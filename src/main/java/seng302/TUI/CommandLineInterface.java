@@ -41,8 +41,16 @@ public class CommandLineInterface {
                     System.out.println("Please enter a valid ID number.");
                 }
             } else if (nextCommand.equals("organ_list")) {
-			    listOrgans();
-            } else if (!nextCommand.equals("quit")) {
+                    listOrgans();
+            } else if (nextCommand.equals("donor_organs")) {
+                try {
+                    listDonorOrgans(scanner.nextLong());
+                } catch (InputMismatchException e) {
+                    System.out.println("Please enter a valid ID number.");
+                }
+            }
+
+            else if (!nextCommand.equals("quit")) {
 				System.out.println("Input not recognised. Valid commands are: create, describe <id>, list, " +
 						"set <id> <attribute> <value>, add <id> <organ>, organ_list, quit.");
 			}
@@ -70,6 +78,12 @@ public class CommandLineInterface {
     }
 
     private void listDonorOrgans(long id) {
+	    Donor donor = getDonorById(id);
+        if(!donor.getOrgans().isEmpty()){
+            System.out.println(donor.getName() + ": " + donor.getOrgans());
+        } else {
+            System.out.println("No organs available from donor!");
+        }
 
     }
 
