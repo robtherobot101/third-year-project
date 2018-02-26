@@ -1,9 +1,6 @@
 package seng302.TUI;
 
-import seng302.Core.BloodType;
-import seng302.Core.Donor;
-import seng302.Core.Gender;
-import seng302.Core.Main;
+import seng302.Core.*;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -34,7 +31,9 @@ public class CommandLineInterface {
 				} catch (NumberFormatException e) {
 					System.out.println("Please enter a valid ID number.");
 				}
-			} else if (!nextCommand.equals("quit")) {
+			} else if(nextCommand.equals("add")) {
+			    addOrgan(scanner.nextLong(), scanner.next());
+            } else if (!nextCommand.equals("quit")) {
 				System.out.println("Input not recognised. Valid commands are: create, describe <id>, list, " +
 						"set <id> <attribute> <value>, quit.");
 			}
@@ -46,7 +45,8 @@ public class CommandLineInterface {
 		scanner.close();
 	}
 
-	private void createDonor() {
+
+    private void createDonor() {
 		System.out.print("Enter the new donor's name: ");
 		String name = scanner.nextLine();
 
@@ -137,6 +137,19 @@ public class CommandLineInterface {
 		}
 	}
 
+    private void addOrgan(long id, String organ) {
+	    Donor toSet = getDonorById(id);
+	    if(toSet == null){
+	        return;
+        }
+        try {
+            toSet.setOrgan(Organ.parse(organ));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Please enter blood type as A-, A+, B-, B+, O-, or O+.");
+        }
+
+    }
+
 	private Donor getDonorById(long id) {
 		if (id < 0) {
 			System.out.println("ID numbers start at 0. Please try an ID number 0 or higher.");
@@ -154,4 +167,5 @@ public class CommandLineInterface {
 		}
 		return found;
 	}
+
 }

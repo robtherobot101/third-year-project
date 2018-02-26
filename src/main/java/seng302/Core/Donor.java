@@ -4,12 +4,14 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.EnumSet;
 
 public class Donor {
 	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
 	public static final String tableHeader = "Donor ID | Creation Time        | Name                 | Date of Birth" +
 			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address";
+
 	private String name, currentAddress;
 	private LocalDate dateOfBirth, dateOfDeath;
 	private LocalDateTime creationTime;
@@ -17,6 +19,7 @@ public class Donor {
 	private double height, weight;
 	private BloodType bloodType;
 	private long id;
+	private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
 
 	public Donor (String name, LocalDate dateOfBirth) {
 		this.name = name;
@@ -68,6 +71,12 @@ public class Donor {
 	public void setCurrentAddress(String currentAddress) {
 		this.currentAddress = currentAddress;
 	}
+
+	public void setOrgan(Organ organ){
+	    this.organs.add(organ);
+	    System.out.println("Added something!");
+	    System.out.println(organs);
+    }
 
 	public long getId() {
 		return id;
