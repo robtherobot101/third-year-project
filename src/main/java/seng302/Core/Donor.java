@@ -121,4 +121,8 @@ public class Donor {
 	public String toString() {
 		return getString(false);
 	}
+
+    public String getName() {
+        return name;
+    }
 }
