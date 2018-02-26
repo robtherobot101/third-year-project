@@ -4,6 +4,7 @@ import seng302.Core.*;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CommandLineInterface {
@@ -31,11 +32,17 @@ public class CommandLineInterface {
 				} catch (NumberFormatException e) {
 					System.out.println("Please enter a valid ID number.");
 				}
-			} else if(nextCommand.equals("add")) {
-			    addOrgan(scanner.nextLong(), scanner.next());
+			}
+			// Consider changing the number format exception to input mismatch exception, eg try "set asdf"
+			else if(nextCommand.equals("add")) {
+			    try {
+                    addOrgan(scanner.nextLong(), scanner.next());
+                } catch (InputMismatchException e) {
+                    System.out.println("Please enter a valid ID number.");
+                }
             } else if (!nextCommand.equals("quit")) {
 				System.out.println("Input not recognised. Valid commands are: create, describe <id>, list, " +
-						"set <id> <attribute> <value>, quit.");
+						"set <id> <attribute> <value>, add <id> <organ>, quit.");
 			}
 
 			System.out.print("$ ");
@@ -145,7 +152,8 @@ public class CommandLineInterface {
         try {
             toSet.setOrgan(Organ.parse(organ));
         } catch (IllegalArgumentException e) {
-            System.out.println("Please enter blood type as A-, A+, B-, B+, O-, or O+.");
+            System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
+			"cornea, middle-ear, skin, bone-marrow, connective-tissue");
         }
 
     }

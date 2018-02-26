@@ -73,9 +73,15 @@ public class Donor {
 	}
 
 	public void setOrgan(Organ organ){
-	    this.organs.add(organ);
-	    System.out.println("Added something!");
-	    System.out.println(organs);
+		if (!organs.contains(organ)) {
+            this.organs.add(organ);
+        } else {
+		    System.out.println("Organ already being donated.");
+        }
+    }
+
+    public EnumSet<Organ> getOrgans() {
+	    return organs;
     }
 
 	public long getId() {

@@ -2,7 +2,7 @@ package seng302.Core;
 
 public enum Organ {
     LIVER("liver"), KIDNEY("kidney"), PANCREAS("pancreas"), HEART("heart"), LUNG("lung"), INTESTINE("intestine"),
-    CORNEA("cornea"), EAR("middle ear"), SKIN("skin"), BONE("bone marrow"), TISSUE("connective tissue");
+    CORNEA("cornea"), EAR("middle-ear"), SKIN("skin"), BONE("bone-marrow"), TISSUE("connective-tissue");
 
     private String organ;
 
