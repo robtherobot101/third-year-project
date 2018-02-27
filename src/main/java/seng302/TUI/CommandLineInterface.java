@@ -40,6 +40,12 @@ public class CommandLineInterface {
                 } catch (InputMismatchException e) {
                     System.out.println("Please enter a valid ID number.");
                 }
+            } else if(nextCommand.equals("remove")) {
+                try {
+                    removeOrgan(scanner.nextLong(), scanner.next());
+                } catch (InputMismatchException e) {
+                    System.out.println("Please enter a valid ID number.");
+                }
             } else if (nextCommand.equals("organ_list")) {
                     listOrgans();
             } else if (nextCommand.equals("donor_organs")) {
@@ -52,7 +58,8 @@ public class CommandLineInterface {
 
             else if (!nextCommand.equals("quit")) {
 				System.out.println("Input not recognised. Valid commands are: create, describe <id>, list, " +
-						"set <id> <attribute> <value>, add <id> <organ>, organ_list, quit.");
+						"set <id> <attribute> <value>, add <id> <organ>, remove <id> <organ> organ_list, " +
+                        "donor_organs <id>, quit.");
 			}
 
 			System.out.print("$ ");
@@ -108,7 +115,7 @@ public class CommandLineInterface {
 	private void describeDonor(long id) {
 		Donor toDescribe = getDonorById(id);
 		if (toDescribe != null) {
-			System.out.println(toDescribe);;
+			System.out.println(toDescribe);
 		}
 	}
 
@@ -128,6 +135,7 @@ public class CommandLineInterface {
 			case "dateOfDeath":
 				try {
 					toSet.setDateOfDeath(LocalDate.parse(value, Donor.dateFormat));
+                    toSet.setLastModified();
 				} catch (DateTimeException e) {
 					System.out.println("Please enter the date in the format dd/mm/yyyy.");
 				}
@@ -135,6 +143,7 @@ public class CommandLineInterface {
 			case "gender":
 				try {
 					toSet.setGender(Gender.parse(value));
+                    toSet.setLastModified();
 				} catch (IllegalArgumentException e) {
 					System.out.println("Please enter gender as other, female, or male.");
 				}
@@ -146,6 +155,7 @@ public class CommandLineInterface {
 						System.out.println("Please enter a height which is larger than 0.");
 					} else {
 						toSet.setHeight(height);
+                        toSet.setLastModified();
 					}
 				} catch (NumberFormatException e) {
 					System.out.println("Please enter a numeric height.");
@@ -158,6 +168,7 @@ public class CommandLineInterface {
 						System.out.println("Please enter a weight which is larger than 0.");
 					} else {
 						toSet.setWeight(weight);
+                        toSet.setLastModified();
 					}
 				} catch (NumberFormatException e) {
 					System.out.println("Please enter a numeric weight.");
@@ -166,6 +177,7 @@ public class CommandLineInterface {
 			case "bloodType":
 				try {
 					toSet.setBloodType(BloodType.parse(value));
+                    toSet.setLastModified();
 				} catch (IllegalArgumentException e) {
 					System.out.println("Please enter blood type as A-, A+, B-, B+, O-, or O+.");
 				}
@@ -173,10 +185,12 @@ public class CommandLineInterface {
 			case "currentAddress":
 				System.out.print("Enter the new donor's address: ");
 				toSet.setCurrentAddress(value);
+                toSet.setLastModified();
 			default:
 				System.out.println("Attribute '" + attribute + "' not recognised. Try dateOfDeath, gender, height, " +
 						"weight, bloodType, or currentAddress.");
 		}
+
 	}
 
     private void addOrgan(long id, String organ) {
@@ -186,9 +200,25 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(organ));
+            toSet.setLastModified();
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
 			"cornea, middle-ear, skin, bone-marrow, connective-tissue");
+        }
+
+    }
+
+    private void removeOrgan(long id, String organ) {
+        Donor toSet = getDonorById(id);
+        if(toSet == null){
+            return;
+        }
+        try {
+            toSet.removeOrgan(Organ.parse(organ));
+            toSet.setLastModified();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
+                    "cornea, middle-ear, skin, bone-marrow, connective-tissue");
         }
 
     }

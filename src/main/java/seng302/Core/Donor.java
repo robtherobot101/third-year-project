@@ -10,11 +10,12 @@ public class Donor {
 	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
 	public static final String tableHeader = "Donor ID | Creation Time        | Name                 | Date of Birth" +
-			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address";
+			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address                | Last Modified";
 
 	private String name, currentAddress;
 	private LocalDate dateOfBirth, dateOfDeath;
 	private LocalDateTime creationTime;
+	private LocalDateTime lastModified;
 	private Gender gender;
 	private double height, weight;
 	private BloodType bloodType;
@@ -31,6 +32,7 @@ public class Donor {
 		this.bloodType = null;
 		this.currentAddress = null;
 		this.creationTime = LocalDateTime.now();
+		this.lastModified = creationTime;
 		this.id = Main.getNextDonorId(true);
 	}
 
@@ -45,6 +47,7 @@ public class Donor {
 		this.bloodType = BloodType.parse(bloodType);
 		this.currentAddress = currentAddress;
 		this.creationTime = LocalDateTime.now();
+		this.lastModified = creationTime;
 		this.id = Main.getNextDonorId(true);
 	}
 
@@ -80,6 +83,14 @@ public class Donor {
         }
     }
 
+    public void removeOrgan(Organ organ) {
+        if (organs.contains(organ)) {
+            this.organs.remove(organ);
+        } else {
+            System.out.println("Organ not in list.");
+        }
+    }
+
     public EnumSet<Organ> getOrgans() {
 	    return organs;
     }
@@ -107,14 +118,17 @@ public class Donor {
 		}
 
 		if (table) {
-			return String.format("%-8d | %s | %-20s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %s",
+			return String.format("%-8d | %s | %-20s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s ",
 					id, dateTimeFormat.format(creationTime), name, dateFormat.format(dateOfBirth),
-					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress);
+					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
+                    dateTimeFormat.format(lastModified));
 		} else {
 			return String.format("Donor (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " +
-							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Current address: %s.",
+							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Current address: %s, Last Modified: %s.",
 					id, dateTimeFormat.format(creationTime), name, dateFormat.format(dateOfBirth),
-					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress);
+					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
+                    dateTimeFormat.format(lastModified));
+
 		}
 	}
 
@@ -125,4 +139,10 @@ public class Donor {
     public String getName() {
         return name;
     }
+
+    public void setLastModified() {
+	    lastModified = LocalDateTime.now();
+    }
+
+
 }
