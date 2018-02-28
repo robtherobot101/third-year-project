@@ -21,6 +21,10 @@ public class Main {
     	return nextDonorId;
 	}
 
+	public static void saveDonors() {
+
+	}
+
     public static void main(String[] args) {
 		donors.add(new Donor("testdude1 test", "01/02/0345", "02/03/0456", "male", 12.1, 111.45, "o+", "abc street 1235"));
 		donors.add(new Donor("testdude2 test", "01/04/0345", "02/01/0456", "female", 1.234, 1.11111, "a-", "street sample text"));

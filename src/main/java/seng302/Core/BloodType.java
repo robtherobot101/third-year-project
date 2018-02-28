@@ -1,7 +1,7 @@
 package seng302.Core;
 
 public enum BloodType {
-	A_NEG("A-"), A_POS("A+"), B_NEG("B-"), B_POS("B+"), O_NEG("O-"), O_POS("O+");
+	A_NEG("A-"), A_POS("A+"), B_NEG("B-"), B_POS("B+"), AB_NEG("AB-"), AB_POS("AB+"), O_NEG("O-"), O_POS("O+");
 
 	private String type;
 

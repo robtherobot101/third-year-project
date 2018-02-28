@@ -143,6 +143,4 @@ public class Donor {
     public void setLastModified() {
 	    lastModified = LocalDateTime.now();
     }
-
-
 }
