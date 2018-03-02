@@ -119,6 +119,10 @@ public class CommandLineInterface {
 		scanner.close();
 	}
 
+	/**
+	 * Lists all donors who have at least 1 organ to donate and their available organs.
+     * If none exist, a message is displayed.
+	 */
     private void listOrgans() {
         boolean organsAvailable = false;
 	    for (Donor donor : Main.donors) {
@@ -133,6 +137,10 @@ public class CommandLineInterface {
 
     }
 
+    /**
+     * Lists a specific donor and their available organs. If they have none a message is displayed.
+     * @param id the donors id.
+     */
     private void listDonorOrgans(long id) {
 	    Donor donor = getDonorById(id);
 	    if (donor != null) {
@@ -258,6 +266,11 @@ public class CommandLineInterface {
 
 	}
 
+    /**
+     * Adds an organ object to a donors list of available organs.
+     * @param id the donor giving the organ.
+     * @param organ the type of organ being donated.
+     */
     private void addOrgan(long id, String organ) {
 	    Donor toSet = getDonorById(id);
 	    if (toSet == null) {
