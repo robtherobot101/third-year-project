@@ -286,7 +286,12 @@ public class CommandLineInterface {
 
     }
 
-    private void removeOrgan(long id, String organ) {
+	/**
+	 * Removes an organ object from a donors available organ set, if it exists.
+	 * @param id the donor having the organ removed from the set
+	 * @param organ the organ being removed
+	 */
+	private void removeOrgan(long id, String organ) {
         Donor toSet = getDonorById(id);
         if(toSet == null){
             return;
