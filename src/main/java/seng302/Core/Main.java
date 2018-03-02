@@ -5,15 +5,20 @@ import seng302.TUI.CommandLineInterface;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-//
-//Test comment
-//for test push
-//to be deleted
-//
+/**
+ * Main class that contains program initialization code and data that must be accessible from multiple parts of the
+ * program.
+ */
 public class Main {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
 
+    /**
+     * Get the unique id number for the next donor or the last id number issued.
+     * @param increment Whether to increment the unique id counter before returning the unique id value
+     * @return returns either the next unique id number or the last issued id number depending on whether increment
+     * was true or false
+     */
     public static long getNextDonorId(boolean increment) {
     	if (increment) {
 			nextDonorId++;
@@ -21,10 +26,17 @@ public class Main {
     	return nextDonorId;
 	}
 
+    /**
+     * Save the donor list to a json file.
+     */
 	public static void saveDonors() {
 
 	}
 
+    /**
+     * Run the command line interface with 4 test donors preloaded.
+     * @param args Not used
+     */
     public static void main(String[] args) {
 		donors.add(new Donor("testdude1 test", "01/02/0345", "02/03/0456", "male", 12.1, 111.45, "o+", "abc street 1235"));
 		donors.add(new Donor("testdude2 test", "01/04/0345", "02/01/0456", "female", 1.234, 1.11111, "a-", "street sample text"));

@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 
+/**
+ * This class contains information about organ donors.
+ */
 public class Donor {
 	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
@@ -99,6 +102,11 @@ public class Donor {
 		return id;
 	}
 
+    /**
+     * Get a string containing key information about the donor. Can be formatted as a table row.
+     * @param table Whether to format the information as a table row
+     * @return The information string
+     */
 	public String getString(boolean table) {
 		String dateOfDeathString, heightString, weightString;
 		if (dateOfDeath != null) {

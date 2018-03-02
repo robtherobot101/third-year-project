@@ -4,12 +4,18 @@ import seng302.Core.*;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * This class runs a command line interface (or text user interface), supplying the core functionality to a user through
+ * a terminal.
+ */
 public class CommandLineInterface {
 	private Scanner scanner;
 
+	/**
+	 * The main loop for the command line interface, which calls specific methods to process each command.
+	 */
 	public void run() {
 		scanner = new Scanner(System.in);
 		String[] nextCommand;
@@ -138,7 +144,9 @@ public class CommandLineInterface {
 		}
     }
 
-
+    /**
+     * Creates a new donor from user input with a name and date of birth.
+     */
     private void createDonor() {
 		System.out.print("Enter the new donor's name: ");
 		String name = scanner.nextLine();
@@ -156,6 +164,10 @@ public class CommandLineInterface {
 		Main.donors.add(new Donor(name, dateOfBirth));
 	}
 
+    /**
+     * Displays information about a donor.
+     * @param id The id of the donor to describe
+     */
 	private void describeDonor(long id) {
 		Donor toDescribe = getDonorById(id);
 		if (toDescribe != null) {
@@ -163,6 +175,9 @@ public class CommandLineInterface {
 		}
 	}
 
+    /**
+     * Displays a table containing information about all donors.
+     */
 	private void listDonors() {
 		System.out.println(Donor.tableHeader);
 		for (Donor donor: Main.donors) {
@@ -170,14 +185,19 @@ public class CommandLineInterface {
 		}
 	}
 
+    /**
+     * Set the value of an attribute of a donor.
+     * @param id The id of the donor to set an attribute of
+     * @param attribute The attribute to set a new value for
+     * @param value The new value for the attribute
+     */
 	private void setAttribute(long id, String attribute, String value) {
 		Donor toSet = getDonorById(id);
 		if (toSet == null) {
 			return;
 		}
-		switch (attribute) {
+		switch (attribute.toLowerCase()) {
 			case "dateofdeath":
-			case "dateOfDeath":
 				try {
 					toSet.setDateOfDeath(LocalDate.parse(value, Donor.dateFormat));
                     toSet.setLastModified();
@@ -220,7 +240,6 @@ public class CommandLineInterface {
 				}
 				break;
 			case "bloodtype":
-			case "bloodType":
 				try {
 					toSet.setBloodType(BloodType.parse(value));
                     toSet.setLastModified();
@@ -229,7 +248,6 @@ public class CommandLineInterface {
 				}
 				break;
 			case "currentaddress":
-			case "currentAddress":
 				System.out.print("Enter the new donor's address: ");
 				toSet.setCurrentAddress(value);
                 toSet.setLastModified();
@@ -270,6 +288,11 @@ public class CommandLineInterface {
 
     }
 
+    /**
+     * Find a specific donor from the main donor list based on their id.
+     * @param id The id of the donor to search for
+     * @return The donor object or null if the donor was not found
+     */
 	private Donor getDonorById(long id) {
 		if (id < 0) {
 			System.out.println("ID numbers start at 0. Please try an ID number 0 or higher.");
