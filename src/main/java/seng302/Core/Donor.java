@@ -15,7 +15,7 @@ public class Donor {
 	public static final String tableHeader = "Donor ID | Creation Time        | Name                 | Date of Birth" +
 			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address                | Last Modified";
 
-	private String name, currentAddress;
+	private String[] name;
 	private LocalDate dateOfBirth, dateOfDeath;
 	private LocalDateTime creationTime;
 	private LocalDateTime lastModified;
@@ -23,10 +23,11 @@ public class Donor {
 	private double height, weight;
 	private BloodType bloodType;
 	private long id;
+	private String currentAddress;
 	private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
 
 	public Donor (String name, LocalDate dateOfBirth) {
-		this.name = name;
+		setName(name);
 		this.dateOfBirth = dateOfBirth;
 		this.dateOfDeath = null;
 		this.gender = null;
@@ -41,7 +42,7 @@ public class Donor {
 
 	public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight,
 				 String bloodType, String currentAddress) throws DateTimeException, IllegalArgumentException {
-		this.name = name;
+		setName(name);
 		this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
 		this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
 		this.gender = Gender.parse(gender);
@@ -54,28 +55,59 @@ public class Donor {
 		this.id = Main.getNextDonorId(true);
 	}
 
+	public String getName() {
+		return String.join(" ", name);
+	}
+
+	public String[] getNameArray() {
+		return name;
+	}
+	public EnumSet<Organ> getOrgans() {
+		return organs;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setName(String name) {
+		this.name = name.split(",");
+		setLastModified();
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+		setLastModified();
+	}
+
 	public void setDateOfDeath(LocalDate dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;
+		setLastModified();
 	}
 
 	public void setHeight(double height) {
 		this.height = height;
+		setLastModified();
 	}
 
 	public void setWeight(double weight) {
 		this.weight = weight;
+		setLastModified();
 	}
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+		setLastModified();
 	}
 
 	public void setBloodType(BloodType bloodType) {
 		this.bloodType = bloodType;
+		setLastModified();
 	}
 
 	public void setCurrentAddress(String currentAddress) {
 		this.currentAddress = currentAddress;
+		setLastModified();
 	}
 
 	public void setOrgan(Organ organ){
@@ -84,6 +116,7 @@ public class Donor {
         } else {
 		    System.out.println("Organ already being donated.");
         }
+		setLastModified();
     }
 
     public void removeOrgan(Organ organ) {
@@ -92,14 +125,11 @@ public class Donor {
         } else {
             System.out.println("Organ not in list.");
         }
+		setLastModified();
     }
 
-    public EnumSet<Organ> getOrgans() {
-	    return organs;
-    }
-
-	public long getId() {
-		return id;
+	private void setLastModified() {
+		lastModified = LocalDateTime.now();
 	}
 
     /**
@@ -127,13 +157,13 @@ public class Donor {
 
 		if (table) {
 			return String.format("%-8d | %s | %-20s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s ",
-					id, dateTimeFormat.format(creationTime), name, dateFormat.format(dateOfBirth),
+					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
 					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
                     dateTimeFormat.format(lastModified));
 		} else {
 			return String.format("Donor (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " +
 							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Current address: %s, Last Modified: %s.",
-					id, dateTimeFormat.format(creationTime), name, dateFormat.format(dateOfBirth),
+					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
 					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
                     dateTimeFormat.format(lastModified));
 
@@ -143,12 +173,4 @@ public class Donor {
 	public String toString() {
 		return getString(false);
 	}
-
-    public String getName() {
-        return name;
-    }
-
-    public void setLastModified() {
-	    lastModified = LocalDateTime.now();
-    }
 }

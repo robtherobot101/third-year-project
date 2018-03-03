@@ -26,6 +26,53 @@ public class Main {
     	return nextDonorId;
 	}
 
+	/**
+	 * Find a specific donor from the donor list based on their id.
+	 * @param id The id of the donor to search for
+	 * @return The donor object or null if the donor was not found
+	 */
+	public static Donor getDonorById(long id) {
+		if (id < 0) {
+			return null;
+		}
+		Donor found = null;
+		for (Donor donor: donors) {
+			if (donor.getId() == id) {
+				found = donor;
+				break;
+			}
+		}
+		return found;
+	}
+
+	/**
+	 * Find a specific donor from the donor list based on their name.
+	 * @param names The names of the donor to search for
+	 * @return The donor objects that matched the input names
+	 */
+	public static ArrayList<Donor> getDonorByName(String[] names) {
+		ArrayList<Donor> found = new ArrayList<>();
+		if (names.length == 0) {
+			return donors;
+		}
+		int matched;
+		for (Donor donor: donors) {
+			matched = 0;
+			for (String name: donor.getNameArray()) {
+				if (name.toLowerCase().contains(names[matched].toLowerCase()))  {
+					matched++;
+					if (matched == names.length) {
+						break;
+					}
+				}
+			}
+			if (matched == names.length) {
+				found.add(donor);
+			}
+		}
+		return found;
+	}
+
     /**
      * Save the donor list to a json file.
      */
@@ -38,10 +85,11 @@ public class Main {
      * @param args Not used
      */
     public static void main(String[] args) {
-		donors.add(new Donor("testdude1 test", "01/02/0345", "02/03/0456", "male", 12.1, 111.45, "o+", "abc street 1235"));
-		donors.add(new Donor("testdude2 test", "01/04/0345", "02/01/0456", "female", 1.234, 1.11111, "a-", "street sample text"));
+		donors.add(new Donor("testdude1,test", "01/02/0345", "02/03/0456", "male", 12.1, 111.45, "o+", "abc street 1235"));
+		donors.add(new Donor("testdude2,test", "01/04/0345", "02/01/0456", "female", 1.234, 1.11111, "a-", "street sample text"));
 		donors.add(new Donor("low-info", LocalDate.parse("12/04/0345", Donor.dateFormat)));
-		donors.add(new Donor("testdude3 test", "01/05/0345", "09/03/0456", "other", 0.1, 12.4, "b-", "sdfghjkwor geirngoernignoe"));
+		donors.add(new Donor("testdude3,test", "01/05/0345", "09/03/0456", "other", 0.1, 12.4, "b-", "sdfghjkwor geirngoernignoe"));
+		donors.add(new Donor("a,long,long,name", "01/05/0345", "09/03/0456", "other", 0.1, 12.4, "b-", "sdfghjkwor geirngoernignoe"));
 		CommandLineInterface commandLineInterface = new CommandLineInterface();
         commandLineInterface.run();
     }

@@ -1,5 +1,7 @@
 package seng302.TUI;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import seng302.Core.*;
 
 import java.time.DateTimeException;
@@ -11,13 +13,11 @@ import java.util.Scanner;
  * a terminal.
  */
 public class CommandLineInterface {
-	private Scanner scanner;
-
 	/**
 	 * The main loop for the command line interface, which calls specific methods to process each command.
 	 */
 	public void run() {
-		scanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
 		String[] nextCommand;
 		do {
 			do {
@@ -26,39 +26,68 @@ public class CommandLineInterface {
 			} while (nextCommand.length == 0);
 			switch (nextCommand[0]) {
 				case "create":
-					if (nextCommand.length == 1) {
-						createDonor();
-					} else {
-						System.out.println("The create command does not accept arguments.");
-					}
-					break;
-				case "describe":
-					if (nextCommand.length == 2) {
+					if (nextCommand.length == 3) {
 						try {
-							describeDonor(Long.parseLong(nextCommand[1]));
-						} catch (NumberFormatException e) {
-							System.out.println("Please enter a valid ID number.");
+							Main.donors.add(new Donor(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], Donor.dateFormat)));
+							System.out.println("New donor created.");
+						} catch (DateTimeException e) {
+							System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
+						}
+					} else if (nextCommand.length > 3 && nextCommand[1].contains("\"") && nextCommand[nextCommand.length-2].contains("\"")) {
+						String date = nextCommand[nextCommand.length-1];
+						nextCommand = String.join(" ", nextCommand).split("\"");
+						if (nextCommand.length == 3) {
+							try {
+								Main.donors.add(new Donor(nextCommand[1], LocalDate.parse(date, Donor.dateFormat)));
+								System.out.println("New donor created.");
+							} catch (DateTimeException e) {
+								System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
+							}
+						} else {
+							printIncorrectUsageString("create", 2, "\"name part 1,name part 2\" <date of birth>");
 						}
 					} else {
-						System.out.println("The describe command must be used with 1 argument (describe <id>).");
+						printIncorrectUsageString("create", 2, "\"name part 1,name part 2\" <date of birth>");
+					}
+
+					break;
+				case "describe":
+					if (nextCommand.length > 1 && nextCommand[1].contains("\"")) {
+						describeDonor(String.join(" ", nextCommand).split("\"")[1]);
+					} else if (nextCommand.length == 2) {
+						describeDonor(nextCommand[1]);
+					} else {
+						printIncorrectUsageString("describe", 1, "<id>");
 					}
 					break;
 				case "list":
 					if (nextCommand.length == 1) {
 						listDonors();
 					} else {
-						System.out.println("The list command does not accept arguments.");
+						printIncorrectUsageString("list", 0, null);
 					}
 					break;
 				case "set":
-					if (nextCommand.length == 4) {
+					if (nextCommand.length >= 4 && nextCommand[2].toLowerCase().equals("name") && nextCommand[3].contains("\"")) {
+						long id = Long.parseLong(nextCommand[1]);
+						nextCommand = String.join(" ", nextCommand).split("\"");
+						if (nextCommand.length > 1) {
+							try {
+								setAttribute(id, "name", nextCommand[1]);
+							} catch (NumberFormatException e) {
+								System.out.println("Please enter a valid ID number.");
+							}
+						} else {
+							System.out.println("Please enter a name.");
+						}
+					} else if (nextCommand.length == 4) {
 						try {
 							setAttribute(Long.parseLong(nextCommand[1]), nextCommand[2], nextCommand[3]);
 						} catch (NumberFormatException e) {
 							System.out.println("Please enter a valid ID number.");
 						}
 					} else {
-						System.out.println("The set command must be used with 3 arguments (set <id> <attribute> <value>).");
+						printIncorrectUsageString("set", 3, "<id> <attribute> <value>");
 					}
 					break;
 				case "add":
@@ -69,7 +98,7 @@ public class CommandLineInterface {
 							System.out.println("Please enter a valid ID number.");
 						}
 					} else {
-						System.out.println("The add command must be used with 2 arguments (add <id> <organ>).");
+						printIncorrectUsageString("add", 2, "<id> <organ>");
 					}
 					break;
 				case "remove":
@@ -80,14 +109,14 @@ public class CommandLineInterface {
 							System.out.println("Please enter a valid ID number.");
 						}
 					} else {
-						System.out.println("The remove command must be used with 2 arguments (remove <id> <organ>).");
+						printIncorrectUsageString("remove", 2, "<id> <organ>");
 					}
 					break;
 				case "organ_list":
 					if (nextCommand.length == 1) {
 						listOrgans();
 					} else {
-						System.out.println("The organ_list command does not accept arguments.");
+						printIncorrectUsageString("organ_list", 0, null);
 					}
 					break;
 				case "donor_organs":
@@ -98,15 +127,16 @@ public class CommandLineInterface {
 							System.out.println("Please enter a valid ID number.");
 						}
 					} else {
-						System.out.println("The remove command must be used with 1 arguments (donor_organs <id>).");
+						printIncorrectUsageString("remove", 1, "<id>");
 					}
 					break;
 				case "quit":
 					break;
 				default:
 					System.out.println("Input not recognised. Valid commands are: "
-						+ "\n\t-create"
+						+ "\n\t-create \"name part 1,name part 2\" <date of birth>"
 						+ "\n\t-describe <id>"
+						+ "\n\t-describe \"name part 1,name part 2\""
 						+ "\n\t-list"
 						+ "\n\t-set <id> <attribute> <value>"
 						+ "\n\t-add <id> <organ>"
@@ -117,6 +147,26 @@ public class CommandLineInterface {
 			}
 		} while (!nextCommand[0].equals("quit"));
 		scanner.close();
+	}
+
+	/**
+	 * Prints a message to the console advising the user on how to correctly use a command they failed to use.
+	 * @param command The command name
+	 * @param argc The argument count
+	 * @param args The arguments
+	 */
+	private void printIncorrectUsageString(String command, int argc, String args) {
+		switch (argc) {
+			case 0:
+				System.out.println(String.format("The %s command does not accept arguments.", command));
+				break;
+			case 1:
+				System.out.println(String.format("The %s command must be used with 1 argument (%s %s).", command, command, args));
+				break;
+			default:
+				System.out.println(String.format("The %s command must be used with %d arguments (%s %s).", command, argc, command, args));
+		}
+
 	}
 
     private void listOrgans() {
@@ -134,8 +184,10 @@ public class CommandLineInterface {
     }
 
     private void listDonorOrgans(long id) {
-	    Donor donor = getDonorById(id);
-	    if (donor != null) {
+	    Donor donor = Main.getDonorById(id);
+	    if (donor == null) {
+			System.out.println(String.format("Donor with ID %d not found.", id));
+		} else {
 			if (!donor.getOrgans().isEmpty()) {
 				System.out.println(donor.getName() + ": " + donor.getOrgans());
 			} else {
@@ -145,33 +197,27 @@ public class CommandLineInterface {
     }
 
     /**
-     * Creates a new donor from user input with a name and date of birth.
-     */
-    private void createDonor() {
-		System.out.print("Enter the new donor's name: ");
-		String name = scanner.nextLine();
-
-		LocalDate dateOfBirth = null;
-		while (dateOfBirth == null) {
-			System.out.print("Enter the new donor's date of birth (dd/mm/yyyy): ");
-			try {
-				dateOfBirth = LocalDate.parse(scanner.nextLine(), Donor.dateFormat);
-			} catch (DateTimeException e) {
-				System.out.println("Please enter a valid date in the format dd/mm/yyyy.");
-			}
-		}
-
-		Main.donors.add(new Donor(name, dateOfBirth));
-	}
-
-    /**
      * Displays information about a donor.
-     * @param id The id of the donor to describe
+     * @param id The id of the donor to describe - either an ID number or a name to search for
      */
-	private void describeDonor(long id) {
-		Donor toDescribe = getDonorById(id);
-		if (toDescribe != null) {
-			System.out.println(toDescribe);
+	private void describeDonor(String id) {
+		try {
+			Donor toDescribe = Main.getDonorById(Long.parseLong(id));
+			if (toDescribe == null) {
+				System.out.println(String.format("Donor with ID %s not found.", id));
+			} else {
+				System.out.println(toDescribe);
+			}
+		} catch (NumberFormatException e) {
+			ArrayList<Donor> toDescribe = Main.getDonorByName(id.split(","));
+			if (toDescribe.size() == 0) {
+				System.out.println(String.format("No donors with names matching %s were found.", id));
+			} else {
+				System.out.println(Donor.tableHeader);
+				for (Donor donor: toDescribe) {
+					System.out.println(donor.getString(true));
+				}
+			}
 		}
 	}
 
@@ -192,15 +238,28 @@ public class CommandLineInterface {
      * @param value The new value for the attribute
      */
 	private void setAttribute(long id, String attribute, String value) {
-		Donor toSet = getDonorById(id);
+		Donor toSet = Main.getDonorById(id);
 		if (toSet == null) {
+			System.out.println(String.format("Donor with ID %d not found.", id));
 			return;
 		}
 		switch (attribute.toLowerCase()) {
+			case "name":
+				toSet.setName(value);
+				System.out.println("New name set.");
+				break;
+			case "dateofbirth":
+				try {
+					toSet.setDateOfBirth(LocalDate.parse(value, Donor.dateFormat));
+					System.out.println("New date of birth set.");
+				} catch (DateTimeException e) {
+					System.out.println("Please enter a valid date in the format dd/mm/yyyy.");
+				}
+				break;
 			case "dateofdeath":
 				try {
 					toSet.setDateOfDeath(LocalDate.parse(value, Donor.dateFormat));
-                    toSet.setLastModified();
+					System.out.println("New date of death set.");
 				} catch (DateTimeException e) {
 					System.out.println("Please enter a valid date in the format dd/mm/yyyy.");
 				}
@@ -208,7 +267,7 @@ public class CommandLineInterface {
 			case "gender":
 				try {
 					toSet.setGender(Gender.parse(value));
-                    toSet.setLastModified();
+					System.out.println("New gender set.");
 				} catch (IllegalArgumentException e) {
 					System.out.println("Please enter gender as other, female, or male.");
 				}
@@ -220,7 +279,7 @@ public class CommandLineInterface {
 						System.out.println("Please enter a height which is larger than 0.");
 					} else {
 						toSet.setHeight(height);
-                        toSet.setLastModified();
+						System.out.println("New height set.");
 					}
 				} catch (NumberFormatException e) {
 					System.out.println("Please enter a numeric height.");
@@ -233,7 +292,7 @@ public class CommandLineInterface {
 						System.out.println("Please enter a weight which is larger than 0.");
 					} else {
 						toSet.setWeight(weight);
-                        toSet.setLastModified();
+						System.out.println("New weight set.");
 					}
 				} catch (NumberFormatException e) {
 					System.out.println("Please enter a numeric weight.");
@@ -242,30 +301,30 @@ public class CommandLineInterface {
 			case "bloodtype":
 				try {
 					toSet.setBloodType(BloodType.parse(value));
-                    toSet.setLastModified();
+					System.out.println("New blood type set.");
 				} catch (IllegalArgumentException e) {
 					System.out.println("Please enter blood type as A-, A+, B-, B+, O-, or O+.");
 				}
 				break;
 			case "currentaddress":
-				System.out.print("Enter the new donor's address: ");
 				toSet.setCurrentAddress(value);
-                toSet.setLastModified();
+				System.out.println("New address set.");
 			default:
-				System.out.println("Attribute '" + attribute + "' not recognised. Try dateOfDeath, gender, height, " +
+				System.out.println("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, " +
 						"weight, bloodType, or currentAddress.");
 		}
 
 	}
 
     private void addOrgan(long id, String organ) {
-	    Donor toSet = getDonorById(id);
+	    Donor toSet = Main.getDonorById(id);
 	    if (toSet == null) {
+			System.out.println(String.format("Donor with ID %d not found.", id));
 	        return;
         }
         try {
             toSet.setOrgan(Organ.parse(organ));
-            toSet.setLastModified();
+			System.out.println("Organ added.");
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
 			"cornea, middle-ear, skin, bone-marrow, connective-tissue");
@@ -274,13 +333,14 @@ public class CommandLineInterface {
     }
 
     private void removeOrgan(long id, String organ) {
-        Donor toSet = getDonorById(id);
+        Donor toSet = Main.getDonorById(id);
         if(toSet == null){
+			System.out.println(String.format("Donor with ID %d not found.", id));
             return;
         }
         try {
             toSet.removeOrgan(Organ.parse(organ));
-            toSet.setLastModified();
+			System.out.println("Organ removed.");
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
@@ -288,27 +348,6 @@ public class CommandLineInterface {
 
     }
 
-    /**
-     * Find a specific donor from the main donor list based on their id.
-     * @param id The id of the donor to search for
-     * @return The donor object or null if the donor was not found
-     */
-	private Donor getDonorById(long id) {
-		if (id < 0) {
-			System.out.println("ID numbers start at 0. Please try an ID number 0 or higher.");
-			return null;
-		}
-		Donor found = null;
-		for (Donor donor: Main.donors) {
-			if (donor.getId() == id) {
-				found = donor;
-				break;
-			}
-		}
-		if (found == null) {
-			System.out.println(String.format("Donor with ID %d not found.", id));
-		}
-		return found;
-	}
+
 
 }
