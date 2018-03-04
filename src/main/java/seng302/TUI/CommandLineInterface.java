@@ -2,6 +2,7 @@ package seng302.TUI;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import seng302.Core.*;
 
 import java.time.DateTimeException;
@@ -13,15 +14,17 @@ import java.util.Scanner;
  * a terminal.
  */
 public class CommandLineInterface {
+    private Scanner scanner;
+
 	/**
 	 * The main loop for the command line interface, which calls specific methods to process each command.
 	 */
 	public void run() {
-		Scanner scanner = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		String[] nextCommand;
 		do {
 			do {
-				System.out.print("$ ");
+				System.out.print("> ");
 				nextCommand = scanner.nextLine().split(" ");
 			} while (nextCommand.length == 0);
 			switch (nextCommand[0]) {
@@ -49,7 +52,6 @@ public class CommandLineInterface {
 					} else {
 						printIncorrectUsageString("create", 2, "\"name part 1,name part 2\" <date of birth>");
 					}
-
 					break;
 				case "describe":
 					if (nextCommand.length > 1 && nextCommand[1].contains("\"")) {
@@ -90,6 +92,17 @@ public class CommandLineInterface {
 						printIncorrectUsageString("set", 3, "<id> <attribute> <value>");
 					}
 					break;
+                case "delete":
+                    if (nextCommand.length == 2) {
+                        try {
+                            deleteDonor(Long.parseLong(nextCommand[1]));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Please enter a valid ID number.");
+                        }
+                    } else {
+                        printIncorrectUsageString("describe", 1, "<id>");
+                    }
+                    break;
 				case "add":
 					if (nextCommand.length == 3) {
 						try {
@@ -130,19 +143,34 @@ public class CommandLineInterface {
 						printIncorrectUsageString("remove", 1, "<id>");
 					}
 					break;
+				case "save":
+					if (nextCommand.length >= 2) {
+					    String[] afterCommand = new String[nextCommand.length-1];
+                        System.arraycopy(nextCommand, 1, afterCommand,0,nextCommand.length-1);
+                        if (Main.saveDonors(String.join(" ", afterCommand))) {
+                            System.out.println("Donors saved.");
+                        } else {
+                            System.out.println("Failed to save to " + String.join(" ", afterCommand) + ". Make sure the program has access to this file.");
+                        }
+					} else {
+						printIncorrectUsageString("save", 1, "<filename>");
+					}
+					break;
 				case "quit":
 					break;
 				default:
 					System.out.println("Input not recognised. Valid commands are: "
-						+ "\n\t-create \"name part 1,name part 2\" <date of birth>"
+						+ "\n\t-create \"name part 1,/name part 2\" <date of birth>"
 						+ "\n\t-describe <id>"
 						+ "\n\t-describe \"name part 1,name part 2\""
 						+ "\n\t-list"
 						+ "\n\t-set <id> <attribute> <value>"
+                        + "\n\t-delete <id>"
 						+ "\n\t-add <id> <organ>"
 						+ "\n\t-remove <id> <organ>"
 						+ "\n\t-organ_list"
 						+ "\n\t-donor_organs <id>"
+						+ "\n\t-save <filename>"
 						+ "\n\t-quit");
 			}
 		} while (!nextCommand[0].equals("quit"));
@@ -315,6 +343,26 @@ public class CommandLineInterface {
 		}
 
 	}
+
+	private void deleteDonor(long id) {
+	    Donor donor = Main.getDonorById(id);
+	    if (donor == null) {
+            System.out.println(String.format("Donor with ID %d not found.", id));
+            return;
+        }
+        System.out.print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId()));
+        String nextLine = scanner.nextLine();
+        while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
+            System.out.println("Answer not recognised. Please enter y or n: ");
+            nextLine = scanner.nextLine();
+        }
+        if (nextLine.equals("y")) {
+            Main.donors.remove(donor);
+            System.out.println("Donor removed. This change will permanent once the donor list is saved.");
+        } else {
+            System.out.println("Donor was not removed.");
+        }
+    }
 
     private void addOrgan(long id, String organ) {
 	    Donor toSet = Main.getDonorById(id);

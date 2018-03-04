@@ -12,7 +12,7 @@ import java.util.EnumSet;
 public class Donor {
 	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
-	public static final String tableHeader = "Donor ID | Creation Time        | Name                 | Date of Birth" +
+	public static final String tableHeader = "Donor ID | Creation Time        | Name                   | Date of Birth" +
 			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address                | Last Modified";
 
 	private String[] name;
@@ -156,7 +156,7 @@ public class Donor {
 		}
 
 		if (table) {
-			return String.format("%-8d | %s | %-20s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s ",
+			return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s ",
 					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
 					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
                     dateTimeFormat.format(lastModified));

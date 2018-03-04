@@ -1,5 +1,10 @@
 package seng302.Core;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import seng302.TUI.CommandLineInterface;
 
 import java.time.LocalDate;
@@ -76,8 +81,22 @@ public class Main {
     /**
      * Save the donor list to a json file.
      */
-	public static void saveDonors() {
-
+	public static boolean saveDonors(String filename) {
+		PrintStream outputStream = null;
+		boolean success;
+		try {
+            outputStream = new PrintStream(new FileOutputStream(filename));
+            Gson gson = new GsonBuilder().create();
+            gson.toJson(donors, outputStream);
+            success = true;
+        } catch (IOException e) {
+		    success = false;
+        } finally {
+		    if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+        return success;
 	}
 
     /**
@@ -85,11 +104,11 @@ public class Main {
      * @param args Not used
      */
     public static void main(String[] args) {
-		donors.add(new Donor("testdude1,test", "01/02/0345", "02/03/0456", "male", 12.1, 111.45, "o+", "abc street 1235"));
-		donors.add(new Donor("testdude2,test", "01/04/0345", "02/01/0456", "female", 1.234, 1.11111, "a-", "street sample text"));
-		donors.add(new Donor("low-info", LocalDate.parse("12/04/0345", Donor.dateFormat)));
-		donors.add(new Donor("testdude3,test", "01/05/0345", "09/03/0456", "other", 0.1, 12.4, "b-", "sdfghjkwor geirngoernignoe"));
-		donors.add(new Donor("a,long,long,name", "01/05/0345", "09/03/0456", "other", 0.1, 12.4, "b-", "sdfghjkwor geirngoernignoe"));
+        Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "1235 abc Street"));
+        Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "street sample text"));
+        Main.donors.add(new Donor("Singlename", LocalDate.parse("12/06/1945", Donor.dateFormat)));
+        Main.donors.add(new Donor("Donor 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Address"));
+        Main.donors.add(new Donor("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example Address 12345"));
 		CommandLineInterface commandLineInterface = new CommandLineInterface();
         commandLineInterface.run();
     }
