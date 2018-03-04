@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import seng302.Core.*;
+import seng302.Files.History;
 
+import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -14,18 +16,22 @@ import java.util.Scanner;
  * a terminal.
  */
 public class CommandLineInterface {
-    private Scanner scanner;
+	private Scanner scanner;
+	private PrintStream streamOut;
 
 	/**
 	 * The main loop for the command line interface, which calls specific methods to process each command.
 	 */
 	public void run() {
 		scanner = new Scanner(System.in);
+		streamOut = History.init();
 		String[] nextCommand;
 		do {
 			do {
 				System.out.print("> ");
 				nextCommand = scanner.nextLine().split(" ");
+				String text = History.prepareFileString(nextCommand);
+				History.printToFile(streamOut, text);
 			} while (nextCommand.length == 0);
 			switch (nextCommand[0]) {
 				case "create":
@@ -197,6 +203,10 @@ public class CommandLineInterface {
 
 	}
 
+	/**
+	 * Lists all donors who have at least 1 organ to donate and their available organs.
+	 * If none exist, a message is displayed.
+	 */
     private void listOrgans() {
         boolean organsAvailable = false;
 	    for (Donor donor : Main.donors) {
@@ -211,6 +221,10 @@ public class CommandLineInterface {
 
     }
 
+    /**
+     * Lists a specific donor and their available organs. If they have none a message is displayed.
+     * @param id the donors id.
+     */
     private void listDonorOrgans(long id) {
 	    Donor donor = Main.getDonorById(id);
 	    if (donor == null) {
@@ -345,25 +359,30 @@ public class CommandLineInterface {
 	}
 
 	private void deleteDonor(long id) {
-	    Donor donor = Main.getDonorById(id);
-	    if (donor == null) {
-            System.out.println(String.format("Donor with ID %d not found.", id));
-            return;
-        }
-        System.out.print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId()));
-        String nextLine = scanner.nextLine();
-        while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
-            System.out.println("Answer not recognised. Please enter y or n: ");
-            nextLine = scanner.nextLine();
-        }
-        if (nextLine.equals("y")) {
-            Main.donors.remove(donor);
-            System.out.println("Donor removed. This change will permanent once the donor list is saved.");
-        } else {
-            System.out.println("Donor was not removed.");
-        }
-    }
+		Donor donor = Main.getDonorById(id);
+		if (donor == null) {
+			System.out.println(String.format("Donor with ID %d not found.", id));
+			return;
+		}
+		System.out.print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId()));
+		String nextLine = scanner.nextLine();
+		while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
+			System.out.println("Answer not recognised. Please enter y or n: ");
+			nextLine = scanner.nextLine();
+		}
+		if (nextLine.equals("y")) {
+			Main.donors.remove(donor);
+			System.out.println("Donor removed. This change will permanent once the donor list is saved.");
+		} else {
+			System.out.println("Donor was not removed.");
+		}
+	}
 
+    /**
+     * Adds an organ object to a donors list of available organs.
+     * @param id the donor giving the organ.
+     * @param organ the type of organ being donated.
+     */
     private void addOrgan(long id, String organ) {
 	    Donor toSet = Main.getDonorById(id);
 	    if (toSet == null) {
@@ -380,8 +399,13 @@ public class CommandLineInterface {
 
     }
 
-    private void removeOrgan(long id, String organ) {
-        Donor toSet = Main.getDonorById(id);
+	/**
+	 * Removes an organ object from a donors available organ set, if it exists.
+	 * @param id the donor having the organ removed from the set
+	 * @param organ the organ being removed
+	 */
+	private void removeOrgan(long id, String organ) {
+        Donor toSet = getDonorById(id);
         if(toSet == null){
 			System.out.println(String.format("Donor with ID %d not found.", id));
             return;
