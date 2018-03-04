@@ -1,7 +1,9 @@
 package seng302.TUI;
 
 import seng302.Core.*;
+import seng302.Files.History;
 
+import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -12,17 +14,21 @@ import java.util.Scanner;
  */
 public class CommandLineInterface {
 	private Scanner scanner;
+	private PrintStream streamOut;
 
 	/**
 	 * The main loop for the command line interface, which calls specific methods to process each command.
 	 */
 	public void run() {
 		scanner = new Scanner(System.in);
+		streamOut = History.init();
 		String[] nextCommand;
 		do {
 			do {
 				System.out.print("$ ");
 				nextCommand = scanner.nextLine().split(" ");
+				String text = History.prepareFileString(nextCommand);
+				History.printToFile(streamOut, text);
 			} while (nextCommand.length == 0);
 			switch (nextCommand[0]) {
 				case "create":
@@ -118,6 +124,7 @@ public class CommandLineInterface {
 		} while (!nextCommand[0].equals("quit"));
 		scanner.close();
 	}
+
 
 	/**
 	 * Lists all donors who have at least 1 organ to donate and their available organs.
