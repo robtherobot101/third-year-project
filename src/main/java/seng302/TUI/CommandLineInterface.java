@@ -1,8 +1,6 @@
 package seng302.TUI;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import seng302.Core.*;
 import seng302.Files.History;
 
@@ -358,6 +356,10 @@ public class CommandLineInterface {
 
 	}
 
+	/**
+	 * Ask for confirmation to delete the specified donor, and then delete it if the user confirms the action.
+	 * @param id The id of the donor to consider deleting
+	 */
 	private void deleteDonor(long id) {
 		Donor donor = Main.getDonorById(id);
 		if (donor == null) {
@@ -405,7 +407,7 @@ public class CommandLineInterface {
 	 * @param organ the organ being removed
 	 */
 	private void removeOrgan(long id, String organ) {
-        Donor toSet = getDonorById(id);
+        Donor toSet = Main.getDonorById(id);
         if(toSet == null){
 			System.out.println(String.format("Donor with ID %d not found.", id));
             return;
