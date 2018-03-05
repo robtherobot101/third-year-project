@@ -18,7 +18,7 @@ public class Donor {
 	private String[] name;
 	private LocalDate dateOfBirth, dateOfDeath;
 	private LocalDateTime creationTime;
-	private LocalDateTime lastModified;
+	private LocalDateTime lastModified = null;
 	private Gender gender;
 	private double height, weight;
 	private BloodType bloodType;
@@ -36,7 +36,6 @@ public class Donor {
 		this.bloodType = null;
 		this.currentAddress = null;
 		this.creationTime = LocalDateTime.now();
-		this.lastModified = creationTime;
 		this.id = Main.getNextDonorId(true);
 	}
 
@@ -51,7 +50,6 @@ public class Donor {
 		this.bloodType = BloodType.parse(bloodType);
 		this.currentAddress = currentAddress;
 		this.creationTime = LocalDateTime.now();
-		this.lastModified = creationTime;
 		this.id = Main.getNextDonorId(true);
 	}
 
@@ -113,6 +111,7 @@ public class Donor {
 	public void setOrgan(Organ organ){
 		if (!organs.contains(organ)) {
             this.organs.add(organ);
+			System.out.println("Organ added.");
         } else {
 		    System.out.println("Organ already being donated.");
         }
@@ -122,6 +121,7 @@ public class Donor {
     public void removeOrgan(Organ organ) {
         if (organs.contains(organ)) {
             this.organs.remove(organ);
+			System.out.println("Organ removed.");
         } else {
             System.out.println("Organ not in list.");
         }

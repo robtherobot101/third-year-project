@@ -35,7 +35,7 @@ public class CommandLineInterface {
 					if (nextCommand.length == 3) {
 						try {
 							Main.donors.add(new Donor(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], Donor.dateFormat)));
-							System.out.println("New donor created.");
+							System.out.println("New donor created early.");
 							success = true;
 						} catch (DateTimeException e) {
 							System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
@@ -46,7 +46,7 @@ public class CommandLineInterface {
 						if (nextCommand.length == 3) {
 							try {
 								Main.donors.add(new Donor(nextCommand[1], LocalDate.parse(date, Donor.dateFormat)));
-								System.out.println("New donor created.");
+								System.out.println("New donor created late.");
 								success = true;
 							} catch (DateTimeException e) {
 								System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
@@ -199,7 +199,9 @@ public class CommandLineInterface {
                             + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
                             + "\n\t-help [<command>]"
                             + "\n\t-quit");
+                        success = true;
                     } else if (nextCommand.length == 2) {
+                    	success = true;
                         switch (nextCommand[1].toLowerCase()) {
                             case "create":
                                 System.out.println("This command creates a new donor with a name and date of birth.\n"
@@ -298,11 +300,13 @@ public class CommandLineInterface {
                                 break;
                             case "quit":
                                 System.out.println("This command exits the program.\n"
-                                    + "Example valid usage: list");
+                                    + "Example valid usage: quit");
                                 break;
                             default:
                                 System.out.println("Can not offer help with this command as it is not a valid command.");
+                                success = false;
                         }
+
                     } else {
                         System.out.println("The help command must be used with 0 or 1 arguments (help or help <command>).");
                     }
@@ -535,7 +539,6 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(organ));
-			System.out.println("Organ added.");
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
 			"cornea, middle-ear, skin, bone-marrow, connective-tissue");
@@ -556,7 +559,6 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(organ));
-			System.out.println("Organ removed.");
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");

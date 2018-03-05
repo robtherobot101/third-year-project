@@ -15,7 +15,7 @@ public class History {
     private static String parameterOne = null;
     private static String parameterTwo = null;
     private static String parameterThree = null;
-    private static String description;
+    private static String description = null;
 
     /**
      * Initialises the printstream writing to file.
@@ -60,63 +60,61 @@ public class History {
      */
     public static String prepareFileString(String[] nextCommand) {
         String text = LocalDateTime.now().toString();
-        switch (nextCommand[0]) {
+        command = nextCommand[0];
+        switch (command) {
             case "create":
-                command = "create";
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
-                description = "Created a donor with name:" + parameterOne + ", and date of birth: " + parameterTwo;
-
+                description = "[Created a donor with name: " + parameterOne + ", and date of birth:" + parameterTwo + "]";
+                break;
             case "describe":
-                command = "describe";
                 parameterOne = nextCommand[1];
-                description = "Listed the attributes of donor " + nextCommand[1];
+                description = "[Listed the attributes of donor " + nextCommand[1] + ".]";
                 break;
             case "list":
-                command = "list";
-                description = "Listed all donors";
+                description = "[Listed all donors.]";
                 break;
             case "set":
-                command = "set";
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
                 parameterThree = nextCommand[3];
-                description = "Changed the attribute " + parameterTwo + " of donor " + parameterOne + ".";
+                description = "[Attempted to change the attribute " + parameterTwo + " of donor " + parameterOne + ".]";
                 break;
             case "delete":
-                command = "delete";
                 parameterOne = nextCommand[1];
-                description = "Deleted donor " + parameterOne + " from the list.";
+                description = "[Deleted donor " + parameterOne + " from the list.]";
                 break;
             case "add":
-               command = "add";
                parameterOne = nextCommand[1];
                parameterTwo = nextCommand[2];
-               description = "Added organ of type " + parameterTwo + " to donor " + parameterOne + ".";
+               description = "[Added organ of type " + parameterTwo + " to donor " + parameterOne + ".]";
                break;
             case "remove":
-                command = "remove";
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
-                description = "Removed organ of type " + parameterTwo + " from donor " + parameterOne + ".";
+                description = "[Removed organ of type " + parameterTwo + " from donor " + parameterOne + ".]";
                 break;
             case "organ_list":
-                command = "organ_list";
-                description = "Listed all organs available from all donors.";
+                description = "[Listed all organs available from all donors.]";
                 break;
             case "donor_organs":
-                command = "donor_organs";
                 parameterOne = nextCommand[1];
-                description = "Listed organs available from donor " + parameterOne + ".";
+                description = "[Listed organs available from donor " + parameterOne + ".]";
                 break;
             case "save":
-                command = "save";
                 parameterOne = nextCommand[1];
-                description = "Saved all donors to file " + parameterOne + ".";
+                description = "[Saved all donors to file " + parameterOne + ".]";
+                break;
+            case "help":
+                if(nextCommand.length == 1) {
+                    description = "[Queried available commands.]";
+                } else {
+                    parameterOne = nextCommand[1];
+                    description = "[Queried information about the " + parameterOne + " command.]";
+                }
                 break;
             case "quit":
-                command = "quit";
-                description = "Quit the program.";
+                description = "[Quit the program.]";
                 break;
        }
 
