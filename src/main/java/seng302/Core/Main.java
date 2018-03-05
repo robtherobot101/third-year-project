@@ -2,9 +2,11 @@ package seng302.Core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
 import seng302.TUI.CommandLineInterface;
 
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 public class Main {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
+    private static String jarPath;
 
     /**
      * Get the unique id number for the next donor or the last id number issued.
@@ -81,11 +84,17 @@ public class Main {
     /**
      * Save the donor list to a json file.
      */
-	public static boolean saveDonors(String filename) {
+	public static String saveDonors(String filename, boolean relative) {
 		PrintStream outputStream = null;
+		File outputFile = null;
 		boolean success;
 		try {
-            outputStream = new PrintStream(new FileOutputStream(filename));
+		    if (relative) {
+		        outputFile = new File(jarPath + File.separatorChar + filename);
+            } else {
+                outputFile = new File(filename);
+            }
+            outputStream = new PrintStream(new FileOutputStream(outputFile));
             Gson gson = new GsonBuilder().create();
             gson.toJson(donors, outputStream);
             success = true;
@@ -96,7 +105,11 @@ public class Main {
                 outputStream.close();
             }
         }
-        return success;
+        if (success) {
+		    return outputFile.getAbsolutePath();
+        } else {
+		    return null;
+        }
 	}
 
     /**
@@ -104,12 +117,18 @@ public class Main {
      * @param args Not used
      */
     public static void main(String[] args) {
-        Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "1235 abc Street"));
-        Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "street sample text"));
-        Main.donors.add(new Donor("Singlename", LocalDate.parse("12/06/1945", Donor.dateFormat)));
-        Main.donors.add(new Donor("Donor 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Address"));
-        Main.donors.add(new Donor("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example Address 12345"));
-		CommandLineInterface commandLineInterface = new CommandLineInterface();
-        commandLineInterface.run();
+        try {
+            jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
+            Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "1235 abc Street"));
+            Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "street sample text"));
+            Main.donors.add(new Donor("Singlename", LocalDate.parse("12/06/1945", Donor.dateFormat)));
+            Main.donors.add(new Donor("Donor 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Address"));
+            Main.donors.add(new Donor("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example Address 12345"));
+            CommandLineInterface commandLineInterface = new CommandLineInterface();
+            commandLineInterface.run();
+        } catch (URISyntaxException e) {
+            System.err.println("Unable to read jar path. Please run from a directory with a simpler path. Stack trace:");
+            e.printStackTrace();
+        }
     }
 }

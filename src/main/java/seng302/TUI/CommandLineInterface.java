@@ -30,9 +30,8 @@ public class CommandLineInterface {
 				System.out.print("> ");
 				nextCommand = scanner.nextLine().split(" ");
 			} while (nextCommand.length == 0);
-			switch (nextCommand[0]) {
+			switch (nextCommand[0].toLowerCase()) {
 				case "create":
-
 					if (nextCommand.length == 3) {
 						try {
 							Main.donors.add(new Donor(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], Donor.dateFormat)));
@@ -185,24 +184,134 @@ public class CommandLineInterface {
                         System.out.println("The save command must be used with 1 or 2 arguments (save -r <filepath> or save <filepath>).");
 					}
 					break;
+                case "help":
+                    if (nextCommand.length == 1) {
+                        System.out.println("Valid commands are: "
+                            + "\n\t-create \"First Name,name part 2,name part n\" <date of birth>"
+                            + "\n\t-describe <id> OR describe \"name substring 1,name substring 2,name substring n\""
+                            + "\n\t-list"
+                            + "\n\t-set <id> <attribute> <value>"
+                            + "\n\t-delete <id>"
+                            + "\n\t-add <id> <organ>"
+                            + "\n\t-remove <id> <organ>"
+                            + "\n\t-organ_list"
+                            + "\n\t-donor_organs <id>"
+                            + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
+                            + "\n\t-help [<command>]"
+                            + "\n\t-quit");
+                    } else if (nextCommand.length == 2) {
+                        switch (nextCommand[1].toLowerCase()) {
+                            case "create":
+                                System.out.println("This command creates a new donor with a name and date of birth.\n"
+                                    + "The syntax is: create <name> <date of birth>\n"
+                                    + "Rules:\n"
+                                    + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
+                                    + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
+                                    + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
+                                    + "Example valid usage: create \"Test,User with,SpacesIn Name\" 01/05/1994");
+                                break;
+                            case "describe":
+                                System.out.println("This command searches donors and displays information about them.\n"
+                                    + "The syntax is: describe <id> OR describe <name>\n"
+                                    + "Rules:\n"
+                                    + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
+                                    + "-If a name or names are used, the names must be comma separated without a space around the comma (eg. drew,david)\n"
+                                    + "-If a name or names are used, all donors whose names contain the input names in order will be returned as matches\n"
+                                    + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
+                                    + "Example valid usage: describe \"andrew,son\'");
+                                break;
+                            case "list":
+                                System.out.println("This command lists all information about all donors in a table.\n"
+                                    + "Example valid usage: list");
+                                break;
+                            case "set":
+                                System.out.println("This command sets one attribute (apart from organs to be donated) of a donor. To find the id of a donor, "
+                                    + "use the list and describe commands. To add or remove organs, instead use the add and remove commands.\n"
+                                    + "The syntax is: set <id> <attribute> <value>\n"
+                                    + "Rules:\n"
+                                    + "-The id number must be a number that is 0 or larger\n"
+                                    + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
+                                    + "weight, bloodType, currentAddress\n"
+                                    + "-If a name or names are used, all donors whose names contain the input names in order will be returned as matches\n"
+                                    + "-The gender must be: male, female, or other\n"
+                                    + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
+                                    + "-The height and weight must be numbers that are larger than 0\n"
+                                    + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
+                                    + "Example valid usage: set 2 bloodtype ab+");
+                                break;
+                            case "delete":
+                                System.out.println("This command deletes one donor. To find the id of a donor, use the list and describe commands.\n"
+                                    + "The syntax is: delete <id>\n"
+                                    + "Rules:\n"
+                                    + "-The id number must be a number that is 0 or larger\n"
+                                    + "-You will be asked to confirm that you want to delete this donor\n"
+                                    + "Example valid usage: delete 1");
+                                break;
+                            case "add":
+                                System.out.println("This command adds one organ to donate to a donor. To find the id of a donor, use the list and "
+                                    + "describe commands.\n"
+                                    + "The syntax is: add <id> <organ>\n"
+                                    + "Rules:\n"
+                                    + "-The id number must be a number that is 0 or larger\n"
+                                    + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
+                                    + "bone-marrow, or connective-tissue.\n"
+                                    + "Example valid usage: add 0 skin");
+                                break;
+                            case "remove":
+                                System.out.println("This command removes one offered organ from a donor. To find the id of a donor, use the list and "
+                                    + "describe commands.\n"
+                                    + "The syntax is: remove <id> <organ>\n"
+                                    + "Rules:\n"
+                                    + "-The id number must be a number that is 0 or larger\n"
+                                    + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
+                                    + "bone-marrow, or connective-tissue.\n"
+                                    + "Example valid usage: remove 5 kidney");
+                                break;
+                            case "organ_list":
+                                System.out.println("This command displays all of the organs that are currently offered by each donor. Donors that are "
+                                    + "not yet offering any organs are not shown.\n"
+                                    + "Example valid usage: organ_list");
+                                break;
+                            case "donor_organs":
+                                System.out.println("This command displays the organs which a donor will donate or has donated. To find the id of a donor, "
+                                    + "use the list and describe commands.\n"
+                                    + "The syntax is: donor_organs <id>\n"
+                                    + "Rules:\n"
+                                    + "-The id number must be a number that is 0 or larger\n"
+                                    + "Example valid usage: donor_organs 4");
+                                break;
+                            case "save":
+                                System.out.println("This command saves the current donor database to a file in JSON format.\n"
+                                    + "The syntax is: save [-r] <filepath>\n"
+                                    + "Rules:\n"
+                                    + "-If the -r flag is present, the filepath will be interpreted as relative\n"
+                                    + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
+                                    + "Example valid usage: save -r \"new folder\\donors.json\"");
+                                break;
+                            case "help":
+                                System.out.println("This command displays information about how to use this program.\n"
+                                    + "The syntax is: help OR help <command>\n"
+                                    + "Rules:\n"
+                                    + "-If the command argument is passed, the command must be: create, describe, list, set, delete, add, remove, organ_list, "
+                                    + "donor_organs, save, help, or quit.\n"
+                                    + "Example valid usage: help help");
+                                break;
+                            case "quit":
+                                System.out.println("This command exits the program.\n"
+                                    + "Example valid usage: list");
+                                break;
+                            default:
+                                System.out.println("Can not offer help with this command as it is not a valid command.");
+                        }
+                    } else {
+                        System.out.println("The help command must be used with 0 or 1 arguments (help or help <command>).");
+                    }
+                    break;
 				case "quit":
 					success = true;
 					break;
 				default:
-					System.out.println("Input not recognised. Valid commands are: "
-						+ "\n\t-create \"name part 1,/name part 2\" <date of birth>"
-						+ "\n\t-describe <id>"
-						+ "\n\t-describe \"name part 1,name part 2\""
-						+ "\n\t-list"
-						+ "\n\t-set <id> <attribute> <value>"
-                        + "\n\t-delete <id>"
-						+ "\n\t-add <id> <organ>"
-						+ "\n\t-remove <id> <organ>"
-						+ "\n\t-organ_list"
-						+ "\n\t-donor_organs <id>"
-                        + "\n\t-save [-r] <path>"
-                        + "\n\t-save [-r] \"File path with spaces\""
-						+ "\n\t-quit");
+                    System.out.println("Command not recognised. Enter 'help' to view available commands, or help <command> to view information about a specific command.");
 			}
 			if (success){
 				String text = History.prepareFileString(nextCommand);
@@ -376,7 +485,7 @@ public class CommandLineInterface {
 					toSet.setBloodType(BloodType.parse(value));
 					System.out.println("New blood type set.");
 				} catch (IllegalArgumentException e) {
-					System.out.println("Please enter blood type as A-, A+, B-, B+, O-, or O+.");
+					System.out.println("Please enter blood type as A-, A+, B-, B+, AB-, AB+, O-, or O+.");
 				}
 				break;
 			case "currentaddress":
@@ -454,7 +563,4 @@ public class CommandLineInterface {
         }
 
     }
-
-
-
 }

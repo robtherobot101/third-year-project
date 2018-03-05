@@ -13,8 +13,8 @@ public class Donor {
 	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
 	public static final String tableHeader = "Donor ID | Creation Time        | Name                   | Date of Birth" +
-			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address                | Last Modified";
-
+			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address                | Last Modified"
+        + "        | Organs to donate";
 	private String[] name;
 	private LocalDate dateOfBirth, dateOfDeath;
 	private LocalDateTime creationTime;
@@ -156,16 +156,16 @@ public class Donor {
 		}
 
 		if (table) {
-			return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s ",
+			return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s | %s",
 					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
 					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
-                    dateTimeFormat.format(lastModified));
+                    dateTimeFormat.format(lastModified), organs);
 		} else {
 			return String.format("Donor (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " +
-							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Current address: %s, Last Modified: %s.",
+							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.",
 					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
 					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
-                    dateTimeFormat.format(lastModified));
+                    dateTimeFormat.format(lastModified), organs);
 
 		}
 	}
