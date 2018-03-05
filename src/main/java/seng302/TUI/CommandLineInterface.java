@@ -149,15 +149,28 @@ public class CommandLineInterface {
 					break;
 				case "save":
 					if (nextCommand.length >= 2) {
-					    String[] afterCommand = new String[nextCommand.length-1];
-                        System.arraycopy(nextCommand, 1, afterCommand,0,nextCommand.length-1);
-                        if (Main.saveDonors(String.join(" ", afterCommand))) {
-                            System.out.println("Donors saved.");
+					    boolean relative = nextCommand[1].equals("-r");
+					    String path = null;
+					    int startLength = relative ? 2 : 1;
+                        if (nextCommand.length >= 1 + startLength) {
+                            if (nextCommand[startLength].contains("\"")) {
+                                path = String.join(" ", nextCommand).split("\"")[1];
+                            } else if (nextCommand.length == startLength + 1) {
+                                path = nextCommand[startLength];
+                            }
+                        }
+                        if (path != null) {
+                            String savePath = Main.saveDonors(path, relative);
+                            if (savePath != null) {
+                                System.out.println("Donors saved to " + savePath + ".");
+                            } else {
+                                System.out.println("Failed to save to " + path + ". Make sure the program has access to this file.");
+                            }
                         } else {
-                            System.out.println("Failed to save to " + String.join(" ", afterCommand) + ". Make sure the program has access to this file.");
+                            System.out.println("The save command must be used with 1 or 2 arguments (save -r <filepath> or save <filepath>).");
                         }
 					} else {
-						printIncorrectUsageString("save", 1, "<filename>");
+                        System.out.println("The save command must be used with 1 or 2 arguments (save -r <filepath> or save <filepath>).");
 					}
 					break;
 				case "quit":
@@ -174,7 +187,8 @@ public class CommandLineInterface {
 						+ "\n\t-remove <id> <organ>"
 						+ "\n\t-organ_list"
 						+ "\n\t-donor_organs <id>"
-						+ "\n\t-save <filename>"
+                        + "\n\t-save [-r] <path>"
+                        + "\n\t-save [-r] \"File path with spaces\""
 						+ "\n\t-quit");
 			}
 		} while (!nextCommand[0].equals("quit"));
