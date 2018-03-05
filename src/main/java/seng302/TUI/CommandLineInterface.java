@@ -23,20 +23,21 @@ public class CommandLineInterface {
 	public void run() {
 		scanner = new Scanner(System.in);
 		streamOut = History.init();
+		boolean success = false;
 		String[] nextCommand;
 		do {
 			do {
 				System.out.print("> ");
 				nextCommand = scanner.nextLine().split(" ");
-				String text = History.prepareFileString(nextCommand);
-				History.printToFile(streamOut, text);
 			} while (nextCommand.length == 0);
 			switch (nextCommand[0]) {
 				case "create":
+
 					if (nextCommand.length == 3) {
 						try {
 							Main.donors.add(new Donor(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], Donor.dateFormat)));
 							System.out.println("New donor created.");
+							success = true;
 						} catch (DateTimeException e) {
 							System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
 						}
@@ -47,6 +48,7 @@ public class CommandLineInterface {
 							try {
 								Main.donors.add(new Donor(nextCommand[1], LocalDate.parse(date, Donor.dateFormat)));
 								System.out.println("New donor created.");
+								success = true;
 							} catch (DateTimeException e) {
 								System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
 							}
@@ -62,6 +64,7 @@ public class CommandLineInterface {
 						describeDonor(String.join(" ", nextCommand).split("\"")[1]);
 					} else if (nextCommand.length == 2) {
 						describeDonor(nextCommand[1]);
+						success = true;
 					} else {
 						printIncorrectUsageString("describe", 1, "<id>");
 					}
@@ -69,6 +72,7 @@ public class CommandLineInterface {
 				case "list":
 					if (nextCommand.length == 1) {
 						listDonors();
+						success = true;
 					} else {
 						printIncorrectUsageString("list", 0, null);
 					}
@@ -80,6 +84,7 @@ public class CommandLineInterface {
 						if (nextCommand.length > 1) {
 							try {
 								setAttribute(id, "name", nextCommand[1]);
+								success = true;
 							} catch (NumberFormatException e) {
 								System.out.println("Please enter a valid ID number.");
 							}
@@ -89,6 +94,7 @@ public class CommandLineInterface {
 					} else if (nextCommand.length == 4) {
 						try {
 							setAttribute(Long.parseLong(nextCommand[1]), nextCommand[2], nextCommand[3]);
+							success = true;
 						} catch (NumberFormatException e) {
 							System.out.println("Please enter a valid ID number.");
 						}
@@ -100,6 +106,7 @@ public class CommandLineInterface {
                     if (nextCommand.length == 2) {
                         try {
                             deleteDonor(Long.parseLong(nextCommand[1]));
+							success = true;
                         } catch (NumberFormatException e) {
                             System.out.println("Please enter a valid ID number.");
                         }
@@ -111,6 +118,7 @@ public class CommandLineInterface {
 					if (nextCommand.length == 3) {
 						try {
 							addOrgan(Long.parseLong(nextCommand[1]), nextCommand[2]);
+							success = true;
 						} catch (NumberFormatException e) {
 							System.out.println("Please enter a valid ID number.");
 						}
@@ -122,6 +130,7 @@ public class CommandLineInterface {
 					if (nextCommand.length == 3) {
 						try {
 							removeOrgan(Long.parseLong(nextCommand[1]), nextCommand[2]);
+							success = true;
 						} catch (NumberFormatException e) {
 							System.out.println("Please enter a valid ID number.");
 						}
@@ -132,6 +141,7 @@ public class CommandLineInterface {
 				case "organ_list":
 					if (nextCommand.length == 1) {
 						listOrgans();
+						success = true;
 					} else {
 						printIncorrectUsageString("organ_list", 0, null);
 					}
@@ -140,6 +150,7 @@ public class CommandLineInterface {
 					if (nextCommand.length == 2) {
 						try {
 							listDonorOrgans(Long.parseLong(nextCommand[1]));
+							success = true;
 						} catch (NumberFormatException e) {
 							System.out.println("Please enter a valid ID number.");
 						}
@@ -153,6 +164,7 @@ public class CommandLineInterface {
                         System.arraycopy(nextCommand, 1, afterCommand,0,nextCommand.length-1);
                         if (Main.saveDonors(String.join(" ", afterCommand))) {
                             System.out.println("Donors saved.");
+							success = true;
                         } else {
                             System.out.println("Failed to save to " + String.join(" ", afterCommand) + ". Make sure the program has access to this file.");
                         }
@@ -161,6 +173,7 @@ public class CommandLineInterface {
 					}
 					break;
 				case "quit":
+					success = true;
 					break;
 				default:
 					System.out.println("Input not recognised. Valid commands are: "
@@ -177,6 +190,12 @@ public class CommandLineInterface {
 						+ "\n\t-save <filename>"
 						+ "\n\t-quit");
 			}
+			if (success){
+				String text = History.prepareFileString(nextCommand);
+				History.printToFile(streamOut, text);
+				success = false;
+			}
+
 		} while (!nextCommand[0].equals("quit"));
 		scanner.close();
 	}
