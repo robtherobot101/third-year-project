@@ -2,15 +2,22 @@ package seng302.Core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+
+import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
+
+import com.google.gson.reflect.TypeToken;
+import jdk.internal.util.xml.impl.Input;
 import seng302.TUI.CommandLineInterface;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import static java.lang.System.in;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -110,6 +117,34 @@ public class Main {
         } else {
 		    return null;
         }
+	}
+
+	/**
+	 * Imports a JSON object of donor information and adds it to the current donor list.
+	 *
+	 * TODO:
+	 * Make it work around ID nums to avoid repetition. (Maybe add another constructor to accept donor objects dunno if
+	 * would work tho, or change ID to be set when added to the arraylist instead of creation, also dunno.
+	 * Errors
+	 * Add to help/command history
+	 * Check works with jar
+	 *
+	 * @param filename name/location of the file.
+	 */
+	public static void importDonors(String filename) {
+		File inputFile = new File((Main.jarPath + "\\"  + filename));
+		Path filePath = inputFile.toPath();
+		Type type = new TypeToken<ArrayList<Donor>>() {}.getType();
+		try (InputStream in = Files.newInputStream(filePath);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in))){
+			Gson gson = new GsonBuilder().create();
+			ArrayList<Donor> importedList = gson.fromJson(reader, type);
+			System.out.println(importedList);
+			Main.donors.addAll(importedList);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 	}
 
     /**

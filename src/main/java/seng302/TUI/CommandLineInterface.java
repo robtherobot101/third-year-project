@@ -184,6 +184,9 @@ public class CommandLineInterface {
                         System.out.println("The save command must be used with 1 or 2 arguments (save -r <filepath> or save <filepath>).");
 					}
 					break;
+				case "import":
+					Main.importDonors(nextCommand[1]);
+					break;
                 case "help":
                     if (nextCommand.length == 1) {
                         System.out.println("Valid commands are: "
