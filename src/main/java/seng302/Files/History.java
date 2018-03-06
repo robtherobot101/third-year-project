@@ -105,6 +105,10 @@ public class History {
                 parameterOne = nextCommand[1];
                 description = "[Saved all donors to file " + parameterOne + ".]";
                 break;
+            case "import":
+                parameterOne = nextCommand[1];
+                description = "[Attempted to import file " + parameterOne + ".]";
+                break;
             case "help":
                 if(nextCommand.length == 1) {
                     description = "[Queried available commands.]";
