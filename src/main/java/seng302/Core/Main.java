@@ -7,12 +7,14 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import jdk.internal.util.xml.impl.Input;
 import seng302.TUI.CommandLineInterface;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -120,14 +122,7 @@ public class Main {
 	}
 
 	/**
-	 * Imports a JSON object of donor information and adds it to the current donor list.
-	 *
-	 * TODO:
-	 * Make it work around ID nums to avoid repetition. (Maybe add another constructor to accept donor objects dunno if
-	 * would work tho, or change ID to be set when added to the arraylist instead of creation, also dunno.
-	 * Errors
-	 * Add to help/command history
-	 * Check works with jar
+	 * Imports a JSON object of donor information and replaces the information in the donor list.
 	 *
 	 * @param filename name/location of the file.
 	 */
@@ -135,16 +130,23 @@ public class Main {
 		File inputFile = new File((Main.jarPath + "\\"  + filename));
 		Path filePath = inputFile.toPath();
 		Type type = new TypeToken<ArrayList<Donor>>() {}.getType();
+		// May have to add backup data here in order to undo actions
+		// Save to disk in a temp file structure? (And delete on quit)
+		// Make copies of the list in arrays?
+		// Lot of potential hurdles to discuss here.
 		try (InputStream in = Files.newInputStream(filePath);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in))){
 			Gson gson = new GsonBuilder().create();
 			ArrayList<Donor> importedList = gson.fromJson(reader, type);
-			System.out.println(importedList);
+			System.out.println("Opened file successfully.");
+			Main.donors.clear();
 			Main.donors.addAll(importedList);
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			System.out.println("Imported list successfully.");
+		} catch (IOException e) {
+			System.out.println("IOException on " + filename + ": Check your inputs and permissions!");
+		} catch (JsonSyntaxException e1) {
+				System.out.println("Invalid syntax in input file.");
 		}
-
 	}
 
     /**

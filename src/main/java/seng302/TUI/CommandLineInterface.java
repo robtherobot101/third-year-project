@@ -185,7 +185,21 @@ public class CommandLineInterface {
 					}
 					break;
 				case "import":
-					Main.importDonors(nextCommand[1]);
+					String filename = null;
+					if(nextCommand.length >= 2) {
+						if (nextCommand[1].contains("\"")) {
+							filename = String.join(" ", nextCommand).split("\"")[1];
+							Main.importDonors(filename);
+							success = true;
+						} else if (nextCommand.length == 2) {
+							Main.importDonors(nextCommand[1]);
+							success = true;
+						} else {
+							printIncorrectUsageString("import", 1, "<filename>");
+						}
+					} else {
+						printIncorrectUsageString("import", 1, "<filename>");
+					}
 					break;
                 case "help":
                     if (nextCommand.length == 1) {
@@ -200,6 +214,7 @@ public class CommandLineInterface {
                             + "\n\t-organ_list"
                             + "\n\t-donor_organs <id>"
                             + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
+							+ "\n\t-import <filename>"
                             + "\n\t-help [<command>]"
                             + "\n\t-quit");
                         success = true;
@@ -293,6 +308,14 @@ public class CommandLineInterface {
                                     + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                                     + "Example valid usage: save -r \"new folder\\donors.json\"");
                                 break;
+							case "import":
+								System.out.println("This command replaces all donor data in the system with an imported JSON object.\n"
+									+ "The syntax is: import <filename>\n"
+									+ "Rules:\n"
+									+ "-The filename is taken from the same directory as the application\n"
+									+ "-The file must be of the same format as those saved from this application (\")\n"
+									+ "Example valid usage: import donor_list_FINAL.txt");
+								break;
                             case "help":
                                 System.out.println("This command displays information about how to use this program.\n"
                                     + "The syntax is: help OR help <command>\n"
