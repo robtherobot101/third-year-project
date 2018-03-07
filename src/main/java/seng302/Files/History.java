@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 
 public class History {
@@ -25,21 +24,14 @@ public class History {
      */
     public static PrintStream init() {
         try {
-            String directoryPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-            File actionHistory = new File(directoryPath + "\\actionHistory.txt");
+            File actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory);
-            PrintStream out = new PrintStream(fout);
-            return out;
+            return new PrintStream(fout);
         } catch(IOException e) {
             System.out.println("I/O Error writing command history to file!");
             e.printStackTrace();
             return null;
-        } catch (URISyntaxException ex) {
-            ex.printStackTrace();
-            return null;
         }
-
-
     }
 
     /**
@@ -61,18 +53,25 @@ public class History {
     public static String prepareFileString(String[] nextCommand) {
         String text = LocalDateTime.now().toString();
         command = nextCommand[0];
-        switch (command) {
-            case "create":
+        switch (command.toLowerCase()) {
+            case "add":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
                 description = "[Created a donor with name: " + parameterOne + ", and date of birth:" + parameterTwo + "]";
                 break;
-            case "describe":
+            case "addorgan":
                 parameterOne = nextCommand[1];
-                description = "[Listed the attributes of donor " + nextCommand[1] + ".]";
+                parameterTwo = nextCommand[2];
+                description = "[Added organ of type " + parameterTwo + " to donor " + parameterOne + ".]";
                 break;
-            case "list":
-                description = "[Listed all donors.]";
+            case "delete":
+                parameterOne = nextCommand[1];
+                description = "[Deleted donor " + parameterOne + " from the list.]";
+                break;
+            case "deleteorgan":
+                parameterOne = nextCommand[1];
+                parameterTwo = nextCommand[2];
+                description = "[Removed organ of type " + parameterTwo + " from donor " + parameterOne + ".]";
                 break;
             case "set":
                 parameterOne = nextCommand[1];
@@ -80,34 +79,27 @@ public class History {
                 parameterThree = nextCommand[3];
                 description = "[Attempted to change the attribute " + parameterTwo + " of donor " + parameterOne + ".]";
                 break;
-            case "delete":
+            case "describe":
                 parameterOne = nextCommand[1];
-                description = "[Deleted donor " + parameterOne + " from the list.]";
+                description = "[Listed the attributes of donor " + nextCommand[1] + ".]";
                 break;
-            case "add":
-               parameterOne = nextCommand[1];
-               parameterTwo = nextCommand[2];
-               description = "[Added organ of type " + parameterTwo + " to donor " + parameterOne + ".]";
-               break;
-            case "remove":
-                parameterOne = nextCommand[1];
-                parameterTwo = nextCommand[2];
-                description = "[Removed organ of type " + parameterTwo + " from donor " + parameterOne + ".]";
-                break;
-            case "organ_list":
-                description = "[Listed all organs available from all donors.]";
-                break;
-            case "donor_organs":
+            case "describeorgans":
                 parameterOne = nextCommand[1];
                 description = "[Listed organs available from donor " + parameterOne + ".]";
                 break;
-            case "save":
-                parameterOne = nextCommand[1];
-                description = "[Saved all donors to file " + parameterOne + ".]";
+            case "list":
+                description = "[Listed all donors.]";
+                break;
+            case "listorgans":
+                description = "[Listed all organs available from all donors.]";
                 break;
             case "import":
                 parameterOne = nextCommand[1];
                 description = "[Attempted to import file " + parameterOne + ".]";
+                break;
+            case "save":
+                parameterOne = nextCommand[1];
+                description = "[Saved all donors to file " + parameterOne + ".]";
                 break;
             case "help":
                 if(nextCommand.length == 1) {
@@ -123,7 +115,7 @@ public class History {
        }
 
        //join the elements
-        text = text.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
+        text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
 
         //reset for next call
         command = null;

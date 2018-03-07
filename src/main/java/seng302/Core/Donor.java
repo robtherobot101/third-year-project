@@ -13,7 +13,7 @@ public class Donor {
 	public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
 	public static final String tableHeader = "Donor ID | Creation Time        | Name                   | Date of Birth" +
-			" | Date of Death | Gender | Height | Weight | Blood Type | Current Address                | Last Modified"
+			" | Date of Death | Gender | Height | Weight | Blood Type | Region          | Current Address                | Last Modified"
         + "        | Organs to donate";
 	private String[] name;
 	private LocalDate dateOfBirth, dateOfDeath;
@@ -23,31 +23,33 @@ public class Donor {
 	private double height, weight;
 	private BloodType bloodType;
 	private long id;
-	private String currentAddress;
+	private String currentAddress, region;
 	private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
 
 	public Donor (String name, LocalDate dateOfBirth) {
-		setName(name);
+        this.name = name.split(",");
 		this.dateOfBirth = dateOfBirth;
 		this.dateOfDeath = null;
 		this.gender = null;
 		this.height = -1;
 		this.weight = -1;
 		this.bloodType = null;
+		this.region = null;
 		this.currentAddress = null;
 		this.creationTime = LocalDateTime.now();
 		this.id = Main.getNextDonorId(true);
 	}
 
 	public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight,
-				 String bloodType, String currentAddress) throws DateTimeException, IllegalArgumentException {
-		setName(name);
+				 String bloodType, String region, String currentAddress) throws DateTimeException, IllegalArgumentException {
+        this.name = name.split(",");
 		this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
 		this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
 		this.gender = Gender.parse(gender);
 		this.height = height;
 		this.weight = weight;
 		this.bloodType = BloodType.parse(bloodType);
+		this.region = region;
 		this.currentAddress = currentAddress;
 		this.creationTime = LocalDateTime.now();
 		this.id = Main.getNextDonorId(true);
@@ -60,6 +62,7 @@ public class Donor {
 	public String[] getNameArray() {
 		return name;
 	}
+
 	public EnumSet<Organ> getOrgans() {
 		return organs;
 	}
@@ -103,6 +106,11 @@ public class Donor {
 		setLastModified();
 	}
 
+	public void setRegion(String region) {
+	    this.region = region;
+	    setLastModified();
+    }
+
 	public void setCurrentAddress(String currentAddress) {
 		this.currentAddress = currentAddress;
 		setLastModified();
@@ -138,12 +146,17 @@ public class Donor {
      * @return The information string
      */
 	public String getString(boolean table) {
-		String dateOfDeathString, heightString, weightString;
+		String dateOfDeathString, dateModifiedString, heightString, weightString;
 		if (dateOfDeath != null) {
 			dateOfDeathString = dateFormat.format(dateOfDeath);
 		} else {
 			dateOfDeathString = null;
 		}
+		if (lastModified == null) {
+		    dateModifiedString = null;
+        } else {
+		    dateModifiedString = dateTimeFormat.format(lastModified);
+        }
 		if (height == -1) {
 			heightString = null;
 		} else {
@@ -156,16 +169,16 @@ public class Donor {
 		}
 
 		if (table) {
-			return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-30s | %s | %s",
+			return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-15s | %-30s | %-20s | %s",
 					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
-					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
-                    dateTimeFormat.format(lastModified), organs);
+					dateOfDeathString, gender, heightString, weightString, bloodType, region, currentAddress,
+                    dateModifiedString, organs);
 		} else {
 			return String.format("Donor (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " +
-							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.",
+							"Gender: %s, Height: %s, Width: %s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.",
 					id, dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth),
-					dateOfDeathString, gender, heightString, weightString, bloodType, currentAddress,
-                    dateTimeFormat.format(lastModified), organs);
+					dateOfDeathString, gender, heightString, weightString, bloodType, region, currentAddress,
+                    dateModifiedString, organs);
 
 		}
 	}

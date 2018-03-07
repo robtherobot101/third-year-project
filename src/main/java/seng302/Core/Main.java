@@ -1,25 +1,21 @@
 package seng302.Core;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import jdk.internal.util.xml.impl.Input;
 import seng302.TUI.CommandLineInterface;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import static java.lang.System.in;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -29,6 +25,52 @@ public class Main {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
     private static String jarPath;
+
+    /**
+     * Class to serialize LocalDates without requiring reflexive access
+     */
+    private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(Donor.dateFormat.format(date));
+        }
+    }
+
+    /**
+     * Class to serialize LocalDateTimes without requiring reflexive access
+     */
+    private static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
+        public JsonElement serialize(LocalDateTime date, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(Donor.dateTimeFormat.format(date));
+        }
+    }
+
+    /**
+     * Class to deserialize LocalDates without requiring reflexive access
+     */
+    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+        public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
+            return LocalDate.parse(date.toString().replace("\"", ""), Donor.dateFormat);
+        }
+    }
+
+    /**
+     * Class to deserialize LocalDateTimes without requiring reflexive access
+     */
+    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+        public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
+            return LocalDateTime.parse(date.toString().replace("\"", ""), Donor.dateTimeFormat);
+        }
+    }
+
+    private static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+            .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+
+    public static String getJarPath() {
+        return jarPath;
+    }
 
     /**
      * Get the unique id number for the next donor or the last id number issued.
@@ -92,19 +134,16 @@ public class Main {
 
     /**
      * Save the donor list to a json file.
+     * @param path The path of the file to save to
+     * @return Whether the save completed successfully
      */
-	public static String saveDonors(String filename, boolean relative) {
+	public static boolean saveDonors(String path) {
 		PrintStream outputStream = null;
-		File outputFile = null;
+		File outputFile;
 		boolean success;
 		try {
-		    if (relative) {
-		        outputFile = new File(jarPath + File.separatorChar + filename);
-            } else {
-                outputFile = new File(filename);
-            }
+		    outputFile = new File(path);
             outputStream = new PrintStream(new FileOutputStream(outputFile));
-            Gson gson = new GsonBuilder().create();
             gson.toJson(donors, outputStream);
             success = true;
         } catch (IOException e) {
@@ -114,21 +153,23 @@ public class Main {
                 outputStream.close();
             }
         }
-        if (success) {
-		    return outputFile.getAbsolutePath();
-        } else {
-		    return null;
-        }
+        return success;
 	}
 
 	/**
 	 * Imports a JSON object of donor information and replaces the information in the donor list.
 	 *
-	 * @param filename name/location of the file.
+	 * @param path path of the file.
+     * @return Whether the command executed successfully
 	 */
-	public static void importDonors(String filename) {
-		File inputFile = new File((Main.jarPath + "\\"  + filename));
-		Path filePath = inputFile.toPath();
+	public static boolean importDonors(String path) {
+		File inputFile = new File(path);
+		Path filePath;
+		try {
+            filePath = inputFile.toPath();
+        } catch (InvalidPathException e) {
+            return false;
+        }
 		Type type = new TypeToken<ArrayList<Donor>>() {}.getType();
 		// May have to add backup data here in order to undo actions
 		// Save to disk in a temp file structure? (And delete on quit)
@@ -136,17 +177,24 @@ public class Main {
 		// Lot of potential hurdles to discuss here.
 		try (InputStream in = Files.newInputStream(filePath);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in))){
-			Gson gson = new GsonBuilder().create();
 			ArrayList<Donor> importedList = gson.fromJson(reader, type);
 			System.out.println("Opened file successfully.");
 			Main.donors.clear();
 			Main.donors.addAll(importedList);
+			nextDonorId = -1;
+			for (Donor donor: Main.donors) {
+			    if (donor.getId() > nextDonorId) {
+			        nextDonorId = donor.getId();
+                }
+            }
 			System.out.println("Imported list successfully.");
+			return true;
 		} catch (IOException e) {
-			System.out.println("IOException on " + filename + ": Check your inputs and permissions!");
-		} catch (JsonSyntaxException e1) {
-				System.out.println("Invalid syntax in input file.");
+			System.out.println("IOException on " + path + ": Check your inputs and permissions!");
+		} catch (JsonSyntaxException | DateTimeException e1) {
+		    System.out.println("Invalid syntax in input file.");
 		}
+		return false;
 	}
 
     /**
@@ -155,12 +203,12 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
-            Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "1235 abc Street"));
-            Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "street sample text"));
+            jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+            Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
+            Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "Auckland", "street sample text"));
             Main.donors.add(new Donor("Singlename", LocalDate.parse("12/06/1945", Donor.dateFormat)));
-            Main.donors.add(new Donor("Donor 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Address"));
-            Main.donors.add(new Donor("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example Address 12345"));
+            Main.donors.add(new Donor("Donor 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Region", "Sample Address"));
+            Main.donors.add(new Donor("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example region", "Example Address 12345"));
             CommandLineInterface commandLineInterface = new CommandLineInterface();
             commandLineInterface.run();
         } catch (URISyntaxException e) {
