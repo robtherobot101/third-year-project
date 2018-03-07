@@ -58,6 +58,7 @@ public class CommandLineInterface {
             } while (nextCommand.length == 0);
             switch (nextCommand[0].toLowerCase()) {
                 case "add":
+                    System.out.println(nextCommand[1]);
                     success = addDonor(nextCommand);
                     break;
                 case "addorgan":
@@ -155,6 +156,7 @@ public class CommandLineInterface {
                 try {
                     Main.donors.add(new Donor(nextCommand[1], LocalDate.parse(date, Donor.dateFormat)));
                     System.out.println("New donor added.");
+                    System.out.println(nextCommand[1]);
                     return true;
                 } catch (DateTimeException e) {
                     System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");

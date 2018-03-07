@@ -26,7 +26,9 @@ public class Main {
     public static ArrayList<Donor> donors = new ArrayList<>();
     private static String jarPath;
 
-    /**
+
+
+	/**
      * Class to serialize LocalDates without requiring reflexive access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
@@ -71,6 +73,14 @@ public class Main {
     public static String getJarPath() {
         return jarPath;
     }
+
+	/**
+	 * Only called in testing.
+ 	 * @param jarPath the jarpath of the app.
+	 */
+	public static void setJarPath(String jarPath) {
+		Main.jarPath = jarPath;
+	}
 
     /**
      * Get the unique id number for the next donor or the last id number issued.

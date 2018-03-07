@@ -55,8 +55,13 @@ public class History {
         command = nextCommand[0];
         switch (command.toLowerCase()) {
             case "add":
-                parameterOne = nextCommand[1];
-                parameterTwo = nextCommand[2];
+                if (nextCommand[1].contains("\"")) {
+                    parameterOne = String.join(" ", nextCommand).split("\"")[1];
+                    parameterTwo = nextCommand[nextCommand.length-1];
+                } else {
+                    parameterOne = nextCommand[1];
+                    parameterTwo = nextCommand[2];
+                }
                 description = "[Created a donor with name: " + parameterOne + ", and date of birth:" + parameterTwo + "]";
                 break;
             case "addorgan":
@@ -98,8 +103,24 @@ public class History {
                 description = "[Attempted to import file " + parameterOne + ".]";
                 break;
             case "save":
-                parameterOne = nextCommand[1];
-                description = "[Saved all donors to file " + parameterOne + ".]";
+                if (nextCommand.length >= 2) {
+                    if (nextCommand[1].equals("-r")) {
+                        parameterOne = nextCommand[1];
+                        if (nextCommand[2].contains("\"")) {
+                            parameterTwo = String.join(" ", nextCommand).split("\"")[1];
+                        } else {
+                            parameterTwo = nextCommand[2];
+                        }
+                        description = "[Saved donors to relative path with filename " + parameterTwo + ".]";
+                    } else {
+                        if (nextCommand[1].contains("\"")) {
+                            parameterOne = String.join(" ", nextCommand).split("\"")[1];
+                        } else {
+                            parameterOne = nextCommand[1];
+                        }
+                        description = "[Saved donors to path " + parameterOne + ".]";
+                    }
+                }
                 break;
             case "help":
                 if(nextCommand.length == 1) {
