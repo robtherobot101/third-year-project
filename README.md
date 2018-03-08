@@ -62,7 +62,7 @@ Rules:
 -If a name or names are used, the names must be comma separated without a space around the comma (eg. drew,david)
 -If a name or names are used, all donors whose names contain the input names in order will be returned as matches
 -If there are any spaces in the name, the name must be enclosed in quotation marks (")
-Example valid usage: describe "andrew,son\'
+Example valid usage: describe "andrew,son"
 
 describeOrgans
 This command displays the organs which a donor will donate or has donated. To find the id of a donor, The syntax is: describeOrgans <id>

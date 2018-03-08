@@ -199,7 +199,9 @@ public class Main {
 			System.out.println("IOException on " + path + ": Check your inputs and permissions!");
 		} catch (JsonSyntaxException | DateTimeException e1) {
 		    System.out.println("Invalid syntax in input file.");
-		}
+		} catch (NullPointerException e2) {
+            System.out.println("Input file was empty.");
+        }
 		return false;
 	}
 
