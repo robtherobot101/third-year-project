@@ -111,7 +111,9 @@ nbactions.xml
 ## Plugin-specific files:
 
 # IntelliJ
+.idea/*
 /out/
+app.iml
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
