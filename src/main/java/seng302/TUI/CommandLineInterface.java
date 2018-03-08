@@ -156,7 +156,6 @@ public class CommandLineInterface {
                 try {
                     Main.donors.add(new Donor(nextCommand[1], LocalDate.parse(date, Donor.dateFormat)));
                     System.out.println("New donor added.");
-                    System.out.println(nextCommand[1]);
                     return true;
                 } catch (DateTimeException e) {
                     System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
@@ -219,8 +218,7 @@ public class CommandLineInterface {
                 }
                 String nextLine = scanner.readLine(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId()));
                 while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
-                    System.out.println("Answer not recognised. Please enter y or n: ");
-                    nextLine = scanner.readLine();
+                    nextLine = scanner.readLine("Answer not recognised. Please enter y or n: ");
                 }
                 if (nextLine.equals("y")) {
                     Main.donors.remove(donor);
@@ -467,9 +465,13 @@ public class CommandLineInterface {
      */
     private boolean listDonors(String[] nextCommand) {
         if (nextCommand.length == 1) {
-            System.out.println(Donor.tableHeader);
-            for (Donor donor: Main.donors) {
-                System.out.println(donor.getString(true));
+            if (Main.donors.size() > 0) {
+                System.out.println(Donor.tableHeader);
+                for (Donor donor : Main.donors) {
+                    System.out.println(donor.getString(true));
+                }
+            } else {
+                System.out.println("There are no donors to list. Please add or import some before using list.");
             }
             return true;
         } else {
@@ -637,7 +639,7 @@ public class CommandLineInterface {
                     break;
                 case "set":
                     System.out.println("This command sets one attribute (apart from organs to be donated) of a donor. To find the id of a donor, "
-                            + "use the list and describe commands. To add or remove organs, instead use the add and remove commands.\n"
+                            + "use the list and describe commands. To add or delete organs, instead use the addOrgan and deleteOrgan commands.\n"
                             + "The syntax is: set <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
@@ -683,8 +685,8 @@ public class CommandLineInterface {
                             + "Rules:\n"
                             + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
-                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows.\n"
-                            + "-The file must be of the same format as those saved from this application (\")\n"
+                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
+                            + "-The file must be of the same format as those saved from this application\n"
                             + "Example valid usage: import -r ../donor_list_FINAL.txt");
                     break;
                 case "save":
@@ -693,7 +695,7 @@ public class CommandLineInterface {
                             + "Rules:\n"
                             + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
-                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows.\n"
+                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
                             + "Example valid usage: save -r \"new folder/donors.json\"");
                     break;
                 case "help":

@@ -51,7 +51,7 @@ public class History {
      * @return the modified string.
      */
     public static String prepareFileString(String[] nextCommand) {
-        String text = LocalDateTime.now().toString();
+        String text = Donor.dateTimeFormat.format(LocalDateTime.now());
         command = nextCommand[0];
         switch (command.toLowerCase()) {
             case "add":

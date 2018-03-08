@@ -29,7 +29,7 @@ public class Main {
 
 
 	/**
-     * Class to serialize LocalDates without requiring reflexive access
+     * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
         public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
@@ -38,7 +38,7 @@ public class Main {
     }
 
     /**
-     * Class to serialize LocalDateTimes without requiring reflexive access
+     * Class to serialize LocalDateTimes without requiring reflective access
      */
     private static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
         public JsonElement serialize(LocalDateTime date, Type typeOfSrc, JsonSerializationContext context) {
@@ -47,7 +47,7 @@ public class Main {
     }
 
     /**
-     * Class to deserialize LocalDates without requiring reflexive access
+     * Class to deserialize LocalDates without requiring reflective access
      */
     private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
         public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
@@ -56,7 +56,7 @@ public class Main {
     }
 
     /**
-     * Class to deserialize LocalDateTimes without requiring reflexive access
+     * Class to deserialize LocalDateTimes without requiring reflective access
      */
     private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
         public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
@@ -64,7 +64,7 @@ public class Main {
         }
     }
 
-    private static Gson gson = new GsonBuilder()
+    private static Gson gson = new GsonBuilder().setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
@@ -190,13 +190,9 @@ public class Main {
 			ArrayList<Donor> importedList = gson.fromJson(reader, type);
 			System.out.println("Opened file successfully.");
 			Main.donors.clear();
-			Main.donors.addAll(importedList);
 			nextDonorId = -1;
-			for (Donor donor: Main.donors) {
-			    if (donor.getId() > nextDonorId) {
-			        nextDonorId = donor.getId();
-                }
-            }
+			Main.donors.addAll(importedList);
+			recalculateNextId();
 			System.out.println("Imported list successfully.");
 			return true;
 		} catch (IOException e) {
@@ -208,17 +204,24 @@ public class Main {
 	}
 
     /**
+     * Changes the next id to be issued to a new donor to be correct for the current donors list.
+     */
+	public static void recalculateNextId() {
+        nextDonorId = -1;
+        for (Donor donor: Main.donors) {
+            if (donor.getId() > nextDonorId) {
+                nextDonorId = donor.getId();
+            }
+        }
+    }
+
+    /**
      * Run the command line interface with 4 test donors preloaded.
      * @param args Not used
      */
     public static void main(String[] args) {
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-            Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
-            Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "Auckland", "street sample text"));
-            Main.donors.add(new Donor("Singlename", LocalDate.parse("12/06/1945", Donor.dateFormat)));
-            Main.donors.add(new Donor("Donor 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Region", "Sample Address"));
-            Main.donors.add(new Donor("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example region", "Example Address 12345"));
             CommandLineInterface commandLineInterface = new CommandLineInterface();
             commandLineInterface.run();
         } catch (URISyntaxException e) {
