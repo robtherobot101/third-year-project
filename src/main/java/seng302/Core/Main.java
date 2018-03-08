@@ -27,8 +27,7 @@ public class Main {
     private static String jarPath;
 
 
-
-	/**
+    /**
      * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
@@ -74,143 +73,148 @@ public class Main {
         return jarPath;
     }
 
-	/**
-	 * Only called in testing.
- 	 * @param jarPath the jarpath of the app.
-	 */
-	public static void setJarPath(String jarPath) {
-		Main.jarPath = jarPath;
-	}
+    /**
+     * Only called in testing.
+     *
+     * @param jarPath the jarpath of the app.
+     */
+    public static void setJarPath(String jarPath) {
+        Main.jarPath = jarPath;
+    }
 
     /**
      * Get the unique id number for the next donor or the last id number issued.
+     *
      * @param increment Whether to increment the unique id counter before returning the unique id value
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
     public static long getNextDonorId(boolean increment) {
-    	if (increment) {
-			nextDonorId++;
-		}
-    	return nextDonorId;
-	}
+        if (increment) {
+            nextDonorId++;
+        }
+        return nextDonorId;
+    }
 
-	/**
-	 * Find a specific donor from the donor list based on their id.
-	 * @param id The id of the donor to search for
-	 * @return The donor object or null if the donor was not found
-	 */
-	public static Donor getDonorById(long id) {
-		if (id < 0) {
-			return null;
-		}
-		Donor found = null;
-		for (Donor donor: donors) {
-			if (donor.getId() == id) {
-				found = donor;
-				break;
-			}
-		}
-		return found;
-	}
+    /**
+     * Find a specific donor from the donor list based on their id.
+     *
+     * @param id The id of the donor to search for
+     * @return The donor object or null if the donor was not found
+     */
+    public static Donor getDonorById(long id) {
+        if (id < 0) {
+            return null;
+        }
+        Donor found = null;
+        for (Donor donor : donors) {
+            if (donor.getId() == id) {
+                found = donor;
+                break;
+            }
+        }
+        return found;
+    }
 
-	/**
-	 * Find a specific donor from the donor list based on their name.
-	 * @param names The names of the donor to search for
-	 * @return The donor objects that matched the input names
-	 */
-	public static ArrayList<Donor> getDonorByName(String[] names) {
-		ArrayList<Donor> found = new ArrayList<>();
-		if (names.length == 0) {
-			return donors;
-		}
-		int matched;
-		for (Donor donor: donors) {
-			matched = 0;
-			for (String name: donor.getNameArray()) {
-				if (name.toLowerCase().contains(names[matched].toLowerCase()))  {
-					matched++;
-					if (matched == names.length) {
-						break;
-					}
-				}
-			}
-			if (matched == names.length) {
-				found.add(donor);
-			}
-		}
-		return found;
-	}
+    /**
+     * Find a specific donor from the donor list based on their name.
+     *
+     * @param names The names of the donor to search for
+     * @return The donor objects that matched the input names
+     */
+    public static ArrayList<Donor> getDonorByName(String[] names) {
+        ArrayList<Donor> found = new ArrayList<>();
+        if (names.length == 0) {
+            return donors;
+        }
+        int matched;
+        for (Donor donor : donors) {
+            matched = 0;
+            for (String name : donor.getNameArray()) {
+                if (name.toLowerCase().contains(names[matched].toLowerCase())) {
+                    matched++;
+                    if (matched == names.length) {
+                        break;
+                    }
+                }
+            }
+            if (matched == names.length) {
+                found.add(donor);
+            }
+        }
+        return found;
+    }
 
     /**
      * Save the donor list to a json file.
+     *
      * @param path The path of the file to save to
      * @return Whether the save completed successfully
      */
-	public static boolean saveDonors(String path) {
-		PrintStream outputStream = null;
-		File outputFile;
-		boolean success;
-		try {
-		    outputFile = new File(path);
+    public static boolean saveDonors(String path) {
+        PrintStream outputStream = null;
+        File outputFile;
+        boolean success;
+        try {
+            outputFile = new File(path);
             outputStream = new PrintStream(new FileOutputStream(outputFile));
             gson.toJson(donors, outputStream);
             success = true;
         } catch (IOException e) {
-		    success = false;
+            success = false;
         } finally {
-		    if (outputStream != null) {
+            if (outputStream != null) {
                 outputStream.close();
             }
         }
         return success;
-	}
+    }
 
-	/**
-	 * Imports a JSON object of donor information and replaces the information in the donor list.
-	 *
-	 * @param path path of the file.
+    /**
+     * Imports a JSON object of donor information and replaces the information in the donor list.
+     *
+     * @param path path of the file.
      * @return Whether the command executed successfully
-	 */
-	public static boolean importDonors(String path) {
-		File inputFile = new File(path);
-		Path filePath;
-		try {
+     */
+    public static boolean importDonors(String path) {
+        File inputFile = new File(path);
+        Path filePath;
+        try {
             filePath = inputFile.toPath();
         } catch (InvalidPathException e) {
             return false;
         }
-		Type type = new TypeToken<ArrayList<Donor>>() {}.getType();
-		// May have to add backup data here in order to undo actions
-		// Save to disk in a temp file structure? (And delete on quit)
-		// Make copies of the list in arrays?
-		// Lot of potential hurdles to discuss here.
-		try (InputStream in = Files.newInputStream(filePath);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in))){
-			ArrayList<Donor> importedList = gson.fromJson(reader, type);
-			System.out.println("Opened file successfully.");
-			Main.donors.clear();
-			nextDonorId = -1;
-			Main.donors.addAll(importedList);
-			recalculateNextId();
-			System.out.println("Imported list successfully.");
-			return true;
-		} catch (IOException e) {
-			System.out.println("IOException on " + path + ": Check your inputs and permissions!");
-		} catch (JsonSyntaxException | DateTimeException e1) {
-		    System.out.println("Invalid syntax in input file.");
-		} catch (NullPointerException e2) {
+        Type type = new TypeToken<ArrayList<Donor>>() {
+        }.getType();
+        // May have to add backup data here in order to undo actions
+        // Save to disk in a temp file structure? (And delete on quit)
+        // Make copies of the list in arrays?
+        // Lot of potential hurdles to discuss here.
+        try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            ArrayList<Donor> importedList = gson.fromJson(reader, type);
+            System.out.println("Opened file successfully.");
+            Main.donors.clear();
+            nextDonorId = -1;
+            Main.donors.addAll(importedList);
+            recalculateNextId();
+            System.out.println("Imported list successfully.");
+            return true;
+        } catch (IOException e) {
+            System.out.println("IOException on " + path + ": Check your inputs and permissions!");
+        } catch (JsonSyntaxException | DateTimeException e1) {
+            System.out.println("Invalid syntax in input file.");
+        } catch (NullPointerException e2) {
             System.out.println("Input file was empty.");
         }
-		return false;
-	}
+        return false;
+    }
 
     /**
      * Changes the next id to be issued to a new donor to be correct for the current donors list.
      */
-	public static void recalculateNextId() {
+    public static void recalculateNextId() {
         nextDonorId = -1;
-        for (Donor donor: Main.donors) {
+        for (Donor donor : Main.donors) {
             if (donor.getId() > nextDonorId) {
                 nextDonorId = donor.getId();
             }
@@ -219,6 +223,7 @@ public class Main {
 
     /**
      * Run the command line interface with 4 test donors preloaded.
+     *
      * @param args Not used
      */
     public static void main(String[] args) {

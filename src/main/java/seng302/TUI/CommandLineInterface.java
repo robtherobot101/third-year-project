@@ -22,25 +22,25 @@ import java.util.logging.*;
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
 public class CommandLineInterface {
-	private LineReader scanner;
+    private LineReader scanner;
 
-	/**
-	 * The main loop for the command line interface, which calls specific methods to process each command.
-	 */
-	public void run() {
+    /**
+     * The main loop for the command line interface, which calls specific methods to process each command.
+     */
+    public void run() {
         Terminal terminal;
-	    try {
+        try {
             Logger logger = Logger.getLogger("");
             logger.getHandlers()[0].setLevel(Level.OFF);
             logger.setLevel(Level.OFF);
-	        terminal = TerminalBuilder.terminal();
+            terminal = TerminalBuilder.terminal();
             scanner = LineReaderBuilder.builder().terminal(terminal).build();
         } catch (IOException e) {
             System.err.println("Failed to start JLine terminal, exiting.");
             return;
         }
         PrintStream streamOut = History.init();
-	    if (streamOut == null) {
+        if (streamOut == null) {
             System.out.println("Failed to create action history file, please run again in a directory that the program has access to.");
             return;
         }
@@ -98,8 +98,8 @@ public class CommandLineInterface {
                     success = true;
                     break;
                 default:
-                    System.out.println("Command not recognised. Enter 'help' to view available commands, or help <command> to view information about " +
-                            "a specific command.");
+                    System.out.println("Command not recognised. Enter 'help' to view available commands, or help <command> to view information " +
+                            "about a specific command.");
             }
             if (success) {
                 String text = History.prepareFileString(nextCommand);
@@ -113,34 +113,36 @@ public class CommandLineInterface {
             System.err.println("Failed to close JLine terminal.");
         }
 
-	}
+    }
 
-	/**
-	 * Prints a message to the console advising the user on how to correctly use a command they failed to use.
-	 * @param command The command name
-	 * @param argc The argument count
-	 * @param args The arguments
-	 */
-	private void printIncorrectUsageString(String command, int argc, String args) {
-		switch (argc) {
-			case 0:
-				System.out.println(String.format("The %s command does not accept arguments.", command));
-				break;
-			case 1:
-				System.out.println(String.format("The %s command must be used with 1 argument (%s %s).", command, command, args));
-				break;
-			default:
-				System.out.println(String.format("The %s command must be used with %d arguments (%s %s).", command, argc, command, args));
-		}
+    /**
+     * Prints a message to the console advising the user on how to correctly use a command they failed to use.
+     *
+     * @param command The command name
+     * @param argc    The argument count
+     * @param args    The arguments
+     */
+    private void printIncorrectUsageString(String command, int argc, String args) {
+        switch (argc) {
+            case 0:
+                System.out.println(String.format("The %s command does not accept arguments.", command));
+                break;
+            case 1:
+                System.out.println(String.format("The %s command must be used with 1 argument (%s %s).", command, command, args));
+                break;
+            default:
+                System.out.println(String.format("The %s command must be used with %d arguments (%s %s).", command, argc, command, args));
+        }
 
-	}
+    }
 
     /**
      * Creates a new donor with a name and date of birth.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-	private boolean addDonor(String[] nextCommand) {
+    private boolean addDonor(String[] nextCommand) {
         if (nextCommand.length == 3) {
             try {
                 Main.donors.add(new Donor(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], Donor.dateFormat)));
@@ -171,6 +173,7 @@ public class CommandLineInterface {
 
     /**
      * Adds an organ object to a donors list of available organs.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -204,6 +207,7 @@ public class CommandLineInterface {
 
     /**
      * Ask for confirmation to delete the specified donor, and then delete it if the user confirms the action.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -216,7 +220,8 @@ public class CommandLineInterface {
                     System.out.println(String.format("Donor with ID %d not found.", id));
                     return false;
                 }
-                String nextLine = scanner.readLine(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId()));
+                String nextLine = scanner.readLine(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId
+                        ()));
                 while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
                     nextLine = scanner.readLine("Answer not recognised. Please enter y or n: ");
                 }
@@ -238,6 +243,7 @@ public class CommandLineInterface {
 
     /**
      * Deletes an organ object from a donors available organ set, if it exists.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -255,7 +261,7 @@ public class CommandLineInterface {
             return false;
         }
 
-        if(toSet == null){
+        if (toSet == null) {
             System.out.println(String.format("Donor with ID %s not found.", nextCommand[1]));
             return false;
         }
@@ -263,14 +269,15 @@ public class CommandLineInterface {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
             return true;
         } catch (IllegalArgumentException e) {
-            System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
-                    "cornea, middle-ear, skin, bone-marrow, connective-tissue");
+            System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
+                    "bone-marrow, connective-tissue");
             return false;
         }
     }
 
     /**
      * Sets a new value for one attribute of a donor.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -389,14 +396,15 @@ public class CommandLineInterface {
                 System.out.println("New address set.");
                 return true;
             default:
-                System.out.println("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, " +
-                        "weight, bloodType, region, or currentAddress.");
+                System.out.println("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
+                        "bloodType, region, or currentAddress.");
                 return false;
         }
     }
 
     /**
      * Searches for donors and displays information about them.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -424,7 +432,7 @@ public class CommandLineInterface {
                 System.out.println(String.format("No donors with names matching %s were found.", idString));
             } else {
                 System.out.println(Donor.tableHeader);
-                for (Donor donor: toDescribe) {
+                for (Donor donor : toDescribe) {
                     System.out.println(donor.getString(true));
                 }
             }
@@ -434,6 +442,7 @@ public class CommandLineInterface {
 
     /**
      * Lists a specific donor and their available organs. If they have none a message is displayed.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -460,6 +469,7 @@ public class CommandLineInterface {
 
     /**
      * Displays a table containing information about all donors.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -480,22 +490,23 @@ public class CommandLineInterface {
         }
     }
 
-	/**
-	 * Lists all donors who have at least 1 organ to donate and their available organs.
-	 * If none exist, a message is displayed.
+    /**
+     * Lists all donors who have at least 1 organ to donate and their available organs.
+     * If none exist, a message is displayed.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
-	 */
+     */
     private boolean listOrgans(String[] nextCommand) {
         if (nextCommand.length == 1) {
             boolean organsAvailable = false;
             for (Donor donor : Main.donors) {
-                if(!donor.getOrgans().isEmpty()){
+                if (!donor.getOrgans().isEmpty()) {
                     System.out.println(donor.getName() + ": " + donor.getOrgans());
                     organsAvailable = true;
                 }
             }
-            if (!organsAvailable){
+            if (!organsAvailable) {
                 System.out.println("No organs available from any donor!");
             }
             return true;
@@ -507,6 +518,7 @@ public class CommandLineInterface {
 
     /**
      * Clear the donor list and load a new one from a file.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -543,6 +555,7 @@ public class CommandLineInterface {
 
     /**
      * Save the donor list to a file.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -579,6 +592,7 @@ public class CommandLineInterface {
 
     /**
      * Shows help either about which commands are available or about a specific command's usage.
+     *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
@@ -594,7 +608,7 @@ public class CommandLineInterface {
                     + "\n\t-describeOrgans <id>"
                     + "\n\t-list"
                     + "\n\t-listOrgans"
-                    + "\n\t-import <filename>"
+                    + "\n\t-import [-r] <filename>"
                     + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
                     + "\n\t-help [<command>]"
                     + "\n\t-quit");
@@ -653,7 +667,8 @@ public class CommandLineInterface {
                             + "Example valid usage: set 2 bloodtype ab+");
                     break;
                 case "describe":
-                    System.out.println("This command searches donors and displays information about them.\n"
+                    System.out.println("This command searches donors and displays information about them. To find the id of a donor, use the list "
+                            + "and describe commands.\n"
                             + "The syntax is: describe <id> OR describe <name>\n"
                             + "Rules:\n"
                             + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
@@ -702,7 +717,8 @@ public class CommandLineInterface {
                     System.out.println("This command displays information about how to use this program.\n"
                             + "The syntax is: help OR help <command>\n"
                             + "Rules:\n"
-                            + "-If the command argument is passed, the command must be: add, addOrgan, delete, deleteOrgan, set, describe, describeOrgans, list, listOrgans, import, save, help, or quit.\n"
+                            + "-If the command argument is passed, the command must be: add, addOrgan, delete, deleteOrgan, set, describe, "
+                            + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
                             + "Example valid usage: help help");
                     break;
                 case "quit":

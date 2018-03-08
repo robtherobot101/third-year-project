@@ -18,8 +18,9 @@ public class History {
 
     /**
      * Initialises the printstream writing to file.
-     *
+     * <p>
      * Currently this is setup to go to the target folder. This will probably change when we have a more robust export system.
+     *
      * @return the printstream if no IO error otherwise null.
      */
     public static PrintStream init() {
@@ -27,7 +28,7 @@ public class History {
             File actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory);
             return new PrintStream(fout);
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("I/O Error writing command history to file!");
             e.printStackTrace();
             return null;
@@ -37,16 +38,17 @@ public class History {
     /**
      * Prints the given string to the file via the given printstream.
      *
-     * @param out the printstream.
+     * @param out  the printstream.
      * @param text the string being written to the file.
      */
     public static void printToFile(PrintStream out, String text) {
-       out.println(text);
+        out.println(text);
     }
 
     /**
      * Adds the current time to the command string being added to file, and formats the string, breaking up the split.
      * Formatted in such a way that it is machine readable.
+     *
      * @param nextCommand the text from the command line.
      * @return the modified string.
      */
@@ -57,7 +59,7 @@ public class History {
             case "add":
                 if (nextCommand[1].contains("\"")) {
                     parameterOne = String.join(" ", nextCommand).split("\"")[1];
-                    parameterTwo = nextCommand[nextCommand.length-1];
+                    parameterTwo = nextCommand[nextCommand.length - 1];
                 } else {
                     parameterOne = nextCommand[1];
                     parameterTwo = nextCommand[2];
@@ -99,8 +101,24 @@ public class History {
                 description = "[Listed all organs available from all donors.]";
                 break;
             case "import":
-                parameterOne = nextCommand[1];
-                description = "[Attempted to import file " + parameterOne + ".]";
+                if (nextCommand.length >= 2) {
+                    if (nextCommand[1].equals("-r")) {
+                        parameterOne = nextCommand[1];
+                        if (nextCommand[2].contains("\"")) {
+                            parameterTwo = String.join(" ", nextCommand).split("\"")[1];
+                        } else {
+                            parameterTwo = nextCommand[2];
+                        }
+                        description = "[Imported donors from relative path with filename " + parameterTwo + ".]";
+                    } else {
+                        if (nextCommand[1].contains("\"")) {
+                            parameterOne = String.join(" ", nextCommand).split("\"")[1];
+                        } else {
+                            parameterOne = nextCommand[1];
+                        }
+                        description = "[Imported donors from path " + parameterOne + ".]";
+                    }
+                }
                 break;
             case "save":
                 if (nextCommand.length >= 2) {
@@ -123,7 +141,7 @@ public class History {
                 }
                 break;
             case "help":
-                if(nextCommand.length == 1) {
+                if (nextCommand.length == 1) {
                     description = "[Queried available commands.]";
                 } else {
                     parameterOne = nextCommand[1];
@@ -133,9 +151,9 @@ public class History {
             case "quit":
                 description = "[Quit the program.]";
                 break;
-       }
+        }
 
-       //join the elements
+        //join the elements
         text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
 
         //reset for next call
