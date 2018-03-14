@@ -26,8 +26,10 @@ public class History {
     public static PrintStream init() {
         try {
             File actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
-            FileOutputStream fout = new FileOutputStream(actionHistory);
-            return new PrintStream(fout);
+            FileOutputStream fout = new FileOutputStream(actionHistory, true);
+            PrintStream out = new PrintStream(fout);
+            out.println(Donor.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
+            return out;
         } catch (IOException e) {
             System.out.println("I/O Error writing command history to file!");
             e.printStackTrace();
@@ -153,6 +155,7 @@ public class History {
                 break;
         }
 
+
         //join the elements
         text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
 
@@ -165,4 +168,5 @@ public class History {
 
         return text;
     }
+
 }
