@@ -7,7 +7,12 @@ import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
 import com.google.gson.reflect.TypeToken;
-import seng302.TUI.CommandLineInterface;
+import java.util.HashMap;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -16,16 +21,29 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import seng302.Controllers.CreateAccountController;
+import seng302.Controllers.LoginController;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
  * program.
  */
-public class Main {
+public class Main extends Application {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
     private static String jarPath;
+    private static Stage stage;
+    private static HashMap<TFScene, Scene> scenes = new HashMap<>();
+    private static LoginController loginController;
+    private static CreateAccountController createAccountController;
 
+    public static void setLoginController(LoginController loginController) {
+        Main.loginController = loginController;
+    }
+
+    public static void setCreateAccountController(CreateAccountController createAccountController) {
+        Main.createAccountController = createAccountController;
+    }
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -227,13 +245,52 @@ public class Main {
      * @param args Not used
      */
     public static void main(String[] args) {
+        launch(args);
+        /*
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
             CommandLineInterface commandLineInterface = new CommandLineInterface();
             commandLineInterface.run();
         } catch (URISyntaxException e) {
-            System.err.println("Unable to read jar path. Please run from a directory with a simpler path. Stack trace:");
             e.printStackTrace();
+        }*/
+    }
+
+    @Override
+    public void start(Stage stage) {
+        Main.stage = stage;
+        stage.setTitle("Transplant Finder");
+        //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
+        try {
+            jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+            scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")), 400, 250));
+            loginController.setEnterEvent();
+            scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
+            createAccountController.setEnterEvent();
+            setScene(TFScene.login);
+            stage.show();
+        } catch (URISyntaxException e) {
+            System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
+            e.printStackTrace();
+            stop();
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml file.");
+            e.printStackTrace();
+            stop();
         }
+    }
+
+    public static Scene getScene(TFScene scene) {
+        return scenes.get(scene);
+    }
+
+    public static void setScene(TFScene scene) {
+        stage.setScene(scenes.get(scene));
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("Exiting GUI");
+        Platform.exit();
     }
 }

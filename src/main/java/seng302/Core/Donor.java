@@ -24,6 +24,7 @@ public class Donor {
     private long id;
     private String currentAddress, region;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
+    private String username, email, password;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -40,7 +41,7 @@ public class Donor {
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
-                 String currentAddress) throws DateTimeException, IllegalArgumentException {
+        String currentAddress) throws DateTimeException, IllegalArgumentException {
         this.name = name.split(",");
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
         this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
@@ -51,6 +52,54 @@ public class Donor {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
+        this.id = Main.getNextDonorId(true);
+    }
+
+    public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
+        int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
+        this.name = new String[1 + middleNames.length + isLastName];
+        this.name[0] = firstName;
+        System.arraycopy(middleNames, 0, this.name, 1, middleNames.length);
+        if (isLastName == 1) {
+            this.name[this.name.length-1] = lastName;
+        }
+        System.out.println(getName());
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = null;
+        this.gender = null;
+        this.height = -1;
+        this.weight = -1;
+        this.bloodType = null;
+        this.region = null;
+        this.currentAddress = null;
+        this.creationTime = LocalDateTime.now();
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.id = Main.getNextDonorId(true);
+    }
+
+    public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
+        double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+        int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
+        this.name = new String[1 + middleNames.length + isLastName];
+        this.name[0] = firstName;
+        System.arraycopy(middleNames, 0, this.name, 1, middleNames.length);
+        if (isLastName == 1) {
+            this.name[this.name.length-1] = lastName;
+        }
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.region = region;
+        this.currentAddress = currentAddress;
+        this.creationTime = LocalDateTime.now();
+        this.username = username;
+        this.email = email;
+        this.password = password;
         this.id = Main.getNextDonorId(true);
     }
 
@@ -65,6 +114,18 @@ public class Donor {
 
     public String[] getNameArray() {
         return name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public EnumSet<Organ> getOrgans() {
