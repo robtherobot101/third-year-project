@@ -114,6 +114,7 @@ nbactions.xml
 .idea/*
 /out/
 app.iml
+testsave
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
