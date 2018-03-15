@@ -90,12 +90,12 @@
                         <TextField fx:id="lastNameField" layoutX="458.0" layoutY="50.0" promptText="Last Name" />
                         <TextField fx:id="addressField" layoutX="120.0" layoutY="102.0" promptText="Address" />
                         <TextField fx:id="regionField" layoutX="354.0" layoutY="103.0" promptText="Region" />
-                        <DatePicker fx:id="dateOfBirthPicker" layoutX="35.0" layoutY="163.0" promptText="Date of Birth" />
-                        <DatePicker fx:id="dateOfDeathPicker" layoutX="34.0" layoutY="219.0" promptText="Date of Death" />
-                        <TextField fx:id="heightField" layoutX="285.0" layoutY="165.0" promptText="Height" />
-                        <TextField fx:id="weightField" layoutX="483.0" layoutY="165.0" prefHeight="27.0" prefWidth="158.0" promptText="Weight" />
-                        <ComboBox fx:id="genderComboBox" layoutX="287.0" layoutY="218.0" prefHeight="27.0" prefWidth="158.0" promptText="Gender" />
-                        <ComboBox fx:id="bloodTypeComboBox" layoutX="482.0" layoutY="218.0" prefHeight="27.0" prefWidth="155.0" promptText="Blood Type" />
+                        <DatePicker fx:id="dateOfBirthPicker" layoutX="34.0" layoutY="178.0" onAction="#updateAge" promptText="Date of Birth" />
+                        <DatePicker fx:id="dateOfDeathPicker" layoutX="35.0" layoutY="223.0" onAction="#updateAge" promptText="Date of Death" />
+                        <TextField fx:id="heightField" layoutX="285.0" layoutY="177.0" onAction="#updateBMI" onKeyTyped="#updateBMI" prefHeight="27.0" prefWidth="139.0" promptText="Height (cm)" />
+                        <TextField fx:id="weightField" layoutX="480.0" layoutY="176.0" onKeyTyped="#updateBMI" prefHeight="27.0" prefWidth="139.0" promptText="Weight (kg)" />
+                        <ComboBox fx:id="genderComboBox" layoutX="288.0" layoutY="222.0" prefHeight="27.0" prefWidth="158.0" promptText="Gender" />
+                        <ComboBox fx:id="bloodTypeComboBox" layoutX="482.0" layoutY="224.0" prefHeight="27.0" prefWidth="155.0" promptText="Blood Type" />
                         <CheckBox fx:id="liverCheckBox" layoutX="48.0" layoutY="300.0" mnemonicParsing="false" text="Liver" />
                         <CheckBox fx:id="kidneyCheckBox" layoutX="150.0" layoutY="301.0" mnemonicParsing="false" text="Kidney" />
                         <CheckBox fx:id="pancreasCheckBox" layoutX="250.0" layoutY="301.0" mnemonicParsing="false" text="Pancreas" />
@@ -116,7 +116,7 @@
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Label fx:id="settingAttributesLabel" layoutX="179.0" layoutY="10.0" prefHeight="17.0" prefWidth="265.0" text="Attributes for User">
+                        <Label fx:id="settingAttributesLabel" layoutX="155.0" layoutY="2.0" prefHeight="23.0" prefWidth="391.0" text="Attributes for User">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -124,6 +124,80 @@
                         <Label layoutX="58.0" layoutY="431.0" prefHeight="17.0" prefWidth="370.0" text="View and Update all Donor Attributes here">
                            <font>
                               <Font size="17.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="ageLabel" layoutX="76.0" layoutY="145.0" text="Age: " />
+                        <Label fx:id="bmiLabel" layoutX="423.0" layoutY="145.0" text="BMI: " />
+                        <Label layoutX="429.0" layoutY="183.0" text="cm" />
+                        <Label layoutX="624.0" layoutY="180.0" text="kg" />
+                        <Label layoutX="55.0" layoutY="34.0" text="First Name">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="258.0" layoutY="34.0" text="Middle Name">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="461.0" layoutY="33.0" text="Last Name">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="122.0" layoutY="91.0" text="Address">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="354.0" layoutY="91.0" text="Region">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="36.0" layoutY="162.0" text="Date of Birth">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="37.0" layoutY="211.0" text="Date of Death">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="285.0" layoutY="163.0" text="Height">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="479.0" layoutY="163.0" text="Weight">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="288.0" layoutY="208.0" text="Gender">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="482.0" layoutY="208.0" text="Blood Type">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="58.0" layoutY="373.0" text="Username">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="266.0" layoutY="373.0" text="Email">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="474.0" layoutY="373.0" text="Password">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
                      </children>

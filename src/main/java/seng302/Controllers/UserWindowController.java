@@ -12,9 +12,12 @@ import seng302.TUI.CommandLineInterface;
 
 import javax.xml.soap.Text;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.time.temporal.ChronoUnit;
 
 public class UserWindowController implements Initializable {
 
@@ -91,6 +94,10 @@ public class UserWindowController implements Initializable {
     private TextField passwordField;
     @FXML
     private Button saveButton;
+    @FXML
+    private Label ageLabel;
+    @FXML
+    private Label bmiLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -135,6 +142,7 @@ public class UserWindowController implements Initializable {
 
         dateOfBirthPicker.setValue(currentDonor.getDateOfBirth());
         dateOfDeathPicker.setValue(currentDonor.getDateOfDeath());
+        updateAge();
 
         ObservableList<String> genders =
                 FXCollections.observableArrayList(
@@ -205,44 +213,59 @@ public class UserWindowController implements Initializable {
         String[] middleNames = middleNameField.getText().split(" ");
 
         //TODO Gender ComboBox
-        String genderPick = (String) genderComboBox.getValue();
-        Gender donorGender;
-        if(genderPick.equals("Male")) {
-            donorGender = Gender.MALE;
-        } else if(genderPick.equals("Female")) {
-            donorGender = Gender.FEMALE;
-        } else {
-            donorGender = Gender.OTHER;
+        Gender donorGender = null;
+        try {
+            String genderPick = (String) genderComboBox.getValue();
+            if (genderPick.equals("Male")) {
+                donorGender = Gender.MALE;
+            } else if (genderPick.equals("Female")) {
+                donorGender = Gender.FEMALE;
+            } else if (genderPick.equals("Other")) {
+                donorGender = Gender.OTHER;
+            } else {
+                donorGender = null;
+            }
+        } catch(Exception e) {
+            System.out.println("Input a gender");
+            //TODO Alert box for Gender
         }
 
         //TODO Blood Type ComboBox
-        String bloodTypePick = (String) bloodTypeComboBox.getValue();
         BloodType donorBloodType = null;
-        switch(bloodTypePick) {
-            case "A-":
-                donorBloodType = BloodType.A_NEG;
-                break;
-            case "A+":
-                donorBloodType = BloodType.A_POS;
-                break;
-            case "B-":
-                donorBloodType = BloodType.B_NEG;
-                break;
-            case "B+":
-                donorBloodType = BloodType.B_POS;
-                break;
-            case "AB-":
-                donorBloodType = BloodType.AB_NEG;
-                break;
-            case "AB+":
-                donorBloodType = BloodType.AB_POS;
-                break;
-            case "O-":
-                donorBloodType = BloodType.O_NEG;
-                break;
-            case "O+":
-                donorBloodType = BloodType.O_POS;
-                break;
+        try {
+            String bloodTypePick = (String) bloodTypeComboBox.getValue();
+
+            switch (bloodTypePick) {
+                case "A-":
+                    donorBloodType = BloodType.A_NEG;
+                    break;
+                case "A+":
+                    donorBloodType = BloodType.A_POS;
+                    break;
+                case "B-":
+                    donorBloodType = BloodType.B_NEG;
+                    break;
+                case "B+":
+                    donorBloodType = BloodType.B_POS;
+                    break;
+                case "AB-":
+                    donorBloodType = BloodType.AB_NEG;
+                    break;
+                case "AB+":
+                    donorBloodType = BloodType.AB_POS;
+                    break;
+                case "O-":
+                    donorBloodType = BloodType.O_NEG;
+                    break;
+                case "O+":
+                    donorBloodType = BloodType.O_POS;
+                    break;
+                case "Blood Type":
+                    donorBloodType = null;
+                    break;
+            }
+        } catch (Exception e) {
+            System.out.println("Input a blood type.");
         }
 
         try {
@@ -319,6 +342,46 @@ public class UserWindowController implements Initializable {
             alert.close();
         } else {
             alert.close();
+        }
+
+    }
+
+    public void updateAge() {
+        LocalDate dobirthPick = dateOfBirthPicker.getValue();
+        LocalDate dodeathPick = dateOfDeathPicker.getValue();
+
+        if(dodeathPick == null) {
+            LocalDate today = LocalDate.now();
+            long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
+            double years = days/365.00;
+            System.out.println(years);
+            String age = String.format("%.1f", years);
+            ageLabel.setText("Age: " + age + " years");
+        } else {
+            long days = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays();
+            double years = days/365.00;
+            System.out.println(years);
+            String age = String.format("%.1f", years);
+            ageLabel.setText("Age: " + age + " years (At Death)");
+        }
+    }
+
+    public void updateBMI() {
+        try {
+
+
+            if ((heightField.getText().equals("")) || (weightField.getText().equals(""))) {
+
+                System.out.print("Input a character in both fields.");
+            } else {
+                double height = Double.parseDouble(heightField.getText());
+                double weight = Double.parseDouble(weightField.getText());
+                double BMI = ((weight) / (Math.pow(height, 2))) * 10000;
+                String bmiString = String.format("%.2f", BMI);
+                bmiLabel.setText("BMI: " + bmiString);
+            }
+        } catch(Exception e) {
+            System.out.println("Enter a valid character.");
         }
 
     }
