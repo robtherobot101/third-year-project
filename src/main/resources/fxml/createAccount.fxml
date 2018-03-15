@@ -8,14 +8,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.CreateAccountController">
+<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="415.0" prefWidth="400.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.CreateAccountController">
    <children>
       <Label alignment="CENTER" layoutX="93.0" layoutY="24.0" text="Create a new donor account" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="35.0" layoutY="52.0" text="Starred fields (*) are required. A username or email is required." AnchorPane.topAnchor="45.0" />
+      <Label layoutX="34.0" layoutY="47.0" text="Starred fields (*) are required. A username or email is required." AnchorPane.topAnchor="47.0" />
       <Label layoutX="35.0" layoutY="74.0" text="Username" AnchorPane.rightAnchor="235.0" AnchorPane.topAnchor="85.0">
          <font>
             <Font size="16.0" />
@@ -33,11 +33,13 @@
             <Font size="16.0" />
          </font>
       </Label>
+      <PasswordField fx:id="passwordInput" layoutX="175.0" layoutY="145.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="145.0" />
       <Label layoutX="34.0" layoutY="167.0" text="*Confirm Password" AnchorPane.rightAnchor="235.0" AnchorPane.topAnchor="175.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
+      <PasswordField fx:id="passwordConfirmInput" layoutX="175.0" layoutY="175.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="175.0" />
       <Label layoutX="34.0" layoutY="200.0" text="*First Name" AnchorPane.rightAnchor="235.0" AnchorPane.topAnchor="205.0">
          <font>
             <Font size="16.0" />
@@ -67,8 +69,6 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <PasswordField fx:id="passwordInput" layoutX="175.0" layoutY="145.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="145.0" />
-      <PasswordField fx:id="passwordConfirmInput" layoutX="175.0" layoutY="175.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="175.0" />
       <Label fx:id="errorText" alignment="CENTER" layoutX="146.0" layoutY="320.0" text="Passwords do not match" textFill="RED" visible="false" wrapText="true" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="40.0" />
       <Button layoutX="119.0" layoutY="346.0" mnemonicParsing="false" onAction="#returnToLogin" text="Back">
          <font>

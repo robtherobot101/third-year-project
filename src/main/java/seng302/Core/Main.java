@@ -31,7 +31,7 @@ import seng302.Controllers.LoginController;
 public class Main extends Application {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
-    private static String jarPath;
+    private static String jarPath, donorPath;
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
     private static LoginController loginController;
@@ -86,6 +86,10 @@ public class Main extends Application {
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+
+    public static String getDonorPath() {
+        return donorPath;
+    }
 
     public static String getJarPath() {
         return jarPath;
@@ -263,6 +267,15 @@ public class Main extends Application {
         //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+            donorPath = jarPath + File.separatorChar + "donors.json";
+            File donors = new File(donorPath);
+            if (donors.exists()) {
+                importDonors(donors.getAbsolutePath());
+            } else {
+                if (!donors.createNewFile()) {
+                    throw new IOException("Save file could not be created.");
+                }
+            }
             scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")), 400, 250));
             loginController.setEnterEvent();
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
@@ -274,7 +287,7 @@ public class Main extends Application {
             e.printStackTrace();
             stop();
         } catch (IOException e) {
-            System.err.println("Unable to load fxml file.");
+            System.err.println("Unable to load fxml or save file.");
             e.printStackTrace();
             stop();
         }
