@@ -281,6 +281,7 @@ public class Main extends Application {
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
             setScene(TFScene.login);
+            stage.setResizable(false);
             stage.show();
         } catch (URISyntaxException e) {
             System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
