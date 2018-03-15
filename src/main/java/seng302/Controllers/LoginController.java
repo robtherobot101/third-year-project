@@ -28,24 +28,25 @@ public class LoginController implements Initializable {
 
     public void login() {
         boolean identificationMatched = false;
-        boolean loggedIn = false;
+        Donor currentDonor = null;
         for (Donor donor: Main.donors) {
             if (donor.getUsername() != null && donor.getUsername().equals(identificationInput.getText()) ||
                 donor.getEmail() != null && donor.getEmail().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (donor.getPassword().equals(passwordInput.getText())) {
-                    Main.setScene(TFScene.createAccount);
-                    loggedIn = true;
+                    currentDonor = donor;
                 }
             }
         }
         if (identificationMatched) {
-            if (loggedIn) {
+            if (currentDonor != null) {
                 //Reset scene to original state
                 identificationInput.setText("");
                 passwordInput.setText("");
                 loginButton.setDisable(true);
                 errorMessage.setVisible(false);
+                Main.setCurrentDonor(currentDonor);
+                Main.setScene(TFScene.userWindow);
             } else {
                 errorMessage.setText("Incorrect password.");
                 errorMessage.setVisible(true);

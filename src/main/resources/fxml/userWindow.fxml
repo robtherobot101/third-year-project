@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Icon?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<GridPane prefHeight="575.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="900.0" minWidth="90.0" prefWidth="900.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="28.5" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="50.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="500.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <MenuBar>
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Open" />
+                  <MenuItem mnemonicParsing="false" text="Save" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Undo" />
+                  <MenuItem mnemonicParsing="false" text="Redo" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Quit" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About..." />
+                  <MenuItem mnemonicParsing="false" onAction="#tester" text="Available Commands" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <AnchorPane prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="2">
+         <children>
+            <StackPane layoutX="225.0" layoutY="1.0" prefHeight="475.0" prefWidth="674.0" style="-fx-background-color: WHITE;" />
+            <AnchorPane prefHeight="478.0" prefWidth="225.0" style="-fx-background-color: DARK_BLUE;">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </AnchorPane>
+            <Button layoutY="56.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="225.0" text="Donor Attributes" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="PERSON" prefHeight="35.0" prefWidth="31.0" />
+               </graphic>
+            </Button>
+            <Button layoutX="-2.0" layoutY="112.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="226.0" text="History" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="HISTORY" />
+               </graphic>
+            </Button>
+            <Button layoutX="-3.0" layoutY="178.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="227.0" text="Medications" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="VIEW_QUILT" />
+               </graphic>
+            </Button>
+            <Button layoutY="236.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="223.0" text="Other" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="HELP_OUTLINE" />
+               </graphic>
+            </Button>
+            <AnchorPane maxHeight="474.0" maxWidth="466.0" prefHeight="474.0" prefWidth="53.0" style="-fx-background-color: WHITE;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="847.0" AnchorPane.topAnchor="0.0">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </AnchorPane>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </AnchorPane>
+      <Pane prefHeight="45.0" prefWidth="900.0" GridPane.rowIndex="1">
+         <children>
+            <Label fx:id="userDisplayText" layoutX="9.0" layoutY="-1.0" prefHeight="57.0" prefWidth="690.0" text="Welcome text.">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </children></Pane>
+      <HBox id="HBox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="579.0" spacing="5.0" GridPane.rowIndex="3">
+         <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font size="11.0" fx:id="x3" />
+               </font>
+               <textFill>
+                  <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
+               </textFill>
+            </Label>
+            <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+            <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
+         </children>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+      </HBox>
+   </children>
+</GridPane>
