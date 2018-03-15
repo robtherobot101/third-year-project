@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import seng302.Core.Clinician;
 import seng302.Core.Donor;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
@@ -38,6 +39,18 @@ public class LoginController implements Initializable {
                 }
             }
         }
+
+        for(Clinician clinician: Main.clinicians){
+            if(clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())){
+                identificationMatched = true;
+                if(clinician.getPassword().equals(passwordInput.getText())){
+                    Main.setClinician(clinician);
+                    Main.setScene(TFScene.clinician);
+                    loggedIn = true;
+                }
+            }
+        }
+
         if (identificationMatched) {
             if (currentDonor != null) {
                 //Reset scene to original state

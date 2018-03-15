@@ -21,6 +21,8 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import seng302.Controllers.ClinicianController;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
 import seng302.Controllers.UserWindowController;
@@ -32,11 +34,21 @@ import seng302.Controllers.UserWindowController;
 public class Main extends Application {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
+    public static ArrayList<Clinician> clinicians = new ArrayList<>();
     private static String jarPath, donorPath;
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
+    private static ClinicianController clinicianController;
+
+    public static void setClinician(Clinician clinician) {
+        clinicianController.setClinician(clinician);
+    }
+
+    public static void setClinicianController(ClinicianController clinicianController) {
+        Main.clinicianController = clinicianController;
+    }
 
     private static UserWindowController userWindowController;
 
@@ -272,8 +284,27 @@ public class Main extends Application {
         }*/
     }
 
+    public void setupDefaultClinician() {
+        Clinician defaultClinician = new Clinician("default", "default", "NA");
+        defaultClinician.setName("Default Clinician");
+        defaultClinician.setStaffID("0");
+        defaultClinician.setWorkAddress("NA");
+        defaultClinician.setRegion("NA");
+
+
+
+
+        clinicians.add(defaultClinician);
+    }
+
+
     @Override
     public void start(Stage stage) {
+
+        //TODO
+        //Load clinicians from json, then only create default clinician if it does not exists. Could use StaffID as identifier
+        setupDefaultClinician();
+
         Main.stage = stage;
         stage.setTitle("Transplant Finder");
         //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
@@ -293,6 +324,7 @@ public class Main extends Application {
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
+            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
             setScene(TFScene.login);
             stage.setResizable(false);
             stage.show();

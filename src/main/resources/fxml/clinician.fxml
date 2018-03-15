@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<Pane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+   <children>
+      <Text layoutX="32.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+      <Text layoutX="31.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Staff ID:" />
+      <Text layoutX="348.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Region:" />
+      <TextField fx:id="nameInput" layoutX="107.0" layoutY="21.0" />
+      <TextField fx:id="staffIDInput" layoutX="107.0" layoutY="57.0" />
+      <TextField fx:id="addressInput" layoutX="435.0" layoutY="21.0" />
+      <TextField fx:id="regionInput" layoutX="435.0" layoutY="57.0" />
+      <Text layoutX="348.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address:" />
+      <Button fx:id="save" layoutX="646.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" />
+      <Text fx:id="updatedSuccessfully" layoutX="646.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Updated Successfully" />
+   </children>
+</Pane>
