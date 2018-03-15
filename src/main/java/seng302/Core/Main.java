@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
+import seng302.Controllers.UserWindowController;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -37,6 +38,8 @@ public class Main extends Application {
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
 
+    private static UserWindowController userWindowController;
+
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
@@ -44,6 +47,11 @@ public class Main extends Application {
     public static void setCreateAccountController(CreateAccountController createAccountController) {
         Main.createAccountController = createAccountController;
     }
+
+    public static void setUserWindowController(UserWindowController userWindowController) {
+        Main.userWindowController = userWindowController;
+    }
+
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -267,6 +275,7 @@ public class Main extends Application {
             loginController.setEnterEvent();
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
+            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 600));
             setScene(TFScene.login);
             stage.show();
         } catch (URISyntaxException e) {

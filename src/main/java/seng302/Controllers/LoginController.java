@@ -34,7 +34,6 @@ public class LoginController implements Initializable {
                 donor.getEmail() != null && donor.getEmail().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (donor.getPassword().equals(passwordInput.getText())) {
-                    Main.setScene(TFScene.createAccount);
                     loggedIn = true;
                 }
             }
@@ -46,6 +45,7 @@ public class LoginController implements Initializable {
                 passwordInput.setText("");
                 loginButton.setDisable(true);
                 errorMessage.setVisible(false);
+                Main.setScene(TFScene.userWindow);
             } else {
                 errorMessage.setText("Incorrect password.");
                 errorMessage.setVisible(true);
