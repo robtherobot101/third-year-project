@@ -40,6 +40,10 @@ public class Main extends Application {
 
     private static UserWindowController userWindowController;
 
+    public static void setCurrentDonor(Donor currentDonor) {
+        userWindowController.setCurrentDonor(currentDonor);
+    }
+
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
@@ -275,7 +279,7 @@ public class Main extends Application {
             loginController.setEnterEvent();
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
-            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 600));
+            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             setScene(TFScene.login);
             stage.show();
         } catch (URISyntaxException e) {

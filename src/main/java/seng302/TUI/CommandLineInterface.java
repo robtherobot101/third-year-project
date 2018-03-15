@@ -595,7 +595,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean showHelp(String[] nextCommand) {
+    public boolean showHelp(String[] nextCommand) {
         if (nextCommand.length == 1) {
             System.out.println("Valid commands are: "
                     + "\n\t-add \"First Name,name part 2,name part n\" <date of birth>"
