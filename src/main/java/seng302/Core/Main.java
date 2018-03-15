@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
+import seng302.Files.History;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -31,6 +32,8 @@ import seng302.Controllers.LoginController;
 public class Main extends Application {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
+    // Is there a way to make this accessible in the controllers but not public? Don't like the idea of a public filewriter.
+    public static PrintStream streamOut;
     private static ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static String jarPath;
@@ -292,6 +295,7 @@ public class Main extends Application {
         //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+            streamOut = History.init();
             scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")), 400, 250));
             loginController.setEnterEvent();
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
