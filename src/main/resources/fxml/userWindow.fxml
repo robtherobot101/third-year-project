@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.Icon?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -24,13 +23,14 @@
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="900.0" minWidth="90.0" prefWidth="900.0" />
    </columnConstraints>
    <rowConstraints>
+      <RowConstraints />
       <RowConstraints maxHeight="28.5" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="50.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="500.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <MenuBar>
+      <MenuBar GridPane.rowIndex="1">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
@@ -51,53 +51,90 @@
             </Menu>
          </menus>
       </MenuBar>
-      <AnchorPane prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="2">
+      <AnchorPane prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="3">
          <children>
-            <StackPane layoutX="225.0" layoutY="1.0" prefHeight="475.0" prefWidth="674.0" style="-fx-background-color: WHITE;" />
-            <AnchorPane prefHeight="478.0" prefWidth="225.0" style="-fx-background-color: DARK_BLUE;">
+            <StackPane layoutX="225.0" layoutY="1.0" prefHeight="475.0" prefWidth="674.0" style="-fx-background-color: WHITE;">
+               <children>
+                  <Pane fx:id="attributesPane" prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="41.0" layoutY="5.0" prefHeight="75.0" prefWidth="150.0" text="Set Attributes pane" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="historyPane" prefHeight="200.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <Label layoutX="221.0" layoutY="182.0" prefHeight="46.0" prefWidth="86.0" text="History Pane" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="medicationsPane" prefHeight="200.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <Label layoutX="245.0" layoutY="191.0" text="Medications Pane" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="welcomePane" prefHeight="200.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <Label layoutX="8.0" layoutY="-9.0" prefHeight="229.0" prefWidth="641.0" text="WELCOME!!!! ">
+                           <font>
+                              <Font size="96.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="15.0" layoutY="198.0" prefHeight="229.0" prefWidth="641.0" text="ORGANS">
+                           <font>
+                              <Font size="96.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Pane>
+               </children></StackPane>
+            <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #F0F7FF;">
                <effect>
                   <DropShadow />
                </effect>
+               <children>
+                  <Button blendMode="SRC_ATOP" layoutY="55.0" mnemonicParsing="false" onAction="#showAttributesPane" prefHeight="57.0" prefWidth="228.0" style="-fx-background-color: #F0F7FF #F0F7FF;" text="Donor Attributes" textAlignment="CENTER" />
+                  <Button layoutX="-2.0" layoutY="296.0" mnemonicParsing="false" onAction="#stop" prefHeight="55.0" prefWidth="228.0" style="-fx-background-color: #F0F7FF #F0F7FF;" text="Exit" textAlignment="CENTER" />
+               </children>
             </AnchorPane>
-            <Button layoutY="56.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="225.0" text="Donor Attributes" textAlignment="CENTER">
-               <graphic>
-                  <Icon content="PERSON" prefHeight="35.0" prefWidth="31.0" />
-               </graphic>
-            </Button>
-            <Button layoutX="-2.0" layoutY="112.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="226.0" text="History" textAlignment="CENTER">
-               <graphic>
-                  <Icon content="HISTORY" />
-               </graphic>
-            </Button>
-            <Button layoutX="-3.0" layoutY="178.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="227.0" text="Medications" textAlignment="CENTER">
-               <graphic>
-                  <Icon content="VIEW_QUILT" />
-               </graphic>
-            </Button>
-            <Button layoutY="236.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="223.0" text="Other" textAlignment="CENTER">
-               <graphic>
-                  <Icon content="HELP_OUTLINE" />
-               </graphic>
-            </Button>
-            <AnchorPane maxHeight="474.0" maxWidth="466.0" prefHeight="474.0" prefWidth="53.0" style="-fx-background-color: WHITE;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="847.0" AnchorPane.topAnchor="0.0">
+            <Button layoutX="-2.0" layoutY="112.0" mnemonicParsing="false" onAction="#showHistoryPane" prefHeight="66.0" prefWidth="229.0" style="-fx-background-color: #F0F7FF #F0F7FF;" text="History" textAlignment="CENTER" />
+            <Button layoutX="-3.0" layoutY="178.0" mnemonicParsing="false" onAction="#showMedicationsPane" prefHeight="59.0" prefWidth="230.0" style="-fx-background-color: #F0F7FF #F0F7FF;" text="Medications" textAlignment="CENTER" />
+            <Button layoutY="236.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="228.0" style="-fx-background-color: #F0F7FF #F0F7FF;" text="Save" textAlignment="CENTER" />
+            <AnchorPane layoutY="3.0" maxHeight="474.0" maxWidth="466.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: WHITE;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="847.0" AnchorPane.topAnchor="3.0">
                <effect>
                   <DropShadow />
                </effect>
+               <children>
+                  <Label layoutX="7.0" layoutY="239.0" text="→">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="6.0" layoutY="182.0" text="→">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="6.0" layoutY="121.0" text="→">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="6.0" layoutY="58.0" text="→">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="7.0" layoutY="300.0" text="→">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+               </children>
             </AnchorPane>
          </children>
          <effect>
             <DropShadow />
          </effect>
       </AnchorPane>
-      <Pane prefHeight="45.0" prefWidth="900.0" GridPane.rowIndex="1">
-         <children>
-            <Label fx:id="userDisplayText" layoutX="9.0" layoutY="-1.0" prefHeight="57.0" prefWidth="690.0" text="Welcome text.">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-         </children></Pane>
-      <HBox id="HBox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="579.0" spacing="5.0" GridPane.rowIndex="3">
+      <HBox id="HBox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="579.0" spacing="5.0" GridPane.rowIndex="4">
          <children>
             <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
                <font>
@@ -114,5 +151,13 @@
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
          </padding>
       </HBox>
+      <Pane prefHeight="66.0" prefWidth="900.0" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="userDisplayText" layoutX="9.0" layoutY="-1.0" prefHeight="57.0" prefWidth="686.0" text="Welcome text.">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </children></Pane>
    </children>
 </GridPane>
