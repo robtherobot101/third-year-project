@@ -158,6 +158,7 @@ public class History {
 
         //join the elements
         text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
+        Main.undoStack.add(nextCommand);
 
         //reset for next call
         command = null;

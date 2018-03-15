@@ -24,8 +24,37 @@ import java.util.ArrayList;
 public class Main {
     private static long nextDonorId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
+    private static ArrayList<Donor> donorUndoStack = new ArrayList<>();
+    private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
+    public static CommandLineInterface commandLineInterface;
     private static String jarPath;
 
+    /**
+     * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
+     *
+     * @param donor donor object being added to the top of the stack.
+     */
+    public static void addDonorToUndoStack(Donor donor){
+        donorUndoStack.add(donor);
+    }
+
+    /**
+     * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
+     * Then removes it from the undo stack and adds it to the redo stack.
+     *
+     * @return the most recent saved version of the donor.
+     */
+    public static Donor donorUndo(){
+        if (donorUndoStack != null){
+            Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
+            donorUndoStack.remove(-1);
+            donorRedoStack.add(donor);
+            return donor;
+        } else {
+            System.out.println("Undo somehow being called with nothing to undo.");
+            return null;
+        }
+    }
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -221,6 +250,7 @@ public class Main {
         }
     }
 
+
     /**
      * Run the command line interface with 4 test donors preloaded.
      *
@@ -229,7 +259,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-            CommandLineInterface commandLineInterface = new CommandLineInterface();
+            commandLineInterface = new CommandLineInterface();
             commandLineInterface.run();
         } catch (URISyntaxException e) {
             System.err.println("Unable to read jar path. Please run from a directory with a simpler path. Stack trace:");
