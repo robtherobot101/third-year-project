@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.gluonhq.charm.glisten.control.Icon?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
@@ -49,6 +51,44 @@
             </Menu>
          </menus>
       </MenuBar>
+      <AnchorPane prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="2">
+         <children>
+            <StackPane layoutX="225.0" layoutY="1.0" prefHeight="475.0" prefWidth="674.0" style="-fx-background-color: WHITE;" />
+            <AnchorPane prefHeight="478.0" prefWidth="225.0" style="-fx-background-color: DARK_BLUE;">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </AnchorPane>
+            <Button layoutY="56.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="225.0" text="Donor Attributes" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="PERSON" prefHeight="35.0" prefWidth="31.0" />
+               </graphic>
+            </Button>
+            <Button layoutX="-2.0" layoutY="112.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="226.0" text="History" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="HISTORY" />
+               </graphic>
+            </Button>
+            <Button layoutX="-3.0" layoutY="178.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="227.0" text="Medications" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="VIEW_QUILT" />
+               </graphic>
+            </Button>
+            <Button layoutY="236.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="223.0" text="Other" textAlignment="CENTER">
+               <graphic>
+                  <Icon content="HELP_OUTLINE" />
+               </graphic>
+            </Button>
+            <AnchorPane maxHeight="474.0" maxWidth="466.0" prefHeight="474.0" prefWidth="53.0" style="-fx-background-color: WHITE;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="847.0" AnchorPane.topAnchor="0.0">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </AnchorPane>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </AnchorPane>
       <Pane prefHeight="45.0" prefWidth="900.0" GridPane.rowIndex="1">
          <children>
             <Label fx:id="userDisplayText" layoutX="9.0" layoutY="-1.0" prefHeight="57.0" prefWidth="690.0" text="Welcome text.">
@@ -57,36 +97,6 @@
                </font>
             </Label>
          </children></Pane>
-      <SplitPane dividerPositions="0.2506, 0.7506" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="900.0" GridPane.rowIndex="2">
-         <items>
-            <AnchorPane>
-               <children>
-                  <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Master" textAlignment="CENTER" wrapText="false">
-                     <font>
-                        <Font size="18.0" fx:id="x1" />
-                     </font>
-                     <textFill>
-                        <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
-                     </textFill>
-                  </Label>
-               </children>
-            </AnchorPane>
-            <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
-               <content>
-                  <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="479.0" prefWidth="430.0">
-                     <children>
-                        <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-                     </children>
-                  </AnchorPane>
-               </content>
-            </ScrollPane>
-            <AnchorPane>
-               <children>
-                  <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Hisory" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-               </children>
-            </AnchorPane>
-         </items>
-      </SplitPane>
       <HBox id="HBox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="579.0" spacing="5.0" GridPane.rowIndex="3">
          <children>
             <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
