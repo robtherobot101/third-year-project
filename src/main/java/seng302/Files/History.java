@@ -54,8 +54,8 @@ public class History {
      * @param nextCommand the text from the command line.
      * @return the modified string.
      */
-    public static String prepareFileString(String[] nextCommand) {
-        String text = Donor.dateTimeFormat.format(LocalDateTime.now());
+    public static String prepareFileStringCLI(String[] nextCommand) {
+        String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " CLI";
         command = nextCommand[0];
         switch (command.toLowerCase()) {
             case "add":
@@ -158,7 +158,6 @@ public class History {
 
         //join the elements
         text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
-        Main.undoStack.add(nextCommand);
 
         //reset for next call
         command = null;
@@ -167,6 +166,34 @@ public class History {
         parameterThree = null;
         description = null;
 
+        return text;
+    }
+
+    /**
+     * Records all actions performed in the GUI in the same action history file.
+     * Uses a slightly different format, identified by the GUI tag after the timestamp.
+     *
+     * @param userId the ID of the user performing the action.
+     * @param command the action being performed in the app.
+     * @return a string to be printed to file containing the action and a brief description.
+     */
+    public static String prepareFileStringGUI(long userId, String command){
+        String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
+        Donor donorInfo = Main.getDonorById(userId);
+        switch(command) {
+            case "create":
+                description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
+                break;
+            case "modify:":
+                description = "[Updated user attributes.]";
+                break;
+            case "undo":
+                description = "[Reversed last action.]";
+                break;
+            case "redo":
+                description = "[Reverted last undo.]";
+        }
+        text = String.join(" ", text, Long.toString(userId), command, description);
         return text;
     }
 

@@ -26,7 +26,6 @@ public class Main {
     public static ArrayList<Donor> donors = new ArrayList<>();
     private static ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
-    public static CommandLineInterface commandLineInterface;
     private static String jarPath;
 
     /**
@@ -259,7 +258,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-            commandLineInterface = new CommandLineInterface();
+            CommandLineInterface commandLineInterface = new CommandLineInterface();
             commandLineInterface.run();
         } catch (URISyntaxException e) {
             System.err.println("Unable to read jar path. Please run from a directory with a simpler path. Stack trace:");

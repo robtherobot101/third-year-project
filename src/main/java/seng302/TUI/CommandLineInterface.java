@@ -101,7 +101,7 @@ public class CommandLineInterface {
                             "about a specific command.");
             }
             if (success) {
-                String text = History.prepareFileString(nextCommand);
+                String text = History.prepareFileStringCLI(nextCommand);
                 History.printToFile(streamOut, text);
                 success = false;
             }
