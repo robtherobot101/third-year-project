@@ -30,6 +30,7 @@ public class LoginController implements Initializable {
     public void login() {
         boolean identificationMatched = false;
         Donor currentDonor = null;
+        Clinician currentClinician = null;
         for (Donor donor: Main.donors) {
             if (donor.getUsername() != null && donor.getUsername().equals(identificationInput.getText()) ||
                 donor.getEmail() != null && donor.getEmail().equals(identificationInput.getText())) {
@@ -44,22 +45,25 @@ public class LoginController implements Initializable {
             if(clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())){
                 identificationMatched = true;
                 if(clinician.getPassword().equals(passwordInput.getText())){
-                    Main.setClinician(clinician);
-                    Main.setScene(TFScene.clinician);
-                    loggedIn = true;
+                    currentClinician = clinician;
                 }
             }
         }
 
         if (identificationMatched) {
-            if (currentDonor != null) {
+            if (currentDonor != null || currentClinician != null) {
                 //Reset scene to original state
                 identificationInput.setText("");
                 passwordInput.setText("");
                 loginButton.setDisable(true);
                 errorMessage.setVisible(false);
-                Main.setCurrentDonor(currentDonor);
-                Main.setScene(TFScene.userWindow);
+                if (currentDonor != null) {
+                    Main.setCurrentDonor(currentDonor);
+                    Main.setScene(TFScene.userWindow);
+                } else {
+                    Main.setClinician(currentClinician);
+                    Main.setScene(TFScene.clinician);
+                }
             } else {
                 errorMessage.setText("Incorrect password.");
                 errorMessage.setVisible(true);
