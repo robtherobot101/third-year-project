@@ -136,6 +136,24 @@ public class Donor {
         return id;
     }
 
+    public String getCurrentAddress() { return currentAddress; }
+
+    public String getRegion() { return region; }
+
+    public Gender getGender() { return gender; }
+
+    public double getHeight() { return height; }
+
+    public double getWeight() { return weight; }
+
+    public BloodType getBloodType() { return bloodType; }
+
+
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+
+    public LocalDate getDateOfDeath() { return dateOfDeath; }
+
+
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         setLastModified();
