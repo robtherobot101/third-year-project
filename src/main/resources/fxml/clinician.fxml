@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -40,5 +42,12 @@
       <Label layoutX="29.0" layoutY="70.0" text="Name" />
       <Label layoutX="237.0" layoutY="70.0" text="Address" />
       <Label layoutX="441.0" layoutY="70.0" text="Region" />
+      <TableView layoutX="29.0" layoutY="183.0" prefHeight="398.0" prefWidth="744.0">
+        <columns>
+          <TableColumn fx:id="profileTable" prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <TextField fx:id="profileSearch" layoutX="29.0" layoutY="148.0" onInputMethodTextChanged="#updateProfileTable" />
    </children>
 </AnchorPane>

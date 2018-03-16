@@ -95,6 +95,10 @@ public class ClinicianController implements Initializable {
      */
     public void requestFocus() { background.requestFocus(); }
 
+    public void updateTable() {
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fadeIn.setNode(updatedSuccessfully);
