@@ -19,7 +19,7 @@ public class MainTest {
     @Before
     public void setup() {
         Main.donors = new ArrayList<>();
-        Main.recalculateNextId();
+        Main.recalculateNextId(true);
         Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
         Main.donors.add(new Donor("Test Donor,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "Auckland", "street sample " +
                 "text"));
@@ -48,10 +48,10 @@ public class MainTest {
     @Test
     public void testImportSave() {
         Main.donors.add(new Donor("extra", LocalDate.parse("01/01/1000", Donor.dateFormat)));
-        Main.saveDonors("testsave");
+        Main.saveUsers("testsave", true);
         Main.donors.remove(5);
         assertEquals(5, Main.donors.size());
-        Main.importDonors("testsave");
+        Main.importUsers("testsave", true);
         assertEquals("extra", Main.donors.get(5).getName());
     }
 

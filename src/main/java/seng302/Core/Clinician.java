@@ -1,27 +1,23 @@
 package seng302.Core;
 
 public class Clinician {
-    private String name;
-    private String staffID;
-    private String workAddress;
-    private String region;
-
-    private String username;
-    private String password;
+    private String name, workAddress, region, username, password;
+    private long staffID;
 
     public Clinician(String username, String password, String name){
         this.username = username;
         this.password = password;
         this.name = name;
+        this.staffID = Main.getNextId(true, false);
+        this.region = null;
+        this.workAddress = null;
     }
 
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
 
-    public String getStaffID() { return staffID; }
-
-    public void setStaffID(String staffID) { this.staffID = staffID; }
+    public long getStaffID() { return staffID; }
 
     public String getWorkAddress() { return workAddress; }
 

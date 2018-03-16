@@ -37,7 +37,7 @@ public class Donor {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -52,7 +52,7 @@ public class Donor {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -76,7 +76,7 @@ public class Donor {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -100,7 +100,7 @@ public class Donor {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public String getName() {

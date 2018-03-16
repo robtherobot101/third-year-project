@@ -64,7 +64,7 @@ public class CreateAccountController implements Initializable {
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             Main.donors.add(newDonor);
             Main.setCurrentDonor(newDonor);
-            Main.saveDonors(Main.getDonorPath());
+            Main.saveUsers(Main.getDonorPath(), true);
             Main.setScene(TFScene.userWindow);
         }
     }

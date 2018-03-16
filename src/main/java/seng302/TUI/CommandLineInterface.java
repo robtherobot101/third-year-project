@@ -537,7 +537,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.importDonors(path)) {
+                if (Main.importUsers(path, true)) {
                     System.out.println("Donors imported from " + path + ".");
                     return true;
                 } else {
@@ -574,7 +574,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.saveDonors(path)) {
+                if (Main.saveUsers(path, true)) {
                     System.out.println("Donors saved to " + path + ".");
                     return true;
                 } else {
