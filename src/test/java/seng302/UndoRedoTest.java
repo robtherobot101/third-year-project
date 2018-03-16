@@ -26,7 +26,7 @@ public class UndoRedoTest {
     public void testRemoveFromStack() {
         Donor toSet = Main.donors.get(0);
         Main.addDonorToUndoStack(toSet);
-        Main.donorUndo();
+        Main.donorUndo(toSet);
         assertTrue(Main.getDonorUndoStack().isEmpty());
     }
 
@@ -34,7 +34,7 @@ public class UndoRedoTest {
     public void testLoadToRedo() {
         Donor toSet = Main.donors.get(0);
         Main.addDonorToUndoStack(toSet);
-        Main.donorUndo();
+        Main.donorUndo(toSet);
         assertFalse(Main.getDonorRedoStack().isEmpty());
     }
 }

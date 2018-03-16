@@ -95,6 +95,10 @@ public class UserWindowController implements Initializable {
     @FXML
     private Button saveButton;
     @FXML
+    private Button undoButton;
+    @FXML
+    private Button redoButton;
+    @FXML
     private Label ageLabel;
     @FXML
     private Label bmiLabel;
@@ -389,9 +393,20 @@ public class UserWindowController implements Initializable {
     }
 
     public void undo() {
-        currentDonor = Main.donorUndo();
+        currentDonor = Main.donorUndo(currentDonor);
         populateDonorFields();
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
+        History.printToFile(Main.streamOut, text);
+    }
+
+    public void redo() {
+        System.out.println(Main.donors);
+        currentDonor = Main.donorRedo();
+        System.out.println(Main.donors);
+        populateDonorFields();
+        System.out.println(Main.donors);
+
+        String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
         History.printToFile(Main.streamOut, text);
     }
 

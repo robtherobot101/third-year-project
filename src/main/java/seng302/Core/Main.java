@@ -69,7 +69,8 @@ public class Main extends Application {
      * @param donor donor object being added to the top of the stack.
      */
     public static void addDonorToUndoStack(Donor donor){
-        donorUndoStack.add(donor);
+        Donor prevDonor = new Donor(donor);
+        donorUndoStack.add(prevDonor);
     }
 
     /**
@@ -78,13 +79,16 @@ public class Main extends Application {
      *
      * @return the most recent saved version of the donor.
      */
-    public static Donor donorUndo(){
+    public static Donor donorUndo(Donor oldDonor){
         if (donorUndoStack != null){
-            Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
+            Donor newDonor = donorUndoStack.get(donorUndoStack.size()-1);
             donorUndoStack.remove(donorUndoStack.size()-1);
-            donorRedoStack.add(donor);
-            String text = History.prepareFileStringGUI(donor.getId(), "undo");
-            return donor;
+            donorRedoStack.add(oldDonor);
+            if (streamOut != null){
+                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
+                History.printToFile(streamOut, text);
+            }
+            return newDonor;
         } else {
             System.out.println("Undo somehow being called with nothing to undo.");
             return null;
@@ -98,10 +102,12 @@ public class Main extends Application {
     public static Donor donorRedo(){
         if (donorRedoStack != null){
             Donor donor = donorRedoStack.get(donorRedoStack.size()-1);
-            donorRedoStack.remove(-1);
-            donorUndoStack.add(donor);
-            String text = History.prepareFileStringGUI(donor.getId(), "redo");
-            History.printToFile(streamOut, text);
+            donorRedoStack.remove(donorRedoStack.size()-1);
+            addDonorToUndoStack(donor);
+            if (streamOut != null) {
+                String text = History.prepareFileStringGUI(donor.getId(), "redo");
+                History.printToFile(streamOut, text);
+            }
             return donor;
         } else {
             System.out.println("Redo somehow being called with nothing to redo.");
