@@ -192,7 +192,7 @@ public class History {
                     description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
                 }
                 break;
-            case "modify:":
+            case "update":
                 description = "[Updated user attributes.]";
                 break;
             case "undo":
@@ -201,6 +201,10 @@ public class History {
             case "redo":
                 description = "[Reverted last undo.]";
                 break;
+            case "quit":
+                description = "[Quit the application.]";
+                break;
+
             //clinician exclusive
 
             case "view":

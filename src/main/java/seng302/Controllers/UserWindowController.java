@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import seng302.Core.*;
+import seng302.Files.History;
 import seng302.TUI.CommandLineInterface;
 
 import java.net.URL;
@@ -378,6 +379,8 @@ public class UserWindowController implements Initializable {
         if (result.get() == ButtonType.OK){
             Main.addDonorToUndoStack(currentDonor);
             updateDonor();
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+            History.printToFile(Main.streamOut, text);
             alert.close();
         } else {
             alert.close();
@@ -388,6 +391,8 @@ public class UserWindowController implements Initializable {
     public void undo() {
         currentDonor = Main.donorUndo();
         populateDonorFields();
+        String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
+        History.printToFile(Main.streamOut, text);
     }
 
     public void updateAge() {
@@ -440,6 +445,8 @@ public class UserWindowController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
             System.out.println("Exiting GUI");
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            History.printToFile(Main.streamOut, text);
             Platform.exit();
         } else {
             alert.close();
