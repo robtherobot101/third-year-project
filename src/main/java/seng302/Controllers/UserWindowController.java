@@ -11,14 +11,13 @@ import javafx.scene.layout.Pane;
 import seng302.Core.*;
 import seng302.TUI.CommandLineInterface;
 
-import javax.xml.soap.Text;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.time.temporal.ChronoUnit;
 
 public class UserWindowController implements Initializable {
 
@@ -136,8 +135,18 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
         firstNameField.setText(splitNames[0]);
-        middleNameField.setText(splitNames[1]);
-        lastNameField.setText(splitNames[2]);
+        if (splitNames.length > 2) {
+            String[] middleName = new String[splitNames.length-2];
+            System.arraycopy(splitNames, 1, middleName, 0, splitNames.length-2);
+            middleNameField.setText(String.join(",", middleName));
+            lastNameField.setText(splitNames[splitNames.length-1]);
+        } else if (splitNames.length == 2) {
+            middleNameField.setText("");
+            lastNameField.setText(splitNames[1]);
+        } else {
+            middleNameField.setText("");
+            lastNameField.setText("");
+        }
         addressField.setText(currentDonor.getCurrentAddress());
         regionField.setText(currentDonor.getRegion());
 

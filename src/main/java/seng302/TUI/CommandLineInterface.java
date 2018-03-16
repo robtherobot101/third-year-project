@@ -101,7 +101,7 @@ public class CommandLineInterface {
                             "about a specific command.");
             }
             if (success) {
-                String text = History.prepareFileString(nextCommand);
+                String text = History.prepareFileStringCLI(nextCommand);
                 History.printToFile(streamOut, text);
                 success = false;
             }
@@ -210,7 +210,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean deleteDonor(String[] nextCommand) {
+    public boolean deleteDonor(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
                 long id = Long.parseLong(nextCommand[1]);
@@ -537,7 +537,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.importDonors(path)) {
+                if (Main.importUsers(path, true)) {
                     System.out.println("Donors imported from " + path + ".");
                     return true;
                 } else {
@@ -574,7 +574,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.saveDonors(path)) {
+                if (Main.saveUsers(path, true)) {
                     System.out.println("Donors saved to " + path + ".");
                     return true;
                 } else {

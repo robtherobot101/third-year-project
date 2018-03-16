@@ -26,8 +26,10 @@ public class History {
     public static PrintStream init() {
         try {
             File actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
-            FileOutputStream fout = new FileOutputStream(actionHistory);
-            return new PrintStream(fout);
+            FileOutputStream fout = new FileOutputStream(actionHistory, true);
+            PrintStream out = new PrintStream(fout);
+            out.println(Donor.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
+            return out;
         } catch (IOException e) {
             System.out.println("I/O Error writing command history to file!");
             e.printStackTrace();
@@ -52,8 +54,8 @@ public class History {
      * @param nextCommand the text from the command line.
      * @return the modified string.
      */
-    public static String prepareFileString(String[] nextCommand) {
-        String text = Donor.dateTimeFormat.format(LocalDateTime.now());
+    public static String prepareFileStringCLI(String[] nextCommand) {
+        String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " CLI";
         command = nextCommand[0];
         switch (command.toLowerCase()) {
             case "add":
@@ -153,6 +155,7 @@ public class History {
                 break;
         }
 
+
         //join the elements
         text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
 
@@ -165,4 +168,60 @@ public class History {
 
         return text;
     }
+
+    /**
+     * Records all actions performed in the GUI in the same action history file.
+     * Uses a slightly different format, identified by the GUI tag after the timestamp.
+     *
+     * @param userId the ID of the user performing the action.
+     * @param command the action being performed in the app.
+     * @return a string to be printed to file containing the action and a brief description.
+     */
+    public static String prepareFileStringGUI(long userId, String command){
+        String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
+        Donor donorInfo = Main.getDonorById(userId);
+        switch(command) {
+            case "login":
+                description = "[User " + userId + " logged in successfully.]";
+                break;
+            case "logout":
+                description = "[User " + userId + " logged out successfully.]";
+                break;
+            case "create":
+                if (donorInfo != null) {
+                    description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
+                }
+                break;
+            case "modify:":
+                description = "[Updated user attributes.]";
+                break;
+            case "undo":
+                description = "[Reversed last action.]";
+                break;
+            case "redo":
+                description = "[Reverted last undo.]";
+                break;
+            //clinician exclusive
+
+            case "view":
+                //TODO get donor viewed id (method in main or clinician or something)
+                description = "[Viewed donor " + " .]";
+                break;
+            case "modifyDonor":
+                description = "[Modified donor " + "'s attributes.]";
+                break;
+            case "addMed":
+                description = "[Added medications to donor " + ".]";
+                break;
+            case "removeMed":
+                description = "[Removed medications from donor " + ".]";
+                break;
+            case "search":
+                description = "[Searched donor database.]";
+                break;
+        }
+        text = String.join(" ", text, Long.toString(userId), command, description);
+        return text;
+    }
+
 }

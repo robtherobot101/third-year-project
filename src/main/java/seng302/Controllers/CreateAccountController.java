@@ -1,10 +1,10 @@
 package seng302.Controllers;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -15,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import seng302.Core.Donor;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
+import seng302.Files.History;
 
 public class CreateAccountController implements Initializable {
     @FXML
@@ -49,18 +50,25 @@ public class CreateAccountController implements Initializable {
     }
 
     public void createAccount() {
-        if (passwordInput.getText().equals(passwordConfirmInput.getText())) {
+        if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
+            errorText.setText("Passwords do not match");
+            errorText.setVisible(true);
+        } else if (dateOfBirthInput.getValue().isAfter(LocalDate.now())) {
+            errorText.setText("Date of birth is in the future");
+            errorText.setVisible(true);
+        } else {
             errorText.setVisible(false);
             String username = usernameInput.getText().isEmpty() ? null : usernameInput.getText();
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             Donor newDonor = new Donor(firstNameInput.getText(), middleNames, lastNameInput.getText(),
-                dateOfBirthInput.getValue(), username, email, passwordInput.getText());
+                    dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             Main.donors.add(newDonor);
+            String text = History.prepareFileStringGUI(newDonor.getId(), "create");
+            History.printToFile(Main.streamOut, text);
             Main.setCurrentDonor(newDonor);
+            Main.saveUsers(Main.getDonorPath(), true);
             Main.setScene(TFScene.userWindow);
-        } else {
-            errorText.setVisible(true);
         }
     }
 
@@ -80,23 +88,11 @@ public class CreateAccountController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setCreateAccountController(this);
-        usernameInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            checkRequiredFields();
-        });
-        emailInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            checkRequiredFields();
-        });
-        passwordInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            checkRequiredFields();
-        });
-        passwordConfirmInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            checkRequiredFields();
-        });
-        firstNameInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            checkRequiredFields();
-        });
-        dateOfBirthInput.valueProperty().addListener((observable, oldValue, newValue) -> {
-            checkRequiredFields();
-        });
+        usernameInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        emailInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        passwordInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        passwordConfirmInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        firstNameInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        dateOfBirthInput.valueProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
     }
 }
