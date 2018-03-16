@@ -51,6 +51,10 @@ public class ClinicianController implements Initializable {
         updateDisplay();
     }
 
+    public void updateProfileTable() {
+
+    }
+
     /**
      * Updates all the displayed TextFields to the values
      * from the current clinician
