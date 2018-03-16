@@ -235,6 +235,7 @@ public class UserWindowController implements Initializable {
             }
         } catch(Exception e) {
             System.out.println("Input a gender");
+            donorGender = null;
             //TODO Alert box for Gender
         }
 
@@ -274,7 +275,30 @@ public class UserWindowController implements Initializable {
             }
         } catch (Exception e) {
             System.out.println("Input a blood type.");
+            donorBloodType = null;
         }
+
+
+        double donorHeight = -1;
+        try{
+            donorHeight = Double.parseDouble(heightField.getText());
+        } catch(Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Height Input ");
+            alert.setContentText("Please input a valid height input.");
+        }
+
+        double donorWeight = -1;
+        try{
+            donorWeight = Double.parseDouble(weightField.getText());
+        } catch(Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Weight Input ");
+            alert.setContentText("Please input a valid weight input.");
+        }
+
 
         try {
             Donor saveDonor = new Donor(
@@ -284,8 +308,8 @@ public class UserWindowController implements Initializable {
                     dateOfBirthPicker.getValue(),
                     dateOfDeathPicker.getValue(),
                     donorGender,
-                    Double.parseDouble(heightField.getText()),
-                    Double.parseDouble(weightField.getText()),
+                    donorHeight,
+                    donorWeight,
                     donorBloodType,
                     regionField.getText(),
                     addressField.getText(),
@@ -328,11 +352,18 @@ public class UserWindowController implements Initializable {
                 saveDonor.setOrgan(Organ.TISSUE);
             }
 
+            Main.donors.remove(currentDonor);
+            Main.saveUsers(Main.getDonorPath(), true);
+
             currentDonor = saveDonor;
+            Main.donors.add(currentDonor);
+
+
             settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
             userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
             System.out.println(currentDonor.toString());
             //TODO Implement save function, saving to database and updating the old donor.
+            Main.saveUsers(Main.getDonorPath(), true);
 
         } catch(Exception e) {
             System.out.println(e);
@@ -392,6 +423,7 @@ public class UserWindowController implements Initializable {
             }
         } catch(Exception e) {
             System.out.println("Enter a valid character.");
+
         }
 
     }
