@@ -37,7 +37,7 @@ public class Donor {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -52,7 +52,7 @@ public class Donor {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -76,7 +76,7 @@ public class Donor {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -100,7 +100,7 @@ public class Donor {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextDonorId(true);
+        this.id = Main.getNextId(true, true);
     }
 
     public String getName() {
@@ -135,6 +135,24 @@ public class Donor {
     public long getId() {
         return id;
     }
+
+    public String getCurrentAddress() { return currentAddress; }
+
+    public String getRegion() { return region; }
+
+    public Gender getGender() { return gender; }
+
+    public double getHeight() { return height; }
+
+    public double getWeight() { return weight; }
+
+    public BloodType getBloodType() { return bloodType; }
+
+
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+
+    public LocalDate getDateOfDeath() { return dateOfDeath; }
+
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;

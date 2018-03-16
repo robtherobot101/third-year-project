@@ -26,6 +26,7 @@ import seng302.Controllers.AccountSettingsController;
 import seng302.Controllers.ClinicianController;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
+import seng302.Controllers.UserWindowController;
 
 
 /**
@@ -33,11 +34,12 @@ import seng302.Controllers.LoginController;
  * program.
  */
 public class Main extends Application {
-    private static long nextDonorId = -1;
+    private static long nextDonorId = -1, nextClinicianId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
-
-    private static String jarPath;
+    private static String jarPath, donorPath, clinicianPath;
+    private static ArrayList<Donor> donorUndoStack = new ArrayList<>();
+    private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
     private static LoginController loginController;
@@ -53,6 +55,39 @@ public class Main extends Application {
         Main.clinicianController = clinicianController;
     }
 
+    private static UserWindowController userWindowController;
+
+    public static void setCurrentDonor(Donor currentDonor) {
+        userWindowController.setCurrentDonor(currentDonor);
+        userWindowController.populateDonorFields();
+    }
+
+    /**
+     * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
+     *
+     * @param donor donor object being added to the top of the stack.
+     */
+    public static void addDonorToUndoStack(Donor donor){
+        donorUndoStack.add(donor);
+    }
+
+    /**
+     * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
+     * Then removes it from the undo stack and adds it to the redo stack.
+     *
+     * @return the most recent saved version of the donor.
+     */
+    public static Donor donorUndo(){
+        if (donorUndoStack != null){
+            Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
+            donorUndoStack.remove(-1);
+            donorRedoStack.add(donor);
+            return donor;
+        } else {
+            System.out.println("Undo somehow being called with nothing to undo.");
+            return null;
+        }
+    }
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
@@ -65,7 +100,9 @@ public class Main extends Application {
         Main.accountSettingsController = accountSettingsController;
     }
 
-
+    public static void setUserWindowController(UserWindowController userWindowController) {
+        Main.userWindowController = userWindowController;
+    }
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -109,6 +146,10 @@ public class Main extends Application {
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
 
+    public static String getDonorPath() {
+        return donorPath;
+    }
+
     public static String getJarPath() {
         return jarPath;
     }
@@ -129,11 +170,19 @@ public class Main extends Application {
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
-    public static long getNextDonorId(boolean increment) {
+    public static long getNextId(boolean increment, boolean donor) {
         if (increment) {
-            nextDonorId++;
+            if (donor) {
+                nextDonorId++;
+            } else {
+                nextClinicianId++;
+            }
         }
-        return nextDonorId;
+        if (donor) {
+            return nextDonorId;
+        } else {
+            return nextClinicianId;
+        }
     }
 
     /**
@@ -191,14 +240,18 @@ public class Main extends Application {
      * @param path The path of the file to save to
      * @return Whether the save completed successfully
      */
-    public static boolean saveDonors(String path) {
+    public static boolean saveUsers(String path, boolean donors) {
         PrintStream outputStream = null;
         File outputFile;
         boolean success;
         try {
             outputFile = new File(path);
             outputStream = new PrintStream(new FileOutputStream(outputFile));
-            gson.toJson(donors, outputStream);
+            if (donors) {
+                gson.toJson(Main.donors, outputStream);
+            } else {
+                gson.toJson(Main.clinicians, outputStream);
+            }
             success = true;
         } catch (IOException e) {
             success = false;
@@ -216,7 +269,7 @@ public class Main extends Application {
      * @param path path of the file.
      * @return Whether the command executed successfully
      */
-    public static boolean importDonors(String path) {
+    public static boolean importUsers(String path, boolean donors) {
         File inputFile = new File(path);
         Path filePath;
         try {
@@ -224,21 +277,29 @@ public class Main extends Application {
         } catch (InvalidPathException e) {
             return false;
         }
-        Type type = new TypeToken<ArrayList<Donor>>() {
-        }.getType();
-        // May have to add backup data here in order to undo actions
-        // Save to disk in a temp file structure? (And delete on quit)
-        // Make copies of the list in arrays?
-        // Lot of potential hurdles to discuss here.
+        Type type;
         try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            ArrayList<Donor> importedList = gson.fromJson(reader, type);
-            System.out.println("Opened file successfully.");
-            Main.donors.clear();
-            nextDonorId = -1;
-            Main.donors.addAll(importedList);
-            recalculateNextId();
-            System.out.println("Imported list successfully.");
-            return true;
+            if (donors) {
+                type = new TypeToken<ArrayList<Donor>>() {}.getType();
+                ArrayList<Donor> importedList = gson.fromJson(reader, type);
+                System.out.println("Opened file successfully.");
+                Main.donors.clear();
+                nextDonorId = -1;
+                Main.donors.addAll(importedList);
+                recalculateNextId(true);
+                System.out.println("Imported list successfully.");
+                return true;
+            } else {
+                type = new TypeToken<ArrayList<Clinician>>() {}.getType();
+                ArrayList<Clinician> importedList = gson.fromJson(reader, type);
+                System.out.println("Opened file successfully.");
+                Main.clinicians.clear();
+                nextClinicianId = -1;
+                Main.clinicians.addAll(importedList);
+                recalculateNextId(false);
+                System.out.println("Imported list successfully.");
+                return true;
+            }
         } catch (IOException e) {
             System.out.println("IOException on " + path + ": Check your inputs and permissions!");
         } catch (JsonSyntaxException | DateTimeException e1) {
@@ -251,15 +312,26 @@ public class Main extends Application {
 
     /**
      * Changes the next id to be issued to a new donor to be correct for the current donors list.
+     * @param donor Whether to recalculate donor or clinician id
      */
-    public static void recalculateNextId() {
-        nextDonorId = -1;
-        for (Donor donor : Main.donors) {
-            if (donor.getId() > nextDonorId) {
-                nextDonorId = donor.getId();
+    public static void recalculateNextId(boolean donor) {
+        if (donor) {
+            nextDonorId = -1;
+            for (Donor nextDonor : Main.donors) {
+                if (nextDonor.getId() > nextDonorId) {
+                    nextDonorId = nextDonor.getId();
+                }
+            }
+        } else {
+            nextClinicianId = -1;
+            for (Clinician clinician : Main.clinicians) {
+                if (clinician.getStaffID() > nextClinicianId) {
+                    nextClinicianId = clinician.getStaffID();
+                }
             }
         }
     }
+
 
     /**
      * Run the command line interface with 4 test donors preloaded.
@@ -278,47 +350,55 @@ public class Main extends Application {
         }*/
     }
 
-    public void setupDefaultClinician() {
-        Clinician defaultClinician = new Clinician("default", "default", "NA");
-        defaultClinician.setName("Default Clinician");
-        defaultClinician.setStaffID("0");
-        defaultClinician.setWorkAddress("NA");
-        defaultClinician.setRegion("NA");
-
-
-
-
-        clinicians.add(defaultClinician);
-    }
-
-
     @Override
     public void start(Stage stage) {
-
-        //TODO
-        //Load clinicians from json, then only create default clinician if it does not exists. Could use StaffID as identifier
-        setupDefaultClinician();
-
         Main.stage = stage;
         stage.setTitle("Transplant Finder");
         //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+            donorPath = jarPath + File.separatorChar + "donors.json";
+            clinicianPath = jarPath + File.separatorChar + "clinicians.json";
+            File donors = new File(donorPath);
+            if (donors.exists()) {
+                if (!importUsers(donors.getAbsolutePath(), true)) {
+                    throw new IOException("Donor save file could not be loaded.");
+                }
+            } else {
+                if (!donors.createNewFile()) {
+                    throw new IOException("Donor save file could not be created.");
+                }
+            }
+            File clinicians = new File(clinicianPath);
+            if (clinicians.exists()) {
+                if (!importUsers(clinicians.getAbsolutePath(), false)) {
+                    throw new IOException("Clinician save file could not be loaded.");
+                }
+            } else {
+                if (!clinicians.createNewFile()) {
+                    throw new IOException("Clinician save file could not be created.");
+                }
+                Clinician defaultClinician = new Clinician("default", "default", "default");
+                Main.clinicians.add(defaultClinician);
+                Main.saveUsers(clinicianPath, false);
+            }
             scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")), 400, 250));
             loginController.setEnterEvent();
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
+            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
             scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 800, 600));
 
             setScene(TFScene.login);
+            stage.setResizable(false);
             stage.show();
         } catch (URISyntaxException e) {
             System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
             e.printStackTrace();
             stop();
         } catch (IOException e) {
-            System.err.println("Unable to load fxml file.");
+            System.err.println("Unable to load fxml or save file.");
             e.printStackTrace();
             stop();
         }

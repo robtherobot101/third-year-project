@@ -48,7 +48,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateDisplay() {
         nameInput.setText(clinician.getName());
-        staffIDInput.setText(clinician.getStaffID());
+        staffIDInput.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
     }
@@ -59,7 +59,6 @@ public class ClinicianController implements Initializable {
      */
     public void updateClinician() {
         clinician.setName(nameInput.getText());
-        clinician.setStaffID(staffIDInput.getText());
         clinician.setWorkAddress(addressInput.getText());
         clinician.setRegion(regionInput.getText());
         System.out.println("Updated to: " + clinician);
