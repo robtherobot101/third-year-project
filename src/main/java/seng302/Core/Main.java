@@ -391,7 +391,7 @@ public class Main extends Application {
             File donors = new File(donorPath);
             if (donors.exists()) {
                 if (!importUsers(donors.getAbsolutePath(), true)) {
-                    throw new IOException("Donor save file could not be loaded.");
+                   // throw new IOException("Donor save file could not be loaded.");
                 }
             } else {
                 if (!donors.createNewFile()) {

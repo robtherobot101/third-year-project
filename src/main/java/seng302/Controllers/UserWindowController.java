@@ -172,40 +172,67 @@ public class UserWindowController implements Initializable {
                         "O+"
                 );
         bloodTypeComboBox.setItems(bloodTypes);
+        genderComboBox.setValue("Gender");
+        bloodTypeComboBox.setValue("Blood Type");
         EnumSet<Organ> donorOrgans = currentDonor.getOrgans();
         if(donorOrgans.contains(Organ.LIVER)) {
             liverCheckBox.setSelected(true);
+        } else {
+            liverCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.KIDNEY)) {
             kidneyCheckBox.setSelected(true);
+        } else {
+            kidneyCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.PANCREAS)) {
             pancreasCheckBox.setSelected(true);
+        } else {
+            pancreasCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.HEART)) {
             heartCheckBox.setSelected(true);
+        } else {
+            heartCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.LUNG)) {
             lungCheckBox.setSelected(true);
+        } else {
+            lungCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.INTESTINE)) {
             intestineCheckBox.setSelected(true);
+        } else {
+            intestineCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.CORNEA)) {
             corneaCheckBox.setSelected(true);
+        } else {
+            corneaCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.EAR)) {
             middleEarCheckBox.setSelected(true);
+        } else {
+            middleEarCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.SKIN)) {
             skinCheckBox.setSelected(true);
+        } else {
+            skinCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.BONE)) {
             boneMarrowCheckBox.setSelected(true);
+        } else {
+            boneMarrowCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.TISSUE)) {
             connectiveTissueCheckBox.setSelected(true);
+        } else {
+            connectiveTissueCheckBox.setSelected(false);
         }
+        weightField.setText(Double.toString(currentDonor.getWeight()));
+        heightField.setText(Double.toString(currentDonor.getHeight()));
+        updateBMI();
 
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
@@ -349,6 +376,7 @@ public class UserWindowController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
+            Main.addDonorToUndoStack(currentDonor);
             updateDonor();
             alert.close();
         } else {
