@@ -10,14 +10,12 @@ import javafx.scene.layout.Pane;
 import seng302.Core.*;
 import seng302.TUI.CommandLineInterface;
 
-import javax.xml.soap.Text;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.time.temporal.ChronoUnit;
 
 public class UserWindowController implements Initializable {
 
