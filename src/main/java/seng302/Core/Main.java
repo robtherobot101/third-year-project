@@ -54,6 +54,7 @@ public class Main extends Application {
 
     public static void setCurrentDonor(Donor currentDonor) {
         userWindowController.setCurrentDonor(currentDonor);
+        userWindowController.populateDonorFields();
     }
 
     public static void setLoginController(LoginController loginController) {
