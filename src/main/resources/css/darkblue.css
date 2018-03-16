@@ -1,4 +1,6 @@
-.root {
+.root,
+.pane,
+.stack-pane {
 	-fx-background-color: #1d3549;
 }
 
@@ -74,14 +76,6 @@
 	-fx-background-color: #4785b8;
 	-fx-padding: 7 8 7 8;
 	-fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
-}
-#createAccountButton {
-	-fx-padding: 1 4 9 4;
-	-fx-background-color: #2b506e, #3d729e, #437dad, #4077a5;
-}
-#createAccountButton:pressed {
-	-fx-padding: 4 4 4 4;
-	-fx-background-color: #4077a5;
 }
 
 .text-field {
