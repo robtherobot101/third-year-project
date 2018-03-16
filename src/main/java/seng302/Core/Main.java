@@ -300,6 +300,7 @@ public class Main extends Application {
             System.out.println("Invalid syntax in input file.");
         } catch (NullPointerException e2) {
             System.out.println("Input file was empty.");
+            return true;
         }
         return false;
     }
