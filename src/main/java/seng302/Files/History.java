@@ -181,8 +181,16 @@ public class History {
         String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         Donor donorInfo = Main.getDonorById(userId);
         switch(command) {
+            case "login":
+                description = "[User " + userId + " logged in successfully.]";
+                break;
+            case "logout":
+                description = "[User " + userId + " logged out successfully.]";
+                break;
             case "create":
-                description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
+                if (donorInfo != null) {
+                    description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
+                }
                 break;
             case "modify:":
                 description = "[Updated user attributes.]";
@@ -192,6 +200,25 @@ public class History {
                 break;
             case "redo":
                 description = "[Reverted last undo.]";
+                break;
+            //clinician exclusive
+
+            case "view":
+                //TODO get donor viewed id (method in main or clinician or something)
+                description = "[Viewed donor " + " .]";
+                break;
+            case "modifyDonor":
+                description = "[Modified donor " + "'s attributes.]";
+                break;
+            case "addMed":
+                description = "[Added medications to donor " + ".]";
+                break;
+            case "removeMed":
+                description = "[Removed medications from donor " + ".]";
+                break;
+            case "search":
+                description = "[Searched donor database.]";
+                break;
         }
         text = String.join(" ", text, Long.toString(userId), command, description);
         return text;

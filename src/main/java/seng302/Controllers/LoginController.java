@@ -14,6 +14,8 @@ import seng302.Core.Clinician;
 import seng302.Core.Donor;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
+import seng302.Files.History;
+import seng302.Files.History;
 
 public class LoginController implements Initializable {
     @FXML
@@ -37,6 +39,7 @@ public class LoginController implements Initializable {
                 identificationMatched = true;
                 if (donor.getPassword().equals(passwordInput.getText())) {
                     currentDonor = donor;
+                    History.prepareFileStringGUI(donor.getId(), "login");
                 }
             }
         }
