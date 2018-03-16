@@ -202,7 +202,7 @@ public class UserWindowController implements Initializable {
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
         passwordField.setText(currentDonor.getPassword());
-        
+
 
     }
 
