@@ -22,9 +22,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import seng302.Controllers.AccountSettingsController;
 import seng302.Controllers.ClinicianController;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
+
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -41,6 +43,7 @@ public class Main extends Application {
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
+    private static AccountSettingsController accountSettingsController;
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
@@ -57,6 +60,12 @@ public class Main extends Application {
     public static void setCreateAccountController(CreateAccountController createAccountController) {
         Main.createAccountController = createAccountController;
     }
+
+    public static void setAccountSettingsContorller(AccountSettingsController accountSettingsController) {
+        Main.accountSettingsController = accountSettingsController;
+    }
+
+
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -300,6 +309,7 @@ public class Main extends Application {
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 800, 600));
 
             setScene(TFScene.login);
             stage.show();

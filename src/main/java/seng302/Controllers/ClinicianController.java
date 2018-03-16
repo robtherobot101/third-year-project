@@ -1,7 +1,9 @@
 package seng302.Controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -28,12 +30,16 @@ public class ClinicianController implements Initializable {
     @FXML
     private TextField regionInput;
 
+    @FXML
+    private MenuItem accountSettingsMenuItem;
+
     /**
      * Sets the current clinician
      * @param clinician The clinician to se as the current
      */
     public void setClinician(Clinician clinician) {
         this.clinician = clinician;
+        updateDisplay();
     }
 
     /**
@@ -58,6 +64,20 @@ public class ClinicianController implements Initializable {
         clinician.setRegion(regionInput.getText());
         System.out.println("Updated to: " + clinician);
     }
+
+
+    public void save(){
+        //Main.saveClinicians()
+    }
+
+    public void close(){
+        Platform.exit();
+    }
+
+    public void accountSettings() {
+        Main.setScene(TFScene.accountSettings);
+    }
+
 
     public void requestFocus() { background.requestFocus(); }
 

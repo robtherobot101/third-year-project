@@ -1,5 +1,5 @@
 package seng302.Core;
 
 public enum TFScene {
-    login, createAccount, clinician;
+    login, createAccount, clinician, accountSettings;
 }
