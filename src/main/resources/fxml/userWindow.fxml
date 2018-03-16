@@ -24,7 +24,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="575.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane prefHeight="575.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="900.0" minWidth="90.0" prefWidth="900.0" />
    </columnConstraints>
@@ -43,7 +43,7 @@
                   <MenuItem mnemonicParsing="false" text="Open" visible="false" />
                   <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Undo" />
+                  <MenuItem mnemonicParsing="false" onAction="#undo" text="Undo" />
                   <MenuItem mnemonicParsing="false" text="Redo" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#stop" text="Exit" />

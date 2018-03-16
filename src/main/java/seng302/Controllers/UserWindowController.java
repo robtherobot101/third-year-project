@@ -357,6 +357,11 @@ public class UserWindowController implements Initializable {
 
     }
 
+    public void undo() {
+        currentDonor = Main.donorUndo();
+        populateDonorFields();
+    }
+
     public void updateAge() {
         LocalDate dobirthPick = dateOfBirthPicker.getValue();
         LocalDate dodeathPick = dateOfDeathPicker.getValue();
