@@ -42,10 +42,15 @@ public class Main extends Application {
     private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
+    private static HashMap<Stage, Scene> userWindows = new HashMap<>();
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
     private static AccountSettingsController accountSettingsController;
+
+    public static void addUserWindow(Stage stage, Scene scene) {
+        userWindows.put(stage, scene);
+    }
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
@@ -152,6 +157,10 @@ public class Main extends Application {
 
     public static String getJarPath() {
         return jarPath;
+    }
+
+    public static String getClinicianPath() {
+        return clinicianPath;
     }
 
     /**
@@ -362,7 +371,7 @@ public class Main extends Application {
             File donors = new File(donorPath);
             if (donors.exists()) {
                 if (!importUsers(donors.getAbsolutePath(), true)) {
-                    throw new IOException("Donor save file could not be loaded.");
+                    //throw new IOException("Donor save file could not be loaded.");
                 }
             } else {
                 if (!donors.createNewFile()) {
