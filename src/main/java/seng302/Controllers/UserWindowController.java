@@ -321,6 +321,8 @@ public class UserWindowController implements Initializable {
             }
 
             currentDonor = saveDonor;
+            settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
+            userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
             System.out.println(currentDonor.toString());
             //TODO Implement save function, saving to database and updating the old donor.
 
