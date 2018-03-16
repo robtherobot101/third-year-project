@@ -27,6 +27,8 @@ import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
 import seng302.Controllers.UserWindowController;
 
+import seng302.Files.History;
+
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
  * program.
@@ -34,6 +36,8 @@ import seng302.Controllers.UserWindowController;
 public class Main extends Application {
     private static long nextDonorId = -1, nextClinicianId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
+    // Is there a way to make this accessible in the controllers but not public? Don't like the idea of a public filewriter.
+    public static PrintStream streamOut;
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
     private static String jarPath, donorPath, clinicianPath;
     private static ArrayList<Donor> donorUndoStack = new ArrayList<>();
@@ -77,14 +81,42 @@ public class Main extends Application {
     public static Donor donorUndo(){
         if (donorUndoStack != null){
             Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
-            donorUndoStack.remove(-1);
+            donorUndoStack.remove(donorUndoStack.size()-1);
             donorRedoStack.add(donor);
+            String text = History.prepareFileStringGUI(donor.getId(), "undo");
             return donor;
         } else {
             System.out.println("Undo somehow being called with nothing to undo.");
             return null;
         }
     }
+
+    /**
+     * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
+     * @return the donor on top of the redo stack.
+     */
+    public static Donor donorRedo(){
+        if (donorRedoStack != null){
+            Donor donor = donorRedoStack.get(donorRedoStack.size()-1);
+            donorRedoStack.remove(-1);
+            donorUndoStack.add(donor);
+            String text = History.prepareFileStringGUI(donor.getId(), "redo");
+            History.printToFile(streamOut, text);
+            return donor;
+        } else {
+            System.out.println("Redo somehow being called with nothing to redo.");
+            return null;
+        }
+    }
+
+    public static ArrayList<Donor> getDonorUndoStack() {
+        return donorUndoStack;
+    }
+
+    public static ArrayList<Donor> getDonorRedoStack() {
+        return donorRedoStack;
+    }
+
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
@@ -98,10 +130,13 @@ public class Main extends Application {
     }
 
 
+
     /**
      * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+        private static ArrayList<Donor> donorUndoStack;
+
         public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(Donor.dateFormat.format(date));
         }
@@ -377,6 +412,7 @@ public class Main extends Application {
                 Main.clinicians.add(defaultClinician);
                 Main.saveUsers(clinicianPath, false);
             }
+            streamOut = History.init();
             scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")), 400, 250));
             loginController.setEnterEvent();
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));

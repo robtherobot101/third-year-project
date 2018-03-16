@@ -15,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import seng302.Core.Donor;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
+import seng302.Files.History;
 
 public class CreateAccountController implements Initializable {
     @FXML
@@ -63,6 +64,8 @@ public class CreateAccountController implements Initializable {
             Donor newDonor = new Donor(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             Main.donors.add(newDonor);
+            String text = History.prepareFileStringGUI(newDonor.getId(), "create");
+            History.printToFile(Main.streamOut, text);
             Main.setCurrentDonor(newDonor);
             Main.saveUsers(Main.getDonorPath(), true);
             Main.setScene(TFScene.userWindow);
