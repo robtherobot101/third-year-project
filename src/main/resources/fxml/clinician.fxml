@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<Pane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+<AnchorPane fx:id="background" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
    <children>
-      <Text layoutX="32.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-      <Text layoutX="31.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Staff ID:" />
-      <Text layoutX="348.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Region:" />
-      <TextField fx:id="nameInput" layoutX="107.0" layoutY="21.0" />
-      <TextField fx:id="staffIDInput" layoutX="107.0" layoutY="57.0" />
-      <TextField fx:id="addressInput" layoutX="435.0" layoutY="21.0" />
-      <TextField fx:id="regionInput" layoutX="435.0" layoutY="57.0" />
-      <Text layoutX="348.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address:" />
-      <Button fx:id="save" layoutX="646.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" />
-      <Text fx:id="updatedSuccessfully" layoutX="646.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Updated Successfully" />
+      <TextField fx:id="nameInput" layoutX="29.0" layoutY="86.0" />
+      <TextField fx:id="addressInput" layoutX="237.0" layoutY="86.0" />
+      <TextField fx:id="regionInput" layoutX="441.0" layoutY="86.0" />
+      <Button fx:id="save" layoutX="642.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" />
+      <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="639.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" text="Save" />
+              <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Label fx:id="staffIDLabel" layoutX="99.0" layoutY="45.0" text="ID#" />
+      <Label fx:id="updatedSuccessfully" layoutX="635.0" layoutY="45.0" opacity="0.0" text="Updated Successfully" />
+      <Label layoutX="29.0" layoutY="45.0" text="Staff ID: " />
+      <Label layoutX="29.0" layoutY="70.0" text="Name" />
+      <Label layoutX="237.0" layoutY="70.0" text="Address" />
+      <Label layoutX="441.0" layoutY="70.0" text="Region" />
+      <TableView layoutX="29.0" layoutY="183.0" prefHeight="398.0" prefWidth="744.0">
+        <columns>
+          <TableColumn fx:id="profileTable" prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <TextField fx:id="profileSearch" layoutX="29.0" layoutY="148.0" onInputMethodTextChanged="#updateProfileTable" />
    </children>
-</Pane>
+</AnchorPane>
