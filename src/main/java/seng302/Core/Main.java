@@ -60,10 +60,9 @@ public class Main extends Application {
     public static Donor donorUndo(){
         if (donorUndoStack != null){
             Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
-            donorUndoStack.remove(-1);
+            donorUndoStack.remove(donorUndoStack.size()-1);
             donorRedoStack.add(donor);
             String text = History.prepareFileStringGUI(donor.getId(), "undo");
-            History.printToFile(streamOut, text);
             return donor;
         } else {
             System.out.println("Undo somehow being called with nothing to undo.");
@@ -98,10 +97,20 @@ public class Main extends Application {
         Main.createAccountController = createAccountController;
     }
 
+    public static ArrayList<Donor> getDonorUndoStack() {
+        return donorUndoStack;
+    }
+
+    public static ArrayList<Donor> getDonorRedoStack() {
+        return donorRedoStack;
+    }
+
     /**
      * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+        private static ArrayList<Donor> donorUndoStack;
+
         public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(Donor.dateFormat.format(date));
         }
