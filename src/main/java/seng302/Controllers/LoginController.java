@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import seng302.Core.Clinician;
 import seng302.Core.Donor;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
@@ -28,24 +29,41 @@ public class LoginController implements Initializable {
 
     public void login() {
         boolean identificationMatched = false;
-        boolean loggedIn = false;
+        Donor currentDonor = null;
+        Clinician currentClinician = null;
         for (Donor donor: Main.donors) {
             if (donor.getUsername() != null && donor.getUsername().equals(identificationInput.getText()) ||
                 donor.getEmail() != null && donor.getEmail().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (donor.getPassword().equals(passwordInput.getText())) {
-                    Main.setScene(TFScene.createAccount);
-                    loggedIn = true;
+                    currentDonor = donor;
                 }
             }
         }
+
+        for(Clinician clinician: Main.clinicians){
+            if(clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())){
+                identificationMatched = true;
+                if(clinician.getPassword().equals(passwordInput.getText())){
+                    currentClinician = clinician;
+                }
+            }
+        }
+
         if (identificationMatched) {
-            if (loggedIn) {
+            if (currentDonor != null || currentClinician != null) {
                 //Reset scene to original state
                 identificationInput.setText("");
                 passwordInput.setText("");
                 loginButton.setDisable(true);
                 errorMessage.setVisible(false);
+                if (currentDonor != null) {
+                    Main.setCurrentDonor(currentDonor);
+                    Main.setScene(TFScene.userWindow);
+                } else {
+                    Main.setClinician(currentClinician);
+                    Main.setScene(TFScene.clinician);
+                }
             } else {
                 errorMessage.setText("Incorrect password.");
                 errorMessage.setVisible(true);

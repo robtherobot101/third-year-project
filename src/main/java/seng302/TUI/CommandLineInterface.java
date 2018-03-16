@@ -537,7 +537,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.importDonors(path)) {
+                if (Main.importUsers(path, true)) {
                     System.out.println("Donors imported from " + path + ".");
                     return true;
                 } else {
@@ -574,7 +574,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.saveDonors(path)) {
+                if (Main.saveUsers(path, true)) {
                     System.out.println("Donors saved to " + path + ".");
                     return true;
                 } else {
@@ -595,7 +595,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean showHelp(String[] nextCommand) {
+    public boolean showHelp(String[] nextCommand) {
         if (nextCommand.length == 1) {
             System.out.println("Valid commands are: "
                     + "\n\t-add \"First Name,name part 2,name part n\" <date of birth>"
