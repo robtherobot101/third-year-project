@@ -62,12 +62,34 @@ public class Main extends Application {
             Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
             donorUndoStack.remove(-1);
             donorRedoStack.add(donor);
+            String text = History.prepareFileStringGUI(donor.getId(), "undo");
+            History.printToFile(streamOut, text);
             return donor;
         } else {
             System.out.println("Undo somehow being called with nothing to undo.");
             return null;
         }
     }
+
+    /**
+     * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
+     * @return the donor on top of the redo stack.
+     */
+    public static Donor donorRedo(){
+        if (donorRedoStack != null){
+            Donor donor = donorRedoStack.get(donorRedoStack.size()-1);
+            donorRedoStack.remove(-1);
+            donorUndoStack.add(donor);
+            String text = History.prepareFileStringGUI(donor.getId(), "redo");
+            History.printToFile(streamOut, text);
+            return donor;
+        } else {
+            System.out.println("Redo somehow being called with nothing to redo.");
+            return null;
+        }
+    }
+
+
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
