@@ -1,9 +1,11 @@
 package seng302.Core;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.EnumSet;
 
 /**
@@ -153,6 +155,10 @@ public class Donor {
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
 
+    public long getAge() {
+        LocalDate today = LocalDate.now();
+        return ChronoUnit.YEARS.between(dateOfBirth, today);
+    }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;

@@ -7,6 +7,9 @@ import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
 import com.google.gson.reflect.TypeToken;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -278,6 +281,72 @@ public class Main extends Application {
         return found;
     }
 
+    public static ArrayList<Donor> getDonorsByNameAlternative(String term){
+        ArrayList<Donor> matched = new ArrayList<Donor>();
+        for(Donor d: donors){
+            int score = 0;
+            boolean matchedStartOfName = false;
+            for(String name: d.getNameArray()){
+                if(matches(name, term)){
+                    score = Math.max(score, lengthMatchedScore(name, term));
+                    matchedStartOfName = true;
+                }
+            }
+            if(matchedStartOfName){
+                matched.add(d);
+
+            }
+        }
+        Collections.sort(matched, new Comparator<Donor>() {
+            @Override
+            public int compare(Donor o1, Donor o2) {
+                Integer o1Score = 0;
+                for(String name: o1.getNameArray()){
+                    o1Score = Math.max(o1Score, lengthMatchedScore(name, term));
+                }
+                Integer o2Score = 0;
+                for(String name: o2.getNameArray()){
+                    o2Score = Math.max(o2Score, lengthMatchedScore(name, term));
+                }
+                int scoreComparison = o1Score.compareTo(o2Score);
+                if(scoreComparison == 0){
+                    return o1.getName().compareTo(o2.getName());
+                }
+                return scoreComparison;
+            }
+        });
+        return matched;
+    }
+
+    /**
+     * Returns the length of the largest substring of searchTerm found in string
+     * starting from the beginning of each. If searchTerm is longer than string, then
+     * zero is returned.
+     * @param string The string which is being searched
+     * @param searchTerm The term which is being looked for
+     * @return The length of the longest substring
+     */
+    public static int lengthMatchedScore(String string, String searchTerm)
+    {
+        string = string.toLowerCase();
+        searchTerm = searchTerm.toLowerCase();
+        int maxLength = Math.min(string.length(), searchTerm.length());
+        int i;
+        for (i = 0; i < maxLength; i++)
+        {
+            if (searchTerm.charAt(i) != string.charAt(i)) {
+                return i-string.length();
+            }
+        }
+        return i-string.length();
+    }
+
+    public static boolean matches(String string, String searchTerm){
+        string = string.toLowerCase();
+        searchTerm = searchTerm.toLowerCase();
+        return string.matches(searchTerm + ".*");
+    }
+
     /**
      * Save the donor list to a json file.
      *
@@ -407,7 +476,7 @@ public class Main extends Application {
             File donors = new File(donorPath);
             if (donors.exists()) {
                 if (!importUsers(donors.getAbsolutePath(), true)) {
-                    //throw new IOException("Donor save file could not be loaded.");
+                    throw new IOException("Donor save file could not be loaded.");
                 }
             } else {
                 if (!donors.createNewFile()) {
