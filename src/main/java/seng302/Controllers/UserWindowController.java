@@ -395,6 +395,10 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Called when the undo button is pushed, and reverts the last action performed by the user.
+     * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
+     */
     public void undo() {
         currentDonor = Main.donorUndo(currentDonor);
         populateDonorFields();
@@ -406,6 +410,10 @@ public class UserWindowController implements Initializable {
         History.printToFile(Main.streamOut, text);
     }
 
+    /**
+     * Called when the redo button is pushed, and reverts the last undo performed by the user.
+     * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
+     */
     public void redo() {
         currentDonor = Main.donorRedo();
         populateDonorFields();

@@ -17,8 +17,6 @@ public class UndoRedoTest {
     @Before
     public void setup() {
         Main.donors = new ArrayList<>();
-        ArrayList<Donor> donorUndoStack = new ArrayList<>();
-        ArrayList<Donor> donorRedoStack = new ArrayList<>();
         Main.donors.add(new Donor("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
     }
 
@@ -36,5 +34,29 @@ public class UndoRedoTest {
         Main.addDonorToUndoStack(toSet);
         Main.donorUndo(toSet);
         assertFalse(Main.getDonorRedoStack().isEmpty());
+    }
+
+    @Test
+    public void testUndo(){
+        Donor originalDonor = Main.donors.get(0);
+        Main.addDonorToUndoStack(originalDonor);
+        originalDonor.setOrgan(Organ.BONE);
+        Donor changedDonor = Main.getDonorUndoStack().get(0);
+        assertFalse(originalDonor.getOrgans() == changedDonor.getOrgans());
+    }
+
+    @Test
+    public void testRedo(){
+        Donor originalDonor = Main.donors.get(0);
+        Main.addDonorToUndoStack(originalDonor);
+        originalDonor.setOrgan(Organ.CORNEA);
+        Main.donorUndo(originalDonor);
+        originalDonor = Main.donorRedo();
+        assertTrue(originalDonor.getOrgans().contains(Organ.CORNEA));
+    }
+
+    @After
+    public void tearDown(){
+        Main.getDonorUndoStack().clear();
     }
 }
