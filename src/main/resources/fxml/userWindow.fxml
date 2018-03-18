@@ -43,8 +43,8 @@
                   <MenuItem mnemonicParsing="false" text="Open" visible="false" />
                   <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#undo" text="Undo" />
-                  <MenuItem mnemonicParsing="false" onAction="#redo" text="Redo" />
+                  <MenuItem fx:id="undoButton" disable="true" mnemonicParsing="false" onAction="#undo" text="Undo" />
+                  <MenuItem fx:id="redoButton" disable="true" mnemonicParsing="false" onAction="#redo" text="Redo" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#stop" text="Exit" />
                </items>

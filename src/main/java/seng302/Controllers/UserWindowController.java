@@ -95,9 +95,9 @@ public class UserWindowController implements Initializable {
     @FXML
     private Button saveButton;
     @FXML
-    private Button undoButton;
+    private MenuItem undoButton;
     @FXML
-    private Button redoButton;
+    private MenuItem redoButton;
     @FXML
     private Label ageLabel;
     @FXML
@@ -378,9 +378,11 @@ public class UserWindowController implements Initializable {
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current donor? ");
         alert.setContentText("By doing so, the donor will be updated with all filled in fields.");
-
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
+            if(Main.getDonorUndoStack().isEmpty()){
+                undoButton.setDisable(false);
+            }
             Main.addDonorToUndoStack(currentDonor);
             updateDonor();
             String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
@@ -390,22 +392,27 @@ public class UserWindowController implements Initializable {
             alert.close();
         }
 
+
     }
 
     public void undo() {
         currentDonor = Main.donorUndo(currentDonor);
         populateDonorFields();
+        redoButton.setDisable(false);
+        if(Main.getDonorUndoStack().isEmpty()){
+            undoButton.setDisable(true);
+        }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
         History.printToFile(Main.streamOut, text);
     }
 
     public void redo() {
-        System.out.println(Main.donors);
         currentDonor = Main.donorRedo();
-        System.out.println(Main.donors);
         populateDonorFields();
-        System.out.println(Main.donors);
-
+        undoButton.setDisable(false);
+        if(Main.getDonorRedoStack().isEmpty()){
+            redoButton.setDisable(true);
+        }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
         History.printToFile(Main.streamOut, text);
     }
