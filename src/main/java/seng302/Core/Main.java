@@ -106,21 +106,22 @@ public class Main extends Application {
      * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
      * @return the donor on top of the redo stack.
      */
-    public static Donor donorRedo(){
+    public static Donor donorRedo(Donor newDonor){
         if (donorRedoStack != null){
-            Donor donor = donorRedoStack.get(donorRedoStack.size()-1);
+            Donor oldDonor = donorRedoStack.get(donorRedoStack.size()-1);
+            addDonorToUndoStack(newDonor);
             donorRedoStack.remove(donorRedoStack.size()-1);
-            addDonorToUndoStack(donor);
             if (streamOut != null) {
-                String text = History.prepareFileStringGUI(donor.getId(), "redo");
+                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
                 History.printToFile(streamOut, text);
             }
-            return donor;
+            return oldDonor;
         } else {
             System.out.println("Redo somehow being called with nothing to redo.");
             return null;
         }
     }
+
 
     public static ArrayList<Donor> getDonorUndoStack() {
         return donorUndoStack;

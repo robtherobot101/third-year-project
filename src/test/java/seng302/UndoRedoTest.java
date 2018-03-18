@@ -51,7 +51,7 @@ public class UndoRedoTest {
         Main.addDonorToUndoStack(originalDonor);
         originalDonor.setOrgan(Organ.CORNEA);
         Main.donorUndo(originalDonor);
-        originalDonor = Main.donorRedo();
+        originalDonor = Main.donorRedo(originalDonor);
         assertTrue(originalDonor.getOrgans().contains(Organ.CORNEA));
     }
 

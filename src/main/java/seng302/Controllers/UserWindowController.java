@@ -414,7 +414,7 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
      */
     public void redo() {
-        currentDonor = Main.donorRedo();
+        currentDonor = Main.donorRedo(currentDonor);
         populateDonorFields();
         undoButton.setDisable(false);
         if(Main.getDonorRedoStack().isEmpty()){
