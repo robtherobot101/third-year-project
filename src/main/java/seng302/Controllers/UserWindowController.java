@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import seng302.Core.*;
 import seng302.Files.History;
@@ -32,7 +33,7 @@ public class UserWindowController implements Initializable {
     private Label userDisplayText;
 
     @FXML
-    private Pane attributesPane;
+    private GridPane attributesGridPane;
     @FXML
     private Pane historyPane;
     @FXML
@@ -107,14 +108,14 @@ public class UserWindowController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
-        attributesPane.setVisible(false);
+        attributesGridPane.setVisible(false);
         historyPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
 
     public void showHistoryPane() {
         welcomePane.setVisible(false);
-        attributesPane.setVisible(false);
+        attributesGridPane.setVisible(false);
         historyPane.setVisible(true);
         medicationsPane.setVisible(false);
 
@@ -122,14 +123,14 @@ public class UserWindowController implements Initializable {
 
     public void showMedicationsPane() {
         welcomePane.setVisible(false);
-        attributesPane.setVisible(false);
+        attributesGridPane.setVisible(false);
         historyPane.setVisible(false);
         medicationsPane.setVisible(true);
     }
 
     public void showAttributesPane() {
         welcomePane.setVisible(false);
-        attributesPane.setVisible(true);
+        attributesGridPane.setVisible(true);
         historyPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
@@ -242,8 +243,6 @@ public class UserWindowController implements Initializable {
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
         passwordField.setText(currentDonor.getPassword());
-
-
 
 
     }

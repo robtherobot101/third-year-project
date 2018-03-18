@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import seng302.Controllers.AccountSettingsController;
 import seng302.Controllers.ClinicianController;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
@@ -44,9 +45,15 @@ public class Main extends Application {
     private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
+    private static HashMap<Stage, Scene> userWindows = new HashMap<>();
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
+    private static AccountSettingsController accountSettingsController;
+
+    public static void addUserWindow(Stage stage, Scene scene) {
+        userWindows.put(stage, scene);
+    }
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
@@ -131,6 +138,10 @@ public class Main extends Application {
         Main.createAccountController = createAccountController;
     }
 
+    public static void setAccountSettingsContorller(AccountSettingsController accountSettingsController) {
+        Main.accountSettingsController = accountSettingsController;
+    }
+
     public static void setUserWindowController(UserWindowController userWindowController) {
         Main.userWindowController = userWindowController;
     }
@@ -187,6 +198,10 @@ public class Main extends Application {
 
     public static String getJarPath() {
         return jarPath;
+    }
+
+    public static String getClinicianPath() {
+        return clinicianPath;
     }
 
     /**
@@ -341,6 +356,7 @@ public class Main extends Application {
             System.out.println("Invalid syntax in input file.");
         } catch (NullPointerException e2) {
             System.out.println("Input file was empty.");
+            return true;
         }
         return false;
     }
@@ -397,7 +413,7 @@ public class Main extends Application {
             File donors = new File(donorPath);
             if (donors.exists()) {
                 if (!importUsers(donors.getAbsolutePath(), true)) {
-                   // throw new IOException("Donor save file could not be loaded.");
+                    //throw new IOException("Donor save file could not be loaded.");
                 }
             } else {
                 if (!donors.createNewFile()) {
@@ -424,6 +440,8 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 800, 600));
+
             setScene(TFScene.login);
             stage.setResizable(false);
             stage.show();

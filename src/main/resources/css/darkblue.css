@@ -1,4 +1,6 @@
-.root {
+.root,
+.pane,
+.stack-pane {
 	-fx-background-color: #1d3549;
 }
 
@@ -75,19 +77,27 @@
 	-fx-padding: 7 8 7 8;
 	-fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
-#createAccountButton {
-	-fx-padding: 1 4 9 4;
-	-fx-background-color: #2b506e, #3d729e, #437dad, #4077a5;
+
+
+.menu-bar,
+.menu,
+.menu-item,
+.context-menu {
+    -fx-border-width: 0px;
+    -fx-background-color: #152837;
 }
-#createAccountButton:pressed {
-	-fx-padding: 4 4 4 4;
-	-fx-background-color: #4077a5;
+.menu-item:hover {
+    -fx-background-color: #1d3549;
 }
 
-.text-field {
+
+.text-field,
+.combo-box-base,
+.combo-box-popup > .list-view,
+.combo-box > .list-cell {
 	-fx-background-color: #2b506e;
 	-fx-text-fill: #edf3f8;
-	-fx-prompt-text-fill: #b6cee2;
+	-fx-prompt-text-fill: #7ea9cd;
 }
 .text-field:focused {
 	-fx-background-color: #325d81;
