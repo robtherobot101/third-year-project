@@ -150,7 +150,12 @@ public class UserWindowController implements Initializable {
     public void populateHistoryTable() {
         userHistoryLabel.setText("History of actions for " + currentDonor.getName());
 
-        History.readFile();
+        String[][] userHistory = History.getUserHistory(currentDonor.getId());
+        for(int i = 0; i < userHistory.length; i++) {
+            for(int j = 0; j < userHistory[i].length; j++) {
+                System.out.println(userHistory[i][j]);
+            }
+        }
 
         final TreeItem<String> childNode1 = new TreeItem<>("Child Node 1");
         final TreeItem<String> childNode2 = new TreeItem<>("Child Node 2");

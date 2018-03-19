@@ -226,16 +226,54 @@ public class History {
         return text;
     }
 
-    public static void readFile(){
+    public static String readFile(){
+
+        String line = null;
+        String actionHistoryString = "";
+
         try {
-            DataInputStream streamIn = new DataInputStream(new FileInputStream(actionHistory));
-            String everything = streamIn.readUTF();
-            System.out.println(everything);
+            FileReader fileReader =
+                    new FileReader(actionHistory);
+
+            // Always wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader =
+                    new BufferedReader(fileReader);
+
+            while((line = bufferedReader.readLine()) != null) {
+                actionHistoryString += line;
+                actionHistoryString += " \n";
+            }
+            // Always close files.
+            bufferedReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("File not found / initilized");
         } catch (IOException e) {
-            System.out.println("OOOpsssies");
+            System.out.println("Error Reading file");
+            e.printStackTrace();
         }
+        return actionHistoryString;
+    }
+
+    public static String[][] getUserHistory(long userid) {
+
+        String history = readFile();
+        String[] historyList = history.split("\n");
+        String[][] userHistory = new String[historyList.length][6];
+        int index = 0;
+        for(int i = 0; i < historyList.length; i++) {
+            String[] actionDetails = historyList[i].split(" ");
+            if(actionDetails[2].equals("====")) {
+
+            } else if(actionDetails[3].length() < 4) {
+                if(Long.parseLong(actionDetails[3]) == userid) {
+                    System.out.println(actionDetails[3]);
+                    userHistory[index] = actionDetails;
+                    index++;
+                }
+            }
+        }
+        return userHistory;
+
     }
 
 }
