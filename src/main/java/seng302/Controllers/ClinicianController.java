@@ -24,26 +24,7 @@ import java.util.ResourceBundle;
 
 public class ClinicianController implements Initializable {
 
-    public Callback<TableView, Boolean> SORT_POLICY = new Callback<TableView, Boolean>() {
-        @Override public Boolean call(TableView table) {
-            ObservableList<?> itemsList = donors;
-
-            if (itemsList == null || itemsList.isEmpty()) {
-                return true;
-            }
-
-            Comparator comparator = table.getComparator();
-            if (comparator == null) {
-                return true;
-            }
-
-            FXCollections.sort(donors, comparator);
-            table.getItems().clear();
-            table.getItems().addAll(getCurrentPage());
-            return true;
-        }
-    };
-
+    
     private Clinician clinician;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -199,7 +180,9 @@ public class ClinicianController implements Initializable {
         displayCurrentPage();
     }
 
-
+    /**
+     * Enables and disables the next and previous page buttons as necessary.
+     */
     public void updatePageButtons(){
         if((page)*resultsPerPage>=donorsFound.size()){
             nextPageButton.setDisable(true);
@@ -246,6 +229,38 @@ public class ClinicianController implements Initializable {
         updatePageButtons();
         displayCurrentPage();
         updateResultsSummary();
-        profileTable.setSortPolicy(SORT_POLICY);
+
+        /**
+         * Sorts of the profileTable across all pages.
+         * As items are removed and re-added, multiple sort calls can trigger an
+         * IndexOutOfBoundsException exception.
+         */
+        profileTable.setSortPolicy(new Callback<TableView, Boolean>() {
+            @Override public Boolean call(TableView table) {
+                try{
+                    ObservableList<?> itemsList = donors;
+
+                    if (itemsList == null || itemsList.isEmpty()) {
+                        return true;
+                    }
+
+                    Comparator comparator = table.getComparator();
+                    if (comparator == null) {
+                        return true;
+                    }
+
+                    FXCollections.sort(donors, comparator);
+                    table.getItems().clear();
+                    table.getItems().addAll(getCurrentPage());
+                    return true;
+                }catch(IndexOutOfBoundsException e){
+                    return false;
+                }catch(UnsupportedOperationException e){
+                    return false;
+                }catch(NullPointerException e){
+                    return false;
+                }
+            }
+        });
     }
 }

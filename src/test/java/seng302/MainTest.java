@@ -129,6 +129,7 @@ public class MainTest {
         Main.donors.add(new Donor("abc", dummyDate));
         Main.donors.add(new Donor("abcd", dummyDate));
         ArrayList<Donor> results = Main.getDonorsByNameAlternative("a");
+        System.out.println(results.get(0).getName());
         assertEquals("ab", results.get(0).getName());
         assertEquals("abc", results.get(1).getName());
         assertEquals("abcd", results.get(2).getName());
