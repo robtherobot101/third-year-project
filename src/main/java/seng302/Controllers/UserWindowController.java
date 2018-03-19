@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import seng302.Core.*;
+import seng302.Files.History;
 import seng302.TUI.CommandLineInterface;
 
 import java.net.URL;
@@ -95,6 +96,10 @@ public class UserWindowController implements Initializable {
     @FXML
     private Button saveButton;
     @FXML
+    private MenuItem undoButton;
+    @FXML
+    private MenuItem redoButton;
+    @FXML
     private Label ageLabel;
     @FXML
     private Label bmiLabel;
@@ -173,40 +178,67 @@ public class UserWindowController implements Initializable {
                         "O+"
                 );
         bloodTypeComboBox.setItems(bloodTypes);
+        genderComboBox.setValue("Gender");
+        bloodTypeComboBox.setValue("Blood Type");
         EnumSet<Organ> donorOrgans = currentDonor.getOrgans();
         if(donorOrgans.contains(Organ.LIVER)) {
             liverCheckBox.setSelected(true);
+        } else {
+            liverCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.KIDNEY)) {
             kidneyCheckBox.setSelected(true);
+        } else {
+            kidneyCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.PANCREAS)) {
             pancreasCheckBox.setSelected(true);
+        } else {
+            pancreasCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.HEART)) {
             heartCheckBox.setSelected(true);
+        } else {
+            heartCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.LUNG)) {
             lungCheckBox.setSelected(true);
+        } else {
+            lungCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.INTESTINE)) {
             intestineCheckBox.setSelected(true);
+        } else {
+            intestineCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.CORNEA)) {
             corneaCheckBox.setSelected(true);
+        } else {
+            corneaCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.EAR)) {
             middleEarCheckBox.setSelected(true);
+        } else {
+            middleEarCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.SKIN)) {
             skinCheckBox.setSelected(true);
+        } else {
+            skinCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.BONE)) {
             boneMarrowCheckBox.setSelected(true);
+        } else {
+            boneMarrowCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.TISSUE)) {
             connectiveTissueCheckBox.setSelected(true);
+        } else {
+            connectiveTissueCheckBox.setSelected(false);
         }
+        weightField.setText(Double.toString(currentDonor.getWeight()));
+        heightField.setText(Double.toString(currentDonor.getHeight()));
+        updateBMI();
 
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
@@ -376,15 +408,51 @@ public class UserWindowController implements Initializable {
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current donor? ");
         alert.setContentText("By doing so, the donor will be updated with all filled in fields.");
-
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
+            if(Main.getDonorUndoStack().isEmpty()){
+                undoButton.setDisable(false);
+            }
+            Main.addDonorToUndoStack(currentDonor);
             updateDonor();
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+            History.printToFile(Main.streamOut, text);
             alert.close();
         } else {
             alert.close();
         }
 
+
+    }
+
+    /**
+     * Called when the undo button is pushed, and reverts the last action performed by the user.
+     * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
+     */
+    public void undo() {
+        currentDonor = Main.donorUndo(currentDonor);
+        populateDonorFields();
+        redoButton.setDisable(false);
+        if(Main.getDonorUndoStack().isEmpty()){
+            undoButton.setDisable(true);
+        }
+        String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
+        History.printToFile(Main.streamOut, text);
+    }
+
+    /**
+     * Called when the redo button is pushed, and reverts the last undo performed by the user.
+     * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
+     */
+    public void redo() {
+        currentDonor = Main.donorRedo(currentDonor);
+        populateDonorFields();
+        undoButton.setDisable(false);
+        if(Main.getDonorRedoStack().isEmpty()){
+            redoButton.setDisable(true);
+        }
+        String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
+        History.printToFile(Main.streamOut, text);
     }
 
     public void updateAge() {
@@ -438,6 +506,8 @@ public class UserWindowController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
             System.out.println("Exiting GUI");
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            History.printToFile(Main.streamOut, text);
             Platform.exit();
         } else {
             alert.close();

@@ -103,6 +103,27 @@ public class Donor {
         this.id = Main.getNextId(true, true);
     }
 
+    /**
+     * Used to create a deep copy of the object.
+     * @param donor
+     */
+    public Donor(Donor donor) {
+        this.name = donor.name;
+        this.dateOfBirth = donor.dateOfBirth;
+        this.dateOfDeath = donor.dateOfDeath;
+        this.gender = donor.gender;
+        this.height = donor.height;
+        this.weight = donor.weight;
+        this.bloodType = donor.bloodType;
+        this.region = donor.region;
+        this.currentAddress = donor.currentAddress;
+        this.creationTime = donor.creationTime;
+        this.username = donor.username;
+        this.email = donor.email;
+        this.password = donor.password;
+        this.id = donor.id;
+    }
+
     public String getName() {
         return String.join(" ", name);
     }

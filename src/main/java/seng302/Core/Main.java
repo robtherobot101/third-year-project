@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import seng302.Controllers.AccountSettingsController;
 import seng302.Controllers.ClinicianController;
 import seng302.Controllers.CreateAccountController;
 import seng302.Controllers.LoginController;
@@ -44,9 +45,15 @@ public class Main extends Application {
     private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
+    private static HashMap<Stage, Scene> userWindows = new HashMap<>();
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
+    private static AccountSettingsController accountSettingsController;
+
+    public static void addUserWindow(Stage stage, Scene scene) {
+        userWindows.put(stage, scene);
+    }
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
@@ -69,7 +76,8 @@ public class Main extends Application {
      * @param donor donor object being added to the top of the stack.
      */
     public static void addDonorToUndoStack(Donor donor){
-        donorUndoStack.add(donor);
+        Donor prevDonor = new Donor(donor);
+        donorUndoStack.add(prevDonor);
     }
 
     /**
@@ -78,13 +86,16 @@ public class Main extends Application {
      *
      * @return the most recent saved version of the donor.
      */
-    public static Donor donorUndo(){
+    public static Donor donorUndo(Donor oldDonor){
         if (donorUndoStack != null){
-            Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
+            Donor newDonor = donorUndoStack.get(donorUndoStack.size()-1);
             donorUndoStack.remove(donorUndoStack.size()-1);
-            donorRedoStack.add(donor);
-            String text = History.prepareFileStringGUI(donor.getId(), "undo");
-            return donor;
+            donorRedoStack.add(oldDonor);
+            if (streamOut != null){
+                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
+                History.printToFile(streamOut, text);
+            }
+            return newDonor;
         } else {
             System.out.println("Undo somehow being called with nothing to undo.");
             return null;
@@ -95,19 +106,22 @@ public class Main extends Application {
      * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
      * @return the donor on top of the redo stack.
      */
-    public static Donor donorRedo(){
+    public static Donor donorRedo(Donor newDonor){
         if (donorRedoStack != null){
-            Donor donor = donorRedoStack.get(donorRedoStack.size()-1);
-            donorRedoStack.remove(-1);
-            donorUndoStack.add(donor);
-            String text = History.prepareFileStringGUI(donor.getId(), "redo");
-            History.printToFile(streamOut, text);
-            return donor;
+            Donor oldDonor = donorRedoStack.get(donorRedoStack.size()-1);
+            addDonorToUndoStack(newDonor);
+            donorRedoStack.remove(donorRedoStack.size()-1);
+            if (streamOut != null) {
+                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
+                History.printToFile(streamOut, text);
+            }
+            return oldDonor;
         } else {
             System.out.println("Redo somehow being called with nothing to redo.");
             return null;
         }
     }
+
 
     public static ArrayList<Donor> getDonorUndoStack() {
         return donorUndoStack;
@@ -123,6 +137,10 @@ public class Main extends Application {
 
     public static void setCreateAccountController(CreateAccountController createAccountController) {
         Main.createAccountController = createAccountController;
+    }
+
+    public static void setAccountSettingsContorller(AccountSettingsController accountSettingsController) {
+        Main.accountSettingsController = accountSettingsController;
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {
@@ -181,6 +199,10 @@ public class Main extends Application {
 
     public static String getJarPath() {
         return jarPath;
+    }
+
+    public static String getClinicianPath() {
+        return clinicianPath;
     }
 
     /**
@@ -392,7 +414,7 @@ public class Main extends Application {
             File donors = new File(donorPath);
             if (donors.exists()) {
                 if (!importUsers(donors.getAbsolutePath(), true)) {
-                    throw new IOException("Donor save file could not be loaded.");
+                    //throw new IOException("Donor save file could not be loaded.");
                 }
             } else {
                 if (!donors.createNewFile()) {
@@ -419,6 +441,8 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 800, 600));
+
             setScene(TFScene.login);
             stage.setResizable(false);
             stage.show();
