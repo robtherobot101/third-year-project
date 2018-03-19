@@ -90,12 +90,6 @@ public class UserWindowController implements Initializable {
     @FXML
     private CheckBox connectiveTissueCheckBox;
     @FXML
-    private TextField usernameField;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private TextField passwordField;
-    @FXML
     private Button saveButton;
     @FXML
     private MenuItem undoButton;
@@ -105,6 +99,11 @@ public class UserWindowController implements Initializable {
     private Label ageLabel;
     @FXML
     private Label bmiLabel;
+
+    @FXML
+    private Button undoWelcomeButton;
+    @FXML
+    private Button redoWelcomeButton;
 
     @FXML
     private Label userHistoryLabel;
@@ -181,6 +180,9 @@ public class UserWindowController implements Initializable {
 
     public void populateDonorFields() {
 
+
+        //TODO THEERE IS A PROBLEM WITH THE NAMES
+
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
         firstNameField.setText(splitNames[0]);
@@ -222,8 +224,23 @@ public class UserWindowController implements Initializable {
                         "O+"
                 );
         bloodTypeComboBox.setItems(bloodTypes);
-        genderComboBox.setValue("Gender");
-        bloodTypeComboBox.setValue("Blood Type");
+
+
+        if(currentDonor.getGender() != null) {
+            System.out.println(currentDonor.getGender());
+            String firstLetter = currentDonor.getGender().toString().substring(0, 1);
+            String restOfWord = currentDonor.getGender().toString().substring(1);
+            genderComboBox.setValue(firstLetter.toUpperCase() + restOfWord);
+        } else {
+            genderComboBox.setValue("Gender");
+        }
+
+        if(currentDonor.getBloodType() != null) {
+            bloodTypeComboBox.setValue(currentDonor.getBloodType().toString());
+        } else {
+            bloodTypeComboBox.setValue("Blood Type");
+        }
+
         EnumSet<Organ> donorOrgans = currentDonor.getOrgans();
         if(donorOrgans.contains(Organ.LIVER)) {
             liverCheckBox.setSelected(true);
@@ -280,13 +297,25 @@ public class UserWindowController implements Initializable {
         } else {
             connectiveTissueCheckBox.setSelected(false);
         }
-        weightField.setText(Double.toString(currentDonor.getWeight()));
-        heightField.setText(Double.toString(currentDonor.getHeight()));
+        if(currentDonor.getWeight() != -1) {
+            weightField.setText(Double.toString(currentDonor.getWeight()));
+        } else {
+            weightField.setText("");
+        }
+
+        if(currentDonor.getHeight() != -1) {
+            heightField.setText(Double.toString(currentDonor.getHeight()));
+
+        } else {
+            heightField.setText("");
+
+        }
+
         updateBMI();
 
-        usernameField.setText(currentDonor.getUsername());
-        emailField.setText(currentDonor.getEmail());
-        passwordField.setText(currentDonor.getPassword());
+//        usernameField.setText(currentDonor.getUsername());
+//        emailField.setText(currentDonor.getEmail());
+//        passwordField.setText(currentDonor.getPassword());
 
 
     }
@@ -361,23 +390,32 @@ public class UserWindowController implements Initializable {
 
 
         double donorHeight = -1;
-        try{
-            donorHeight = Double.parseDouble(heightField.getText());
-        } catch(Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Error with the Height Input ");
-            alert.setContentText("Please input a valid height input.");
+        if(!heightField.getText().equals("")) {
+            try{
+                donorHeight = Double.parseDouble(heightField.getText());
+                currentDonor.setHeight(donorHeight);
+            } catch(Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Height Input ");
+                alert.setContentText("Please input a valid height input.");
+                alert.show();
+                return;
+            }
         }
+
 
         double donorWeight = -1;
         try{
             donorWeight = Double.parseDouble(weightField.getText());
+            currentDonor.setWeight(donorWeight);
         } catch(Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error with the Weight Input ");
             alert.setContentText("Please input a valid weight input.");
+            alert.show();
+            return;
         }
 
 
@@ -387,14 +425,14 @@ public class UserWindowController implements Initializable {
             currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
             currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
             currentDonor.setGender(donorGender);
-            currentDonor.setHeight(donorHeight);
-            currentDonor.setWeight(donorWeight);
+
+
             currentDonor.setBloodType(donorBloodType);
             currentDonor.setRegion(regionField.getText());
             currentDonor.setCurrentAddress(addressField.getText());
-            currentDonor.setUsername(usernameField.getText());
-            currentDonor.setEmail(emailField.getText());
-            currentDonor.setPassword(passwordField.getText());
+//            currentDonor.setUsername(usernameField.getText());
+//            currentDonor.setEmail(emailField.getText());
+//            currentDonor.setPassword(passwordField.getText());
 
             if(liverCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.LIVER);
@@ -452,9 +490,11 @@ public class UserWindowController implements Initializable {
         if (result.get() == ButtonType.OK){
             if(Main.getDonorUndoStack().isEmpty()){
                 undoButton.setDisable(false);
+                undoWelcomeButton.setDisable(false);
             }
             Main.addDonorToUndoStack(currentDonor);
             updateDonor();
+            populateDonorFields();
             String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
             History.printToFile(Main.streamOut, text);
             alert.close();
@@ -473,8 +513,10 @@ public class UserWindowController implements Initializable {
         currentDonor = Main.donorUndo(currentDonor);
         populateDonorFields();
         redoButton.setDisable(false);
+        redoWelcomeButton.setDisable(false);
         if(Main.getDonorUndoStack().isEmpty()){
             undoButton.setDisable(true);
+            undoWelcomeButton.setDisable(true);
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
         History.printToFile(Main.streamOut, text);
@@ -488,8 +530,10 @@ public class UserWindowController implements Initializable {
         currentDonor = Main.donorRedo(currentDonor);
         populateDonorFields();
         undoButton.setDisable(false);
+        undoWelcomeButton.setDisable(false);
         if(Main.getDonorRedoStack().isEmpty()){
             redoButton.setDisable(true);
+            redoWelcomeButton.setDisable(true);
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
         History.printToFile(Main.streamOut, text);
@@ -546,7 +590,14 @@ public class UserWindowController implements Initializable {
         if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword())) ) {
             System.out.println("Authenticated!");
             Main.setScene(TFScene.accountSettings);
+            Main.setCurrentDonorForAccountSettings(currentDonor);
 
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Incorrect");
+            alert.setHeaderText("Incorrect password. ");
+            alert.setContentText("Please enter the correct password to view account settings");
+            alert.show();
         }
     }
 

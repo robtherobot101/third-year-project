@@ -71,6 +71,11 @@ public class Main extends Application {
         userWindowController.populateHistoryTable();
     }
 
+    public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
+        accountSettingsController.setCurrentDonor(currentDonor);
+        accountSettingsController.populateAccountDetails();
+    }
+
     /**
      * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
      *
@@ -442,7 +447,7 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
-            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 250, 300));
+            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 270, 350));
 
             setScene(TFScene.login);
             stage.setResizable(false);

@@ -79,7 +79,7 @@
 						</Label>
 					</children>
 				</Pane>
-				<GridPane fx:id="attributesGridPane" layoutX="226.0" maxHeight="475.0" maxWidth="1.7976931348623157E308" prefHeight="475.0" prefWidth="674.0" visible="false" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<GridPane fx:id="attributesGridPane" layoutX="226.0" maxHeight="475.0" maxWidth="1.7976931348623157E308" prefHeight="475.0" prefWidth="674.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<columnConstraints>
 						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="118.0" prefWidth="0.0" />
 						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="104.0" prefWidth="100.0" />
@@ -112,6 +112,47 @@
 								<Insets left="20.0" right="25.0" />
 							</GridPane.margin>
 						</TextField>
+						<GridPane GridPane.columnSpan="3" GridPane.rowIndex="2">
+							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="22.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+							</columnConstraints>
+							<children>
+								<TextField fx:id="regionField" promptText="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
+									<GridPane.margin>
+										<Insets />
+									</GridPane.margin>
+								</TextField>
+								<Label text="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
+									<font>
+										<Font name="System Bold" size="10.0" />
+									</font>
+									<GridPane.margin>
+										<Insets bottom="40.0" />
+									</GridPane.margin>
+								</Label>
+								<Label text="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
+									<font>
+										<Font name="System Bold" size="10.0" />
+									</font>
+									<GridPane.margin>
+										<Insets bottom="40.0" />
+									</GridPane.margin>
+								</Label>
+								<TextField fx:id="addressField" prefHeight="27.0" prefWidth="310.0" promptText="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
+									<GridPane.margin>
+										<Insets />
+									</GridPane.margin>
+								</TextField>
+							</children>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+						</GridPane>
 						<DatePicker fx:id="dateOfBirthPicker" onAction="#updateAge" promptText="Date of Birth" GridPane.rowIndex="3">
 							<GridPane.margin>
 								<Insets left="25.0" right="20.0" />
@@ -142,17 +183,79 @@
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
 						</ComboBox>
-						<TextField fx:id="usernameField" promptText="Username" GridPane.rowIndex="7">
+                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+      						<CheckBox fx:id="liverCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Liver" GridPane.columnIndex="1" />
+      						<CheckBox fx:id="kidneyCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Kidney" GridPane.columnIndex="2" />
+      						<CheckBox fx:id="pancreasCheckBox" mnemonicParsing="false" text="Pancreas" GridPane.columnIndex="3" />
+      						<CheckBox fx:id="heartCheckBox" mnemonicParsing="false" text="Heart" GridPane.columnIndex="4" />
+      						<CheckBox fx:id="lungCheckBox" mnemonicParsing="false" text="Lung" GridPane.columnIndex="5" />
+      						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" text="Intestine" GridPane.columnIndex="6" />
+                     </children>
+                  </GridPane>
+                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="11.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="14.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="16.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="12.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="19.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+      						<CheckBox fx:id="corneaCheckBox" mnemonicParsing="false" text="Cornea" GridPane.columnIndex="1">
+      							<GridPane.margin>
+      								<Insets />
+      							</GridPane.margin>
+      						</CheckBox>
+      						<CheckBox fx:id="middleEarCheckBox" mnemonicParsing="false" text="Middle Ear" GridPane.columnIndex="2" GridPane.columnSpan="2">
+      							<GridPane.margin>
+      								<Insets />
+      							</GridPane.margin>
+      						</CheckBox>
+      						<CheckBox fx:id="skinCheckBox" mnemonicParsing="false" text="Skin" GridPane.columnIndex="3">
+      							<GridPane.margin>
+      								<Insets />
+      							</GridPane.margin>
+      						</CheckBox>
+      						<CheckBox fx:id="boneMarrowCheckBox" mnemonicParsing="false" text="Bone Marrow" GridPane.columnIndex="4" GridPane.columnSpan="2">
+      							<GridPane.margin>
+      								<Insets />
+      							</GridPane.margin>
+      						</CheckBox>
+      						<CheckBox fx:id="connectiveTissueCheckBox" mnemonicParsing="false" text="Connective Tissue" GridPane.columnIndex="5">
+      							<GridPane.margin>
+      								<Insets />
+      							</GridPane.margin>
+      						</CheckBox>
+                     </children>
+                  </GridPane>
+						<TextField promptText="additionalAttribute 1" GridPane.rowIndex="7">
 							<GridPane.margin>
 								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="emailField" promptText="Email" GridPane.columnIndex="1" GridPane.rowIndex="7">
+						<TextField promptText="additionalAttribute 2" GridPane.columnIndex="1" GridPane.rowIndex="7">
 							<GridPane.margin>
 								<Insets left="20.0" right="20.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="passwordField" promptText="Password" GridPane.columnIndex="2" GridPane.rowIndex="7">
+						<TextField promptText="additionalAttribute 3" GridPane.columnIndex="2" GridPane.rowIndex="7">
 							<GridPane.margin>
 								<Insets left="20.0" right="25.0" />
 							</GridPane.margin>
@@ -278,7 +381,7 @@
 								<Insets bottom="60.0" left="20.0" />
 							</GridPane.margin>
 						</Label>
-						<Label text="Username" GridPane.rowIndex="7">
+						<Label text="additionalAttribute" GridPane.rowIndex="7">
 							<font>
 								<Font name="System Bold" size="10.0" />
 							</font>
@@ -286,7 +389,7 @@
 								<Insets bottom="40.0" left="25.0" />
 							</GridPane.margin>
 						</Label>
-						<Label text="Email" GridPane.columnIndex="1" GridPane.rowIndex="7">
+						<Label text="additionalAttribute" GridPane.columnIndex="1" GridPane.rowIndex="7">
 							<font>
 								<Font name="System Bold" size="10.0" />
 							</font>
@@ -294,7 +397,7 @@
 								<Insets bottom="40.0" left="20.0" />
 							</GridPane.margin>
 						</Label>
-						<Label text="Password" GridPane.columnIndex="2" GridPane.rowIndex="7">
+						<Label text="additionalAttribute" GridPane.columnIndex="2" GridPane.rowIndex="7">
 							<font>
 								<Font name="System Bold" size="10.0" />
 							</font>
@@ -302,109 +405,6 @@
 								<Insets bottom="40.0" left="25.0" />
 							</GridPane.margin>
 						</Label>
-						<GridPane GridPane.columnSpan="3" GridPane.rowIndex="2">
-							<columnConstraints>
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="22.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-							</columnConstraints>
-							<children>
-								<TextField fx:id="regionField" promptText="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
-									<GridPane.margin>
-										<Insets />
-									</GridPane.margin>
-								</TextField>
-								<Label text="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
-									<font>
-										<Font name="System Bold" size="10.0" />
-									</font>
-									<GridPane.margin>
-										<Insets bottom="40.0" />
-									</GridPane.margin>
-								</Label>
-								<Label text="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
-									<font>
-										<Font name="System Bold" size="10.0" />
-									</font>
-									<GridPane.margin>
-										<Insets bottom="40.0" />
-									</GridPane.margin>
-								</Label>
-								<TextField fx:id="addressField" prefHeight="27.0" prefWidth="310.0" promptText="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
-									<GridPane.margin>
-										<Insets />
-									</GridPane.margin>
-								</TextField>
-							</children>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
-						</GridPane>
-                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-      						<CheckBox fx:id="liverCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Liver" GridPane.columnIndex="1" />
-      						<CheckBox fx:id="kidneyCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Kidney" GridPane.columnIndex="2" />
-      						<CheckBox fx:id="pancreasCheckBox" mnemonicParsing="false" text="Pancreas" GridPane.columnIndex="3" />
-      						<CheckBox fx:id="heartCheckBox" mnemonicParsing="false" text="Heart" GridPane.columnIndex="4" />
-      						<CheckBox fx:id="lungCheckBox" mnemonicParsing="false" text="Lung" GridPane.columnIndex="5" />
-      						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" text="Intestine" GridPane.columnIndex="6" />
-                     </children>
-                  </GridPane>
-                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="11.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="14.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="16.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="12.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="19.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-      						<CheckBox fx:id="corneaCheckBox" mnemonicParsing="false" text="Cornea" GridPane.columnIndex="1">
-      							<GridPane.margin>
-      								<Insets />
-      							</GridPane.margin>
-      						</CheckBox>
-      						<CheckBox fx:id="middleEarCheckBox" mnemonicParsing="false" text="Middle Ear" GridPane.columnIndex="2" GridPane.columnSpan="2">
-      							<GridPane.margin>
-      								<Insets />
-      							</GridPane.margin>
-      						</CheckBox>
-      						<CheckBox fx:id="skinCheckBox" mnemonicParsing="false" text="Skin" GridPane.columnIndex="3">
-      							<GridPane.margin>
-      								<Insets />
-      							</GridPane.margin>
-      						</CheckBox>
-      						<CheckBox fx:id="boneMarrowCheckBox" mnemonicParsing="false" text="Bone Marrow" GridPane.columnIndex="4" GridPane.columnSpan="2">
-      							<GridPane.margin>
-      								<Insets />
-      							</GridPane.margin>
-      						</CheckBox>
-      						<CheckBox fx:id="connectiveTissueCheckBox" mnemonicParsing="false" text="Connective Tissue" GridPane.columnIndex="5">
-      							<GridPane.margin>
-      								<Insets />
-      							</GridPane.margin>
-      						</CheckBox>
-                     </children>
-                  </GridPane>
 					</children>
 				</GridPane>
 				<AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -469,7 +469,7 @@
 						</Label>
 					</children>
 				</AnchorPane>
-            <GridPane fx:id="historyGridPane" layoutX="265.0" layoutY="11.0" prefHeight="469.0" prefWidth="624.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <GridPane fx:id="historyGridPane" layoutX="265.0" layoutY="11.0" prefHeight="469.0" prefWidth="624.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.0958251953125" minWidth="10.0" prefWidth="328.41766357421875" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="351.71258544921875" minWidth="10.0" prefWidth="345.58233642578125" />
@@ -520,7 +520,7 @@
 		</HBox>
       <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="2">
          <children>
-				<Label fx:id="userDisplayText" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Welcome text." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<Label fx:id="userDisplayText" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="554.0" text="Welcome text." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="341.0" AnchorPane.topAnchor="0.0">
 					<font>
 						<Font size="20.0" />
 					</font>
@@ -531,6 +531,21 @@
                   <Insets left="10.0" />
                </padding>
 				</Label>
+            <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="undoWelcomeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="redoWelcomeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
 	</children>
