@@ -2,14 +2,12 @@ package seng302.Files;
 
 import seng302.Core.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.time.LocalDateTime;
 
 public class History {
 
+    private static File actionHistory;
     private static String command;
     private static String parameterOne = null;
     private static String parameterTwo = null;
@@ -25,7 +23,7 @@ public class History {
      */
     public static PrintStream init() {
         try {
-            File actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
+            actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory, true);
             PrintStream out = new PrintStream(fout);
             out.println(Donor.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
@@ -226,6 +224,18 @@ public class History {
         }
         text = String.join(" ", text, Long.toString(userId), command, description);
         return text;
+    }
+
+    public static void readFile(){
+        try {
+            DataInputStream streamIn = new DataInputStream(new FileInputStream(actionHistory));
+            String everything = streamIn.readUTF();
+            System.out.println(everything);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found / initilized");
+        } catch (IOException e) {
+            System.out.println("OOOpsssies");
+        }
     }
 
 }

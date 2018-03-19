@@ -1,6 +1,7 @@
 package seng302.Controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,6 +28,7 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
+
     }
 
     @FXML
@@ -35,7 +37,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private GridPane attributesGridPane;
     @FXML
-    private Pane historyPane;
+    private GridPane historyGridPane;
     @FXML
     private Pane medicationsPane;
     @FXML
@@ -104,19 +106,29 @@ public class UserWindowController implements Initializable {
     @FXML
     private Label bmiLabel;
 
+    @FXML
+    private Label userHistoryLabel;
+    @FXML
+    private TreeTableView<String> historyTreeTableView;
+    @FXML
+    private TreeTableColumn<String, String> historyDateTimeColumn;
+    @FXML
+    private TreeTableColumn<String, String> historyActionColumn;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
-        historyPane.setVisible(false);
+        historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
 
     public void showHistoryPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
-        historyPane.setVisible(true);
+        historyGridPane.setVisible(true);
         medicationsPane.setVisible(false);
 
     }
@@ -124,15 +136,42 @@ public class UserWindowController implements Initializable {
     public void showMedicationsPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
-        historyPane.setVisible(false);
+        historyGridPane.setVisible(false);
         medicationsPane.setVisible(true);
     }
 
     public void showAttributesPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
-        historyPane.setVisible(false);
+        historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+    }
+
+    public void populateHistoryTable() {
+        userHistoryLabel.setText("History of actions for " + currentDonor.getName());
+
+        History.readFile();
+
+        final TreeItem<String> childNode1 = new TreeItem<>("Child Node 1");
+        final TreeItem<String> childNode2 = new TreeItem<>("Child Node 2");
+        final TreeItem<String> childNode3 = new TreeItem<>("Child Node 3");
+
+        //Creating the root element
+        final TreeItem<String> root = new TreeItem<>("Root node");
+        root.setExpanded(true);
+
+        //Adding tree items to the root
+        root.getChildren().setAll(childNode1, childNode2, childNode3);
+
+        //Defining cell content
+        historyDateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
+                new ReadOnlyStringWrapper(p.getValue().getValue()));
+
+        //Creating a tree table view
+        historyTreeTableView.setRoot(root);
+        historyTreeTableView.setShowRoot(true);
+
+
     }
 
     public void populateDonorFields() {
@@ -251,6 +290,11 @@ public class UserWindowController implements Initializable {
 
         //TODO Middle Names
         String[] middleNames = middleNameField.getText().split(" ");
+        String middleNamesStr = "";
+        for(int i = 0; i < middleNames.length; i++) {
+            middleNamesStr += middleNames[i] + " ";
+        }
+
 
         //TODO Gender ComboBox
         Gender donorGender = null;
@@ -333,62 +377,53 @@ public class UserWindowController implements Initializable {
 
 
         try {
-            Donor saveDonor = new Donor(
-                    firstNameField.getText(),
-                    middleNames,
-                    lastNameField.getText(),
-                    dateOfBirthPicker.getValue(),
-                    dateOfDeathPicker.getValue(),
-                    donorGender,
-                    donorHeight,
-                    donorWeight,
-                    donorBloodType,
-                    regionField.getText(),
-                    addressField.getText(),
-                    usernameField.getText(),
-                    emailField.getText(),
-                    passwordField.getText()
-                    );
+
+            currentDonor.setName(firstNameField.getText() + " " + middleNamesStr + lastNameField.getText());
+            currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
+            currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+            currentDonor.setGender(donorGender);
+            currentDonor.setHeight(donorHeight);
+            currentDonor.setWeight(donorWeight);
+            currentDonor.setBloodType(donorBloodType);
+            currentDonor.setRegion(regionField.getText());
+            currentDonor.setCurrentAddress(addressField.getText());
+            currentDonor.setUsername(usernameField.getText());
+            currentDonor.setEmail(emailField.getText());
+            currentDonor.setPassword(passwordField.getText());
 
             if(liverCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.LIVER);
+                currentDonor.setOrgan(Organ.LIVER);
             }
             if(kidneyCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.KIDNEY);
+                currentDonor.setOrgan(Organ.KIDNEY);
             }
             if(pancreasCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.PANCREAS);
+                currentDonor.setOrgan(Organ.PANCREAS);
             }
             if(heartCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.HEART);
+                currentDonor.setOrgan(Organ.HEART);
             }
             if(lungCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.LUNG);
+                currentDonor.setOrgan(Organ.LUNG);
             }
             if(intestineCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.INTESTINE);
+                currentDonor.setOrgan(Organ.INTESTINE);
             }
             if(corneaCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.CORNEA);
+                currentDonor.setOrgan(Organ.CORNEA);
             }
             if(middleEarCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.EAR);
+                currentDonor.setOrgan(Organ.EAR);
             }
             if(skinCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.SKIN);
+                currentDonor.setOrgan(Organ.SKIN);
             }
             if(boneMarrowCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.BONE);
+                currentDonor.setOrgan(Organ.BONE);
             }
             if(connectiveTissueCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.TISSUE);
+                currentDonor.setOrgan(Organ.TISSUE);
             }
-
-            Main.donors.remove(currentDonor);
-            Main.saveUsers(Main.getDonorPath(), true);
-
-            currentDonor = saveDonor;
-            Main.donors.add(currentDonor);
 
 
             settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
