@@ -122,6 +122,7 @@ public class Donor {
         this.email = donor.email;
         this.password = donor.password;
         this.id = donor.id;
+        this.organs = donor.organs;
     }
 
     public String getName() {

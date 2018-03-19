@@ -242,6 +242,7 @@ public class UserWindowController implements Initializable {
         }
 
         EnumSet<Organ> donorOrgans = currentDonor.getOrgans();
+        System.out.println(donorOrgans.toString());
         if(donorOrgans.contains(Organ.LIVER)) {
             liverCheckBox.setSelected(true);
         } else {
@@ -434,38 +435,73 @@ public class UserWindowController implements Initializable {
 //            currentDonor.setEmail(emailField.getText());
 //            currentDonor.setPassword(passwordField.getText());
 
+            System.out.println(currentDonor.getOrgans());
             if(liverCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.LIVER);
+                System.out.println(currentDonor.getOrgans());
+            }
+            if(!liverCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.LIVER);
             }
             if(kidneyCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.KIDNEY);
             }
+            if(!kidneyCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.KIDNEY);
+            }
             if(pancreasCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.PANCREAS);
+            }
+            if(!pancreasCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.PANCREAS);
             }
             if(heartCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.HEART);
             }
+            if(!heartCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.HEART);
+            }
             if(lungCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.LUNG);
+            }
+            if(!lungCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.LUNG);
             }
             if(intestineCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.INTESTINE);
             }
+            if(!intestineCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.INTESTINE);
+            }
             if(corneaCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.CORNEA);
+            }
+            if(!corneaCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.CORNEA);
             }
             if(middleEarCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.EAR);
             }
+            if(!middleEarCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.EAR);
+            }
             if(skinCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.SKIN);
+            }
+            if(!skinCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.SKIN);
             }
             if(boneMarrowCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.BONE);
             }
+            if(!boneMarrowCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.BONE);
+            }
             if(connectiveTissueCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.TISSUE);
+            }
+            if(!connectiveTissueCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.TISSUE);
             }
 
 
@@ -510,7 +546,11 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
+        System.out.println(currentDonor.getOrgans().toString());
+        System.out.println(currentDonor.getCurrentAddress().toString());
         currentDonor = Main.donorUndo(currentDonor);
+        System.out.println(currentDonor.getOrgans().toString());
+        System.out.println(currentDonor.getCurrentAddress().toString());
         populateDonorFields();
         redoButton.setDisable(false);
         redoWelcomeButton.setDisable(false);
@@ -520,6 +560,7 @@ public class UserWindowController implements Initializable {
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
         History.printToFile(Main.streamOut, text);
+
     }
 
     /**
