@@ -45,7 +45,7 @@
                         <MenuItem fx:id="undoButton" disable="true" mnemonicParsing="false" onAction="#undo" text="Undo" />
                         <MenuItem fx:id="redoButton" disable="true" mnemonicParsing="false" onAction="#redo" text="Redo" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-						<MenuItem mnemonicParsing="false" text="Account Settings..." />
+						<MenuItem mnemonicParsing="false" onAction="#updateAccountSettings" text="Account Settings..." />
 						<SeparatorMenuItem mnemonicParsing="false" />
 						<MenuItem mnemonicParsing="false" onAction="#stop" text="Exit" />
 					</items>

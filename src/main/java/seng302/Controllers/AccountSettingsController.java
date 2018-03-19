@@ -22,20 +22,20 @@ public class AccountSettingsController implements Initializable {
     private String password;
     private String email;
 
-    public void update() {
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("You are about update your username and");
-        alert.setContentText("Are you ok with this?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            System.out.println("OK");
-        } else {
-            System.out.println("cancel");
-        }
-    }
+//    public void update() {
+//
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setTitle("Confirmation Dialog");
+//        alert.setHeaderText("You are about update your username and");
+//        alert.setContentText("Are you ok with this?");
+//
+//        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.get() == ButtonType.OK){
+//            System.out.println("OK");
+//        } else {
+//            System.out.println("cancel");
+//        }
+//    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

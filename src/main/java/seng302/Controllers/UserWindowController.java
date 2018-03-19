@@ -536,6 +536,21 @@ public class UserWindowController implements Initializable {
 
     }
 
+    public void updateAccountSettings() {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("View Account Settings");
+        dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
+        dialog.setContentText("Please enter your password:");
+
+        Optional<String> password = dialog.showAndWait();
+        if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword())) ) {
+            System.out.println("Authenticated!");
+            Main.setScene(TFScene.accountSettings);
+
+        }
+    }
+
+
     public void stop() {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
