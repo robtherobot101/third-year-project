@@ -25,6 +25,9 @@ public class Donor {
     private String currentAddress, region;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private String username, email, password;
+    private String bloodPressure;
+    private SmokerStatus smokerStatus;
+    private AlcoholConsumption alcoholConsumption;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -122,7 +125,12 @@ public class Donor {
         this.email = donor.email;
         this.password = donor.password;
         this.id = donor.id;
-        this.organs = donor.organs;
+        this.smokerStatus = donor.smokerStatus;
+        this.bloodPressure = donor.bloodPressure;
+        this.alcoholConsumption = donor.alcoholConsumption;
+        for(Organ organ: donor.organs) {
+            this.organs.add(organ);
+        }
     }
 
     public String getName() {
@@ -245,6 +253,18 @@ public class Donor {
     private void setLastModified() {
         lastModified = LocalDateTime.now();
     }
+
+    public String getBloodPressure() { return bloodPressure; }
+
+    public void setBloodPressure(String bloodPressure) { this.bloodPressure = bloodPressure; }
+
+    public SmokerStatus getSmokerStatus() { return smokerStatus; }
+
+    public void setSmokerStatus(SmokerStatus smokerStatus) { this.smokerStatus = smokerStatus; }
+
+    public AlcoholConsumption getAlcoholConsumption() { return alcoholConsumption; }
+
+    public void setAlcoholConsumption(AlcoholConsumption alcoholConsumption) { this.alcoholConsumption = alcoholConsumption; }
 
     /**
      * Get a string containing key information about the donor. Can be formatted as a table row.

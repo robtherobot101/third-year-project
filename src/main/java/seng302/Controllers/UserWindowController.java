@@ -16,10 +16,7 @@ import seng302.TUI.CommandLineInterface;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UserWindowController implements Initializable {
 
@@ -99,6 +96,14 @@ public class UserWindowController implements Initializable {
     private Label ageLabel;
     @FXML
     private Label bmiLabel;
+    @FXML
+    private ComboBox smokerStatusComboBox;
+    @FXML
+    private TextField bloodPressureTextField;
+    @FXML
+    private ComboBox alcoholConsumptionComboBox;
+
+
 
     @FXML
     private Button undoWelcomeButton;
@@ -149,23 +154,30 @@ public class UserWindowController implements Initializable {
     public void populateHistoryTable() {
         userHistoryLabel.setText("History of actions for " + currentDonor.getName());
 
+        ArrayList<TreeItem<String>> treeItems = new ArrayList<TreeItem<String>>();
+
         String[][] userHistory = History.getUserHistory(currentDonor.getId());
         for(int i = 0; i < userHistory.length; i++) {
-            for(int j = 0; j < userHistory[i].length; j++) {
-                System.out.println(userHistory[i][j]);
+
+//            for(int j = 0; j < userHistory[i].length; j++) {
+//                System.out.println(userHistory[i][j]);
+//            }
+            System.out.println(userHistory[i][1]);
+
+            try{
+                final TreeItem<String> childNode = new TreeItem<>(userHistory[i][1]);
+                treeItems.add(childNode);
+            } catch(Exception e) {
+                e.printStackTrace();
             }
+
         }
 
-        final TreeItem<String> childNode1 = new TreeItem<>("Child Node 1");
-        final TreeItem<String> childNode2 = new TreeItem<>("Child Node 2");
-        final TreeItem<String> childNode3 = new TreeItem<>("Child Node 3");
-
-        //Creating the root element
-        final TreeItem<String> root = new TreeItem<>("Root node");
+        final TreeItem<String> root = new TreeItem<>("User History");
         root.setExpanded(true);
 
-        //Adding tree items to the root
-        root.getChildren().setAll(childNode1, childNode2, childNode3);
+        root.getChildren().setAll(treeItems);
+
 
         //Defining cell content
         historyDateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
@@ -205,6 +217,8 @@ public class UserWindowController implements Initializable {
         dateOfDeathPicker.setValue(currentDonor.getDateOfDeath());
         updateAge();
 
+        bloodPressureTextField.setText(currentDonor.getBloodPressure());
+
         ObservableList<String> genders =
                 FXCollections.observableArrayList(
                         "Male",
@@ -212,6 +226,7 @@ public class UserWindowController implements Initializable {
                         "Other"
                 );
         genderComboBox.setItems(genders);
+
         ObservableList<String> bloodTypes =
                 FXCollections.observableArrayList(
                         "A-",
@@ -224,6 +239,37 @@ public class UserWindowController implements Initializable {
                         "O+"
                 );
         bloodTypeComboBox.setItems(bloodTypes);
+
+        ObservableList<String> smokerStatuses =
+                FXCollections.observableArrayList(
+                        "Current",
+                        "Past",
+                        "Never"
+                );
+        smokerStatusComboBox.setItems(smokerStatuses);
+
+        if(currentDonor.getSmokerStatus() != null) {
+            smokerStatusComboBox.setValue(currentDonor.getSmokerStatus().toString());
+        } else {
+            smokerStatusComboBox.setValue("Smoker Status");
+        }
+
+        ObservableList<String> alcoholConsumptions =
+                FXCollections.observableArrayList(
+                        "None",
+                        "Low",
+                        "Average",
+                        "High",
+                        "Very High",
+                        "Alcoholic"
+                );
+        alcoholConsumptionComboBox.setItems(alcoholConsumptions);
+
+        if(currentDonor.getAlcoholConsumption() != null) {
+            alcoholConsumptionComboBox.setValue(currentDonor.getAlcoholConsumption().toString());
+        } else {
+            alcoholConsumptionComboBox.setValue("Alcohol Consumption");
+        }
 
 
         if(currentDonor.getGender() != null) {
@@ -314,24 +360,31 @@ public class UserWindowController implements Initializable {
 
         updateBMI();
 
-//        usernameField.setText(currentDonor.getUsername());
-//        emailField.setText(currentDonor.getEmail());
-//        passwordField.setText(currentDonor.getPassword());
-
-
     }
 
     public void updateDonor() {
 
-        //TODO Middle Names
-        String[] middleNames = middleNameField.getText().split(" ");
-        String middleNamesStr = "";
-        for(int i = 0; i < middleNames.length; i++) {
-            middleNamesStr += middleNames[i] + " ";
+        //TODO
+        //Problem with middle names
+        String firstName = firstNameField.getText();
+        String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
+        String lastName = lastNameField.getText();
+        //currentDonor.set(firstNameField.getText() + " " + middleNamesStr + lastNameField.getText());
+
+        int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
+        String[] name = new String[1 + middleNames.length + isLastName];
+        name[0] = firstName;
+        System.arraycopy(middleNames, 0, name, 1, middleNames.length);
+        if (isLastName == 1) {
+            name[name.length-1] = lastName;
         }
+        String result = "";
+        for(String donorName: name) {
+            result += donorName;
+            result += ",";
+        }
+        currentDonor.setName(result.substring(0, result.length()));
 
-
-        //TODO Gender ComboBox
         Gender donorGender = null;
         try {
             String genderPick = (String) genderComboBox.getValue();
@@ -345,12 +398,39 @@ public class UserWindowController implements Initializable {
                 donorGender = null;
             }
         } catch(Exception e) {
-            System.out.println("Input a gender");
-            donorGender = null;
-            //TODO Alert box for Gender
+
         }
 
-        //TODO Blood Type ComboBox
+        SmokerStatus smokerStatus;
+        String smokerPick = (String) smokerStatusComboBox.getValue();
+        if (smokerPick.equals("Never")) {
+            smokerStatus = SmokerStatus.NEVER;
+        } else if(smokerPick.equals("Current")) {
+            smokerStatus = SmokerStatus.CURRENT;
+        } else if(smokerPick.equals("Past")) {
+            smokerStatus = SmokerStatus.PAST;
+        } else {
+            smokerStatus = null;
+        }
+
+        AlcoholConsumption alcoholConsumption;
+        String alcoholPick = (String) alcoholConsumptionComboBox.getValue();
+        if (alcoholPick.equals("None")) {
+            alcoholConsumption = AlcoholConsumption.NONE;
+        } else if(alcoholPick.equals("Low")) {
+            alcoholConsumption = AlcoholConsumption.LOW;
+        } else if(alcoholPick.equals("Average")) {
+            alcoholConsumption = AlcoholConsumption.AVERAGE;
+        } else if(alcoholPick.equals("High")) {
+            alcoholConsumption = AlcoholConsumption.HIGH;
+        } else if(alcoholPick.equals("Very High")) {
+            alcoholConsumption = AlcoholConsumption.VERYHIGH;
+        } else if(alcoholPick.equals("Alcoholic")) {
+            alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
+        } else {
+            alcoholConsumption = null;
+        }
+
         BloodType donorBloodType = null;
         try {
             String bloodTypePick = (String) bloodTypeComboBox.getValue();
@@ -389,7 +469,6 @@ public class UserWindowController implements Initializable {
             donorBloodType = null;
         }
 
-
         double donorHeight = -1;
         if(!heightField.getText().equals("")) {
             try{
@@ -421,24 +500,20 @@ public class UserWindowController implements Initializable {
 
 
         try {
-
-            currentDonor.setName(firstNameField.getText() + " " + middleNamesStr + lastNameField.getText());
             currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
             currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
             currentDonor.setGender(donorGender);
-
-
             currentDonor.setBloodType(donorBloodType);
             currentDonor.setRegion(regionField.getText());
             currentDonor.setCurrentAddress(addressField.getText());
-//            currentDonor.setUsername(usernameField.getText());
-//            currentDonor.setEmail(emailField.getText());
-//            currentDonor.setPassword(passwordField.getText());
+            currentDonor.setSmokerStatus(smokerStatus);
+            currentDonor.setAlcoholConsumption(alcoholConsumption);
+            currentDonor.setBloodPressure(bloodPressureTextField.getText());
 
-            System.out.println(currentDonor.getOrgans());
+
             if(liverCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.LIVER);
-                System.out.println(currentDonor.getOrgans());
+
             }
             if(!liverCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.LIVER);

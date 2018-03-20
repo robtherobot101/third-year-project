@@ -266,7 +266,6 @@ public class History {
 
             } else if(actionDetails[3].length() < 4) {
                 if(Long.parseLong(actionDetails[3]) == userid) {
-                    System.out.println(actionDetails[3]);
                     userHistory[index] = actionDetails;
                     index++;
                 }
