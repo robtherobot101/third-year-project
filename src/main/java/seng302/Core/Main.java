@@ -46,15 +46,14 @@ public class Main extends Application {
     private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
-    private static HashMap<Stage, Scene> userWindows = new HashMap<>();
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
     private static AccountSettingsController accountSettingsController;
 
-    public static void addUserWindow(Stage stage, Scene scene) {
-        userWindows.put(stage, scene);
-    }
+    private static ArrayList<Stage> cliniciansDonorWindows = new ArrayList<>();
+    public static void addCliniciansDonorWindow(Stage stage) {cliniciansDonorWindows.add(stage);}
+
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
@@ -212,6 +211,7 @@ public class Main extends Application {
         return clinicianPath;
     }
 
+    public static Stage getStage() {return stage; }
     /**
      * Only called in testing.
      *
@@ -520,10 +520,16 @@ public class Main extends Application {
         }*/
     }
 
+
     @Override
     public void start(Stage stage) {
         Main.stage = stage;
         stage.setTitle("Transplant Finder");
+        stage.setOnHiding( closeAllWindows -> {
+            for(Stage donorWindow:cliniciansDonorWindows){
+                donorWindow.close();
+            }
+        });
         //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
@@ -562,7 +568,7 @@ public class Main extends Application {
             scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 270, 350));
 
             setScene(TFScene.login);
-            stage.setResizable(false);
+            stage.setResizable(true);
             stage.show();
 
 
