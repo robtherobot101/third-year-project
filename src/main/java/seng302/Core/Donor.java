@@ -27,6 +27,9 @@ public class Donor {
     private String currentAddress, region;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private String username, email, password;
+    private String bloodPressure;
+    private SmokerStatus smokerStatus;
+    private AlcoholConsumption alcoholConsumption;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -105,6 +108,33 @@ public class Donor {
         this.id = Main.getNextId(true, true);
     }
 
+    /**
+     * Used to create a deep copy of the object.
+     * @param donor
+     */
+    public Donor(Donor donor) {
+        this.name = donor.name;
+        this.dateOfBirth = donor.dateOfBirth;
+        this.dateOfDeath = donor.dateOfDeath;
+        this.gender = donor.gender;
+        this.height = donor.height;
+        this.weight = donor.weight;
+        this.bloodType = donor.bloodType;
+        this.region = donor.region;
+        this.currentAddress = donor.currentAddress;
+        this.creationTime = donor.creationTime;
+        this.username = donor.username;
+        this.email = donor.email;
+        this.password = donor.password;
+        this.id = donor.id;
+        this.smokerStatus = donor.smokerStatus;
+        this.bloodPressure = donor.bloodPressure;
+        this.alcoholConsumption = donor.alcoholConsumption;
+        for(Organ organ: donor.organs) {
+            this.organs.add(organ);
+        }
+    }
+
     public String getName() {
         return String.join(" ", name);
     }
@@ -113,6 +143,12 @@ public class Donor {
         this.name = name.split(",");
         setLastModified();
     }
+
+    public void setUsername(String username) { this.username = username; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public void setPassword(String password) { this.password = password; }
 
     public String[] getNameArray() {
         return name;
@@ -223,6 +259,18 @@ public class Donor {
     private void setLastModified() {
         lastModified = LocalDateTime.now();
     }
+
+    public String getBloodPressure() { return bloodPressure; }
+
+    public void setBloodPressure(String bloodPressure) { this.bloodPressure = bloodPressure; }
+
+    public SmokerStatus getSmokerStatus() { return smokerStatus; }
+
+    public void setSmokerStatus(SmokerStatus smokerStatus) { this.smokerStatus = smokerStatus; }
+
+    public AlcoholConsumption getAlcoholConsumption() { return alcoholConsumption; }
+
+    public void setAlcoholConsumption(AlcoholConsumption alcoholConsumption) { this.alcoholConsumption = alcoholConsumption; }
 
     /**
      * Get a string containing key information about the donor. Can be formatted as a table row.

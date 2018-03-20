@@ -69,6 +69,12 @@ public class Main extends Application {
     public static void setCurrentDonor(Donor currentDonor) {
         userWindowController.setCurrentDonor(currentDonor);
         userWindowController.populateDonorFields();
+        userWindowController.populateHistoryTable();
+    }
+
+    public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
+        accountSettingsController.setCurrentDonor(currentDonor);
+        accountSettingsController.populateAccountDetails();
     }
 
     /**
@@ -77,7 +83,8 @@ public class Main extends Application {
      * @param donor donor object being added to the top of the stack.
      */
     public static void addDonorToUndoStack(Donor donor){
-        donorUndoStack.add(donor);
+        Donor prevDonor = new Donor(donor);
+        donorUndoStack.add(prevDonor);
     }
 
     /**
@@ -86,13 +93,16 @@ public class Main extends Application {
      *
      * @return the most recent saved version of the donor.
      */
-    public static Donor donorUndo(){
+    public static Donor donorUndo(Donor oldDonor){
         if (donorUndoStack != null){
-            Donor donor = donorUndoStack.get(donorUndoStack.size()-1);
+            Donor newDonor = donorUndoStack.get(donorUndoStack.size()-1);
             donorUndoStack.remove(donorUndoStack.size()-1);
-            donorRedoStack.add(donor);
-            String text = History.prepareFileStringGUI(donor.getId(), "undo");
-            return donor;
+            donorRedoStack.add(oldDonor);
+            if (streamOut != null){
+                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
+                History.printToFile(streamOut, text);
+            }
+            return newDonor;
         } else {
             System.out.println("Undo somehow being called with nothing to undo.");
             return null;
@@ -103,19 +113,22 @@ public class Main extends Application {
      * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
      * @return the donor on top of the redo stack.
      */
-    public static Donor donorRedo(){
+    public static Donor donorRedo(Donor newDonor){
         if (donorRedoStack != null){
-            Donor donor = donorRedoStack.get(donorRedoStack.size()-1);
-            donorRedoStack.remove(-1);
-            donorUndoStack.add(donor);
-            String text = History.prepareFileStringGUI(donor.getId(), "redo");
-            History.printToFile(streamOut, text);
-            return donor;
+            Donor oldDonor = donorRedoStack.get(donorRedoStack.size()-1);
+            addDonorToUndoStack(newDonor);
+            donorRedoStack.remove(donorRedoStack.size()-1);
+            if (streamOut != null) {
+                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
+                History.printToFile(streamOut, text);
+            }
+            return oldDonor;
         } else {
             System.out.println("Redo somehow being called with nothing to redo.");
             return null;
         }
     }
+
 
     public static ArrayList<Donor> getDonorUndoStack() {
         return donorUndoStack;
@@ -546,7 +559,7 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
-            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 800, 600));
+            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 270, 350));
 
             setScene(TFScene.login);
             stage.setResizable(false);
@@ -568,6 +581,8 @@ public class Main extends Application {
 
     public static void setScene(TFScene scene) {
         stage.setScene(scenes.get(scene));
+        stage.setResizable(scene == TFScene.userWindow);
+
     }
 
     @Override

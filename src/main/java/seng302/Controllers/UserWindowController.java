@@ -1,6 +1,7 @@
 package seng302.Controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,15 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import seng302.Core.*;
+import seng302.Files.History;
 import seng302.TUI.CommandLineInterface;
 
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UserWindowController implements Initializable {
 
@@ -26,6 +25,7 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
+
     }
 
     @FXML
@@ -34,7 +34,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private GridPane attributesGridPane;
     @FXML
-    private Pane historyPane;
+    private GridPane historyGridPane;
     @FXML
     private Pane medicationsPane;
     @FXML
@@ -87,31 +87,52 @@ public class UserWindowController implements Initializable {
     @FXML
     private CheckBox connectiveTissueCheckBox;
     @FXML
-    private TextField usernameField;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private TextField passwordField;
-    @FXML
     private Button saveButton;
+    @FXML
+    private MenuItem undoButton;
+    @FXML
+    private MenuItem redoButton;
     @FXML
     private Label ageLabel;
     @FXML
     private Label bmiLabel;
+    @FXML
+    private ComboBox smokerStatusComboBox;
+    @FXML
+    private TextField bloodPressureTextField;
+    @FXML
+    private ComboBox alcoholConsumptionComboBox;
+
+
+
+    @FXML
+    private Button undoWelcomeButton;
+    @FXML
+    private Button redoWelcomeButton;
+
+    @FXML
+    private Label userHistoryLabel;
+    @FXML
+    private TreeTableView<String> historyTreeTableView;
+    @FXML
+    private TreeTableColumn<String, String> historyDateTimeColumn;
+    @FXML
+    private TreeTableColumn<String, String> historyActionColumn;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
-        historyPane.setVisible(false);
+        historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
 
     public void showHistoryPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
-        historyPane.setVisible(true);
+        historyGridPane.setVisible(true);
         medicationsPane.setVisible(false);
 
     }
@@ -119,18 +140,60 @@ public class UserWindowController implements Initializable {
     public void showMedicationsPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
-        historyPane.setVisible(false);
+        historyGridPane.setVisible(false);
         medicationsPane.setVisible(true);
     }
 
     public void showAttributesPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
-        historyPane.setVisible(false);
+        historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
 
+    public void populateHistoryTable() {
+        userHistoryLabel.setText("History of actions for " + currentDonor.getName());
+
+        ArrayList<TreeItem<String>> treeItems = new ArrayList<TreeItem<String>>();
+
+        String[][] userHistory = History.getUserHistory(currentDonor.getId());
+        for(int i = 0; i < userHistory.length; i++) {
+
+//            for(int j = 0; j < userHistory[i].length; j++) {
+//                System.out.println(userHistory[i][j]);
+//            }
+            System.out.println(userHistory[i][1]);
+
+            try{
+                final TreeItem<String> childNode = new TreeItem<>(userHistory[i][1]);
+                treeItems.add(childNode);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        final TreeItem<String> root = new TreeItem<>("User History");
+        root.setExpanded(true);
+
+        root.getChildren().setAll(treeItems);
+
+
+        //Defining cell content
+        historyDateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
+                new ReadOnlyStringWrapper(p.getValue().getValue()));
+
+        //Creating a tree table view
+        historyTreeTableView.setRoot(root);
+        historyTreeTableView.setShowRoot(true);
+
+
+    }
+
     public void populateDonorFields() {
+
+
+        //TODO THEERE IS A PROBLEM WITH THE NAMES
 
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
@@ -154,6 +217,8 @@ public class UserWindowController implements Initializable {
         dateOfDeathPicker.setValue(currentDonor.getDateOfDeath());
         updateAge();
 
+        bloodPressureTextField.setText(currentDonor.getBloodPressure());
+
         ObservableList<String> genders =
                 FXCollections.observableArrayList(
                         "Male",
@@ -161,6 +226,7 @@ public class UserWindowController implements Initializable {
                         "Other"
                 );
         genderComboBox.setItems(genders);
+
         ObservableList<String> bloodTypes =
                 FXCollections.observableArrayList(
                         "A-",
@@ -173,54 +239,152 @@ public class UserWindowController implements Initializable {
                         "O+"
                 );
         bloodTypeComboBox.setItems(bloodTypes);
+
+        ObservableList<String> smokerStatuses =
+                FXCollections.observableArrayList(
+                        "Current",
+                        "Past",
+                        "Never"
+                );
+        smokerStatusComboBox.setItems(smokerStatuses);
+
+        if(currentDonor.getSmokerStatus() != null) {
+            smokerStatusComboBox.setValue(currentDonor.getSmokerStatus().toString());
+        } else {
+            smokerStatusComboBox.setValue("Smoker Status");
+        }
+
+        ObservableList<String> alcoholConsumptions =
+                FXCollections.observableArrayList(
+                        "None",
+                        "Low",
+                        "Average",
+                        "High",
+                        "Very High",
+                        "Alcoholic"
+                );
+        alcoholConsumptionComboBox.setItems(alcoholConsumptions);
+
+        if(currentDonor.getAlcoholConsumption() != null) {
+            alcoholConsumptionComboBox.setValue(currentDonor.getAlcoholConsumption().toString());
+        } else {
+            alcoholConsumptionComboBox.setValue("Alcohol Consumption");
+        }
+
+
+        if(currentDonor.getGender() != null) {
+            System.out.println(currentDonor.getGender());
+            String firstLetter = currentDonor.getGender().toString().substring(0, 1);
+            String restOfWord = currentDonor.getGender().toString().substring(1);
+            genderComboBox.setValue(firstLetter.toUpperCase() + restOfWord);
+        } else {
+            genderComboBox.setValue("Gender");
+        }
+
+        if(currentDonor.getBloodType() != null) {
+            bloodTypeComboBox.setValue(currentDonor.getBloodType().toString());
+        } else {
+            bloodTypeComboBox.setValue("Blood Type");
+        }
+
         EnumSet<Organ> donorOrgans = currentDonor.getOrgans();
+        System.out.println(donorOrgans.toString());
         if(donorOrgans.contains(Organ.LIVER)) {
             liverCheckBox.setSelected(true);
+        } else {
+            liverCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.KIDNEY)) {
             kidneyCheckBox.setSelected(true);
+        } else {
+            kidneyCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.PANCREAS)) {
             pancreasCheckBox.setSelected(true);
+        } else {
+            pancreasCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.HEART)) {
             heartCheckBox.setSelected(true);
+        } else {
+            heartCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.LUNG)) {
             lungCheckBox.setSelected(true);
+        } else {
+            lungCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.INTESTINE)) {
             intestineCheckBox.setSelected(true);
+        } else {
+            intestineCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.CORNEA)) {
             corneaCheckBox.setSelected(true);
+        } else {
+            corneaCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.EAR)) {
             middleEarCheckBox.setSelected(true);
+        } else {
+            middleEarCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.SKIN)) {
             skinCheckBox.setSelected(true);
+        } else {
+            skinCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.BONE)) {
             boneMarrowCheckBox.setSelected(true);
+        } else {
+            boneMarrowCheckBox.setSelected(false);
         }
         if(donorOrgans.contains(Organ.TISSUE)) {
             connectiveTissueCheckBox.setSelected(true);
+        } else {
+            connectiveTissueCheckBox.setSelected(false);
+        }
+        if(currentDonor.getWeight() != -1) {
+            weightField.setText(Double.toString(currentDonor.getWeight()));
+        } else {
+            weightField.setText("");
         }
 
-        usernameField.setText(currentDonor.getUsername());
-        emailField.setText(currentDonor.getEmail());
-        passwordField.setText(currentDonor.getPassword());
+        if(currentDonor.getHeight() != -1) {
+            heightField.setText(Double.toString(currentDonor.getHeight()));
 
+        } else {
+            heightField.setText("");
+
+        }
+
+        updateBMI();
 
     }
 
     public void updateDonor() {
 
-        //TODO Middle Names
-        String[] middleNames = middleNameField.getText().split(" ");
+        //TODO
+        //Problem with middle names
+        String firstName = firstNameField.getText();
+        String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
+        String lastName = lastNameField.getText();
+        //currentDonor.set(firstNameField.getText() + " " + middleNamesStr + lastNameField.getText());
 
-        //TODO Gender ComboBox
+        int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
+        String[] name = new String[1 + middleNames.length + isLastName];
+        name[0] = firstName;
+        System.arraycopy(middleNames, 0, name, 1, middleNames.length);
+        if (isLastName == 1) {
+            name[name.length-1] = lastName;
+        }
+        String result = "";
+        for(String donorName: name) {
+            result += donorName;
+            result += ",";
+        }
+        currentDonor.setName(result.substring(0, result.length()));
+
         Gender donorGender = null;
         try {
             String genderPick = (String) genderComboBox.getValue();
@@ -234,11 +398,39 @@ public class UserWindowController implements Initializable {
                 donorGender = null;
             }
         } catch(Exception e) {
-            System.out.println("Input a gender");
-            //TODO Alert box for Gender
+
         }
 
-        //TODO Blood Type ComboBox
+        SmokerStatus smokerStatus;
+        String smokerPick = (String) smokerStatusComboBox.getValue();
+        if (smokerPick.equals("Never")) {
+            smokerStatus = SmokerStatus.NEVER;
+        } else if(smokerPick.equals("Current")) {
+            smokerStatus = SmokerStatus.CURRENT;
+        } else if(smokerPick.equals("Past")) {
+            smokerStatus = SmokerStatus.PAST;
+        } else {
+            smokerStatus = null;
+        }
+
+        AlcoholConsumption alcoholConsumption;
+        String alcoholPick = (String) alcoholConsumptionComboBox.getValue();
+        if (alcoholPick.equals("None")) {
+            alcoholConsumption = AlcoholConsumption.NONE;
+        } else if(alcoholPick.equals("Low")) {
+            alcoholConsumption = AlcoholConsumption.LOW;
+        } else if(alcoholPick.equals("Average")) {
+            alcoholConsumption = AlcoholConsumption.AVERAGE;
+        } else if(alcoholPick.equals("High")) {
+            alcoholConsumption = AlcoholConsumption.HIGH;
+        } else if(alcoholPick.equals("Very High")) {
+            alcoholConsumption = AlcoholConsumption.VERYHIGH;
+        } else if(alcoholPick.equals("Alcoholic")) {
+            alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
+        } else {
+            alcoholConsumption = null;
+        }
+
         BloodType donorBloodType = null;
         try {
             String bloodTypePick = (String) bloodTypeComboBox.getValue();
@@ -274,65 +466,125 @@ public class UserWindowController implements Initializable {
             }
         } catch (Exception e) {
             System.out.println("Input a blood type.");
+            donorBloodType = null;
         }
 
+        double donorHeight = -1;
+        if(!heightField.getText().equals("")) {
+            try{
+                donorHeight = Double.parseDouble(heightField.getText());
+                currentDonor.setHeight(donorHeight);
+            } catch(Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Height Input ");
+                alert.setContentText("Please input a valid height input.");
+                alert.show();
+                return;
+            }
+        }
+
+
+        double donorWeight = -1;
+        try{
+            donorWeight = Double.parseDouble(weightField.getText());
+            currentDonor.setWeight(donorWeight);
+        } catch(Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Weight Input ");
+            alert.setContentText("Please input a valid weight input.");
+            alert.show();
+            return;
+        }
+
+
         try {
-            Donor saveDonor = new Donor(
-                    firstNameField.getText(),
-                    middleNames,
-                    lastNameField.getText(),
-                    dateOfBirthPicker.getValue(),
-                    dateOfDeathPicker.getValue(),
-                    donorGender,
-                    Double.parseDouble(heightField.getText()),
-                    Double.parseDouble(weightField.getText()),
-                    donorBloodType,
-                    regionField.getText(),
-                    addressField.getText(),
-                    usernameField.getText(),
-                    emailField.getText(),
-                    passwordField.getText()
-                    );
+            currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
+            currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+            currentDonor.setGender(donorGender);
+            currentDonor.setBloodType(donorBloodType);
+            currentDonor.setRegion(regionField.getText());
+            currentDonor.setCurrentAddress(addressField.getText());
+            currentDonor.setSmokerStatus(smokerStatus);
+            currentDonor.setAlcoholConsumption(alcoholConsumption);
+            currentDonor.setBloodPressure(bloodPressureTextField.getText());
+
 
             if(liverCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.LIVER);
+                currentDonor.setOrgan(Organ.LIVER);
+
+            }
+            if(!liverCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.LIVER);
             }
             if(kidneyCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.KIDNEY);
+                currentDonor.setOrgan(Organ.KIDNEY);
+            }
+            if(!kidneyCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.KIDNEY);
             }
             if(pancreasCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.PANCREAS);
+                currentDonor.setOrgan(Organ.PANCREAS);
+            }
+            if(!pancreasCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.PANCREAS);
             }
             if(heartCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.HEART);
+                currentDonor.setOrgan(Organ.HEART);
+            }
+            if(!heartCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.HEART);
             }
             if(lungCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.LUNG);
+                currentDonor.setOrgan(Organ.LUNG);
+            }
+            if(!lungCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.LUNG);
             }
             if(intestineCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.INTESTINE);
+                currentDonor.setOrgan(Organ.INTESTINE);
+            }
+            if(!intestineCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.INTESTINE);
             }
             if(corneaCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.CORNEA);
+                currentDonor.setOrgan(Organ.CORNEA);
+            }
+            if(!corneaCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.CORNEA);
             }
             if(middleEarCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.EAR);
+                currentDonor.setOrgan(Organ.EAR);
+            }
+            if(!middleEarCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.EAR);
             }
             if(skinCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.SKIN);
+                currentDonor.setOrgan(Organ.SKIN);
+            }
+            if(!skinCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.SKIN);
             }
             if(boneMarrowCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.BONE);
+                currentDonor.setOrgan(Organ.BONE);
+            }
+            if(!boneMarrowCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.BONE);
             }
             if(connectiveTissueCheckBox.isSelected()) {
-                saveDonor.setOrgan(Organ.TISSUE);
+                currentDonor.setOrgan(Organ.TISSUE);
+            }
+            if(!connectiveTissueCheckBox.isSelected()) {
+                currentDonor.removeOrgan(Organ.TISSUE);
             }
 
-            currentDonor = saveDonor;
+
             settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
             userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
             System.out.println(currentDonor.toString());
             //TODO Implement save function, saving to database and updating the old donor.
+            Main.saveUsers(Main.getDonorPath(), true);
 
         } catch(Exception e) {
             System.out.println(e);
@@ -345,15 +597,62 @@ public class UserWindowController implements Initializable {
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current donor? ");
         alert.setContentText("By doing so, the donor will be updated with all filled in fields.");
-
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
+            if(Main.getDonorUndoStack().isEmpty()){
+                undoButton.setDisable(false);
+                undoWelcomeButton.setDisable(false);
+            }
+            Main.addDonorToUndoStack(currentDonor);
             updateDonor();
+            populateDonorFields();
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+            History.printToFile(Main.streamOut, text);
             alert.close();
         } else {
             alert.close();
         }
 
+
+    }
+
+    /**
+     * Called when the undo button is pushed, and reverts the last action performed by the user.
+     * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
+     */
+    public void undo() {
+        System.out.println(currentDonor.getOrgans().toString());
+        System.out.println(currentDonor.getCurrentAddress().toString());
+        currentDonor = Main.donorUndo(currentDonor);
+        System.out.println(currentDonor.getOrgans().toString());
+        System.out.println(currentDonor.getCurrentAddress().toString());
+        populateDonorFields();
+        redoButton.setDisable(false);
+        redoWelcomeButton.setDisable(false);
+        if(Main.getDonorUndoStack().isEmpty()){
+            undoButton.setDisable(true);
+            undoWelcomeButton.setDisable(true);
+        }
+        String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
+        History.printToFile(Main.streamOut, text);
+
+    }
+
+    /**
+     * Called when the redo button is pushed, and reverts the last undo performed by the user.
+     * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
+     */
+    public void redo() {
+        currentDonor = Main.donorRedo(currentDonor);
+        populateDonorFields();
+        undoButton.setDisable(false);
+        undoWelcomeButton.setDisable(false);
+        if(Main.getDonorRedoStack().isEmpty()){
+            redoButton.setDisable(true);
+            redoWelcomeButton.setDisable(true);
+        }
+        String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
+        History.printToFile(Main.streamOut, text);
     }
 
     public void updateAge() {
@@ -392,9 +691,32 @@ public class UserWindowController implements Initializable {
             }
         } catch(Exception e) {
             System.out.println("Enter a valid character.");
+
         }
 
     }
+
+    public void updateAccountSettings() {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("View Account Settings");
+        dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
+        dialog.setContentText("Please enter your password:");
+
+        Optional<String> password = dialog.showAndWait();
+        if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword())) ) {
+            System.out.println("Authenticated!");
+            Main.setScene(TFScene.accountSettings);
+            Main.setCurrentDonorForAccountSettings(currentDonor);
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Incorrect");
+            alert.setHeaderText("Incorrect password. ");
+            alert.setContentText("Please enter the correct password to view account settings");
+            alert.show();
+        }
+    }
+
 
     public void stop() {
 
@@ -406,6 +728,8 @@ public class UserWindowController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
             System.out.println("Exiting GUI");
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            History.printToFile(Main.streamOut, text);
             Platform.exit();
         } else {
             alert.close();

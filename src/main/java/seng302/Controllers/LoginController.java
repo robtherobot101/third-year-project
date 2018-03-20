@@ -39,7 +39,8 @@ public class LoginController implements Initializable {
                 identificationMatched = true;
                 if (donor.getPassword().equals(passwordInput.getText())) {
                     currentDonor = donor;
-                    History.prepareFileStringGUI(donor.getId(), "login");
+                    String text = History.prepareFileStringGUI(donor.getId(), "login");
+                    History.printToFile(Main.streamOut, text);
                 }
             }
         }

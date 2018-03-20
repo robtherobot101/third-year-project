@@ -2,14 +2,12 @@ package seng302.Files;
 
 import seng302.Core.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.time.LocalDateTime;
 
 public class History {
 
+    private static File actionHistory;
     private static String command;
     private static String parameterOne = null;
     private static String parameterTwo = null;
@@ -25,7 +23,7 @@ public class History {
      */
     public static PrintStream init() {
         try {
-            File actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
+            actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory, true);
             PrintStream out = new PrintStream(fout);
             out.println(Donor.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
@@ -192,7 +190,7 @@ public class History {
                     description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
                 }
                 break;
-            case "modify:":
+            case "update":
                 description = "[Updated user attributes.]";
                 break;
             case "undo":
@@ -201,6 +199,10 @@ public class History {
             case "redo":
                 description = "[Reverted last undo.]";
                 break;
+            case "quit":
+                description = "[Quit the application.]";
+                break;
+
             //clinician exclusive
 
             case "view":
@@ -222,6 +224,55 @@ public class History {
         }
         text = String.join(" ", text, Long.toString(userId), command, description);
         return text;
+    }
+
+    public static String readFile(){
+
+        String line = null;
+        String actionHistoryString = "";
+
+        try {
+            FileReader fileReader =
+                    new FileReader(actionHistory);
+
+            // Always wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader =
+                    new BufferedReader(fileReader);
+
+            while((line = bufferedReader.readLine()) != null) {
+                actionHistoryString += line;
+                actionHistoryString += " \n";
+            }
+            // Always close files.
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found / initilized");
+        } catch (IOException e) {
+            System.out.println("Error Reading file");
+            e.printStackTrace();
+        }
+        return actionHistoryString;
+    }
+
+    public static String[][] getUserHistory(long userid) {
+
+        String history = readFile();
+        String[] historyList = history.split("\n");
+        String[][] userHistory = new String[historyList.length][6];
+        int index = 0;
+        for(int i = 0; i < historyList.length; i++) {
+            String[] actionDetails = historyList[i].split(" ");
+            if(actionDetails[2].equals("====")) {
+
+            } else if(actionDetails[3].length() < 4) {
+                if(Long.parseLong(actionDetails[3]) == userid) {
+                    userHistory[index] = actionDetails;
+                    index++;
+                }
+            }
+        }
+        return userHistory;
+
     }
 
 }
