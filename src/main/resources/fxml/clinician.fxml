@@ -10,7 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="background" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+<AnchorPane fx:id="background" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
    <children>
       <TextField fx:id="nameInput" layoutX="29.0" layoutY="86.0" />
       <TextField fx:id="addressInput" layoutX="237.0" layoutY="86.0" />
@@ -42,12 +42,17 @@
       <Label layoutX="29.0" layoutY="70.0" text="Name" />
       <Label layoutX="237.0" layoutY="70.0" text="Address" />
       <Label layoutX="441.0" layoutY="70.0" text="Region" />
-      <TableView layoutX="29.0" layoutY="183.0" prefHeight="398.0" prefWidth="744.0">
+      <TableView fx:id="profileTable" layoutX="29.0" layoutY="180.0" prefHeight="407.0" prefWidth="751.0">
         <columns>
-          <TableColumn fx:id="profileTable" prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
+          <TableColumn fx:id="profileName" prefWidth="344.0" text="Name" />
+          <TableColumn fx:id="profileAge" prefWidth="110.0" text="Age" />
+            <TableColumn fx:id="profileGender" prefWidth="133.0" text="Gender" />
+            <TableColumn fx:id="profileRegion" prefWidth="163.0" text="Region" />
         </columns>
       </TableView>
-      <TextField fx:id="profileSearch" layoutX="29.0" layoutY="148.0" onInputMethodTextChanged="#updateProfileTable" />
+      <TextField fx:id="profileSearchTextField" layoutX="29.0" layoutY="144.0" />
+      <Label fx:id="resultsDisplayLabel" layoutX="219.0" layoutY="149.0" text="Displaying # of # results" />
+      <Button fx:id="nextPageButton" layoutX="733.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#nextPage" text="Next" />
+      <Button fx:id="previousPageButton" layoutX="653.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#previousPage" text="previous" />
    </children>
 </AnchorPane>

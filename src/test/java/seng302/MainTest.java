@@ -3,6 +3,7 @@ package seng302;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,6 +55,104 @@ public class MainTest {
         Main.importUsers("testsave", true);
         assertEquals("extra", Main.donors.get(5).getName());
     }
+
+    @Test
+    public void testLengthMatched_emptyString_returnsZero() {
+        assertEquals(0, Main.lengthMatchedScore("", ""));
+    }
+    @Test
+    public void testLengthMatched_longerSearchTerm_returnsZero() {
+        assertEquals(0, Main.lengthMatchedScore("a", "aa"));
+    }
+    @Test
+    public void testLengthMatched_shorterSearchTerm_returnsMatchLengthMinusNameLength() {
+        assertEquals(-1, Main.lengthMatchedScore("aa", "a"));
+    }
+    @Test
+    public void testLengthMatched_termEqualsString_returnsZero() {
+        assertEquals(0, Main.lengthMatchedScore("aa", "aa"));
+    }
+    @Test
+    public void testLengthMatched_upperCaseString_returnsZeroIgnoringCase() {
+        assertEquals(0, Main.lengthMatchedScore("AA", "aa"));
+    }
+    @Test
+    public void testLengthMatched_upperCaseTerm_returnsZeroIgnoringCase() {
+        assertEquals(0, Main.lengthMatchedScore("aa", "AA"));
+    }
+
+    @Test
+    public void testMatches_stringEqualsTerm_returnsTrue(){
+        assertEquals(true, Main.matches("aaa", "aaa"));
+    }
+    @Test
+    public void testMatches_longerSearchTerm_returnsFalse(){
+        assertEquals(false, Main.matches("aaa", "aaaa"));
+    }
+    @Test
+    public void testMatches_longerStringShouldMatch_returnsTrue(){
+        assertEquals(true, Main.matches("abcd", "abc"));
+    }
+    @Test
+    public void testMatches_emptyStringAndTerm_returnsTrue(){
+        assertEquals(true, Main.matches("", ""));
+    }
+    @Test
+    public void testMatches_uppercaseTerm_returnsTrue(){
+        assertEquals(true, Main.matches("aa", "AA"));
+    }
+    @Test
+    public void testMatches_uppercaseString_returnsTrue(){
+        assertEquals(true, Main.matches("AA", "aa"));
+    }
+
+    @Test
+    public void testGetDonorsByNameAlternative_equallyMatched_SortedAlphabetically(){
+        LocalDate dummyDate = LocalDate.of(2000, 1, 1);
+        Main.donors.clear();
+        Main.donors.add(new Donor("aad,coco", dummyDate));
+        Main.donors.add(new Donor("aaa,coco", dummyDate));
+        Main.donors.add(new Donor("aab,coco", dummyDate));
+        Main.donors.add(new Donor("aac,coco", dummyDate));
+        ArrayList<Donor> results = Main.getDonorsByNameAlternative("aa");
+        assertEquals("aaa coco", results.get(0).getName());
+        assertEquals("aab coco", results.get(1).getName());
+        assertEquals("aac coco", results.get(2).getName());
+        assertEquals("aad coco", results.get(3).getName());
+    }
+    @Test
+    public void testGetDonorsByNameAlternative_differentlyMatched_sortedByMatchedAmount(){
+        LocalDate dummyDate = LocalDate.of(2000, 1, 1);
+        Main.donors.clear();
+        Main.donors.add(new Donor("abcde", dummyDate));
+        Main.donors.add(new Donor("ab", dummyDate));
+        Main.donors.add(new Donor("abc", dummyDate));
+        Main.donors.add(new Donor("abcd", dummyDate));
+        ArrayList<Donor> results = Main.getDonorsByNameAlternative("a");
+        System.out.println(results.get(0).getName());
+        assertEquals("ab", results.get(0).getName());
+        assertEquals("abc", results.get(1).getName());
+        assertEquals("abcd", results.get(2).getName());
+        assertEquals("abcde", results.get(3).getName());
+    }
+    @Test
+    public void testGetDonorsByNameAlternative_doesNotMatch_noResults(){
+        Main.donors.clear();
+        LocalDate dummyDate = LocalDate.of(2000, 1, 1);
+        Main.donors.add(new Donor("abc,bcd,cde", dummyDate));
+        ArrayList<Donor> results = Main.getDonorsByNameAlternative("d");
+        assertEquals(0, results.size());
+    }
+    @Test
+    public void testGetDonorsByNameAlternative_longerSearchTerm_noResults(){
+        Main.donors.clear();
+        LocalDate dummyDate = LocalDate.of(2000, 1, 1);
+        Main.donors.add(new Donor("a", dummyDate));
+        Main.donors.add(new Donor("ab", dummyDate));
+        ArrayList<Donor> results = Main.getDonorsByNameAlternative("abc");
+        assertEquals(0, results.size());
+    }
+
 
     @After
     public void tearDown() {

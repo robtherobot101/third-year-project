@@ -7,7 +7,9 @@ import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
 import com.google.gson.reflect.TypeToken;
-import java.util.HashMap;
+
+import java.util.*;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +22,6 @@ import java.nio.file.Path;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import seng302.Controllers.AccountSettingsController;
 import seng302.Controllers.ClinicianController;
@@ -279,6 +280,117 @@ public class Main extends Application {
     }
 
     /**
+     * Returns true if the given token matches the beginning of at least one of the given names.
+     * Otherwise returns false.
+     * @param names The list of names
+     * @param token The token to test
+     * @return A boolean value which denotes whether or not the token matches a name
+     */
+    public static boolean matchesAtleastOne(String[] names, String token){
+        for(String name:names){
+            if(matches(name, token)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a list of donors matching the given search term.
+     * Results are sorted by their score first, and alphabetically second.
+     * The search term is broken into tokens, which should be separated by spaces in the term param.
+     * If every token matches at least part of the
+     * beginning of a one of part of a donors name, that donor will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of donors sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<Donor> getDonorsByNameAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<Donor> matched = new ArrayList<Donor>();
+        boolean allTokensMatchedAName = true;
+        for(Donor d: donors){
+            boolean allTokensMatchAName = true;
+            for(String token:tokens){
+                if(matchesAtleastOne(d.getNameArray(), token)==false){
+                    allTokensMatchAName = false;
+                }
+            }
+            if(allTokensMatchAName){
+                matched.add(d);
+            }
+        }
+        Collections.sort(matched, new Comparator<Donor>() {
+            @Override
+            public int compare(Donor o1, Donor o2) {
+                Integer o1Score = 0;
+                for(String name: o1.getNameArray()){
+                    for(String token:tokens){
+                        if(matches(name, token)){
+                            o1Score += lengthMatchedScore(name, token);
+                        }
+                    }
+                }
+                Integer o2Score = 0;
+                for(String name: o2.getNameArray()){
+                    for(String token:tokens) {
+                        if(matches(name, token)){
+                            o2Score += lengthMatchedScore(name, token);
+                        }
+                    }
+                }
+                int scoreComparison = o2Score.compareTo(o1Score);
+                if(scoreComparison == 0){
+                    return o1.getName().compareTo(o2.getName());
+                }
+                return scoreComparison;
+            }
+        });
+        return matched;
+    }
+
+    /**
+     * Returns the length of the longest matched commmon substring starting from the
+     * beggining of string and searchTerm, minus the length of the string.
+     * The maximum value returned is zero. This method is used for scoring different
+     * strings against a search term.
+     * @param string The string which is being searched
+     * @param searchTerm The term which is being looked for
+     * @return The length of the longest substring minus the length of string
+     */
+    public static int lengthMatchedScore(String string, String searchTerm)
+    {
+        string = string.toLowerCase();
+        searchTerm = searchTerm.toLowerCase();
+        int maxLength = Math.min(string.length(), searchTerm.length());
+        int i;
+        for (i = 0; i < maxLength; i++)
+        {
+            if (searchTerm.charAt(i) != string.charAt(i)) {
+                return i-string.length();
+            }
+        }
+        return i-string.length();
+    }
+
+    /**
+     * Returns true if the given token matches the beggining of the given string.
+     * Otherwise returns false.
+     * Case is ignored.
+     * @param string The string to test
+     * @param token The given search token
+     * @return True if token and string at least start the same, otherwise false.
+     */
+    public static boolean matches(String string, String token){
+        string = string.toLowerCase();
+        token = token.toLowerCase();
+        return string.matches(token + ".*");
+    }
+
+    /**
      * Save the donor list to a json file.
      *
      * @param path The path of the file to save to
@@ -407,7 +519,7 @@ public class Main extends Application {
             File donors = new File(donorPath);
             if (donors.exists()) {
                 if (!importUsers(donors.getAbsolutePath(), true)) {
-                    //throw new IOException("Donor save file could not be loaded.");
+                    throw new IOException("Donor save file could not be loaded.");
                 }
             } else {
                 if (!donors.createNewFile()) {
