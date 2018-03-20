@@ -204,7 +204,11 @@ public class UserWindowController implements Initializable {
                     TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-
+                System.out.println(userHistory[i][4]);
+                if(userHistory[i][4].equals("updateAccountSettings")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) + " " + userHistory[i][4].substring(6, 13)+ " at " + userHistory[i][1]);
+                    sessionNode.getChildren().add(newItem);
+                }
                 if(userHistory[i][4].equals("login")) {
 
                     sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0,userHistory[i][0].length() - 1));
@@ -251,6 +255,9 @@ public class UserWindowController implements Initializable {
                                                  }
                                                  if(param.getValue().getValue().toString().substring(0, 4).equals("Quit")) {
                                                      return new ReadOnlyStringWrapper("Quit the application.");
+                                                 }
+                                                 if(param.getValue().getValue().toString().substring(0, 12).equals("Update Account")) {
+                                                     return new ReadOnlyStringWrapper("Updated account settings for user " + userName);
                                                  }
                                                  return null;
 

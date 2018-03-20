@@ -75,9 +75,12 @@ public class AccountSettingsController implements Initializable {
 
             }
 
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "updateAccountSettings");
+            History.printToFile(Main.streamOut, text);
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             Main.setCurrentDonor(currentDonor);
+
 
 
         } else {

@@ -490,8 +490,8 @@
                         <Insets left="25.0" right="25.0" />
                      </GridPane.margin>
                      <columns>
-                        <TreeTableColumn fx:id="dateTimeColumn" editable="false" prefWidth="226.0" resizable="false" sortable="false" text="Date/Time" />
-                        <TreeTableColumn fx:id="actionColumn" editable="false" prefWidth="397.5" resizable="false" sortable="false" text="Action" />
+                        <TreeTableColumn fx:id="dateTimeColumn" editable="false" prefWidth="236.0" resizable="false" sortable="false" text="Date/Time" />
+                        <TreeTableColumn fx:id="actionColumn" editable="false" prefWidth="387.5" resizable="false" sortable="false" text="Action" />
                      </columns>
                   </TreeTableView>
                </children>

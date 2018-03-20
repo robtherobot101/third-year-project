@@ -193,6 +193,9 @@ public class History {
             case "update":
                 description = "[Updated user attributes.]";
                 break;
+            case "updateAccountSettings":
+                description = "[Updated user account settings.]";
+                break;
             case "undo":
                 description = "[Reversed last action.]";
                 break;
