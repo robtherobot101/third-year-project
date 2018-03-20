@@ -52,6 +52,8 @@ public class Main extends Application {
     private static ClinicianController clinicianController;
     private static AccountSettingsController accountSettingsController;
 
+    private static ArrayList<Stage> cliniciansDonorWindows;
+    public static void addCliniciansDonorWindow(Stage stage) {cliniciansDonorWindows.add(stage);}
     public static void addUserWindow(Stage stage, Scene scene) {
         userWindows.put(stage, scene);
     }
@@ -212,6 +214,7 @@ public class Main extends Application {
         return clinicianPath;
     }
 
+    public static Stage getStage() {return stage; }
     /**
      * Only called in testing.
      *
@@ -519,6 +522,7 @@ public class Main extends Application {
             e.printStackTrace();
         }*/
     }
+
 
     @Override
     public void start(Stage stage) {

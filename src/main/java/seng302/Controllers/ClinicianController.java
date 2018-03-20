@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import seng302.Core.Clinician;
@@ -19,6 +20,7 @@ import seng302.Core.TFScene;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
@@ -231,6 +233,44 @@ public class ClinicianController implements Initializable {
         updateResultsSummary();
 
         profileTable.setItems(currentPage);
+
+        profileTable.setRowFactory(new Callback<TableView<Donor>, TableRow<Donor>>() {
+            @Override
+            public TableRow<Donor> call(TableView<Donor> tableView) {
+                final TableRow<Donor> row = new TableRow<Donor>() {
+                    private Tooltip tooltip = new Tooltip();
+                    @Override
+                    public void updateItem(Donor donor, boolean empty) {
+                        super.updateItem(donor, empty);
+                        if (donor == null || empty) {
+                            setTooltip(null);
+                        } else {
+                            if (donor.getOrgans().isEmpty()) {
+                                tooltip.setText(donor.getName() + ".");
+                            } else {
+                                String organs = donor.getOrgans().toString();
+                                tooltip.setText(donor.getName() + ". Donor: " + organs.substring(1, organs.length() - 1));
+                            }
+                            setTooltip(tooltip);
+                        }
+                    }
+                };
+
+                row.setOnMouseClicked(event -> {
+                    if (!row.isEmpty() && event.getClickCount()==2) {
+                        System.out.println(row.getItem());
+                        Stage stage = new Stage();
+                        stage.setTitle("Add New");
+                        stage.initOwner(Main.getStage());
+                        stage.show();
+                        //Main.addCliniciansDonorWindow()
+                    }
+                });
+
+                return row;
+            }
+        });
+
         /**
          * Sorts of the profileTable across all pages.
          * As items are removed and re-added, multiple sort calls can trigger an
