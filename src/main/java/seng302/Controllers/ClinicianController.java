@@ -76,6 +76,7 @@ public class ClinicianController implements Initializable {
     private ArrayList<Donor> donorsFound;
 
     ObservableList<Object> donors;
+    ObservableList currentPage = FXCollections.observableArrayList();
 
     /**
      * Sets the current clinician
@@ -132,9 +133,8 @@ public class ClinicianController implements Initializable {
 
 
     public void displayCurrentPage() {
-        profileTable.getItems().clear();
-        profileTable.getSortOrder().clear();
-        profileTable.getItems().addAll(getCurrentPage());
+        currentPage.clear();
+        currentPage.addAll(getCurrentPage());
     }
 
     public void updateFoundDonors(String searchTerm){
@@ -230,6 +230,7 @@ public class ClinicianController implements Initializable {
         displayCurrentPage();
         updateResultsSummary();
 
+        profileTable.setItems(currentPage);
         /**
          * Sorts of the profileTable across all pages.
          * As items are removed and re-added, multiple sort calls can trigger an
@@ -248,12 +249,9 @@ public class ClinicianController implements Initializable {
                     if (comparator == null) {
                         return true;
                     }
-
                     FXCollections.sort(donors, comparator);
-                    ObservableList<Donor> updatedPage = getCurrentPage();
-                    for(int i = 0; i < profileTable.getItems().size(); i++){
-                        table.getItems().set(i, updatedPage.get(i));
-                    }
+                    displayCurrentPage();
+                    profileTable.getSelectionModel().select(0);
                     return true;
                 }catch(IndexOutOfBoundsException e){
                     System.out.println("Error");
