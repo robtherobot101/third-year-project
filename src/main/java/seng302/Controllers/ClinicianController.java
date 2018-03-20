@@ -6,10 +6,14 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -18,6 +22,7 @@ import seng302.Core.Donor;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,8 +82,12 @@ public class ClinicianController implements Initializable {
     private int page = 1;
     private ArrayList<Donor> donorsFound;
 
+    private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
+
+
+    private ObservableList<Donor> currentPage = FXCollections.observableArrayList();
+
     ObservableList<Object> donors;
-    ObservableList currentPage = FXCollections.observableArrayList();
 
     /**
      * Sets the current clinician
@@ -145,6 +154,7 @@ public class ClinicianController implements Initializable {
 
     }
 
+
     public ObservableList<Donor> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
         int lastIndex = Math.min(donors.size(), page*resultsPerPage);
@@ -155,6 +165,9 @@ public class ClinicianController implements Initializable {
         return FXCollections.observableArrayList(new ArrayList(donors.subList(firstIndex, lastIndex)));
     }
 
+    /**
+     * Displays the next page of results.
+     */
     public void nextPage(){
         page++;
         updatePageButtons();
@@ -162,6 +175,10 @@ public class ClinicianController implements Initializable {
         displayCurrentPage();
     }
 
+    /**
+     * Updates the resultsDisplayLabel to show how many results were found,
+     * and how many are displayed.
+     */
     public void updateResultsSummary(){
         String text;
         if(donorsFound.size()==0){
@@ -214,6 +231,7 @@ public class ClinicianController implements Initializable {
             displayCurrentPage();
             updateResultsSummary();
         });
+
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
         profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
@@ -225,6 +243,9 @@ public class ClinicianController implements Initializable {
         fadeIn.setToValue(0.0);
         fadeIn.setCycleCount(0);
         fadeIn.setAutoReverse(false);
+
+        profileTable.setItems(currentPage);
+
         Main.setClinicianController(this);
 
         updateFoundDonors("");
@@ -260,16 +281,35 @@ public class ClinicianController implements Initializable {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         System.out.println(row.getItem());
                         Stage stage = new Stage();
-                        stage.setTitle("Add New");
-                        stage.initOwner(Main.getStage());
-                        stage.show();
-                        //Main.addCliniciansDonorWindow()
+
+                        Main.addCliniciansDonorWindow(stage);
+                        stage.initModality(Modality.NONE);
+
+                        try{
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
+                            Parent root = (Parent) loader.load();
+                            UserWindowController userWindowController = loader.getController();
+                            userWindowController.setCurrentDonor(row.getItem());
+                            userWindowController.populateDonorFields();
+                            Scene newScene = new Scene(root, 900, 575);
+                            stage.setScene(newScene);
+                            stage.show();
+                        } catch (IOException e) {
+                            System.err.println("Unable to load fxml or save file.");
+                            e.printStackTrace();
+                            Platform.exit();
+                        }catch (NullPointerException e){
+                            System.err.println("Unable to load fxml or save file.");
+                            e.printStackTrace();
+                            Platform.exit();
+                        }
                     }
                 });
-
                 return row;
             }
         });
+
+
 
         /**
          * Sorts of the profileTable across all pages.
@@ -279,12 +319,6 @@ public class ClinicianController implements Initializable {
         profileTable.setSortPolicy(new Callback<TableView, Boolean>() {
             @Override public Boolean call(TableView table) {
                 try{
-                    ObservableList<?> itemsList = donors;
-
-                    if (itemsList == null || itemsList.isEmpty()) {
-                        return true;
-                    }
-
                     Comparator comparator = table.getComparator();
                     if (comparator == null) {
                         return true;
