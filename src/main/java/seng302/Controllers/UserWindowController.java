@@ -2,13 +2,20 @@ package seng302.Controllers;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.util.Callback;
 import seng302.Core.*;
 import seng302.Files.History;
 import seng302.TUI.CommandLineInterface;
@@ -21,6 +28,10 @@ import java.util.*;
 public class UserWindowController implements Initializable {
 
     private Donor currentDonor;
+
+    public Donor getCurrentDonor() {
+        return currentDonor;
+    }
 
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
@@ -115,9 +126,13 @@ public class UserWindowController implements Initializable {
     @FXML
     private TreeTableView<String> historyTreeTableView;
     @FXML
-    private TreeTableColumn<String, String> historyDateTimeColumn;
+    private TreeTableColumn<String, String> dateTimeColumn;
     @FXML
-    private TreeTableColumn<String, String> historyActionColumn;
+    private TreeTableColumn<String, String> actionColumn;
+
+
+
+
 
 
     @Override
@@ -127,6 +142,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+
     }
 
     public void showHistoryPane() {
@@ -152,23 +168,52 @@ public class UserWindowController implements Initializable {
     }
 
     public void populateHistoryTable() {
+
         userHistoryLabel.setText("History of actions for " + currentDonor.getName());
 
         ArrayList<TreeItem<String>> treeItems = new ArrayList<TreeItem<String>>();
 
         String[][] userHistory = History.getUserHistory(currentDonor.getId());
-        for(int i = 0; i < userHistory.length; i++) {
+        TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0,userHistory[0][0].length() - 1));
+        TreeItem<String> outerItem1 = new TreeItem<>("Create at " + userHistory[0][1]);
+        TreeItem<String> outerItem2 = new TreeItem<>("Login at " + userHistory[0][1]);
+        sessionNode.getChildren().add(outerItem1);
+        sessionNode.getChildren().add(outerItem2);
+        treeItems.add(sessionNode);
+        int sessionNumber = 2;
+        for(int i = 2; i < userHistory.length; i++) {
 
-//            for(int j = 0; j < userHistory[i].length; j++) {
-//                System.out.println(userHistory[i][j]);
-//            }
-            System.out.println(userHistory[i][1]);
+            if(userHistory[i][4] == null) {
 
-            try{
-                final TreeItem<String> childNode = new TreeItem<>(userHistory[i][1]);
-                treeItems.add(childNode);
-            } catch(Exception e) {
-                e.printStackTrace();
+            } else if(userHistory[i][4].equals("create"))  {
+
+            } else {
+                if(userHistory[i][4].equals("update")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                    sessionNode.getChildren().add(newItem);
+                }
+                if(userHistory[i][4].equals("undo")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                    sessionNode.getChildren().add(newItem);
+                }
+                if(userHistory[i][4].equals("redo")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                    sessionNode.getChildren().add(newItem);
+                }
+                if(userHistory[i][4].equals("quit")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                    sessionNode.getChildren().add(newItem);
+                }
+
+                if(userHistory[i][4].equals("login")) {
+
+                    sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0,userHistory[i][0].length() - 1));
+                    treeItems.add(sessionNode);
+                    TreeItem<String> newItem = new TreeItem<>("Login at " + userHistory[i][1]);
+                    sessionNode.getChildren().add(newItem);
+                    sessionNumber++;
+                }
+
             }
 
         }
@@ -180,20 +225,51 @@ public class UserWindowController implements Initializable {
 
 
         //Defining cell content
-        historyDateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
+        dateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
                 new ReadOnlyStringWrapper(p.getValue().getValue()));
 
-        //Creating a tree table view
+
+        actionColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<String, String>, ObservableValue<String>>() {
+                                             @Override
+                                             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<String, String> param) {
+                                                 String userName = currentDonor.getName();
+                                                 if(param.getValue().getValue().toString().substring(0, 6).equals("Create")) {
+                                                     String creationString = "Created a new user profile with name " + userName;
+                                                     return new ReadOnlyStringWrapper(creationString);
+                                                 }
+                                                 if(param.getValue().getValue().toString().substring(0, 5).equals("Login")) {
+                                                     return new ReadOnlyStringWrapper("User with id: " + userHistory[0][3] + " logged in successfully.");
+                                                 }
+                                                 if(param.getValue().getValue().toString().substring(0, 6).equals("Update")) {
+                                                     return new ReadOnlyStringWrapper("Updated user attributes for user " + userName);
+                                                 }
+                                                 if(param.getValue().getValue().toString().substring(0, 4).equals("Undo")) {
+                                                     return new ReadOnlyStringWrapper("Reversed last action.");
+                                                 }
+                                                 if(param.getValue().getValue().toString().substring(0, 4).equals("Redo")) {
+                                                     return new ReadOnlyStringWrapper("Reversed last undo.");
+                                                 }
+                                                 if(param.getValue().getValue().toString().substring(0, 4).equals("Quit")) {
+                                                     return new ReadOnlyStringWrapper("Quit the application.");
+                                                 }
+                                                 return null;
+
+
+                                             }
+                                         });
+
+
+                //Creating a tree table view
         historyTreeTableView.setRoot(root);
         historyTreeTableView.setShowRoot(true);
+
+
+
 
 
     }
 
     public void populateDonorFields() {
-
-
-        //TODO THEERE IS A PROBLEM WITH THE NAMES
 
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
@@ -483,20 +559,25 @@ public class UserWindowController implements Initializable {
                 return;
             }
         }
+        currentDonor.setHeight(donorHeight);
 
 
         double donorWeight = -1;
-        try{
-            donorWeight = Double.parseDouble(weightField.getText());
-            currentDonor.setWeight(donorWeight);
-        } catch(Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Error with the Weight Input ");
-            alert.setContentText("Please input a valid weight input.");
-            alert.show();
-            return;
+        if(!weightField.getText().equals("")) {
+            try{
+                donorWeight = Double.parseDouble(weightField.getText());
+                currentDonor.setWeight(donorWeight);
+            } catch(Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Weight Input ");
+                alert.setContentText("Please input a valid weight input.");
+                alert.show();
+                return;
+            }
         }
+        currentDonor.setWeight(donorWeight);
+
 
 
         try {
@@ -608,6 +689,7 @@ public class UserWindowController implements Initializable {
             populateDonorFields();
             String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
             History.printToFile(Main.streamOut, text);
+            populateHistoryTable();
             alert.close();
         } else {
             alert.close();
@@ -621,11 +703,9 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
-        System.out.println(currentDonor.getOrgans().toString());
-        System.out.println(currentDonor.getCurrentAddress().toString());
+
         currentDonor = Main.donorUndo(currentDonor);
-        System.out.println(currentDonor.getOrgans().toString());
-        System.out.println(currentDonor.getCurrentAddress().toString());
+
         populateDonorFields();
         redoButton.setDisable(false);
         redoWelcomeButton.setDisable(false);
@@ -635,6 +715,7 @@ public class UserWindowController implements Initializable {
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
         History.printToFile(Main.streamOut, text);
+        populateHistoryTable();
 
     }
 
@@ -653,6 +734,7 @@ public class UserWindowController implements Initializable {
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
         History.printToFile(Main.streamOut, text);
+        populateHistoryTable();
     }
 
     public void updateAge() {
@@ -705,7 +787,17 @@ public class UserWindowController implements Initializable {
         Optional<String> password = dialog.showAndWait();
         if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword())) ) {
             System.out.println("Authenticated!");
-            Main.setScene(TFScene.accountSettings);
+
+            try{
+                Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
+                Stage stage = new Stage();
+                stage.setTitle("Account Settings");
+                stage.setScene(new Scene(root, 270, 350));
+                stage.show();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+
             Main.setCurrentDonorForAccountSettings(currentDonor);
 
         } else {
@@ -737,9 +829,4 @@ public class UserWindowController implements Initializable {
 
     }
 
-    public void tester() {
-        CommandLineInterface commandLineInterface = new CommandLineInterface();
-        String[] helpString = new String[]{"Andy"};
-        commandLineInterface.showHelp(helpString);
-    }
 }

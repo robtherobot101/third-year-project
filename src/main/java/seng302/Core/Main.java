@@ -98,8 +98,8 @@ public class Main extends Application {
             donorUndoStack.remove(donorUndoStack.size()-1);
             donorRedoStack.add(oldDonor);
             if (streamOut != null){
-                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
-                History.printToFile(streamOut, text);
+//                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
+//                History.printToFile(streamOut, text);
             }
             return newDonor;
         } else {
@@ -118,8 +118,8 @@ public class Main extends Application {
             addDonorToUndoStack(newDonor);
             donorRedoStack.remove(donorRedoStack.size()-1);
             if (streamOut != null) {
-                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
-                History.printToFile(streamOut, text);
+//                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
+//                History.printToFile(streamOut, text);
             }
             return oldDonor;
         } else {
@@ -145,7 +145,7 @@ public class Main extends Application {
         Main.createAccountController = createAccountController;
     }
 
-    public static void setAccountSettingsContorller(AccountSettingsController accountSettingsController) {
+    public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
         Main.accountSettingsController = accountSettingsController;
     }
 
@@ -452,6 +452,8 @@ public class Main extends Application {
             setScene(TFScene.login);
             stage.setResizable(false);
             stage.show();
+
+
         } catch (URISyntaxException e) {
             System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
             e.printStackTrace();
@@ -475,6 +477,13 @@ public class Main extends Application {
 
     @Override
     public void stop() {
+        try{
+            String text = History.prepareFileStringGUI(userWindowController.getCurrentDonor().getId(), "quit");
+            History.printToFile(Main.streamOut, text);
+        } catch(Exception e) {
+            System.out.println("Oh hello there");
+        }
+
         System.out.println("Exiting GUI");
         Platform.exit();
     }

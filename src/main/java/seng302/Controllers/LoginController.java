@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import seng302.Core.Clinician;
 import seng302.Core.Donor;
 import seng302.Core.Main;
@@ -64,6 +65,7 @@ public class LoginController implements Initializable {
                 if (currentDonor != null) {
                     Main.setCurrentDonor(currentDonor);
                     Main.setScene(TFScene.userWindow);
+
                 } else {
                     Main.setClinician(currentClinician);
                     Main.setScene(TFScene.clinician);

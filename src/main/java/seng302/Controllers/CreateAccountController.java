@@ -64,8 +64,10 @@ public class CreateAccountController implements Initializable {
             Donor newDonor = new Donor(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             Main.donors.add(newDonor);
-            String text = History.prepareFileStringGUI(newDonor.getId(), "create");
-            History.printToFile(Main.streamOut, text);
+            String text1 = History.prepareFileStringGUI(newDonor.getId(), "create");
+            History.printToFile(Main.streamOut, text1);
+            String text2 = History.prepareFileStringGUI(newDonor.getId(), "login");
+            History.printToFile(Main.streamOut, text2);
             Main.setCurrentDonor(newDonor);
             Main.saveUsers(Main.getDonorPath(), true);
             Main.setScene(TFScene.userWindow);

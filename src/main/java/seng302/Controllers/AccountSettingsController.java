@@ -3,10 +3,12 @@ package seng302.Controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import seng302.Core.Clinician;
 import seng302.Core.Donor;
 import seng302.Core.Main;
@@ -43,6 +45,8 @@ public class AccountSettingsController implements Initializable {
     @FXML
     private Label donorNameLabel;
 
+
+
     public void populateAccountDetails() {
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
@@ -71,8 +75,9 @@ public class AccountSettingsController implements Initializable {
 
             }
 
+            Stage stage = (Stage) updateButton.getScene().getWindow();
+            stage.close();
             Main.setCurrentDonor(currentDonor);
-            Main.setScene(TFScene.userWindow);
 
 
         } else {
@@ -81,18 +86,16 @@ public class AccountSettingsController implements Initializable {
 
     }
 
-//    public void tester() {
-//        usernameField.setBorder();
-//    }
 
     public void exit() {
-        Main.setScene(TFScene.userWindow);
+        Stage stage = (Stage) updateButton.getScene().getWindow();
+        stage.close();
     }
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setAccountSettingsContorller(this);
+        Main.setAccountSettingsController(this);
 
     }
 }
