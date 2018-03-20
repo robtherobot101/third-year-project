@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class ClinicianController implements Initializable {
 
-    
+
     private Clinician clinician;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -250,10 +250,13 @@ public class ClinicianController implements Initializable {
                     }
 
                     FXCollections.sort(donors, comparator);
-                    table.getItems().clear();
-                    table.getItems().addAll(getCurrentPage());
+                    ObservableList<Donor> updatedPage = getCurrentPage();
+                    for(int i = 0; i < profileTable.getItems().size(); i++){
+                        table.getItems().set(i, updatedPage.get(i));
+                    }
                     return true;
                 }catch(IndexOutOfBoundsException e){
+                    System.out.println("Error");
                     return false;
                 }catch(UnsupportedOperationException e){
                     return false;
