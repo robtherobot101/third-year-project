@@ -12,8 +12,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import seng302.Core.*;
@@ -137,11 +138,18 @@ public class UserWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+
+        Image welcomeImage = new Image("/OrganDonation.jpg");
+        BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+        welcomePane.setBackground(new Background(imageBackground));
 
     }
 
@@ -163,6 +171,13 @@ public class UserWindowController implements Initializable {
     public void showAttributesPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
+        historyGridPane.setVisible(false);
+        medicationsPane.setVisible(false);
+    }
+
+    public void showWelcomePane() {
+        welcomePane.setVisible(true);
+        attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
@@ -269,10 +284,6 @@ public class UserWindowController implements Initializable {
                 //Creating a tree table view
         historyTreeTableView.setRoot(root);
         historyTreeTableView.setShowRoot(true);
-
-
-
-
 
     }
 
