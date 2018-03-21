@@ -42,8 +42,6 @@ public class Main extends Application {
     public static PrintStream streamOut;
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
     private static String jarPath, donorPath, clinicianPath;
-    private static ArrayList<Donor> donorUndoStack = new ArrayList<>();
-    private static ArrayList<Donor> donorRedoStack = new ArrayList<>();
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
     private static LoginController loginController;
@@ -74,67 +72,6 @@ public class Main extends Application {
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
         accountSettingsController.setCurrentDonor(currentDonor);
         accountSettingsController.populateAccountDetails();
-    }
-
-    /**
-     * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
-     *
-     * @param donor donor object being added to the top of the stack.
-     */
-    public static void addDonorToUndoStack(Donor donor){
-        Donor prevDonor = new Donor(donor);
-        donorUndoStack.add(prevDonor);
-    }
-
-    /**
-     * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
-     * Then removes it from the undo stack and adds it to the redo stack.
-     *
-     * @return the most recent saved version of the donor.
-     */
-    public static Donor donorUndo(Donor oldDonor){
-        if (donorUndoStack != null){
-            Donor newDonor = donorUndoStack.get(donorUndoStack.size()-1);
-            donorUndoStack.remove(donorUndoStack.size()-1);
-            donorRedoStack.add(oldDonor);
-            if (streamOut != null){
-//                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
-//                History.printToFile(streamOut, text);
-            }
-            return newDonor;
-        } else {
-            System.out.println("Undo somehow being called with nothing to undo.");
-            return null;
-        }
-    }
-
-    /**
-     * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
-     * @return the donor on top of the redo stack.
-     */
-    public static Donor donorRedo(Donor newDonor){
-        if (donorRedoStack != null){
-            Donor oldDonor = donorRedoStack.get(donorRedoStack.size()-1);
-            addDonorToUndoStack(newDonor);
-            donorRedoStack.remove(donorRedoStack.size()-1);
-            if (streamOut != null) {
-//                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
-//                History.printToFile(streamOut, text);
-            }
-            return oldDonor;
-        } else {
-            System.out.println("Redo somehow being called with nothing to redo.");
-            return null;
-        }
-    }
-
-
-    public static ArrayList<Donor> getDonorUndoStack() {
-        return donorUndoStack;
-    }
-
-    public static ArrayList<Donor> getDonorRedoStack() {
-        return donorRedoStack;
     }
 
     public static void setLoginController(LoginController loginController) {

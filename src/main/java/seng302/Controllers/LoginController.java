@@ -100,11 +100,9 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Main.setLoginController(this);
         requestFocus();
-        identificationInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty());
-        });
-        passwordInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty());
-        });
+        identificationInput.textProperty().addListener((observable, oldValue, newValue) ->
+                loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
+        passwordInput.textProperty().addListener((observable, oldValue, newValue) ->
+                loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
     }
 }
