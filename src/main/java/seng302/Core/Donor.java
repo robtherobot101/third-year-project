@@ -131,9 +131,7 @@ public class Donor {
         this.smokerStatus = donor.smokerStatus;
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
-        for(Organ organ: donor.organs) {
-            this.organs.add(organ);
-        }
+        this.organs.addAll(donor.organs);
     }
 
     public String getName() {

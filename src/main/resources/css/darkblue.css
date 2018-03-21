@@ -99,6 +99,18 @@
 	-fx-text-fill: #edf3f8;
 	-fx-prompt-text-fill: #7ea9cd;
 }
+.combo-box-popup .list-view {
+    -fx-background-color: #2b506e;
+}    
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: #2b506e;
+	-fx-text-fill: #edf3f8;
+}
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {
+	-fx-background-color: #325d81;
+}
+
+
 .text-field:focused {
 	-fx-background-color: #325d81;
 }
@@ -173,16 +185,24 @@
 }
 
 
+.table-view .column-header-background,
 .tree-table-view .column-header-background,
 .tree-table-view .column-header-background > *,
+.table-view .column-header-background > *,
 .tree-table-view .column-header,
+.table-view .column-header,
+.table-view .column-header .label,
 .tree-table-view-row-cell,
+.table-view-row-cell,
 .tree-table-view .placeholder {
 	-fx-background-color: #2b506e;
+	-fx-text-fill: white;
 }
 
 .tree-view,
 .tree-table-view,
+.table-view,
+.table-view .filler,
 .tree-view:focused {
 	-fx-font-size: 14px;
 	-fx-focus-color: transparent;
@@ -206,19 +226,23 @@
 
 
 .tree-view .virtual-flow .scroll-bar .thumb,
+.table-view .virtual-flow .scroll-bar .thumb,
 .tree-table-view .virtual-flow .scroll-bar .thumb {
 	-fx-background-color: #6c9dc6;
 }
 
+.table-cell, 
 .tree-table-cell {
 	-fx-text-fill: #edf3f8;
 }
 
 .tree-view .tree-cell,
+.table-row-cell,
 .tree-table-row-cell {
 	-fx-background-color: #396a93;
 }
 .tree-view .tree-cell:selected,
+.table-row-cell:selected,
 .tree-table-row-cell:selected {
 	-fx-background-color: #4785b8;
 }

@@ -67,6 +67,7 @@ public class Main extends Application {
         userWindowController.setCurrentDonor(currentDonor);
         userWindowController.populateDonorFields();
         userWindowController.populateHistoryTable();
+        userWindowController.setupUndo();
     }
 
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {

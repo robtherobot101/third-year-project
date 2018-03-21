@@ -92,17 +92,17 @@
 						<RowConstraints maxHeight="266.8590087890625" minHeight="10.0" percentHeight="12.0" prefHeight="58.204071044921875" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
-						<TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308" promptText="First Name" GridPane.rowIndex="1">
+						<TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" promptText="First Name" GridPane.rowIndex="1">
 							<GridPane.margin>
 								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="middleNameField" maxWidth="1.7976931348623157E308" promptText="Middle Names" GridPane.columnIndex="1" GridPane.rowIndex="1">
+						<TextField fx:id="middleNameField" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" promptText="Middle Names" GridPane.columnIndex="1" GridPane.rowIndex="1">
 							<GridPane.margin>
 								<Insets left="20.0" right="20.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" promptText="Last Name" GridPane.columnIndex="2" GridPane.rowIndex="1">
+						<TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" promptText="Last Name" GridPane.columnIndex="2" GridPane.rowIndex="1">
 							<GridPane.margin>
 								<Insets left="20.0" right="25.0" />
 							</GridPane.margin>
@@ -116,7 +116,7 @@
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 							</columnConstraints>
 							<children>
-								<TextField fx:id="regionField" maxWidth="1.7976931348623157E308" promptText="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
+								<TextField fx:id="regionField" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" promptText="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
 									<GridPane.margin>
 										<Insets />
 									</GridPane.margin>
@@ -137,7 +137,7 @@
 										<Insets bottom="40.0" />
 									</GridPane.margin>
 								</Label>
-								<TextField fx:id="addressField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="310.0" promptText="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<TextField fx:id="addressField" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" prefHeight="27.0" prefWidth="310.0" promptText="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
 									<GridPane.margin>
 										<Insets />
 									</GridPane.margin>
@@ -148,12 +148,12 @@
                         <RowConstraints />
                      </rowConstraints>
 						</GridPane>
-						<DatePicker fx:id="dateOfBirthPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" promptText="Date of Birth" GridPane.rowIndex="3">
+						<DatePicker fx:id="dateOfBirthPicker" maxWidth="1.7976931348623157E308" onAction="#dateEdited" promptText="Date of Birth" GridPane.rowIndex="3">
 							<GridPane.margin>
 								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</DatePicker>
-						<DatePicker fx:id="dateOfDeathPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" promptText="Date of Death" GridPane.rowIndex="4">
+						<DatePicker fx:id="dateOfDeathPicker" maxWidth="1.7976931348623157E308" onAction="#dateEdited" promptText="Date of Death" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="25.0" right="20.0" />
 							</GridPane.margin>
@@ -168,12 +168,12 @@
 								<Insets left="20.0" right="40.0" />
 							</GridPane.margin>
 						</TextField>
-						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="158.0" promptText="Gender" GridPane.columnIndex="1" GridPane.rowIndex="4">
+						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" prefHeight="27.0" prefWidth="158.0" promptText="Gender" GridPane.columnIndex="1" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
 						</ComboBox>
-						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="167.0" promptText="Blood Type" GridPane.columnIndex="2" GridPane.rowIndex="4">
+						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" prefHeight="27.0" prefWidth="167.0" promptText="Blood Type" GridPane.columnIndex="2" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
@@ -192,12 +192,12 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-      						<CheckBox fx:id="liverCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Liver" GridPane.columnIndex="1" />
-      						<CheckBox fx:id="kidneyCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Kidney" GridPane.columnIndex="2" />
-      						<CheckBox fx:id="pancreasCheckBox" mnemonicParsing="false" text="Pancreas" GridPane.columnIndex="3" />
-      						<CheckBox fx:id="heartCheckBox" mnemonicParsing="false" text="Heart" GridPane.columnIndex="4" />
-      						<CheckBox fx:id="lungCheckBox" mnemonicParsing="false" text="Lung" GridPane.columnIndex="5" />
-      						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" text="Intestine" GridPane.columnIndex="6" />
+      						<CheckBox fx:id="liverCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fieldsEdited" text="Liver" GridPane.columnIndex="1" />
+      						<CheckBox fx:id="kidneyCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fieldsEdited" text="Kidney" GridPane.columnIndex="2" />
+      						<CheckBox fx:id="pancreasCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Pancreas" GridPane.columnIndex="3" />
+      						<CheckBox fx:id="heartCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Heart" GridPane.columnIndex="4" />
+      						<CheckBox fx:id="lungCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Lung" GridPane.columnIndex="5" />
+      						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Intestine" GridPane.columnIndex="6" />
                      </children>
                   </GridPane>
                   <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
@@ -213,27 +213,27 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-      						<CheckBox fx:id="corneaCheckBox" mnemonicParsing="false" text="Cornea" GridPane.columnIndex="1">
+      						<CheckBox fx:id="corneaCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Cornea" GridPane.columnIndex="1">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="middleEarCheckBox" mnemonicParsing="false" text="Middle Ear" GridPane.columnIndex="2" GridPane.columnSpan="2">
+      						<CheckBox fx:id="middleEarCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Middle Ear" GridPane.columnIndex="2" GridPane.columnSpan="2">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="skinCheckBox" mnemonicParsing="false" text="Skin" GridPane.columnIndex="3">
+      						<CheckBox fx:id="skinCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Skin" GridPane.columnIndex="3">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="boneMarrowCheckBox" mnemonicParsing="false" text="Bone Marrow" GridPane.columnIndex="4" GridPane.columnSpan="2">
+      						<CheckBox fx:id="boneMarrowCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Bone Marrow" GridPane.columnIndex="4" GridPane.columnSpan="2">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="connectiveTissueCheckBox" mnemonicParsing="false" text="Connective Tissue" GridPane.columnIndex="5">
+      						<CheckBox fx:id="connectiveTissueCheckBox" mnemonicParsing="false" onAction="#fieldsEdited" text="Connective Tissue" GridPane.columnIndex="5">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
@@ -382,12 +382,12 @@
 								<Insets bottom="40.0" left="25.0" />
 							</GridPane.margin>
 						</Label>
-                  <ComboBox fx:id="smokerStatusComboBox" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="7">
+                  <ComboBox fx:id="smokerStatusComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets left="25.0" right="20.0" />
                      </GridPane.margin>
                   </ComboBox>
-                  <ComboBox fx:id="alcoholConsumptionComboBox" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                  <ComboBox fx:id="alcoholConsumptionComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldsEdited" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets left="20.0" right="20.0" />
                      </GridPane.margin>

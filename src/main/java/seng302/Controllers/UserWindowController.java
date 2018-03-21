@@ -2,8 +2,10 @@ package seng302.Controllers;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import seng302.Core.*;
 import seng302.Files.History;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -132,7 +135,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private TreeTableColumn<String, String> actionColumn;
 
-    private boolean changeSinceLastUndoStackPush = false;
+    //private boolean changeSinceLastUndoStackPush = false;
 
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
@@ -212,23 +215,37 @@ public class UserWindowController implements Initializable {
                 BackgroundSize.DEFAULT);
         welcomePane.setBackground(new Background(imageBackground));
 
-        firstNameField.textProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
-        middleNameField.textProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
-        lastNameField.textProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
-        addressField.textProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
-        regionField.textProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
-        dateOfBirthPicker.chronologyProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
-        dateOfDeathPicker.chronologyProperty().addListener((observable, oldValue, newValue) -> fieldEdited());
+        /*
         heightField.textProperty().addListener((observable, oldValue, newValue) -> {
-            fieldEdited();
-        });
-        weightField.textProperty().addListener((observable, oldValue, newValue) -> {
-            fieldEdited();
-        });
+            try {
+                if (!newValue.isEmpty()) {
+                    double parsed = Double.parseDouble(newValue);
+                    if (parsed < 0) {
+                        ((StringProperty) observable).setValue(oldValue);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                ((StringProperty) observable).setValue(oldValue);
+            }
+        });*/
     }
 
-    private void fieldEdited() {
+    public void fieldsEdited() {
+        /*
+        System.out.println("test");
+        undoWelcomeButton.setDisable(false);
+        changeSinceLastUndoStackPush = true;*/
+    }
 
+    public void dateEdited() {
+        fieldsEdited();
+        updateAge();
+    }
+
+    public void setupUndo() {
+        /*
+        changeSinceLastUndoStackPush = false;
+        undoWelcomeButton.setDisable(true);*/
     }
 
     /**
@@ -814,6 +831,7 @@ public class UserWindowController implements Initializable {
      * Then calls the populate donor function to repopulate the donor fields.
      */
     public void save() {
+        //changeSinceLastUndoStackPush = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current donor? ");
@@ -841,6 +859,12 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
+        /*
+        if (changeSinceLastUndoStackPush) {
+            addDonorToUndoStack(currentDonor);
+            updateDonor();
+            changeSinceLastUndoStackPush = false;
+        }*/
 
         currentDonor = donorUndo(currentDonor);
 
@@ -854,7 +878,6 @@ public class UserWindowController implements Initializable {
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
         History.printToFile(streamOut, text);
         populateHistoryTable();
-
     }
 
     /**
