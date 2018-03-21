@@ -953,27 +953,27 @@ public class UserWindowController implements Initializable {
         dialog.setContentText("Please enter your password:");
 
         Optional<String> password = dialog.showAndWait();
-        if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword()))) {
-            System.out.println("Authenticated!");
-            try {
-                Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
-                Stage stage = new Stage();
-                stage.setTitle("Account Settings");
-                stage.setScene(new Scene(root, 270, 350));
-                stage.initModality(Modality.APPLICATION_MODAL);
-                Main.setCurrentDonorForAccountSettings(currentDonor);
-                stage.showAndWait();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(password.isPresent()){ //Ok was pressed, Else cancel
+            if(password.get().equals(currentDonor.getPassword())){
+                try {
+                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
+                    Stage stage = new Stage();
+                    stage.setTitle("Account Settings");
+                    stage.setScene(new Scene(root, 270, 350));
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    Main.setCurrentDonorForAccountSettings(currentDonor);
+                    stage.showAndWait();
+                } catch (Exception e) {
+                    System.out.println("here");
+                    e.printStackTrace();
+                }
+            }else{ // Password incorrect
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Incorrect");
+                alert.setHeaderText("Incorrect password. ");
+                alert.setContentText("Please enter the correct password to view account settings");
+                alert.show();
             }
-        } else if (!(password.get().equals(currentDonor.getPassword()))) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Incorrect");
-            alert.setHeaderText("Incorrect password. ");
-            alert.setContentText("Please enter the correct password to view account settings");
-            alert.show();
-        } else {
-            dialog.close();
         }
     }
 
