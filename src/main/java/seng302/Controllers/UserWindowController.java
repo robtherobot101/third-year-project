@@ -42,7 +42,6 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
-
     }
 
     @FXML
