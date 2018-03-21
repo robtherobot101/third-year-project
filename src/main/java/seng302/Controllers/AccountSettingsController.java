@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
  */
 public class AccountSettingsController implements Initializable {
 
+
     private Donor currentDonor;
 
     public void setCurrentDonor(Donor currentDonor) {
@@ -53,6 +54,7 @@ public class AccountSettingsController implements Initializable {
      * Populates the account details inputs based on the current donor's attributes.
      */
     public void populateAccountDetails() {
+        donorNameLabel.setText(currentDonor.getName());
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
         passwordField.setText(currentDonor.getPassword());
@@ -72,17 +74,9 @@ public class AccountSettingsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
 
-            if(!usernameField.getText().equals(currentDonor.getUsername())) {
-                currentDonor.setUsername(usernameField.getText());
-            }
-            if(!emailField.getText().equals(currentDonor.getEmail())) {
-                currentDonor.setEmail(emailField.getText());
-
-            }
-            if(!passwordField.getText().equals(currentDonor.getPassword())) {
-                currentDonor.setPassword(passwordField.getText());
-
-            }
+            currentDonor.setUsername(usernameField.getText());
+            currentDonor.setEmail(emailField.getText());
+            currentDonor.setPassword(passwordField.getText());
 
             String text = History.prepareFileStringGUI(currentDonor.getId(), "updateAccountSettings");
             History.printToFile(Main.streamOut, text);

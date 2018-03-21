@@ -15,6 +15,7 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import seng302.Core.*;
@@ -838,6 +839,8 @@ public class UserWindowController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
+
+
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
@@ -852,19 +855,23 @@ public class UserWindowController implements Initializable {
                 Stage stage = new Stage();
                 stage.setTitle("Account Settings");
                 stage.setScene(new Scene(root, 270, 350));
-                stage.show();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                Main.setCurrentDonorForAccountSettings(currentDonor);
+                stage.showAndWait();
             } catch(Exception e) {
                 e.printStackTrace();
             }
 
-            Main.setCurrentDonorForAccountSettings(currentDonor);
 
-        } else {
+
+        } else if(!(password.get().equals(currentDonor.getPassword()))){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Incorrect");
             alert.setHeaderText("Incorrect password. ");
             alert.setContentText("Please enter the correct password to view account settings");
             alert.show();
+        } else {
+            dialog.close();
         }
     }
 
