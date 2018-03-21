@@ -229,6 +229,10 @@ public class History {
         return text;
     }
 
+    /**
+     * Function which takes the action history text file and parses it to create a string of all the user history.
+     * @return A string of all the action history for the application.
+     */
     public static String readFile(){
 
         String line = null;
@@ -257,6 +261,11 @@ public class History {
         return actionHistoryString;
     }
 
+    /**
+     * Function which parses the history text file for all the actions for the given user.
+     * @param userid the given user which we are looking for the history
+     * @return A two dimensional string list for each users actions with the second list being the action history broken up
+     */
     public static String[][] getUserHistory(long userid) {
 
         String history = readFile();

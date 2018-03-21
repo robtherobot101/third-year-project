@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Class to handle all the logic for the Account Settings window.
+ */
 public class AccountSettingsController implements Initializable {
 
     private Donor currentDonor;
@@ -46,13 +49,19 @@ public class AccountSettingsController implements Initializable {
     private Label donorNameLabel;
 
 
-
+    /**
+     * Populates the account details inputs based on the current donor's attributes.
+     */
     public void populateAccountDetails() {
         usernameField.setText(currentDonor.getUsername());
         emailField.setText(currentDonor.getEmail());
         passwordField.setText(currentDonor.getPassword());
     }
 
+    /**
+     * Function which is called when the user presses the 'Update' button, updating
+     * the account details of the user based on the current inputs.
+     */
     public void updateAccountDetails() {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -89,7 +98,9 @@ public class AccountSettingsController implements Initializable {
 
     }
 
-
+    /**
+     * Function which closes the current stage upon the user pressing the 'cancel' button.
+     */
     public void exit() {
         Stage stage = (Stage) updateButton.getScene().getWindow();
         stage.close();

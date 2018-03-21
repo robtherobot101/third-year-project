@@ -26,6 +26,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Class which handles all the logic for the User Window.
+ * Handles all functions including:
+ * Saving, Undo, Redo, All input fields and more.
+ */
 public class UserWindowController implements Initializable {
 
     private Donor currentDonor;
@@ -153,6 +158,9 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Sets the history pane as the visible pane
+     */
     public void showHistoryPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
@@ -161,6 +169,9 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Sets the medications pane as the visible pane
+     */
     public void showMedicationsPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
@@ -168,6 +179,9 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(true);
     }
 
+    /**
+     * Sets the Donor Attributes pane as the visible pane
+     */
     public void showAttributesPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
@@ -175,6 +189,9 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
     }
 
+    /**
+     * Sets the welcome pane as the visible pane
+     */
     public void showWelcomePane() {
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
@@ -182,6 +199,11 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
     }
 
+    /**
+     * Populates the history table based on the action history of the current user.
+     * Gets the user history from the History.getUserHistory() function.
+     * Sorts these into tree nodes based on new sessions.
+     */
     public void populateHistoryTable() {
 
         userHistoryLabel.setText("History of actions for " + currentDonor.getName());
@@ -287,6 +309,10 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Function which takes the current donor object that has logged in and
+     * takes all their attributes and populates the donor attributes on the attributes pane accordingly.
+     */
     public void populateDonorFields() {
 
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
@@ -456,10 +482,12 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Function which takes all the inputs of the user attributes window.
+     * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
+     */
     public void updateDonor() {
 
-        //TODO
-        //Problem with middle names
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
         String lastName = lastNameField.getText();
@@ -682,7 +710,6 @@ public class UserWindowController implements Initializable {
             settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
             userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
             System.out.println(currentDonor.toString());
-            //TODO Implement save function, saving to database and updating the old donor.
             Main.saveUsers(Main.getDonorPath(), true);
 
         } catch(Exception e) {
@@ -691,6 +718,11 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Saves the current state of the GUI.
+     * Gets all the inputs for the user attributes and sets the user attributes to those by calling the update donor function.
+     * Then calls the populate donor function to repopulate the donor fields.
+     */
     public void save() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
@@ -755,6 +787,9 @@ public class UserWindowController implements Initializable {
         populateHistoryTable();
     }
 
+    /**
+     * Updates the age label for the user window based on the date of birth and death of the user.
+     */
     public void updateAge() {
         LocalDate dobirthPick = dateOfBirthPicker.getValue();
         LocalDate dodeathPick = dateOfDeathPicker.getValue();
@@ -775,6 +810,9 @@ public class UserWindowController implements Initializable {
         }
     }
 
+    /**
+     * Updates the BMI label for the user based on the height and weight fields inputted.
+     */
     public void updateBMI() {
         try {
 
@@ -796,6 +834,10 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Function which is called when the user wants to update their account settings in the user Window,
+     * and creates a new account settings window to do so. Then does a prompt for the password as well.
+     */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("View Account Settings");
@@ -827,7 +869,9 @@ public class UserWindowController implements Initializable {
         }
     }
 
-
+    /**
+     * Function which is called when the user wants to exit the application.
+     */
     public void stop() {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
