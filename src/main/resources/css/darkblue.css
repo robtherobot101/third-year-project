@@ -171,3 +171,54 @@
 .progress-bar .bar {
 	-fx-background-color: #1d3549;
 }
+
+
+.tree-table-view .column-header-background,
+.tree-table-view .column-header-background > *,
+.tree-table-view .column-header,
+.tree-table-view-row-cell,
+.tree-table-view .placeholder {
+	-fx-background-color: #2b506e;
+}
+
+.tree-view,
+.tree-table-view,
+.tree-view:focused {
+	-fx-font-size: 14px;
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
+	-fx-background-color: #396a93;
+	-fx-box-border: hidden;
+	-fx-background-radius: 0px;
+	-fx-background-insets: 0px;
+}
+
+.list-view > .virtual-flow > .scroll-bar,
+.table-view > .virtual-flow > .scroll-bar,
+.tree-table-view > .virtual-flow > .scroll-bar,
+.tree-view > .virtual-flow > .scroll-bar,
+.list-view > .virtual-flow > .corner,
+.table-view > .virtual-flow > .corner,
+.tree-table-view > .virtual-flow > .corner,
+.tree-view > .virtual-flow > .corner {
+	-fx-background-color: #396a93;
+}
+
+
+.tree-view .virtual-flow .scroll-bar .thumb,
+.tree-table-view .virtual-flow .scroll-bar .thumb {
+	-fx-background-color: #6c9dc6;
+}
+
+.tree-table-cell {
+	-fx-text-fill: #edf3f8;
+}
+
+.tree-view .tree-cell,
+.tree-table-row-cell {
+	-fx-background-color: #396a93;
+}
+.tree-view .tree-cell:selected,
+.tree-table-row-cell:selected {
+	-fx-background-color: #4785b8;
+}

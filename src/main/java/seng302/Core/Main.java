@@ -589,7 +589,7 @@ public class Main extends Application {
 
     public static void setScene(TFScene scene) {
         stage.setScene(scenes.get(scene));
-        stage.setResizable(scene == TFScene.userWindow);
+        stage.setResizable(scene == TFScene.userWindow || scene == TFScene.clinician);
 
     }
 

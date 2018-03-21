@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -50,7 +50,7 @@
 						<MenuItem mnemonicParsing="false" onAction="#stop" text="Exit" />
 					</items>
 				</Menu>
-				<Menu mnemonicParsing="false" text="Help">
+				<Menu mnemonicParsing="false" text="Help" visible="false">
 					<items>
 						<MenuItem mnemonicParsing="false" text="About..." />
 						<MenuItem mnemonicParsing="false" text="Available Commands" />
@@ -461,10 +461,10 @@
 						</Label>
 					</children>
 				</AnchorPane>
-            <GridPane fx:id="historyGridPane" layoutX="265.0" layoutY="11.0" prefHeight="469.0" prefWidth="624.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <GridPane fx:id="historyGridPane" layoutX="265.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="469.0" prefWidth="624.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.0958251953125" minWidth="10.0" prefWidth="328.41766357421875" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="351.71258544921875" minWidth="10.0" prefWidth="345.58233642578125" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.41766357421875" minWidth="10.0" prefWidth="328.41766357421875" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="345.58233642578125" minWidth="10.0" prefWidth="345.58233642578125" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="152.86978149414062" minHeight="10.0" percentHeight="12.0" prefHeight="106.28005981445312" vgrow="SOMETIMES" />
@@ -480,7 +480,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TreeTableView fx:id="historyTreeTableView" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                  <TreeTableView fx:id="historyTreeTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets left="25.0" right="25.0" />
                      </GridPane.margin>
@@ -523,17 +523,17 @@
                   <Insets left="10.0" />
                </padding>
 				</Label>
-            <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER">
+            <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="undoWelcomeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER">
+            <Button fx:id="undoWelcomeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="redoWelcomeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER">
+            <Button fx:id="redoWelcomeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
                <font>
                   <Font size="14.0" />
                </font>
