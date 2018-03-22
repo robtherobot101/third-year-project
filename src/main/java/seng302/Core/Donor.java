@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
@@ -111,7 +112,7 @@ public class Donor {
 
     /**
      * Used to create a deep copy of the object.
-     * @param donor
+     * @param donor The donor to make a copy of
      */
     public Donor(Donor donor) {
         this.name = donor.name;
@@ -124,14 +125,40 @@ public class Donor {
         this.region = donor.region;
         this.currentAddress = donor.currentAddress;
         this.creationTime = donor.creationTime;
-        this.username = donor.username;
-        this.email = donor.email;
-        this.password = donor.password;
         this.id = donor.id;
         this.smokerStatus = donor.smokerStatus;
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
         this.organs.addAll(donor.organs);
+    }
+
+    public boolean fieldsEqual(Donor donor) {
+        return (Arrays.equals(name, donor.getNameArray()) &&
+                dateOfBirth == donor.getDateOfBirth() &&
+                dateOfDeath == donor.getDateOfDeath() &&
+                gender == donor.getGender() &&
+                bloodType == donor.getBloodType() &&
+                height == donor.getHeight() &&
+                weight == donor.getWeight() &&
+                stringEqual(region, donor.getRegion()) &&
+                stringEqual(currentAddress, donor.getCurrentAddress()) &&
+                stringEqual(username, donor.getUsername()) &&
+                stringEqual(email, donor.getEmail()) &&
+                stringEqual(password, donor.getPassword()) &&
+                id == donor.getId() &&
+                smokerStatus == donor.getSmokerStatus() &&
+                stringEqual(bloodPressure, donor.getBloodPressure()) &&
+                alcoholConsumption == donor.getAlcoholConsumption() &&
+                organs.equals(donor.getOrgans())
+        );
+    }
+
+    private boolean stringEqual(String s1, String s2) {
+        if (s1 == null) {
+            return s2 == null;
+        } else {
+            return s2 != null && s1.equals(s2);
+        }
     }
 
     public String getName() {
@@ -148,6 +175,10 @@ public class Donor {
     public void setEmail(String email) { this.email = email; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
 
     public String[] getNameArray() {
         return name;

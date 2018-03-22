@@ -140,23 +140,25 @@ public class UserWindowController implements Initializable {
 
 
     //private boolean changeSinceLastUndoStackPush = false;
+    @FXML
+    private GridPane background;
 
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
 
 
+    private boolean ignoreFieldChanges = false;
+
     /**
      * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
      *
-Example 26-7 calculates the day interval between the date selected in the checkInDatePicker and the current date cell. The result is rendered in the cell tooltip.
-
-
      * @param donor donor object being added to the top of the stack.
      */
     public void addDonorToUndoStack(Donor donor) {
         Donor prevDonor = new Donor(donor);
         donorUndoStack.add(prevDonor);
     }
+
 
     /**
      * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
@@ -224,6 +226,39 @@ Example 26-7 calculates the day interval between the date selected in the checkI
                 BackgroundSize.DEFAULT);
         welcomePane.setBackground(new Background(imageBackground));
 
+        firstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        middleNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        lastNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        addressField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        regionField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        dateOfBirthPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        heightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        weightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        bloodPressureTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+
+        heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
+        weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         /*
         heightField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
@@ -239,22 +274,28 @@ Example 26-7 calculates the day interval between the date selected in the checkI
         });*/
     }
 
-    public void fieldsEdited() {
-        /*
-        System.out.println("test");
-        undoWelcomeButton.setDisable(false);
-        changeSinceLastUndoStackPush = true;*/
+    /**
+     * Removes focus from all fields.
+     */
+    public void requestFocus() {
+        background.requestFocus();
     }
 
-    public void dateEdited() {
-        fieldsEdited();
-        updateAge();
-    }
+    public void fieldUnfocused() {
+        if (!ignoreFieldChanges) {
+            Donor oldFields = new Donor(currentDonor);
+            updateDonor();
+            System.out.println("updating fields: " + currentDonor.fieldsEqual(oldFields));
+            if (!currentDonor.fieldsEqual(oldFields)) {
+                addDonorToUndoStack(oldFields);
+                undoButton.setDisable(false);
+                undoWelcomeButton.setDisable(false);
 
-    public void setupUndo() {
-        /*
-        changeSinceLastUndoStackPush = false;
-        undoWelcomeButton.setDisable(true);*/
+                donorRedoStack.clear();
+                redoButton.setDisable(true);
+                redoWelcomeButton.setDisable(true);
+            }
+        }
     }
 
     /**
@@ -343,7 +384,7 @@ Example 26-7 calculates the day interval between the date selected in the checkI
                             "at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-                System.out.println(userHistory[i][4]);
+                //System.out.println(userHistory[i][4]);
                 if (userHistory[i][4].equals("updateAccountSettings")) {
                     TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
                             " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]);
@@ -413,7 +454,7 @@ Example 26-7 calculates the day interval between the date selected in the checkI
      * takes all their attributes and populates the donor attributes on the attributes pane accordingly.
      */
     public void populateDonorFields() {
-
+        ignoreFieldChanges = true;
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
         firstNameField.setText(splitNames[0]);
@@ -449,6 +490,7 @@ Example 26-7 calculates the day interval between the date selected in the checkI
         ObservableList<String> bloodTypes =
                 FXCollections.observableArrayList(
                         "A-",
+                        "A+",
                         "A+",
                         "B-",
                         "B+",
@@ -578,7 +620,7 @@ Example 26-7 calculates the day interval between the date selected in the checkI
         }
 
         updateBMI();
-
+        ignoreFieldChanges = false;
     }
 
     /**
@@ -646,28 +688,32 @@ Example 26-7 calculates the day interval between the date selected in the checkI
 
         AlcoholConsumption alcoholConsumption;
         String alcoholPick = (String) alcoholConsumptionComboBox.getValue();
-        switch (alcoholPick) {
-            case "None":
-                alcoholConsumption = AlcoholConsumption.NONE;
-                break;
-            case "Low":
-                alcoholConsumption = AlcoholConsumption.LOW;
-                break;
-            case "Average":
-                alcoholConsumption = AlcoholConsumption.AVERAGE;
-                break;
-            case "High":
-                alcoholConsumption = AlcoholConsumption.HIGH;
-                break;
-            case "Very High":
-                alcoholConsumption = AlcoholConsumption.VERYHIGH;
-                break;
-            case "Alcoholic":
-                alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
-                break;
-            default:
-                alcoholConsumption = null;
-                break;
+        if (alcoholPick != null) {
+            switch (alcoholPick) {
+                case "None":
+                    alcoholConsumption = AlcoholConsumption.NONE;
+                    break;
+                case "Low":
+                    alcoholConsumption = AlcoholConsumption.LOW;
+                    break;
+                case "Average":
+                    alcoholConsumption = AlcoholConsumption.AVERAGE;
+                    break;
+                case "High":
+                    alcoholConsumption = AlcoholConsumption.HIGH;
+                    break;
+                case "Very High":
+                    alcoholConsumption = AlcoholConsumption.VERYHIGH;
+                    break;
+                case "Alcoholic":
+                    alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
+                    break;
+                default:
+                    alcoholConsumption = null;
+                    break;
+            }
+        } else {
+            alcoholConsumption = null;
         }
 
         BloodType donorBloodType = null;
@@ -741,10 +787,40 @@ Example 26-7 calculates the day interval between the date selected in the checkI
         }
         currentDonor.setWeight(donorWeight);
 
+        LocalDate currentDate = LocalDate.now();
+        System.out.println(currentDate);
+        System.out.println(dateOfBirthPicker.getValue());
+        if(dateOfBirthPicker.getValue().isAfter(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Date Input.");
+            alert.setContentText("The date of birth cannot be after today.");
+            alert.show();
+            return;
+        } else if(dateOfDeathPicker.getValue().isAfter(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Date Input ");
+            alert.setContentText("The date of death cannot be after today.");
+            alert.show();
+            return;
+        } else {
+            if(dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Date Input ");
+                alert.setContentText("The date of birth cannot be after the date of death.");
+                alert.show();
+                return;
+            } else {
+                currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
+                currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+            }
+        }
+
 
         try {
-            currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
-            currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+
             currentDonor.setGender(donorGender);
             currentDonor.setBloodType(donorBloodType);
             currentDonor.setRegion(regionField.getText());
@@ -868,12 +944,8 @@ Example 26-7 calculates the day interval between the date selected in the checkI
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
-        /*
-        if (changeSinceLastUndoStackPush) {
-            addDonorToUndoStack(currentDonor);
-            updateDonor();
-            changeSinceLastUndoStackPush = false;
-        }*/
+        System.out.println(donorUndoStack);
+        System.out.println(donorRedoStack);
 
         currentDonor = donorUndo(currentDonor);
 
@@ -917,16 +989,24 @@ Example 26-7 calculates the day interval between the date selected in the checkI
         if (dodeathPick == null) {
             LocalDate today = LocalDate.now();
             long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
-            double years = days / 365.00;
-            System.out.println(years);
-            String age = String.format("%.1f", years);
-            ageLabel.setText("Age: " + age + " years");
+            double years = days/365.00;
+            if(years < 0) {
+                ageLabel.setText("Age: Invalid Input");
+            } else {
+                String age = String.format("%.1f", years);
+                ageLabel.setText("Age: " + age + " years");
+            }
+
         } else {
             long days = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays();
-            double years = days / 365.00;
-            System.out.println(years);
-            String age = String.format("%.1f", years);
-            ageLabel.setText("Age: " + age + " years (At Death)");
+            double years = days/365.00;
+            if(years < 0) {
+                ageLabel.setText("Age: Invalid Input");
+            } else {
+                String age = String.format("%.1f", years);
+                ageLabel.setText("Age: " + age + " years (At Death)");
+            }
+
         }
     }
 
@@ -944,8 +1024,8 @@ Example 26-7 calculates the day interval between the date selected in the checkI
                 String bmiString = String.format("%.2f", BMI);
                 bmiLabel.setText("BMI: " + bmiString);
             }
-        } catch (Exception e) {
-            System.out.println("Enter a valid character.");
+        } catch(Exception e) {
+            bmiLabel.setText("BMI: Invalid Input");
 
         }
 
@@ -983,6 +1063,26 @@ Example 26-7 calculates the day interval between the date selected in the checkI
                 alert.setContentText("Please enter the correct password to view account settings");
                 alert.show();
             }
+        }
+    }
+
+    /**
+     * Function which is called when the user wants to logout of the application and log into a new user
+     */
+    public void logout() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Are you sure?");
+        alert.setHeaderText("Are you sure would like to log out? ");
+        alert.setContentText("Logging out without saving loses your non-saved data.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            System.out.println("Exiting GUI");
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            History.printToFile(streamOut, text);
+            Main.setScene(TFScene.login);
+        } else {
+            alert.close();
         }
     }
 
