@@ -397,6 +397,11 @@
                         <Insets left="160.0" />
                      </GridPane.margin>
                   </Label>
+                  <Label fx:id="bloodPressureLabel" prefHeight="17.0" prefWidth="116.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                     <GridPane.margin>
+                        <Insets bottom="50.0" left="50.0" />
+                     </GridPane.margin>
+                  </Label>
 					</children>
 				</GridPane>
 				<AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">

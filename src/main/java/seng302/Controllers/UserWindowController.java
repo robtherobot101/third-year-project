@@ -43,6 +43,7 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
+        bloodPressureLabel.setText("");
     }
 
     @FXML
@@ -119,6 +120,8 @@ public class UserWindowController implements Initializable {
     private TextField bloodPressureTextField;
     @FXML
     private ComboBox alcoholConsumptionComboBox;
+    @FXML
+    private Label bloodPressureLabel;
 
 
     @FXML
@@ -136,6 +139,8 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> actionColumn;
     @FXML
     private GridPane background;
+
+
 
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
@@ -251,6 +256,7 @@ public class UserWindowController implements Initializable {
 
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
+        bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
         /*
         heightField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
@@ -613,6 +619,7 @@ public class UserWindowController implements Initializable {
         }
 
         updateBMI();
+        updateBloodPressure();
         ignoreFieldChanges = false;
     }
 
@@ -780,6 +787,45 @@ public class UserWindowController implements Initializable {
         }
         currentDonor.setWeight(donorWeight);
 
+        String donorBloodPressure = "";
+        if (!bloodPressureTextField.getText().equals("")) {
+            try {
+                String[] bloodPressureList = bloodPressureTextField.getText().split("/");
+                if(bloodPressureList.length != 2) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error with the Blood Pressure Input ");
+                    alert.setContentText("Please input a valid blood pressure input.");
+                    alert.show();
+                    return;
+                } else {
+                    for(int i = 0; i < bloodPressureList.length; i++) {
+                        try{
+                            int pressure = Integer.parseInt(bloodPressureList[i]);
+                        } catch(Exception e){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Error with the Blood Pressure Input ");
+                            alert.setContentText("Please input a valid blood pressure input.");
+                            alert.show();
+                            return;
+                        }
+                    }
+                    donorBloodPressure = bloodPressureTextField.getText();
+
+                }
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Blood Pressure Input ");
+                alert.setContentText("Please input a valid blood pressure input.");
+                alert.show();
+                return;
+            }
+        }
+        currentDonor.setBloodPressure(donorBloodPressure);
+
+
         LocalDate currentDate = LocalDate.now();
         System.out.println(currentDate);
         System.out.println(dateOfBirthPicker.getValue());
@@ -820,7 +866,7 @@ public class UserWindowController implements Initializable {
             currentDonor.setCurrentAddress(addressField.getText());
             currentDonor.setSmokerStatus(smokerStatus);
             currentDonor.setAlcoholConsumption(alcoholConsumption);
-            currentDonor.setBloodPressure(bloodPressureTextField.getText());
+
 
 
             if (liverCheckBox.isSelected()) {
@@ -1030,9 +1076,28 @@ public class UserWindowController implements Initializable {
     public void updateBloodPressure() {
         try {
             String userBloodPressure = bloodPressureTextField.getText();
+            String[] pressureList = userBloodPressure.split("/");
+            if(userBloodPressure.equals("")) {
+                bloodPressureLabel.setText("");
+                return;
+            } else if(pressureList.length != 2) {
+                bloodPressureLabel.setText("Invalid Input.");
+                return;
+            } else {
+                for(int i = 0; i < pressureList.length; i++) {
+                    try{
+                        int pressure = Integer.parseInt(pressureList[i]);
+                    } catch(Exception e){
+                        bloodPressureLabel.setText("Invalid Input.");
+                        return;
+                    }
+                }
+                bloodPressureLabel.setText("");
+            }
 
         } catch(Exception e) {
             bloodPressureLabel.setText("Invalid Input.");
+            return;
         }
     }
 
