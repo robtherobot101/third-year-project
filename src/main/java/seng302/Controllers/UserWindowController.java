@@ -427,6 +427,7 @@ public class UserWindowController implements Initializable {
         historyTreeTableView.setRoot(root);
         historyTreeTableView.setShowRoot(true);
 
+
     }
 
     /**
@@ -969,7 +970,7 @@ public class UserWindowController implements Initializable {
             long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
             double years = days/365.00;
             if(years < 0) {
-                ageLabel.setText("Age: Invalid Input");
+                ageLabel.setText("Age: Invalid Input.");
             } else {
                 String age = String.format("%.1f", years);
                 ageLabel.setText("Age: " + age + " years");
@@ -979,7 +980,7 @@ public class UserWindowController implements Initializable {
             long days = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays();
             double years = days/365.00;
             if(years < 0) {
-                ageLabel.setText("Age: Invalid Input");
+                ageLabel.setText("Age: Invalid Input.");
             } else {
                 String age = String.format("%.1f", years);
                 ageLabel.setText("Age: " + age + " years (At Death)");
@@ -1003,10 +1004,22 @@ public class UserWindowController implements Initializable {
                 bmiLabel.setText("BMI: " + bmiString);
             }
         } catch(Exception e) {
-            bmiLabel.setText("BMI: Invalid Input");
+            bmiLabel.setText("BMI: Invalid Input.");
 
         }
 
+    }
+
+    /**
+     * Updates the validity label of the blood pressure based on the input from the user.
+     */
+    public void updateBloodPressure() {
+        try {
+            String userBloodPressure = bloodPressureTextField.getText();
+
+        } catch(Exception e) {
+            bloodPressureLabel.setText("Invalid Input.");
+        }
     }
 
     /**
