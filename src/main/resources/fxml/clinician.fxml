@@ -37,7 +37,7 @@
         </menus>
       </MenuBar>
       <Label fx:id="staffIDLabel" layoutX="99.0" layoutY="45.0" text="ID#" />
-      <Label fx:id="updatedSuccessfully" layoutX="635.0" layoutY="45.0" opacity="0.0" text="Updated Successfully" />
+      <Label fx:id="updatedSuccessfully" layoutX="655.0" layoutY="119.0" opacity="0.0" text="Updated Successfully" />
       <Label layoutX="29.0" layoutY="45.0" text="Staff ID: " />
       <Label layoutX="29.0" layoutY="70.0" text="Name" />
       <Label layoutX="237.0" layoutY="70.0" text="Address" />
@@ -55,6 +55,8 @@
       <Button fx:id="nextPageButton" layoutX="733.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#nextPage" text="Next" AnchorPane.topAnchor="142.0" />
       <Button fx:id="previousPageButton" layoutX="653.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#previousPage" text="Previous" AnchorPane.topAnchor="142.0" />
       <Label layoutX="29.0" layoutY="127.0" text="Search" AnchorPane.topAnchor="127.0" />
+      <Button fx:id="undoButton" disable="true" layoutX="653.0" layoutY="37.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+      <Button fx:id="redoButton" disable="true" layoutX="711.0" layoutY="37.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
       <Button fx:id="accountSettingsButton" layoutX="640.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#accountSettings" text="Account Settings" />
    </children>
 </AnchorPane>

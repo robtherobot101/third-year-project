@@ -78,11 +78,20 @@ public class ClinicianController implements Initializable {
     @FXML
     private Button accountSettingsButton;
 
+    @FXML
+    private Button undoButton;
+
+    @FXML
+    private Button redoButton;
+
     private int resultsPerPage;
     private int page = 1;
     private ArrayList<Donor> donorsFound;
 
-    private ArrayList<UserWindowController> userWindows = new ArrayList<>();
+    private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
+
+    private ArrayList<Clinician> clinicianUndoStack = new ArrayList<>();
+    private ArrayList<Clinician> clinicianRedoStack = new ArrayList<>();
 
 
     private ObservableList<Donor> currentPage = FXCollections.observableArrayList();
@@ -103,6 +112,7 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
+        System.out.print(clinician);
         nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
@@ -152,6 +162,7 @@ public class ClinicianController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateClinician() {
+        addClinicianToUndoStack(clinician);
         clinician.setName(nameInput.getText());
         clinician.setWorkAddress(addressInput.getText());
         clinician.setRegion(regionInput.getText());
@@ -179,6 +190,75 @@ public class ClinicianController implements Initializable {
      * Changes the focus to the pane when pressed
      */
     public void requestFocus() { background.requestFocus(); }
+
+    /**
+     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
+     */
+    public void undo(){
+        clinician = clinicianUndo(clinician);
+        updateDisplay();
+        redoButton.setDisable(false);
+
+        if (clinicianUndoStack.isEmpty()){
+            undoButton.setDisable(true);
+        }
+    }
+
+    /**
+     * The main clincian redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
+     */
+    public void redo(){
+        clinician = clinicianRedo(clinician);
+        updateDisplay();
+        undoButton.setDisable(false);
+        if(clinicianRedoStack.isEmpty()){
+            redoButton.setDisable(true);
+        }
+    }
+
+    /**
+     * Reads the top element of the undo stack and removes it, while placing the current clinician in the redo stack.
+     * Then returns the clinician from the undo stack.
+     * @param oldClinician the clincian being placed in the redo stack.
+     * @return the previous iteration of the clinician object.
+     */
+    public Clinician clinicianUndo(Clinician oldClinician) {
+        if (clinicianUndoStack != null) {
+            Clinician newClinician = clinicianUndoStack.get(clinicianUndoStack.size() - 1);
+            clinicianUndoStack.remove(clinicianUndoStack.size() - 1);
+            clinicianRedoStack.add(oldClinician);
+            return newClinician;
+        }
+        return null;
+    }
+
+    /**
+     * Creates a deep copy of the current clinician and adds that copy to the undo stack. Then updates the GUI button to be usable.
+     * @param clinician the clinician object being copied.
+     */
+    public void addClinicianToUndoStack(Clinician clinician) {
+        Clinician prevClinician = new Clinician(clinician);
+        clinicianUndoStack.add(prevClinician);
+        if (undoButton.isDisable()) {
+            undoButton.setDisable(false);
+        }
+    }
+
+    /**
+     * Pops the topmost clinician object from the redo stack and returns it, while adding the provided clinician object to the undo stack.
+     * @param newClinician the clinican being placed on the undo stack.
+     * @return the topmost clinician object on the redo stack.
+     */
+    public Clinician clinicianRedo(Clinician newClinician){
+        if (clinicianRedoStack != null) {
+            Clinician oldClinician = clinicianRedoStack.get(clinicianRedoStack.size() - 1);
+            addClinicianToUndoStack(newClinician);
+            clinicianRedoStack.remove(clinicianRedoStack.size() - 1);
+            return oldClinician;
+        } else{
+            return null;
+        }
+    }
 
 
     /**
@@ -355,6 +435,8 @@ public class ClinicianController implements Initializable {
                 return row;
             }
         });
+
+
 
         /**
          * Sorts of the profileTable across all pages.
