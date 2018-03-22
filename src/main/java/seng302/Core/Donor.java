@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
@@ -111,7 +112,7 @@ public class Donor {
 
     /**
      * Used to create a deep copy of the object.
-     * @param donor
+     * @param donor The donor to make a copy of
      */
     public Donor(Donor donor) {
         this.name = donor.name;
@@ -134,6 +135,27 @@ public class Donor {
         this.organs.addAll(donor.organs);
     }
 
+    public boolean fieldsEqual(Donor donor) {
+        return (Arrays.equals(name, donor.getNameArray()) &&
+                dateOfBirth == donor.getDateOfBirth() &&
+                dateOfDeath == donor.getDateOfDeath() &&
+                gender == donor.getGender() &&
+                bloodType == donor.getBloodType() &&
+                height == donor.getHeight() &&
+                weight == donor.getWeight() &&
+                region.equals(donor.getRegion()) &&
+                currentAddress.equals(donor.getCurrentAddress()) &&
+                username.equals(donor.getUsername()) &&
+                email.equals(donor.getEmail()) &&
+                password.equals(donor.getPassword()) &&
+                id == donor.getId() &&
+                smokerStatus == donor.getSmokerStatus() &&
+                bloodPressure.equals(donor.getBloodPressure()) &&
+                alcoholConsumption == donor.getAlcoholConsumption() &&
+                organs == donor.getOrgans()
+        );
+    }
+
     public String getName() {
         return String.join(" ", name);
     }
@@ -148,6 +170,10 @@ public class Donor {
     public void setEmail(String email) { this.email = email; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
 
     public String[] getNameArray() {
         return name;

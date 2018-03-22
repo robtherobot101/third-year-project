@@ -134,8 +134,8 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn;
     @FXML
     private TreeTableColumn<String, String> actionColumn;
-
-    //private boolean changeSinceLastUndoStackPush = false;
+    @FXML
+    private GridPane background;
 
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
@@ -148,6 +148,10 @@ public class UserWindowController implements Initializable {
     public void addDonorToUndoStack(Donor donor) {
         Donor prevDonor = new Donor(donor);
         donorUndoStack.add(prevDonor);
+    }
+
+    public void logout() {
+
     }
 
     /**
@@ -215,6 +219,39 @@ public class UserWindowController implements Initializable {
                 BackgroundSize.DEFAULT);
         welcomePane.setBackground(new Background(imageBackground));
 
+        firstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        middleNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        lastNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        addressField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        regionField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        dateOfBirthPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        heightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        weightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+        bloodPressureTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) fieldUnfocused();
+        });
+
+        heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
+        weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         /*
         heightField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
@@ -230,22 +267,18 @@ public class UserWindowController implements Initializable {
         });*/
     }
 
-    public void fieldsEdited() {
+    /**
+     * Removes focus from all fields.
+     */
+    public void requestFocus() {
+        background.requestFocus();
+    }
+
+    public void fieldUnfocused() {
+        System.out.println("asd");
         /*
         System.out.println("test");
-        undoWelcomeButton.setDisable(false);
-        changeSinceLastUndoStackPush = true;*/
-    }
-
-    public void dateEdited() {
-        fieldsEdited();
-        updateAge();
-    }
-
-    public void setupUndo() {
-        /*
-        changeSinceLastUndoStackPush = false;
-        undoWelcomeButton.setDisable(true);*/
+        undoWelcomeButton.setDisable(false);*/
     }
 
     /**
@@ -404,7 +437,6 @@ public class UserWindowController implements Initializable {
      * takes all their attributes and populates the donor attributes on the attributes pane accordingly.
      */
     public void populateDonorFields() {
-
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
         firstNameField.setText(splitNames[0]);

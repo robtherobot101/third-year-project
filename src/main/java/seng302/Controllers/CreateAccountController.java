@@ -17,6 +17,9 @@ import seng302.Core.Main;
 import seng302.Core.TFScene;
 import seng302.Files.History;
 
+/**
+ * A controller class for the create account screen.
+ */
 public class CreateAccountController implements Initializable {
     @FXML
     private TextField usernameInput;
@@ -41,14 +44,23 @@ public class CreateAccountController implements Initializable {
     @FXML
     private AnchorPane background;
 
+    /**
+     * Switches the currently displayed scene to the log in screen.
+     */
     public void returnToLogin() {
         Main.setScene(TFScene.login);
     }
 
+    /**
+     * Removes focus from all fields.
+     */
     public void requestFocus() {
         background.requestFocus();
     }
 
+    /**
+     * Attempts to create a new donor account based on the information currently provided by the user. Provides appropriate feedback if this fails.
+     */
     public void createAccount() {
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
@@ -74,11 +86,17 @@ public class CreateAccountController implements Initializable {
         }
     }
 
+    /**
+     * Enable/disable the create account button based on whether the required information is present or not.
+     */
     private void checkRequiredFields() {
         createAccountButton.setDisable((usernameInput.getText().isEmpty() && emailInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
             passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null);
     }
 
+    /**
+     * Sets the enter key press to attempt log in if sufficient information is present.
+     */
     public void setEnterEvent() {
         Main.getScene(TFScene.createAccount).setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !createAccountButton.isDisable()) {
@@ -87,6 +105,11 @@ public class CreateAccountController implements Initializable {
         });
     }
 
+    /**
+     * Add listeners to enable/disable the create account button based on information supplied
+     * @param location Not used
+     * @param resources Not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setCreateAccountController(this);

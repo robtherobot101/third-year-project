@@ -38,60 +38,24 @@ import seng302.Files.History;
 public class Main extends Application {
     private static long nextDonorId = -1, nextClinicianId = -1;
     public static ArrayList<Donor> donors = new ArrayList<>();
-    // Is there a way to make this accessible in the controllers but not public? Don't like the idea of a public filewriter.
-    public static PrintStream streamOut;
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
+    public static PrintStream streamOut;
     private static String jarPath, donorPath, clinicianPath;
+    private static Gson gson = new GsonBuilder().setPrettyPrinting()
+            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+            .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
+    private static ArrayList<Stage> cliniciansDonorWindows = new ArrayList<>();
+
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
     private static AccountSettingsController accountSettingsController;
-
-    private static ArrayList<Stage> cliniciansDonorWindows = new ArrayList<>();
-    public static void addCliniciansDonorWindow(Stage stage) {cliniciansDonorWindows.add(stage);}
-
-
-    public static void setClinician(Clinician clinician) {
-        clinicianController.setClinician(clinician);
-    }
-
-    public static void setClinicianController(ClinicianController clinicianController) {
-        Main.clinicianController = clinicianController;
-    }
-
     private static UserWindowController userWindowController;
-
-    public static void setCurrentDonor(Donor currentDonor) {
-        userWindowController.setCurrentDonor(currentDonor);
-        userWindowController.populateDonorFields();
-        userWindowController.populateHistoryTable();
-        userWindowController.setupUndo();
-    }
-
-    public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
-        accountSettingsController.setCurrentDonor(currentDonor);
-        accountSettingsController.populateAccountDetails();
-    }
-
-    public static void setLoginController(LoginController loginController) {
-        Main.loginController = loginController;
-    }
-
-    public static void setCreateAccountController(CreateAccountController createAccountController) {
-        Main.createAccountController = createAccountController;
-    }
-
-    public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
-        Main.accountSettingsController = accountSettingsController;
-    }
-
-    public static void setUserWindowController(UserWindowController userWindowController) {
-        Main.userWindowController = userWindowController;
-    }
-
-
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -131,11 +95,43 @@ public class Main extends Application {
         }
     }
 
-    private static Gson gson = new GsonBuilder().setPrettyPrinting()
-            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-            .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+
+    public static void addCliniciansDonorWindow(Stage stage) {cliniciansDonorWindows.add(stage);}
+
+    public static void setClinician(Clinician clinician) {
+        clinicianController.setClinician(clinician);
+    }
+
+    public static void setClinicianController(ClinicianController clinicianController) {
+        Main.clinicianController = clinicianController;
+    }
+
+    public static void setCurrentDonor(Donor currentDonor) {
+        userWindowController.setCurrentDonor(currentDonor);
+        userWindowController.populateDonorFields();
+        userWindowController.populateHistoryTable();
+    }
+
+    public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
+        accountSettingsController.setCurrentDonor(currentDonor);
+        accountSettingsController.populateAccountDetails();
+    }
+
+    public static void setLoginController(LoginController loginController) {
+        Main.loginController = loginController;
+    }
+
+    public static void setCreateAccountController(CreateAccountController createAccountController) {
+        Main.createAccountController = createAccountController;
+    }
+
+    public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
+        Main.accountSettingsController = accountSettingsController;
+    }
+
+    public static void setUserWindowController(UserWindowController userWindowController) {
+        Main.userWindowController = userWindowController;
+    }
 
     public static String getDonorPath() {
         return donorPath;
@@ -262,11 +258,10 @@ public class Main extends Application {
             tokens.remove("");
         }
         ArrayList<Donor> matched = new ArrayList<Donor>();
-        boolean allTokensMatchedAName = true;
         for(Donor d: donors){
             boolean allTokensMatchAName = true;
             for(String token:tokens){
-                if(matchesAtleastOne(d.getNameArray(), token)==false){
+                if(!matchesAtleastOne(d.getNameArray(), token)){
                     allTokensMatchAName = false;
                 }
             }
@@ -304,8 +299,8 @@ public class Main extends Application {
     }
 
     /**
-     * Returns the length of the longest matched commmon substring starting from the
-     * beggining of string and searchTerm, minus the length of the string.
+     * Returns the length of the longest matched common substring starting from the
+     * beginning of string and searchTerm, minus the length of the string.
      * The maximum value returned is zero. This method is used for scoring different
      * strings against a search term.
      * @param string The string which is being searched
@@ -328,7 +323,7 @@ public class Main extends Application {
     }
 
     /**
-     * Returns true if the given token matches the beggining of the given string.
+     * Returns true if the given token matches the beginning of the given string.
      * Otherwise returns false.
      * Case is ignored.
      * @param string The string to test
@@ -342,9 +337,10 @@ public class Main extends Application {
     }
 
     /**
-     * Save the donor list to a json file.
+     * Save the donor or clinician list to a json file.
      *
      * @param path The path of the file to save to
+     * @param donors whether to save the donors or clinicians
      * @return Whether the save completed successfully
      */
     public static boolean saveUsers(String path, boolean donors) {
@@ -371,9 +367,10 @@ public class Main extends Application {
     }
 
     /**
-     * Imports a JSON object of donor information and replaces the information in the donor list.
+     * Imports a JSON object of donor or clinician information and replaces the information in the donor/clinician list.
      *
      * @param path path of the file.
+     * @param donors whether the imported file contains donors or clinicians
      * @return Whether the command executed successfully
      */
     public static boolean importUsers(String path, boolean donors) {
@@ -442,7 +439,7 @@ public class Main extends Application {
 
 
     /**
-     * Run the command line interface with 4 test donors preloaded.
+     * Run the GUI.
      *
      * @param args Not used
      */
@@ -458,7 +455,10 @@ public class Main extends Application {
         }*/
     }
 
-
+    /**
+     * Load in saved donors and clinicians, and initialise the GUI.
+     * @param stage The stage to set the GUI up on
+     */
     @Override
     public void start(Stage stage) {
         Main.stage = stage;
@@ -531,13 +531,16 @@ public class Main extends Application {
 
     }
 
+    /**
+     * Writes quit history before exiting the GUI.
+     */
     @Override
     public void stop() {
         try{
             String text = History.prepareFileStringGUI(userWindowController.getCurrentDonor().getId(), "quit");
             History.printToFile(Main.streamOut, text);
         } catch(Exception e) {
-            System.out.println("Oh hello there");
+            System.out.println("Error writing history.");
         }
 
         System.out.println("Exiting GUI");
