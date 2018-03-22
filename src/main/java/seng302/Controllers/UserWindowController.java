@@ -150,9 +150,6 @@ public class UserWindowController implements Initializable {
         donorUndoStack.add(prevDonor);
     }
 
-    public void logout() {
-
-    }
 
     /**
      * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
@@ -1047,26 +1044,25 @@ public class UserWindowController implements Initializable {
         }
     }
 
-//    /**
-//     * Function which is called when the user wants to logout of the application and log into a new user
-//     */
-//    public void logout() {
-//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setTitle("Are you sure?");
-//        alert.setHeaderText("Are you sure would like to logout? ");
-//        alert.setContentText("Logging out without saving loses your non-saved data.");
-//
-//        Optional<ButtonType> result = alert.showAndWait();
-//        if (result.get() == ButtonType.OK) {
-//            System.out.println("Exiting GUI");
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
-//            History.printToFile(streamOut, text);
-//            Main.setCurrentDonor(null);
-//            Main.setScene(TFScene.login);
-//        } else {
-//            alert.close();
-//        }
-//    }
+    /**
+     * Function which is called when the user wants to logout of the application and log into a new user
+     */
+    public void logout() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Are you sure?");
+        alert.setHeaderText("Are you sure would like to log out? ");
+        alert.setContentText("Logging out without saving loses your non-saved data.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            System.out.println("Exiting GUI");
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            History.printToFile(streamOut, text);
+            Main.setScene(TFScene.login);
+        } else {
+            alert.close();
+        }
+    }
 
     /**
      * Function which is called when the user wants to exit the application.
