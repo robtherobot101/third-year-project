@@ -624,11 +624,40 @@ public class UserWindowController implements Initializable {
         }
         currentDonor.setWeight(donorWeight);
 
+        LocalDate currentDate = LocalDate.now();
+        System.out.println(currentDate);
+        System.out.println(dateOfBirthPicker.getValue());
+        if(dateOfBirthPicker.getValue().isAfter(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Date Input.");
+            alert.setContentText("The date of birth cannot be after today.");
+            alert.show();
+            return;
+        } else if(dateOfDeathPicker.getValue().isAfter(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Date Input ");
+            alert.setContentText("The date of death cannot be after today.");
+            alert.show();
+            return;
+        } else {
+            if(dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Date Input ");
+                alert.setContentText("The date of birth cannot be after the date of death.");
+                alert.show();
+                return;
+            } else {
+                currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
+                currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+            }
+        }
 
 
         try {
-            currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
-            currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+
             currentDonor.setGender(donorGender);
             currentDonor.setBloodType(donorBloodType);
             currentDonor.setRegion(regionField.getText());
@@ -798,15 +827,23 @@ public class UserWindowController implements Initializable {
             LocalDate today = LocalDate.now();
             long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
             double years = days/365.00;
-            System.out.println(years);
-            String age = String.format("%.1f", years);
-            ageLabel.setText("Age: " + age + " years");
+            if(years < 0) {
+                ageLabel.setText("Age: Invalid Input");
+            } else {
+                String age = String.format("%.1f", years);
+                ageLabel.setText("Age: " + age + " years");
+            }
+
         } else {
             long days = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays();
             double years = days/365.00;
-            System.out.println(years);
-            String age = String.format("%.1f", years);
-            ageLabel.setText("Age: " + age + " years (At Death)");
+            if(years < 0) {
+                ageLabel.setText("Age: Invalid Input");
+            } else {
+                String age = String.format("%.1f", years);
+                ageLabel.setText("Age: " + age + " years (At Death)");
+            }
+
         }
     }
 
@@ -828,7 +865,7 @@ public class UserWindowController implements Initializable {
                 bmiLabel.setText("BMI: " + bmiString);
             }
         } catch(Exception e) {
-            System.out.println("Enter a valid character.");
+            bmiLabel.setText("BMI: Invalid Input");
 
         }
 
