@@ -140,6 +140,8 @@ public class UserWindowController implements Initializable {
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
 
+    private boolean ignoreFieldChanges = false;
+
     /**
      * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
      *
@@ -272,10 +274,20 @@ public class UserWindowController implements Initializable {
     }
 
     public void fieldUnfocused() {
-        System.out.println("asd");
-        /*
-        System.out.println("test");
-        undoWelcomeButton.setDisable(false);*/
+        if (!ignoreFieldChanges) {
+            Donor oldFields = new Donor(currentDonor);
+            updateDonor();
+            System.out.println("updating fields: " + currentDonor.fieldsEqual(oldFields));
+            if (!currentDonor.fieldsEqual(oldFields)) {
+                addDonorToUndoStack(oldFields);
+                undoButton.setDisable(false);
+                undoWelcomeButton.setDisable(false);
+
+                donorRedoStack.clear();
+                redoButton.setDisable(true);
+                redoWelcomeButton.setDisable(true);
+            }
+        }
     }
 
     /**
@@ -364,7 +376,7 @@ public class UserWindowController implements Initializable {
                             "at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-                System.out.println(userHistory[i][4]);
+                //System.out.println(userHistory[i][4]);
                 if (userHistory[i][4].equals("updateAccountSettings")) {
                     TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
                             " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]);
@@ -435,6 +447,7 @@ public class UserWindowController implements Initializable {
      * takes all their attributes and populates the donor attributes on the attributes pane accordingly.
      */
     public void populateDonorFields() {
+        ignoreFieldChanges = true;
         settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
         String[] splitNames = currentDonor.getNameArray();
         firstNameField.setText(splitNames[0]);
@@ -470,6 +483,7 @@ public class UserWindowController implements Initializable {
         ObservableList<String> bloodTypes =
                 FXCollections.observableArrayList(
                         "A-",
+                        "A+",
                         "A+",
                         "B-",
                         "B+",
@@ -599,7 +613,7 @@ public class UserWindowController implements Initializable {
         }
 
         updateBMI();
-
+        ignoreFieldChanges = false;
     }
 
     /**
@@ -667,28 +681,32 @@ public class UserWindowController implements Initializable {
 
         AlcoholConsumption alcoholConsumption;
         String alcoholPick = (String) alcoholConsumptionComboBox.getValue();
-        switch (alcoholPick) {
-            case "None":
-                alcoholConsumption = AlcoholConsumption.NONE;
-                break;
-            case "Low":
-                alcoholConsumption = AlcoholConsumption.LOW;
-                break;
-            case "Average":
-                alcoholConsumption = AlcoholConsumption.AVERAGE;
-                break;
-            case "High":
-                alcoholConsumption = AlcoholConsumption.HIGH;
-                break;
-            case "Very High":
-                alcoholConsumption = AlcoholConsumption.VERYHIGH;
-                break;
-            case "Alcoholic":
-                alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
-                break;
-            default:
-                alcoholConsumption = null;
-                break;
+        if (alcoholPick != null) {
+            switch (alcoholPick) {
+                case "None":
+                    alcoholConsumption = AlcoholConsumption.NONE;
+                    break;
+                case "Low":
+                    alcoholConsumption = AlcoholConsumption.LOW;
+                    break;
+                case "Average":
+                    alcoholConsumption = AlcoholConsumption.AVERAGE;
+                    break;
+                case "High":
+                    alcoholConsumption = AlcoholConsumption.HIGH;
+                    break;
+                case "Very High":
+                    alcoholConsumption = AlcoholConsumption.VERYHIGH;
+                    break;
+                case "Alcoholic":
+                    alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
+                    break;
+                default:
+                    alcoholConsumption = null;
+                    break;
+            }
+        } else {
+            alcoholConsumption = null;
         }
 
         BloodType donorBloodType = null;
@@ -919,12 +937,8 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
-        /*
-        if (changeSinceLastUndoStackPush) {
-            addDonorToUndoStack(currentDonor);
-            updateDonor();
-            changeSinceLastUndoStackPush = false;
-        }*/
+        System.out.println(donorUndoStack);
+        System.out.println(donorRedoStack);
 
         currentDonor = donorUndo(currentDonor);
 
