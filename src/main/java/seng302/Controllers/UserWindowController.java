@@ -275,6 +275,9 @@ public class UserWindowController implements Initializable {
         background.requestFocus();
     }
 
+    /**
+     * Checks for any new updates when a field loses focus, and appends to undostack if there is new changes.
+     */
     public void fieldUnfocused() {
         if (!ignoreFieldChanges) {
             Donor oldFields = new Donor(currentDonor);
