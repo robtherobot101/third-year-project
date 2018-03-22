@@ -29,7 +29,7 @@ public class Donor {
     private String currentAddress, region;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private String username, email, password;
-    private String bloodPressure;
+    private String bloodPressure = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
 

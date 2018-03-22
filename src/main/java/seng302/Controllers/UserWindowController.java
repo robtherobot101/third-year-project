@@ -189,7 +189,7 @@ public class UserWindowController implements Initializable {
      * @return the donor on top of the redo stack.
      */
     public Donor donorRedo(Donor newDonor) {
-        if (donorRedoStack != null) {
+        if (donorRedoStack != null && donorRedoStack.size() != 0) {
             Donor oldDonor = donorRedoStack.get(donorRedoStack.size() - 1);
             addDonorToUndoStack(newDonor);
             donorRedoStack.remove(donorRedoStack.size() - 1);
@@ -787,7 +787,8 @@ public class UserWindowController implements Initializable {
         currentDonor.setWeight(donorWeight);
 
         String donorBloodPressure = "";
-        if (!bloodPressureTextField.getText().equals("")) {
+        String bloodPressure = bloodPressureTextField.getText();
+        if (bloodPressure != null && !bloodPressure.equals("")) {
             try {
                 String[] bloodPressureList = bloodPressureTextField.getText().split("/");
                 if(bloodPressureList.length != 2) {
@@ -835,7 +836,7 @@ public class UserWindowController implements Initializable {
             alert.setContentText("The date of birth cannot be after today.");
             alert.show();
             return;
-        } else if(dateOfDeathPicker.getValue().isAfter(currentDate)) {
+        } else if(dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Error with the Date Input ");
@@ -843,7 +844,7 @@ public class UserWindowController implements Initializable {
             alert.show();
             return;
         } else {
-            if(dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+            if(dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Error with the Date Input ");
