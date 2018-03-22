@@ -13,6 +13,19 @@ public class Clinician {
         this.workAddress = null;
     }
 
+    /**
+     * Constructor used when making a deep copy of a clinician.
+     * @param clinician the original clinician object being copied.
+     */
+    public Clinician(Clinician clinician){
+        this.username = clinician.username;
+        this.password = clinician.password;
+        this.name = clinician.name;
+        this.staffID = clinician.staffID;
+        this.region = clinician.region;
+        this.workAddress = clinician.workAddress;
+    }
+
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }

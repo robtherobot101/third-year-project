@@ -10,12 +10,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="background" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+<AnchorPane fx:id="background" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
    <children>
       <TextField fx:id="nameInput" layoutX="29.0" layoutY="86.0" />
       <TextField fx:id="addressInput" layoutX="237.0" layoutY="86.0" />
       <TextField fx:id="regionInput" layoutX="441.0" layoutY="86.0" />
-      <Button fx:id="save" layoutX="642.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" />
+      <Button fx:id="save" layoutX="653.0" layoutY="83.0" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" />
       <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="639.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
@@ -37,7 +37,7 @@
         </menus>
       </MenuBar>
       <Label fx:id="staffIDLabel" layoutX="99.0" layoutY="45.0" text="ID#" />
-      <Label fx:id="updatedSuccessfully" layoutX="635.0" layoutY="45.0" opacity="0.0" text="Updated Successfully" />
+      <Label fx:id="updatedSuccessfully" layoutX="655.0" layoutY="119.0" opacity="0.0" text="Updated Successfully" />
       <Label layoutX="29.0" layoutY="45.0" text="Staff ID: " />
       <Label layoutX="29.0" layoutY="70.0" text="Name" />
       <Label layoutX="237.0" layoutY="70.0" text="Address" />
@@ -55,5 +55,7 @@
       <Button fx:id="nextPageButton" layoutX="733.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#nextPage" text="Next" AnchorPane.topAnchor="142.0" />
       <Button fx:id="previousPageButton" layoutX="653.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#previousPage" text="Previous" AnchorPane.topAnchor="142.0" />
       <Label layoutX="29.0" layoutY="127.0" text="Search" AnchorPane.topAnchor="127.0" />
+      <Button fx:id="undoButton" disable="true" layoutX="653.0" layoutY="37.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+      <Button fx:id="redoButton" disable="true" layoutX="711.0" layoutY="37.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
    </children>
 </AnchorPane>
