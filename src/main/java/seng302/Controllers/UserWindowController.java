@@ -41,6 +41,12 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
+        donorUndoStack.clear();
+        donorRedoStack.clear();
+        undoButton.setDisable(true);
+        undoWelcomeButton.setDisable(true);
+        redoButton.setDisable(true);
+        redoWelcomeButton.setDisable(true);
         bloodPressureLabel.setText("");
     }
 
