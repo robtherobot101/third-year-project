@@ -16,9 +16,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import seng302.Core.*;
 import seng302.Files.History;
 
+import javax.swing.text.EditorKit;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.Duration;
@@ -135,14 +137,20 @@ public class UserWindowController implements Initializable {
     @FXML
     private TreeTableColumn<String, String> actionColumn;
 
+
+
     //private boolean changeSinceLastUndoStackPush = false;
 
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
 
+
     /**
      * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
      *
+Example 26-7 calculates the day interval between the date selected in the checkInDatePicker and the current date cell. The result is rendered in the cell tooltip.
+
+
      * @param donor donor object being added to the top of the stack.
      */
     public void addDonorToUndoStack(Donor donor) {
@@ -203,6 +211,7 @@ public class UserWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
@@ -983,7 +992,7 @@ public class UserWindowController implements Initializable {
     public void stop() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to exit the application? ");
+        alert.setHeaderText("Are you sure would like to exit the window? ");
         alert.setContentText("Exiting without saving loses your non-saved data.");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -991,7 +1000,9 @@ public class UserWindowController implements Initializable {
             System.out.println("Exiting GUI");
             String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
             History.printToFile(streamOut, text);
-            Platform.exit();
+
+            Stage stage = (Stage) welcomePane.getScene().getWindow();
+            stage.close();
         } else {
             alert.close();
         }
