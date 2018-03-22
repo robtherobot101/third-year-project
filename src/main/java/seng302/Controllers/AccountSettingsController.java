@@ -23,7 +23,6 @@ public class AccountSettingsController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         donorNameLabel.setText(currentDonor.getName());
-
     }
 
     @FXML
@@ -73,13 +72,9 @@ public class AccountSettingsController implements Initializable {
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             Main.setCurrentDonor(currentDonor);
-
-
-
         } else {
             alert.close();
         }
-
     }
 
     /**

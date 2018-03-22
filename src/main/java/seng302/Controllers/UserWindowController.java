@@ -16,9 +16,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import seng302.Core.*;
 import seng302.Files.History;
 
+import javax.swing.text.EditorKit;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.Duration;
@@ -43,6 +45,7 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
+        bloodPressureLabel.setText("");
     }
 
     @FXML
@@ -119,6 +122,8 @@ public class UserWindowController implements Initializable {
     private TextField bloodPressureTextField;
     @FXML
     private ComboBox alcoholConsumptionComboBox;
+    @FXML
+    private Label bloodPressureLabel;
 
 
     @FXML
@@ -134,11 +139,18 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn;
     @FXML
     private TreeTableColumn<String, String> actionColumn;
+
+
+
+    //private boolean changeSinceLastUndoStackPush = false;
     @FXML
     private GridPane background;
 
+
+
     private ArrayList<Donor> donorUndoStack = new ArrayList<>();
     private ArrayList<Donor> donorRedoStack = new ArrayList<>();
+
 
     private boolean ignoreFieldChanges = false;
 
@@ -206,6 +218,7 @@ public class UserWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
@@ -251,6 +264,7 @@ public class UserWindowController implements Initializable {
 
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
+        bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
         /*
         heightField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
@@ -439,6 +453,7 @@ public class UserWindowController implements Initializable {
         historyTreeTableView.setRoot(root);
         historyTreeTableView.setShowRoot(true);
 
+
     }
 
     /**
@@ -612,6 +627,7 @@ public class UserWindowController implements Initializable {
         }
 
         updateBMI();
+        updateBloodPressure();
         ignoreFieldChanges = false;
     }
 
@@ -779,6 +795,45 @@ public class UserWindowController implements Initializable {
         }
         currentDonor.setWeight(donorWeight);
 
+        String donorBloodPressure = "";
+        if (!bloodPressureTextField.getText().equals("")) {
+            try {
+                String[] bloodPressureList = bloodPressureTextField.getText().split("/");
+                if(bloodPressureList.length != 2) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error with the Blood Pressure Input ");
+                    alert.setContentText("Please input a valid blood pressure input.");
+                    alert.show();
+                    return;
+                } else {
+                    for(int i = 0; i < bloodPressureList.length; i++) {
+                        try{
+                            int pressure = Integer.parseInt(bloodPressureList[i]);
+                        } catch(Exception e){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Error with the Blood Pressure Input ");
+                            alert.setContentText("Please input a valid blood pressure input.");
+                            alert.show();
+                            return;
+                        }
+                    }
+                    donorBloodPressure = bloodPressureTextField.getText();
+
+                }
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Blood Pressure Input ");
+                alert.setContentText("Please input a valid blood pressure input.");
+                alert.show();
+                return;
+            }
+        }
+        currentDonor.setBloodPressure(donorBloodPressure);
+
+
         LocalDate currentDate = LocalDate.now();
         System.out.println(currentDate);
         System.out.println(dateOfBirthPicker.getValue());
@@ -819,7 +874,7 @@ public class UserWindowController implements Initializable {
             currentDonor.setCurrentAddress(addressField.getText());
             currentDonor.setSmokerStatus(smokerStatus);
             currentDonor.setAlcoholConsumption(alcoholConsumption);
-            currentDonor.setBloodPressure(bloodPressureTextField.getText());
+
 
 
             if (liverCheckBox.isSelected()) {
@@ -977,7 +1032,7 @@ public class UserWindowController implements Initializable {
             long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
             double years = days/365.00;
             if(years < 0) {
-                ageLabel.setText("Age: Invalid Input");
+                ageLabel.setText("Age: Invalid Input.");
             } else {
                 String age = String.format("%.1f", years);
                 ageLabel.setText("Age: " + age + " years");
@@ -987,7 +1042,7 @@ public class UserWindowController implements Initializable {
             long days = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays();
             double years = days/365.00;
             if(years < 0) {
-                ageLabel.setText("Age: Invalid Input");
+                ageLabel.setText("Age: Invalid Input.");
             } else {
                 String age = String.format("%.1f", years);
                 ageLabel.setText("Age: " + age + " years (At Death)");
@@ -1011,10 +1066,41 @@ public class UserWindowController implements Initializable {
                 bmiLabel.setText("BMI: " + bmiString);
             }
         } catch(Exception e) {
-            bmiLabel.setText("BMI: Invalid Input");
+            bmiLabel.setText("BMI: Invalid Input.");
 
         }
 
+    }
+
+    /**
+     * Updates the validity label of the blood pressure based on the input from the user.
+     */
+    public void updateBloodPressure() {
+        try {
+            String userBloodPressure = bloodPressureTextField.getText();
+            String[] pressureList = userBloodPressure.split("/");
+            if(userBloodPressure.equals("")) {
+                bloodPressureLabel.setText("");
+                return;
+            } else if(pressureList.length != 2) {
+                bloodPressureLabel.setText("Invalid Input.");
+                return;
+            } else {
+                for(int i = 0; i < pressureList.length; i++) {
+                    try{
+                        int pressure = Integer.parseInt(pressureList[i]);
+                    } catch(Exception e){
+                        bloodPressureLabel.setText("Invalid Input.");
+                        return;
+                    }
+                }
+                bloodPressureLabel.setText("");
+            }
+
+        } catch(Exception e) {
+            bloodPressureLabel.setText("Invalid Input.");
+            return;
+        }
     }
 
     /**
@@ -1078,7 +1164,7 @@ public class UserWindowController implements Initializable {
     public void stop() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to exit the application? ");
+        alert.setHeaderText("Are you sure would like to exit the window? ");
         alert.setContentText("Exiting without saving loses your non-saved data.");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -1086,7 +1172,9 @@ public class UserWindowController implements Initializable {
             System.out.println("Exiting GUI");
             String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
             History.printToFile(streamOut, text);
-            Platform.exit();
+
+            Stage stage = (Stage) welcomePane.getScene().getWindow();
+            stage.close();
         } else {
             alert.close();
         }
