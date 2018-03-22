@@ -132,6 +132,23 @@ public class Donor {
         this.organs.addAll(donor.organs);
     }
 
+    public void copyFieldsFrom(Donor donor) {
+        name = donor.getNameArray();
+        dateOfBirth = donor.getDateOfBirth();
+        dateOfDeath = donor.getDateOfDeath();
+        gender = donor.getGender();
+        bloodType = donor.getBloodType();
+        height = donor.getHeight();
+        weight = donor.getWeight();
+        region = donor.getRegion();
+        currentAddress = donor.getCurrentAddress();
+        smokerStatus = donor.getSmokerStatus();
+        bloodPressure = donor.getBloodPressure();
+        alcoholConsumption = donor.getAlcoholConsumption();
+        organs.clear();
+        organs.addAll(donor.getOrgans());
+    }
+
     public boolean fieldsEqual(Donor donor) {
         return (Arrays.equals(name, donor.getNameArray()) &&
                 dateOfBirth == donor.getDateOfBirth() &&
@@ -142,10 +159,6 @@ public class Donor {
                 weight == donor.getWeight() &&
                 stringEqual(region, donor.getRegion()) &&
                 stringEqual(currentAddress, donor.getCurrentAddress()) &&
-                stringEqual(username, donor.getUsername()) &&
-                stringEqual(email, donor.getEmail()) &&
-                stringEqual(password, donor.getPassword()) &&
-                id == donor.getId() &&
                 smokerStatus == donor.getSmokerStatus() &&
                 stringEqual(bloodPressure, donor.getBloodPressure()) &&
                 alcoholConsumption == donor.getAlcoholConsumption() &&

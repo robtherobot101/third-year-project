@@ -908,18 +908,12 @@ public class UserWindowController implements Initializable {
      * Then calls the populate donor function to repopulate the donor fields.
      */
     public void save() {
-        //changeSinceLastUndoStackPush = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current donor? ");
         alert.setContentText("By doing so, the donor will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            if (donorUndoStack.isEmpty()) {
-                undoButton.setDisable(false);
-                undoWelcomeButton.setDisable(false);
-            }
-            addDonorToUndoStack(currentDonor);
             updateDonor();
             populateDonorFields();
             String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
@@ -936,12 +930,10 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
-        System.out.println(donorUndoStack);
-        System.out.println(donorRedoStack);
-
-        currentDonor = donorUndo(currentDonor);
-
+        fieldUnfocused();
+        currentDonor.copyFieldsFrom(donorUndo(new Donor(currentDonor)));
         populateDonorFields();
+
         redoButton.setDisable(false);
         redoWelcomeButton.setDisable(false);
         if (donorUndoStack.isEmpty()) {
@@ -958,8 +950,10 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
      */
     public void redo() {
-        currentDonor = donorRedo(currentDonor);
+        fieldUnfocused();
+        currentDonor.copyFieldsFrom(donorRedo(new Donor(currentDonor)));
         populateDonorFields();
+
         undoButton.setDisable(false);
         undoWelcomeButton.setDisable(false);
         if (donorRedoStack.isEmpty()) {
