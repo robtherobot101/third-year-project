@@ -1,5 +1,8 @@
 package seng302.Core;
 
+/**
+ * This class contains information about clinicians.
+ */
 public class Clinician {
     private String name, workAddress, region, username, password;
     private long staffID;

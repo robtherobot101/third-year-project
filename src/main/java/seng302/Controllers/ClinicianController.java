@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * Class to control all the logic for the clinician interactions with the application.
+ */
 public class ClinicianController implements Initializable {
 
 
