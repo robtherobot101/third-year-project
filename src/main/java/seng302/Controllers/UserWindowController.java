@@ -1,11 +1,8 @@
 package seng302.Controllers;
 
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,12 +13,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import seng302.Core.*;
 import seng302.Files.History;
 
-import javax.swing.text.EditorKit;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -145,9 +139,6 @@ public class UserWindowController implements Initializable {
     @FXML
     private TreeTableColumn<String, String> actionColumn;
 
-
-
-    //private boolean changeSinceLastUndoStackPush = false;
     @FXML
     private GridPane background;
 
@@ -221,6 +212,11 @@ public class UserWindowController implements Initializable {
         return donorRedoStack;
     }
 
+    /**
+     * Set up the User window.
+     * @param location Not used
+     * @param resources Not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -270,19 +266,6 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
-        /*
-        heightField.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                if (!newValue.isEmpty()) {
-                    double parsed = Double.parseDouble(newValue);
-                    if (parsed < 0) {
-                        ((StringProperty) observable).setValue(oldValue);
-                    }
-                }
-            } catch (NumberFormatException e) {
-                ((StringProperty) observable).setValue(oldValue);
-            }
-        });*/
     }
 
     /**
@@ -292,6 +275,9 @@ public class UserWindowController implements Initializable {
         background.requestFocus();
     }
 
+    /**
+     * Checks for any new updates when a field loses focus, and appends to undostack if there is new changes.
+     */
     public void fieldUnfocused() {
         if (!ignoreFieldChanges) {
             Donor oldFields = new Donor(currentDonor);
