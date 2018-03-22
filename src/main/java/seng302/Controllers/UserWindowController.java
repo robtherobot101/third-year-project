@@ -764,10 +764,40 @@ public class UserWindowController implements Initializable {
         }
         currentDonor.setWeight(donorWeight);
 
+        LocalDate currentDate = LocalDate.now();
+        System.out.println(currentDate);
+        System.out.println(dateOfBirthPicker.getValue());
+        if(dateOfBirthPicker.getValue().isAfter(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Date Input.");
+            alert.setContentText("The date of birth cannot be after today.");
+            alert.show();
+            return;
+        } else if(dateOfDeathPicker.getValue().isAfter(currentDate)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Date Input ");
+            alert.setContentText("The date of death cannot be after today.");
+            alert.show();
+            return;
+        } else {
+            if(dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Date Input ");
+                alert.setContentText("The date of birth cannot be after the date of death.");
+                alert.show();
+                return;
+            } else {
+                currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
+                currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+            }
+        }
+
 
         try {
-            currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
-            currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
+
             currentDonor.setGender(donorGender);
             currentDonor.setBloodType(donorBloodType);
             currentDonor.setRegion(regionField.getText());
@@ -940,16 +970,24 @@ public class UserWindowController implements Initializable {
         if (dodeathPick == null) {
             LocalDate today = LocalDate.now();
             long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
-            double years = days / 365.00;
-            System.out.println(years);
-            String age = String.format("%.1f", years);
-            ageLabel.setText("Age: " + age + " years");
+            double years = days/365.00;
+            if(years < 0) {
+                ageLabel.setText("Age: Invalid Input");
+            } else {
+                String age = String.format("%.1f", years);
+                ageLabel.setText("Age: " + age + " years");
+            }
+
         } else {
             long days = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays();
-            double years = days / 365.00;
-            System.out.println(years);
-            String age = String.format("%.1f", years);
-            ageLabel.setText("Age: " + age + " years (At Death)");
+            double years = days/365.00;
+            if(years < 0) {
+                ageLabel.setText("Age: Invalid Input");
+            } else {
+                String age = String.format("%.1f", years);
+                ageLabel.setText("Age: " + age + " years (At Death)");
+            }
+
         }
     }
 
@@ -967,8 +1005,8 @@ public class UserWindowController implements Initializable {
                 String bmiString = String.format("%.2f", BMI);
                 bmiLabel.setText("BMI: " + bmiString);
             }
-        } catch (Exception e) {
-            System.out.println("Enter a valid character.");
+        } catch(Exception e) {
+            bmiLabel.setText("BMI: Invalid Input");
 
         }
 
@@ -985,27 +1023,27 @@ public class UserWindowController implements Initializable {
         dialog.setContentText("Please enter your password:");
 
         Optional<String> password = dialog.showAndWait();
-        if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword()))) {
-            System.out.println("Authenticated!");
-            try {
-                Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
-                Stage stage = new Stage();
-                stage.setTitle("Account Settings");
-                stage.setScene(new Scene(root, 270, 350));
-                stage.initModality(Modality.APPLICATION_MODAL);
-                Main.setCurrentDonorForAccountSettings(currentDonor);
-                stage.showAndWait();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(password.isPresent()){ //Ok was pressed, Else cancel
+            if(password.get().equals(currentDonor.getPassword())){
+                try {
+                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
+                    Stage stage = new Stage();
+                    stage.setTitle("Account Settings");
+                    stage.setScene(new Scene(root, 270, 350));
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    Main.setCurrentDonorForAccountSettings(currentDonor);
+                    stage.showAndWait();
+                } catch (Exception e) {
+                    System.out.println("here");
+                    e.printStackTrace();
+                }
+            }else{ // Password incorrect
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Incorrect");
+                alert.setHeaderText("Incorrect password. ");
+                alert.setContentText("Please enter the correct password to view account settings");
+                alert.show();
             }
-        } else if (!(password.get().equals(currentDonor.getPassword()))) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Incorrect");
-            alert.setHeaderText("Incorrect password. ");
-            alert.setContentText("Please enter the correct password to view account settings");
-            alert.show();
-        } else {
-            dialog.close();
         }
     }
 
