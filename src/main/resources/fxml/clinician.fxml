@@ -10,7 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="background" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+<AnchorPane fx:id="background" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
    <children>
       <TextField fx:id="nameInput" layoutX="29.0" layoutY="86.0" />
       <TextField fx:id="addressInput" layoutX="237.0" layoutY="86.0" />
@@ -57,6 +57,6 @@
       <Label layoutX="29.0" layoutY="127.0" text="Search" AnchorPane.topAnchor="127.0" />
       <Button fx:id="undoButton" disable="true" layoutX="653.0" layoutY="37.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
       <Button fx:id="redoButton" disable="true" layoutX="711.0" layoutY="37.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
-      <Button fx:id="accountSettingsButton" layoutX="640.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#accountSettings" text="Account Settings" />
+      <Button fx:id="accountSettingsButton" layoutX="507.0" layoutY="37.0" mnemonicParsing="false" onMouseClicked="#accountSettings" text="Account Settings" />
    </children>
 </AnchorPane>
