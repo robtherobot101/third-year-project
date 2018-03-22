@@ -32,6 +32,8 @@ public class UserWindowController implements Initializable {
 
     private Donor currentDonor;
 
+    private boolean childWindow = false;
+
     public Donor getCurrentDonor() {
         return currentDonor;
     }
@@ -41,6 +43,7 @@ public class UserWindowController implements Initializable {
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
         bloodPressureLabel.setText("");
     }
+
 
     @FXML
     private Label userDisplayText;
@@ -119,6 +122,8 @@ public class UserWindowController implements Initializable {
     @FXML
     private Label bloodPressureLabel;
 
+    @FXML
+    private Button logoutButton;
 
     @FXML
     private Button undoWelcomeButton;
@@ -1121,7 +1126,10 @@ public class UserWindowController implements Initializable {
         }
     }
 
-    /**
+    public void setAsChildWindow(){
+        logoutButton.setDisable(true);
+    }
+    /*
      * Function which is called when the user wants to logout of the application and log into a new user
      */
     public void logout() {
@@ -1135,6 +1143,7 @@ public class UserWindowController implements Initializable {
             System.out.println("Exiting GUI");
             String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
             History.printToFile(streamOut, text);
+
             Main.setScene(TFScene.login);
         } else {
             alert.close();

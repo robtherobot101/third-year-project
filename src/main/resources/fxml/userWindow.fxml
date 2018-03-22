@@ -423,7 +423,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-      				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="121.0" mnemonicParsing="false" onAction="#logout" prefHeight="55.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Log out" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="242.0">
+      				<Button fx:id="logoutButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="121.0" mnemonicParsing="false" onAction="#logout" prefHeight="55.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Log out" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="242.0">
                      <font>
                         <Font size="14.0" />
                      </font>
