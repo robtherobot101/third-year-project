@@ -125,9 +125,6 @@ public class Donor {
         this.region = donor.region;
         this.currentAddress = donor.currentAddress;
         this.creationTime = donor.creationTime;
-        this.username = donor.username;
-        this.email = donor.email;
-        this.password = donor.password;
         this.id = donor.id;
         this.smokerStatus = donor.smokerStatus;
         this.bloodPressure = donor.bloodPressure;
@@ -143,17 +140,25 @@ public class Donor {
                 bloodType == donor.getBloodType() &&
                 height == donor.getHeight() &&
                 weight == donor.getWeight() &&
-                region.equals(donor.getRegion()) &&
-                currentAddress.equals(donor.getCurrentAddress()) &&
-                username.equals(donor.getUsername()) &&
-                email.equals(donor.getEmail()) &&
-                password.equals(donor.getPassword()) &&
+                stringEqual(region, donor.getRegion()) &&
+                stringEqual(currentAddress, donor.getCurrentAddress()) &&
+                stringEqual(username, donor.getUsername()) &&
+                stringEqual(email, donor.getEmail()) &&
+                stringEqual(password, donor.getPassword()) &&
                 id == donor.getId() &&
                 smokerStatus == donor.getSmokerStatus() &&
-                bloodPressure.equals(donor.getBloodPressure()) &&
+                stringEqual(bloodPressure, donor.getBloodPressure()) &&
                 alcoholConsumption == donor.getAlcoholConsumption() &&
-                organs == donor.getOrgans()
+                organs.equals(donor.getOrgans())
         );
+    }
+
+    private boolean stringEqual(String s1, String s2) {
+        if (s1 == null) {
+            return s2 == null;
+        } else {
+            return s2 != null && s1.equals(s2);
+        }
     }
 
     public String getName() {

@@ -240,9 +240,9 @@
       						</CheckBox>
                      </children>
                   </GridPane>
-						<TextField fx:id="bloodPressureTextField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="146.0" promptText="Blood Pressure" GridPane.columnIndex="1" GridPane.rowIndex="7">
+						<TextField fx:id="bloodPressureTextField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="159.0" promptText="Blood Pressure (eg 20/30)" GridPane.columnIndex="1" GridPane.rowIndex="7">
 							<GridPane.margin>
-								<Insets left="20.0" right="45.0" />
+								<Insets left="20.0" right="40.0" />
 							</GridPane.margin>
 						</TextField>
 						<Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="27.0" prefWidth="86.0" text="Save" GridPane.columnIndex="2" GridPane.rowIndex="8">
