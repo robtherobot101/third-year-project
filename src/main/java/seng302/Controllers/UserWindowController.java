@@ -2,30 +2,30 @@ package seng302.Controllers;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import seng302.Core.*;
 import seng302.Files.History;
-import seng302.TUI.CommandLineInterface;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
+
+import static seng302.Core.Main.streamOut;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -121,7 +121,6 @@ public class UserWindowController implements Initializable {
     private ComboBox alcoholConsumptionComboBox;
 
 
-
     @FXML
     private Button undoWelcomeButton;
     @FXML
@@ -136,14 +135,74 @@ public class UserWindowController implements Initializable {
     @FXML
     private TreeTableColumn<String, String> actionColumn;
 
+    //private boolean changeSinceLastUndoStackPush = false;
 
+    private ArrayList<Donor> donorUndoStack = new ArrayList<>();
+    private ArrayList<Donor> donorRedoStack = new ArrayList<>();
 
+    /**
+     * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
+     *
+     * @param donor donor object being added to the top of the stack.
+     */
+    public void addDonorToUndoStack(Donor donor) {
+        Donor prevDonor = new Donor(donor);
+        donorUndoStack.add(prevDonor);
+    }
 
+    /**
+     * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
+     * Then removes it from the undo stack and adds it to the redo stack.
+     *
+     * @return the most recent saved version of the donor.
+     */
+    public Donor donorUndo(Donor oldDonor) {
+        if (donorUndoStack != null) {
+            Donor newDonor = donorUndoStack.get(donorUndoStack.size() - 1);
+            donorUndoStack.remove(donorUndoStack.size() - 1);
+            donorRedoStack.add(oldDonor);
+            if (streamOut != null) {
+//                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
+//                History.printToFile(streamOut, text);
+            }
+            return newDonor;
+        } else {
+            System.out.println("Undo somehow being called with nothing to undo.");
+            return null;
+        }
+    }
 
+    /**
+     * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
+     *
+     * @return the donor on top of the redo stack.
+     */
+    public Donor donorRedo(Donor newDonor) {
+        if (donorRedoStack != null) {
+            Donor oldDonor = donorRedoStack.get(donorRedoStack.size() - 1);
+            addDonorToUndoStack(newDonor);
+            donorRedoStack.remove(donorRedoStack.size() - 1);
+            if (streamOut != null) {
+//                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
+//                History.printToFile(streamOut, text);
+            }
+            return oldDonor;
+        } else {
+            System.out.println("Redo somehow being called with nothing to redo.");
+            return null;
+        }
+    }
+
+    public ArrayList<Donor> getDonorUndoStack() {
+        return donorUndoStack;
+    }
+
+    public ArrayList<Donor> getDonorRedoStack() {
+        return donorRedoStack;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         Main.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
@@ -156,6 +215,37 @@ public class UserWindowController implements Initializable {
                 BackgroundSize.DEFAULT);
         welcomePane.setBackground(new Background(imageBackground));
 
+        /*
+        heightField.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                if (!newValue.isEmpty()) {
+                    double parsed = Double.parseDouble(newValue);
+                    if (parsed < 0) {
+                        ((StringProperty) observable).setValue(oldValue);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                ((StringProperty) observable).setValue(oldValue);
+            }
+        });*/
+    }
+
+    public void fieldsEdited() {
+        /*
+        System.out.println("test");
+        undoWelcomeButton.setDisable(false);
+        changeSinceLastUndoStackPush = true;*/
+    }
+
+    public void dateEdited() {
+        fieldsEdited();
+        updateAge();
+    }
+
+    public void setupUndo() {
+        /*
+        changeSinceLastUndoStackPush = false;
+        undoWelcomeButton.setDisable(true);*/
     }
 
     /**
@@ -205,50 +295,55 @@ public class UserWindowController implements Initializable {
      * Sorts these into tree nodes based on new sessions.
      */
     public void populateHistoryTable() {
-
         userHistoryLabel.setText("History of actions for " + currentDonor.getName());
 
         ArrayList<TreeItem<String>> treeItems = new ArrayList<TreeItem<String>>();
 
         String[][] userHistory = History.getUserHistory(currentDonor.getId());
-        TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0,userHistory[0][0].length() - 1));
+        TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0, userHistory[0][0].length() - 1));
         TreeItem<String> outerItem1 = new TreeItem<>("Create at " + userHistory[0][1]);
         TreeItem<String> outerItem2 = new TreeItem<>("Login at " + userHistory[0][1]);
         sessionNode.getChildren().add(outerItem1);
         sessionNode.getChildren().add(outerItem2);
         treeItems.add(sessionNode);
         int sessionNumber = 2;
-        for(int i = 2; i < userHistory.length; i++) {
+        for (int i = 2; i < userHistory.length; i++) {
 
-            if(userHistory[i][4] == null) {
+            if (userHistory[i][4] == null) {
 
-            } else if(userHistory[i][4].equals("create"))  {
+            } else if (userHistory[i][4].equals("create")) {
 
             } else {
-                if(userHistory[i][4].equals("update")) {
-                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                if (userHistory[i][4].equals("update")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " " +
+                            "at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-                if(userHistory[i][4].equals("undo")) {
-                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                if (userHistory[i][4].equals("undo")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " " +
+                            "at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-                if(userHistory[i][4].equals("redo")) {
-                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                if (userHistory[i][4].equals("redo")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " " +
+                            "at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-                if(userHistory[i][4].equals("quit")) {
-                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]);
+                if (userHistory[i][4].equals("quit")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " " +
+                            "at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
                 System.out.println(userHistory[i][4]);
-                if(userHistory[i][4].equals("updateAccountSettings")) {
-                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) + " " + userHistory[i][4].substring(6, 13)+ " at " + userHistory[i][1]);
+                if (userHistory[i][4].equals("updateAccountSettings")) {
+                    TreeItem<String> newItem = new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
+                            " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
                 }
-                if(userHistory[i][4].equals("login")) {
+                if (userHistory[i][4].equals("login")) {
 
-                    sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0,userHistory[i][0].length() - 1));
+                    sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
+                            1));
                     treeItems.add(sessionNode);
                     TreeItem<String> newItem = new TreeItem<>("Login at " + userHistory[i][1]);
                     sessionNode.getChildren().add(newItem);
@@ -270,40 +365,35 @@ public class UserWindowController implements Initializable {
                 new ReadOnlyStringWrapper(p.getValue().getValue()));
 
 
-        actionColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<String, String>, ObservableValue<String>>() {
-                                             @Override
-                                             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<String, String> param) {
-                                                 String userName = currentDonor.getName();
-                                                 if(param.getValue().getValue().toString().substring(0, 6).equals("Create")) {
-                                                     String creationString = "Created a new user profile with name " + userName;
-                                                     return new ReadOnlyStringWrapper(creationString);
-                                                 }
-                                                 if(param.getValue().getValue().toString().substring(0, 5).equals("Login")) {
-                                                     return new ReadOnlyStringWrapper("User with id: " + userHistory[0][3] + " logged in successfully.");
-                                                 }
-                                                 if(param.getValue().getValue().toString().substring(0, 6).equals("Update")) {
-                                                     return new ReadOnlyStringWrapper("Updated user attributes for user " + userName);
-                                                 }
-                                                 if(param.getValue().getValue().toString().substring(0, 4).equals("Undo")) {
-                                                     return new ReadOnlyStringWrapper("Reversed last action.");
-                                                 }
-                                                 if(param.getValue().getValue().toString().substring(0, 4).equals("Redo")) {
-                                                     return new ReadOnlyStringWrapper("Reversed last undo.");
-                                                 }
-                                                 if(param.getValue().getValue().toString().substring(0, 4).equals("Quit")) {
-                                                     return new ReadOnlyStringWrapper("Quit the application.");
-                                                 }
-                                                 if(param.getValue().getValue().toString().substring(0, 12).equals("Update Account")) {
-                                                     return new ReadOnlyStringWrapper("Updated account settings for user " + userName);
-                                                 }
-                                                 return null;
+        actionColumn.setCellValueFactory(param -> {
+            String userName = currentDonor.getName();
+            if (param.getValue().getValue().substring(0, 6).equals("Create")) {
+                String creationString = "Created a new user profile with name " + userName;
+                return new ReadOnlyStringWrapper(creationString);
+            }
+            if (param.getValue().getValue().substring(0, 5).equals("Login")) {
+                return new ReadOnlyStringWrapper("User with id: " + userHistory[0][3] + " logged in successfully.");
+            }
+            if (param.getValue().getValue().substring(0, 6).equals("Update")) {
+                return new ReadOnlyStringWrapper("Updated user attributes for user " + userName);
+            }
+            if (param.getValue().getValue().substring(0, 4).equals("Undo")) {
+                return new ReadOnlyStringWrapper("Reversed last action.");
+            }
+            if (param.getValue().getValue().substring(0, 4).equals("Redo")) {
+                return new ReadOnlyStringWrapper("Reversed last undo.");
+            }
+            if (param.getValue().getValue().substring(0, 4).equals("Quit")) {
+                return new ReadOnlyStringWrapper("Quit the application.");
+            }
+            if (param.getValue().getValue().substring(0, 12).equals("Update Account")) {
+                return new ReadOnlyStringWrapper("Updated account settings for user " + userName);
+            }
+            return null;
+        });
 
 
-                                             }
-                                         });
-
-
-                //Creating a tree table view
+        //Creating a tree table view
         historyTreeTableView.setRoot(root);
         historyTreeTableView.setShowRoot(true);
 
@@ -319,10 +409,10 @@ public class UserWindowController implements Initializable {
         String[] splitNames = currentDonor.getNameArray();
         firstNameField.setText(splitNames[0]);
         if (splitNames.length > 2) {
-            String[] middleName = new String[splitNames.length-2];
-            System.arraycopy(splitNames, 1, middleName, 0, splitNames.length-2);
+            String[] middleName = new String[splitNames.length - 2];
+            System.arraycopy(splitNames, 1, middleName, 0, splitNames.length - 2);
             middleNameField.setText(String.join(",", middleName));
-            lastNameField.setText(splitNames[splitNames.length-1]);
+            lastNameField.setText(splitNames[splitNames.length - 1]);
         } else if (splitNames.length == 2) {
             middleNameField.setText("");
             lastNameField.setText(splitNames[1]);
@@ -368,7 +458,7 @@ public class UserWindowController implements Initializable {
                 );
         smokerStatusComboBox.setItems(smokerStatuses);
 
-        if(currentDonor.getSmokerStatus() != null) {
+        if (currentDonor.getSmokerStatus() != null) {
             smokerStatusComboBox.setValue(currentDonor.getSmokerStatus().toString());
         } else {
             smokerStatusComboBox.setValue("Smoker Status");
@@ -385,14 +475,14 @@ public class UserWindowController implements Initializable {
                 );
         alcoholConsumptionComboBox.setItems(alcoholConsumptions);
 
-        if(currentDonor.getAlcoholConsumption() != null) {
+        if (currentDonor.getAlcoholConsumption() != null) {
             alcoholConsumptionComboBox.setValue(currentDonor.getAlcoholConsumption().toString());
         } else {
             alcoholConsumptionComboBox.setValue("Alcohol Consumption");
         }
 
 
-        if(currentDonor.getGender() != null) {
+        if (currentDonor.getGender() != null) {
             System.out.println(currentDonor.getGender());
             String firstLetter = currentDonor.getGender().toString().substring(0, 1);
             String restOfWord = currentDonor.getGender().toString().substring(1);
@@ -401,7 +491,7 @@ public class UserWindowController implements Initializable {
             genderComboBox.setValue("Gender");
         }
 
-        if(currentDonor.getBloodType() != null) {
+        if (currentDonor.getBloodType() != null) {
             bloodTypeComboBox.setValue(currentDonor.getBloodType().toString());
         } else {
             bloodTypeComboBox.setValue("Blood Type");
@@ -409,68 +499,68 @@ public class UserWindowController implements Initializable {
 
         EnumSet<Organ> donorOrgans = currentDonor.getOrgans();
         System.out.println(donorOrgans.toString());
-        if(donorOrgans.contains(Organ.LIVER)) {
+        if (donorOrgans.contains(Organ.LIVER)) {
             liverCheckBox.setSelected(true);
         } else {
             liverCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.KIDNEY)) {
+        if (donorOrgans.contains(Organ.KIDNEY)) {
             kidneyCheckBox.setSelected(true);
         } else {
             kidneyCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.PANCREAS)) {
+        if (donorOrgans.contains(Organ.PANCREAS)) {
             pancreasCheckBox.setSelected(true);
         } else {
             pancreasCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.HEART)) {
+        if (donorOrgans.contains(Organ.HEART)) {
             heartCheckBox.setSelected(true);
         } else {
             heartCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.LUNG)) {
+        if (donorOrgans.contains(Organ.LUNG)) {
             lungCheckBox.setSelected(true);
         } else {
             lungCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.INTESTINE)) {
+        if (donorOrgans.contains(Organ.INTESTINE)) {
             intestineCheckBox.setSelected(true);
         } else {
             intestineCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.CORNEA)) {
+        if (donorOrgans.contains(Organ.CORNEA)) {
             corneaCheckBox.setSelected(true);
         } else {
             corneaCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.EAR)) {
+        if (donorOrgans.contains(Organ.EAR)) {
             middleEarCheckBox.setSelected(true);
         } else {
             middleEarCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.SKIN)) {
+        if (donorOrgans.contains(Organ.SKIN)) {
             skinCheckBox.setSelected(true);
         } else {
             skinCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.BONE)) {
+        if (donorOrgans.contains(Organ.BONE)) {
             boneMarrowCheckBox.setSelected(true);
         } else {
             boneMarrowCheckBox.setSelected(false);
         }
-        if(donorOrgans.contains(Organ.TISSUE)) {
+        if (donorOrgans.contains(Organ.TISSUE)) {
             connectiveTissueCheckBox.setSelected(true);
         } else {
             connectiveTissueCheckBox.setSelected(false);
         }
-        if(currentDonor.getWeight() != -1) {
+        if (currentDonor.getWeight() != -1) {
             weightField.setText(Double.toString(currentDonor.getWeight()));
         } else {
             weightField.setText("");
         }
 
-        if(currentDonor.getHeight() != -1) {
+        if (currentDonor.getHeight() != -1) {
             heightField.setText(Double.toString(currentDonor.getHeight()));
 
         } else {
@@ -498,10 +588,10 @@ public class UserWindowController implements Initializable {
         name[0] = firstName;
         System.arraycopy(middleNames, 0, name, 1, middleNames.length);
         if (isLastName == 1) {
-            name[name.length-1] = lastName;
+            name[name.length - 1] = lastName;
         }
         String result = "";
-        for(String donorName: name) {
+        for (String donorName : name) {
             result += donorName;
             result += ",";
         }
@@ -510,47 +600,65 @@ public class UserWindowController implements Initializable {
         Gender donorGender = null;
         try {
             String genderPick = (String) genderComboBox.getValue();
-            if (genderPick.equals("Male")) {
-                donorGender = Gender.MALE;
-            } else if (genderPick.equals("Female")) {
-                donorGender = Gender.FEMALE;
-            } else if (genderPick.equals("Other")) {
-                donorGender = Gender.OTHER;
-            } else {
-                donorGender = null;
+            switch (genderPick) {
+                case "Male":
+                    donorGender = Gender.MALE;
+                    break;
+                case "Female":
+                    donorGender = Gender.FEMALE;
+                    break;
+                case "Other":
+                    donorGender = Gender.OTHER;
+                    break;
+                default:
+                    donorGender = null;
+                    break;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
 
         }
 
         SmokerStatus smokerStatus;
         String smokerPick = (String) smokerStatusComboBox.getValue();
-        if (smokerPick.equals("Never")) {
-            smokerStatus = SmokerStatus.NEVER;
-        } else if(smokerPick.equals("Current")) {
-            smokerStatus = SmokerStatus.CURRENT;
-        } else if(smokerPick.equals("Past")) {
-            smokerStatus = SmokerStatus.PAST;
-        } else {
-            smokerStatus = null;
+        switch (smokerPick) {
+            case "Never":
+                smokerStatus = SmokerStatus.NEVER;
+                break;
+            case "Current":
+                smokerStatus = SmokerStatus.CURRENT;
+                break;
+            case "Past":
+                smokerStatus = SmokerStatus.PAST;
+                break;
+            default:
+                smokerStatus = null;
+                break;
         }
 
         AlcoholConsumption alcoholConsumption;
         String alcoholPick = (String) alcoholConsumptionComboBox.getValue();
-        if (alcoholPick.equals("None")) {
-            alcoholConsumption = AlcoholConsumption.NONE;
-        } else if(alcoholPick.equals("Low")) {
-            alcoholConsumption = AlcoholConsumption.LOW;
-        } else if(alcoholPick.equals("Average")) {
-            alcoholConsumption = AlcoholConsumption.AVERAGE;
-        } else if(alcoholPick.equals("High")) {
-            alcoholConsumption = AlcoholConsumption.HIGH;
-        } else if(alcoholPick.equals("Very High")) {
-            alcoholConsumption = AlcoholConsumption.VERYHIGH;
-        } else if(alcoholPick.equals("Alcoholic")) {
-            alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
-        } else {
-            alcoholConsumption = null;
+        switch (alcoholPick) {
+            case "None":
+                alcoholConsumption = AlcoholConsumption.NONE;
+                break;
+            case "Low":
+                alcoholConsumption = AlcoholConsumption.LOW;
+                break;
+            case "Average":
+                alcoholConsumption = AlcoholConsumption.AVERAGE;
+                break;
+            case "High":
+                alcoholConsumption = AlcoholConsumption.HIGH;
+                break;
+            case "Very High":
+                alcoholConsumption = AlcoholConsumption.VERYHIGH;
+                break;
+            case "Alcoholic":
+                alcoholConsumption = AlcoholConsumption.ALCOHOLIC;
+                break;
+            default:
+                alcoholConsumption = null;
+                break;
         }
 
         BloodType donorBloodType = null;
@@ -592,11 +700,11 @@ public class UserWindowController implements Initializable {
         }
 
         double donorHeight = -1;
-        if(!heightField.getText().equals("")) {
-            try{
+        if (!heightField.getText().equals("")) {
+            try {
                 donorHeight = Double.parseDouble(heightField.getText());
                 currentDonor.setHeight(donorHeight);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Error with the Height Input ");
@@ -609,11 +717,11 @@ public class UserWindowController implements Initializable {
 
 
         double donorWeight = -1;
-        if(!weightField.getText().equals("")) {
-            try{
+        if (!weightField.getText().equals("")) {
+            try {
                 donorWeight = Double.parseDouble(weightField.getText());
                 currentDonor.setWeight(donorWeight);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Error with the Weight Input ");
@@ -667,71 +775,71 @@ public class UserWindowController implements Initializable {
             currentDonor.setBloodPressure(bloodPressureTextField.getText());
 
 
-            if(liverCheckBox.isSelected()) {
+            if (liverCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.LIVER);
 
             }
-            if(!liverCheckBox.isSelected()) {
+            if (!liverCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.LIVER);
             }
-            if(kidneyCheckBox.isSelected()) {
+            if (kidneyCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.KIDNEY);
             }
-            if(!kidneyCheckBox.isSelected()) {
+            if (!kidneyCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.KIDNEY);
             }
-            if(pancreasCheckBox.isSelected()) {
+            if (pancreasCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.PANCREAS);
             }
-            if(!pancreasCheckBox.isSelected()) {
+            if (!pancreasCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.PANCREAS);
             }
-            if(heartCheckBox.isSelected()) {
+            if (heartCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.HEART);
             }
-            if(!heartCheckBox.isSelected()) {
+            if (!heartCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.HEART);
             }
-            if(lungCheckBox.isSelected()) {
+            if (lungCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.LUNG);
             }
-            if(!lungCheckBox.isSelected()) {
+            if (!lungCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.LUNG);
             }
-            if(intestineCheckBox.isSelected()) {
+            if (intestineCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.INTESTINE);
             }
-            if(!intestineCheckBox.isSelected()) {
+            if (!intestineCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.INTESTINE);
             }
-            if(corneaCheckBox.isSelected()) {
+            if (corneaCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.CORNEA);
             }
-            if(!corneaCheckBox.isSelected()) {
+            if (!corneaCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.CORNEA);
             }
-            if(middleEarCheckBox.isSelected()) {
+            if (middleEarCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.EAR);
             }
-            if(!middleEarCheckBox.isSelected()) {
+            if (!middleEarCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.EAR);
             }
-            if(skinCheckBox.isSelected()) {
+            if (skinCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.SKIN);
             }
-            if(!skinCheckBox.isSelected()) {
+            if (!skinCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.SKIN);
             }
-            if(boneMarrowCheckBox.isSelected()) {
+            if (boneMarrowCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.BONE);
             }
-            if(!boneMarrowCheckBox.isSelected()) {
+            if (!boneMarrowCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.BONE);
             }
-            if(connectiveTissueCheckBox.isSelected()) {
+            if (connectiveTissueCheckBox.isSelected()) {
                 currentDonor.setOrgan(Organ.TISSUE);
             }
-            if(!connectiveTissueCheckBox.isSelected()) {
+            if (!connectiveTissueCheckBox.isSelected()) {
                 currentDonor.removeOrgan(Organ.TISSUE);
             }
 
@@ -741,8 +849,8 @@ public class UserWindowController implements Initializable {
             System.out.println(currentDonor.toString());
             Main.saveUsers(Main.getDonorPath(), true);
 
-        } catch(Exception e) {
-            System.out.println(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -753,28 +861,27 @@ public class UserWindowController implements Initializable {
      * Then calls the populate donor function to repopulate the donor fields.
      */
     public void save() {
+        //changeSinceLastUndoStackPush = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current donor? ");
         alert.setContentText("By doing so, the donor will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            if(Main.getDonorUndoStack().isEmpty()){
+        if (result.get() == ButtonType.OK) {
+            if (donorUndoStack.isEmpty()) {
                 undoButton.setDisable(false);
                 undoWelcomeButton.setDisable(false);
             }
-            Main.addDonorToUndoStack(currentDonor);
+            addDonorToUndoStack(currentDonor);
             updateDonor();
             populateDonorFields();
             String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-            History.printToFile(Main.streamOut, text);
+            History.printToFile(streamOut, text);
             populateHistoryTable();
             alert.close();
         } else {
             alert.close();
         }
-
-
     }
 
     /**
@@ -782,20 +889,25 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
+        /*
+        if (changeSinceLastUndoStackPush) {
+            addDonorToUndoStack(currentDonor);
+            updateDonor();
+            changeSinceLastUndoStackPush = false;
+        }*/
 
-        currentDonor = Main.donorUndo(currentDonor);
+        currentDonor = donorUndo(currentDonor);
 
         populateDonorFields();
         redoButton.setDisable(false);
         redoWelcomeButton.setDisable(false);
-        if(Main.getDonorUndoStack().isEmpty()){
+        if (donorUndoStack.isEmpty()) {
             undoButton.setDisable(true);
             undoWelcomeButton.setDisable(true);
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
-        History.printToFile(Main.streamOut, text);
+        History.printToFile(streamOut, text);
         populateHistoryTable();
-
     }
 
     /**
@@ -803,16 +915,16 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
      */
     public void redo() {
-        currentDonor = Main.donorRedo(currentDonor);
+        currentDonor = donorRedo(currentDonor);
         populateDonorFields();
         undoButton.setDisable(false);
         undoWelcomeButton.setDisable(false);
-        if(Main.getDonorRedoStack().isEmpty()){
+        if (donorRedoStack.isEmpty()) {
             redoButton.setDisable(true);
             redoWelcomeButton.setDisable(true);
         }
         String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
-        History.printToFile(Main.streamOut, text);
+        History.printToFile(streamOut, text);
         populateHistoryTable();
     }
 
@@ -823,7 +935,7 @@ public class UserWindowController implements Initializable {
         LocalDate dobirthPick = dateOfBirthPicker.getValue();
         LocalDate dodeathPick = dateOfDeathPicker.getValue();
 
-        if(dodeathPick == null) {
+        if (dodeathPick == null) {
             LocalDate today = LocalDate.now();
             long days = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays();
             double years = days/365.00;
@@ -852,10 +964,7 @@ public class UserWindowController implements Initializable {
      */
     public void updateBMI() {
         try {
-
-
             if ((heightField.getText().equals("")) || (weightField.getText().equals(""))) {
-
                 System.out.print("Input a character in both fields.");
             } else {
                 double height = Double.parseDouble(heightField.getText());
@@ -876,39 +985,33 @@ public class UserWindowController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
-
-
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
 
         Optional<String> password = dialog.showAndWait();
-        if ((password.isPresent()) && (password.get().equals(currentDonor.getPassword())) ) {
-            System.out.println("Authenticated!");
-
-            try{
-                Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
-                Stage stage = new Stage();
-                stage.setTitle("Account Settings");
-                stage.setScene(new Scene(root, 270, 350));
-                stage.initModality(Modality.APPLICATION_MODAL);
-                Main.setCurrentDonorForAccountSettings(currentDonor);
-                stage.showAndWait();
-            } catch(Exception e) {
-                e.printStackTrace();
+        if(password.isPresent()){ //Ok was pressed, Else cancel
+            if(password.get().equals(currentDonor.getPassword())){
+                try {
+                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
+                    Stage stage = new Stage();
+                    stage.setTitle("Account Settings");
+                    stage.setScene(new Scene(root, 270, 350));
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    Main.setCurrentDonorForAccountSettings(currentDonor);
+                    stage.showAndWait();
+                } catch (Exception e) {
+                    System.out.println("here");
+                    e.printStackTrace();
+                }
+            }else{ // Password incorrect
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Incorrect");
+                alert.setHeaderText("Incorrect password. ");
+                alert.setContentText("Please enter the correct password to view account settings");
+                alert.show();
             }
-
-
-
-        } else if(!(password.get().equals(currentDonor.getPassword()))){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Incorrect");
-            alert.setHeaderText("Incorrect password. ");
-            alert.setContentText("Please enter the correct password to view account settings");
-            alert.show();
-        } else {
-            dialog.close();
         }
     }
 
@@ -916,17 +1019,16 @@ public class UserWindowController implements Initializable {
      * Function which is called when the user wants to exit the application.
      */
     public void stop() {
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to exit the application? ");
         alert.setContentText("Exiting without saving loses your non-saved data.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.get() == ButtonType.OK) {
             System.out.println("Exiting GUI");
             String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
-            History.printToFile(Main.streamOut, text);
+            History.printToFile(streamOut, text);
             Platform.exit();
         } else {
             alert.close();

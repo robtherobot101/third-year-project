@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 /**
@@ -130,9 +131,7 @@ public class Donor {
         this.smokerStatus = donor.smokerStatus;
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
-        for(Organ organ: donor.organs) {
-            this.organs.add(organ);
-        }
+        this.organs.addAll(donor.organs);
     }
 
     public String getName() {

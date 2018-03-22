@@ -82,7 +82,7 @@ public class ClinicianController implements Initializable {
     private int page = 1;
     private ArrayList<Donor> donorsFound;
 
-    private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
+    private ArrayList<UserWindowController> userWindows = new ArrayList<>();
 
 
     private ObservableList<Donor> currentPage = FXCollections.observableArrayList();
@@ -294,11 +294,7 @@ public class ClinicianController implements Initializable {
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
                             stage.show();
-                        } catch (IOException e) {
-                            System.err.println("Unable to load fxml or save file.");
-                            e.printStackTrace();
-                            Platform.exit();
-                        }catch (NullPointerException e){
+                        } catch (IOException | NullPointerException e) {
                             System.err.println("Unable to load fxml or save file.");
                             e.printStackTrace();
                             Platform.exit();
@@ -308,8 +304,6 @@ public class ClinicianController implements Initializable {
                 return row;
             }
         });
-
-
 
         /**
          * Sorts of the profileTable across all pages.

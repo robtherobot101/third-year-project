@@ -1,24 +1,14 @@
 package seng302.Controllers;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import seng302.Core.Clinician;
 import seng302.Core.Donor;
 import seng302.Core.Main;
-import seng302.Core.TFScene;
 import seng302.Files.History;
 
-import javax.xml.soap.Text;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
