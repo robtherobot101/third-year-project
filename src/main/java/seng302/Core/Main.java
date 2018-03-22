@@ -23,11 +23,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import seng302.Controllers.AccountSettingsController;
-import seng302.Controllers.ClinicianController;
-import seng302.Controllers.CreateAccountController;
-import seng302.Controllers.LoginController;
-import seng302.Controllers.UserWindowController;
+import seng302.Controllers.*;
 
 import seng302.Files.History;
 
@@ -54,7 +50,9 @@ public class Main extends Application {
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
+
     private static AccountSettingsController accountSettingsController;
+    private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
 
     /**
@@ -117,6 +115,11 @@ public class Main extends Application {
         accountSettingsController.populateAccountDetails();
     }
 
+    public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
+        clinicianAccountSettingsController.setCurrentClinician(currentClinician);
+        clinicianAccountSettingsController.populateAccountDetails();
+    }
+
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
@@ -127,6 +130,10 @@ public class Main extends Application {
 
     public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
         Main.accountSettingsController = accountSettingsController;
+    }
+
+    public static void setClincianAccountSettingsController(ClinicianAccountSettingsController clincianAccountSettingsController) {
+        Main.clinicianAccountSettingsController = clincianAccountSettingsController;
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {
