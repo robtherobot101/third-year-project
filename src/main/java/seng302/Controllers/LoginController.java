@@ -18,6 +18,9 @@ import seng302.Core.TFScene;
 import seng302.Files.History;
 import seng302.Files.History;
 
+/**
+ * A controller class for the log in screen.
+ */
 public class LoginController implements Initializable {
     @FXML
     private TextField identificationInput;
@@ -30,10 +33,14 @@ public class LoginController implements Initializable {
     @FXML
     private AnchorPane background;
 
+    /**
+     * Attempts to log in based on the information currently provided by the user. Provides appropriate feedback if log in fails.
+     */
     public void login() {
         boolean identificationMatched = false;
+
+        //Check for a donor match
         Donor currentDonor = null;
-        Clinician currentClinician = null;
         for (Donor donor: Main.donors) {
             if (donor.getUsername() != null && donor.getUsername().equals(identificationInput.getText()) ||
                 donor.getEmail() != null && donor.getEmail().equals(identificationInput.getText())) {
@@ -46,6 +53,8 @@ public class LoginController implements Initializable {
             }
         }
 
+        //Check for a clinician match
+        Clinician currentClinician = null;
         for(Clinician clinician: Main.clinicians){
             if(clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())){
                 identificationMatched = true;
@@ -80,14 +89,23 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Removes focus from all fields.
+     */
     public void requestFocus() {
         background.requestFocus();
     }
 
+    /**
+     * Switches the displayed scene to the create account scene.
+     */
     public void createAccount() {
         Main.setScene(TFScene.createAccount);
     }
 
+    /**
+     * Sets the enter key press to attempt log in if sufficient information is present.
+     */
     public void setEnterEvent() {
         Main.getScene(TFScene.login).setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !loginButton.isDisable()) {
@@ -96,6 +114,11 @@ public class LoginController implements Initializable {
         });
     }
 
+    /**
+     * Add listeners to enable/disable the login button based on information supplied
+     * @param location Not used
+     * @param resources Not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setLoginController(this);
