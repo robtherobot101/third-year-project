@@ -24,10 +24,7 @@ import seng302.Core.TFScene;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ClinicianController implements Initializable {
 
@@ -79,6 +76,9 @@ public class ClinicianController implements Initializable {
     private Label resultsDisplayLabel;
 
     @FXML
+    private Button accountSettingsButton;
+
+    @FXML
     private Button undoButton;
 
     @FXML
@@ -118,6 +118,44 @@ public class ClinicianController implements Initializable {
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
     }
+
+    /**
+     * Function which is called when the user wants to update their account settings in the user Window,
+     * and creates a new account settings window to do so. Then does a prompt for the password as well.
+     */
+    public void accountSettings() {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("View Account Settings");
+        dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
+        dialog.setContentText("Please enter your password:");
+
+        Optional<String> password = dialog.showAndWait();
+        if(password.isPresent()){ //Ok was pressed, Else cancel
+            if(password.get().equals(clinician.getPassword())){
+                try {
+                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
+                    Stage stage = new Stage();
+                    stage.setTitle("Account Settings");
+                    stage.setScene(new Scene(root, 290, 350));
+                    stage.initModality(Modality.APPLICATION_MODAL);
+
+                    Main.setCurrentClinicianForAccountSettings(clinician);
+
+                    stage.showAndWait();
+                } catch (Exception e) {
+                    System.out.println("here");
+                    e.printStackTrace();
+                }
+            }else{ // Password incorrect
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Incorrect");
+                alert.setHeaderText("Incorrect password. ");
+                alert.setContentText("Please enter the correct password to view account settings");
+                alert.show();
+            }
+        }
+    }
+
 
     /**
      * Updates the current clinicians attributes to
@@ -223,11 +261,18 @@ public class ClinicianController implements Initializable {
     }
 
 
+    /**
+     * Updates theO ObservableList for the profile table
+     */
     public void displayCurrentPage() {
         currentPage.clear();
         currentPage.addAll(getCurrentPage());
     }
 
+    /**
+     * Updates the list of donors found from the search
+     * @param searchTerm the search term
+     */
     public void updateFoundDonors(String searchTerm){
         donorsFound = Main.getDonorsByNameAlternative(searchTerm);
         donors = FXCollections.observableArrayList(donorsFound);
@@ -235,6 +280,9 @@ public class ClinicianController implements Initializable {
     }
 
 
+    /**
+     * Splits the sorted list of found donors and returns a page worth
+     */
     public ObservableList<Donor> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
         int lastIndex = Math.min(donors.size(), page*resultsPerPage);
@@ -272,6 +320,9 @@ public class ClinicianController implements Initializable {
         resultsDisplayLabel.setText(text);
     }
 
+    /**
+     * Displays the next page of donor search results
+     */
     public void previousPage(){
         page--;
         updatePageButtons();
@@ -292,12 +343,6 @@ public class ClinicianController implements Initializable {
             previousPageButton.setDisable(true);
         }else{
             previousPageButton.setDisable(false);
-        }
-    }
-
-    public void sort(){
-        for(Object t: profileTable.getSortOrder()){
-            System.out.println(t);
         }
     }
 
@@ -335,6 +380,12 @@ public class ClinicianController implements Initializable {
 
         profileTable.setItems(currentPage);
 
+        /**
+         * RowFactory for the profileTable.
+         * Displays a tooltip when the mouse is over a table entry.
+         * Adds a mouse click listener to each row in the table so that a donor window
+         * is opened when the event is triggered
+         */
         profileTable.setRowFactory(new Callback<TableView<Donor>, TableRow<Donor>>() {
             @Override
             public TableRow<Donor> call(TableView<Donor> tableView) {
@@ -356,7 +407,6 @@ public class ClinicianController implements Initializable {
                         }
                     }
                 };
-
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         System.out.println(row.getItem());

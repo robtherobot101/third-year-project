@@ -125,14 +125,28 @@ public class Donor {
         this.region = donor.region;
         this.currentAddress = donor.currentAddress;
         this.creationTime = donor.creationTime;
-        this.username = donor.username;
-        this.email = donor.email;
-        this.password = donor.password;
         this.id = donor.id;
         this.smokerStatus = donor.smokerStatus;
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
         this.organs.addAll(donor.organs);
+    }
+
+    public void copyFieldsFrom(Donor donor) {
+        name = donor.getNameArray();
+        dateOfBirth = donor.getDateOfBirth();
+        dateOfDeath = donor.getDateOfDeath();
+        gender = donor.getGender();
+        bloodType = donor.getBloodType();
+        height = donor.getHeight();
+        weight = donor.getWeight();
+        region = donor.getRegion();
+        currentAddress = donor.getCurrentAddress();
+        smokerStatus = donor.getSmokerStatus();
+        bloodPressure = donor.getBloodPressure();
+        alcoholConsumption = donor.getAlcoholConsumption();
+        organs.clear();
+        organs.addAll(donor.getOrgans());
     }
 
     public boolean fieldsEqual(Donor donor) {
@@ -143,17 +157,21 @@ public class Donor {
                 bloodType == donor.getBloodType() &&
                 height == donor.getHeight() &&
                 weight == donor.getWeight() &&
-                region.equals(donor.getRegion()) &&
-                currentAddress.equals(donor.getCurrentAddress()) &&
-                username.equals(donor.getUsername()) &&
-                email.equals(donor.getEmail()) &&
-                password.equals(donor.getPassword()) &&
-                id == donor.getId() &&
+                stringEqual(region, donor.getRegion()) &&
+                stringEqual(currentAddress, donor.getCurrentAddress()) &&
                 smokerStatus == donor.getSmokerStatus() &&
-                bloodPressure.equals(donor.getBloodPressure()) &&
+                stringEqual(bloodPressure, donor.getBloodPressure()) &&
                 alcoholConsumption == donor.getAlcoholConsumption() &&
-                organs == donor.getOrgans()
+                organs.equals(donor.getOrgans())
         );
+    }
+
+    private boolean stringEqual(String s1, String s2) {
+        if (s1 == null) {
+            return s2 == null;
+        } else {
+            return s2 != null && s1.equals(s2);
+        }
     }
 
     public String getName() {

@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -240,9 +240,9 @@
       						</CheckBox>
                      </children>
                   </GridPane>
-						<TextField fx:id="bloodPressureTextField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="146.0" promptText="Blood Pressure" GridPane.columnIndex="1" GridPane.rowIndex="7">
+						<TextField fx:id="bloodPressureTextField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="159.0" promptText="Blood Pressure (eg 20/30)" GridPane.columnIndex="1" GridPane.rowIndex="7">
 							<GridPane.margin>
-								<Insets left="20.0" right="45.0" />
+								<Insets left="20.0" right="40.0" />
 							</GridPane.margin>
 						</TextField>
 						<Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="27.0" prefWidth="86.0" text="Save" GridPane.columnIndex="2" GridPane.rowIndex="8">
@@ -395,6 +395,11 @@
                   <Label text="mmHg" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets left="160.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label fx:id="bloodPressureLabel" prefHeight="17.0" prefWidth="116.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                     <GridPane.margin>
+                        <Insets bottom="50.0" left="50.0" />
                      </GridPane.margin>
                   </Label>
 					</children>
