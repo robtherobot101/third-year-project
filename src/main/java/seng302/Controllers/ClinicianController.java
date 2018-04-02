@@ -3,8 +3,14 @@ package seng302.Controllers;
 import com.sun.javafx.scene.control.Logging;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,6 +21,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import seng302.Core.Clinician;
@@ -364,6 +372,7 @@ public class ClinicianController implements Initializable {
         profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
+        
 
         fadeIn.setNode(updatedSuccessfully);
         fadeIn.setDelay(Duration.millis(1000));
@@ -441,6 +450,7 @@ public class ClinicianController implements Initializable {
 
 
 
+        profileTable.refresh();
         /**
          * Sorts of the profileTable across all pages.
          * As items are removed and re-added, multiple sort calls can trigger an

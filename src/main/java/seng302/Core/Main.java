@@ -98,6 +98,11 @@ public class Main extends Application {
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
+        clinicianController.updateDisplay();
+        clinicianController.updateFoundDonors("");
+        clinicianController.updatePageButtons();
+        clinicianController.displayCurrentPage();
+        clinicianController.updateResultsSummary();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {

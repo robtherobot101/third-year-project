@@ -32,8 +32,6 @@ public class UserWindowController implements Initializable {
 
     private Donor currentDonor;
 
-    private boolean childWindow = false;
-
     public Donor getCurrentDonor() {
         return currentDonor;
     }

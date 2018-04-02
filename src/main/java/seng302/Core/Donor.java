@@ -1,5 +1,10 @@
 package seng302.Core;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.adapter.JavaBeanStringProperty;
+import javafx.scene.control.TextField;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -32,6 +37,7 @@ public class Donor {
     private String bloodPressure = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
+
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -314,6 +320,7 @@ public class Donor {
     public AlcoholConsumption getAlcoholConsumption() { return alcoholConsumption; }
 
     public void setAlcoholConsumption(AlcoholConsumption alcoholConsumption) { this.alcoholConsumption = alcoholConsumption; }
+
 
     /**
      * Get a string containing key information about the donor. Can be formatted as a table row.
