@@ -34,7 +34,7 @@
             <Insets top="19.0" />
          </GridPane.margin>
       </TextField>
-      <Button minWidth="-Infinity" mnemonicParsing="false" text="Add" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Button minWidth="-Infinity" mnemonicParsing="false" text="Add" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <font>
             <Font size="14.0" />
          </font>
@@ -66,11 +66,11 @@
          <GridPane.margin>
             <Insets top="15.0" />
          </GridPane.margin></ListView>
-      <Button alignment="CENTER" mnemonicParsing="false" prefHeight="32.0" prefWidth="136.0" text="Delete Medication" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3">
+      <Button alignment="CENTER" mnemonicParsing="false" prefHeight="32.0" prefWidth="136.0" text="Delete Medication" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3">
          <GridPane.margin>
-            <Insets left="130.0" />
+            <Insets />
          </GridPane.margin></Button>
-      <Label alignment="BASELINE_LEFT" text="Current Medications" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="2">
+      <Label alignment="BASELINE_LEFT" text="Current Medications" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -78,7 +78,7 @@
             <Insets bottom="250.0" />
          </GridPane.margin>
       </Label>
-      <Label alignment="BASELINE_LEFT" text="History of Medications" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <Label alignment="BASELINE_LEFT" text="History of Medications" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -95,11 +95,11 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Drug 1" />
-            <Label text="Drug 2" GridPane.rowIndex="1" />
+            <Label fx:id="drugALabel" text="Drug A" />
+            <Label fx:id="drugBLabel" text="Drug B" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Label text="Interactions between Drugs (if any)" GridPane.columnIndex="5" GridPane.rowIndex="1">
+      <Label fx:id="interactionsLabel" text="Interactions between Drugs (if any)" GridPane.columnIndex="5" GridPane.rowIndex="1">
          <font>
             <Font size="9.0" />
          </font>
