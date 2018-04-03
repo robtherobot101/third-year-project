@@ -52,15 +52,16 @@ public class MedicationsController implements Initializable {
     public void addNewMedication() {
         //TODO Add in check for autocomplete
         String medicationChoice = newMedicationField.getText();
-        currentDonor.getCurrentMedications().add(1, new Medication(medicationChoice));
+        //currentDonor.getCurrentMedications().add(1, new Medication(medicationChoice));
         populateMedications();
     }
 
     public void populateMedications() {
         ObservableList<String> items = FXCollections.observableArrayList (
                 "Single", "Double", "Suite", "Family App");
-        historyListView.setItems(items);
-        currentListView.setItems(currentDonor.getCurrentMedications());
+        //items.add("Rosie");
+        //historyListView.setItems(items);
+        //currentListView.setItems(currentDonor.getCurrentMedications());
 
     }
 
