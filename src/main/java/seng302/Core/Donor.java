@@ -1,5 +1,8 @@
 package seng302.Core;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -32,6 +35,8 @@ public class Donor {
     private String bloodPressure = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
+    private ObservableList<Medication> currentMedications;
+    private ObservableList<Medication> historicMedications;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -45,6 +50,8 @@ public class Donor {
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
         this.id = Main.getNextId(true, true);
+        this.currentMedications = FXCollections.observableArrayList();
+        this.historicMedications = FXCollections.observableArrayList();
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -60,6 +67,8 @@ public class Donor {
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
         this.id = Main.getNextId(true, true);
+        this.currentMedications = FXCollections.observableArrayList();
+        this.historicMedications = FXCollections.observableArrayList();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -84,6 +93,8 @@ public class Donor {
         this.email = email;
         this.password = password;
         this.id = Main.getNextId(true, true);
+        this.currentMedications = FXCollections.observableArrayList();
+        this.historicMedications = FXCollections.observableArrayList();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -108,6 +119,8 @@ public class Donor {
         this.email = email;
         this.password = password;
         this.id = Main.getNextId(true, true);
+        this.currentMedications = FXCollections.observableArrayList();
+        this.historicMedications = FXCollections.observableArrayList();
     }
 
     /**
@@ -130,6 +143,8 @@ public class Donor {
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
         this.organs.addAll(donor.organs);
+        this.currentMedications = donor.currentMedications;
+        this.historicMedications = donor.historicMedications;
     }
 
     public void copyFieldsFrom(Donor donor) {
@@ -147,6 +162,10 @@ public class Donor {
         alcoholConsumption = donor.getAlcoholConsumption();
         organs.clear();
         organs.addAll(donor.getOrgans());
+        currentMedications.clear();
+        currentMedications.addAll(donor.getCurrentMedications());
+        historicMedications.clear();
+        historicMedications.addAll(donor.getHistoricMedications());
     }
 
     public boolean fieldsEqual(Donor donor) {
@@ -162,7 +181,9 @@ public class Donor {
                 smokerStatus == donor.getSmokerStatus() &&
                 stringEqual(bloodPressure, donor.getBloodPressure()) &&
                 alcoholConsumption == donor.getAlcoholConsumption() &&
-                organs.equals(donor.getOrgans())
+                organs.equals(donor.getOrgans()) &&
+                currentMedications.equals(donor.getCurrentMedications()) &&
+                historicMedications.equals(donor.getHistoricMedications())
         );
     }
 
@@ -314,6 +335,14 @@ public class Donor {
     public AlcoholConsumption getAlcoholConsumption() { return alcoholConsumption; }
 
     public void setAlcoholConsumption(AlcoholConsumption alcoholConsumption) { this.alcoholConsumption = alcoholConsumption; }
+
+    public ObservableList<Medication> getCurrentMedications() { return currentMedications; }
+
+    public void setCurrentMedications(ObservableList<Medication> currentMedications) { this.currentMedications = currentMedications; }
+
+    public ObservableList<Medication> getHistoricMedications() { return historicMedications; }
+
+    public void setHistoricMedications(ObservableList<Medication> historicMedications) { this.historicMedications = historicMedications; }
 
     /**
      * Get a string containing key information about the donor. Can be formatted as a table row.
