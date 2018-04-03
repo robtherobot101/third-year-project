@@ -3,7 +3,7 @@
 	-fx-padding: 7 8 7 8;
 	-fx-background-insets: 0 0 0 0, 0 0 1 0, 0 0 2 0;
 	-fx-background-radius: 8;
-	-fx-label-padding: 0 0 0 17;
+	-fx-label-padding: 0 0 0 12;
 	-fx-background-color: #457fb0, #4f89ba, #4785b8;
 }
 .button:hover {
