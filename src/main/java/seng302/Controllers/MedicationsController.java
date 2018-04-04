@@ -49,19 +49,43 @@ public class MedicationsController implements Initializable {
     @FXML
     private ListView currentListView;
 
+    private ObservableList<String> historicItems = FXCollections.observableArrayList();
+    private ObservableList<String> currentItems = FXCollections.observableArrayList();
+
     public void addNewMedication() {
         //TODO Add in check for autocomplete
         String medicationChoice = newMedicationField.getText();
-        //currentDonor.getCurrentMedications().add(1, new Medication(medicationChoice));
+        currentDonor.getCurrentMedications().add(new Medication(medicationChoice));
         populateMedications();
     }
 
     public void populateMedications() {
-        ObservableList<String> items = FXCollections.observableArrayList (
-                "Single", "Double", "Suite", "Family App");
-        //items.add("Rosie");
-        //historyListView.setItems(items);
-        //currentListView.setItems(currentDonor.getCurrentMedications());
+
+        //Populate table for current medications
+
+        if(currentDonor.getCurrentMedications().size() != 0) {
+            for(Medication medication: currentDonor.getCurrentMedications()) {
+                currentItems.add(medication.getName());
+            }
+            currentListView.setItems(currentItems);
+        } else {
+            return;
+        }
+
+        //Populate table for historic medications
+
+        if(currentDonor.getHistoricMedications().size() != 0) {
+            for(Medication medication: currentDonor.getHistoricMedications()) {
+                historicItems.add(medication.getName());
+            }
+            historyListView.setItems(historicItems);
+
+            historyListView.setItems(historicItems);
+        } else {
+            return;
+        }
+
+
 
     }
 
