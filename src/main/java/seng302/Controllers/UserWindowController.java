@@ -237,8 +237,7 @@ public class UserWindowController implements Initializable {
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
 
-        medicationsButton.setDisable(true);
-        medicalHistoryButton.setDisable(true);
+        Main.medicationsViewForDonor();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -280,11 +279,6 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
-    }
-
-    public void enableMedicationsForClinician() {
-        medicationsButton.setDisable(false);
-        medicalHistoryButton.setDisable(false);
     }
 
     /**

@@ -115,6 +115,14 @@ public class Main extends Application {
         medicationsController.populateMedications(true);
     }
 
+    public static void medicationsViewForDonor() {
+        medicationsController.setMedicationsViewForDonor();
+    }
+
+    public static void medicationsViewForClinician() {
+        medicationsController.setMedicationsViewForClinician();
+    }
+
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
         accountSettingsController.setCurrentDonor(currentDonor);
         accountSettingsController.populateAccountDetails();

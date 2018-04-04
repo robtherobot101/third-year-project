@@ -34,7 +34,7 @@
             <Insets top="19.0" />
          </GridPane.margin>
       </TextField>
-      <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewMedication" text="Add" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Button fx:id="addNewMedicationButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewMedication" text="Add" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <font>
             <Font size="14.0" />
          </font>
@@ -42,7 +42,7 @@
             <Insets right="120.0" top="48.0" />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#moveMedicationToHistory" text="&lt;&lt;" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+      <Button fx:id="moveToHistoryButton" mnemonicParsing="false" onAction="#moveMedicationToHistory" text="&lt;&lt;" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <font>
             <Font size="14.0" />
          </font>
@@ -50,7 +50,7 @@
             <Insets bottom="40.0" />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#moveMedicationToCurrent" text="&gt;&gt;" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+      <Button fx:id="moveToCurrentButton" mnemonicParsing="false" onAction="#moveMedicationToCurrent" text="&gt;&gt;" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <font>
             <Font size="14.0" />
          </font>
@@ -66,7 +66,7 @@
          <GridPane.margin>
             <Insets top="15.0" />
          </GridPane.margin></ListView>
-      <Button alignment="CENTER" mnemonicParsing="false" onAction="#deleteSelectedMedication" prefHeight="32.0" prefWidth="136.0" text="Delete Medication" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+      <Button fx:id="deleteMedicationButton" alignment="CENTER" mnemonicParsing="false" onAction="#deleteSelectedMedication" prefHeight="32.0" prefWidth="136.0" text="Delete Medication" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets />
          </GridPane.margin></Button>
@@ -104,7 +104,7 @@
             <Font size="9.0" />
          </font>
       </Label>
-      <Button mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
       <Label text="Medications" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
             <Font name="System Bold" size="28.0" />

@@ -59,6 +59,18 @@ public class MedicationsController implements Initializable {
     @FXML
     private ListView<String> currentListView = new ListView<>();
 
+    @FXML
+    private Button saveMedicationButton;
+    @FXML
+    private Button moveToHistoryButton;
+    @FXML
+    private Button moveToCurrentButton;
+    @FXML
+    private Button addNewMedicationButton;
+    @FXML
+    private Button deleteMedicationButton;
+
+
     private ObservableList<String> historicItems = FXCollections.observableArrayList();
     private ObservableList<String> currentItems = FXCollections.observableArrayList();
 
@@ -206,7 +218,7 @@ public class MedicationsController implements Initializable {
                 }
                 currentListView.setItems(currentItems);
             } catch(Exception e) {
-                System.out.println("Hello 1");
+                e.printStackTrace();
             }
 
 
@@ -220,7 +232,7 @@ public class MedicationsController implements Initializable {
                 }
                 historyListView.setItems(historicItems);
             } catch(Exception e) {
-                System.out.println("Hello 2");
+                e.printStackTrace();
             }
 
         } else {
@@ -234,7 +246,7 @@ public class MedicationsController implements Initializable {
                 }
                 currentListView.setItems(currentItems);
             } catch(Exception e) {
-                System.out.println("Hello 1");
+                e.printStackTrace();
             }
 
 
@@ -248,12 +260,10 @@ public class MedicationsController implements Initializable {
                 }
                 historyListView.setItems(historicItems);
             } catch(Exception e) {
-                System.out.println("Hello 2");
+                e.printStackTrace();
             }
 
         }
-
-
 
 
     }
@@ -283,7 +293,21 @@ public class MedicationsController implements Initializable {
         }
     }
 
+    public void setMedicationsViewForDonor() {
+        addNewMedicationButton.setDisable(true);
+        deleteMedicationButton.setDisable(true);
+        moveToCurrentButton.setDisable(true);
+        moveToHistoryButton.setDisable(true);
+        saveMedicationButton.setDisable(true);
+    }
 
+    public void setMedicationsViewForClinician() {
+        addNewMedicationButton.setDisable(false);
+        deleteMedicationButton.setDisable(false);
+        moveToCurrentButton.setDisable(false);
+        moveToHistoryButton.setDisable(false);
+        saveMedicationButton.setDisable(false);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
