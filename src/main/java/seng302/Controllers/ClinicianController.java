@@ -17,10 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import seng302.Core.Clinician;
-import seng302.Core.Donor;
-import seng302.Core.Main;
-import seng302.Core.TFScene;
+import seng302.Core.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -422,8 +419,11 @@ public class ClinicianController implements Initializable {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
-                            userWindowController.setCurrentDonor(row.getItem());
+                            Main.setCurrentDonor(row.getItem());
                             userWindowController.populateDonorFields();
+                            userWindowController.populateHistoryTable();
+                            userWindowController.enableMedicationsForClinician();
+
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
                             stage.show();

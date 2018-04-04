@@ -146,6 +146,11 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> actionColumn;
 
     @FXML
+    private Button medicationsButton;
+    @FXML
+    private Button medicalHistoryButton;
+
+    @FXML
     private GridPane background;
 
 
@@ -232,6 +237,9 @@ public class UserWindowController implements Initializable {
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
 
+        medicationsButton.setDisable(true);
+        medicalHistoryButton.setDisable(true);
+
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
@@ -272,6 +280,11 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
+    }
+
+    public void enableMedicationsForClinician() {
+        medicationsButton.setDisable(false);
+        medicalHistoryButton.setDisable(false);
     }
 
     /**

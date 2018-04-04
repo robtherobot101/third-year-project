@@ -112,7 +112,7 @@ public class Main extends Application {
         userWindowController.populateHistoryTable();
 
         medicationsController.setCurrentDonor(currentDonor);
-        medicationsController.populateMedications();
+        medicationsController.populateMedications(true);
     }
 
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {

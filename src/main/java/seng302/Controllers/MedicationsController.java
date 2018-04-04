@@ -11,15 +11,26 @@ import seng302.Core.Medication;
 import seng302.Files.History;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static seng302.Core.Main.streamOut;
-
+/**
+ * Class which handles all the logic for the Medications Pane.
+ * Handles all functions including:
+ * Saving, Adding new medications, moving medications between lists, deleting medications and comparing medications.
+ */
 public class MedicationsController implements Initializable {
 
     private Donor currentDonor;
 
+    private ArrayList<Medication> historicMedicationsCopy = new ArrayList<>();
+    private ArrayList<Medication> currentMedicationsCopy = new ArrayList<>();
+
+    /**
+     * Function to set the current donor of this class to that of the instance of the application.
+     * @param currentDonor The donor to set the current donor.
+     */
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         System.out.println("HELLO");
@@ -51,6 +62,10 @@ public class MedicationsController implements Initializable {
     private ObservableList<String> historicItems = FXCollections.observableArrayList();
     private ObservableList<String> currentItems = FXCollections.observableArrayList();
 
+    /**
+     * Function to handle when the user wants to add a new medication to the current medications list.
+     * Adds the medication to the donor's personal list and then updates the listview.
+     */
     public void addNewMedication() {
         //TODO **
         // STORY 19 - Add in new medication - autocomplete DO HERE.
@@ -58,16 +73,21 @@ public class MedicationsController implements Initializable {
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
 
-        // This step is for adding a new medication to the donor's medication and then the list views are updated after.
-        currentDonor.getCurrentMedications().add(new Medication(medicationChoice));
+        // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
+        // and then the list views are updated after.
+        currentMedicationsCopy.add(new Medication(medicationChoice));
         // NOTE: I have created another constructor in the Medications class for a medication with a name and
         // active ingredients also.
         // TODO **
 
         newMedicationField.clear();
-        populateMedications();
+        populateMedications(false);
     }
 
+    /**
+     * Function to handle when the user wants to delete a medication from either listview.
+     * Removes the medication from the donor's personal list and then updates the respective listview.
+     */
     public void deleteSelectedMedication() {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -80,25 +100,25 @@ public class MedicationsController implements Initializable {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
                 String medicationString = currentListView.getSelectionModel().getSelectedItem();
                 Medication medicationChoice = null;
-                for(Medication medication : currentDonor.getCurrentMedications()) {
+                for(Medication medication : currentMedicationsCopy) {
                     if(medication.getName().equals(medicationString)) {
                         medicationChoice = medication;
                     }
                 }
-                currentDonor.getCurrentMedications().remove(medicationChoice);
-                populateMedications();
+                currentMedicationsCopy.remove(medicationChoice);
+                populateMedications(false);
             }
             else {
                 if (historyListView.getSelectionModel().getSelectedItem() != null) {
                     String medicationString = historyListView.getSelectionModel().getSelectedItem();
                     Medication medicationChoice = null;
-                    for(Medication medication : currentDonor.getHistoricMedications()) {
+                    for(Medication medication : historicMedicationsCopy) {
                         if(medication.getName().equals(medicationString)) {
                             medicationChoice = medication;
                         }
                     }
-                    currentDonor.getHistoricMedications().remove(medicationChoice);
-                    populateMedications();
+                    historicMedicationsCopy.remove(medicationChoice);
+                    populateMedications(false);
                 }
             }
 
@@ -110,26 +130,29 @@ public class MedicationsController implements Initializable {
         } else {
             alert.close();
         }
-
-
-
     }
 
+    /**
+     * Moves the selected medication from the current medications listview to the historic medications listview.
+     */
     public void moveMedicationToHistory() {
         if (currentListView.getSelectionModel().getSelectedItem() != null) {
 
+            //ADD
             String medicationString = currentListView.getSelectionModel().getSelectedItem();
-            currentDonor.getHistoricMedications().add(new Medication(medicationString));
+            historicMedicationsCopy.add(new Medication(medicationString));
 
+            //REMOVE
             Medication medicationChoice = null;
-            for(Medication medication : currentDonor.getCurrentMedications()) {
+            for(Medication medication : currentMedicationsCopy) {
                 if(medication.getName().equals(medicationString)) {
                     medicationChoice = medication;
                 }
             }
-            currentDonor.getCurrentMedications().remove(medicationChoice);
+            currentMedicationsCopy.remove(medicationChoice);
 
-            populateMedications();
+            //UPDATE
+            populateMedications(false);
 
 
         } else {
@@ -139,21 +162,27 @@ public class MedicationsController implements Initializable {
 
     }
 
+    /**
+     * Moves the selected medication from the historic medications listview to the current medications listview.
+     */
     public void moveMedicationToCurrent() {
         if (historyListView.getSelectionModel().getSelectedItem() != null) {
 
+            //ADD
             String medicationString = historyListView.getSelectionModel().getSelectedItem();
-            currentDonor.getCurrentMedications().add(new Medication(medicationString));
+            currentMedicationsCopy.add(new Medication(medicationString));
 
+            //REMOVE
             Medication medicationChoice = null;
-            for(Medication medication : currentDonor.getHistoricMedications()) {
+            for(Medication medication : historicMedicationsCopy) {
                 if(medication.getName().equals(medicationString)) {
                     medicationChoice = medication;
                 }
             }
-            currentDonor.getHistoricMedications().remove(medicationChoice);
+            historicMedicationsCopy.remove(medicationChoice);
 
-            populateMedications();
+            //UPDATE
+            populateMedications(false);
 
         } else {
             System.out.println("You must be in the history LIst to move to the left");
@@ -161,36 +190,77 @@ public class MedicationsController implements Initializable {
 
     }
 
-    public void populateMedications() {
+    /**
+     * Populates both list views based on the current status of the current donors medication status
+     * and past medications. Must act differently for when starting and mid change.
+     */
+    public void populateMedications(Boolean startUp) {
 
-        //Populate table for current medications
-        currentItems.clear();
+        if(startUp == true) {
+            //Populate table for current medications
+            currentItems.clear();
 
-        if(currentDonor.getCurrentMedications().size() != 0) {
-            for(Medication medication: currentDonor.getCurrentMedications()) {
-                currentItems.add(medication.getName());
+            try {
+                for(Medication medication: currentDonor.getCurrentMedications()) {
+                    currentItems.add(medication.getName());
+                }
+                currentListView.setItems(currentItems);
+            } catch(Exception e) {
+                System.out.println("Hello 1");
             }
-            currentListView.setItems(currentItems);
+
+
+
+            //Populate table for historic medications
+            historicItems.clear();
+
+            try {
+                for (Medication medication : currentDonor.getHistoricMedications()) {
+                    historicItems.add(medication.getName());
+                }
+                historyListView.setItems(historicItems);
+            } catch(Exception e) {
+                System.out.println("Hello 2");
+            }
+
         } else {
-            return;
+
+            //Populate table for current medications
+            currentItems.clear();
+
+            try {
+                for(Medication medication: currentMedicationsCopy) {
+                    currentItems.add(medication.getName());
+                }
+                currentListView.setItems(currentItems);
+            } catch(Exception e) {
+                System.out.println("Hello 1");
+            }
+
+
+
+            //Populate table for historic medications
+            historicItems.clear();
+
+            try {
+                for (Medication medication : historicMedicationsCopy) {
+                    historicItems.add(medication.getName());
+                }
+                historyListView.setItems(historicItems);
+            } catch(Exception e) {
+                System.out.println("Hello 2");
+            }
+
         }
 
-        //Populate table for historic medications
-        historicItems.clear();
 
-        if(currentDonor.getHistoricMedications().size() != 0) {
-            for(Medication medication: currentDonor.getHistoricMedications()) {
-                historicItems.add(medication.getName());
-            }
-            historyListView.setItems(historicItems);
 
-            historyListView.setItems(historicItems);
-        } else {
-            return;
-        }
 
     }
 
+    /**
+     * Saves the current state of the donor's medications lists for both their historic and current medications.
+     */
     public void save() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
@@ -198,6 +268,10 @@ public class MedicationsController implements Initializable {
         alert.setContentText("By doing so, the donor will be updated with the following medication details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            currentDonor.getHistoricMedications().clear();
+            currentDonor.getHistoricMedications().addAll(historicMedicationsCopy);
+            currentDonor.getCurrentMedications().clear();
+            currentDonor.getCurrentMedications().addAll(currentMedicationsCopy);
             Main.saveUsers(Main.getDonorPath(), true);
             //TODO create update for medications for history
 //            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
