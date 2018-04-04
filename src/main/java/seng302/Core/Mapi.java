@@ -16,29 +16,53 @@ public class Mapi {
      * @param query The string to auto complete.
      * @return Returns an ArrayList of strings of the matching medicines.
      */
-    private ArrayList<String> autocomplete(String query) {
+    public ArrayList<String> autocomplete(String query) {
+        String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s",query));
+        String[] temp = result.split("\\[");
+        result = temp[1];
+        if (result.length() > 4) {
+            result = result.substring(1, result.length() - 3);
+        } else {
+            result = "";
+        }
+        temp = result.split("\",\"");
+        return new ArrayList<String>(Arrays.asList(temp));
+    }
+
+    /**
+     * Gets all the active ingredients of a given medicine.
+     * @param medicine The medicine to get the active ingredients of.
+     * @return Returns the active ingredients as a string arraylist
+     */
+    public ArrayList<String> activeIngredients(String medicine) {
+        String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/%s/substances.json", medicine));
+        if (result.length() > 4) {
+            result = result.substring(2, result.length() - 2);
+        } else {
+            result = "";
+        }
+        String[] temp = result.split("\",\"");
+        return new ArrayList<String>(Arrays.asList(temp));
+    }
+
+    /**
+     * Sends the api requests to MAPI.
+     * @param url The api url to call.
+     * @return returns a String of the result of the api request.
+     */
+    private String apiRequest(String url) {
         try {
-            HttpResponse<JsonNode> response = Unirest.get(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s",query))
+            HttpResponse<JsonNode> response = Unirest.get(url)
                     .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")
                     .header("Accept", "application/json")
                     .asJson();
-            int n = response.getRawBody().available();
+            int n = 0;
+            n = response.getRawBody().available();
             byte[] bytes = new byte[n];
             response.getRawBody().read(bytes, 0, n);
-            String s = new String(bytes, StandardCharsets.UTF_8);
-            String[] t = s.split("\\[");
-            s = t[1];
-            if (s.length() > 4) {
-                s = s.substring(1, s.length() - 3);
-            } else {
-                s = "";
-            }
-            t = s.split("\",\"");
-            return new ArrayList<String>(Arrays.asList(t));
-        } catch (UnirestException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return "";
         }
     }
 
@@ -46,7 +70,8 @@ public class Mapi {
      * Test function to test if the api works
      */
     public void main() {
-        System.out.println(autocomplete("res").toString());
+        //System.out.println(autocomplete("res").toString());
+        //System.out.println(activeIngredients("reserpine"));
     }
 
 
