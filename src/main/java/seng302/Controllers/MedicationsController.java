@@ -55,6 +55,14 @@ public class MedicationsController implements Initializable {
     @FXML
     private Label drugBLabel;
     @FXML
+    private Label histDrugLabel;
+    @FXML
+    private Label currDrugLabel;
+    @FXML
+    private Label histDrugIngredients;
+    @FXML
+    private Label currDrugIngredients;
+    @FXML
     private ListView<String> historyListView = new ListView<>();
     @FXML
     private ListView<String> currentListView = new ListView<>();
@@ -82,6 +90,26 @@ public class MedicationsController implements Initializable {
 
         newMedicationField.clear();
         populateMedications(false);
+
+
+        // Below code is temporary
+        histDrugIngredients.setText("Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n");
+
+        currDrugIngredients.setText("Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n" +
+                "Ingredient\n");
     }
 
     /**
