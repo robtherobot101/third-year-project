@@ -293,6 +293,9 @@ public class MedicationsController implements Initializable {
         }
     }
 
+    /**
+     * Disables all the medications buttons as a donor is unable to interact with them.
+     */
     public void setMedicationsViewForDonor() {
         addNewMedicationButton.setDisable(true);
         deleteMedicationButton.setDisable(true);
@@ -301,6 +304,9 @@ public class MedicationsController implements Initializable {
         saveMedicationButton.setDisable(true);
     }
 
+    /**
+     * Enables all the medications buttons as a clinician is able to interact with them.
+     */
     public void setMedicationsViewForClinician() {
         addNewMedicationButton.setDisable(false);
         deleteMedicationButton.setDisable(false);

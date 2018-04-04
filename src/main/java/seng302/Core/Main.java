@@ -115,10 +115,16 @@ public class Main extends Application {
         medicationsController.populateMedications(true);
     }
 
+    /**
+     * Sets the medications view to be unable to edit for a donor.
+     */
     public static void medicationsViewForDonor() {
         medicationsController.setMedicationsViewForDonor();
     }
 
+    /**
+     * Sets the medications view to be able to edit for a clinican.
+     */
     public static void medicationsViewForClinician() {
         medicationsController.setMedicationsViewForClinician();
     }
