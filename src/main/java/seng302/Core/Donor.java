@@ -143,6 +143,8 @@ public class Donor {
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
         this.organs.addAll(donor.organs);
+        this.currentMedications = new ArrayList<>();
+        this.historicMedications = new ArrayList<>();
         this.currentMedications.addAll(donor.currentMedications);
         this.historicMedications.addAll(donor.historicMedications);
     }
@@ -191,7 +193,7 @@ public class Donor {
         if (s1 == null) {
             return s2 == null;
         } else {
-            return s2 != null && s1.equals(s2);
+            return s1.equals(s2);
         }
     }
 
@@ -202,6 +204,10 @@ public class Donor {
     public void setName(String name) {
         this.name = name.split(",");
         setLastModified();
+    }
+
+    public void setNameArray(String[] name) {
+        this.name = name;
     }
 
     public void setUsername(String username) { this.username = username; }
@@ -249,7 +255,6 @@ public class Donor {
     public double getWeight() { return weight; }
 
     public BloodType getBloodType() { return bloodType; }
-
 
     public LocalDate getDateOfBirth() { return dateOfBirth; }
 
