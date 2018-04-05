@@ -143,6 +143,8 @@ public class Donor {
         this.bloodPressure = donor.bloodPressure;
         this.alcoholConsumption = donor.alcoholConsumption;
         this.organs.addAll(donor.organs);
+        this.currentMedications = new ArrayList<>();
+        this.historicMedications = new ArrayList<>();
         this.currentMedications.addAll(donor.currentMedications);
         this.historicMedications.addAll(donor.historicMedications);
     }
@@ -191,7 +193,7 @@ public class Donor {
         if (s1 == null) {
             return s2 == null;
         } else {
-            return s2 != null && s1.equals(s2);
+            return s1.equals(s2);
         }
     }
 
