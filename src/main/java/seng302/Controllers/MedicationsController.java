@@ -35,6 +35,7 @@ public class MedicationsController implements Initializable {
         this.currentDonor = currentDonor;
         System.out.println("HELLO");
         donorNameLabel.setText("Donor: " + currentDonor.getName());
+        addNewMedicationButton.setDisable(true);
 //        donorUndoStack.clear();
 //        donorRedoStack.clear();
 //        undoButton.setDisable(true);
@@ -49,11 +50,7 @@ public class MedicationsController implements Initializable {
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label interactionsLabel;
-    @FXML
-    private Label drugALabel;
-    @FXML
-    private Label drugBLabel;
+    private Label newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
     @FXML
     private ListView<String> historyListView = new ListView<>();
     @FXML
@@ -271,10 +268,7 @@ public class MedicationsController implements Initializable {
             } catch(Exception e) {
                 e.printStackTrace();
             }
-
         }
-
-
     }
 
     /**
@@ -303,35 +297,24 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Disables all the medications buttons as a donor is unable to interact with them.
+     * Sets whether the control buttons are shown or not on the medications pane
      */
-    public void setMedicationsViewForDonor() {
-        addNewMedicationButton.setDisable(true);
-        deleteMedicationButton.setDisable(true);
-        moveToCurrentButton.setDisable(true);
-        moveToHistoryButton.setDisable(true);
-        saveMedicationButton.setDisable(true);
-    }
-
-    /**
-     * Enables all the medications buttons as a clinician is able to interact with them.
-     */
-    public void setMedicationsViewForClinician() {
-        addNewMedicationButton.setDisable(false);
-        deleteMedicationButton.setDisable(false);
-        moveToCurrentButton.setDisable(false);
-        moveToHistoryButton.setDisable(false);
-        saveMedicationButton.setDisable(false);
+    public void setControlsShown(boolean shown) {
+        addNewMedicationButton.setVisible(shown);
+        deleteMedicationButton.setVisible(shown);
+        moveToCurrentButton.setVisible(shown);
+        moveToHistoryButton.setVisible(shown);
+        saveMedicationButton.setVisible(shown);
+        newMedicationField.setVisible(shown);
+        newMedicationLabel.setVisible(shown);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicationsController(this);
-
-        //TODO Andrew - tried to chuck a listener in but a bit unsure as to which function to bind it to.
-        //newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> medicationFieldListenerFunction());
-
+        newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
+            addNewMedicationButton.setDisable(newValue.isEmpty());
+            //TODO Add your listener code here James
+        });
     }
-
-
 }

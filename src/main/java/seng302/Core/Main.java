@@ -60,8 +60,6 @@ public class Main extends Application {
      * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
-        private static ArrayList<Donor> donorUndoStack;
-
         public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(Donor.dateFormat.format(date));
         }
@@ -119,14 +117,14 @@ public class Main extends Application {
      * Sets the medications view to be unable to edit for a donor.
      */
     public static void medicationsViewForDonor() {
-        medicationsController.setMedicationsViewForDonor();
+        medicationsController.setControlsShown(false);
     }
 
     /**
      * Sets the medications view to be able to edit for a clinican.
      */
     public static void medicationsViewForClinician() {
-        medicationsController.setMedicationsViewForClinician();
+        medicationsController.setControlsShown(true);
     }
 
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
