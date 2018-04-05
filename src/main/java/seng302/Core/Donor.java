@@ -204,6 +204,10 @@ public class Donor {
         setLastModified();
     }
 
+    public void setNameArray(String[] name) {
+        this.name = name;
+    }
+
     public void setUsername(String username) { this.username = username; }
 
     public void setEmail(String email) { this.email = email; }
@@ -249,7 +253,6 @@ public class Donor {
     public double getWeight() { return weight; }
 
     public BloodType getBloodType() { return bloodType; }
-
 
     public LocalDate getDateOfBirth() { return dateOfBirth; }
 
