@@ -63,6 +63,10 @@ public class UserWindowController implements Initializable {
     private ArrayList<Donor> donorUndoStack = new ArrayList<>(), donorRedoStack = new ArrayList<>();
     private Donor currentDonor;
     private boolean childWindow = false;
+    @FXML
+    private Button medicationsButton;
+    @FXML
+    private Button medicalHistoryButton;
 
     public ArrayList<Donor> getDonorUndoStack() {
         return donorUndoStack;
@@ -171,6 +175,8 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.SKIN, skinCheckBox);
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
+
+        Main.medicationsViewForDonor();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,

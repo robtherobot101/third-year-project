@@ -12,6 +12,11 @@ public class Medication {
         this.name = name;
     }
 
+    public Medication(String name, String[] activeIngredients) {
+        this.name = name;
+        this.activeIngredients = activeIngredients;
+    }
+
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
