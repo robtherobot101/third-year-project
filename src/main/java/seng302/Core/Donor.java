@@ -3,6 +3,11 @@ package seng302.Core;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.adapter.JavaBeanStringProperty;
+import javafx.scene.control.TextField;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -260,10 +265,13 @@ public class Donor {
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
 
-    public long getAge() {
-        LocalDate today = LocalDate.now();
-        return ChronoUnit.YEARS.between(dateOfBirth, today);
+    public String getAge() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        double years = days/365.00;
+        String age = String.format("%.1f", years);
+        return age + " years";
     }
+
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;

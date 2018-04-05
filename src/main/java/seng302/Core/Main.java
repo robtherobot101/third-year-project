@@ -97,6 +97,11 @@ public class Main extends Application {
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
+        clinicianController.updateDisplay();
+        clinicianController.updateFoundDonors("");
+        clinicianController.updatePageButtons();
+        clinicianController.displayCurrentPage();
+        clinicianController.updateResultsSummary();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -155,6 +160,14 @@ public class Main extends Application {
 
     public static void setClincianAccountSettingsController(ClinicianAccountSettingsController clincianAccountSettingsController) {
         Main.clinicianAccountSettingsController = clincianAccountSettingsController;
+    }
+
+    public static ClinicianController getClinicianController() {
+        return Main.clinicianController;
+    }
+
+    public static ArrayList<Stage> getCliniciansDonorWindows(){
+        return cliniciansDonorWindows;
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {
