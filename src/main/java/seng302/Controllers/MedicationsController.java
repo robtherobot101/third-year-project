@@ -84,16 +84,25 @@ public class MedicationsController implements Initializable {
 
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
+        if(medicationChoice.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Medication Input");
+            alert.setContentText("The input must not be empty.");
+            alert.show();
 
-        // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
-        // and then the list views are updated after.
-        currentMedicationsCopy.add(new Medication(medicationChoice));
-        // NOTE: I have created another constructor in the Medications class for a medication with a name and
-        // active ingredients also.
-        // TODO **
+        } else {
+            // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
+            // and then the list views are updated after.
+            currentMedicationsCopy.add(new Medication(medicationChoice));
+            // NOTE: I have created another constructor in the Medications class for a medication with a name and
+            // active ingredients also.
+            // TODO **
 
-        newMedicationField.clear();
-        populateMedications(false);
+            newMedicationField.clear();
+            populateMedications(false);
+        }
+
     }
 
     /**
@@ -318,6 +327,9 @@ public class MedicationsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicationsController(this);
+
+        //TODO Andrew - tried to chuck a listener in but a bit unsure as to which function to bind it to.
+        //newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> medicationFieldListenerFunction());
 
     }
 
