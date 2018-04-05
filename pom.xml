@@ -8,9 +8,6 @@
     <url>https://eng-git.canterbury.ac.nz/SENG302-2016/team-0</url>
 
     <properties>
-        <property>
-            <jvm.options>-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dtestfx.setup.timeout=2500</jvm.options>
-        </property>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,7 +55,6 @@
             <version>8u76-b04</version> <!-- jdk-9+181 for Java 9 -->
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
@@ -98,7 +94,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.4</version>
                 <configuration>
-                    <argLine>${jvm.options}</argLine>
+                    <argLine>${argLine} -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dtestfx.setup.timeout=2500</argLine>
                 </configuration>
             </plugin>
 
@@ -153,16 +149,6 @@
                     </rulesets>
                     <includeXmlInSite>true</includeXmlInSite>
                     <sourceEncoding>utf-8</sourceEncoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <compilerArgs>
-                        <arg>${jvm.options}</arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
