@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static seng302.Core.Main.streamOut;
+
 /**
  * Class to control all the logic for the clinician interactions with the application.
  */
@@ -129,6 +131,39 @@ public class ClinicianController implements Initializable {
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
     }
+
+    /**
+     * Refreshes the results in the donor profile table to match the values
+     * in the main ArrayList<Donor> in Main
+     */
+    public void updateDonorTable(){
+        updatePageButtons();
+        displayCurrentPage();
+        updateResultsSummary();
+    }
+
+    /**
+     * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
+     * all open donor windows spawned by the clinician are closed and the main scene is returned to the logout screen.
+     */
+    public void logout() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Are you sure?");
+        alert.setHeaderText("Are you sure would like to log out? ");
+        alert.setContentText("Logging out without saving loses your non-saved data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            System.out.println("Exiting GUI");
+            for(Stage donorWindow: Main.getCliniciansDonorWindows()){
+                donorWindow.close();
+            }
+            Main.setScene(TFScene.login);
+        } else {
+            alert.close();
+        }
+    }
+
+
 
     /**
      * Function which is called when the user wants to update their account settings in the user Window,
@@ -309,9 +344,7 @@ public class ClinicianController implements Initializable {
      */
     public void nextPage(){
         page++;
-        updatePageButtons();
-        updateResultsSummary();
-        displayCurrentPage();
+        updateDonorTable();
     }
 
     /**
@@ -336,9 +369,7 @@ public class ClinicianController implements Initializable {
      */
     public void previousPage(){
         page--;
-        updatePageButtons();
-        updateResultsSummary();
-        displayCurrentPage();
+        updateDonorTable();
     }
 
     /**
@@ -363,9 +394,7 @@ public class ClinicianController implements Initializable {
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             updateFoundDonors(newValue);
-            updatePageButtons();
-            displayCurrentPage();
-            updateResultsSummary();
+            updateDonorTable();
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -386,9 +415,7 @@ public class ClinicianController implements Initializable {
         Main.setClinicianController(this);
 
         updateFoundDonors("");
-        updatePageButtons();
-        displayCurrentPage();
-        updateResultsSummary();
+        updateDonorTable();
 
         profileTable.setItems(currentPage);
 

@@ -141,6 +141,14 @@ public class Main extends Application {
         Main.clinicianAccountSettingsController = clincianAccountSettingsController;
     }
 
+    public static ClinicianController getClinicianController() {
+        return Main.clinicianController;
+    }
+
+    public static ArrayList<Stage> getCliniciansDonorWindows(){
+        return cliniciansDonorWindows;
+    }
+
     public static void setUserWindowController(UserWindowController userWindowController) {
         Main.userWindowController = userWindowController;
     }

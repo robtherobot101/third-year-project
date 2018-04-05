@@ -631,7 +631,7 @@ public class UserWindowController implements Initializable {
      * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
      */
     public void updateDonor() {
-
+        Main.getClinicianController().updateDonorTable();
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
         String lastName = lastNameField.getText();

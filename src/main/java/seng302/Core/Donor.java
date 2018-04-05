@@ -38,7 +38,6 @@ public class Donor {
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
 
-
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
         this.dateOfBirth = dateOfBirth;
@@ -240,10 +239,13 @@ public class Donor {
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
 
-    public long getAge() {
-        LocalDate today = LocalDate.now();
-        return ChronoUnit.YEARS.between(dateOfBirth, today);
+    public String getAge() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        double years = days/365.00;
+        String age = String.format("%.1f", years);
+        return age + " years";
     }
+
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
