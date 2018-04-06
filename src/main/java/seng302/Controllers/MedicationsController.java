@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import seng302.Core.Donor;
 import seng302.Core.Main;
+import seng302.Core.Mapi;
 import seng302.Core.Medication;
 import seng302.Files.History;
 
@@ -70,6 +71,59 @@ public class MedicationsController implements Initializable {
     private ObservableList<String> historicItems = FXCollections.observableArrayList();
     private ObservableList<String> currentItems = FXCollections.observableArrayList();
 
+
+    /**
+     * Converts a String ArrayList query from Core/Mapi to a single string with each ingredient separated by a newline
+     * @param ApiQuery String ArrayList returned from a call to Mapi.activeIngredients
+     * @return String of newline separated ingredients
+     */
+    private String convertArrayListIngredientsToString(ArrayList<String> ApiQuery) {
+        StringBuilder displayedActiveIngredients = new StringBuilder();
+        for (String currentIngreidient : ApiQuery) {
+            displayedActiveIngredients.append(currentIngreidient).append("\n");
+        }
+        return displayedActiveIngredients.toString();
+    }
+
+    /**
+     * Called when a object is selected in the currentListView, filling in the active ingredient section.
+     */
+    @FXML
+    public void currentMedicationClicked() {
+        String selectedItem = currentListView.getSelectionModel().getSelectedItem();
+
+        // Check if it is an actual item selected, not just a highlight
+        if (selectedItem != null) {
+            // Set drug title text
+            currDrugLabel.setText(selectedItem);
+            currDrugIngredients.setText("Loading...");
+
+            // Display the ingredients
+            currDrugIngredients.setText(convertArrayListIngredientsToString(
+                    new Mapi().activeIngredients(selectedItem)));
+        }
+    }
+
+    /**
+     * Called when a object is selected in the historyListView, filling in the active ingredient section.
+     */
+    @FXML
+    public void historyMedicationClicked() {
+        String selectedItem = historyListView.getSelectionModel().getSelectedItem();
+
+        // Check if it is an actual item selected, not just a highlight
+        if (selectedItem != null) {
+            // Set drug title text
+            histDrugLabel.setText(selectedItem);
+            histDrugIngredients.setText("Loading...");
+
+            // Display the ingredients
+            histDrugIngredients.setText(convertArrayListIngredientsToString(
+                    new Mapi().activeIngredients(selectedItem)));
+        }
+    }
+
+
     /**
      * Function to handle when the user wants to add a new medication to the current medications list.
      * Adds the medication to the donor's personal list and then updates the listview.
@@ -90,26 +144,6 @@ public class MedicationsController implements Initializable {
 
         newMedicationField.clear();
         populateMedications(false);
-
-
-        // Below code is temporary
-        histDrugIngredients.setText("Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n");
-
-        currDrugIngredients.setText("Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n" +
-                "Ingredient\n");
     }
 
     /**
@@ -316,6 +350,10 @@ public class MedicationsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicationsController(this);
+        histDrugLabel.setText("");
+        currDrugLabel.setText("");
+        histDrugIngredients.setText("");
+        currDrugIngredients.setText("");
 
     }
 
