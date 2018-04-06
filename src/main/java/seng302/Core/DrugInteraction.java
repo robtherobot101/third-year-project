@@ -14,7 +14,6 @@ public class DrugInteraction {
     public DrugInteraction(String json) {
         Gson gson = new Gson();
         JSONObject jsonObj = new JSONObject(json);
-        Map<String, HashSet<String>> ageMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
         ageMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
         genderMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
         genderMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());

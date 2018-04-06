@@ -1,5 +1,6 @@
 package seng302;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +19,7 @@ public class DrugInteractionTest {
     private static DrugInteraction drugInteraction;
 
     @Before
-    public void setUpAll() {
+    public void setUp() {
         try{
             String json = new String(Files.readAllBytes(Paths.get("src/test/java/seng302/DrugInteractionTestingJson")));
             drugInteraction = new DrugInteraction(json);
@@ -27,6 +28,11 @@ public class DrugInteractionTest {
         }catch(Exception e){
             System.out.println(e);
         }
+    }
+
+    @After
+    public void tearDown(){
+
     }
 
     @Test
