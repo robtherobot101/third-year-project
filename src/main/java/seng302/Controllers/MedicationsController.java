@@ -74,13 +74,19 @@ public class MedicationsController implements Initializable {
 
     /**
      * Converts a String ArrayList query from Core/Mapi to a single string with each ingredient separated by a newline
-     * @param ApiQuery String ArrayList returned from a call to Mapi.activeIngredients
+     * @param ApiQueryResult String ArrayList returned from a call to Mapi.activeIngredients
      * @return String of newline separated ingredients
      */
-    private String convertArrayListIngredientsToString(ArrayList<String> ApiQuery) {
+    private String convertArrayListIngredientsToString(ArrayList<String> ApiQueryResult) {
+        // Check if query result is empty
+        if (ApiQueryResult.get(0).isEmpty()) {
+            // Invalid drug/no active ingredients
+            return "No active ingredients found";
+        }
+
         StringBuilder displayedActiveIngredients = new StringBuilder();
-        for (String currentIngreidient : ApiQuery) {
-            displayedActiveIngredients.append(currentIngreidient).append("\n");
+        for (String currentIngredient : ApiQueryResult) {
+            displayedActiveIngredients.append("-").append(currentIngredient).append("\n");
         }
         return displayedActiveIngredients.toString();
     }
@@ -96,7 +102,6 @@ public class MedicationsController implements Initializable {
         if (selectedItem != null) {
             // Set drug title text
             currDrugLabel.setText(selectedItem);
-            currDrugIngredients.setText("Loading...");
 
             // Display the ingredients
             currDrugIngredients.setText(convertArrayListIngredientsToString(
@@ -115,7 +120,6 @@ public class MedicationsController implements Initializable {
         if (selectedItem != null) {
             // Set drug title text
             histDrugLabel.setText(selectedItem);
-            histDrugIngredients.setText("Loading...");
 
             // Display the ingredients
             histDrugIngredients.setText(convertArrayListIngredientsToString(
