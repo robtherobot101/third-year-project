@@ -55,6 +55,11 @@
             <version>8u76-b04</version> <!-- jdk-9+181 for Java 9 -->
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
     </dependencies>
 
 
@@ -122,6 +127,7 @@
                   </execution>
                </executions>
             </plugin>
+
 </plugins>
     </build>
     <reporting>

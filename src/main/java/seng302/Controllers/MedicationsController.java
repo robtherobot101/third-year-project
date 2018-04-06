@@ -296,6 +296,29 @@ public class MedicationsController implements Initializable {
         }
     }
 
+    public void compare(){
+        String currentSelection = currentListView.getSelectionModel().getSelectedItem();
+        String historicSelection = historyListView.getSelectionModel().getSelectedItem();
+        if(currentSelection != null){
+            addToComparison(currentSelection);
+        }else if(historicSelection != null){
+            addToComparison(historicSelection);
+        }
+    }
+
+    public void addToComparison(String selection){
+        if(drugALabel.getText().equals("Drug A")){
+            drugALabel.setText(selection);
+        }else if(drugBLabel.getText().equals("Drug B")){
+            drugBLabel.setText(selection);
+            System.out.println("Make comparison");
+        }else{
+            drugALabel.setText(selection);
+            drugBLabel.setText("Drug B");
+            System.out.println("Yooo");
+        }
+    }
+
     /**
      * Sets whether the control buttons are shown or not on the medications pane
      */
