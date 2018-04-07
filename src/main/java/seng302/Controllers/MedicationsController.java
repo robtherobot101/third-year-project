@@ -1,5 +1,6 @@
 package seng302.Controllers;
 
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 
 /**
  * Class which handles all the logic for the Medications Pane.
@@ -50,7 +52,7 @@ public class MedicationsController implements Initializable {
     @FXML
     private Label donorNameLabel;
     @FXML
-    private AutoCompleteTextBox newMedicationField;
+    private TextField newMedicationField;
     @FXML
     private Label newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
     @FXML
@@ -318,8 +320,18 @@ public class MedicationsController implements Initializable {
             addNewMedicationButton.setDisable(newValue.isEmpty());
             //TODO Add your listener code here James
             if (!newMedicationField.getText().isEmpty() || !newMedicationField.getText().equals("")) {
+                System.out.println("aksjgdijhas");
                 ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
-                newMedicationField.getEntries().addAll(results);
+                System.out.println(results);
+                new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
+                    if (results.size() > 5) {
+                        return results.subList(0,4);
+                    } else {
+                        return results;
+                    }
+                });
+//                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
+//                newMedicationField.getEntries().addAll(results);
             }
 
         });

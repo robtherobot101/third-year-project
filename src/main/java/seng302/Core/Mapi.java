@@ -3,7 +3,6 @@ package seng302.Core;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -17,16 +16,20 @@ public class Mapi {
      * @return Returns an ArrayList of strings of the matching medicines.
      */
     public static ArrayList<String> autocomplete(String query) {
-        String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s",query));
-        String[] temp = result.split("\\[");
-        result = temp[1];
-        if (result.length() > 4) {
-            result = result.substring(1, result.length() - 3);
-        } else {
-            result = "";
+        try {
+            String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s", query));
+            String[] temp = result.split("\\[");
+            result = temp[1];
+            if (result.length() > 4) {
+                result = result.substring(1, result.length() - 3);
+            } else {
+                result = "";
+            }
+            temp = result.split("\",\"");
+            return new ArrayList<String>(Arrays.asList(temp));
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return new ArrayList<String>();
         }
-        temp = result.split("\",\"");
-        return new ArrayList<String>(Arrays.asList(temp));
     }
 
     /**
