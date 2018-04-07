@@ -16,7 +16,7 @@ public class Mapi {
      * @param query The string to auto complete.
      * @return Returns an ArrayList of strings of the matching medicines.
      */
-    public ArrayList<String> autocomplete(String query) {
+    public static ArrayList<String> autocomplete(String query) {
         String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s",query));
         String[] temp = result.split("\\[");
         result = temp[1];
@@ -34,7 +34,7 @@ public class Mapi {
      * @param medicine The medicine to get the active ingredients of.
      * @return Returns the active ingredients as a string arraylist
      */
-    public ArrayList<String> activeIngredients(String medicine) {
+    public static ArrayList<String> activeIngredients(String medicine) {
         String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/%s/substances.json", medicine));
         if (result.length() > 4) {
             result = result.substring(2, result.length() - 2);
@@ -50,7 +50,7 @@ public class Mapi {
      * @param url The api url to call.
      * @return returns a String of the result of the api request.
      */
-    private String apiRequest(String url) {
+    private static String apiRequest(String url) {
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)
                     .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")

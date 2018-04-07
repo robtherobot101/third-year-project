@@ -7,11 +7,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import seng302.Core.Donor;
 import seng302.Core.Main;
+import seng302.Core.Mapi;
 import seng302.Core.Medication;
 import seng302.Files.History;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -48,7 +50,7 @@ public class MedicationsController implements Initializable {
     @FXML
     private Label donorNameLabel;
     @FXML
-    private TextField newMedicationField;
+    private AutoCompleteTextBox newMedicationField;
     @FXML
     private Label newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
     @FXML
@@ -315,6 +317,11 @@ public class MedicationsController implements Initializable {
         newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
             addNewMedicationButton.setDisable(newValue.isEmpty());
             //TODO Add your listener code here James
+            if (!newMedicationField.getText().isEmpty() || !newMedicationField.getText().equals("")) {
+                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
+                newMedicationField.getEntries().addAll(results);
+            }
+
         });
     }
 }
