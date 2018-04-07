@@ -16,7 +16,12 @@ import java.util.ResourceBundle;
  * Class to handle all the logic for the Account Settings window.
  */
 public class AccountSettingsController implements Initializable {
-
+    @FXML
+    private TextField usernameField, emailField, passwordField;
+    @FXML
+    private Button updateButton, cancelButton;
+    @FXML
+    private Label donorNameLabel;
 
     private Donor currentDonor;
 
@@ -24,20 +29,6 @@ public class AccountSettingsController implements Initializable {
         this.currentDonor = currentDonor;
         donorNameLabel.setText(currentDonor.getName());
     }
-
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private TextField passwordField;
-    @FXML
-    private Button updateButton;
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private Label donorNameLabel;
-
 
     /**
      * Populates the account details inputs based on the current donor's attributes.
@@ -54,7 +45,6 @@ public class AccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update account settings ? ");
@@ -85,10 +75,16 @@ public class AccountSettingsController implements Initializable {
         stage.close();
     }
 
+    private void updateUpdateButtonState() {
+        updateButton.setDisable((usernameField.getText().isEmpty() && emailField.getText().isEmpty())|| passwordField.getText().isEmpty());
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setAccountSettingsController(this);
-
+        usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
+        passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
+        emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
     }
 }

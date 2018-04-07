@@ -22,19 +22,9 @@ import seng302.Files.History;
  */
 public class CreateAccountController implements Initializable {
     @FXML
-    private TextField usernameInput;
-    @FXML
-    private TextField emailInput;
+    private TextField usernameInput, emailInput, passwordConfirmInput, firstNameInput, middleNamesInput, lastNameInput;
     @FXML
     private PasswordField passwordInput;
-    @FXML
-    private TextField passwordConfirmInput;
-    @FXML
-    private TextField firstNameInput;
-    @FXML
-    private TextField middleNamesInput;
-    @FXML
-    private TextField lastNameInput;
     @FXML
     private DatePicker dateOfBirthInput;
     @FXML
@@ -62,6 +52,17 @@ public class CreateAccountController implements Initializable {
      * Attempts to create a new donor account based on the information currently provided by the user. Provides appropriate feedback if this fails.
      */
     public void createAccount() {
+        for (Donor donor: Main.donors) {
+            if (usernameInput.getText().equals(donor.getUsername())) {
+                errorText.setText("That username is already taken.");
+                errorText.setVisible(true);
+                return;
+            } else if (emailInput.getText().equals(donor.getEmail())) {
+                errorText.setText("There is already a donor account with that email.");
+                errorText.setVisible(true);
+                return;
+            }
+        }
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
             errorText.setVisible(true);
@@ -76,10 +77,8 @@ public class CreateAccountController implements Initializable {
             Donor newDonor = new Donor(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             Main.donors.add(newDonor);
-            String text1 = History.prepareFileStringGUI(newDonor.getId(), "create");
-            History.printToFile(Main.streamOut, text1);
-            String text2 = History.prepareFileStringGUI(newDonor.getId(), "login");
-            History.printToFile(Main.streamOut, text2);
+            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newDonor.getId(), "create"));
+            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newDonor.getId(), "login"));
             Main.setCurrentDonor(newDonor);
             Main.saveUsers(Main.getDonorPath(), true);
             Main.setScene(TFScene.userWindow);
