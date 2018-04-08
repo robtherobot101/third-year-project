@@ -5,13 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import seng302.Core.Donor;
-import seng302.Core.Main;
-import seng302.Core.Medication;
+import seng302.Core.*;
 import seng302.Files.History;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -26,6 +25,8 @@ public class MedicationsController implements Initializable {
 
     private ArrayList<Medication> historicMedicationsCopy = new ArrayList<>();
     private ArrayList<Medication> currentMedicationsCopy = new ArrayList<>();
+
+    private InteractionApi interactionApi = new InteractionApi();
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
@@ -304,6 +305,21 @@ public class MedicationsController implements Initializable {
         }else if(historicSelection != null){
             addToComparison(historicSelection);
         }
+        String drugA = drugALabel.getText();
+        String drugB = drugBLabel.getText();
+
+        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+        HashSet<String> ageSymptoms = result.ageInteraction(Integer.parseInt(currentDonor.getAge()));
+        HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+
+        HashSet<String> conditions = new HashSet<>();
+
+        for (String condition : ageSymptoms){
+            if (genderSymptoms.contains(condition)){
+                //TODO Implement a form of sorting through the duration elements (reformat?)
+
+            }
+        }
     }
 
     public void addToComparison(String selection){
@@ -331,6 +347,7 @@ public class MedicationsController implements Initializable {
         newMedicationField.setVisible(shown);
         newMedicationLabel.setVisible(shown);
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
