@@ -60,8 +60,6 @@ public class Main extends Application {
      * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
-        private static ArrayList<Donor> donorUndoStack;
-
         public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(Donor.dateFormat.format(date));
         }
@@ -99,6 +97,11 @@ public class Main extends Application {
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
+        clinicianController.updateDisplay();
+        clinicianController.updateFoundDonors("");
+        clinicianController.updatePageButtons();
+        clinicianController.displayCurrentPage();
+        clinicianController.updateResultsSummary();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -113,6 +116,20 @@ public class Main extends Application {
 
         medicationsController.setCurrentDonor(currentDonor);
         medicationsController.populateMedications(true);
+    }
+
+    /**
+     * Sets the medications view to be unable to edit for a donor.
+     */
+    public static void medicationsViewForDonor() {
+        medicationsController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medications view to be able to edit for a clinican.
+     */
+    public static void medicationsViewForClinician() {
+        medicationsController.setControlsShown(true);
     }
 
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
@@ -143,6 +160,14 @@ public class Main extends Application {
 
     public static void setClincianAccountSettingsController(ClinicianAccountSettingsController clincianAccountSettingsController) {
         Main.clinicianAccountSettingsController = clincianAccountSettingsController;
+    }
+
+    public static ClinicianController getClinicianController() {
+        return Main.clinicianController;
+    }
+
+    public static ArrayList<Stage> getCliniciansDonorWindows(){
+        return cliniciansDonorWindows;
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {

@@ -1,5 +1,6 @@
 package seng302.Controllers;
 
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,8 +14,10 @@ import seng302.Files.History;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 
 /**
  * Class which handles all the logic for the Medications Pane.
@@ -36,6 +39,7 @@ public class MedicationsController implements Initializable {
         this.currentDonor = currentDonor;
         System.out.println("HELLO");
         donorNameLabel.setText("Donor: " + currentDonor.getName());
+        addNewMedicationButton.setDisable(true);
 //        donorUndoStack.clear();
 //        donorRedoStack.clear();
 //        undoButton.setDisable(true);
@@ -50,11 +54,9 @@ public class MedicationsController implements Initializable {
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label interactionsLabel;
+    private Label newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
     @FXML
-    private Label drugALabel;
-    @FXML
-    private Label drugBLabel;
+    private ListView<String> historyListView = new ListView<>();
     @FXML
     private Label histDrugLabel;
     @FXML
@@ -63,10 +65,20 @@ public class MedicationsController implements Initializable {
     private Label histDrugIngredients;
     @FXML
     private Label currDrugIngredients;
-    @FXML
-    private ListView<String> historyListView = new ListView<>();
-    @FXML
+
     private ListView<String> currentListView = new ListView<>();
+
+    @FXML
+    private Button saveMedicationButton;
+    @FXML
+    private Button moveToHistoryButton;
+    @FXML
+    private Button moveToCurrentButton;
+    @FXML
+    private Button addNewMedicationButton;
+    @FXML
+    private Button deleteMedicationButton;
+
 
     private ObservableList<String> historicItems = FXCollections.observableArrayList();
     private ObservableList<String> currentItems = FXCollections.observableArrayList();
@@ -138,16 +150,25 @@ public class MedicationsController implements Initializable {
 
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
+        if(medicationChoice.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error with the Medication Input");
+            alert.setContentText("The input must not be empty.");
+            alert.show();
 
-        // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
-        // and then the list views are updated after.
-        currentMedicationsCopy.add(new Medication(medicationChoice));
-        // NOTE: I have created another constructor in the Medications class for a medication with a name and
-        // active ingredients also.
-        // TODO **
+        } else {
+            // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
+            // and then the list views are updated after.
+            currentMedicationsCopy.add(new Medication(medicationChoice));
+            // NOTE: I have created another constructor in the Medications class for a medication with a name and
+            // active ingredients also.
+            // TODO **
 
-        newMedicationField.clear();
-        populateMedications(false);
+            newMedicationField.clear();
+            populateMedications(false);
+        }
+
     }
 
     /**
@@ -272,7 +293,7 @@ public class MedicationsController implements Initializable {
                 }
                 currentListView.setItems(currentItems);
             } catch(Exception e) {
-                System.out.println("Hello 1");
+                e.printStackTrace();
             }
 
 
@@ -286,7 +307,7 @@ public class MedicationsController implements Initializable {
                 }
                 historyListView.setItems(historicItems);
             } catch(Exception e) {
-                System.out.println("Hello 2");
+                e.printStackTrace();
             }
 
         } else {
@@ -300,7 +321,7 @@ public class MedicationsController implements Initializable {
                 }
                 currentListView.setItems(currentItems);
             } catch(Exception e) {
-                System.out.println("Hello 1");
+                e.printStackTrace();
             }
 
 
@@ -314,14 +335,9 @@ public class MedicationsController implements Initializable {
                 }
                 historyListView.setItems(historicItems);
             } catch(Exception e) {
-                System.out.println("Hello 2");
+                e.printStackTrace();
             }
-
         }
-
-
-
-
     }
 
     /**
@@ -349,11 +365,39 @@ public class MedicationsController implements Initializable {
         }
     }
 
-
+    /**
+     * Sets whether the control buttons are shown or not on the medications pane
+     */
+    public void setControlsShown(boolean shown) {
+        addNewMedicationButton.setVisible(shown);
+        deleteMedicationButton.setVisible(shown);
+        moveToCurrentButton.setVisible(shown);
+        moveToHistoryButton.setVisible(shown);
+        saveMedicationButton.setVisible(shown);
+        newMedicationField.setVisible(shown);
+        newMedicationLabel.setVisible(shown);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicationsController(this);
+        newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
+            addNewMedicationButton.setDisable(newValue.isEmpty());
+            //TODO Add your listener code here James
+            if (!newMedicationField.getText().isEmpty() || !newMedicationField.getText().equals("")) {
+                System.out.println("aksjgdijhas");
+                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
+                System.out.println(results);
+                new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
+                    if (results.size() > 5) {
+                        return results.subList(0,4);
+                    } else {
+                        return results;
+                    }
+                });
+//                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
+//                newMedicationField.getEntries().addAll(results);
+            }
         histDrugLabel.setText("");
         currDrugLabel.setText("");
         histDrugIngredients.setText("");
@@ -362,4 +406,6 @@ public class MedicationsController implements Initializable {
     }
 
 
+        });
+    }
 }
