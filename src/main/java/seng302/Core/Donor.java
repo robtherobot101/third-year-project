@@ -42,6 +42,8 @@ public class Donor {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
+    private ArrayList<Disease> currentDiseases;
+    private ArrayList<Disease> curedDiseases;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -356,6 +358,22 @@ public class Donor {
     public ArrayList<Medication> getHistoricMedications() { return historicMedications; }
 
     public void setHistoricMedications(ArrayList<Medication> historicMedications) { this.historicMedications = historicMedications; }
+
+    public ArrayList<Disease> getCurrentDiseases() {
+        return currentDiseases;
+    }
+
+    public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
+    public ArrayList<Disease> getCuredDiseases() {
+        return curedDiseases;
+    }
+
+    public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
+        this.curedDiseases = curedDiseases;
+    }
 
     /**
      * Get a string containing key information about the donor. Can be formatted as a table row.

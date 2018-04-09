@@ -33,7 +33,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private GridPane attributesGridPane, historyGridPane, background;
     @FXML
-    private AnchorPane medicationsPane;
+    private AnchorPane medicationsPane, medicalHistoryPane;
     @FXML
     private Pane welcomePane;
     @FXML
@@ -252,6 +252,7 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(true);
+        medicalHistoryPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
 
@@ -262,6 +263,7 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
+        medicalHistoryPane.setVisible(false);
         medicationsPane.setVisible(true);
     }
 
@@ -272,6 +274,18 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
         historyGridPane.setVisible(false);
+        medicalHistoryPane.setVisible(false);
+        medicationsPane.setVisible(false);
+    }
+
+    /**
+     * Sets the medical history pane as the visible pane
+     */
+    public void showMedicalHistoryPane() {
+        welcomePane.setVisible(false);
+        attributesGridPane.setVisible(false);
+        historyGridPane.setVisible(false);
+        medicalHistoryPane.setVisible(true);
         medicationsPane.setVisible(false);
     }
 
@@ -282,6 +296,7 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
+        medicalHistoryPane.setVisible(false);
         medicationsPane.setVisible(false);
     }
 

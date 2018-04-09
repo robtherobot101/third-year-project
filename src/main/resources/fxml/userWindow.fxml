@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -411,7 +411,8 @@
 						<Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="66.0" mnemonicParsing="false" onAction="#showAttributesPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Attributes" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="62.0">
                      <font>
                         <Font size="14.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
       				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="183.0" mnemonicParsing="false" onAction="#showHistoryPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Action History" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
                      <font>
                         <Font size="14.0" />
@@ -430,13 +431,14 @@
 						<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="302.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="362.0">
                      <font>
                         <Font size="14.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
                   <Button fx:id="medicationsButton" alignment="BASELINE_LEFT" layoutX="90.0" layoutY="95.0" mnemonicParsing="false" onAction="#showMedicationsPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Medications" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="112.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="58.0" layoutY="193.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Medical History" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
+                  <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="58.0" layoutY="193.0" mnemonicParsing="false" onAction="#showMedicalHistoryPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Medical History" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -515,6 +517,11 @@
                   </TreeTableView>
                </children>
             </GridPane>
+            <AnchorPane fx:id="medicalHistoryPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <fx:include source="medicalHistory.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
 			</children>
 		</AnchorPane>
 		<HBox id="HBox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="579.0" spacing="5.0" GridPane.rowIndex="4">

@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicationsController">
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicalHistoryController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
@@ -28,34 +29,18 @@
       <RowConstraints minHeight="10.0" percentHeight="1.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label fx:id="newMedicationLabel" text="New medication" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-      <TextField fx:id="newMedicationField" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label fx:id="newMedicationLabel" text="New disease" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+      <TextField fx:id="newDiseaseTextField" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="19.0" />
          </GridPane.margin>
       </TextField>
-      <Button fx:id="addNewMedicationButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewMedication" text="Add" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Button fx:id="addNewMedicationButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewDisease" text="Add Disease" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <font>
             <Font size="14.0" />
          </font>
          <GridPane.margin>
             <Insets right="120.0" top="48.0" />
-         </GridPane.margin>
-      </Button>
-      <Button fx:id="moveToHistoryButton" mnemonicParsing="false" onAction="#moveMedicationToHistory" text="&lt;&lt;" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-         <font>
-            <Font size="14.0" />
-         </font>
-         <GridPane.margin>
-            <Insets bottom="40.0" />
-         </GridPane.margin>
-      </Button>
-      <Button fx:id="moveToCurrentButton" mnemonicParsing="false" onAction="#moveMedicationToCurrent" text="&gt;&gt;" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-         <font>
-            <Font size="14.0" />
-         </font>
-         <GridPane.margin>
-            <Insets top="40.0" />
          </GridPane.margin>
       </Button>
       <ListView fx:id="historyListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -66,11 +51,7 @@
          <GridPane.margin>
             <Insets top="15.0" />
          </GridPane.margin></ListView>
-      <Button fx:id="deleteMedicationButton" alignment="CENTER" mnemonicParsing="false" onAction="#deleteSelectedMedication" prefHeight="32.0" prefWidth="136.0" text="Delete Medication" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Label alignment="BASELINE_LEFT" text="Current Medications" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label alignment="BASELINE_LEFT" text="Current Diseases" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -78,7 +59,7 @@
             <Insets bottom="250.0" />
          </GridPane.margin>
       </Label>
-      <Label alignment="BASELINE_LEFT" text="History of Medications" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label alignment="BASELINE_LEFT" text="Previous Diseases (Cured)" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -99,13 +80,8 @@
             <Label fx:id="drugBLabel" text="Drug B" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Label fx:id="interactionsLabel" text="Interactions between Drugs (if any)" GridPane.columnIndex="5" GridPane.rowIndex="1">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Label>
-      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-      <Label text="Medications" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <Button fx:id="saveMedicationButton" mnemonicParsing="false" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+      <Label text="History" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>
@@ -116,6 +92,16 @@
       <Label fx:id="donorNameLabel" text="Donor: &quot;LadiesMan217&quot;" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets top="20.0" />
+         </GridPane.margin>
+      </Label>
+      <DatePicker fx:id="dateOfDiagnosisInput" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="TOP">
+         <GridPane.margin>
+            <Insets top="19.0" />
+         </GridPane.margin>
+      </DatePicker>
+      <Label fx:id="newMedicationLabel1" text="Diagnosed on" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="TOP">
+         <GridPane.margin>
+            <Insets />
          </GridPane.margin>
       </Label>
    </children>

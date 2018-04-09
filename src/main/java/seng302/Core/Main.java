@@ -55,6 +55,7 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
+    private static MedicalHistoryController medicalHistoryController;
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -116,6 +117,9 @@ public class Main extends Application {
 
         medicationsController.setCurrentDonor(currentDonor);
         medicationsController.populateMedications(true);
+
+        medicalHistoryController.setCurrentDonor(currentDonor);
+        //medicalHistoryController.populateHistory(true);
     }
 
     /**
@@ -152,6 +156,10 @@ public class Main extends Application {
 
     public static void setMedicationsController(MedicationsController medicationsController) {
         Main.medicationsController = medicationsController;
+    }
+
+    public static void setMedicalHistoryController(MedicalHistoryController medicalHistoryController) {
+        Main.medicalHistoryController = medicalHistoryController;
     }
 
     public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
