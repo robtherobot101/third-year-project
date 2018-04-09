@@ -265,11 +265,18 @@ public class Donor {
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
 
-    public String getAge() {
+    public String getAgeString() {
         long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
         double years = days/365.00;
         String age = String.format("%.1f", years);
         return age + " years";
+    }
+
+    public double getAgeDouble() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        double years = days/365.00;
+        return years;
+
     }
 
 

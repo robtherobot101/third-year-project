@@ -16,11 +16,11 @@ public class DrugInteraction {
         JSONObject jsonObj = new JSONObject(json);
         ageMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
         genderMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
-        genderMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
+        durationMap = new Gson().fromJson(jsonObj.get("duration_interaction").toString(), new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
 
     }
 
-    public HashSet<String> ageInteraction(int age) {
+    public HashSet<String> ageInteraction(double age) {
         if (age >= 0 && age <= 1) {
             return (ageMap.containsKey("0-1")) ? ageMap.get("0-1") : new HashSet<String>();
         } else if (age >= 2 && age <= 9) {
@@ -57,6 +57,10 @@ public class DrugInteraction {
         }else{
             return new HashSet<String>();
         }
+    }
+
+    public HashMap<String, HashSet<String>> getDurationInteraction(){
+        return new HashMap<>(durationMap);
     }
 
     public HashSet<String> durationInteraction(int months){

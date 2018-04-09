@@ -8,11 +8,10 @@ import javafx.scene.control.*;
 import seng302.Core.*;
 import seng302.Files.History;
 
+import javax.sound.midi.SysexMessage;
+import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Class which handles all the logic for the Medications Pane.
@@ -305,29 +304,37 @@ public class MedicationsController implements Initializable {
         }else if(historicSelection != null){
             addToComparison(historicSelection);
         }
-        String drugA = drugALabel.getText();
-        String drugB = drugBLabel.getText();
-
-        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
-        HashSet<String> ageSymptoms = result.ageInteraction(Integer.parseInt(currentDonor.getAge()));
-        HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
-
-        HashSet<String> conditions = new HashSet<>();
-
-        for (String condition : ageSymptoms){
-            if (genderSymptoms.contains(condition)){
-                //TODO Implement a form of sorting through the duration elements (reformat?)
-
-            }
-        }
     }
 
     public void addToComparison(String selection){
-        if(drugALabel.getText().equals("Drug A")){
+        String drugA = drugALabel.getText();
+        String drugB = drugBLabel.getText();
+        int[] months = {0, 1, 6, 12, 24, 60, 120};
+        String[] monthString = {"< 1 month", "1 - 6 months", "6 - 12 months", "1 - 2 years", "2 - 5 years", "5 - 10 years","10+ years"};
+        if(drugA.equals("Drug A")){
             drugALabel.setText(selection);
-        }else if(drugBLabel.getText().equals("Drug B")){
+        }else if(drugB.equals("Drug B")){
             drugBLabel.setText(selection);
             System.out.println("Make comparison");
+            DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+            HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
+            HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+            HashSet<String> symptoms = new HashSet<>();
+
+            ageSymptoms.addAll(genderSymptoms);
+
+            HashMap<String, HashSet<String>> durationInteraction = result.getDurationInteraction();
+
+            for (Map.Entry<String, HashSet<String>> entry : durationInteraction.entrySet()){
+                HashSet<String> interactions = entry.getValue();
+                interactions.retainAll(ageSymptoms);
+                for (String interaction : interactions){
+                    interaction += ": " + entry.getKey();
+                    //System.out.println(interaction);
+                    symptoms.add(interaction);
+                }
+            }
+
         }else{
             drugALabel.setText(selection);
             drugBLabel.setText("Drug B");
