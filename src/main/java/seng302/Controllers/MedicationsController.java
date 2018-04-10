@@ -324,9 +324,12 @@ public class MedicationsController implements Initializable {
         }else if(drugB.equals("Drug B")){
             drugBLabel.setText(selection);
             System.out.println("Make comparison");
+            drugA = drugALabel.getText();
+            drugB = drugBLabel.getText();
             HashSet<String> symptoms = makeComparison(drugA, drugB);
             interactionItems.addAll(symptoms);
             FXCollections.reverse(interactionItems);
+
             interactionListView.setItems(interactionItems);
 
         }else{

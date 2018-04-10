@@ -13,9 +13,10 @@ import java.util.Arrays;
 public class InteractionApi {
 
     public String interactions(String drugA, String drugB) {
-        //String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s",drugA, drugB));
-        String result = apiRequest("https://www.ehealthme.com/api/v1/drug-interaction/digoxin/amiodarone-hydrochloride/");
-        //System.out.println("Querying "+ String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s",drugA, drugB));
+        //String request = "https://www.ehealthme.com/api/v1/drug-interaction/" + drugA + "/" + drugB + "/";
+        String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
+        //String result = apiRequest("https://www.ehealthme.com/api/v1/drug-interaction/digoxin/amiodarone-hydrochloride/");
+        System.out.println("Querying "+ String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
         String[] temp = result.split("\\[");
         //result = temp[1];
         //if (result.length() > 4) {
