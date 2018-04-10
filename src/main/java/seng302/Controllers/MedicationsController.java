@@ -55,6 +55,8 @@ public class MedicationsController implements Initializable {
     private ListView<String> historyListView = new ListView<>();
     @FXML
     private ListView<String> currentListView = new ListView<>();
+    @FXML
+    private ListView<String> interactionListView = new ListView<>();
 
     @FXML
     private Button saveMedicationButton;
@@ -70,6 +72,7 @@ public class MedicationsController implements Initializable {
 
     private ObservableList<String> historicItems = FXCollections.observableArrayList();
     private ObservableList<String> currentItems = FXCollections.observableArrayList();
+    private ObservableList<String> interactionItems = FXCollections.observableArrayList();
 
     /**
      * Function to handle when the user wants to add a new medication to the current medications list.
@@ -296,6 +299,9 @@ public class MedicationsController implements Initializable {
         }
     }
 
+    /**
+     * Acts on button push, selects whether the drug selected is in the historic medications pane or the current med pane.
+     */
     public void compare(){
         String currentSelection = currentListView.getSelectionModel().getSelectedItem();
         String historicSelection = historyListView.getSelectionModel().getSelectedItem();
@@ -306,40 +312,57 @@ public class MedicationsController implements Initializable {
         }
     }
 
+    /**
+     * Acts as a check whether the selected drug is being added to the comparison, or if the two selected drugs are being compared.
+     * @param selection the drug selected in the medications pane.
+     */
     public void addToComparison(String selection){
         String drugA = drugALabel.getText();
         String drugB = drugBLabel.getText();
-        int[] months = {0, 1, 6, 12, 24, 60, 120};
-        String[] monthString = {"< 1 month", "1 - 6 months", "6 - 12 months", "1 - 2 years", "2 - 5 years", "5 - 10 years","10+ years"};
         if(drugA.equals("Drug A")){
             drugALabel.setText(selection);
         }else if(drugB.equals("Drug B")){
             drugBLabel.setText(selection);
             System.out.println("Make comparison");
-            DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
-            HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
-            HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
-            HashSet<String> symptoms = new HashSet<>();
-
-            ageSymptoms.addAll(genderSymptoms);
-
-            HashMap<String, HashSet<String>> durationInteraction = result.getDurationInteraction();
-
-            for (Map.Entry<String, HashSet<String>> entry : durationInteraction.entrySet()){
-                HashSet<String> interactions = entry.getValue();
-                interactions.retainAll(ageSymptoms);
-                for (String interaction : interactions){
-                    interaction += ": " + entry.getKey();
-                    //System.out.println(interaction);
-                    symptoms.add(interaction);
-                }
-            }
+            HashSet<String> symptoms = makeComparison(drugA, drugB);
+            interactionItems.addAll(symptoms);
+            FXCollections.reverse(interactionItems);
+            interactionListView.setItems(interactionItems);
 
         }else{
             drugALabel.setText(selection);
             drugBLabel.setText("Drug B");
-            System.out.println("Yooo");
         }
+    }
+
+    /**
+     * Accesses the ehealth api with the two given drugs.
+     * Finds all conditions based on donors age and gender, and then finds the duration of each.
+     * It modifies the string to add on the duration to the end eg "Nausea: 2-5 years"
+     * @param drugA The first drug being compared.
+     * @param drugB The second drug being compared.
+     * @return A hashset of each condition and it's duration.
+     */
+    public HashSet<String> makeComparison(String drugA, String drugB){
+        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+        HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
+        HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+        HashSet<String> symptoms = new HashSet<>();
+
+        ageSymptoms.addAll(genderSymptoms);
+
+        HashMap<String, HashSet<String>> durationInteraction = result.getDurationInteraction();
+
+        for (Map.Entry<String, HashSet<String>> entry : durationInteraction.entrySet()){
+            HashSet<String> interactions = entry.getValue();
+            interactions.retainAll(ageSymptoms);
+            for (String interaction : interactions){
+                interaction += ": " + entry.getKey();
+                //System.out.println(interaction);
+                symptoms.add(interaction);
+            }
+        }
+        return symptoms;
     }
 
     /**
