@@ -65,7 +65,7 @@ public class MedicationsController implements Initializable {
     private Label histDrugIngredients;
     @FXML
     private Label currDrugIngredients;
-
+    @FXML
     private ListView<String> currentListView = new ListView<>();
 
     @FXML
@@ -402,8 +402,6 @@ public class MedicationsController implements Initializable {
         currDrugLabel.setText("");
         histDrugIngredients.setText("");
         currDrugIngredients.setText("");
-
-    }
 
 
         });
