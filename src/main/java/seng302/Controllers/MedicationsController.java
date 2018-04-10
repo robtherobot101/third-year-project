@@ -80,8 +80,6 @@ public class MedicationsController implements Initializable {
      * Adds the medication to the donor's personal list and then updates the listview.
      */
     public void addNewMedication() {
-        //TODO **
-        // STORY 19 - Add in new medication - autocomplete DO HERE.
 
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
@@ -95,13 +93,21 @@ public class MedicationsController implements Initializable {
         } else {
             // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
             // and then the list views are updated after.
-            currentMedicationsCopy.add(new Medication(medicationChoice));
-            // NOTE: I have created another constructor in the Medications class for a medication with a name and
-            // active ingredients also.
-            // TODO **
+            if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
+                currentMedicationsCopy.add(new Medication(medicationChoice));
+                // NOTE: I have created another constructor in the Medications class for a medication with a name and
+                // active ingredients also.
+                // TODO **
 
-            newMedicationField.clear();
-            populateMedications(false);
+                newMedicationField.clear();
+                populateMedications(false);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error with the Medication Input");
+                alert.setContentText(String.format("The medication %s does not exist.", medicationChoice));
+                alert.show();
+            }
         }
 
     }
@@ -318,11 +324,8 @@ public class MedicationsController implements Initializable {
         Main.setMedicationsController(this);
         newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
             addNewMedicationButton.setDisable(newValue.isEmpty());
-            //TODO Add your listener code here James
             if (!newMedicationField.getText().isEmpty() || !newMedicationField.getText().equals("")) {
-                System.out.println("aksjgdijhas");
                 ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
-                System.out.println(results);
                 new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
                     if (results.size() > 5) {
                         return results.subList(0,4);
