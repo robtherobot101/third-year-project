@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
@@ -433,7 +434,7 @@ public class UserWindowController implements Initializable {
                 donorHeight = Double.parseDouble(heightField.getText());
                 currentDonor.setHeight(donorHeight);
             } catch (NumberFormatException e) {
-                createErrorAlert("Error with the Height Input ", "Please input a valid height input.");
+                Main.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
                 return false;
             }
         }
@@ -444,7 +445,7 @@ public class UserWindowController implements Initializable {
                 donorWeight = Double.parseDouble(weightField.getText());
                 currentDonor.setWeight(donorWeight);
             } catch (NumberFormatException e) {
-                createErrorAlert("Error with the Weight Input ", "Please input a valid weight input.");
+                Main.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
                 return false;
             }
         }
@@ -454,14 +455,14 @@ public class UserWindowController implements Initializable {
         if (bloodPressure != null && !bloodPressure.equals("")) {
             String[] bloodPressureList = bloodPressureTextField.getText().split("/");
             if (bloodPressureList.length != 2) {
-                createErrorAlert("Error with the Blood Pressure Input ", "Please input a valid blood pressure input.");
+                Main.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure input.").show();
                 return false;
             } else {
                 for (String pressureComponent: bloodPressureList) {
                     try {
                         Integer.parseInt(pressureComponent);
                     } catch (NumberFormatException e) {
-                        createErrorAlert("Error with the Blood Pressure Input ", "Please input a valid blood pressure input.");
+                        Main.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure input.").show();
                         return false;
                     }
                 }
@@ -471,13 +472,13 @@ public class UserWindowController implements Initializable {
 
         LocalDate currentDate = LocalDate.now();
         if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
-            createErrorAlert("Error with the Date Input ", "The date of birth cannot be after today.");
+            Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
             return false;
         } else if(dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
-            createErrorAlert("Error with the Date Input ", "The date of death cannot be after today.");
+            Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
             return false;
         } else if(dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
-            createErrorAlert("Error with the Date Input ", "The date of birth cannot be after the date of death.");
+            Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death.").show();
             return false;
         }
 
@@ -511,24 +512,14 @@ public class UserWindowController implements Initializable {
         return true;
     }
 
-    private void createErrorAlert(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.show();
-    }
-
     /**
      * Saves the current state of the GUI.
      * Gets all the inputs for the user attributes and sets the user attributes to those by calling the update donor function.
      * Then calls the populate donor function to repopulate the donor fields.
      */
     public void save() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current donor? ");
-        alert.setContentText("By doing so, the donor will be updated with all filled in fields.");
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
+            "Are you sure would like to update the current donor? ", "By doing so, the donor will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateDonor()) {
             Main.saveUsers(Main.getDonorPath(), true);
@@ -652,6 +643,8 @@ public class UserWindowController implements Initializable {
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        dialog.getDialogPane().getStyleClass().add("dialog");
 
         Optional<String> password = dialog.showAndWait();
         if(password.isPresent()){ //Ok was pressed, Else cancel
@@ -659,21 +652,19 @@ public class UserWindowController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
                     Stage stage = new Stage();
+                    stage.setResizable(false);
                     stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 270, 350));
+                    stage.setScene(new Scene(root, 270, 330));
                     stage.initModality(Modality.APPLICATION_MODAL);
                     Main.setCurrentDonorForAccountSettings(currentDonor);
+                    Main.setAccountSettingsEnterEvent();
                     stage.showAndWait();
                 } catch (Exception e) {
                     System.out.println("here");
                     e.printStackTrace();
                 }
             }else{ // Password incorrect
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Incorrect");
-                alert.setHeaderText("Incorrect password. ");
-                alert.setContentText("Please enter the correct password to view account settings");
-                alert.show();
+                Main.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view account settings").show();
             }
         }
     }
@@ -685,11 +676,7 @@ public class UserWindowController implements Initializable {
      * Function which is called when the user wants to logout of the application and log into a new user
      */
     public void logout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to log out? ");
-        alert.setContentText("Logging out without saving loses your non-saved data.");
-
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Exiting GUI");
@@ -706,11 +693,8 @@ public class UserWindowController implements Initializable {
      * Function which is called when the user wants to exit the application.
      */
     public void stop() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to exit the window? ");
-        alert.setContentText("Exiting without saving loses your non-saved data.");
-
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
+            "Are you sure would like to exit the window? ", "Exiting without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Exiting GUI");

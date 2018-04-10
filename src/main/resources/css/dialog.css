@@ -1,0 +1,42 @@
+.dialog-pane {
+  -fx-background-color: #1d3549;
+}
+
+.dialog-pane .label {
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+}
+
+.dialog-pane .header-panel {
+  -fx-background-color: #2b506e;
+}
+
+.dialog-pane .header-panel .label {
+  -fx-font-size: 16px;
+}
+
+/*Roughly based off the record-sales button from http://fxexperience.com/2011/12/styling-fx-buttons-with-css/*/
+.button {
+  -fx-text-fill: white;
+  -fx-padding: 4 8 11 8;
+  -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
+  -fx-background-radius: 8;
+  -fx-background-color: #2b506e, #457fb0, #4f89ba, #4785b8;
+}
+.button:hover {
+  -fx-background-color: #2e5576, #4785b8, #568ebd, #4f89ba;
+}
+.button:pressed {
+  -fx-background-color: #4785b8;
+  -fx-padding: 7 8 7 8;
+  -fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+
+.text-field {
+  -fx-background-color: #2b506e;
+  -fx-text-fill: #edf3f8;
+  -fx-prompt-text-fill: #7ea9cd;
+}
+.text-field:focused {
+  -fx-background-color: #325d81;
+}

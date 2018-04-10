@@ -53,11 +53,11 @@ public class CreateAccountController implements Initializable {
      */
     public void createAccount() {
         for (Donor donor: Main.donors) {
-            if (usernameInput.getText().equals(donor.getUsername())) {
+            if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(donor.getUsername())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return;
-            } else if (emailInput.getText().equals(donor.getEmail())) {
+            } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(donor.getEmail())) {
                 errorText.setText("There is already a donor account with that email.");
                 errorText.setVisible(true);
                 return;
