@@ -83,9 +83,9 @@ public class MedicationsController implements Initializable {
      * @param ApiQueryResult String ArrayList returned from a call to Mapi.activeIngredients
      * @return String of newline separated ingredients
      */
-    private String convertArrayListIngredientsToString(ArrayList<String> ApiQueryResult) {
+    private String convertArrayListIngredientsToString(String[] ApiQueryResult) {
         // Check if query result is empty
-        if (ApiQueryResult.get(0).isEmpty()) {
+        if (ApiQueryResult.length == 0) {
             // Invalid drug/no active ingredients
             return "No active ingredients found";
         }
@@ -110,8 +110,7 @@ public class MedicationsController implements Initializable {
             currDrugLabel.setText(selectedItem.toString());
 
             // Display the ingredients
-            currDrugIngredients.setText(convertArrayListIngredientsToString(
-                    new Mapi().activeIngredients(selectedItem.toString())));
+            currDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
         }
     }
 
@@ -128,8 +127,7 @@ public class MedicationsController implements Initializable {
             histDrugLabel.setText(selectedItem.toString());
 
             // Display the ingredients
-            histDrugIngredients.setText(convertArrayListIngredientsToString(
-                    new Mapi().activeIngredients(selectedItem.toString())));
+            histDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
         }
     }
 
@@ -167,6 +165,7 @@ public class MedicationsController implements Initializable {
                 // and then the list views are updated after.
                 if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
+                    System.out.print(activeIngredients);
                     currentMedicationsCopy.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
                     // NOTE: I have created another constructor in the Medications class for a medication with a name and
                     // active ingredients also.
