@@ -94,10 +94,10 @@ public class MedicationsController implements Initializable {
             // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
             // and then the list views are updated after.
             if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
-                currentMedicationsCopy.add(new Medication(medicationChoice));
+                List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
+                currentMedicationsCopy.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
                 // NOTE: I have created another constructor in the Medications class for a medication with a name and
                 // active ingredients also.
-                // TODO **
 
                 newMedicationField.clear();
                 populateMedications(false);
