@@ -190,11 +190,8 @@ public class ClinicianController implements Initializable {
                     e.printStackTrace();
                 }
             }else{ // Password incorrect
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Incorrect");
-                alert.setHeaderText("Incorrect password. ");
-                alert.setContentText("Please enter the correct password to view account settings");
-                alert.show();
+                Main.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
+                    "Incorrect password. ", "Please enter the correct password to view account settings").show();
             }
         }
     }

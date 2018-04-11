@@ -3,11 +3,10 @@ package seng302.Controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import seng302.Core.Clinician;
-import seng302.Core.Donor;
 import seng302.Core.Main;
-import seng302.Files.History;
 
 import java.net.URL;
 import java.util.Optional;
@@ -51,11 +50,7 @@ public class ClinicianAccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update account settings ? ");
-        alert.setContentText("The changes made will take place instantly.");
-
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
 
