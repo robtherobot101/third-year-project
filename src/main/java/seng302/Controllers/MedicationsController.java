@@ -32,14 +32,24 @@ public class MedicationsController implements Initializable {
     @FXML
     private Label donorNameLabel, newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
     @FXML
-    private ListView<String> historyListView = new ListView<>(), currentListView = new ListView<>();
+    private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
     private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton;
 
     private boolean movingItem = false;
     private Donor currentDonor;
     private ArrayList<Medication> historicMedicationsCopy, currentMedicationsCopy;
-    private ObservableList<String> historicItems, currentItems;
+    private ObservableList<Medication> historicItems, currentItems;
+
+
+    @FXML
+    private Label histDrugLabel;
+    @FXML
+    private Label currDrugLabel;
+    @FXML
+    private Label histDrugIngredients;
+    @FXML
+    private Label currDrugIngredients;
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
@@ -66,39 +76,6 @@ public class MedicationsController implements Initializable {
 //        bloodPressureLabel.setText("");
     }
 
-    @FXML
-    private Label donorNameLabel;
-    @FXML
-    private TextField newMedicationField;
-    @FXML
-    private Label newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
-    @FXML
-    private ListView<String> historyListView = new ListView<>();
-    @FXML
-    private Label histDrugLabel;
-    @FXML
-    private Label currDrugLabel;
-    @FXML
-    private Label histDrugIngredients;
-    @FXML
-    private Label currDrugIngredients;
-    @FXML
-    private ListView<String> currentListView = new ListView<>();
-
-    @FXML
-    private Button saveMedicationButton;
-    @FXML
-    private Button moveToHistoryButton;
-    @FXML
-    private Button moveToCurrentButton;
-    @FXML
-    private Button addNewMedicationButton;
-    @FXML
-    private Button deleteMedicationButton;
-
-
-    private ObservableList<String> historicItems = FXCollections.observableArrayList();
-    private ObservableList<String> currentItems = FXCollections.observableArrayList();
 
 
     /**
@@ -125,16 +102,16 @@ public class MedicationsController implements Initializable {
      */
     @FXML
     public void currentMedicationClicked() {
-        String selectedItem = currentListView.getSelectionModel().getSelectedItem();
+        Medication selectedItem = currentListView.getSelectionModel().getSelectedItem();
 
         // Check if it is an actual item selected, not just a highlight
         if (selectedItem != null) {
             // Set drug title text
-            currDrugLabel.setText(selectedItem);
+            currDrugLabel.setText(selectedItem.toString());
 
             // Display the ingredients
             currDrugIngredients.setText(convertArrayListIngredientsToString(
-                    new Mapi().activeIngredients(selectedItem)));
+                    new Mapi().activeIngredients(selectedItem.toString())));
         }
     }
 
@@ -143,16 +120,16 @@ public class MedicationsController implements Initializable {
      */
     @FXML
     public void historyMedicationClicked() {
-        String selectedItem = historyListView.getSelectionModel().getSelectedItem();
+        Medication selectedItem = historyListView.getSelectionModel().getSelectedItem();
 
         // Check if it is an actual item selected, not just a highlight
         if (selectedItem != null) {
             // Set drug title text
-            histDrugLabel.setText(selectedItem);
+            histDrugLabel.setText(selectedItem.toString());
 
             // Display the ingredients
             histDrugIngredients.setText(convertArrayListIngredientsToString(
-                    new Mapi().activeIngredients(selectedItem)));
+                    new Mapi().activeIngredients(selectedItem.toString())));
         }
     }
 
@@ -230,9 +207,9 @@ public class MedicationsController implements Initializable {
      * @param deleteFrom The ArrayList of medications to delete the medication from
      * @param toDelete The name of the medication
      */
-    private void deleteMedication(ArrayList<Medication> deleteFrom, String toDelete) {
+    private void deleteMedication(ArrayList<Medication> deleteFrom, Medication toDelete) {
         for (Medication medication: deleteFrom) {
-            if (medication.getName().equals(toDelete)) {
+            if (medication.equals(toDelete)) {
                 deleteFrom.remove(medication);
                 break;
             }
@@ -261,15 +238,15 @@ public class MedicationsController implements Initializable {
      * @param from The Medication list to move the medication to
      * @param view The ListView to get the selected medication from
      */
-    private void moveMedication(ArrayList<Medication> to, ArrayList<Medication> from, ListView<String> view) {
+    private void moveMedication(ArrayList<Medication> to, ArrayList<Medication> from, ListView<Medication> view) {
         movingItem = true;
 
         //Get the item the user has selected
-        String medicationString = view.getSelectionModel().getSelectedItem();
+        Medication selectedMedication = view.getSelectionModel().getSelectedItem();
         //Get the medication object reference
         Medication medicationChoice = null;
         for (Medication medication: from) {
-            if (medication.getName().equals(medicationString)) {
+            if (medication.equals(selectedMedication)) {
                 medicationChoice = medication;
                 break;
             }
@@ -292,28 +269,28 @@ public class MedicationsController implements Initializable {
             //Populate table for current medications
             currentItems.clear();
             for (Medication medication : currentDonor.getCurrentMedications()) {
-                currentItems.add(medication.getName());
+                currentItems.add(medication);
             }
             currentListView.setItems(currentItems);
 
             //Populate table for historic medications
             historicItems.clear();
             for (Medication medication : currentDonor.getHistoricMedications()) {
-                historicItems.add(medication.getName());
+                historicItems.add(medication);
             }
             historyListView.setItems(historicItems);
         } else {
             //Populate table for current medications
             currentItems.clear();
             for (Medication medication : currentMedicationsCopy) {
-                currentItems.add(medication.getName());
+                currentItems.add(medication);
             }
             currentListView.setItems(currentItems);
 
             //Populate table for historic medications
             historicItems.clear();
             for (Medication medication : historicMedicationsCopy) {
-                historicItems.add(medication.getName());
+                historicItems.add(medication);
             }
             historyListView.setItems(historicItems);
         }
