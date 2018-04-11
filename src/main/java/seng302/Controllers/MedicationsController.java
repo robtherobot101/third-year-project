@@ -7,12 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import seng302.Core.Donor;
-import seng302.Core.Main;
-import seng302.Core.Mapi;
-import seng302.Core.Medication;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import seng302.Core.*;
 import seng302.Files.History;
 
+import java.beans.EventHandler;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,6 +176,8 @@ public class MedicationsController implements Initializable {
                 }
             }
         }
+        // After clicking the button, it becomes disabled
+        addNewMedicationButton.setDisable(true);
     }
 
     /**
@@ -362,27 +363,16 @@ public class MedicationsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicationsController(this);
-        newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
-            addNewMedicationButton.setDisable(newValue.isEmpty());
-            if (!newMedicationField.getText().isEmpty() || !newMedicationField.getText().equals("")) {
-                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
-                new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
-                    if (results.size() > 5) {
-                        return results.subList(0,4);
-                    } else {
-                        return results;
-                    }
-                });
-//                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
-//                newMedicationField.getEntries().addAll(results);
+
+        // Attach the autocompletion box and set its endpoint to the MAPI API
+        // ALso only enable the add button if a medication has been autocompleted
+        new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
+            if(newMedicationField.getText().length() == 0) {
+                return null;
             }
-        histDrugLabel.setText("");
-        currDrugLabel.setText("");
-        histDrugIngredients.setText("");
-        currDrugIngredients.setText("");
+            return Mapi.autocomplete(newMedicationField.getText()).subList(0, 5);
+        }).setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false));
 
-
-        });
         currentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!movingItem) {
                 checkSelectionNumber(true);
