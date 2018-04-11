@@ -14,6 +14,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.nio.file.Files;
@@ -55,6 +57,8 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
+
+    private static String dialogStyle;
 
     /**
      * Class to serialize LocalDates without requiring reflective access
@@ -109,7 +113,6 @@ public class Main extends Application {
     }
 
     public static void setCurrentDonor(Donor currentDonor) {
-
         userWindowController.setCurrentDonor(currentDonor);
         userWindowController.populateDonorFields();
         userWindowController.populateHistoryTable();
@@ -187,6 +190,11 @@ public class Main extends Application {
     }
 
     public static Stage getStage() {return stage; }
+
+    public static String getDialogStyle() {
+        return dialogStyle;
+    }
+
     /**
      * Only called in testing.
      *
@@ -194,6 +202,10 @@ public class Main extends Application {
      */
     public static void setJarPath(String jarPath) {
         Main.jarPath = jarPath;
+    }
+
+    public static void setAccountSettingsEnterEvent() {
+        accountSettingsController.setEnterEvent();
     }
 
     /**
@@ -509,6 +521,7 @@ public class Main extends Application {
                 donorWindow.close();
             }
         });
+        dialogStyle = Main.class.getResource("/css/dialog.css").toExternalForm();
         //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
         try {
             jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
@@ -544,7 +557,6 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
-            scenes.put(TFScene.accountSettings, new Scene(FXMLLoader.load(getClass().getResource("/fxml/accountSettings.fxml")), 270, 350));
 
             setScene(TFScene.login);
             stage.setResizable(true);
@@ -570,6 +582,25 @@ public class Main extends Application {
         stage.setScene(scenes.get(scene));
         stage.setResizable(scene == TFScene.userWindow || scene == TFScene.clinician);
 
+    }
+
+    /**
+     * Create a styled alert dialog.
+     *
+     * @param alertType The type of alert to create
+     * @param title The title for the alert dialog
+     * @param header The header text for the alert dialog
+     * @param content The content text for the alert dialog
+     * @return The created alert object
+     */
+    public static Alert createAlert(AlertType alertType, String title, String header, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.getDialogPane().getStylesheets().add(dialogStyle);
+        alert.getDialogPane().getStyleClass().add("dialog");
+        return alert;
     }
 
     /**

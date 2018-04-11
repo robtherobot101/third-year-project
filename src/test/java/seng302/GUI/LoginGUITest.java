@@ -1,34 +1,25 @@
-package seng302.Core;
+package seng302.GUI;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import seng302.Controllers.LoginController;
+import seng302.Core.Main;
 
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
+import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class LoginGUITest extends ApplicationTest {
 
-    Main mainGUI;
+    private Main mainGUI;
+    private static final boolean runHeadless = true;
 
     @BeforeClass
     public static void setupSpec() throws Exception {
-        if (Boolean.getBoolean("headless")) {
+        if (runHeadless) {
             System.setProperty("testfx.robot", "glass");
             System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
@@ -55,13 +46,18 @@ public class LoginGUITest extends ApplicationTest {
         mainGUI.start(stage);
     }
 
+    /**
+     * Method that can be called to path correctly to the stage to be tested.
+     *
+     * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
+     */
     private void enterAccountCreation() {
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
     }
 
     /**
-     * Simple proof of concept for testing TestFX
+     * Simple proof of concept test of inputting a valid donor for testing TestFX
      */
     @Test
     public void createValidUser(){
@@ -75,5 +71,12 @@ public class LoginGUITest extends ApplicationTest {
         clickOn("#lastNameInput"); write("Knight");
         clickOn("#dateOfBirthInput"); write("12/06/1997");
         clickOn("#createAccountButton");
+    }
+
+    @Test
+    public void loginAsDefaultClinician() {
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput"); write("default");
+        clickOn("#loginButton");
     }
 }
