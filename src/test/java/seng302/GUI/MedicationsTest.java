@@ -12,6 +12,7 @@ import org.junit.runners.JUnit4;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Donor;
 import seng302.Core.Main;
 
@@ -23,7 +24,7 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class MedicationsTest extends ApplicationTest {
 
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -39,7 +40,7 @@ public class MedicationsTest extends ApplicationTest {
             System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
-            System.setProperty("java.awt.headless", "true");
+            System.setProperty("headless.geometry", "1600x1200-32");
         }
         registerPrimaryStage();
     }
@@ -70,6 +71,8 @@ public class MedicationsTest extends ApplicationTest {
      * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
      */
     private void enterMedicationPanel() {
+
+        Main.donors.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -82,16 +85,12 @@ public class MedicationsTest extends ApplicationTest {
         clickOn("#middleNamesInput").write("Dong");
         clickOn("#lastNameInput").write("Flame");
         clickOn("#dateOfBirthInput").write("4/8/1969");
-        press(KeyCode.TAB);
-        release(KeyCode.TAB);
-
 
         doubleClickOn("#createAccountButton");
 
         // Logout to be able to login as a clinician
         clickOn("#logoutButton");
         clickOn("OK");
-
 
         // Login as default clinician
         clickOn("#identificationInput");
@@ -101,7 +100,7 @@ public class MedicationsTest extends ApplicationTest {
 
         TableView searchDonorTable = lookup("#profileTable").queryTableView();
         Donor topResult = (Donor) searchDonorTable.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Bobby Flame"));
+        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Bobby Dong Flame"));
 
     }
 
