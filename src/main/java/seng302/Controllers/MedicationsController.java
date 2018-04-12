@@ -9,6 +9,7 @@ import seng302.Core.*;
 import seng302.Files.History;
 
 import javax.sound.midi.SysexMessage;
+import javax.swing.event.ChangeListener;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
@@ -302,7 +303,7 @@ public class MedicationsController implements Initializable {
     /**
      * Acts on button push, selects whether the drug selected is in the historic medications pane or the current med pane.
      */
-    public void compare(){
+    public void updateComparison(){
         String currentSelection = currentListView.getSelectionModel().getSelectedItem();
         String historicSelection = historyListView.getSelectionModel().getSelectedItem();
         if(currentSelection != null){
@@ -323,7 +324,6 @@ public class MedicationsController implements Initializable {
             drugALabel.setText(selection);
         }else if(drugB.equals("Drug B")){
             drugBLabel.setText(selection);
-            System.out.println("Make comparison");
             drugA = drugALabel.getText();
             drugB = drugBLabel.getText();
             HashSet<String> symptoms = makeComparison(drugA, drugB);
@@ -388,6 +388,12 @@ public class MedicationsController implements Initializable {
         newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
             addNewMedicationButton.setDisable(newValue.isEmpty());
             //TODO Add your listener code here James
+        });
+        historyListView.focusedProperty().addListener((observable, oldVal, newVal) -> {
+            if(newVal) currentListView.getSelectionModel().clearSelection();
+        });
+        currentListView.focusedProperty().addListener((observable, oldVal, newVal) -> {
+            if(newVal) historyListView.getSelectionModel().clearSelection();
         });
     }
 }

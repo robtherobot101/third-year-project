@@ -12,24 +12,24 @@ import java.util.Arrays;
 
 public class InteractionApi {
 
+    /**
+     * Takes two drug names as Strings and returns a Json String from the
+     * eHealthMe API which contains information about the drug interactions
+     * @param drugA The name of the first drug
+     * @param drugB THe name of the other drug
+     * @return The Json String
+     */
     public String interactions(String drugA, String drugB) {
-        //String request = "https://www.ehealthme.com/api/v1/drug-interaction/" + drugA + "/" + drugB + "/";
         String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
-        //String result = apiRequest("https://www.ehealthme.com/api/v1/drug-interaction/digoxin/amiodarone-hydrochloride/");
-        System.out.println("Querying "+ String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
-        String[] temp = result.split("\\[");
-        //result = temp[1];
-        //if (result.length() > 4) {
-        //    result = result.substring(1, result.length() - 3);
-        //} else {
-        //    result = "";
-        //}
-        //temp = result.split("\",\"");
-        //return new ArrayList<String>(Arrays.asList(temp));
         return result;
     }
 
-
+    /**
+     * Takes an API request URI as a parameter and returns a Json String
+     * from the API
+     * @param url The api request
+     * @return The Json String
+     */
     private String apiRequest(String url) {
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)
