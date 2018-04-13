@@ -262,6 +262,8 @@ public class MedicationsController implements Initializable {
     /**
      * Populates both list views based on the current status of the current donors medication status
      * and past medications. Must act differently for when starting and mid change.
+     *
+     * @param startUp A Boolean, where True means that this method is called on start up and false when called during the running of the program.
      */
     public void populateMedications(Boolean startUp) {
         if (startUp) {
@@ -323,7 +325,9 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Sets whether the control buttons are shown or not on the medications pane
+     * Sets whether the control buttons are shown or not on the medications pane.,
+     *
+     * @param shown A Boolean where true shows the control buttons and false hides them.
      */
     public void setControlsShown(boolean shown) {
         addNewMedicationButton.setVisible(shown);

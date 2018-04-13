@@ -211,7 +211,8 @@ public class Main extends Application {
     /**
      * Get the unique id number for the next donor or the last id number issued.
      *
-     * @param increment Whether to increment the unique id counter before returning the unique id value
+     * @param increment Whether to increment the unique id counter before returning the unique id value.
+     * @param donor Whether to increment and return clinician or donor. True for donor, false for clinician.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
