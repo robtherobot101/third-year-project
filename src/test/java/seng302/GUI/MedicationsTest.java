@@ -4,10 +4,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runners.JUnit4;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
@@ -23,7 +20,7 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class MedicationsTest extends ApplicationTest {
 
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -101,7 +98,7 @@ public class MedicationsTest extends ApplicationTest {
 
         TableView searchDonorTable = lookup("#profileTable").queryTableView();
         Donor topResult = (Donor) searchDonorTable.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Bobby Flame"));
+        Assert.assertTrue(topResult.getName().equalsIgnoreCase("Bobby Dong Flame"));
 
     }
 

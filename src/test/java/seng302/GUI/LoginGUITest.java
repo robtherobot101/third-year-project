@@ -75,7 +75,7 @@ public class LoginGUITest extends ApplicationTest {
 
     @Test
     public void loginAsDefaultClinician() {
-        clickOn("#identificationInput").write("default");
+        clickOn("#identificationInput"); write("default");
         clickOn("#passwordInput"); write("default");
         clickOn("#loginButton");
     }
