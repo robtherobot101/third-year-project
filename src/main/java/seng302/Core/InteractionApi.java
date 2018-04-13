@@ -12,6 +12,8 @@ import java.util.Arrays;
 
 public class InteractionApi {
 
+
+
     /**
      * Takes two drug names as Strings and returns a Json String from the
      * eHealthMe API which contains information about the drug interactions
@@ -25,20 +27,38 @@ public class InteractionApi {
     }
 
     /**
-     * Takes an API request URI as a parameter and returns a Json String
-     * from the API
+     * Takes an API request URI as a parameter and returns a Json String.
+     * Also includes error handling for if the drugs are invalid or if there is an internal server error.
      * @param url The api request
      * @return The Json String
      */
     private String apiRequest(String url) {
         try {
-            HttpResponse<JsonNode> response = Unirest.get(url)
-                .asJson();
+            HttpResponse<String> response = Unirest.get(url).asString();
             int n = 0;
-            n = response.getRawBody().available();
-            byte[] bytes = new byte[n];
-            response.getRawBody().read(bytes, 0, n);
-            return new String(bytes, StandardCharsets.UTF_8);
+            int statusCode = response.getStatus();
+            String result = "";
+            if (statusCode == 200 || statusCode == 301) {
+                n = response.getRawBody().available();
+                byte[] bytes = new byte[n];
+                response.getRawBody().read(bytes, 0, n);
+                result = new String(bytes, StandardCharsets.UTF_8);
+            } else {
+                switch (statusCode) {
+                    case 202:
+                        result = "No report comparing the two medications exists.";
+                        break;
+
+                    case 404:
+                        result = "Invalid comparison.";
+                        break;
+
+                    case 502:
+                        result = "Internal server error.";
+                        break;
+                }
+            }
+            return result;
         } catch (Exception e) {
             System.out.println(e);
 

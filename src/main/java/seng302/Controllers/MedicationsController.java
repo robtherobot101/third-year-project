@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import org.json.JSONException;
 import seng302.Core.*;
 import seng302.Files.History;
 
@@ -327,9 +328,15 @@ public class MedicationsController implements Initializable {
             drugA = drugALabel.getText();
             drugB = drugBLabel.getText();
             HashSet<String> symptoms = makeComparison(drugA, drugB);
+            interactionItems.clear();
             interactionItems.addAll(symptoms);
+            if (interactionItems.isEmpty()) {
+                interactionItems.add("No interactions found.");
+            }
             FXCollections.reverse(interactionItems);
-
+            for(String thing : interactionItems){
+                System.out.println(thing);
+            }
             interactionListView.setItems(interactionItems);
 
         }else{
@@ -346,26 +353,31 @@ public class MedicationsController implements Initializable {
      * @param drugB The second drug being compared.
      * @return A hashset of each condition and it's duration.
      */
-    public HashSet<String> makeComparison(String drugA, String drugB){
-        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
-        HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
-        HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+    public HashSet<String> makeComparison(String drugA, String drugB) {
         HashSet<String> symptoms = new HashSet<>();
+        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+        // Check to see if the api call was successful
+        if (!result.getError()) {
+            HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
+            HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+            ageSymptoms.addAll(genderSymptoms);
 
-        ageSymptoms.addAll(genderSymptoms);
+            HashMap<String, HashSet<String>> durationInteraction = result.getDurationInteraction();
 
-        HashMap<String, HashSet<String>> durationInteraction = result.getDurationInteraction();
-
-        for (Map.Entry<String, HashSet<String>> entry : durationInteraction.entrySet()){
-            HashSet<String> interactions = entry.getValue();
-            interactions.retainAll(ageSymptoms);
-            for (String interaction : interactions){
-                interaction += ": " + entry.getKey();
-                //System.out.println(interaction);
-                symptoms.add(interaction);
+            for (Map.Entry<String, HashSet<String>> entry : durationInteraction.entrySet()) {
+                HashSet<String> interactions = entry.getValue();
+                interactions.retainAll(ageSymptoms);
+                for (String interaction : interactions) {
+                    interaction += ": " + entry.getKey();
+                    //System.out.println(interaction);
+                    symptoms.add(interaction);
+                }
             }
+        } else {
+            symptoms.add(result.getErrorMessage());
         }
         return symptoms;
+
     }
 
     /**

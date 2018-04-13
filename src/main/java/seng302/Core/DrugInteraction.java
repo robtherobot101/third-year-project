@@ -2,6 +2,7 @@ package seng302.Core;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -10,15 +11,32 @@ public class DrugInteraction {
     private Map<String, HashSet<String>> ageMap;
     private Map<String, HashSet<String>> genderMap;
     private Map<String, HashSet<String>> durationMap;
+    private Boolean error = false;
+    private String errorMessage;
 
+    /**
+     * The constructor for the class. The json string will either be a valid json report, or an error string.
+     * The constructor parses it and sets values accordingly.
+     * @param json The result of the api call, either a json report or an error message.
+     */
     public DrugInteraction(String json) {
-        JSONObject jsonObj = new JSONObject(json);
-        ageMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(),
-                new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
-        genderMap = new Gson().fromJson(jsonObj.get("gender_interaction").toString(),
-                new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
-        durationMap = new Gson().fromJson(jsonObj.get("duration_interaction").toString(),
-                new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
+
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+            ageMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(),
+                    new TypeToken<HashMap<String, HashSet<String>>>() {
+                    }.getType());
+            genderMap = new Gson().fromJson(jsonObj.get("gender_interaction").toString(),
+                    new TypeToken<HashMap<String, HashSet<String>>>() {
+                    }.getType());
+            durationMap = new Gson().fromJson(jsonObj.get("duration_interaction").toString(),
+                    new TypeToken<HashMap<String, HashSet<String>>>() {
+                    }.getType());
+            error = false;
+        } catch (JSONException e) {
+            error = true;
+            errorMessage = json;
+        }
     }
 
     /**
@@ -146,5 +164,13 @@ public class DrugInteraction {
      */
     public HashMap<String, HashSet<String>> getDurationInteraction(){
         return new HashMap<>(durationMap);
+    }
+
+    public Boolean getError() {
+        return error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }
