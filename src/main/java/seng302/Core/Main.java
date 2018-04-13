@@ -211,7 +211,8 @@ public class Main extends Application {
     /**
      * Get the unique id number for the next donor or the last id number issued.
      *
-     * @param increment Whether to increment the unique id counter before returning the unique id value
+     * @param increment Whether to increment the unique id counter before returning the unique id value.
+     * @param donor Whether to increment and return clinician or donor. True for donor, false for clinician.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
@@ -509,11 +510,31 @@ public class Main extends Application {
     }
 
     /**
+     * To be honest with you guys, I'm not 100% sure on how this works but it does
+     *
+     * Solves an error on Linux systems with menu bar skin issues cropping up on the FX thread
+     *
+     * @param t Thread?
+     * @param e Exception?
+     */
+    private static void showError(Thread t, Throwable e) {
+        System.err.println("Non-critical error caught, probably platform dependent.");
+        if (Platform.isFxApplicationThread()) {
+            System.out.println(e);
+        } else {
+            System.err.println("An unexpected error occurred in "+t);
+        }
+    }
+
+    /**
      * Load in saved donors and clinicians, and initialise the GUI.
      * @param stage The stage to set the GUI up on
      */
     @Override
     public void start(Stage stage) {
+        // This fixes errors which occur in different threads in TestFX
+        Thread.setDefaultUncaughtExceptionHandler(Main::showError);
+
         Main.stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {

@@ -32,14 +32,24 @@ public class MedicationsController implements Initializable {
     @FXML
     private Label donorNameLabel, newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
     @FXML
-    private ListView<String> historyListView = new ListView<>(), currentListView = new ListView<>();
+    private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
     private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton;
 
     private boolean movingItem = false;
     private Donor currentDonor;
     private ArrayList<Medication> historicMedicationsCopy, currentMedicationsCopy;
-    private ObservableList<String> historicItems, currentItems;
+    private ObservableList<Medication> historicItems, currentItems;
+
+
+    @FXML
+    private Label histDrugLabel;
+    @FXML
+    private Label currDrugLabel;
+    @FXML
+    private Label histDrugIngredients;
+    @FXML
+    private Label currDrugIngredients;
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
@@ -65,6 +75,62 @@ public class MedicationsController implements Initializable {
 //        redoWelcomeButton.setDisable(true);
 //        bloodPressureLabel.setText("");
     }
+
+
+
+    /**
+     * Converts a String ArrayList query from Core/Mapi to a single string with each ingredient separated by a newline
+     * @param ApiQueryResult String ArrayList returned from a call to Mapi.activeIngredients
+     * @return String of newline separated ingredients
+     */
+    private String convertArrayListIngredientsToString(String[] ApiQueryResult) {
+        // Check if query result is empty
+        if (ApiQueryResult.length == 0) {
+            // Invalid drug/no active ingredients
+            return "No active ingredients found";
+        }
+
+        StringBuilder displayedActiveIngredients = new StringBuilder();
+        for (String currentIngredient : ApiQueryResult) {
+            displayedActiveIngredients.append("-").append(currentIngredient).append("\n");
+        }
+        return displayedActiveIngredients.toString();
+    }
+
+    /**
+     * Called when a object is selected in the currentListView, filling in the active ingredient section.
+     */
+    @FXML
+    public void currentMedicationClicked() {
+        Medication selectedItem = currentListView.getSelectionModel().getSelectedItem();
+
+        // Check if it is an actual item selected, not just a highlight
+        if (selectedItem != null) {
+            // Set drug title text
+            currDrugLabel.setText(selectedItem.toString());
+
+            // Display the ingredients
+            currDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
+        }
+    }
+
+    /**
+     * Called when a object is selected in the historyListView, filling in the active ingredient section.
+     */
+    @FXML
+    public void historyMedicationClicked() {
+        Medication selectedItem = historyListView.getSelectionModel().getSelectedItem();
+
+        // Check if it is an actual item selected, not just a highlight
+        if (selectedItem != null) {
+            // Set drug title text
+            histDrugLabel.setText(selectedItem.toString());
+
+            // Display the ingredients
+            histDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
+        }
+    }
+
 
     /**
      * Function to handle when the user wants to add a new medication to the current medications list.
@@ -99,6 +165,7 @@ public class MedicationsController implements Initializable {
                 // and then the list views are updated after.
                 if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
+                    System.out.print(activeIngredients);
                     currentMedicationsCopy.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
                     // NOTE: I have created another constructor in the Medications class for a medication with a name and
                     // active ingredients also.
@@ -141,9 +208,9 @@ public class MedicationsController implements Initializable {
      * @param deleteFrom The ArrayList of medications to delete the medication from
      * @param toDelete The name of the medication
      */
-    private void deleteMedication(ArrayList<Medication> deleteFrom, String toDelete) {
+    private void deleteMedication(ArrayList<Medication> deleteFrom, Medication toDelete) {
         for (Medication medication: deleteFrom) {
-            if (medication.getName().equals(toDelete)) {
+            if (medication.equals(toDelete)) {
                 deleteFrom.remove(medication);
                 break;
             }
@@ -172,15 +239,15 @@ public class MedicationsController implements Initializable {
      * @param from The Medication list to move the medication to
      * @param view The ListView to get the selected medication from
      */
-    private void moveMedication(ArrayList<Medication> to, ArrayList<Medication> from, ListView<String> view) {
+    private void moveMedication(ArrayList<Medication> to, ArrayList<Medication> from, ListView<Medication> view) {
         movingItem = true;
 
         //Get the item the user has selected
-        String medicationString = view.getSelectionModel().getSelectedItem();
+        Medication selectedMedication = view.getSelectionModel().getSelectedItem();
         //Get the medication object reference
         Medication medicationChoice = null;
         for (Medication medication: from) {
-            if (medication.getName().equals(medicationString)) {
+            if (medication.equals(selectedMedication)) {
                 medicationChoice = medication;
                 break;
             }
@@ -195,6 +262,8 @@ public class MedicationsController implements Initializable {
     /**
      * Populates both list views based on the current status of the current donors medication status
      * and past medications. Must act differently for when starting and mid change.
+     *
+     * @param startUp A Boolean, where True means that this method is called on start up and false when called during the running of the program.
      */
     public void populateMedications(Boolean startUp) {
         if (startUp) {
@@ -203,28 +272,28 @@ public class MedicationsController implements Initializable {
             //Populate table for current medications
             currentItems.clear();
             for (Medication medication : currentDonor.getCurrentMedications()) {
-                currentItems.add(medication.getName());
+                currentItems.add(medication);
             }
             currentListView.setItems(currentItems);
 
             //Populate table for historic medications
             historicItems.clear();
             for (Medication medication : currentDonor.getHistoricMedications()) {
-                historicItems.add(medication.getName());
+                historicItems.add(medication);
             }
             historyListView.setItems(historicItems);
         } else {
             //Populate table for current medications
             currentItems.clear();
             for (Medication medication : currentMedicationsCopy) {
-                currentItems.add(medication.getName());
+                currentItems.add(medication);
             }
             currentListView.setItems(currentItems);
 
             //Populate table for historic medications
             historicItems.clear();
             for (Medication medication : historicMedicationsCopy) {
-                historicItems.add(medication.getName());
+                historicItems.add(medication);
             }
             historyListView.setItems(historicItems);
         }
@@ -256,7 +325,9 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Sets whether the control buttons are shown or not on the medications pane
+     * Sets whether the control buttons are shown or not on the medications pane.,
+     *
+     * @param shown A Boolean where true shows the control buttons and false hides them.
      */
     public void setControlsShown(boolean shown) {
         addNewMedicationButton.setVisible(shown);
@@ -309,6 +380,11 @@ public class MedicationsController implements Initializable {
 //                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
 //                newMedicationField.getEntries().addAll(results);
             }
+        histDrugLabel.setText("");
+        currDrugLabel.setText("");
+        histDrugIngredients.setText("");
+        currDrugIngredients.setText("");
+
 
         });
         currentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

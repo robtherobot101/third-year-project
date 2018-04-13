@@ -108,6 +108,7 @@ public class UserWindowController implements Initializable {
      * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
      * Then removes it from the undo stack and adds it to the redo stack.
      *
+     * @param oldDonor The Donor object that is having changes undone.
      * @return the most recent saved version of the donor.
      */
     public Donor donorUndo(Donor oldDonor) {
@@ -129,6 +130,7 @@ public class UserWindowController implements Initializable {
     /**
      * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
      *
+     * @param newDonor The Donor object that is having changes redone.
      * @return the donor on top of the redo stack.
      */
     public Donor donorRedo(Donor newDonor) {
