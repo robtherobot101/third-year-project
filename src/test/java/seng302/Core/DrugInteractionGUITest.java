@@ -1,6 +1,7 @@
 package seng302.Core;
 
 import javafx.scene.Node;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableRow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -8,6 +9,7 @@ import javafx.stage.Stage;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.ListViewMatchers;
 import org.testfx.matcher.control.TableViewMatchers;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Main;
@@ -75,7 +77,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
     }
 
 
-    public void waitForButton(int timeout, String cssID) throws TimeoutException{
+    public void waitForEnabled(int timeout, String cssID) throws TimeoutException{
         Callable<Boolean> callable = () -> {
             if(lookup(cssID).query()==null){
                 return false;
@@ -100,19 +102,24 @@ public class DrugInteractionGUITest extends ApplicationTest {
         clickOn("#medicationsButton");
     }
 
+
+
     @Test
-    public void addSingleDrug(){
-        clickOn("#newMedicationField"); write("diazepam");
+    public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
+        String badDrugA = "badDrugA";
+        String badDrugB = "badDrugB";
+        clickOn("#newMedicationField"); write("badDrugA");
         clickOn("#addNewMedicationButton");
-        clickOn("#newMedicationField"); write("escitalopram");
+        clickOn("#newMedicationField"); write("badDrugB");
         clickOn("#addNewMedicationButton");
-        Node drugARow = from(lookup("#currentListView")).lookup("escitalopram").query();
+        Node drugARow = from(lookup("#currentListView")).lookup("badDrugB").query();
         clickOn(drugARow);
         clickOn("#compareButton");
-        Node drugBRow = from(lookup("#currentListView")).lookup("diazepam").query();
+        Node drugBRow = from(lookup("#currentListView")).lookup("badDrugA").query();
         clickOn(drugBRow);
         clickOn("#compareButton");
-        sleep(7000);
+        waitForEnabled(5,"#compareButton");
+        verifyThat(lookup("#interactionListView"), ListViewMatchers.hasListCell("Invalid comparison."));
     }
 
 }

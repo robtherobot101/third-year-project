@@ -1,5 +1,6 @@
 package seng302.Controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javax.swing.event.ChangeListener;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
+
 
 /**
  * Class which handles all the logic for the Medications Pane.
@@ -70,7 +72,8 @@ public class MedicationsController implements Initializable {
     private Button addNewMedicationButton;
     @FXML
     private Button deleteMedicationButton;
-
+    @FXML
+    private Button compareButton;
 
     private ObservableList<String> historicItems = FXCollections.observableArrayList();
     private ObservableList<String> currentItems = FXCollections.observableArrayList();
@@ -325,19 +328,25 @@ public class MedicationsController implements Initializable {
             drugALabel.setText(selection);
         }else if(drugB.equals("Drug B")){
             drugBLabel.setText(selection);
-            drugA = drugALabel.getText();
-            drugB = drugBLabel.getText();
-            HashSet<String> symptoms = makeComparison(drugA, drugB);
-            interactionItems.clear();
-            interactionItems.addAll(symptoms);
-            if (interactionItems.isEmpty()) {
-                interactionItems.add("No interactions found.");
-            }
-            FXCollections.reverse(interactionItems);
-            for(String thing : interactionItems){
-                System.out.println(thing);
-            }
-            interactionListView.setItems(interactionItems);
+            final String drugAF = drugALabel.getText();
+            final String drugBF = drugBLabel.getText();
+
+            new Thread(() -> {
+                compareButton.setDisable(true);
+                HashSet<String> symptoms = makeComparison(drugAF, drugBF);
+                interactionItems.clear();
+                interactionItems.addAll(symptoms);
+                if (interactionItems.isEmpty()) {
+                    interactionItems.add("No interactions found.");
+                }
+                FXCollections.reverse(interactionItems);
+                for(String thing : interactionItems){
+                    System.out.println(thing);
+                }
+                interactionListView.setItems(interactionItems);
+                compareButton.setDisable(false);
+            }).start();
+
 
         }else{
             drugALabel.setText(selection);
