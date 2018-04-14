@@ -102,7 +102,21 @@ public class DrugInteractionGUITest extends ApplicationTest {
         clickOn("#medicationsButton");
     }
 
-
+    @Test
+    public void compareDrugsWithInteractionSymptoms_returnsCorrectResults(){
+        clickOn("#newMedicationField"); write("diazepam");
+        clickOn("#addNewMedicationButton");
+        clickOn("#newMedicationField"); write("escitalopram");
+        clickOn("#addNewMedicationButton");
+        Node drugARow = from(lookup("#currentListView")).lookup("escitalopram").query();
+        clickOn(drugARow);
+        clickOn("#compareButton");
+        Node drugBRow = from(lookup("#currentListView")).lookup("diazepam").query();
+        clickOn(drugBRow);
+        clickOn("#compareButton");
+        sleep(2000);
+        //Todo Verify the results in the symptom table
+    }
 
     @Test
     public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
@@ -121,5 +135,4 @@ public class DrugInteractionGUITest extends ApplicationTest {
         waitForEnabled(5,"#compareButton");
         verifyThat(lookup("#interactionListView"), ListViewMatchers.hasListCell("Invalid comparison."));
     }
-
 }

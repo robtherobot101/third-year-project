@@ -368,25 +368,19 @@ public class MedicationsController implements Initializable {
         // Check to see if the api call was successful
         if (!result.getError()) {
             HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
+            System.out.println("age symptoms: "+ ageSymptoms);
             HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
-            ageSymptoms.addAll(genderSymptoms);
+            System.out.println("gender symptoms: " + genderSymptoms);
+            ageSymptoms.retainAll(genderSymptoms);
 
-            HashMap<String, HashSet<String>> durationInteraction = result.getDurationInteraction();
-
-            for (Map.Entry<String, HashSet<String>> entry : durationInteraction.entrySet()) {
-                HashSet<String> interactions = entry.getValue();
-                interactions.retainAll(ageSymptoms);
-                for (String interaction : interactions) {
-                    interaction += ": " + entry.getKey();
-                    //System.out.println(interaction);
-                    symptoms.add(interaction);
-                }
+            for(String symptom : ageSymptoms){
+                symptom += ": " + result.getDuration(symptom);
+                symptoms.add(symptom);
             }
         } else {
             symptoms.add(result.getErrorMessage());
         }
         return symptoms;
-
     }
 
     /**

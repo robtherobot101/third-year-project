@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class InteractionApi {
-
-
-
     /**
      * Takes two drug names as Strings and returns a Json String from the
      * eHealthMe API which contains information about the drug interactions

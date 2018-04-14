@@ -24,7 +24,4 @@ public class Medication {
     public String[] getActiveIngredients() { return activeIngredients; }
 
     public void setActiveIngredients(String[] activeIngredients) { this.activeIngredients = activeIngredients; }
-
-
-
 }

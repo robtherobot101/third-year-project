@@ -11,6 +11,7 @@ public class DrugInteraction {
     private Map<String, HashSet<String>> ageMap;
     private Map<String, HashSet<String>> genderMap;
     private Map<String, HashSet<String>> durationMap;
+    private Map<String, String> invertedDurationMap;
     private Boolean error = false;
     private String errorMessage;
 
@@ -23,19 +24,61 @@ public class DrugInteraction {
 
         try {
             JSONObject jsonObj = new JSONObject(json);
-            ageMap = new Gson().fromJson(jsonObj.get("age_interaction").toString(),
-                    new TypeToken<HashMap<String, HashSet<String>>>() {
-                    }.getType());
-            genderMap = new Gson().fromJson(jsonObj.get("gender_interaction").toString(),
-                    new TypeToken<HashMap<String, HashSet<String>>>() {
-                    }.getType());
-            durationMap = new Gson().fromJson(jsonObj.get("duration_interaction").toString(),
-                    new TypeToken<HashMap<String, HashSet<String>>>() {
-                    }.getType());
+            ageMap = getOrCreateMap(jsonObj, "age_interaction");
+            genderMap = getOrCreateMap(jsonObj, "gender_interaction");
+            durationMap = getOrCreateMap(jsonObj, "duration_interaction");
+            invertedDurationMap = invertDurationMap(durationMap);
             error = false;
         } catch (JSONException e) {
             error = true;
             errorMessage = json;
+        }
+    }
+
+    /**
+     * Returns the HashMap from the jsonObj denoted by the given key if it exists,
+     * otherwise returns a new HashMap
+     * @param jsonObj The drug interaction json object.
+     * @param key The identifier of the HashMap to look for
+     * @return The HashMap of strings to symptom sets
+     */
+    public HashMap<String, HashSet<String>> getOrCreateMap(JSONObject jsonObj, String key){
+        if(jsonObj.keySet().contains(key)){
+            return new Gson().fromJson(jsonObj.get(key).toString(),
+                    new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
+        }else{
+            return new HashMap<String, HashSet<String>>();
+        }
+    }
+
+    /**
+     * Inverts a duration map so that symptoms map to durations.
+     * @param durationMap The original duration map
+     * @return The inverted duration map
+     */
+    public HashMap<String, String> invertDurationMap(Map<String, HashSet<String>> durationMap){
+        HashMap<String, String> inverted = new HashMap<>();
+        for(String durationKey : durationMap.keySet()){
+            for(String symptom : durationMap.get(durationKey)){
+                inverted.put(symptom, durationKey);
+            }
+        }
+        return inverted;
+    }
+
+    /**
+     * Returns the duration of the given symptom. If the symptom is not known,
+     * "not specified" is returned. "not specified" will also be
+     * returned for symptoms which have durations explicitly defined
+     * as "not specified".
+     * @param symptom The given symptom
+     * @return The duration of the symptom
+     */
+    public String getDuration(String symptom){
+        if(invertedDurationMap.containsKey(symptom)){
+            return invertedDurationMap.get(symptom);
+        }else{
+            return "not specified";
         }
     }
 
@@ -157,6 +200,8 @@ public class DrugInteraction {
             return new HashSet<String>();
         }
     }
+
+
 
     /**
      * Returns the HashMap of symptoms grouped by duration.
