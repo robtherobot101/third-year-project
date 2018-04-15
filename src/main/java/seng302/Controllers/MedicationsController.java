@@ -1,5 +1,6 @@
 package seng302.Controllers;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +15,9 @@ import javax.sound.midi.SysexMessage;
 import javax.swing.event.ChangeListener;
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 
 /**
@@ -333,18 +336,20 @@ public class MedicationsController implements Initializable {
 
             new Thread(() -> {
                 compareButton.setDisable(true);
-                HashSet<String> symptoms = makeComparison(drugAF, drugBF);
-                interactionItems.clear();
-                interactionItems.addAll(symptoms);
-                if (interactionItems.isEmpty()) {
-                    interactionItems.add("No interactions found.");
-                }
-                FXCollections.reverse(interactionItems);
-                for(String thing : interactionItems){
-                    System.out.println(thing);
-                }
-                interactionListView.setItems(interactionItems);
+                    HashSet<String> symptoms = makeComparison(drugAF, drugBF);
+                    interactionItems.clear();
+                    interactionItems.addAll(symptoms);
+                    if (interactionItems.isEmpty()) {
+                        interactionItems.add("No interactions found.");
+                    }
+                    FXCollections.reverse(interactionItems);
+                    for(String thing : interactionItems){
+                        System.out.println(thing);
+                    }
+                    interactionListView.setItems(interactionItems);
+
                 compareButton.setDisable(false);
+
             }).start();
 
 

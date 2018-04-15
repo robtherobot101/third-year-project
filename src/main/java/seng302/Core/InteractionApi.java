@@ -6,9 +6,11 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 public class InteractionApi {
     /**
@@ -56,8 +58,12 @@ public class InteractionApi {
                 }
             }
             return result;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (UnirestException e) {
+            if(e.getCause() instanceof UnknownHostException || e.getCause() instanceof TimeoutException){
+                return "Host could not be reached.";
+            }
+            return "";
+        } catch(Exception e){
 
             return "";
         }

@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.*;
+import org.junit.runners.model.TestTimedOutException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.ListViewMatchers;
@@ -34,7 +35,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     private Main mainGUI;
     private static final boolean runHeadless = true;
-    Donor donor = new Donor("test user", LocalDate.of(1994,7,4));
+    Donor donor = new Donor("test,user", LocalDate.of(1983,7,4));
 
     @BeforeClass
     public static void setupSpec() throws Exception {
@@ -51,6 +52,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     @Before
     public void setUp () throws Exception {
+        donor.setGender(Gender.FEMALE);
         mainGUI.donors.add(donor);
         navigateToMedicationsPane();
     }
@@ -95,7 +97,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     private void navigateToMedicationsPane() {
         loginAsDefaultClinician();
-        clickOn("#profileSearchTextField").write("tes");
+        clickOn("#profileSearchTextField").write("test user");
         System.out.println();
         Node row = from(lookup("#profileTable")).lookup("test user").query();
         doubleClickOn(row);
@@ -103,7 +105,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
     }
 
     @Test
-    public void compareDrugsWithInteractionSymptoms_returnsCorrectResults(){
+    public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException{
         clickOn("#newMedicationField"); write("diazepam");
         clickOn("#addNewMedicationButton");
         clickOn("#newMedicationField"); write("escitalopram");
@@ -114,10 +116,17 @@ public class DrugInteractionGUITest extends ApplicationTest {
         Node drugBRow = from(lookup("#currentListView")).lookup("diazepam").query();
         clickOn(drugBRow);
         clickOn("#compareButton");
-        sleep(2000);
-        //Todo Verify the results in the symptom table
+        waitForEnabled(5,"#compareButton");
+        ListView results = (ListView)lookup("#interactionListView").query();
+        verifyThat(results, list -> list.getItems().contains("fatigue: 1 - 6 months"));
+        verifyThat(results, list -> list.getItems().contains("nausea: < 1 month"));
+        verifyThat(results, list -> list.getItems().contains("drug ineffective: < 1 month"));
+        verifyThat(results, list -> list.getItems().contains("weight increased: 1 - 2 years"));
+        verifyThat(results, list -> list.getItems().contains("dizziness: 2 - 5 years"));
+        verifyThat(results, list -> list.getItems().contains("headache: not specified"));
+        verifyThat(results, list -> list.getItems().contains("suicidal ideation: 6 - 12 months"));
     }
-
+    
     @Test
     public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
         String badDrugA = "badDrugA";
@@ -133,6 +142,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
         clickOn(drugBRow);
         clickOn("#compareButton");
         waitForEnabled(5,"#compareButton");
-        verifyThat(lookup("#interactionListView"), ListViewMatchers.hasListCell("Invalid comparison."));
+        ListView results = (ListView)lookup("#interactionListView").query();
+        verifyThat(results, list -> list.getItems().contains("Invalid comparison."));
     }
 }

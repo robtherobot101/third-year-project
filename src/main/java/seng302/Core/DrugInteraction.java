@@ -14,6 +14,7 @@ public class DrugInteraction {
     private Map<String, String> invertedDurationMap;
     private Boolean error = false;
     private String errorMessage;
+    private ArrayList<String> durations;
 
     /**
      * The constructor for the class. The json string will either be a valid json report, or an error string.
@@ -21,7 +22,15 @@ public class DrugInteraction {
      * @param json The result of the api call, either a json report or an error message.
      */
     public DrugInteraction(String json) {
-
+        durations = new ArrayList<String>(Arrays.asList(
+                "not specified",
+                "< 1 month",
+                "1 - 6 months",
+                "6 - 12 months",
+                "1 - 2 years",
+                "2 - 5 years",
+                "5 - 10 years",
+                "10+ years"));
         try {
             JSONObject jsonObj = new JSONObject(json);
             ageMap = getOrCreateMap(jsonObj, "age_interaction");
@@ -60,10 +69,36 @@ public class DrugInteraction {
         HashMap<String, String> inverted = new HashMap<>();
         for(String durationKey : durationMap.keySet()){
             for(String symptom : durationMap.get(durationKey)){
-                inverted.put(symptom, durationKey);
+                if(inverted.containsKey(symptom)){
+                    String greaterDuration = greaterDuration(inverted.get(symptom), durationKey);
+                    inverted.put(symptom, greaterDuration);
+                }else{
+                    inverted.put(symptom, durationKey);
+                }
             }
         }
         return inverted;
+    }
+
+    /**
+     * Returns the longer duration denoted by the duration keys given.
+     * "not specified" is treated as the shortest duration.
+     * If either of the duration keys is invalid, an IllegalArgumentException
+     * is thrown.
+     * @param durationA A duration key
+     * @param durationB A second duration key
+     * @return THe longer duration key
+     */
+    public String greaterDuration(String durationA, String durationB){
+        if(durations.containsAll(Arrays.asList(durationA,durationB))){
+            if(durations.indexOf(durationB) > durations.indexOf(durationA)){
+                return durationB;
+            }else{
+                return durationA;
+            }
+        }else{
+            throw new IllegalArgumentException("Invalid durations passed.");
+        }
     }
 
     /**
@@ -123,6 +158,7 @@ public class DrugInteraction {
         if(ageMap.containsKey(key)){
             HashSet<String> results = ageMap.get(key);
             results.addAll(nanAgeInteraction());
+            System.out.println("Age Interaction: "+key);
             return results;
         }else{
             return nanAgeInteraction();
@@ -201,8 +237,6 @@ public class DrugInteraction {
         }
     }
 
-
-
     /**
      * Returns the HashMap of symptoms grouped by duration.
      * @return The HashMap of symptoms
@@ -211,10 +245,19 @@ public class DrugInteraction {
         return new HashMap<>(durationMap);
     }
 
+
+    /**
+     * Returns true if there was an error passing or fetching the json
+     * @return True if there was an error, otherwise false
+     */
     public Boolean getError() {
         return error;
     }
 
+    /**
+     * Returns the error message if one was generated while passing or fetching the json.
+     * @return The error message
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
