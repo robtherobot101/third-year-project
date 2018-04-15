@@ -54,27 +54,23 @@ public class UserWindowController implements Initializable {
     @FXML
     private MenuItem undoButton, redoButton;
     @FXML
-    private Button logoutButton, undoWelcomeButton, redoWelcomeButton;
+    private Button logoutButton, undoWelcomeButton, redoWelcomeButton, medicationsButton, medicalHistoryButton;
     @FXML
     private TreeTableView<String> historyTreeTableView;
     @FXML
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<Donor> donorUndoStack = new ArrayList<>(), donorRedoStack = new ArrayList<>();
+    private ArrayList<Donor> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
     private Donor currentDonor;
     private boolean childWindow = false;
-    @FXML
-    private Button medicationsButton;
-    @FXML
-    private Button medicalHistoryButton;
 
     public ArrayList<Donor> getDonorUndoStack() {
-        return donorUndoStack;
+        return attributeUndoStack;
     }
 
     public ArrayList<Donor> getDonorRedoStack() {
-        return donorRedoStack;
+        return attributeRedoStack;
     }
 
     public Donor getCurrentDonor() {
@@ -84,8 +80,8 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
-        donorUndoStack.clear();
-        donorRedoStack.clear();
+        attributeUndoStack.clear();
+        attributeRedoStack.clear();
         undoButton.setDisable(true);
         undoWelcomeButton.setDisable(true);
         redoButton.setDisable(true);
@@ -100,7 +96,7 @@ public class UserWindowController implements Initializable {
      */
     public void addDonorToUndoStack(Donor donor) {
         Donor prevDonor = new Donor(donor);
-        donorUndoStack.add(prevDonor);
+        attributeUndoStack.add(prevDonor);
     }
 
 
@@ -112,10 +108,10 @@ public class UserWindowController implements Initializable {
      * @return the most recent saved version of the donor.
      */
     public Donor donorUndo(Donor oldDonor) {
-        if (donorUndoStack != null) {
-            Donor newDonor = donorUndoStack.get(donorUndoStack.size() - 1);
-            donorUndoStack.remove(donorUndoStack.size() - 1);
-            donorRedoStack.add(oldDonor);
+        if (attributeUndoStack != null) {
+            Donor newDonor = attributeUndoStack.get(attributeUndoStack.size() - 1);
+            attributeUndoStack.remove(attributeUndoStack.size() - 1);
+            attributeRedoStack.add(oldDonor);
             if (streamOut != null) {
 //                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
 //                History.printToFile(streamOut, text);
@@ -134,10 +130,10 @@ public class UserWindowController implements Initializable {
      * @return the donor on top of the redo stack.
      */
     public Donor donorRedo(Donor newDonor) {
-        if (donorRedoStack != null && donorRedoStack.size() != 0) {
-            Donor oldDonor = donorRedoStack.get(donorRedoStack.size() - 1);
+        if (attributeRedoStack != null && attributeRedoStack.size() != 0) {
+            Donor oldDonor = attributeRedoStack.get(attributeRedoStack.size() - 1);
             addDonorToUndoStack(newDonor);
-            donorRedoStack.remove(donorRedoStack.size() - 1);
+            attributeRedoStack.remove(attributeRedoStack.size() - 1);
             if (streamOut != null) {
 //                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
 //                History.printToFile(streamOut, text);
@@ -242,7 +238,7 @@ public class UserWindowController implements Initializable {
             undoButton.setDisable(false);
             undoWelcomeButton.setDisable(false);
 
-            donorRedoStack.clear();
+            attributeRedoStack.clear();
             redoButton.setDisable(true);
             redoWelcomeButton.setDisable(true);
         }
@@ -545,7 +541,7 @@ public class UserWindowController implements Initializable {
 
         redoButton.setDisable(false);
         redoWelcomeButton.setDisable(false);
-        if (donorUndoStack.isEmpty()) {
+        if (attributeUndoStack.isEmpty()) {
             undoButton.setDisable(true);
             undoWelcomeButton.setDisable(true);
         }
@@ -565,7 +561,7 @@ public class UserWindowController implements Initializable {
 
         undoButton.setDisable(false);
         undoWelcomeButton.setDisable(false);
-        if (donorRedoStack.isEmpty()) {
+        if (attributeRedoStack.isEmpty()) {
             redoButton.setDisable(true);
             redoWelcomeButton.setDisable(true);
         }
