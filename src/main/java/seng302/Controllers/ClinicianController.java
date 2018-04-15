@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -93,6 +94,9 @@ public class ClinicianController implements Initializable {
 
     @FXML
     private Button redoButton;
+
+    @FXML
+    private AnchorPane transplantPane;
 
     private int resultsPerPage;
     private int page = 1;
@@ -386,6 +390,7 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        background.setVisible(true);
         resultsPerPage = 15;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
@@ -503,5 +508,10 @@ public class ClinicianController implements Initializable {
                 }
             }
         });
+    }
+
+    public void transplantWaitingList() {
+        //background.setVisible(false);
+        Main.setScene(TFScene.transplantList);
     }
 }

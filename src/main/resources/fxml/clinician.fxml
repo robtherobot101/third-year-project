@@ -10,7 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="background" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+<AnchorPane fx:id="background" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
    <children>
       <TextField fx:id="nameInput" layoutX="29.0" layoutY="86.0" />
       <TextField fx:id="addressInput" layoutX="237.0" layoutY="86.0" />
@@ -59,5 +59,6 @@
       <Button fx:id="redoButton" disable="true" layoutX="725.0" layoutY="37.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
       <Button fx:id="accountSettingsButton" layoutX="156.0" layoutY="37.0" mnemonicParsing="false" onMouseClicked="#accountSettings" text="Account Settings" />
       <Button layoutX="346.0" layoutY="37.0" mnemonicParsing="false" onMouseClicked="#logout" text="Logout" />
+      <Button layoutX="460.0" layoutY="37.0" mnemonicParsing="false" onAction="#transplantWaitingList" text="Transplant Waiting List" />
    </children>
 </AnchorPane>

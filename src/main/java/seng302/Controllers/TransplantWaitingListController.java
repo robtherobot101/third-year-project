@@ -1,11 +1,22 @@
 package seng302.Controllers;
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.layout.AnchorPane;
+import seng302.Core.Main;
+import seng302.Core.TFScene;
 
-public class TransplantWaitingListController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class TransplantWaitingListController implements Initializable {
+
+    @FXML
+    private AnchorPane transplantPane;
 
     public void returnView(){
-
+        Main.setScene(TFScene.clinician);
     }
 
     /**
@@ -13,6 +24,11 @@ public class TransplantWaitingListController {
      */
     public void close(){
         Platform.exit();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 
 }

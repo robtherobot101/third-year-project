@@ -12,6 +12,7 @@ import java.util.*;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -57,6 +58,7 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
+    private static TransplantWaitingListController transplantWaitingListController;
 
     private static String dialogStyle;
 
@@ -163,6 +165,10 @@ public class Main extends Application {
 
     public static void setClincianAccountSettingsController(ClinicianAccountSettingsController clincianAccountSettingsController) {
         Main.clinicianAccountSettingsController = clincianAccountSettingsController;
+    }
+
+    public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
+        Main.transplantWaitingListController = transplantWaitingListController;
     }
 
     public static ClinicianController getClinicianController() {
@@ -578,6 +584,7 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),800,600));
 
             setScene(TFScene.login);
             stage.setResizable(true);
