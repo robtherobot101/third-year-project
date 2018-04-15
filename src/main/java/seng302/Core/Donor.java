@@ -169,6 +169,9 @@ public class Donor {
         alcoholConsumption = donor.getAlcoholConsumption();
         organs.clear();
         organs.addAll(donor.getOrgans());
+    }
+
+    public void copyMedicationListsFrom(Donor donor) {
         currentMedications.clear();
         currentMedications.addAll(donor.getCurrentMedications());
         historicMedications.clear();

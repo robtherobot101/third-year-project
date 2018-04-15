@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -61,10 +61,10 @@
 		</MenuBar>
 		<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="3">
 			<children>
-				<AnchorPane fx:id="medicationsPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<AnchorPane fx:id="medicationsPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<fx:include source="medications.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 				</AnchorPane>
-				<Pane fx:id="welcomePane" layoutX="226.0" prefHeight="295.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<Pane fx:id="welcomePane" layoutX="226.0" prefHeight="295.0" prefWidth="398.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label layoutX="14.0" layoutY="14.0" prefHeight="70.0" prefWidth="313.0">
                      <font>
@@ -73,7 +73,7 @@
                   </Label>
                </children>
 				</Pane>
-				<GridPane fx:id="attributesGridPane" layoutX="226.0" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="674.0" visible="false" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<GridPane fx:id="attributesGridPane" layoutX="226.0" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="674.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<columnConstraints>
 						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="118.0" prefWidth="0.0" />
 						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="104.0" prefWidth="100.0" />
@@ -167,12 +167,12 @@
 								<Insets left="20.0" right="40.0" />
 							</GridPane.margin>
 						</TextField>
-						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldUnfocused" prefHeight="27.0" prefWidth="158.0" promptText="Gender" GridPane.columnIndex="1" GridPane.rowIndex="4">
+						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="158.0" promptText="Gender" GridPane.columnIndex="1" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
 						</ComboBox>
-						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldUnfocused" prefHeight="27.0" prefWidth="167.0" promptText="Blood Type" GridPane.columnIndex="2" GridPane.rowIndex="4">
+						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="167.0" promptText="Blood Type" GridPane.columnIndex="2" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
@@ -191,12 +191,12 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-      						<CheckBox fx:id="liverCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fieldUnfocused" text="Liver" GridPane.columnIndex="1" />
-      						<CheckBox fx:id="kidneyCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#fieldUnfocused" text="Kidney" GridPane.columnIndex="2" />
-      						<CheckBox fx:id="pancreasCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Pancreas" GridPane.columnIndex="3" />
-      						<CheckBox fx:id="heartCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Heart" GridPane.columnIndex="4" />
-      						<CheckBox fx:id="lungCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Lung" GridPane.columnIndex="5" />
-      						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Intestine" GridPane.columnIndex="6" />
+      						<CheckBox fx:id="liverCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Liver" GridPane.columnIndex="1" />
+      						<CheckBox fx:id="kidneyCheckBox" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Kidney" GridPane.columnIndex="2" />
+      						<CheckBox fx:id="pancreasCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Pancreas" GridPane.columnIndex="3" />
+      						<CheckBox fx:id="heartCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Heart" GridPane.columnIndex="4" />
+      						<CheckBox fx:id="lungCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Lung" GridPane.columnIndex="5" />
+      						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Intestine" GridPane.columnIndex="6" />
                      </children>
                   </GridPane>
                   <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
@@ -212,27 +212,27 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-      						<CheckBox fx:id="corneaCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Cornea" GridPane.columnIndex="1">
+      						<CheckBox fx:id="corneaCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Cornea" GridPane.columnIndex="1">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="middleEarCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Middle Ear" GridPane.columnIndex="2" GridPane.columnSpan="2">
+      						<CheckBox fx:id="middleEarCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Middle Ear" GridPane.columnIndex="2" GridPane.columnSpan="2">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="skinCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Skin" GridPane.columnIndex="3">
+      						<CheckBox fx:id="skinCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Skin" GridPane.columnIndex="3">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="boneMarrowCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Bone Marrow" GridPane.columnIndex="4" GridPane.columnSpan="2">
+      						<CheckBox fx:id="boneMarrowCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Bone Marrow" GridPane.columnIndex="4" GridPane.columnSpan="2">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
       						</CheckBox>
-      						<CheckBox fx:id="connectiveTissueCheckBox" mnemonicParsing="false" onAction="#fieldUnfocused" text="Connective Tissue" GridPane.columnIndex="5">
+      						<CheckBox fx:id="connectiveTissueCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Connective Tissue" GridPane.columnIndex="5">
       							<GridPane.margin>
       								<Insets />
       							</GridPane.margin>
@@ -381,12 +381,12 @@
 								<Insets bottom="40.0" left="25.0" />
 							</GridPane.margin>
 						</Label>
-                  <ComboBox fx:id="smokerStatusComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldUnfocused" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="7">
+                  <ComboBox fx:id="smokerStatusComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets left="25.0" right="20.0" />
                      </GridPane.margin>
                   </ComboBox>
-                  <ComboBox fx:id="alcoholConsumptionComboBox" maxWidth="1.7976931348623157E308" onAction="#fieldUnfocused" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                  <ComboBox fx:id="alcoholConsumptionComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets left="20.0" right="20.0" />
                      </GridPane.margin>

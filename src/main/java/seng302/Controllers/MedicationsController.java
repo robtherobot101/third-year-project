@@ -1,6 +1,7 @@
 package seng302.Controllers;
 
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import java.util.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,25 +36,51 @@ public class MedicationsController implements Initializable {
 
     private boolean movingItem = false;
     private Donor currentDonor;
-    private ArrayList<Medication> historicMedicationsCopy, currentMedicationsCopy;
     private ObservableList<Medication> historicItems, currentItems;
 
     /**
-     * Function to set the current donor of this class to that of the instance of the application.
+     * Initializes the medications pane to show medications for a specified donor.
      *
-     * @param currentDonor The donor to set the current donor.
+     * @param currentDonor The donor to initialize the medications pane with
      */
-    public void setCurrentDonor(Donor currentDonor) {
+    public void initializeDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         donorNameLabel.setText("Donor: " + currentDonor.getName());
-        addNewMedicationButton.setDisable(true);
-        historicMedicationsCopy = new ArrayList<>();
-        historicMedicationsCopy.addAll(currentDonor.getHistoricMedications());
-        currentMedicationsCopy = new ArrayList<>();
-        currentMedicationsCopy.addAll(currentDonor.getCurrentMedications());
-        historicItems = FXCollections.observableArrayList();
+        addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());
+        
+        //Populate table for current medications
         currentItems = FXCollections.observableArrayList();
+        currentItems.addAll(currentDonor.getCurrentMedications());
+        currentListView.setItems(currentItems);
+        
+        //Populate table for historic medications
+        historicItems = FXCollections.observableArrayList();
+        historicItems.addAll(currentDonor.getHistoricMedications());
+        historyListView.setItems(historicItems);
+        
         checkSelections();
+    }
+
+    /**
+     * Update the displayed donor medications to what is currently stored in the donor object.
+     */
+    public void updateMedications() {
+        currentItems.clear();
+        currentItems.addAll(currentDonor.getCurrentMedications());
+        historicItems.clear();
+        historicItems.addAll(currentDonor.getHistoricMedications());
+        checkSelections();
+    }
+
+    /**
+     *
+     */
+    private void saveToUndoStack() {
+        Main.addCurrentToMedicationUndoStack();
+        currentDonor.getCurrentMedications().clear();
+        currentDonor.getCurrentMedications().addAll(currentItems);
+        currentDonor.getHistoricMedications().clear();
+        currentDonor.getHistoricMedications().addAll(historicItems);
     }
 
     /**
@@ -86,14 +113,14 @@ public class MedicationsController implements Initializable {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
         } else {
             boolean duplicate = false;
-            for (Medication medication: historicMedicationsCopy) {
+            for (Medication medication: historicItems) {
                 if (medication.getName().equals(medicationChoice)) {
                     duplicate = true;
                     break;
                 }
             }
             if (!duplicate) {
-                for (Medication medication : currentMedicationsCopy) {
+                for (Medication medication : currentItems) {
                     if (medication.getName().equals(medicationChoice)) {
                         duplicate = true;
                         break;
@@ -108,12 +135,12 @@ public class MedicationsController implements Initializable {
                 if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
                     System.out.print(activeIngredients);
-                    currentMedicationsCopy.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
+                    currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
                     // NOTE: I have created another constructor in the Medications class for a medication with a name and
                     // active ingredients also.
 
                     newMedicationField.clear();
-                    populateMedications(false);
+                    saveToUndoStack();
                 } else {
                     Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
                 }
@@ -131,9 +158,9 @@ public class MedicationsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(currentMedicationsCopy, currentListView.getSelectionModel().getSelectedItem());
+                deleteMedication(currentItems, currentListView.getSelectionModel().getSelectedItem());
             } else if (historyListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(historicMedicationsCopy, historyListView.getSelectionModel().getSelectedItem());
+                deleteMedication(historicItems, historyListView.getSelectionModel().getSelectedItem());
             }
 
             //TODO create update for medications for history when deleting
@@ -150,28 +177,28 @@ public class MedicationsController implements Initializable {
      * @param deleteFrom The ArrayList of medications to delete the medication from
      * @param toDelete The name of the medication
      */
-    private void deleteMedication(ArrayList<Medication> deleteFrom, Medication toDelete) {
+    private void deleteMedication(ObservableList<Medication> deleteFrom, Medication toDelete) {
         for (Medication medication: deleteFrom) {
             if (medication.equals(toDelete)) {
                 deleteFrom.remove(medication);
                 break;
             }
         }
-        populateMedications(false);
+        saveToUndoStack();
     }
 
     /**
      * Moves the selected medication from the current medications listview to the historic medications listview.
      */
     public void moveMedicationToHistory() {
-        moveMedication(historicMedicationsCopy, currentMedicationsCopy, currentListView);
+        moveMedication(historicItems, currentItems, currentListView);
     }
 
     /**
      * Moves the selected medication from the historic medications listview to the current medications listview.
      */
     public void moveMedicationToCurrent() {
-        moveMedication(currentMedicationsCopy, historicMedicationsCopy, historyListView);
+        moveMedication(currentItems, historicItems, historyListView);
     }
 
     /**
@@ -181,7 +208,7 @@ public class MedicationsController implements Initializable {
      * @param from The Medication list to move the medication to
      * @param view The ListView to get the selected medication from
      */
-    private void moveMedication(ArrayList<Medication> to, ArrayList<Medication> from, ListView<Medication> view) {
+    private void moveMedication(ObservableList<Medication> to, ObservableList<Medication> from, ListView<Medication> view) {
         movingItem = true;
         //Get the item the user has selected
         Medication selectedMedication = view.getSelectionModel().getSelectedItem();
@@ -195,38 +222,8 @@ public class MedicationsController implements Initializable {
         }
         to.add(medicationChoice);
         from.remove(medicationChoice);
-        populateMedications(false);
+        saveToUndoStack();
         movingItem = false;
-    }
-
-    /**
-     * Populates both list views based on the current status of the current donors medication status
-     * and past medications. Must act differently for when starting and mid change.
-     *
-     * @param startUp A Boolean, where True means that this method is called on start up and false when called during the running of the program.
-     */
-    public void populateMedications(Boolean startUp) {
-        if (startUp) {
-            //Populate table for current medications
-            currentItems.clear();
-            currentItems.addAll(currentDonor.getCurrentMedications());
-            currentListView.setItems(currentItems);
-
-            //Populate table for historic medications
-            historicItems.clear();
-            historicItems.addAll(currentDonor.getHistoricMedications());
-            historyListView.setItems(historicItems);
-        } else {
-            //Populate table for current medications
-            currentItems.clear();
-            currentItems.addAll(currentMedicationsCopy);
-            currentListView.setItems(currentItems);
-
-            //Populate table for historic medications
-            historicItems.clear();
-            historicItems.addAll(historicMedicationsCopy);
-            historyListView.setItems(historicItems);
-        }
     }
 
     /**
@@ -240,9 +237,9 @@ public class MedicationsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentDonor.getHistoricMedications().clear();
-            currentDonor.getHistoricMedications().addAll(historicMedicationsCopy);
+            currentDonor.getHistoricMedications().addAll(historicItems);
             currentDonor.getCurrentMedications().clear();
-            currentDonor.getCurrentMedications().addAll(currentMedicationsCopy);
+            currentDonor.getCurrentMedications().addAll(currentItems);
             Main.saveUsers(Main.getDonorPath(), true);
             //TODO create update for medications for history
 //            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
