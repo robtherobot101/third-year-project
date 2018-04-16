@@ -12,8 +12,6 @@ import java.util.ResourceBundle;
 
 public class TransplantWaitingListController implements Initializable {
 
-    @FXML
-    private AnchorPane transplantPane;
 
     public void returnView(){
         Main.setScene(TFScene.clinician);
