@@ -375,27 +375,30 @@ public class MedicationsController implements Initializable {
         String drugB = drugBLabel.getText();
         if(drugA.equals("Drug A")){
             drugALabel.setText(selection);
-        }else if(drugB.equals("Drug B")){
+        }else if(drugB.equals("Drug B") && !drugA.equals(selection)){
             drugBLabel.setText(selection);
             final String drugAF = drugALabel.getText();
             final String drugBF = drugBLabel.getText();
 
             new Thread(() -> {
-                compareButton.setDisable(true);
-                    HashSet<String> symptoms = makeComparison(drugAF, drugBF);
-                    interactionItems.clear();
-                    interactionItems.addAll(symptoms);
-                    if (interactionItems.isEmpty()) {
-                        interactionItems.add("No interactions found.");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        compareButton.setDisable(true);
+                        HashSet<String> symptoms = makeComparison(drugAF, drugBF);
+                        interactionItems.clear();
+                        interactionItems.addAll(symptoms);
+                        if (interactionItems.isEmpty()) {
+                            interactionItems.add("No interactions found.");
+                        }
+                        FXCollections.reverse(interactionItems);
+                        for(String thing : interactionItems){
+                            System.out.println(thing);
+                        }
+                        interactionListView.setItems(interactionItems);
+                        compareButton.setDisable(false);
                     }
-                    FXCollections.reverse(interactionItems);
-                    for(String thing : interactionItems){
-                        System.out.println(thing);
-                    }
-                    interactionListView.setItems(interactionItems);
-
-                compareButton.setDisable(false);
-
+                });
             }).start();
 
 

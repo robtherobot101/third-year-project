@@ -519,6 +519,7 @@ public class Main extends Application {
      */
     private static void showError(Thread t, Throwable e) {
         System.err.println("Non-critical error caught, probably platform dependent.");
+        e.printStackTrace();
         if (Platform.isFxApplicationThread()) {
             System.out.println(e);
         } else {
