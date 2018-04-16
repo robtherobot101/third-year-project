@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -94,6 +95,9 @@ public class ClinicianController implements Initializable {
     @FXML
     private Button redoButton;
 
+    @FXML
+    private GridPane mainPane;
+
     private int resultsPerPage;
     private int page = 1;
     private ArrayList<Donor> donorsFound;
@@ -166,7 +170,7 @@ public class ClinicianController implements Initializable {
      * Function which is called when the user wants to update their account settings in the user Window,
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
-    public void accountSettings() {
+    public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
@@ -195,6 +199,7 @@ public class ClinicianController implements Initializable {
             }
         }
     }
+
 
 
     /**
@@ -382,6 +387,14 @@ public class ClinicianController implements Initializable {
             previousPageButton.setDisable(false);
         }
     }
+
+    /**
+     * Sets the Donor Attributes pane as the visible pane
+     */
+    public void showMainPane() {
+        mainPane.setVisible(true);
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
