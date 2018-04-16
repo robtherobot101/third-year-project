@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -106,15 +107,12 @@
             <ListView fx:id="interactionListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Label fx:id="interactionsLabel" text="Interactions between Drugs (if any)" GridPane.columnIndex="5" GridPane.rowIndex="1">
-         <font>
-            <Font size="9.0" />
-         </font>
+      <Label fx:id="interactionsLabel" text="Medication Interactions" GridPane.columnIndex="5" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
       </Label>
-      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
       <Label text="Medications" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
             <Font name="System Bold" size="28.0" />
@@ -133,5 +131,6 @@
             <Insets top="48.0" />
          </GridPane.margin>
       </Button>
+      <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowSpan="5" GridPane.valignment="CENTER" />
    </children>
 </GridPane>
