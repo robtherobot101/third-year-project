@@ -119,7 +119,7 @@ public class Main extends Application {
         medicationsController.populateMedications(true);
 
         medicalHistoryController.setCurrentDonor(currentDonor);
-        //medicalHistoryController.populateHistory(true);
+        medicalHistoryController.populateDiseases(true);
     }
 
     /**

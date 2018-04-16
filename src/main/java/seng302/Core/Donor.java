@@ -1,19 +1,10 @@
 package seng302.Core;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.property.adapter.JavaBeanStringProperty;
-import javafx.scene.control.TextField;
-
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -42,8 +33,7 @@ public class Donor {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
-    private ArrayList<Disease> currentDiseases;
-    private ArrayList<Disease> curedDiseases;
+    private ArrayList<Disease> diseases;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -102,6 +92,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.diseases = new ArrayList<>();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -359,20 +350,12 @@ public class Donor {
 
     public void setHistoricMedications(ArrayList<Medication> historicMedications) { this.historicMedications = historicMedications; }
 
-    public ArrayList<Disease> getCurrentDiseases() {
-        return currentDiseases;
+    public ArrayList<Disease> getDiseases() {
+        return diseases;
     }
 
-    public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
-        this.currentDiseases = currentDiseases;
-    }
-
-    public ArrayList<Disease> getCuredDiseases() {
-        return curedDiseases;
-    }
-
-    public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
-        this.curedDiseases = curedDiseases;
+    public void setDiseases(ArrayList<Disease> diseases) {
+        this.diseases = diseases;
     }
 
     /**
