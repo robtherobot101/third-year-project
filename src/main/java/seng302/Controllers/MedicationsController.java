@@ -311,8 +311,20 @@ public class MedicationsController implements Initializable {
      * Acts on button push, selects whether the drug selected is in the historic medications pane or the current med pane.
      */
     public void updateComparison(){
-        String currentSelection = currentListView.getSelectionModel().getSelectedItem();
-        String historicSelection = historyListView.getSelectionModel().getSelectedItem();
+        String currentSelection;
+        String historicSelection;
+
+        if(currentListView.getSelectionModel().isEmpty()){
+            currentSelection = null;
+        }else{
+            currentSelection = currentListView.getSelectionModel().getSelectedItem().toString();
+        }
+
+        if(historyListView.getSelectionModel().isEmpty()){
+            historicSelection = null;
+        }else{
+            historicSelection = historyListView.getSelectionModel().getSelectedItem().toString();
+        }
         if(currentSelection != null){
             addToComparison(currentSelection);
         }else if(historicSelection != null){
