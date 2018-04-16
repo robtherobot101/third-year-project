@@ -1,11 +1,15 @@
 package seng302.Controllers;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import javafx.application.Platform;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import org.json.JSONException;
+import seng302.Core.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Core.Donor;
 import seng302.Core.Main;
@@ -13,7 +17,14 @@ import seng302.Core.Mapi;
 import seng302.Core.Medication;
 import seng302.Files.History;
 
+import javax.sound.midi.SysexMessage;
+import javax.swing.event.ChangeListener;
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.*;
+import java.util.concurrent.TimeoutException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +61,14 @@ public class MedicationsController implements Initializable {
     private Label histDrugIngredients;
     @FXML
     private Label currDrugIngredients;
+
+    private InteractionApi interactionApi = new InteractionApi();
+
+    @FXML
+    private ListView<String> interactionListView = new ListView<>();
+    private ObservableList<String> interactionItems = FXCollections.observableArrayList();
+    @FXML
+    private Button compareButton;
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
@@ -117,10 +136,9 @@ public class MedicationsController implements Initializable {
     /**
      * Called when a object is selected in the historyListView, filling in the active ingredient section.
      */
-    @FXML
+
     public void historyMedicationClicked() {
         Medication selectedItem = historyListView.getSelectionModel().getSelectedItem();
-
         // Check if it is an actual item selected, not just a highlight
         if (selectedItem != null) {
             // Set drug title text
@@ -130,7 +148,6 @@ public class MedicationsController implements Initializable {
             histDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
         }
     }
-
 
     /**
      * Function to handle when the user wants to add a new medication to the current medications list.
@@ -325,6 +342,99 @@ public class MedicationsController implements Initializable {
     }
 
     /**
+     * Acts on button push, selects whether the drug selected is in the historic medications pane or the current med pane.
+     */
+    public void updateComparison(){
+        String currentSelection;
+        String historicSelection;
+
+        if(currentListView.getSelectionModel().isEmpty()){
+            currentSelection = null;
+        }else{
+            currentSelection = currentListView.getSelectionModel().getSelectedItem().toString();
+        }
+
+        if(historyListView.getSelectionModel().isEmpty()){
+            historicSelection = null;
+        }else{
+            historicSelection = historyListView.getSelectionModel().getSelectedItem().toString();
+        }
+        if(currentSelection != null){
+            addToComparison(currentSelection);
+        }else if(historicSelection != null){
+            addToComparison(historicSelection);
+        }
+    }
+
+    /**
+     * Acts as a check whether the selected drug is being added to the comparison, or if the two selected drugs are being compared.
+     * @param selection the drug selected in the medications pane.
+     */
+    public void addToComparison(String selection){
+        String drugA = drugALabel.getText();
+        String drugB = drugBLabel.getText();
+        if(drugA.equals("Drug A")){
+            drugALabel.setText(selection);
+        }else if(drugB.equals("Drug B")){
+            drugBLabel.setText(selection);
+            final String drugAF = drugALabel.getText();
+            final String drugBF = drugBLabel.getText();
+
+            new Thread(() -> {
+                compareButton.setDisable(true);
+                    HashSet<String> symptoms = makeComparison(drugAF, drugBF);
+                    interactionItems.clear();
+                    interactionItems.addAll(symptoms);
+                    if (interactionItems.isEmpty()) {
+                        interactionItems.add("No interactions found.");
+                    }
+                    FXCollections.reverse(interactionItems);
+                    for(String thing : interactionItems){
+                        System.out.println(thing);
+                    }
+                    interactionListView.setItems(interactionItems);
+
+                compareButton.setDisable(false);
+
+            }).start();
+
+
+        }else{
+            drugALabel.setText(selection);
+            drugBLabel.setText("Drug B");
+        }
+    }
+
+    /**
+     * Accesses the ehealth api with the two given drugs.
+     * Finds all conditions based on donors age and gender, and then finds the duration of each.
+     * It modifies the string to add on the duration to the end eg "Nausea: 2-5 years"
+     * @param drugA The first drug being compared.
+     * @param drugB The second drug being compared.
+     * @return A hashset of each condition and it's duration.
+     */
+    public HashSet<String> makeComparison(String drugA, String drugB) {
+        HashSet<String> symptoms = new HashSet<>();
+        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+        // Check to see if the api call was successful
+        if (!result.getError()) {
+            HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
+            System.out.println("age symptoms: "+ ageSymptoms);
+            HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+            System.out.println("gender symptoms: " + genderSymptoms);
+            ageSymptoms.retainAll(genderSymptoms);
+
+            for(String symptom : ageSymptoms){
+                symptom += ": " + result.getDuration(symptom);
+                symptoms.add(symptom);
+            }
+        } else {
+            symptoms.add(result.getErrorMessage());
+        }
+        return symptoms;
+    }
+
+    /**
      * Sets whether the control buttons are shown or not on the medications pane.,
      *
      * @param shown A Boolean where true shows the control buttons and false hides them.
@@ -398,6 +508,12 @@ public class MedicationsController implements Initializable {
                 checkSelectionNumber(false);
             }
             checkSelections();
+        });
+        historyListView.focusedProperty().addListener((observable, oldVal, newVal) -> {
+            if(newVal) currentListView.getSelectionModel().clearSelection();
+        });
+        currentListView.focusedProperty().addListener((observable, oldVal, newVal) -> {
+            if(newVal) historyListView.getSelectionModel().clearSelection();
         });
     }
 }

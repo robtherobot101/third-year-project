@@ -107,21 +107,29 @@
          <font>
             <Font size="9.0" />
          </font>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
       </Label>
-      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
       <Label text="Medications" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>
          <GridPane.margin>
-            <Insets top="10.0" />
+            <Insets bottom="30.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="donorNameLabel" text="Donor: " GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label fx:id="donorNameLabel" text="Donor: &quot;LadiesMan217&quot;" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <GridPane.margin>
-            <Insets top="45.0" />
+            <Insets top="20.0" />
          </GridPane.margin>
       </Label>
+      <Button fx:id="compareButton" mnemonicParsing="false" onAction="#updateComparison" text="Compare" GridPane.columnIndex="5" GridPane.rowIndex="1">
+          <GridPane.margin>
+              <Insets top="48.0" />
+          </GridPane.margin>
+      </Button>
       <SplitPane dividerPositions="0.3" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="166.0">

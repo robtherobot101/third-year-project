@@ -131,7 +131,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Refreshes the results in the donor profile table to match the values
-     * in the main Donor ArrayList in Main
+     * in the donor ArrayList in Main
      */
     public void updateDonorTable(){
         updatePageButtons();
@@ -321,9 +321,8 @@ public class ClinicianController implements Initializable {
 
 
     /**
-     * Splits the sorted list of found donors and returns a page worth.
-     *
-     * @return Returns an ObservableList of the donors to show.
+     * Splits the sorted list of found donors and returns a page worth
+     * @return The sorted page of results
      */
     public ObservableList<Donor> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
