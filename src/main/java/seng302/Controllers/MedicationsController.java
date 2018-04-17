@@ -1,33 +1,17 @@
 package seng302.Controllers;
 
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import seng302.Core.Donor;
-import seng302.Core.DrugInteraction;
-import seng302.Core.InteractionApi;
-import seng302.Core.Main;
-import seng302.Core.Mapi;
-import seng302.Core.Medication;
+import seng302.Core.*;
+
+import java.net.URL;
+import java.util.*;
 
 
 /**
@@ -160,6 +144,8 @@ public class MedicationsController implements Initializable {
                 }
             }
         }
+        // After clicking the button, it becomes disabled
+        addNewMedicationButton.setDisable(true);
     }
 
     /**
@@ -402,23 +388,16 @@ public class MedicationsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicationsController(this);
-        newMedicationField.textProperty().addListener((observable, oldValue, newValue) -> {
-            addNewMedicationButton.setDisable(newValue.isEmpty());
-            if (!newMedicationField.getText().isEmpty() || !newMedicationField.getText().equals("")) {
-                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
-                new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
-                    if (results.size() > 5) {
-                        return results.subList(0,4);
-                    } else {
-                        return results;
-                    }
-                });
-//                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
-//                newMedicationField.getEntries().addAll(results);
+
+        // Attach the autocompletion box and set its endpoint to the MAPI API
+        // ALso only enable the add button if a medication has been autocompleted
+        new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
+            if(newMedicationField.getText().length() == 0) {
+                return null;
             }
+            return Mapi.autocomplete(newMedicationField.getText()).subList(0, 5);
+        }).setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false));
 
-
-        });
         //Hide the drug interactions title as this feature is not implemented yet
         interactionsTitleLabel.setText("");
         interactionsContentLabel.setText("");
