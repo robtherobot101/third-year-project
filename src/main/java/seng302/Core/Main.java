@@ -120,6 +120,9 @@ public class Main extends Application {
 
         medicationsController.setCurrentDonor(currentDonor);
         medicationsController.populateMedications(true);
+
+        waitingListController.setCurrentUser(currentDonor);
+        waitingListController.populateWaitingList();
     }
 
     /**
