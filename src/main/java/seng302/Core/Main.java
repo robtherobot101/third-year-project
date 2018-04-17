@@ -57,6 +57,7 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
+    private static WaitingListController waitingListController;
 
     private static String dialogStyle;
 
@@ -155,6 +156,10 @@ public class Main extends Application {
 
     public static void setMedicationsController(MedicationsController medicationsController) {
         Main.medicationsController = medicationsController;
+    }
+
+    public static void setWaitingListController(WaitingListController waitingListController) {
+        Main.waitingListController = waitingListController;
     }
 
     public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {

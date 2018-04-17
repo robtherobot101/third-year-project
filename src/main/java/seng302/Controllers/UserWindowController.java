@@ -36,6 +36,8 @@ public class UserWindowController implements Initializable {
     @FXML
     private AnchorPane medicationsPane;
     @FXML
+    private AnchorPane waitingListPane;
+    @FXML
     private Pane welcomePane;
     @FXML
     private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField;
@@ -68,6 +70,9 @@ public class UserWindowController implements Initializable {
     private Button medicationsButton;
     @FXML
     private Button medicalHistoryButton;
+    @FXML
+    private Button waitingListButton;
+
 
     public ArrayList<Donor> getDonorUndoStack() {
         return donorUndoStack;
@@ -248,6 +253,10 @@ public class UserWindowController implements Initializable {
         }
     }
 
+    public void showWaitingListButton(){
+        waitingListButton.setVisible(true);
+    }
+
     /**
      * Sets the history pane as the visible pane
      */
@@ -256,6 +265,17 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(true);
         medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
+    }
+
+
+
+    public void showWaitingListPane(){
+        welcomePane.setVisible(false);
+        attributesGridPane.setVisible(false);
+        historyGridPane.setVisible(false);
+        medicationsPane.setVisible(false);
+        waitingListPane.setVisible(true);
     }
 
     /**
@@ -266,6 +286,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(true);
+        waitingListPane.setVisible(false);
     }
 
     /**
@@ -276,6 +297,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(true);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
     }
 
     /**
@@ -286,6 +308,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
     }
 
     /**
