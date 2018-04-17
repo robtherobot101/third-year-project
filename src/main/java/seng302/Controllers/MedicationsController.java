@@ -1,34 +1,30 @@
 package seng302.Controllers;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
-import javafx.application.Platform;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import org.json.JSONException;
-import seng302.Core.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import seng302.Core.Donor;
+import seng302.Core.DrugInteraction;
+import seng302.Core.InteractionApi;
 import seng302.Core.Main;
 import seng302.Core.Mapi;
 import seng302.Core.Medication;
-import seng302.Files.History;
-
-import javax.sound.midi.SysexMessage;
-import javax.swing.event.ChangeListener;
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.*;
-import java.util.concurrent.TimeoutException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 
 /**
@@ -37,11 +33,10 @@ import java.util.ResourceBundle;
  * Saving, Adding new medications, moving medications between lists, deleting medications and comparing medications.
  */
 public class MedicationsController implements Initializable {
-
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label donorNameLabel, newMedicationLabel, interactionsLabel, drugALabel, drugBLabel;
+    private Label donorNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel;
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
@@ -49,7 +44,6 @@ public class MedicationsController implements Initializable {
 
     private boolean movingItem = false;
     private Donor currentDonor;
-    private ArrayList<Medication> historicMedicationsCopy, currentMedicationsCopy;
     private ObservableList<Medication> historicItems, currentItems;
 
 
@@ -71,31 +65,49 @@ public class MedicationsController implements Initializable {
     private Button compareButton;
 
     /**
-     * Function to set the current donor of this class to that of the instance of the application.
+     * Initializes the medications pane to show medications for a specified donor.
      *
-     * @param currentDonor The donor to set the current donor.
+     * @param currentDonor The donor to initialize the medications pane with
      */
-    public void setCurrentDonor(Donor currentDonor) {
+    public void initializeDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         donorNameLabel.setText("Donor: " + currentDonor.getName());
-        addNewMedicationButton.setDisable(true);
-        historicMedicationsCopy = new ArrayList<>();
-        historicMedicationsCopy.addAll(currentDonor.getHistoricMedications());
-        currentMedicationsCopy = new ArrayList<>();
-        currentMedicationsCopy.addAll(currentDonor.getCurrentMedications());
-        historicItems = FXCollections.observableArrayList();
+        addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());
+
+        //Populate table for current medications
         currentItems = FXCollections.observableArrayList();
+        currentItems.addAll(currentDonor.getCurrentMedications());
+        currentListView.setItems(currentItems);
+
+        //Populate table for historic medications
+        historicItems = FXCollections.observableArrayList();
+        historicItems.addAll(currentDonor.getHistoricMedications());
+        historyListView.setItems(historicItems);
+
         checkSelections();
-//        donorUndoStack.clear();
-//        donorRedoStack.clear();
-//        undoButton.setDisable(true);
-//        undoWelcomeButton.setDisable(true);
-//        redoButton.setDisable(true);
-//        redoWelcomeButton.setDisable(true);
-//        bloodPressureLabel.setText("");
     }
 
+    /**
+     * Update the displayed donor medications to what is currently stored in the donor object.
+     */
+    public void updateMedications() {
+        currentItems.clear();
+        currentItems.addAll(currentDonor.getCurrentMedications());
+        historicItems.clear();
+        historicItems.addAll(currentDonor.getHistoricMedications());
+        checkSelections();
+    }
 
+    /**
+     *
+     */
+    private void saveToUndoStack() {
+        Main.addCurrentToMedicationUndoStack();
+        currentDonor.getCurrentMedications().clear();
+        currentDonor.getCurrentMedications().addAll(currentItems);
+        currentDonor.getHistoricMedications().clear();
+        currentDonor.getHistoricMedications().addAll(historicItems);
+    }
 
     /**
      * Converts a String ArrayList query from Core/Mapi to a single string with each ingredient separated by a newline
@@ -117,58 +129,24 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Called when a object is selected in the currentListView, filling in the active ingredient section.
-     */
-    @FXML
-    public void currentMedicationClicked() {
-        Medication selectedItem = currentListView.getSelectionModel().getSelectedItem();
-
-        // Check if it is an actual item selected, not just a highlight
-        if (selectedItem != null) {
-            // Set drug title text
-            currDrugLabel.setText(selectedItem.toString());
-
-            // Display the ingredients
-            currDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
-        }
-    }
-
-    /**
-     * Called when a object is selected in the historyListView, filling in the active ingredient section.
-     */
-
-    public void historyMedicationClicked() {
-        Medication selectedItem = historyListView.getSelectionModel().getSelectedItem();
-        // Check if it is an actual item selected, not just a highlight
-        if (selectedItem != null) {
-            // Set drug title text
-            histDrugLabel.setText(selectedItem.toString());
-
-            // Display the ingredients
-            histDrugIngredients.setText(convertArrayListIngredientsToString(selectedItem.getActiveIngredients()));
-        }
-    }
-
-    /**
      * Function to handle when the user wants to add a new medication to the current medications list.
      * Adds the medication to the donor's personal list and then updates the listview.
      */
     public void addNewMedication() {
-
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
         if (medicationChoice.equals("")) {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
         } else {
             boolean duplicate = false;
-            for (Medication medication: historicMedicationsCopy) {
+            for (Medication medication: historicItems) {
                 if (medication.getName().equals(medicationChoice)) {
                     duplicate = true;
                     break;
                 }
             }
             if (!duplicate) {
-                for (Medication medication : currentMedicationsCopy) {
+                for (Medication medication : currentItems) {
                     if (medication.getName().equals(medicationChoice)) {
                         duplicate = true;
                         break;
@@ -183,12 +161,12 @@ public class MedicationsController implements Initializable {
                 if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
                     System.out.print(activeIngredients);
-                    currentMedicationsCopy.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
+                    currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
                     // NOTE: I have created another constructor in the Medications class for a medication with a name and
                     // active ingredients also.
 
                     newMedicationField.clear();
-                    populateMedications(false);
+                    saveToUndoStack();
                 } else {
                     Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
                 }
@@ -206,9 +184,9 @@ public class MedicationsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(currentMedicationsCopy, currentListView.getSelectionModel().getSelectedItem());
+                deleteMedication(currentItems, currentListView.getSelectionModel().getSelectedItem());
             } else if (historyListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(historicMedicationsCopy, historyListView.getSelectionModel().getSelectedItem());
+                deleteMedication(historicItems, historyListView.getSelectionModel().getSelectedItem());
             }
 
             //TODO create update for medications for history when deleting
@@ -225,28 +203,28 @@ public class MedicationsController implements Initializable {
      * @param deleteFrom The ArrayList of medications to delete the medication from
      * @param toDelete The name of the medication
      */
-    private void deleteMedication(ArrayList<Medication> deleteFrom, Medication toDelete) {
+    private void deleteMedication(ObservableList<Medication> deleteFrom, Medication toDelete) {
         for (Medication medication: deleteFrom) {
             if (medication.equals(toDelete)) {
                 deleteFrom.remove(medication);
                 break;
             }
         }
-        populateMedications(false);
+        saveToUndoStack();
     }
 
     /**
      * Moves the selected medication from the current medications listview to the historic medications listview.
      */
     public void moveMedicationToHistory() {
-        moveMedication(historicMedicationsCopy, currentMedicationsCopy, currentListView);
+        moveMedication(historicItems, currentItems, currentListView);
     }
 
     /**
      * Moves the selected medication from the historic medications listview to the current medications listview.
      */
     public void moveMedicationToCurrent() {
-        moveMedication(currentMedicationsCopy, historicMedicationsCopy, historyListView);
+        moveMedication(currentItems, historicItems, historyListView);
     }
 
     /**
@@ -256,9 +234,8 @@ public class MedicationsController implements Initializable {
      * @param from The Medication list to move the medication to
      * @param view The ListView to get the selected medication from
      */
-    private void moveMedication(ArrayList<Medication> to, ArrayList<Medication> from, ListView<Medication> view) {
+    private void moveMedication(ObservableList<Medication> to, ObservableList<Medication> from, ListView<Medication> view) {
         movingItem = true;
-
         //Get the item the user has selected
         Medication selectedMedication = view.getSelectionModel().getSelectedItem();
         //Get the medication object reference
@@ -269,51 +246,10 @@ public class MedicationsController implements Initializable {
                 break;
             }
         }
-
         to.add(medicationChoice);
         from.remove(medicationChoice);
-        populateMedications(false);
+        saveToUndoStack();
         movingItem = false;
-    }
-
-    /**
-     * Populates both list views based on the current status of the current donors medication status
-     * and past medications. Must act differently for when starting and mid change.
-     *
-     * @param startUp A Boolean, where True means that this method is called on start up and false when called during the running of the program.
-     */
-    public void populateMedications(Boolean startUp) {
-        if (startUp) {
-
-
-            //Populate table for current medications
-            currentItems.clear();
-            for (Medication medication : currentDonor.getCurrentMedications()) {
-                currentItems.add(medication);
-            }
-            currentListView.setItems(currentItems);
-
-            //Populate table for historic medications
-            historicItems.clear();
-            for (Medication medication : currentDonor.getHistoricMedications()) {
-                historicItems.add(medication);
-            }
-            historyListView.setItems(historicItems);
-        } else {
-            //Populate table for current medications
-            currentItems.clear();
-            for (Medication medication : currentMedicationsCopy) {
-                currentItems.add(medication);
-            }
-            currentListView.setItems(currentItems);
-
-            //Populate table for historic medications
-            historicItems.clear();
-            for (Medication medication : historicMedicationsCopy) {
-                historicItems.add(medication);
-            }
-            historyListView.setItems(historicItems);
-        }
     }
 
     /**
@@ -327,9 +263,9 @@ public class MedicationsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentDonor.getHistoricMedications().clear();
-            currentDonor.getHistoricMedications().addAll(historicMedicationsCopy);
+            currentDonor.getHistoricMedications().addAll(historicItems);
             currentDonor.getCurrentMedications().clear();
-            currentDonor.getCurrentMedications().addAll(currentMedicationsCopy);
+            currentDonor.getCurrentMedications().addAll(currentItems);
             Main.saveUsers(Main.getDonorPath(), true);
             //TODO create update for medications for history
 //            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
@@ -468,12 +404,28 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Sets controls enabled or disabled based on the current selections made.
+     * Sets controls enabled or disabled based on the current selections made. Sets active ingredients to show based on the currently selected medication.
      */
     private void checkSelections() {
-        moveToCurrentButton.setDisable(historyListView.getSelectionModel().getSelectedItem() == null);
-        moveToHistoryButton.setDisable(currentListView.getSelectionModel().getSelectedItem() == null);
-        deleteMedicationButton.setDisable(historyListView.getSelectionModel().getSelectedItem() == null && currentListView.getSelectionModel().getSelectedItem() == null);
+        boolean historySelectionIsNull = historyListView.getSelectionModel().getSelectedItem() == null, currentSelectionIsNull = currentListView.getSelectionModel().getSelectedItem() == null;
+        moveToCurrentButton.setDisable(historySelectionIsNull);
+        moveToHistoryButton.setDisable(currentSelectionIsNull);
+        deleteMedicationButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
+        Medication selected;
+        if (!historySelectionIsNull) {
+            selected = historyListView.getSelectionModel().getSelectedItem();
+            // Display the ingredients
+            activeIngredientsTitleLabel.setVisible(true);
+            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+        } else if (!currentSelectionIsNull) {
+            selected = currentListView.getSelectionModel().getSelectedItem();
+            // Display the ingredients
+            activeIngredientsTitleLabel.setVisible(true);
+            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+        } else {
+            activeIngredientsTitleLabel.setVisible(false);
+            activeIngredientsContentLabel.setText("");
+        }
     }
 
     @Override
@@ -493,13 +445,13 @@ public class MedicationsController implements Initializable {
 //                ArrayList<String> results = Mapi.autocomplete(newMedicationField.getText());
 //                newMedicationField.getEntries().addAll(results);
             }
-        histDrugLabel.setText("");
-        currDrugLabel.setText("");
-        histDrugIngredients.setText("");
-        currDrugIngredients.setText("");
 
 
         });
+        //Hide the drug interactions title as this feature is not implemented yet
+        interactionsTitleLabel.setText("");
+        interactionsContentLabel.setText("");
+
         currentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!movingItem) {
                 checkSelectionNumber(true);

@@ -117,8 +117,15 @@ public class Main extends Application {
         userWindowController.populateDonorFields();
         userWindowController.populateHistoryTable();
 
-        medicationsController.setCurrentDonor(currentDonor);
-        medicationsController.populateMedications(true);
+        medicationsController.initializeDonor(currentDonor);
+    }
+
+    public static void addCurrentToMedicationUndoStack() {
+        userWindowController.addCurrentToMedicationUndoStack();
+    }
+
+    public static void updateMedications() {
+        medicationsController.updateMedications();
     }
 
     /**

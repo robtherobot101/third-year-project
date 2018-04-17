@@ -54,27 +54,22 @@ public class UserWindowController implements Initializable {
     @FXML
     private MenuItem undoButton, redoButton;
     @FXML
-    private Button logoutButton, undoWelcomeButton, redoWelcomeButton;
+    private Button logoutButton, undoWelcomeButton, redoWelcomeButton, medicationsButton, medicalHistoryButton;
     @FXML
     private TreeTableView<String> historyTreeTableView;
     @FXML
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<Donor> donorUndoStack = new ArrayList<>(), donorRedoStack = new ArrayList<>();
+    private ArrayList<Donor> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
     private Donor currentDonor;
-    private boolean childWindow = false;
-    @FXML
-    private Button medicationsButton;
-    @FXML
-    private Button medicalHistoryButton;
 
     public ArrayList<Donor> getDonorUndoStack() {
-        return donorUndoStack;
+        return attributeUndoStack;
     }
 
     public ArrayList<Donor> getDonorRedoStack() {
-        return donorRedoStack;
+        return attributeRedoStack;
     }
 
     public Donor getCurrentDonor() {
@@ -84,8 +79,8 @@ public class UserWindowController implements Initializable {
     public void setCurrentDonor(Donor currentDonor) {
         this.currentDonor = currentDonor;
         userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
-        donorUndoStack.clear();
-        donorRedoStack.clear();
+        attributeUndoStack.clear();
+        attributeRedoStack.clear();
         undoButton.setDisable(true);
         undoWelcomeButton.setDisable(true);
         redoButton.setDisable(true);
@@ -99,54 +94,7 @@ public class UserWindowController implements Initializable {
      * @param donor donor object being added to the top of the stack.
      */
     public void addDonorToUndoStack(Donor donor) {
-        Donor prevDonor = new Donor(donor);
-        donorUndoStack.add(prevDonor);
-    }
-
-
-    /**
-     * Called when clicking the undo button. Takes the most recent donor object on the stack and returns it.
-     * Then removes it from the undo stack and adds it to the redo stack.
-     *
-     * @param oldDonor The Donor object that is having changes undone.
-     * @return the most recent saved version of the donor.
-     */
-    public Donor donorUndo(Donor oldDonor) {
-        if (donorUndoStack != null) {
-            Donor newDonor = donorUndoStack.get(donorUndoStack.size() - 1);
-            donorUndoStack.remove(donorUndoStack.size() - 1);
-            donorRedoStack.add(oldDonor);
-            if (streamOut != null) {
-//                String text = History.prepareFileStringGUI(oldDonor.getId(), "undo");
-//                History.printToFile(streamOut, text);
-            }
-            return newDonor;
-        } else {
-            System.out.println("Undo somehow being called with nothing to undo.");
-            return null;
-        }
-    }
-
-    /**
-     * A reverse of undo. Can only be called if an action has already been undone, and re loads the donor from the redo stack.
-     *
-     * @param newDonor The Donor object that is having changes redone.
-     * @return the donor on top of the redo stack.
-     */
-    public Donor donorRedo(Donor newDonor) {
-        if (donorRedoStack != null && donorRedoStack.size() != 0) {
-            Donor oldDonor = donorRedoStack.get(donorRedoStack.size() - 1);
-            addDonorToUndoStack(newDonor);
-            donorRedoStack.remove(donorRedoStack.size() - 1);
-            if (streamOut != null) {
-//                String text = History.prepareFileStringGUI(oldDonor.getId(), "redo");
-//                History.printToFile(streamOut, text);
-            }
-            return oldDonor;
-        } else {
-            System.out.println("Redo somehow being called with nothing to redo.");
-            return null;
-        }
+        attributeUndoStack.add(new Donor(donor));
     }
 
     /**
@@ -189,34 +137,34 @@ public class UserWindowController implements Initializable {
 
         //Add listeners for attribute undo and redo
         firstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         middleNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         lastNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         addressField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         regionField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         dateOfBirthPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         heightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         weightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
         bloodPressureTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) fieldUnfocused();
+            if (!newValue) attributeFieldUnfocused();
         });
 
         //Add listeners to correctly update BMI and blood pressure based on user input
@@ -233,19 +181,37 @@ public class UserWindowController implements Initializable {
     }
 
     /**
-     * Checks for any new updates when a field loses focus, and appends to undostack if there is new changes.
+     * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
-    public void fieldUnfocused() {
+    public void attributeFieldUnfocused() {
         Donor oldFields = new Donor(currentDonor);
         if (updateDonor() && !currentDonor.fieldsEqual(oldFields)) {
             addDonorToUndoStack(oldFields);
-            undoButton.setDisable(false);
-            undoWelcomeButton.setDisable(false);
-
-            donorRedoStack.clear();
-            redoButton.setDisable(true);
-            redoWelcomeButton.setDisable(true);
+            attributeRedoStack.clear();
+            setUndoRedoButtonsDisabled(false, true);
         }
+    }
+
+    /**
+     * Add the current donor object to the medications undo stack.
+     */
+    public void addCurrentToMedicationUndoStack() {
+        medicationUndoStack.add(new Donor(currentDonor));
+        medicationRedoStack.clear();
+        setUndoRedoButtonsDisabled(false, true);
+    }
+
+    /**
+     * Set whether the undo and redo buttons are enabled.
+     *
+     * @param undoDisabled Whether the undo buttons should be disabled
+     * @param redoDisabled Whether the redo buttons should be disabled
+     */
+    private void setUndoRedoButtonsDisabled(boolean undoDisabled, boolean redoDisabled) {
+        undoButton.setDisable(undoDisabled);
+        undoWelcomeButton.setDisable(undoDisabled);
+        redoButton.setDisable(redoDisabled);
+        redoWelcomeButton.setDisable(redoDisabled);
     }
 
     /**
@@ -256,6 +222,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(true);
         medicationsPane.setVisible(false);
+        setUndoRedoButtonsDisabled(true, true);
     }
 
     /**
@@ -266,6 +233,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(true);
+        setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
     }
 
     /**
@@ -276,6 +244,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(true);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
     }
 
     /**
@@ -286,6 +255,7 @@ public class UserWindowController implements Initializable {
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
+        setUndoRedoButtonsDisabled(true, true);
     }
 
     /**
@@ -539,19 +509,31 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
-        fieldUnfocused();
-        currentDonor.copyFieldsFrom(donorUndo(new Donor(currentDonor)));
-        populateDonorFields();
+        if (attributesGridPane.isVisible()) {
+            attributeFieldUnfocused();
+            //Add the current fields to the redo stack
+            attributeRedoStack.add(new Donor(currentDonor));
+            //Copy the attribute information from the top element of the undo stack
+            currentDonor.copyFieldsFrom(attributeUndoStack.get(attributeUndoStack.size() - 1));
+            //Remove the top element of the undo stack
+            attributeUndoStack.remove(attributeUndoStack.size() - 1);
+            populateDonorFields();
 
-        redoButton.setDisable(false);
-        redoWelcomeButton.setDisable(false);
-        if (donorUndoStack.isEmpty()) {
-            undoButton.setDisable(true);
-            undoWelcomeButton.setDisable(true);
+            setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), false);
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
+            History.printToFile(streamOut, text);
+            populateHistoryTable();
+        } else if (medicationsPane.isVisible()) {
+            //Add the current medication lists to the redo stack
+            medicationRedoStack.add(new Donor(currentDonor));
+            //Copy the medication lists from the top element of the undo stack
+            currentDonor.copyMedicationListsFrom(medicationUndoStack.get(medicationUndoStack.size() - 1));
+            //Remove the top element of the undo stack
+            medicationUndoStack.remove(medicationUndoStack.size() - 1);
+
+            setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
+            Main.updateMedications();
         }
-        String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
-        History.printToFile(streamOut, text);
-        populateHistoryTable();
     }
 
     /**
@@ -559,19 +541,31 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
      */
     public void redo() {
-        fieldUnfocused();
-        currentDonor.copyFieldsFrom(donorRedo(new Donor(currentDonor)));
-        populateDonorFields();
+        if (attributesGridPane.isVisible()) {
+            attributeFieldUnfocused();
+            //Add the current fields to the undo stack
+            addDonorToUndoStack(currentDonor);
+            //Copy the attribute information from the top element of the redo stack
+            currentDonor.copyFieldsFrom(attributeRedoStack.get(attributeRedoStack.size() - 1));
+            //Remove the top element of the redo stack
+            attributeRedoStack.remove(attributeRedoStack.size() - 1);
+            populateDonorFields();
 
-        undoButton.setDisable(false);
-        undoWelcomeButton.setDisable(false);
-        if (donorRedoStack.isEmpty()) {
-            redoButton.setDisable(true);
-            redoWelcomeButton.setDisable(true);
+            setUndoRedoButtonsDisabled(false, attributeRedoStack.isEmpty());
+            String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
+            History.printToFile(streamOut, text);
+            populateHistoryTable();
+        } else if (medicationsPane.isVisible()) {
+            //Add the current medication lists to the undo stack
+            medicationUndoStack.add(new Donor(currentDonor));
+            //Copy the medications lists from the top element of the redo stack
+            currentDonor.copyMedicationListsFrom(medicationRedoStack.get(medicationRedoStack.size() - 1));
+            //Remove the top element of the redo stack
+            medicationRedoStack.remove(medicationRedoStack.size() - 1);
+
+            setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
+            Main.updateMedications();
         }
-        String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
-        History.printToFile(streamOut, text);
-        populateHistoryTable();
     }
 
     /**
@@ -672,10 +666,14 @@ public class UserWindowController implements Initializable {
         }
     }
 
+    /**
+     * Disable the logout button if this donor window is the child of a clinician window.
+     */
     public void setAsChildWindow(){
         logoutButton.setDisable(true);
     }
-    /*
+
+    /**
      * Function which is called when the user wants to logout of the application and log into a new user
      */
     public void logout() {
