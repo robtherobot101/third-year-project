@@ -54,7 +54,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox, middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
     @FXML
-    private MenuItem undoButton, redoButton;
+    private MenuItem undoButton, redoButton, logoutMenuItem;
     @FXML
     private Button logoutButton, undoWelcomeButton, redoWelcomeButton, medicationsButton, medicalHistoryButton;
     @FXML
@@ -65,7 +65,6 @@ public class UserWindowController implements Initializable {
     private HashMap<Organ, CheckBox> organTickBoxes;
     private ArrayList<Donor> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
     private Donor currentDonor;
-    private boolean childWindow = false;
     @FXML
     private Button waitingListButton;
 
@@ -694,7 +693,8 @@ public class UserWindowController implements Initializable {
     /**
      * Disable the logout button if this donor window is the child of a clinician window.
      */
-    public void setAsChildWindow(){
+    public void setAsChildWindow() {
+        logoutMenuItem.setDisable(true);
         logoutButton.setDisable(true);
     }
 
@@ -705,11 +705,10 @@ public class UserWindowController implements Initializable {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            System.out.println("Exiting GUI");
             String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
             History.printToFile(streamOut, text);
-
             Main.setScene(TFScene.login);
+            Main.clearUserScreen();
         } else {
             alert.close();
         }

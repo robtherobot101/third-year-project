@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -46,7 +46,7 @@
                         <MenuItem fx:id="redoButton" disable="true" mnemonicParsing="false" onAction="#redo" text="Redo" />
                         <SeparatorMenuItem mnemonicParsing="false" />
 						<MenuItem mnemonicParsing="false" onAction="#updateAccountSettings" text="Account Settings" />
-                  <MenuItem mnemonicParsing="false" onAction="#logout" text="Log out" />
+                  <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" onAction="#logout" text="Log out" />
 						<SeparatorMenuItem mnemonicParsing="false" />
 						<MenuItem mnemonicParsing="false" onAction="#stop" text="Exit" />
 					</items>

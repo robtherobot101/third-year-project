@@ -596,7 +596,6 @@ public class Main extends Application {
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
 
             setScene(TFScene.login);
-            stage.setResizable(true);
             stage.show();
 
 
@@ -611,6 +610,16 @@ public class Main extends Application {
         }
     }
 
+    public static void clearUserScreen() {
+        try {
+            scenes.remove(TFScene.userWindow);
+            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(Main.class.getResource("/fxml/userWindow.fxml")), 900, 575));
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+        }
+    }
+
     public static Scene getScene(TFScene scene) {
         return scenes.get(scene);
     }
@@ -618,15 +627,18 @@ public class Main extends Application {
     public static void setScene(TFScene scene) {
         stage.setScene(scenes.get(scene));
         if (scene == TFScene.userWindow || scene == TFScene.clinician) {
-            stage.setResizable(true);
             stage.setMinWidth(650);
             stage.setMinHeight(550);
+            stage.setResizable(true);
         } else {
-            stage.setResizable(false);
             stage.setMinWidth(0);
             stage.setMinHeight(0);
+            if (scene == TFScene.login) {
+                stage.setScene(null);
+                stage.setScene(scenes.get(scene));
+            }
+            stage.setResizable(false);
         }
-
     }
 
     /**

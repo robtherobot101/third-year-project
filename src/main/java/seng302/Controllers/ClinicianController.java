@@ -154,11 +154,11 @@ public class ClinicianController implements Initializable {
         alert.setContentText("Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            System.out.println("Exiting GUI");
             for(Stage donorWindow: Main.getCliniciansDonorWindows()){
                 donorWindow.close();
             }
             Main.setScene(TFScene.login);
+            Main.clearUserScreen();
         } else {
             alert.close();
         }
