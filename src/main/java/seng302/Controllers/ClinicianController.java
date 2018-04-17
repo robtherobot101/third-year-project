@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -94,6 +95,9 @@ public class ClinicianController implements Initializable {
     @FXML
     private Button redoButton;
 
+    @FXML
+    private GridPane mainPane;
+
     private int resultsPerPage;
     private int page = 1;
     private ArrayList<Donor> donorsFound;
@@ -131,7 +135,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Refreshes the results in the donor profile table to match the values
-     * in the main ArrayList<Donor> in Main
+     * in the donor ArrayList in Main
      */
     public void updateDonorTable(){
         updatePageButtons();
@@ -166,7 +170,7 @@ public class ClinicianController implements Initializable {
      * Function which is called when the user wants to update their account settings in the user Window,
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
-    public void accountSettings() {
+    public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
@@ -195,6 +199,7 @@ public class ClinicianController implements Initializable {
             }
         }
     }
+
 
 
     /**
@@ -322,6 +327,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Splits the sorted list of found donors and returns a page worth
+     * @return The sorted page of results
      */
     public ObservableList<Donor> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
@@ -381,6 +387,14 @@ public class ClinicianController implements Initializable {
             previousPageButton.setDisable(false);
         }
     }
+
+    /**
+     * Sets the Donor Attributes pane as the visible pane
+     */
+    public void showMainPane() {
+        mainPane.setVisible(true);
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -444,6 +458,8 @@ public class ClinicianController implements Initializable {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         System.out.println(row.getItem());
                         Stage stage = new Stage();
+                        stage.setMinHeight(550);
+                        stage.setMinWidth(650);
 
                         Main.addCliniciansDonorWindow(stage);
                         stage.initModality(Modality.NONE);
@@ -455,6 +471,7 @@ public class ClinicianController implements Initializable {
                             Main.setCurrentDonor(row.getItem());
                             userWindowController.populateDonorFields();
                             userWindowController.populateHistoryTable();
+                            userWindowController.showWaitingListButton();
                             Main.medicationsViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);

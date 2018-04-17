@@ -1,19 +1,19 @@
 package seng302.GUI;
 
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runners.JUnit4;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Donor;
 import seng302.Core.Main;
+import seng302.Core.Medication;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.testfx.api.FxAssert.assertContext;
@@ -23,7 +23,7 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class MedicationsTest extends ApplicationTest {
 
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -39,7 +39,7 @@ public class MedicationsTest extends ApplicationTest {
             System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
-            System.setProperty("java.awt.headless", "true");
+            System.setProperty("headless.geometry", "1600x1200-32");
         }
         registerPrimaryStage();
     }
@@ -65,11 +65,11 @@ public class MedicationsTest extends ApplicationTest {
     /**
      * Method that can be called to path correctly to the stage to be tested.
      *
-     * TODO sort out why this crashes
-     *
      * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
      */
     private void enterMedicationPanel() {
+
+        Main.donors.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -82,9 +82,6 @@ public class MedicationsTest extends ApplicationTest {
         clickOn("#middleNamesInput").write("Dong");
         clickOn("#lastNameInput").write("Flame");
         clickOn("#dateOfBirthInput").write("4/8/1969");
-        press(KeyCode.TAB);
-        release(KeyCode.TAB);
-
 
         doubleClickOn("#createAccountButton");
 
@@ -92,26 +89,38 @@ public class MedicationsTest extends ApplicationTest {
         clickOn("#logoutButton");
         clickOn("OK");
 
-
         // Login as default clinician
         clickOn("#identificationInput");
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
 
-        TableView searchDonorTable = lookup("#profileTable").queryTableView();
-        Donor topResult = (Donor) searchDonorTable.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Bobby Flame"));
+
+        //Click on the Created User in clinician table and enter the medications panel.
+        doubleClickOn("Bobby Dong Flame");
+        clickOn("#medicationsButton");
 
     }
 
 
 
     /**
-     * Add a simple medication and verify it appears
+     * Add a simple medication and verify it is correct
      */
     @Test
-    public void testInputMedication(){
+    public void addMedicationForDonor(){
+
         enterMedicationPanel();
+
+        //Add a new medication for the donor.
+
+        clickOn("#newMedicationField").write("Asacol");
+        clickOn("#donorNameLabel");
+        clickOn("#addNewMedicationButton");
+
+        //Check if medication added is correct.
+        ListView currentMedicationList = lookup("#currentListView").queryListView();
+        Medication topResult = (Medication) currentMedicationList.getItems().get(0);
+        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
     }
 }

@@ -9,9 +9,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.Core.Donor;
+import seng302.Core.Gender;
 import seng302.Core.Main;
+import seng302.Core.Organ;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for simple Main.
@@ -54,6 +58,37 @@ public class MainTest {
         assertEquals(5, Main.donors.size());
         Main.importUsers("testsave", true);
         assertEquals("extra", Main.donors.get(5).getName());
+    }
+
+    @Test
+    public void testImportSaveIntegrity() {
+        Donor oldDonor = new Donor("extra", LocalDate.parse("01/01/1000", Donor.dateFormat));
+        oldDonor.setOrgan(Organ.CORNEA);
+        oldDonor.setWeight(100);
+        oldDonor.setGender(Gender.MALE);
+        Main.donors.add(oldDonor);
+        Main.saveUsers("testsave", true);
+        Main.donors.remove(5);
+        Main.importUsers("testsave", true);
+        assertEquals(Main.donors.get(5).toString(), oldDonor.toString());
+    }
+
+    @Test
+    public void testImportIOException(){
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(out));
+        Main.importUsers("", true);
+        String text = out.toString();
+        String expected = "IOException on : Check your inputs and permissions!\r\n";
+        assertEquals(text, expected);
+    }
+
+    /**
+     * The method in this test is made to return false if and only if an IO exception occurs.
+     */
+    @Test
+    public void testSaveIOException(){
+        assertFalse(Main.saveUsers("", true));
     }
 
     @Test
