@@ -4,6 +4,7 @@ import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -18,7 +19,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import seng302.Core.Donor;
 import seng302.Core.DrugInteraction;
 import seng302.Core.InteractionApi;
@@ -40,29 +43,14 @@ public class MedicationsController implements Initializable {
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
-    private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton;
+    private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
 
     private boolean movingItem = false;
     private Donor currentDonor;
     private ObservableList<Medication> historicItems, currentItems;
-
-
-    @FXML
-    private Label histDrugLabel;
-    @FXML
-    private Label currDrugLabel;
-    @FXML
-    private Label histDrugIngredients;
-    @FXML
-    private Label currDrugIngredients;
-
     private InteractionApi interactionApi = new InteractionApi();
-
-    @FXML
-    private ListView<String> interactionListView = new ListView<>();
-    private ObservableList<String> interactionItems = FXCollections.observableArrayList();
-    @FXML
-    private Button compareButton;
+    private String drugA = null, drugB = null;
+    private boolean retrievingInteractions = false;
 
     /**
      * Initializes the medications pane to show medications for a specified donor.
@@ -281,24 +269,10 @@ public class MedicationsController implements Initializable {
      * Acts on button push, selects whether the drug selected is in the historic medications pane or the current med pane.
      */
     public void updateComparison(){
-        String currentSelection;
-        String historicSelection;
-
-        if(currentListView.getSelectionModel().isEmpty()){
-            currentSelection = null;
-        }else{
-            currentSelection = currentListView.getSelectionModel().getSelectedItem().toString();
-        }
-
-        if(historyListView.getSelectionModel().isEmpty()){
-            historicSelection = null;
-        }else{
-            historicSelection = historyListView.getSelectionModel().getSelectedItem().toString();
-        }
-        if(currentSelection != null){
-            addToComparison(currentSelection);
-        }else if(historicSelection != null){
-            addToComparison(historicSelection);
+        if (!currentListView.getSelectionModel().isEmpty()){
+            addToComparison(currentListView.getSelectionModel().getSelectedItem().toString());
+        } else if (!historyListView.getSelectionModel().isEmpty()){
+            addToComparison(historyListView.getSelectionModel().getSelectedItem().toString());
         }
     }
 
@@ -306,41 +280,32 @@ public class MedicationsController implements Initializable {
      * Acts as a check whether the selected drug is being added to the comparison, or if the two selected drugs are being compared.
      * @param selection the drug selected in the medications pane.
      */
-    public void addToComparison(String selection){
-        String drugA = drugALabel.getText();
-        String drugB = drugBLabel.getText();
-        if(drugA.equals("Drug A")){
-            drugALabel.setText(selection);
-        }else if(drugB.equals("Drug B") && !drugA.equals(selection)){
-            drugBLabel.setText(selection);
-            final String drugAF = drugALabel.getText();
-            final String drugBF = drugBLabel.getText();
+    private void addToComparison(String selection){
+        if (drugA == null) {
+            drugA = selection;
+            interactionsTitleLabel.setText("Select a drug to compare " + drugA + " with and then click compare again");
+        } else if (drugB == null && !drugA.equals(selection)){
+            compareButton.setDisable(true);
+            retrievingInteractions = true;
+            drugB = selection;
+            interactionsTitleLabel.setText(String.format("Loading interactions between %s and %s...", drugA, drugB));
 
-            new Thread(() -> {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        compareButton.setDisable(true);
-                        HashSet<String> symptoms = makeComparison(drugAF, drugBF);
-                        interactionItems.clear();
-                        interactionItems.addAll(symptoms);
-                        if (interactionItems.isEmpty()) {
-                            interactionItems.add("No interactions found.");
-                        }
-                        FXCollections.reverse(interactionItems);
-                        for(String thing : interactionItems){
-                            System.out.println(thing);
-                        }
-                        interactionListView.setItems(interactionItems);
-                        compareButton.setDisable(false);
-                    }
-                });
-            }).start();
-
-
-        }else{
-            drugALabel.setText(selection);
-            drugBLabel.setText("Drug B");
+            new Thread(() -> Platform.runLater(() -> {
+                LinkedList<String> symptoms = makeComparison(drugA, drugB);
+                interactionsTitleLabel.setText(String.format("Interactions between %s and %s", drugA, drugB));
+                if (symptoms.isEmpty()) {
+                    interactionsContentLabel.setText("No interactions found.");
+                } else {
+                    interactionsContentLabel.setText(String.join("\n", symptoms));
+                }
+                compareButton.setDisable(false);
+                retrievingInteractions = false;
+            })).start();
+        } else {
+            drugA = selection;
+            interactionsTitleLabel.setText("Select a drug to compare " + drugA + " with and then click compare again");
+            interactionsContentLabel.setText("");
+            drugB = null;
         }
     }
 
@@ -352,8 +317,8 @@ public class MedicationsController implements Initializable {
      * @param drugB The second drug being compared.
      * @return A hashset of each condition and it's duration.
      */
-    public HashSet<String> makeComparison(String drugA, String drugB) {
-        HashSet<String> symptoms = new HashSet<>();
+    private LinkedList<String> makeComparison(String drugA, String drugB) {
+        LinkedList<String> symptoms = new LinkedList<>();
         DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
         // Check to see if the api call was successful
         if (!result.getError()) {
@@ -363,9 +328,12 @@ public class MedicationsController implements Initializable {
             System.out.println("gender symptoms: " + genderSymptoms);
             ageSymptoms.retainAll(genderSymptoms);
 
-            for(String symptom : ageSymptoms){
-                symptom += ": " + result.getDuration(symptom);
-                symptoms.add(symptom);
+            for (String symptom : ageSymptoms) {
+                if (result.getDuration(symptom).equals("not specified")) {
+                    symptoms.add("-" + symptom);
+                } else {
+                    symptoms.add("-" + symptom + ": " + result.getDuration(symptom));
+                }
             }
         } else {
             symptoms.add(result.getErrorMessage());
@@ -411,19 +379,22 @@ public class MedicationsController implements Initializable {
         moveToCurrentButton.setDisable(historySelectionIsNull);
         moveToHistoryButton.setDisable(currentSelectionIsNull);
         deleteMedicationButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
+        if (!retrievingInteractions) {
+            compareButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
+        }
         Medication selected;
         if (!historySelectionIsNull) {
             selected = historyListView.getSelectionModel().getSelectedItem();
             // Display the ingredients
-            activeIngredientsTitleLabel.setVisible(true);
+            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
             activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
         } else if (!currentSelectionIsNull) {
             selected = currentListView.getSelectionModel().getSelectedItem();
             // Display the ingredients
-            activeIngredientsTitleLabel.setVisible(true);
+            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
             activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
         } else {
-            activeIngredientsTitleLabel.setVisible(false);
+            activeIngredientsTitleLabel.setText("");
             activeIngredientsContentLabel.setText("");
         }
     }
@@ -463,12 +434,6 @@ public class MedicationsController implements Initializable {
                 checkSelectionNumber(false);
             }
             checkSelections();
-        });
-        historyListView.focusedProperty().addListener((observable, oldVal, newVal) -> {
-            if(newVal) currentListView.getSelectionModel().clearSelection();
-        });
-        currentListView.focusedProperty().addListener((observable, oldVal, newVal) -> {
-            if(newVal) historyListView.getSelectionModel().clearSelection();
         });
     }
 }

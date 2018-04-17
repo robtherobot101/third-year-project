@@ -445,6 +445,8 @@ public class ClinicianController implements Initializable {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         System.out.println(row.getItem());
                         Stage stage = new Stage();
+                        stage.setMinHeight(550);
+                        stage.setMinWidth(650);
 
                         Main.addCliniciansDonorWindow(stage);
                         stage.initModality(Modality.NONE);
