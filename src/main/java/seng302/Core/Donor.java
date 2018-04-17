@@ -43,6 +43,8 @@ public class Donor {
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
 
+    private ArrayList<WaitingListItem> waitingListItems;
+
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
         this.dateOfBirth = dateOfBirth;
@@ -57,6 +59,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -74,6 +77,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -100,6 +104,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -126,6 +131,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
     }
 
     /**
@@ -152,6 +158,7 @@ public class Donor {
         this.historicMedications = new ArrayList<>();
         this.currentMedications.addAll(donor.currentMedications);
         this.historicMedications.addAll(donor.historicMedications);
+        this.waitingListItems = new ArrayList<>();
     }
 
     public void copyFieldsFrom(Donor donor) {
@@ -176,6 +183,7 @@ public class Donor {
         currentMedications.addAll(donor.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(donor.getHistoricMedications());
+        waitingListItems.addAll(waitingListItems);
     }
 
     public boolean fieldsEqual(Donor donor) {
@@ -267,6 +275,10 @@ public class Donor {
     public LocalDate getDateOfBirth() { return dateOfBirth; }
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
+
+    public ArrayList<WaitingListItem> getWaitingListItems(){
+        return waitingListItems;
+    }
 
     public String getAgeString() {
         long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
