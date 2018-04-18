@@ -12,7 +12,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
 import seng302.Files.History;
@@ -49,16 +49,16 @@ public class CreateAccountController implements Initializable {
     }
 
     /**
-     * Attempts to create a new donor account based on the information currently provided by the user. Provides appropriate feedback if this fails.
+     * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
      */
     public void createAccount() {
-        for (Donor donor: Main.donors) {
-            if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(donor.getUsername())) {
+        for (User user: Main.users) {
+            if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(user.getUsername())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return;
-            } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(donor.getEmail())) {
-                errorText.setText("There is already a donor account with that email.");
+            } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(user.getEmail())) {
+                errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return;
             }
@@ -74,13 +74,13 @@ public class CreateAccountController implements Initializable {
             String username = usernameInput.getText().isEmpty() ? null : usernameInput.getText();
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
-            Donor newDonor = new Donor(firstNameInput.getText(), middleNames, lastNameInput.getText(),
+            User newUser = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
-            Main.donors.add(newDonor);
-            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newDonor.getId(), "create"));
-            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newDonor.getId(), "login"));
-            Main.setCurrentDonor(newDonor);
-            Main.saveUsers(Main.getDonorPath(), true);
+            Main.users.add(newUser);
+            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newUser.getId(), "create"));
+            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newUser.getId(), "login"));
+            Main.setCurrentUser(newUser);
+            Main.saveUsers(Main.getUserPath(), true);
             Main.setScene(TFScene.userWindow);
         }
     }

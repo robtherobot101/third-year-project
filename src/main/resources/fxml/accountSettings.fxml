@@ -36,6 +36,6 @@
       </Label>
       <Label alignment="CENTER" layoutY="298.0" prefHeight="17.0" prefWidth="252.0" text="Note: Any changes made are permanent" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Label alignment="CENTER" layoutX="46.0" layoutY="37.0" prefHeight="17.0" prefWidth="179.0" text="Viewing account settings for " AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <Label fx:id="donorNameLabel" alignment="CENTER" layoutX="102.0" layoutY="54.0" prefHeight="17.0" prefWidth="144.0" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Label fx:id="userNameLabel" alignment="CENTER" layoutX="102.0" layoutY="54.0" prefHeight="17.0" prefWidth="144.0" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
    </children>
 </AnchorPane>

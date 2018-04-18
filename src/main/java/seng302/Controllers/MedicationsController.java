@@ -23,50 +23,50 @@ public class MedicationsController implements Initializable {
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label donorNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel;
+    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel;
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
     private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
 
     private boolean movingItem = false;
-    private Donor currentDonor;
+    private User currentUser;
     private ObservableList<Medication> historicItems, currentItems;
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
 
     /**
-     * Initializes the medications pane to show medications for a specified donor.
+     * Initializes the medications pane to show medications for a specified user.
      *
-     * @param currentDonor The donor to initialize the medications pane with
+     * @param currentUser The user to initialize the medications pane with
      */
-    public void initializeDonor(Donor currentDonor) {
-        this.currentDonor = currentDonor;
-        donorNameLabel.setText("Donor: " + currentDonor.getName());
+    public void initializeUser(User currentUser) {
+        this.currentUser = currentUser;
+        userNameLabel.setText("User: " + currentUser.getName());
         addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());
 
         //Populate table for current medications
         currentItems = FXCollections.observableArrayList();
-        currentItems.addAll(currentDonor.getCurrentMedications());
+        currentItems.addAll(currentUser.getCurrentMedications());
         currentListView.setItems(currentItems);
 
         //Populate table for historic medications
         historicItems = FXCollections.observableArrayList();
-        historicItems.addAll(currentDonor.getHistoricMedications());
+        historicItems.addAll(currentUser.getHistoricMedications());
         historyListView.setItems(historicItems);
 
         checkSelections();
     }
 
     /**
-     * Update the displayed donor medications to what is currently stored in the donor object.
+     * Update the displayed user medications to what is currently stored in the user object.
      */
     public void updateMedications() {
         currentItems.clear();
-        currentItems.addAll(currentDonor.getCurrentMedications());
+        currentItems.addAll(currentUser.getCurrentMedications());
         historicItems.clear();
-        historicItems.addAll(currentDonor.getHistoricMedications());
+        historicItems.addAll(currentUser.getHistoricMedications());
         checkSelections();
     }
 
@@ -75,10 +75,10 @@ public class MedicationsController implements Initializable {
      */
     private void saveToUndoStack() {
         Main.addCurrentToMedicationUndoStack();
-        currentDonor.getCurrentMedications().clear();
-        currentDonor.getCurrentMedications().addAll(currentItems);
-        currentDonor.getHistoricMedications().clear();
-        currentDonor.getHistoricMedications().addAll(historicItems);
+        currentUser.getCurrentMedications().clear();
+        currentUser.getCurrentMedications().addAll(currentItems);
+        currentUser.getHistoricMedications().clear();
+        currentUser.getHistoricMedications().addAll(historicItems);
     }
 
     /**
@@ -102,7 +102,7 @@ public class MedicationsController implements Initializable {
 
     /**
      * Function to handle when the user wants to add a new medication to the current medications list.
-     * Adds the medication to the donor's personal list and then updates the listview.
+     * Adds the medication to the user's personal list and then updates the listview.
      */
     public void addNewMedication() {
         // This step is for getting the text from the text field.
@@ -128,7 +128,7 @@ public class MedicationsController implements Initializable {
             if (duplicate) {
                 Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to this person.").show();
             } else {
-                // This step is for adding a new medication to the copy of the donor's medication list (which will then be saved later)
+                // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
                 if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
@@ -150,7 +150,7 @@ public class MedicationsController implements Initializable {
 
     /**
      * Function to handle when the user wants to delete a medication from either listview.
-     * Removes the medication from the donor's personal list and then updates the respective listview.
+     * Removes the medication from the user's personal list and then updates the respective listview.
      */
     public void deleteSelectedMedication() {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
@@ -164,7 +164,7 @@ public class MedicationsController implements Initializable {
             }
 
             //TODO create update for medications for history when deleting
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
 //            History.printToFile(streamOut, text);
             //populateHistoryTable();
         }
@@ -227,22 +227,22 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Saves the current state of the donor's medications lists for both their historic and current medications.
+     * Saves the current state of the user's medications lists for both their historic and current medications.
      */
     public void save() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current donor? ");
-        alert.setContentText("By doing so, the donor will be updated with the following medication details.");
+        alert.setHeaderText("Are you sure would like to update the current user? ");
+        alert.setContentText("By doing so, the user will be updated with the following medication details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            currentDonor.getHistoricMedications().clear();
-            currentDonor.getHistoricMedications().addAll(historicItems);
-            currentDonor.getCurrentMedications().clear();
-            currentDonor.getCurrentMedications().addAll(currentItems);
-            Main.saveUsers(Main.getDonorPath(), true);
+            currentUser.getHistoricMedications().clear();
+            currentUser.getHistoricMedications().addAll(historicItems);
+            currentUser.getCurrentMedications().clear();
+            currentUser.getCurrentMedications().addAll(currentItems);
+            Main.saveUsers(Main.getUserPath(), true);
             //TODO create update for medications for history
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
 //            History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
@@ -297,7 +297,7 @@ public class MedicationsController implements Initializable {
 
     /**
      * Accesses the ehealth api with the two given drugs.
-     * Finds all conditions based on donors age and gender, and then finds the duration of each.
+     * Finds all conditions based on users age and gender, and then finds the duration of each.
      * It modifies the string to add on the duration to the end eg "Nausea: 2-5 years"
      * @param drugA The first drug being compared.
      * @param drugB The second drug being compared.
@@ -308,9 +308,9 @@ public class MedicationsController implements Initializable {
         DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
         // Check to see if the api call was successful
         if (!result.getError()) {
-            HashSet<String> ageSymptoms = result.ageInteraction(currentDonor.getAgeDouble());
+            HashSet<String> ageSymptoms = result.ageInteraction(currentUser.getAgeDouble());
             System.out.println("age symptoms: "+ ageSymptoms);
-            HashSet<String> genderSymptoms = result.genderInteraction(currentDonor.getGender());
+            HashSet<String> genderSymptoms = result.genderInteraction(currentUser.getGender());
             System.out.println("gender symptoms: " + genderSymptoms);
             ageSymptoms.retainAll(genderSymptoms);
 

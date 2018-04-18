@@ -11,7 +11,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
 import seng302.Core.Medication;
 
@@ -69,7 +69,7 @@ public class MedicationsTest extends ApplicationTest {
      */
     private void enterMedicationPanel() {
 
-        Main.donors.clear();
+        Main.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -108,14 +108,14 @@ public class MedicationsTest extends ApplicationTest {
      * Add a simple medication and verify it is correct
      */
     @Test
-    public void addMedicationForDonor(){
+    public void addMedicationForUser(){
 
         enterMedicationPanel();
 
-        //Add a new medication for the donor.
+        //Add a new medication for the user.
 
         clickOn("#newMedicationField").write("Asacol");
-        clickOn("#donorNameLabel");
+        clickOn("#userNameLabel");
         clickOn("#addNewMedicationButton");
 
         //Check if medication added is correct.

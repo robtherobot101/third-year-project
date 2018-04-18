@@ -63,27 +63,27 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<Donor> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
-    private Donor currentDonor;
+    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
+    private User currentUser;
     @FXML
     private Button waitingListButton;
 
 
-    public ArrayList<Donor> getDonorUndoStack() {
+    public ArrayList<User> getUserUndoStack() {
         return attributeUndoStack;
     }
 
-    public ArrayList<Donor> getDonorRedoStack() {
+    public ArrayList<User> getUserRedoStack() {
         return attributeRedoStack;
     }
 
-    public Donor getCurrentDonor() {
-        return currentDonor;
+    public User getCurrentUser() {
+        return currentUser;
     }
 
-    public void setCurrentDonor(Donor currentDonor) {
-        this.currentDonor = currentDonor;
-        userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         attributeUndoStack.clear();
         attributeRedoStack.clear();
         undoButton.setDisable(true);
@@ -94,12 +94,12 @@ public class UserWindowController implements Initializable {
     }
 
     /**
-     * Adds a donor object to the donor undo stack. This is called whenever a user saves any changes in the GUI.
+     * Adds a user object to the user undo stack. This is called whenever a user saves any changes in the GUI.
      *
-     * @param donor donor object being added to the top of the stack.
+     * @param user user object being added to the top of the stack.
      */
-    public void addDonorToUndoStack(Donor donor) {
-        attributeUndoStack.add(new Donor(donor));
+    public void addUserToUndoStack(User user) {
+        attributeUndoStack.add(new User(user));
     }
 
     /**
@@ -132,7 +132,7 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.medicationsViewForDonor();
+        Main.medicationsViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -189,19 +189,19 @@ public class UserWindowController implements Initializable {
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
     public void attributeFieldUnfocused() {
-        Donor oldFields = new Donor(currentDonor);
-        if (updateDonor() && !currentDonor.fieldsEqual(oldFields)) {
-            addDonorToUndoStack(oldFields);
+        User oldFields = new User(currentUser);
+        if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
+            addUserToUndoStack(oldFields);
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
         }
     }
 
     /**
-     * Add the current donor object to the medications undo stack.
+     * Add the current user object to the medications undo stack.
      */
     public void addCurrentToMedicationUndoStack() {
-        medicationUndoStack.add(new Donor(currentDonor));
+        medicationUndoStack.add(new User(currentUser));
         medicationRedoStack.clear();
         setUndoRedoButtonsDisabled(false, true);
     }
@@ -259,7 +259,7 @@ public class UserWindowController implements Initializable {
     }
 
     /**
-     * Sets the Donor Attributes pane as the visible pane
+     * Sets the User Attributes pane as the visible pane
      */
     public void showAttributesPane() {
         welcomePane.setVisible(false);
@@ -288,8 +288,8 @@ public class UserWindowController implements Initializable {
      * Sorts these into tree nodes based on new sessions.
      */
     public void populateHistoryTable() {
-        userHistoryLabel.setText("History of actions for " + currentDonor.getName());
-        String[][] userHistory = History.getUserHistory(currentDonor.getId());
+        userHistoryLabel.setText("History of actions for " + currentUser.getName());
+        String[][] userHistory = History.getUserHistory(currentUser.getId());
 
         ArrayList<TreeItem<String>> treeItems = new ArrayList<>();
         TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0, userHistory[0][0].length() - 1));
@@ -332,7 +332,7 @@ public class UserWindowController implements Initializable {
                 new ReadOnlyStringWrapper(p.getValue().getValue()));
 
         actionColumn.setCellValueFactory(param -> {
-            String userName = currentDonor.getName(), toCheck = param.getValue().getValue().substring(0, 12);
+            String userName = currentUser.getName(), toCheck = param.getValue().getValue().substring(0, 12);
             if (toCheck.equals("Update Account")) {
                 return new ReadOnlyStringWrapper("Updated account settings for user " + userName);
             }
@@ -362,12 +362,12 @@ public class UserWindowController implements Initializable {
     }
 
     /**
-     * Function which takes the current donor object that has logged in and
-     * takes all their attributes and populates the donor attributes on the attributes pane accordingly.
+     * Function which takes the current user object that has logged in and
+     * takes all their attributes and populates the user attributes on the attributes pane accordingly.
      */
-    public void populateDonorFields() {
-        settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
-        String[] splitNames = currentDonor.getNameArray();
+    public void populateUserFields() {
+        settingAttributesLabel.setText("Attributes for " + currentUser.getName());
+        String[] splitNames = currentUser.getNameArray();
         firstNameField.setText(splitNames[0]);
         if (splitNames.length > 2) {
             String[] middleName = new String[splitNames.length - 2];
@@ -381,26 +381,26 @@ public class UserWindowController implements Initializable {
             middleNameField.setText("");
             lastNameField.setText("");
         }
-        addressField.setText(currentDonor.getCurrentAddress());
-        regionField.setText(currentDonor.getRegion());
+        addressField.setText(currentUser.getCurrentAddress());
+        regionField.setText(currentUser.getRegion());
 
-        dateOfBirthPicker.setValue(currentDonor.getDateOfBirth());
-        dateOfDeathPicker.setValue(currentDonor.getDateOfDeath());
+        dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
+        dateOfDeathPicker.setValue(currentUser.getDateOfDeath());
         updateAge();
 
-        bloodPressureTextField.setText(currentDonor.getBloodPressure());
+        bloodPressureTextField.setText(currentUser.getBloodPressure());
 
-        genderComboBox.setValue(currentDonor.getGender());
-        bloodTypeComboBox.setValue(currentDonor.getBloodType());
-        smokerStatusComboBox.setValue(currentDonor.getSmokerStatus());
-        alcoholConsumptionComboBox.setValue(currentDonor.getAlcoholConsumption());
+        genderComboBox.setValue(currentUser.getGender());
+        bloodTypeComboBox.setValue(currentUser.getBloodType());
+        smokerStatusComboBox.setValue(currentUser.getSmokerStatus());
+        alcoholConsumptionComboBox.setValue(currentUser.getAlcoholConsumption());
 
         for (Organ key: organTickBoxes.keySet()) {
-            organTickBoxes.get(key).setSelected(currentDonor.getOrgans().contains(key));
+            organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));
         }
 
-        weightField.setText(currentDonor.getWeight() == -1 ? "" : Double.toString(currentDonor.getWeight()));
-        heightField.setText(currentDonor.getHeight() == -1 ? "" : Double.toString(currentDonor.getHeight()));
+        weightField.setText(currentUser.getWeight() == -1 ? "" : Double.toString(currentUser.getWeight()));
+        heightField.setText(currentUser.getHeight() == -1 ? "" : Double.toString(currentUser.getHeight()));
 
         updateBMI();
         updateBloodPressure();
@@ -410,9 +410,9 @@ public class UserWindowController implements Initializable {
      * Function which takes all the inputs of the user attributes window.
      * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
      */
-    private boolean updateDonor() {
-        Main.getClinicianController().updateDonorTable();
-        //Extract names from donor
+    private boolean updateUser() {
+        Main.getClinicianController().updateUserTable();
+        //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
         String lastName = lastNameField.getText();
@@ -425,29 +425,29 @@ public class UserWindowController implements Initializable {
             name[name.length - 1] = lastName;
         }
 
-        double donorHeight = -1;
+        double userHeight = -1;
         if (!heightField.getText().equals("")) {
             try {
-                donorHeight = Double.parseDouble(heightField.getText());
-                currentDonor.setHeight(donorHeight);
+                userHeight = Double.parseDouble(heightField.getText());
+                currentUser.setHeight(userHeight);
             } catch (NumberFormatException e) {
                 Main.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
                 return false;
             }
         }
 
-        double donorWeight = -1;
+        double userWeight = -1;
         if (!weightField.getText().equals("")) {
             try {
-                donorWeight = Double.parseDouble(weightField.getText());
-                currentDonor.setWeight(donorWeight);
+                userWeight = Double.parseDouble(weightField.getText());
+                currentUser.setWeight(userWeight);
             } catch (NumberFormatException e) {
                 Main.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
                 return false;
             }
         }
 
-        String donorBloodPressure = "";
+        String userBloodPressure = "";
         String bloodPressure = bloodPressureTextField.getText();
         if (bloodPressure != null && !bloodPressure.equals("")) {
             String[] bloodPressureList = bloodPressureTextField.getText().split("/");
@@ -463,7 +463,7 @@ public class UserWindowController implements Initializable {
                         return false;
                     }
                 }
-                donorBloodPressure = bloodPressureTextField.getText();
+                userBloodPressure = bloodPressureTextField.getText();
             }
         }
 
@@ -480,48 +480,48 @@ public class UserWindowController implements Initializable {
         }
 
         //Commit changes
-        currentDonor.setNameArray(name);
-        currentDonor.setHeight(donorHeight);
-        currentDonor.setWeight(donorWeight);
-        currentDonor.setBloodPressure(donorBloodPressure);
-        currentDonor.setDateOfBirth(dateOfBirthPicker.getValue());
-        currentDonor.setDateOfDeath(dateOfDeathPicker.getValue());
-        currentDonor.setGender(genderComboBox.getValue());
-        currentDonor.setBloodType(bloodTypeComboBox.getValue());
-        currentDonor.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
-        currentDonor.setSmokerStatus(smokerStatusComboBox.getValue());
-        currentDonor.setRegion(regionField.getText());
-        currentDonor.setCurrentAddress(addressField.getText());
+        currentUser.setNameArray(name);
+        currentUser.setHeight(userHeight);
+        currentUser.setWeight(userWeight);
+        currentUser.setBloodPressure(userBloodPressure);
+        currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
+        currentUser.setDateOfDeath(dateOfDeathPicker.getValue());
+        currentUser.setGender(genderComboBox.getValue());
+        currentUser.setBloodType(bloodTypeComboBox.getValue());
+        currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
+        currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
+        currentUser.setRegion(regionField.getText());
+        currentUser.setCurrentAddress(addressField.getText());
         for (Organ key: organTickBoxes.keySet()) {
-            if (currentDonor.getOrgans().contains(key)) {
+            if (currentUser.getOrgans().contains(key)) {
                 if (!organTickBoxes.get(key).isSelected()) {
-                    currentDonor.getOrgans().remove(key);
+                    currentUser.getOrgans().remove(key);
                 }
             } else {
                 if (organTickBoxes.get(key).isSelected()) {
-                    currentDonor.getOrgans().add(key);
+                    currentUser.getOrgans().add(key);
                 }
             }
         }
-        settingAttributesLabel.setText("Attributes for " + currentDonor.getName());
-        userDisplayText.setText("Currently logged in as: " + currentDonor.getName());
-        System.out.println(currentDonor.toString());
+        settingAttributesLabel.setText("Attributes for " + currentUser.getName());
+        userDisplayText.setText("Currently logged in as: " + currentUser.getName());
+        System.out.println(currentUser.toString());
         return true;
     }
 
     /**
      * Saves the current state of the GUI.
-     * Gets all the inputs for the user attributes and sets the user attributes to those by calling the update donor function.
-     * Then calls the populate donor function to repopulate the donor fields.
+     * Gets all the inputs for the user attributes and sets the user attributes to those by calling the update user function.
+     * Then calls the populate user function to repopulate the user fields.
      */
     public void save() {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
-            "Are you sure would like to update the current donor? ", "By doing so, the donor will be updated with all filled in fields.");
+            "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK && updateDonor()) {
-            Main.saveUsers(Main.getDonorPath(), true);
-            populateDonorFields();
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+        if (result.get() == ButtonType.OK && updateUser()) {
+            Main.saveUsers(Main.getUserPath(), true);
+            populateUserFields();
+            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
             populateHistoryTable();
         }
@@ -536,22 +536,22 @@ public class UserWindowController implements Initializable {
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the redo stack
-            attributeRedoStack.add(new Donor(currentDonor));
+            attributeRedoStack.add(new User(currentUser));
             //Copy the attribute information from the top element of the undo stack
-            currentDonor.copyFieldsFrom(attributeUndoStack.get(attributeUndoStack.size() - 1));
+            currentUser.copyFieldsFrom(attributeUndoStack.get(attributeUndoStack.size() - 1));
             //Remove the top element of the undo stack
             attributeUndoStack.remove(attributeUndoStack.size() - 1);
-            populateDonorFields();
+            populateUserFields();
 
             setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), false);
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "undo");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "undo");
             History.printToFile(streamOut, text);
             populateHistoryTable();
         } else if (medicationsPane.isVisible()) {
             //Add the current medication lists to the redo stack
-            medicationRedoStack.add(new Donor(currentDonor));
+            medicationRedoStack.add(new User(currentUser));
             //Copy the medication lists from the top element of the undo stack
-            currentDonor.copyMedicationListsFrom(medicationUndoStack.get(medicationUndoStack.size() - 1));
+            currentUser.copyMedicationListsFrom(medicationUndoStack.get(medicationUndoStack.size() - 1));
             //Remove the top element of the undo stack
             medicationUndoStack.remove(medicationUndoStack.size() - 1);
 
@@ -568,22 +568,22 @@ public class UserWindowController implements Initializable {
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the undo stack
-            addDonorToUndoStack(currentDonor);
+            addUserToUndoStack(currentUser);
             //Copy the attribute information from the top element of the redo stack
-            currentDonor.copyFieldsFrom(attributeRedoStack.get(attributeRedoStack.size() - 1));
+            currentUser.copyFieldsFrom(attributeRedoStack.get(attributeRedoStack.size() - 1));
             //Remove the top element of the redo stack
             attributeRedoStack.remove(attributeRedoStack.size() - 1);
-            populateDonorFields();
+            populateUserFields();
 
             setUndoRedoButtonsDisabled(false, attributeRedoStack.isEmpty());
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "redo");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "redo");
             History.printToFile(streamOut, text);
             populateHistoryTable();
         } else if (medicationsPane.isVisible()) {
             //Add the current medication lists to the undo stack
-            medicationUndoStack.add(new Donor(currentDonor));
+            medicationUndoStack.add(new User(currentUser));
             //Copy the medications lists from the top element of the redo stack
-            currentDonor.copyMedicationListsFrom(medicationRedoStack.get(medicationRedoStack.size() - 1));
+            currentUser.copyMedicationListsFrom(medicationRedoStack.get(medicationRedoStack.size() - 1));
             //Remove the top element of the redo stack
             medicationRedoStack.remove(medicationRedoStack.size() - 1);
 
@@ -669,7 +669,7 @@ public class UserWindowController implements Initializable {
 
         Optional<String> password = dialog.showAndWait();
         if(password.isPresent()){ //Ok was pressed, Else cancel
-            if(password.get().equals(currentDonor.getPassword())){
+            if(password.get().equals(currentUser.getPassword())){
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
                     Stage stage = new Stage();
@@ -677,7 +677,7 @@ public class UserWindowController implements Initializable {
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 270, 330));
                     stage.initModality(Modality.APPLICATION_MODAL);
-                    Main.setCurrentDonorForAccountSettings(currentDonor);
+                    Main.setCurrentUserForAccountSettings(currentUser);
                     Main.setAccountSettingsEnterEvent();
                     stage.showAndWait();
                 } catch (Exception e) {
@@ -691,7 +691,7 @@ public class UserWindowController implements Initializable {
     }
 
     /**
-     * Disable the logout button if this donor window is the child of a clinician window.
+     * Disable the logout button if this user window is the child of a clinician window.
      */
     public void setAsChildWindow() {
         logoutMenuItem.setDisable(true);
@@ -705,7 +705,7 @@ public class UserWindowController implements Initializable {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "quit");
             History.printToFile(streamOut, text);
             Main.setScene(TFScene.login);
             Main.clearUserScreen();
@@ -723,7 +723,7 @@ public class UserWindowController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Exiting GUI");
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "quit");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "quit");
             History.printToFile(streamOut, text);
 
             Stage stage = (Stage) welcomePane.getScene().getWindow();

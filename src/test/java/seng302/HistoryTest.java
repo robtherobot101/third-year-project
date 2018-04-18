@@ -34,7 +34,7 @@ public class HistoryTest {
     public void prepareFileStringTest() {
         String[] testCommand = new String[]{"list"};
         String result = History.prepareFileStringCLI(testCommand);
-        assertEquals(result.substring(25), "list null null null [Listed all donors.]");
+        assertEquals(result.substring(25), "list null null null [Listed all users.]");
     }
 
     @After

@@ -36,7 +36,7 @@ public class ClinicianAccountSettingsController implements Initializable {
 
 
     /**
-     * Populates the account details inputs based on the current donor's attributes.
+     * Populates the account details inputs based on the current user's attributes.
      */
     public void populateAccountDetails() {
         System.out.println(currentClinician);

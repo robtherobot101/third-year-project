@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Gender;
 import seng302.Core.Main;
 
@@ -29,7 +29,7 @@ public class CreateReceiverGUITest extends ApplicationTest {
 
     private Main mainGUI;
     private static final boolean runHeadless = false;
-    Donor donor = new Donor("test,user", LocalDate.of(1983,7,4));
+    User user = new User("test,user", LocalDate.of(1983,7,4));
 
 
     @BeforeClass
@@ -47,7 +47,7 @@ public class CreateReceiverGUITest extends ApplicationTest {
 
     @Before
     public void setUp () throws Exception {
-        mainGUI.donors.add(donor);
+        mainGUI.users.add(user);
     }
 
     @After
@@ -55,7 +55,7 @@ public class CreateReceiverGUITest extends ApplicationTest {
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
-        mainGUI.donors.remove(donor);
+        mainGUI.users.remove(user);
     }
 
     @Override

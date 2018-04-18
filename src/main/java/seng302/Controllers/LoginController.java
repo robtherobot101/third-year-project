@@ -12,7 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.Core.Clinician;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
 import seng302.Files.History;
@@ -39,15 +39,15 @@ public class LoginController implements Initializable {
     public void login() {
         boolean identificationMatched = false;
 
-        //Check for a donor match
-        Donor currentDonor = null;
-        for (Donor donor: Main.donors) {
-            if (donor.getUsername() != null && donor.getUsername().equals(identificationInput.getText()) ||
-                donor.getEmail() != null && donor.getEmail().equals(identificationInput.getText())) {
+        //Check for a user match
+        User currentUser = null;
+        for (User user: Main.users) {
+            if (user.getUsername() != null && user.getUsername().equals(identificationInput.getText()) ||
+                user.getEmail() != null && user.getEmail().equals(identificationInput.getText())) {
                 identificationMatched = true;
-                if (donor.getPassword().equals(passwordInput.getText())) {
-                    currentDonor = donor;
-                    String text = History.prepareFileStringGUI(donor.getId(), "login");
+                if (user.getPassword().equals(passwordInput.getText())) {
+                    currentUser = user;
+                    String text = History.prepareFileStringGUI(user.getId(), "login");
                     History.printToFile(Main.streamOut, text);
                 }
             }
@@ -65,14 +65,14 @@ public class LoginController implements Initializable {
         }
 
         if (identificationMatched) {
-            if (currentDonor != null || currentClinician != null) {
+            if (currentUser != null || currentClinician != null) {
                 //Reset scene to original state
                 identificationInput.setText("");
                 passwordInput.setText("");
                 loginButton.setDisable(true);
                 errorMessage.setVisible(false);
-                if (currentDonor != null) {
-                    Main.setCurrentDonor(currentDonor);
+                if (currentUser != null) {
+                    Main.setCurrentUser(currentUser);
                     Main.setScene(TFScene.userWindow);
 
                 } else {

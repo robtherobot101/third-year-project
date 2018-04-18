@@ -57,7 +57,7 @@ public class LoginGUITest extends ApplicationTest {
     }
 
     /**
-     * Simple proof of concept test of inputting a valid donor for testing TestFX
+     * Simple proof of concept test of inputting a valid user for testing TestFX
      */
     @Test
     public void createValidUser(){

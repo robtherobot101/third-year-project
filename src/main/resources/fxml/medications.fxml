@@ -159,7 +159,7 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <Label fx:id="donorNameLabel" text="Donor: " GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label fx:id="userNameLabel" text="User: " GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="33.0" />
          </GridPane.margin>

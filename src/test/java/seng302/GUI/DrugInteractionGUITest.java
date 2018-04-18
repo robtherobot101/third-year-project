@@ -13,7 +13,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.ListViewMatchers;
 import org.testfx.matcher.control.TableViewMatchers;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Gender;
 import seng302.Core.Main;
 
@@ -37,7 +37,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     private Main mainGUI;
     private static final boolean runHeadless = true;
-    Donor donor = new Donor("test,user", LocalDate.of(1983,7,4));
+    User user = new User("test,user", LocalDate.of(1983,7,4));
 
     @BeforeClass
     public static void setupSpec() throws Exception {
@@ -54,14 +54,14 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     @Before
     public void setUp () throws Exception {
-        donor.setGender(Gender.FEMALE);
-        mainGUI.donors.add(donor);
+        user.setGender(Gender.FEMALE);
+        mainGUI.users.add(user);
         navigateToMedicationsPane();
     }
 
     @After
     public void tearDown () throws Exception {
-        mainGUI.donors.remove(donor);
+        mainGUI.users.remove(user);
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -104,6 +104,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
         Node row = from(lookup("#profileTable")).lookup("test user").query();
         doubleClickOn(row);
         clickOn("#medicationsButton");
+        sleep(1000);
     }
 
     @Test
