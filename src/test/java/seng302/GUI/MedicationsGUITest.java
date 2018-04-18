@@ -23,7 +23,7 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class MedicationsGUITest extends ApplicationTest {
 
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -140,6 +140,7 @@ public class MedicationsGUITest extends ApplicationTest {
 
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("TESTER");
+        clickOn("OK");
 
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
@@ -219,7 +220,7 @@ public class MedicationsGUITest extends ApplicationTest {
         clickOn("#saveMedicationButton");
         clickOn("OK");
         clickOn("Exit");
-        clickOn("OK");
+        //clickOn("OK");
 
         //Check if medication added is correct in the Medication Array List of the Donor.
         TableView donorList = lookup("#profileTable").queryTableView();
@@ -233,7 +234,6 @@ public class MedicationsGUITest extends ApplicationTest {
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topMedication = (Medication) currentMedicationList.getItems().get(0);
         org.junit.Assert.assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
-
 
     }
 
