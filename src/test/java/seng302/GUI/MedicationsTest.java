@@ -23,7 +23,7 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class MedicationsTest extends ApplicationTest {
 
-    private static final boolean runHeadless = true;
+    private static final boolean runHeadless = false;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
