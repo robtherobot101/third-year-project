@@ -49,6 +49,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.diseases = new ArrayList<>();
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -66,6 +67,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.diseases = new ArrayList<>();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -119,6 +121,7 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.diseases = new ArrayList<>();
     }
 
     /**
@@ -145,6 +148,8 @@ public class Donor {
         this.historicMedications = new ArrayList<>();
         this.currentMedications.addAll(donor.currentMedications);
         this.historicMedications.addAll(donor.historicMedications);
+        this.diseases = new ArrayList<>();
+        this.diseases.addAll(donor.diseases);
     }
 
     public void copyFieldsFrom(Donor donor) {
@@ -166,6 +171,8 @@ public class Donor {
         currentMedications.addAll(donor.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(donor.getHistoricMedications());
+        diseases.clear();
+        diseases.addAll(donor.diseases);
     }
 
     public boolean fieldsEqual(Donor donor) {
@@ -183,7 +190,8 @@ public class Donor {
                 alcoholConsumption == donor.getAlcoholConsumption() &&
                 organs.equals(donor.getOrgans()) &&
                 currentMedications.equals(donor.getCurrentMedications()) &&
-                historicMedications.equals(donor.getHistoricMedications())
+                historicMedications.equals(donor.getHistoricMedications()) &&
+                diseases.equals(donor.getDiseases())
         );
     }
 

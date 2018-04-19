@@ -136,6 +136,20 @@ public class Main extends Application {
         medicationsController.setControlsShown(true);
     }
 
+    /**
+     * Sets the medical history view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryViewForDonor() {
+        medicalHistoryController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryViewForClinician() {
+        medicalHistoryController.setControlsShown(true);
+    }
+
     public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
         accountSettingsController.setCurrentDonor(currentDonor);
         accountSettingsController.populateAccountDetails();

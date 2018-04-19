@@ -177,6 +177,7 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
         Main.medicationsViewForDonor();
+        Main.medicalHistoryViewForDonor();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,

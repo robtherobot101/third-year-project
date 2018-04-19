@@ -459,6 +459,7 @@ public class ClinicianController implements Initializable {
                             userWindowController.populateDonorFields();
                             userWindowController.populateHistoryTable();
                             Main.medicationsViewForClinician();
+                            Main.medicalHistoryViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
