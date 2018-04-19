@@ -12,6 +12,16 @@ public class WaitingListItem {
         this.organRegisteredDate = LocalDate.now();
     }
 
+    public void registerOrgan(){
+        this.organRegisteredDate = LocalDate.now();
+        this.organDeregisteredDate = null;
+    }
+
+    public void deregisterOrgan(){
+        this.organDeregisteredDate = LocalDate.now();
+        this.organRegisteredDate = null;
+    }
+
     public Organ getOrganType() {
         return organType;
     }

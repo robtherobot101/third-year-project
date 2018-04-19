@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.property.adapter.JavaBeanStringProperty;
 import javafx.scene.control.TextField;
 
+import java.lang.reflect.Array;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -278,6 +279,14 @@ public class User {
 
     public ArrayList<WaitingListItem> getWaitingListItems(){
         return waitingListItems;
+    }
+
+    public ArrayList<Organ> getWaitingListOrgans(){
+        ArrayList<Organ> items = new ArrayList<>();
+        for (WaitingListItem item : waitingListItems){
+            items.add(item.getOrganType());
+        }
+        return items;
     }
 
     public String getAgeString() {
