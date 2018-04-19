@@ -60,14 +60,19 @@ public class WaitingListController implements Initializable {
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if(organTypeSelected != null){
             WaitingListItem temp = new WaitingListItem(organTypeSelected);
-            if (currentUser.getWaitingListOrgans().contains(organTypeSelected)){
-                System.out.println(temp.getOrganDeregisteredDate());
-                temp.registerOrgan();
-            } else {
+            boolean found = false;
+            for (WaitingListItem item : currentUser.getWaitingListItems()){
+                if (temp.getOrganType() == item.getOrganType()){
+                    item.registerOrgan();
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
                 currentUser.getWaitingListItems().add(temp);
             }
             populateWaitingList();
-            System.out.println("this should be reached");
         }
     }
 

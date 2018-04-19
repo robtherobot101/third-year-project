@@ -1,24 +1,29 @@
 package seng302.Core;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class WaitingListItem {
     private Organ organType;
-    private LocalDate organRegisteredDate;
-    private LocalDate organDeregisteredDate;
+    private String organRegisteredDate;
+    private String organDeregisteredDate;
 
     public WaitingListItem(Organ organType){
         this.organType = organType;
-        this.organRegisteredDate = LocalDate.now();
+        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
     }
 
     public void registerOrgan(){
-        this.organRegisteredDate = LocalDate.now();
+        if (this.organRegisteredDate == null) {
+            this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        }
         this.organDeregisteredDate = null;
     }
 
     public void deregisterOrgan(){
-        this.organDeregisteredDate = LocalDate.now();
+        if (this.organDeregisteredDate == null) {
+            this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        }
         this.organRegisteredDate = null;
     }
 
@@ -26,11 +31,11 @@ public class WaitingListItem {
         return organType;
     }
 
-    public LocalDate getOrganRegisteredDate() {
+    public String getOrganRegisteredDate() {
         return organRegisteredDate;
     }
 
-    public LocalDate getOrganDeregisteredDate() {
+    public String getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
 }

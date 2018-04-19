@@ -281,13 +281,6 @@ public class User {
         return waitingListItems;
     }
 
-    public ArrayList<Organ> getWaitingListOrgans(){
-        ArrayList<Organ> items = new ArrayList<>();
-        for (WaitingListItem item : waitingListItems){
-            items.add(item.getOrganType());
-        }
-        return items;
-    }
 
     public String getAgeString() {
         long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
