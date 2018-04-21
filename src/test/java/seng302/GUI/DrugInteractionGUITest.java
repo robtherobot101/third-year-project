@@ -2,6 +2,7 @@ package seng302.GUI;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableRow;
 import javafx.scene.input.KeyCode;
@@ -18,6 +19,7 @@ import seng302.Core.User;
 import seng302.Core.Gender;
 import seng302.Core.Main;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
@@ -35,17 +37,15 @@ import java.util.concurrent.TimeoutException;
 
 
 public class DrugInteractionGUITest extends ApplicationTest {
-
-    private Main mainGUI;
     private static final boolean runHeadless = true;
-    User user = new User("test,user", LocalDate.of(1983,7,4));
+    private User user = new User("test,user", LocalDate.of(1983,7,4));
 
     @BeforeClass
     public static void setupSpec() throws Exception {
 
         if (runHeadless) {
             System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "false");
+            System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
             System.setProperty("headless.geometry", "1600x1200-32");
@@ -56,13 +56,13 @@ public class DrugInteractionGUITest extends ApplicationTest {
     @Before
     public void setUp () throws Exception {
         user.setGender(Gender.FEMALE);
-        mainGUI.users.add(user);
+        Main.users.add(user);
         navigateToMedicationsPane();
     }
 
     @After
     public void tearDown () throws Exception {
-        mainGUI.users.remove(user);
+        Main.users.remove(user);
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -70,7 +70,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     @Override
     public void start (Stage stage) throws Exception {
-        mainGUI = new Main();
+        Main mainGUI = new Main();
         mainGUI.start(stage);
     }
 
@@ -84,14 +84,10 @@ public class DrugInteractionGUITest extends ApplicationTest {
 
     public void waitForEnabled(int timeout, String cssID) throws TimeoutException{
         Callable<Boolean> callable = () -> {
-            if(lookup(cssID).query()==null){
+            if (lookup(cssID).query()==null){
                 return false;
-            }else{
-                if(lookup(cssID).query().isDisable()==false){
-                    return true;
-                }else{
-                    return false;
-                }
+            } else{
+                return !lookup(cssID).query().isDisable();
             }
         };
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
@@ -104,37 +100,34 @@ public class DrugInteractionGUITest extends ApplicationTest {
         System.out.println();
         Node row = from(lookup("#profileTable")).lookup("test user").query();
         doubleClickOn(row);
-        clickOn("#medicationsButton");
+        clickOn("Medications");
         sleep(1000);
     }
 
     @Test
     public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException{
-        clickOn("#newMedicationField"); write("diazepam");
+        clickOn("#newMedicationField"); write("Diazepam");
         clickOn("#addNewMedicationButton");
-        clickOn("#newMedicationField"); write("escitalopram");
+        clickOn("#newMedicationField"); write("Escitalopram");
         clickOn("#addNewMedicationButton");
-        Node drugARow = from(lookup("#currentListView")).lookup("escitalopram").query();
+        Node drugARow = from(lookup("#currentListView")).lookup("Escitalopram").query();
         clickOn(drugARow);
         clickOn("#compareButton");
-        Node drugBRow = from(lookup("#currentListView")).lookup("diazepam").query();
+        Node drugBRow = from(lookup("#currentListView")).lookup("Diazepam").query();
         clickOn(drugBRow);
         clickOn("#compareButton");
         waitForEnabled(5,"#compareButton");
-        ListView results = (ListView)lookup("#interactionListView").query();
-        verifyThat(results, list -> list.getItems().contains("fatigue: 1 - 6 months"));
-        verifyThat(results, list -> list.getItems().contains("nausea: < 1 month"));
-        verifyThat(results, list -> list.getItems().contains("drug ineffective: < 1 month"));
-        verifyThat(results, list -> list.getItems().contains("weight increased: 1 - 2 years"));
-        verifyThat(results, list -> list.getItems().contains("dizziness: 2 - 5 years"));
-        verifyThat(results, list -> list.getItems().contains("headache: not specified"));
-        verifyThat(results, list -> list.getItems().contains("suicidal ideation: 6 - 12 months"));
+        Label resultsLabel = lookup("#interactionsContentLabel").query();
+        String results = resultsLabel.getText().toLowerCase();
+        String[] toCheck = {"fatigue: 1 - 6 months", "nausea: < 1 month", "drug ineffective: < 1 month", "weight increased: 1 - 2 years", "dizziness: 2 - 5 years", "headache", "suicidal ideation: 6 - 12 months"};
+        for (String item: toCheck) {
+            assertTrue(results.contains(item));
+        }
     }
-    
+
+    @Ignore //TODO Change this test - it no longer works as invalid drugs can not be added
     @Test
-    public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
-        String badDrugA = "badDrugA";
-        String badDrugB = "badDrugB";
+    public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException {
         clickOn("#newMedicationField"); write("badDrugA");
         clickOn("#addNewMedicationButton");
         clickOn("#newMedicationField"); write("badDrugB");
@@ -146,7 +139,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
         clickOn(drugBRow);
         clickOn("#compareButton");
         waitForEnabled(5,"#compareButton");
-        ListView results = (ListView)lookup("#interactionListView").query();
+        ListView results = lookup("#interactionListView").query();
         verifyThat(results, list -> list.getItems().contains("Invalid comparison."));
     }
 }

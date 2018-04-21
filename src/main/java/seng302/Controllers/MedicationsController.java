@@ -391,14 +391,10 @@ public class MedicationsController implements Initializable {
 
         // Attach the autocompletion box and set its endpoint to the MAPI API
         // ALso only enable the add button if a medication has been autocompleted
-        new AutoCompletionTextFieldBinding<String>(newMedicationField, param -> {
-            if(newMedicationField.getText().length() == 0) {
-                return null;
-            }
-            return Mapi.autocomplete(newMedicationField.getText()).subList(0, 5);
-        }).setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false));
+        new AutoCompletionTextFieldBinding<>(newMedicationField, param ->
+            newMedicationField.getText().isEmpty() ? null : Mapi.autocomplete(newMedicationField.getText()).subList(0, 5));//.setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false));
+        newMedicationField.textProperty().addListener(((observable, oldValue, newValue) -> addNewMedicationButton.setDisable(newValue.isEmpty())));
 
-        //Hide the drug interactions title as this feature is not implemented yet
         interactionsTitleLabel.setText("");
         interactionsContentLabel.setText("");
 

@@ -1,25 +1,22 @@
 package seng302.GUI;
 
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import org.junit.*;
-import org.junit.runners.JUnit4;
-import org.testfx.api.FxRobot;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
 import seng302.Core.Medication;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.testfx.api.FxAssert.assertContext;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 public class MedicationsGUITest extends ApplicationTest {
 
@@ -68,8 +65,7 @@ public class MedicationsGUITest extends ApplicationTest {
      * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
      */
     private void enterMedicationPanel() {
-
-        Main.donors.clear();
+        Main.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -113,7 +109,7 @@ public class MedicationsGUITest extends ApplicationTest {
         //Add a new medication for the donor.
 
         clickOn("#newMedicationField").write(medication);
-        clickOn("#donorNameLabel");
+        clickOn("#userNameLabel");
         clickOn("#addNewMedicationButton");
     }
 
@@ -144,7 +140,7 @@ public class MedicationsGUITest extends ApplicationTest {
 
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
-        org.junit.Assert.assertTrue(currentMedicationList.getItems().size() == 0);
+        Assert.assertEquals(0, currentMedicationList.getItems().size());
     }
 
     /**
@@ -203,7 +199,7 @@ public class MedicationsGUITest extends ApplicationTest {
 
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
-        org.junit.Assert.assertTrue(currentMedicationList.getItems().size() == 0);
+        Assert.assertEquals(0, currentMedicationList.getItems().size());
 
     }
 
@@ -222,9 +218,9 @@ public class MedicationsGUITest extends ApplicationTest {
         clickOn("Exit");
         //clickOn("OK");
 
-        //Check if medication added is correct in the Medication Array List of the Donor.
+        //Check if medication added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();
-        Donor topDonor = (Donor) donorList.getItems().get(0);
+        User topDonor = (User) donorList.getItems().get(0);
         org.junit.Assert.assertTrue(topDonor.getCurrentMedications().get(0).getName().equalsIgnoreCase("Asacol"));
 
         doubleClickOn("Bobby Dong Flame");

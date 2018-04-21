@@ -28,7 +28,7 @@ import static org.testfx.api.FxToolkit.registerPrimaryStage;
 public class CreateReceiverGUITest extends ApplicationTest {
 
     private Main mainGUI;
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
     User user = new User("test,user", LocalDate.of(1983,7,4));
 
 
@@ -37,7 +37,7 @@ public class CreateReceiverGUITest extends ApplicationTest {
 
         if (runHeadless) {
             System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "false");
+            System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
             System.setProperty("headless.geometry", "1600x1200-32");
