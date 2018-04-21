@@ -2,6 +2,7 @@ package seng302.GUI;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableRow;
 import javafx.scene.input.KeyCode;
@@ -18,17 +19,20 @@ import seng302.Core.User;
 import seng302.Core.Gender;
 import seng302.Core.Main;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import static org.testfx.util.NodeQueryUtils.bySelector;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import org.testfx.service.support.*;
 
 import javax.swing.text.TableView;
+import java.sql.Time;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -82,12 +86,16 @@ public class DrugInteractionGUITest extends ApplicationTest {
     }
 
 
-    public void waitForEnabled(int timeout, String cssID) throws TimeoutException{
+
+    public void waitForNodeVisible(int timeout, String id) throws TimeoutException{
         Callable<Boolean> callable = () -> {
-            if(lookup(cssID).query()==null){
+            Node nodeFound = lookup(id).query();
+            if(nodeFound==null){
                 return false;
             }else{
-                if(lookup(cssID).query().isDisable()==false){
+                if(nodeFound.isVisible()){
+                    //Let the GUI skin catchup to the controller state
+                    waitForFxEvents();
                     return true;
                 }else{
                     return false;
@@ -97,6 +105,42 @@ public class DrugInteractionGUITest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
+    public void waitForNodeEnabled(int timeout, String id) throws TimeoutException{
+        Callable<Boolean> callable = () -> {
+            Node nodeFound = lookup(id).query();
+            if(nodeFound==null){
+                return false;
+            }else{
+                if(!nodeFound.isDisable()){
+                    //Let the GUI skin catchup to the controller state
+                    waitForFxEvents();
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        };
+        WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
+    }
+
+    public void addValidMedication(String drug) throws TimeoutException{
+        clickOn("#newMedicationField").write(drug.substring(0,drug.length()-1));
+        waitForNodeVisible(10, drug);
+        clickOn(drug);
+        clickOn("#addNewMedicationButton");
+    }
+
+    public void compareMedications(String drugA, String drugB) throws TimeoutException{
+        Node drugARow = from(lookup("#currentListView")).lookup(drugA).query();
+        clickOn(drugARow);
+        waitForNodeEnabled(10,"#compareButton");
+        clickOn("#compareButton");
+
+        Node drugBRow = from(lookup("#currentListView")).lookup(drugB).query();
+        clickOn(drugBRow);
+        waitForNodeEnabled(10,"#compareButton");
+        clickOn("#compareButton");
+    }
 
     private void navigateToMedicationsPane() {
         loginAsDefaultClinician();
@@ -104,31 +148,30 @@ public class DrugInteractionGUITest extends ApplicationTest {
         System.out.println();
         Node row = from(lookup("#profileTable")).lookup("test user").query();
         doubleClickOn(row);
-        clickOn("#medicationsButton");
-        sleep(1000);
+        clickOn("Medications");
     }
+
+
 
     @Test
     public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException{
-        clickOn("#newMedicationField"); write("diazepam");
-        clickOn("#addNewMedicationButton");
-        clickOn("#newMedicationField"); write("escitalopram");
-        clickOn("#addNewMedicationButton");
-        Node drugARow = from(lookup("#currentListView")).lookup("escitalopram").query();
-        clickOn(drugARow);
-        clickOn("#compareButton");
-        Node drugBRow = from(lookup("#currentListView")).lookup("diazepam").query();
-        clickOn(drugBRow);
-        clickOn("#compareButton");
-        waitForEnabled(5,"#compareButton");
-        ListView results = (ListView)lookup("#interactionListView").query();
-        verifyThat(results, list -> list.getItems().contains("fatigue: 1 - 6 months"));
-        verifyThat(results, list -> list.getItems().contains("nausea: < 1 month"));
-        verifyThat(results, list -> list.getItems().contains("drug ineffective: < 1 month"));
-        verifyThat(results, list -> list.getItems().contains("weight increased: 1 - 2 years"));
-        verifyThat(results, list -> list.getItems().contains("dizziness: 2 - 5 years"));
-        verifyThat(results, list -> list.getItems().contains("headache: not specified"));
-        verifyThat(results, list -> list.getItems().contains("suicidal ideation: 6 - 12 months"));
+        addValidMedication("Diazepam");
+        addValidMedication("Escitalopram");
+
+        compareMedications("Escitalopram","Diazepam");
+        waitForNodeEnabled(10,"#compareButton");
+
+        Label resultLabel = (Label)lookup("#interactionsContentLabel").query();
+        HashSet<String> results = new HashSet<>(Arrays.asList(resultLabel.getText().split(System.lineSeparator())));
+        HashSet<String> expected = new HashSet<String>();
+        expected.add("-fatigue: 1 - 6 months");
+        expected.add("-nausea: < 1 month");
+        expected.add("-drug ineffective: < 1 month");
+        expected.add("-weight increased: 1 - 2 years");
+        expected.add("-dizziness: 2 - 5 years");
+        expected.add("-headache");
+        expected.add("-suicidal ideation: 6 - 12 months");
+        assertEquals(expected,results);
     }
     
     @Test
@@ -145,7 +188,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
         Node drugBRow = from(lookup("#currentListView")).lookup("badDrugA").query();
         clickOn(drugBRow);
         clickOn("#compareButton");
-        waitForEnabled(5,"#compareButton");
+        waitForNodeEnabled(5,"#compareButton");
         ListView results = (ListView)lookup("#interactionListView").query();
         verifyThat(results, list -> list.getItems().contains("Invalid comparison."));
     }
