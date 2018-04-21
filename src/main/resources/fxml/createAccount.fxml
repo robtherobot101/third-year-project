@@ -13,7 +13,7 @@
 
 <AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="415.0" prefWidth="400.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.CreateAccountController">
    <children>
-      <Label alignment="CENTER" layoutX="93.0" layoutY="24.0" text="Create a new donor account" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <Label alignment="CENTER" layoutX="93.0" layoutY="24.0" text="Create a new user account" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
          <font>
             <Font size="18.0" />
          </font>

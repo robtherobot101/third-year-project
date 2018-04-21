@@ -13,6 +13,9 @@ import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 public class InteractionApi {
+    private String serverErr = "Internal server error.";
+    private String emptyReportErr = "No report comparing the two medications exists.";
+
     /**
      * Takes two drug names as Strings and returns a Json String from the
      * eHealthMe API which contains information about the drug interactions
@@ -22,6 +25,9 @@ public class InteractionApi {
      */
     public String interactions(String drugA, String drugB) {
         String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
+        if (result.equals(serverErr) || result.equals(emptyReportErr)){
+            result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugB, drugA));
+        }
         return result;
     }
 
@@ -45,7 +51,7 @@ public class InteractionApi {
             } else {
                 switch (statusCode) {
                     case 202:
-                        result = "No report comparing the two medications exists.";
+                        result = emptyReportErr;
                         break;
 
                     case 404:
@@ -53,7 +59,7 @@ public class InteractionApi {
                         break;
 
                     case 502:
-                        result = "Internal server error.";
+                        result = serverErr;
                         break;
                 }
             }

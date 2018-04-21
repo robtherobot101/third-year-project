@@ -37,7 +37,7 @@ public class WaitingListController implements Initializable {
     @FXML
     private TableColumn organDeregisteredDate;
 
-    private Donor currentUser;
+    private User currentUser;
 
 
 
@@ -48,7 +48,7 @@ public class WaitingListController implements Initializable {
      * Sets the user that whose waiting list items will be displayed or modified.
      * @param user
      */
-    public void setCurrentUser(Donor user){
+    public void setCurrentUser(User user){
         this.currentUser = user;
     }
 

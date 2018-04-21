@@ -7,7 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
 import seng302.Core.TFScene;
 import seng302.Files.History;
@@ -25,25 +25,25 @@ public class AccountSettingsController implements Initializable {
     @FXML
     private Button updateButton, cancelButton;
     @FXML
-    private Label donorNameLabel, errorLabel;
+    private Label userNameLabel, errorLabel;
     @FXML
     private AnchorPane background;
 
-    private Donor currentDonor;
+    private User currentUser;
 
-    public void setCurrentDonor(Donor currentDonor) {
-        this.currentDonor = currentDonor;
-        donorNameLabel.setText("donor: " + currentDonor.getName());
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        userNameLabel.setText("user: " + currentUser.getName());
     }
 
     /**
-     * Populates the account details inputs based on the current donor's attributes.
+     * Populates the account details inputs based on the current user's attributes.
      */
     public void populateAccountDetails() {
-        donorNameLabel.setText("donor: " + currentDonor.getName());
-        usernameField.setText(currentDonor.getUsername() != null ? currentDonor.getUsername() : "");
-        emailField.setText(currentDonor.getEmail() != null ? currentDonor.getEmail() : "");
-        passwordField.setText(currentDonor.getPassword());
+        userNameLabel.setText("user: " + currentUser.getName());
+        usernameField.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "");
+        emailField.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
+        passwordField.setText(currentUser.getPassword());
     }
 
     /**
@@ -51,14 +51,14 @@ public class AccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        for (Donor donor: Main.donors) {
-            if (donor != currentDonor) {
-                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(donor.getUsername())) {
+        for (User user: Main.users) {
+            if (user != currentUser) {
+                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
                     errorLabel.setText("That username is already taken.");
                     errorLabel.setVisible(true);
                     return;
-                } else if (!emailField.getText().isEmpty() && emailField.getText().equals(donor.getEmail())) {
-                    errorLabel.setText("There is already a donor account with that email.");
+                } else if (!emailField.getText().isEmpty() && emailField.getText().equals(user.getEmail())) {
+                    errorLabel.setText("There is already a user account with that email.");
                     errorLabel.setVisible(true);
                     return;
                 }
@@ -68,16 +68,16 @@ public class AccountSettingsController implements Initializable {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            currentDonor.setUsername(usernameField.getText());
-            currentDonor.setEmail(emailField.getText());
-            currentDonor.setPassword(passwordField.getText());
+            currentUser.setUsername(usernameField.getText());
+            currentUser.setEmail(emailField.getText());
+            currentUser.setPassword(passwordField.getText());
 
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "updateAccountSettings");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "updateAccountSettings");
             History.printToFile(Main.streamOut, text);
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            Main.setCurrentDonor(currentDonor);
-            Main.saveUsers(Main.getDonorPath(), true);
+            Main.setCurrentUser(currentUser);
+            Main.saveUsers(Main.getUserPath(), true);
         } else {
             alert.close();
         }

@@ -100,7 +100,7 @@ public class ClinicianController implements Initializable {
 
     private int resultsPerPage;
     private int page = 1;
-    private ArrayList<Donor> donorsFound;
+    private ArrayList<User> usersFound;
 
     private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
 
@@ -108,9 +108,9 @@ public class ClinicianController implements Initializable {
     private ArrayList<Clinician> clinicianRedoStack = new ArrayList<>();
 
 
-    private ObservableList<Donor> currentPage = FXCollections.observableArrayList();
+    private ObservableList<User> currentPage = FXCollections.observableArrayList();
 
-    ObservableList<Object> donors;
+    ObservableList<Object> users;
 
     /**
      * Sets the current clinician
@@ -134,10 +134,10 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * Refreshes the results in the donor profile table to match the values
-     * in the donor ArrayList in Main
+     * Refreshes the results in the user profile table to match the values
+     * in the user ArrayList in Main
      */
-    public void updateDonorTable(){
+    public void updateUserTable(){
         updatePageButtons();
         displayCurrentPage();
         updateResultsSummary();
@@ -145,7 +145,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
-     * all open donor windows spawned by the clinician are closed and the main scene is returned to the logout screen.
+     * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
      */
     public void logout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -154,8 +154,8 @@ public class ClinicianController implements Initializable {
         alert.setContentText("Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            for(Stage donorWindow: Main.getCliniciansDonorWindows()){
-                donorWindow.close();
+            for(Stage userWindow: Main.getCliniciansUserWindows()){
+                userWindow.close();
             }
             Main.setScene(TFScene.login);
             Main.clearUserScreen();
@@ -315,28 +315,28 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * Updates the list of donors found from the search
+     * Updates the list of users found from the search
      * @param searchTerm the search term
      */
-    public void updateFoundDonors(String searchTerm){
-        donorsFound = Main.getDonorsByNameAlternative(searchTerm);
-        donors = FXCollections.observableArrayList(donorsFound);
+    public void updateFoundUsers(String searchTerm){
+        usersFound = Main.getUsersByNameAlternative(searchTerm);
+        users = FXCollections.observableArrayList(usersFound);
 
     }
 
 
     /**
-     * Splits the sorted list of found donors and returns a page worth
+     * Splits the sorted list of found users and returns a page worth
      * @return The sorted page of results
      */
-    public ObservableList<Donor> getCurrentPage(){
+    public ObservableList<User> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
-        int lastIndex = Math.min(donors.size(), page*resultsPerPage);
+        int lastIndex = Math.min(users.size(), page*resultsPerPage);
         if(lastIndex<firstIndex){
             System.out.println(firstIndex+" to "+lastIndex+ " is an illegal page");
-            return FXCollections.observableArrayList(new ArrayList<Donor>());
+            return FXCollections.observableArrayList(new ArrayList<User>());
         }
-        return FXCollections.observableArrayList(new ArrayList(donors.subList(firstIndex, lastIndex)));
+        return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
     }
 
     /**
@@ -344,7 +344,7 @@ public class ClinicianController implements Initializable {
      */
     public void nextPage(){
         page++;
-        updateDonorTable();
+        updateUserTable();
     }
 
     /**
@@ -353,30 +353,30 @@ public class ClinicianController implements Initializable {
      */
     public void updateResultsSummary(){
         String text;
-        if(donorsFound.size()==0){
+        if(usersFound.size()==0){
             text = "No results found";
         }else{
             int from = ((page-1)*resultsPerPage)+1;
-            int to = Math.min((page*resultsPerPage), donorsFound.size());
-            int of = donorsFound.size();
+            int to = Math.min((page*resultsPerPage), usersFound.size());
+            int of = usersFound.size();
             text = "Displaying " + from + "-" + to + " of " + of;
         }
         resultsDisplayLabel.setText(text);
     }
 
     /**
-     * Displays the next page of donor search results
+     * Displays the next page of user search results
      */
     public void previousPage(){
         page--;
-        updateDonorTable();
+        updateUserTable();
     }
 
     /**
      * Enables and disables the next and previous page buttons as necessary.
      */
     public void updatePageButtons(){
-        if((page)*resultsPerPage>=donorsFound.size()){
+        if((page)*resultsPerPage>=usersFound.size()){
             nextPageButton.setDisable(true);
         }else{
             nextPageButton.setDisable(false);
@@ -389,7 +389,7 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * Sets the Donor Attributes pane as the visible pane
+     * Sets the User Attributes pane as the visible pane
      */
     public void showMainPane() {
         mainPane.setVisible(true);
@@ -401,8 +401,8 @@ public class ClinicianController implements Initializable {
         resultsPerPage = 15;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
-            updateFoundDonors(newValue);
-            updateDonorTable();
+            updateFoundUsers(newValue);
+            updateUserTable();
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -422,33 +422,33 @@ public class ClinicianController implements Initializable {
 
         Main.setClinicianController(this);
 
-        updateFoundDonors("");
-        updateDonorTable();
+        updateFoundUsers("");
+        updateUserTable();
 
         profileTable.setItems(currentPage);
 
         /**
          * RowFactory for the profileTable.
          * Displays a tooltip when the mouse is over a table entry.
-         * Adds a mouse click listener to each row in the table so that a donor window
+         * Adds a mouse click listener to each row in the table so that a user window
          * is opened when the event is triggered
          */
-        profileTable.setRowFactory(new Callback<TableView<Donor>, TableRow<Donor>>() {
+        profileTable.setRowFactory(new Callback<TableView<User>, TableRow<User>>() {
             @Override
-            public TableRow<Donor> call(TableView<Donor> tableView) {
-                final TableRow<Donor> row = new TableRow<Donor>() {
+            public TableRow<User> call(TableView<User> tableView) {
+                final TableRow<User> row = new TableRow<User>() {
                     private Tooltip tooltip = new Tooltip();
                     @Override
-                    public void updateItem(Donor donor, boolean empty) {
-                        super.updateItem(donor, empty);
-                        if (donor == null || empty) {
+                    public void updateItem(User user, boolean empty) {
+                        super.updateItem(user, empty);
+                        if (user == null || empty) {
                             setTooltip(null);
                         } else {
-                            if (donor.getOrgans().isEmpty()) {
-                                tooltip.setText(donor.getName() + ".");
+                            if (user.getOrgans().isEmpty()) {
+                                tooltip.setText(user.getName() + ".");
                             } else {
-                                String organs = donor.getOrgans().toString();
-                                tooltip.setText(donor.getName() + ". Donor: " + organs.substring(1, organs.length() - 1));
+                                String organs = user.getOrgans().toString();
+                                tooltip.setText(user.getName() + ". User: " + organs.substring(1, organs.length() - 1));
                             }
                             setTooltip(tooltip);
                         }
@@ -461,15 +461,15 @@ public class ClinicianController implements Initializable {
                         stage.setMinHeight(550);
                         stage.setMinWidth(650);
 
-                        Main.addCliniciansDonorWindow(stage);
+                        Main.addCliniciansUserWindow(stage);
                         stage.initModality(Modality.NONE);
 
                         try{
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
-                            Main.setCurrentDonor(row.getItem());
-                            userWindowController.populateDonorFields();
+                            Main.setCurrentUser(row.getItem());
+                            userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
                             Main.medicationsViewForClinician();
@@ -504,7 +504,7 @@ public class ClinicianController implements Initializable {
                     if (comparator == null) {
                         return true;
                     }
-                    FXCollections.sort(donors, comparator);
+                    FXCollections.sort(users, comparator);
                     displayCurrentPage();
                     profileTable.getSelectionModel().select(0);
                     return true;
