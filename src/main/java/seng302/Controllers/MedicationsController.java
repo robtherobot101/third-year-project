@@ -395,7 +395,12 @@ public class MedicationsController implements Initializable {
             if(newMedicationField.getText().length() == 0) {
                 return null;
             }
-            return Mapi.autocomplete(newMedicationField.getText()).subList(0, 5);
+            ArrayList<String> medicines = Mapi.autocomplete(newMedicationField.getText());
+            if (medicines.size() > 5) {
+                return medicines.subList(0, 5);
+            } else {
+                return medicines;
+            }
         }).setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false));
 
         //Hide the drug interactions title as this feature is not implemented yet
