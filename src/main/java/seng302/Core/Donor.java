@@ -33,7 +33,8 @@ public class Donor {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
-    private ArrayList<Disease> diseases;
+    private ArrayList<Disease> currentDiseases;
+    private ArrayList<Disease> curedDiseases;
 
     public Donor(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -49,7 +50,8 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
-        this.diseases = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
     }
 
     public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -67,7 +69,8 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
-        this.diseases = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -94,7 +97,8 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
-        this.diseases = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
     }
 
     public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -121,7 +125,8 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
-        this.diseases = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
     }
 
     /**
@@ -148,8 +153,12 @@ public class Donor {
         this.historicMedications = new ArrayList<>();
         this.currentMedications.addAll(donor.currentMedications);
         this.historicMedications.addAll(donor.historicMedications);
-        this.diseases = new ArrayList<>();
-        this.diseases.addAll(donor.diseases);
+
+        this.currentDiseases = new ArrayList<>();
+        this.currentDiseases.addAll(donor.getCurrentDiseases());
+
+        this.curedDiseases = new ArrayList<>();
+        this.curedDiseases.addAll(donor.getCuredDiseases());
     }
 
     public void copyFieldsFrom(Donor donor) {
@@ -171,8 +180,11 @@ public class Donor {
         currentMedications.addAll(donor.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(donor.getHistoricMedications());
-        diseases.clear();
-        diseases.addAll(donor.diseases);
+        currentDiseases.clear();
+        currentDiseases.addAll(donor.getCurrentDiseases());
+
+        curedDiseases.clear();
+        curedDiseases.addAll(donor.getCuredDiseases());
     }
 
     public boolean fieldsEqual(Donor donor) {
@@ -191,7 +203,8 @@ public class Donor {
                 organs.equals(donor.getOrgans()) &&
                 currentMedications.equals(donor.getCurrentMedications()) &&
                 historicMedications.equals(donor.getHistoricMedications()) &&
-                diseases.equals(donor.getDiseases())
+                currentDiseases.equals(donor.getCurrentDiseases()) &&
+                curedDiseases.equals(donor.getCuredDiseases())
         );
     }
 
@@ -358,13 +371,6 @@ public class Donor {
 
     public void setHistoricMedications(ArrayList<Medication> historicMedications) { this.historicMedications = historicMedications; }
 
-    public ArrayList<Disease> getDiseases() {
-        return diseases;
-    }
-
-    public void setDiseases(ArrayList<Disease> diseases) {
-        this.diseases = diseases;
-    }
 
     /**
      * Get a string containing key information about the donor. Can be formatted as a table row.
@@ -409,5 +415,21 @@ public class Donor {
 
     public String toString() {
         return getString(false);
+    }
+
+    public ArrayList<Disease> getCurrentDiseases() {
+        return currentDiseases;
+    }
+
+    public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
+    public ArrayList<Disease> getCuredDiseases() {
+        return curedDiseases;
+    }
+
+    public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
+        this.curedDiseases = curedDiseases;
     }
 }

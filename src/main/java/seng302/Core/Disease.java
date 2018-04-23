@@ -12,11 +12,11 @@ public class Disease {
     private boolean isChronic;
     private boolean isCured;
 
-    public Disease(String name, LocalDate diagnosisDate, boolean isChronic) {
+    public Disease(String name, LocalDate diagnosisDate, boolean isChronic, boolean isCured) {
         this.name = name;
         this.diagnosisDate = diagnosisDate;
         this.isChronic = isChronic;
-        this.isCured = false;
+        this.isCured = isCured;
     }
 
     public String getName() { return name; }
