@@ -1,26 +1,34 @@
 package seng302.Controllers;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Callback;
 import seng302.Core.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 
 public class WaitingListController implements Initializable {
     @FXML
-    private Button addOrganButton;
+    private Button registerOrganButton;
 
     @FXML
-    private Button removeOrganButton;
+    private Button deregisterOrganButton;
 
     @FXML
     private TableView<WaitingListItem> waitingList;
@@ -30,6 +38,9 @@ public class WaitingListController implements Initializable {
 
     @FXML
     private TableColumn organType;
+
+    @FXML
+    private TableColumn stillWaitingOn;
 
     @FXML
     private TableColumn organRegisteredDate;
@@ -56,10 +67,10 @@ public class WaitingListController implements Initializable {
      * If there is an Organ type selected in the combobox, a new WaitingListItem
      * is added to the user's profile.
      */
-    public void addOrgan(){
+    public void registerOrgan(){
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if(organTypeSelected != null){
-            WaitingListItem temp = new WaitingListItem(organTypeSelected);
+            WaitingListItem temp = new WaitingListItem(organTypeSelected, currentUser);
             boolean found = false;
             for (WaitingListItem item : currentUser.getWaitingListItems()){
                 if (temp.getOrganType() == item.getOrganType()){
@@ -80,7 +91,7 @@ public class WaitingListController implements Initializable {
      * Removes the selected item from the user's waiting list and refreshes
      * the waiting TableView
      */
-    public void removeOrgan(){
+    public void deregisterOrgan(){
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
         if(waitingListItemSelected != null){
             waitingListItemSelected.deregisterOrgan();
@@ -104,5 +115,42 @@ public class WaitingListController implements Initializable {
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         organDeregisteredDate.setCellValueFactory(new PropertyValueFactory<>("organDeregisteredDate"));
+
+        registerOrganButton.setDisable(true);
+        deregisterOrganButton.setDisable(true);
+
+        organTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            registerOrganButton.setDisable(false);
+        });
+
+        waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue==null){
+                deregisterOrganButton.setDisable(true);
+            }else{
+                deregisterOrganButton.setDisable(false);
+            }
+        });
+
+        waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
+            Boolean highlight = false;
+            @Override
+            public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
+                final TableRow<WaitingListItem> row = new TableRow<WaitingListItem>() {
+                    @Override
+                    public void updateItem(WaitingListItem item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            //do nothing
+                        } else {
+                            if(item.getUserDonatingOrgan()){
+                                //TODO Highlight the row
+                                highlight = true;
+                            }
+                        }
+                    }
+                };
+                return row;
+            }
+        });
     }
 }

@@ -9,12 +9,12 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.WaitingListController">
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.WaitingListController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.0" minWidth="70.0" prefWidth="160.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="368.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="75.0" prefWidth="75.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="341.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
@@ -28,6 +28,7 @@
       <TableView fx:id="waitingList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3">
         <columns>
           <TableColumn fx:id="organType" prefWidth="75.0" text="Organ Type" />
+            <TableColumn fx:id="stillWaitingOn" prefWidth="75.0" text="Still waiting on" />
           <TableColumn fx:id="organRegisteredDate" prefWidth="75.0" text="Registered on" />
             <TableColumn fx:id="organDeregisteredDate" prefWidth="75.0" text="Deregistered on" />
         </columns>
@@ -37,7 +38,7 @@
       </TableView>
       <ComboBox fx:id="organTypeComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
       <Label text="Organ Type" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-      <Button fx:id="addOrganButton" mnemonicParsing="false" onAction="#addOrgan" text="Add" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-      <Button fx:id="removeOrganButton" mnemonicParsing="false" onAction="#removeOrgan" text="Deregister" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+      <Button fx:id="registerOrganButton" mnemonicParsing="false" onAction="#registerOrgan" text="Register" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+      <Button fx:id="deregisterOrganButton" mnemonicParsing="false" onAction="#deregisterOrgan" text="Deregister" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
    </children>
 </GridPane>

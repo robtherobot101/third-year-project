@@ -7,10 +7,12 @@ public class WaitingListItem {
     private Organ organType;
     private String organRegisteredDate;
     private String organDeregisteredDate;
+    private User user;
 
-    public WaitingListItem(Organ organType){
+    public WaitingListItem(Organ organType, User user){
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.user = user;
     }
 
     public void registerOrgan(){
@@ -25,6 +27,10 @@ public class WaitingListItem {
             this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         }
         this.organRegisteredDate = null;
+    }
+
+    public boolean getUserDonatingOrgan(){
+        return user.getOrgans().contains(organType);
     }
 
     public Organ getOrganType() {
