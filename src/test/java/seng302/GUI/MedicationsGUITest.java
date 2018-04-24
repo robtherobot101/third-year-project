@@ -1,6 +1,7 @@
 package seng302.GUI;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
@@ -10,7 +11,6 @@ import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -18,8 +18,10 @@ import seng302.Core.User;
 import seng302.Core.Main;
 import seng302.Core.Medication;
 
+import java.time.LocalDate;
+
 public class MedicationsGUITest extends ApplicationTest {
-    private static final boolean runHeadless = true;
+    private static final boolean runHeadless = false;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -40,9 +42,26 @@ public class MedicationsGUITest extends ApplicationTest {
         registerPrimaryStage();
     }
 
+    /**
+     * Method that can be called to path correctly to the stage to be tested.
+     *
+     * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
+     */
     @Before
-    public void setUp () throws Exception {
+    public void setUp() throws Exception {
+        Main.users.clear();
+        Main.users.add(new User("Bobby", new String[]{"Dong"} , "Flame", LocalDate.of(1969,8,4), "bflame", "flameman@hotmail.com", "password123"));
 
+        // Login as default clinician
+        clickOn("#identificationInput");
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+
+        //Click on the Created User in clinician table and enter the medications panel.
+        doubleClickOn("Bobby Dong Flame");
+        clickOn("Medications");
     }
 
     @After
@@ -59,56 +78,12 @@ public class MedicationsGUITest extends ApplicationTest {
     }
 
     /**
-     * Method that can be called to path correctly to the stage to be tested.
-     *
-     * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
-     */
-    private void enterMedicationPanel() {
-        Main.users.clear();
-        // Assumed that calling method is currently on login screen
-        clickOn("#createAccountButton");
-
-        // Create a valid user
-        clickOn("#usernameInput").write("bflame");
-        clickOn("#emailInput").write("flameman@hotmail.com");
-        clickOn("#passwordInput").write("password123");
-        clickOn("#passwordConfirmInput").write("password123");
-        clickOn("#firstNameInput").write("Bobby");
-        clickOn("#middleNamesInput").write("Dong");
-        clickOn("#lastNameInput").write("Flame");
-        clickOn("#dateOfBirthInput").write("4/8/1969");
-
-        doubleClickOn("#createAccountButton");
-
-        // Logout to be able to login as a clinician
-        clickOn("#logoutButton");
-        clickOn("OK");
-
-        // Login as default clinician
-        clickOn("#identificationInput");
-        clickOn("#identificationInput").write("default");
-        clickOn("#passwordInput").write("default");
-        clickOn("#loginButton");
-
-
-        //Click on the Created User in clinician table and enter the medications panel.
-        doubleClickOn("Bobby Dong Flame");
-        clickOn("Medications");
-
-    }
-
-    /**
      * Method to add a new medication to a user's current medications list.
      * @param medication The medication to add.
      */
     private void addNewMedicationToCurrentMedications(String medication) {
-
-        enterMedicationPanel();
-
         //Add a new medication for the donor.
-
         clickOn("#newMedicationField").write(medication);
-        clickOn("#userNameLabel");
         clickOn("#addNewMedicationButton");
     }
 
@@ -124,7 +99,7 @@ public class MedicationsGUITest extends ApplicationTest {
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topResult = (Medication) currentMedicationList.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
+        assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
     }
 
     /**
@@ -157,7 +132,7 @@ public class MedicationsGUITest extends ApplicationTest {
         //Check if medication moved is correct.
         ListView historyMedicationList = lookup("#historyListView").queryListView();
         Medication topResult = (Medication) historyMedicationList.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
+        assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
 
     }
 
@@ -179,7 +154,7 @@ public class MedicationsGUITest extends ApplicationTest {
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topResult = (Medication) currentMedicationList.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
+        assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
 
     }
 
@@ -207,7 +182,7 @@ public class MedicationsGUITest extends ApplicationTest {
      * as well as checking that the current medications table has been populated.
      */
     @Test
-    public void saveMedicationsForDonor(){
+    public void saveMedicationsForDonor() {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
@@ -219,7 +194,7 @@ public class MedicationsGUITest extends ApplicationTest {
         //Check if medication added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();
         User topDonor = (User) donorList.getItems().get(0);
-        org.junit.Assert.assertTrue(topDonor.getCurrentMedications().get(0).getName().equalsIgnoreCase("Asacol"));
+        assertTrue(topDonor.getCurrentMedications().get(0).getName().equalsIgnoreCase("Asacol"));
 
         doubleClickOn("Bobby Dong Flame");
         clickOn("Medications");
@@ -227,25 +202,21 @@ public class MedicationsGUITest extends ApplicationTest {
         //Check if medication added is correct and is populated when the user re-enters the medications window.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topMedication = (Medication) currentMedicationList.getItems().get(0);
-        org.junit.Assert.assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
+        assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
 
     }
 
-    @Ignore
     @Test
     public void undoTest() {
-        enterMedicationPanel();
         //Action 1 to undo
-        clickOn("#newMedicationField").write("Asacol");
-        clickOn("#addNewMedicationButton");
+        addNewMedicationToCurrentMedications("Asacol");
 
         //Action 2 to undo
         clickOn("Asacol");
         clickOn("#moveToHistoryButton");
 
         //Action 3 to undo
-        clickOn("#newMedicationField").write("Ibuprofen");
-        clickOn("#addNewMedicationButton");
+        addNewMedicationToCurrentMedications("Ibuprofen");
 
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         ListView historicMedicationList = lookup("#historyListView").queryListView();
@@ -254,42 +225,38 @@ public class MedicationsGUITest extends ApplicationTest {
         assertEquals(1, historicMedicationList.getItems().size());
         assertEquals("Asacol", ((Medication)historicMedicationList.getItems().get(0)).getName());
 
+        clickOn("#undoWelcomeButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
-        clickOn("#undoWelcomeButton");
         assertEquals(0, currentMedicationList.getItems().size());
         assertEquals(1, historicMedicationList.getItems().size());
         assertEquals("Asacol", ((Medication)historicMedicationList.getItems().get(0)).getName());
 
+        clickOn("#undoWelcomeButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
-        clickOn("#undoWelcomeButton");
         assertEquals(1, currentMedicationList.getItems().size());
         assertEquals("Asacol", ((Medication)currentMedicationList.getItems().get(0)).getName());
         assertEquals(0, historicMedicationList.getItems().size());
 
+        clickOn("#undoWelcomeButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
-        clickOn("#undoWelcomeButton");
         assertEquals(0, currentMedicationList.getItems().size());
         assertEquals(0, historicMedicationList.getItems().size());
     }
 
-    @Ignore
     @Test
     public void redoTest() {
-        enterMedicationPanel();
         //Action 1 to undo and then be discarded due to new changes
-        clickOn("#newMedicationField").write("Cidofovir");
-        clickOn("#addNewMedicationButton");
+        addNewMedicationToCurrentMedications("Cidofovir");
 
         //Action 2 to undo and then redo
         clickOn("Cidofovir");
         clickOn("#moveToHistoryButton");
 
         //Action 3 to undo and then redo
-        clickOn("#newMedicationField").write("Ibuprofen");
-        clickOn("#addNewMedicationButton");
+        addNewMedicationToCurrentMedications("Ibuprofen");
 
         clickOn("#undoWelcomeButton");
         clickOn("#undoWelcomeButton");
