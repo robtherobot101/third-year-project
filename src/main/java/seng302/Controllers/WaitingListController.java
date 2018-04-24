@@ -79,7 +79,6 @@ public class WaitingListController implements Initializable {
                     break;
                 }
             }
-
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
             }
@@ -113,6 +112,7 @@ public class WaitingListController implements Initializable {
         organTypeComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
         waitingList.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
+        stillWaitingOn.setCellValueFactory(new PropertyValueFactory<>("stillWaitingOn"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         organDeregisteredDate.setCellValueFactory(new PropertyValueFactory<>("organDeregisteredDate"));
 
@@ -135,22 +135,29 @@ public class WaitingListController implements Initializable {
             Boolean highlight = false;
             @Override
             public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
-                final TableRow<WaitingListItem> row = new TableRow<WaitingListItem>() {
+                return new TableRow<WaitingListItem>() {
                     @Override
                     public void updateItem(WaitingListItem item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
                             //do nothing
                         } else {
-                            if(item.getUserDonatingOrgan()){
+                            if(item.isDonatingOrgan(currentUser)){
                                 //TODO Highlight the row
+                                System.out.println("User is donating "+item.getOrganType());
                                 highlight = true;
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
+                                }
+
+                            }else{
+                                getStyleClass().remove("highlighted-row");
                             }
                         }
                     }
                 };
-                return row;
             }
         });
+
     }
 }

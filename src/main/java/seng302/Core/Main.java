@@ -266,6 +266,10 @@ public class Main extends Application {
         return found;
     }
 
+    public static WaitingListController getWaitingListController(){
+        return waitingListController;
+    }
+
     /**
      * Find a specific user from the user list based on their name.
      *
