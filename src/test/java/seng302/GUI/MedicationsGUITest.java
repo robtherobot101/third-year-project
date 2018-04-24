@@ -21,7 +21,7 @@ import seng302.Core.Medication;
 import java.time.LocalDate;
 
 public class MedicationsGUITest extends ApplicationTest {
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -84,6 +84,7 @@ public class MedicationsGUITest extends ApplicationTest {
     private void addNewMedicationToCurrentMedications(String medication) {
         //Add a new medication for the donor.
         clickOn("#newMedicationField").write(medication);
+        //clickOn("#userNameLabel");
         clickOn("#addNewMedicationButton");
     }
 
