@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="415.0" prefWidth="400.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.CreateAccountController">
+<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="415.0" prefWidth="400.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.CreateAccountController">
    <children>
-      <Label alignment="CENTER" layoutX="93.0" layoutY="24.0" text="Create a new donor account" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <Label alignment="CENTER" layoutX="93.0" layoutY="24.0" text="Create a new user account" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -89,8 +89,8 @@
                </font>
             </Label>
             <TextField fx:id="middleNamesInput" maxWidth="1.7976931348623157E308" promptText="eg. Neil,Patrick" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-            <DatePicker fx:id="dateOfBirthInput" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="7" />
             <TextField fx:id="lastNameInput" maxWidth="1.7976931348623157E308" promptText="eg. David" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <DatePicker fx:id="dateOfBirthInput" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="7" />
             <Label text="*Date of Birth" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
                <font>
                   <Font size="16.0" />

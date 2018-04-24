@@ -7,7 +7,7 @@
     ],
     "dateOfBirth": "01/02/1998",
     "dateOfDeath": "01/11/4000",
-    "creationTime": "11/04/2018, 21:38:04",
+    "creationTime": "18/04/2018, 14:38:10",
     "gender": "MALE",
     "height": 12.1,
     "weight": 50.45,
@@ -18,16 +18,17 @@
     "organs": [],
     "bloodPressure": "",
     "currentMedications": [],
-    "historicMedications": []
+    "historicMedications": [],
+    "waitingListItems": []
   },
   {
     "name": [
-      "Test Donor",
+      "Test User",
       "Testperson"
     ],
     "dateOfBirth": "01/04/1530",
     "dateOfDeath": "31/01/1565",
-    "creationTime": "11/04/2018, 21:38:04",
+    "creationTime": "18/04/2018, 14:38:10",
     "gender": "OTHER",
     "height": 1.234,
     "weight": 1.11111,
@@ -38,30 +39,32 @@
     "organs": [],
     "bloodPressure": "",
     "currentMedications": [],
-    "historicMedications": []
+    "historicMedications": [],
+    "waitingListItems": []
   },
   {
     "name": [
       "Singlename"
     ],
     "dateOfBirth": "12/06/1945",
-    "creationTime": "11/04/2018, 21:38:04",
+    "creationTime": "18/04/2018, 14:38:10",
     "height": -1.0,
     "weight": -1.0,
     "id": 2,
     "organs": [],
     "bloodPressure": "",
     "currentMedications": [],
-    "historicMedications": []
+    "historicMedications": [],
+    "waitingListItems": []
   },
   {
     "name": [
-      "Donor 2",
+      "User 2",
       "Person"
     ],
     "dateOfBirth": "01/12/1990",
     "dateOfDeath": "09/03/2090",
-    "creationTime": "11/04/2018, 21:38:04",
+    "creationTime": "18/04/2018, 14:38:10",
     "gender": "FEMALE",
     "height": 2.0,
     "weight": 60.0,
@@ -72,7 +75,8 @@
     "organs": [],
     "bloodPressure": "",
     "currentMedications": [],
-    "historicMedications": []
+    "historicMedications": [],
+    "waitingListItems": []
   },
   {
     "name": [
@@ -83,7 +87,7 @@
     ],
     "dateOfBirth": "01/11/3000",
     "dateOfDeath": "01/11/4000",
-    "creationTime": "11/04/2018, 21:38:04",
+    "creationTime": "18/04/2018, 14:38:10",
     "gender": "OTHER",
     "height": 0.1,
     "weight": 12.4,
@@ -94,20 +98,22 @@
     "organs": [],
     "bloodPressure": "",
     "currentMedications": [],
-    "historicMedications": []
+    "historicMedications": [],
+    "waitingListItems": []
   },
   {
     "name": [
       "extra"
     ],
     "dateOfBirth": "01/01/1000",
-    "creationTime": "11/04/2018, 21:38:04",
+    "creationTime": "18/04/2018, 14:38:10",
     "height": -1.0,
     "weight": -1.0,
     "id": 5,
     "organs": [],
     "bloodPressure": "",
     "currentMedications": [],
-    "historicMedications": []
+    "historicMedications": [],
+    "waitingListItems": []
   }
 ]

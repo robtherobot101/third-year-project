@@ -1,5 +1,6 @@
 package seng302.GUI;
 
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -10,8 +11,9 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
+import seng302.Core.Medication;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.testfx.api.FxAssert.assertContext;
@@ -63,13 +65,11 @@ public class MedicationsTest extends ApplicationTest {
     /**
      * Method that can be called to path correctly to the stage to be tested.
      *
-     * TODO sort out why this crashes
-     *
      * Hot tip: All tests start on the app launch screen and we need to navigate to the area to be tested.
      */
     private void enterMedicationPanel() {
 
-        Main.donors.clear();
+        Main.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -95,19 +95,32 @@ public class MedicationsTest extends ApplicationTest {
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
 
-        TableView searchDonorTable = lookup("#profileTable").queryTableView();
-        Donor topResult = (Donor) searchDonorTable.getItems().get(0);
-        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Bobby Dong Flame"));
+
+        //Click on the Created User in clinician table and enter the medications panel.
+        doubleClickOn("Bobby Dong Flame");
+        clickOn("#medicationsButton");
 
     }
 
 
 
     /**
-     * Add a simple medication and verify it appears
+     * Add a simple medication and verify it is correct
      */
     @Test
-    public void testInputMedication(){
+    public void addMedicationForUser(){
+
         enterMedicationPanel();
+
+        //Add a new medication for the user.
+
+        clickOn("#newMedicationField").write("Asacol");
+        clickOn("#userNameLabel");
+        clickOn("#addNewMedicationButton");
+
+        //Check if medication added is correct.
+        ListView currentMedicationList = lookup("#currentListView").queryListView();
+        Medication topResult = (Medication) currentMedicationList.getItems().get(0);
+        org.junit.Assert.assertTrue(topResult.getName().equalsIgnoreCase("Asacol"));
     }
 }
