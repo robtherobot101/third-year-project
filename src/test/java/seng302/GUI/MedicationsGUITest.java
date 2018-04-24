@@ -84,7 +84,7 @@ public class MedicationsGUITest extends ApplicationTest {
     private void addNewMedicationToCurrentMedications(String medication) {
         //Add a new medication for the donor.
         clickOn("#newMedicationField").write(medication);
-        //clickOn("#userNameLabel");
+        clickOn("#userNameLabel");
         clickOn("#addNewMedicationButton");
     }
 
