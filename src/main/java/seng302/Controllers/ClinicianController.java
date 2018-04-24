@@ -100,7 +100,7 @@ public class ClinicianController implements Initializable {
 
     private int resultsPerPage;
     private int page = 1;
-    private ArrayList<Donor> donorsFound;
+    private ArrayList<User> donorsFound;
 
     private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
 
@@ -108,7 +108,7 @@ public class ClinicianController implements Initializable {
     private ArrayList<Clinician> clinicianRedoStack = new ArrayList<>();
 
 
-    private ObservableList<Donor> currentPage = FXCollections.observableArrayList();
+    private ObservableList<User> currentPage = FXCollections.observableArrayList();
 
     ObservableList<Object> donors;
 
@@ -137,7 +137,7 @@ public class ClinicianController implements Initializable {
      * Refreshes the results in the donor profile table to match the values
      * in the main Donor ArrayList in Main
      */
-    public void updateDonorTable(){
+    public void updateUserTable(){
         updatePageButtons();
         displayCurrentPage();
         updateResultsSummary();
@@ -155,7 +155,7 @@ public class ClinicianController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Exiting GUI");
-            for(Stage donorWindow: Main.getCliniciansDonorWindows()){
+            for(Stage donorWindow: Main.getCliniciansUserWindows()){
                 donorWindow.close();
             }
             Main.setScene(TFScene.login);
@@ -317,8 +317,8 @@ public class ClinicianController implements Initializable {
      * Updates the list of donors found from the search
      * @param searchTerm the search term
      */
-    public void updateFoundDonors(String searchTerm){
-        donorsFound = Main.getDonorsByNameAlternative(searchTerm);
+    public void updateFoundUsers(String searchTerm){
+        donorsFound = Main.getUsersByNameAlternative(searchTerm);
         donors = FXCollections.observableArrayList(donorsFound);
 
     }
@@ -329,12 +329,12 @@ public class ClinicianController implements Initializable {
      *
      * @return Returns an ObservableList of the donors to show.
      */
-    public ObservableList<Donor> getCurrentPage(){
+    public ObservableList<User> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
         int lastIndex = Math.min(donors.size(), page*resultsPerPage);
         if(lastIndex<firstIndex){
             System.out.println(firstIndex+" to "+lastIndex+ " is an illegal page");
-            return FXCollections.observableArrayList(new ArrayList<Donor>());
+            return FXCollections.observableArrayList(new ArrayList<User>());
         }
         return FXCollections.observableArrayList(new ArrayList(donors.subList(firstIndex, lastIndex)));
     }
@@ -344,7 +344,7 @@ public class ClinicianController implements Initializable {
      */
     public void nextPage(){
         page++;
-        updateDonorTable();
+        updateUserTable();
     }
 
     /**
@@ -369,7 +369,7 @@ public class ClinicianController implements Initializable {
      */
     public void previousPage(){
         page--;
-        updateDonorTable();
+        updateUserTable();
     }
 
     /**
@@ -394,8 +394,8 @@ public class ClinicianController implements Initializable {
         resultsPerPage = 15;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
-            updateFoundDonors(newValue);
-            updateDonorTable();
+            updateFoundUsers(newValue);
+            updateUserTable();
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -415,8 +415,8 @@ public class ClinicianController implements Initializable {
 
         Main.setClinicianController(this);
 
-        updateFoundDonors("");
-        updateDonorTable();
+        updateFoundUsers("");
+        updateUserTable();
 
         profileTable.setItems(currentPage);
 
@@ -426,22 +426,22 @@ public class ClinicianController implements Initializable {
          * Adds a mouse click listener to each row in the table so that a donor window
          * is opened when the event is triggered
          */
-        profileTable.setRowFactory(new Callback<TableView<Donor>, TableRow<Donor>>() {
+        profileTable.setRowFactory(new Callback<TableView<User>, TableRow<User>>() {
             @Override
-            public TableRow<Donor> call(TableView<Donor> tableView) {
-                final TableRow<Donor> row = new TableRow<Donor>() {
+            public TableRow<User> call(TableView<User> tableView) {
+                final TableRow<User> row = new TableRow<User>() {
                     private Tooltip tooltip = new Tooltip();
                     @Override
-                    public void updateItem(Donor donor, boolean empty) {
-                        super.updateItem(donor, empty);
-                        if (donor == null || empty) {
+                    public void updateItem(User user, boolean empty) {
+                        super.updateItem(user, empty);
+                        if (user == null || empty) {
                             setTooltip(null);
                         } else {
-                            if (donor.getOrgans().isEmpty()) {
-                                tooltip.setText(donor.getName() + ".");
+                            if (user.getOrgans().isEmpty()) {
+                                tooltip.setText(user.getName() + ".");
                             } else {
-                                String organs = donor.getOrgans().toString();
-                                tooltip.setText(donor.getName() + ". Donor: " + organs.substring(1, organs.length() - 1));
+                                String organs = user.getOrgans().toString();
+                                tooltip.setText(user.getName() + ". Donor: " + organs.substring(1, organs.length() - 1));
                             }
                             setTooltip(tooltip);
                         }
@@ -452,15 +452,15 @@ public class ClinicianController implements Initializable {
                         System.out.println(row.getItem());
                         Stage stage = new Stage();
 
-                        Main.addCliniciansDonorWindow(stage);
+                        Main.addCliniciansUserWindow(stage);
                         stage.initModality(Modality.NONE);
 
                         try{
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
-                            Main.setCurrentDonor(row.getItem());
-                            userWindowController.populateDonorFields();
+                            Main.setCurrentUser(row.getItem());
+                            userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             Main.medicationsViewForClinician();
 
