@@ -290,36 +290,37 @@ public class UserWindowController implements Initializable {
     public void populateHistoryTable() {
         userHistoryLabel.setText("History of actions for " + currentUser.getName());
         String[][] userHistory = History.getUserHistory(currentUser.getId());
-
         ArrayList<TreeItem<String>> treeItems = new ArrayList<>();
-        TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0, userHistory[0][0].length() - 1));
-        TreeItem<String> outerItem1 = new TreeItem<>("Create at " + userHistory[0][1]);
-        TreeItem<String> outerItem2 = new TreeItem<>("Login at " + userHistory[0][1]);
-        sessionNode.getChildren().add(outerItem1);
-        sessionNode.getChildren().add(outerItem2);
-        treeItems.add(sessionNode);
+        if(userHistory[0][0] != null) {
+            TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0, userHistory[0][0].length() - 1));
+            TreeItem<String> outerItem1 = new TreeItem<>("Create at " + userHistory[0][1]);
+            TreeItem<String> outerItem2 = new TreeItem<>("Login at " + userHistory[0][1]);
+            sessionNode.getChildren().add(outerItem1);
+            sessionNode.getChildren().add(outerItem2);
+            treeItems.add(sessionNode);
 
-        int sessionNumber = 2;
-        for (int i = 2; i < userHistory.length; i++) {
-            if (!(userHistory[i][4] == null) && !(userHistory[i][4].equals("create"))){
-                switch (userHistory[i][4]) {
-                    case "update":
-                    case "undo":
-                    case "redo":
-                    case "quit":
-                        sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]));
-                        break;
-                    case "updateAccountSettings":
-                        sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
-                            " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
-                        break;
-                    case "login":
-                        sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
-                            1));
-                        treeItems.add(sessionNode);
-                        sessionNode.getChildren().add(new TreeItem<>("Login at " + userHistory[i][1]));
-                        sessionNumber++;
-                        break;
+            int sessionNumber = 2;
+            for (int i = 2; i < userHistory.length; i++) {
+                if (!(userHistory[i][4] == null) && !(userHistory[i][4].equals("create"))) {
+                    switch (userHistory[i][4]) {
+                        case "update":
+                        case "undo":
+                        case "redo":
+                        case "quit":
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]));
+                            break;
+                        case "updateAccountSettings":
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
+                                    " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
+                            break;
+                        case "login":
+                            sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
+                                    1));
+                            treeItems.add(sessionNode);
+                            sessionNode.getChildren().add(new TreeItem<>("Login at " + userHistory[i][1]));
+                            sessionNumber++;
+                            break;
+                    }
                 }
             }
         }
@@ -343,7 +344,7 @@ public class UserWindowController implements Initializable {
                     return new ReadOnlyStringWrapper("Updated user attributes for user " + userName);
             }
             if (toCheck.substring(0, 5).equals("Login")) {
-                return new ReadOnlyStringWrapper("User with id: " + userHistory[0][3] + " logged in successfully.");
+                return new ReadOnlyStringWrapper("User with id: " + currentUser.getId() + " logged in successfully.");
             }
             switch (toCheck.substring(0, 4)) {
                 case "Undo":
