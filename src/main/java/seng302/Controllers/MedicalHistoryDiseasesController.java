@@ -27,12 +27,11 @@ import seng302.Core.User;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class MedicalHistoryController implements Initializable {
+public class MedicalHistoryDiseasesController implements Initializable {
     @FXML
     private DatePicker dateOfDiagnosisInput;
     @FXML
@@ -63,7 +62,7 @@ public class MedicalHistoryController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setMedicalHistoryController(this);
+        Main.setMedicalHistoryDiseasesController(this);
         setupListeners();
 
 
@@ -75,7 +74,7 @@ public class MedicalHistoryController implements Initializable {
      * Also checks for invalid input in both the disease text field and date field.
      */
     public void addNewDisease() {
-        System.out.println("MedicalHistoryController: Adding new disease");
+        System.out.println("MedicalHistoryDiseasesController: Adding new disease");
         // Check for empty disease name TODO could be a listener to disable the add button
         if (newDiseaseTextField.getText() == "") {
             DialogWindowController.showWarning("Invalid Disease", "",
@@ -105,7 +104,7 @@ public class MedicalHistoryController implements Initializable {
             } else {
                 addCurrentDisease(diseaseToAdd);
             }
-            System.out.println("MedicalHistoryController: Finished adding new disease");
+            System.out.println("MedicalHistoryDiseasesController: Finished adding new disease");
         }
     }
 
@@ -133,7 +132,7 @@ public class MedicalHistoryController implements Initializable {
      * Deletes a disease from either the current or cured list views for the donor.
      */
     public void deleteDisease() {
-        System.out.println("MedicalHistoryController: Deleting disease");
+        System.out.println("MedicalHistoryDiseasesController: Deleting disease");
 
         if (currentDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
 
@@ -198,7 +197,7 @@ public class MedicalHistoryController implements Initializable {
         }
     }
 
-    private void updateDiseasePopUp(Disease selectedDisease) {
+    private void updateDiseasePopUp(Disease selectedDisease, boolean current) {
 
         // Create the custom dialog.
         Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
@@ -250,7 +249,12 @@ public class MedicalHistoryController implements Initializable {
                     DialogWindowController.showWarning("Invalid Disease", "",
                             "Diagnosis date occurs in the future.");
                     dateOfDiagnosis.getEditor().clear();
-                    updateDiseasePopUp(selectedDisease);
+                    if(current) {
+                        updateDiseasePopUp(selectedDisease, true);
+                    } else {
+                        updateDiseasePopUp(selectedDisease, false);
+                    }
+
                 } else {
                     return new Pair<>(diseaseName.getText(), dateOfDiagnosis.getValue());
                 }
@@ -264,6 +268,14 @@ public class MedicalHistoryController implements Initializable {
             System.out.println("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
             selectedDisease.setName(newDiseaseDetails.getKey());
             selectedDisease.setDiagnosisDate(newDiseaseDetails.getValue());
+            if(current) {
+                currentDiseaseItems.remove(selectedDisease);
+                currentDiseaseItems.add(selectedDisease);
+            } else {
+                curedDiseaseItems.remove(selectedDisease);
+                curedDiseaseItems.add(selectedDisease);
+            }
+
         });
     }
 
@@ -277,7 +289,7 @@ public class MedicalHistoryController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-                updateDiseasePopUp(selectedDisease);
+                updateDiseasePopUp(selectedDisease, true);
 
             }
         });
@@ -328,7 +340,7 @@ public class MedicalHistoryController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-                updateDiseasePopUp(selectedDisease);
+                updateDiseasePopUp(selectedDisease, false);
             }
         });
         curedDiseaseContextMenu.getItems().add(updateCuredDiseaseMenuItem);
@@ -478,6 +490,7 @@ public class MedicalHistoryController implements Initializable {
         newDiseaseTextField.setVisible(shown);
         deleteDiseaseButton.setVisible(shown);
         saveDiseaseButton.setVisible(shown);
+        isCuredCheckBox.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
     }
@@ -488,7 +501,7 @@ public class MedicalHistoryController implements Initializable {
      */
     public void setCurrentUser(User currentDonor) {
         this.currentDonor = currentDonor;
-        donorNameLabel.setText("Donor: " + currentDonor.getName());
+        donorNameLabel.setText("User: " + currentDonor.getName());
 
         currentDiseaseItems = FXCollections.observableArrayList();
         currentDiseaseItems.addAll(currentDonor.getCurrentDiseases());
@@ -501,6 +514,6 @@ public class MedicalHistoryController implements Initializable {
 
         //unsavedDonorDiseases = currentDonor.getDiseases();
         //pastDiseasesCopy = currentDonor.getCuredDiseases();
-        System.out.println("MedicalHistoryController: Setting donor of Medical History pane...");
+        System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
     }
 }
