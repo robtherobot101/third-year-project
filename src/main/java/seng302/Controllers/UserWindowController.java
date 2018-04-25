@@ -82,6 +82,23 @@ public class UserWindowController implements Initializable {
         this.stage = stage;
     }
 
+    /**
+     * Update the title of the window.
+     * @param title The title string.
+     */
+    public void updateTitle(String title){
+        stage.setTitle(title);
+    }
+
+    /**
+     * Append a * to the title bar when a change is made
+     */
+    public void updateTitle(){
+        if(!stage.getTitle().endsWith("*")) {
+            stage.setTitle(stage.getTitle() + "*");
+        }
+    }
+
     public ArrayList<User> getUserUndoStack() {
         return attributeUndoStack;
     }
@@ -104,7 +121,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
         bloodPressureLabel.setText("");
-        stage.setTitle("QQQQQQQQQQQ");
+        updateTitle("User: " + currentUser.getName());
     }
 
     /**
