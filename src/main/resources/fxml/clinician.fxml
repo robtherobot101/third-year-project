@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
+<GridPane stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.ClinicianController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -113,21 +113,26 @@
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="183.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
+                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="260.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="260.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="medicationsButton" alignment="BASELINE_LEFT" layoutX="90.0" layoutY="95.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="112.0">
+                        <Button fx:id="medicationsButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="160.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="160.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="58.0" layoutY="193.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
+                        <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="210.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="210.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
+                  <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant  List" textAlignment="CENTER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                     </children>
                 </AnchorPane>
                 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: #1d3549;">
@@ -155,6 +160,11 @@
                                 <Font size="36.0" />
                             </font>
                         </Label>
+                  <Label layoutX="6.0" layoutY="257.0" text="→">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
                     </children>
                 </AnchorPane>
             </children>
