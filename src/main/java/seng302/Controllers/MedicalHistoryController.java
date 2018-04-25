@@ -22,8 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import seng302.Core.Disease;
-import seng302.Core.Donor;
 import seng302.Core.Main;
+import seng302.Core.User;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -57,7 +57,7 @@ public class MedicalHistoryController implements Initializable {
     private Button saveDiseaseButton;
 
 
-    private Donor currentDonor;
+    private User currentDonor;
 
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
 
@@ -187,7 +187,7 @@ public class MedicalHistoryController implements Initializable {
             currentDonor.getCuredDiseases().clear();
             currentDonor.getCuredDiseases().addAll(curedDiseaseItems);
 
-            Main.saveUsers(Main.getDonorPath(), true);
+            Main.saveUsers(Main.getUserPath(), true);
             //TODO create update for diseases for history
 //            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
 //            History.printToFile(streamOut, text);
@@ -486,7 +486,7 @@ public class MedicalHistoryController implements Initializable {
      * Function to set the current donor of this class to that of the instance of the application.
      * @param currentDonor The donor to set the current donor.
      */
-    public void setCurrentDonor(Donor currentDonor) {
+    public void setCurrentUser(User currentDonor) {
         this.currentDonor = currentDonor;
         donorNameLabel.setText("Donor: " + currentDonor.getName());
 

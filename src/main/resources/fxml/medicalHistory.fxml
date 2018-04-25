@@ -13,15 +13,15 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicalHistoryController">
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicalHistoryController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="38.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="0.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="0.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
@@ -66,17 +66,17 @@
          <GridPane.margin>
             <Insets right="20.0" />
          </GridPane.margin></Button>
-      <Label text="Medical History" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+      <Label text="Diseases" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
          <font>
-            <Font name="System Bold" size="28.0" />
+            <Font name="System Bold" size="36.0" />
          </font>
          <GridPane.margin>
-            <Insets bottom="30.0" />
+            <Insets bottom="30.0" top="20.0" />
          </GridPane.margin>
       </Label>
       <Label fx:id="donorNameLabel" text="Donor: &quot;LadiesMan217&quot;" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <GridPane.margin>
-            <Insets top="20.0" />
+            <Insets top="45.0" />
          </GridPane.margin>
       </Label>
       <DatePicker fx:id="dateOfDiagnosisInput" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
@@ -89,16 +89,19 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <CheckBox fx:id="chronicCheckBox" mnemonicParsing="false" text="Chronic Disease" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <CheckBox fx:id="chronicCheckBox" mnemonicParsing="false" text="Chronic Disease" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
-            <Insets top="58.0" />
+            <Insets left="5.0" top="45.0" />
          </GridPane.margin>
       </CheckBox>
-      <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#deleteDisease" prefHeight="32.0" prefWidth="111.0" text="Delete Disease" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#deleteDisease" prefHeight="32.0" prefWidth="111.0" text="Delete Disease" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
       <TableView fx:id="curedDiseaseTableView" prefHeight="252.0" prefWidth="209.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
         <columns>
-          <TableColumn fx:id="curedDiagnosisColumn" prefWidth="162.0" text="Diagnosis" />
-          <TableColumn fx:id="curedDateColumn" prefWidth="95.0" text="Date" />
+          <TableColumn fx:id="curedDiagnosisColumn" prefWidth="145.0" text="Diagnosis" />
+          <TableColumn fx:id="curedDateColumn" prefWidth="112.0" text="Date" />
         </columns>
          <GridPane.margin>
             <Insets left="12.0" right="40.0" top="15.0" />
@@ -106,13 +109,24 @@
       </TableView>
       <TableView fx:id="currentDiseaseTableView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="2">
          <columns>
-            <TableColumn fx:id="currentDiagnosisColumn" prefWidth="163.0" text="Diagnosis" />
-            <TableColumn fx:id="currentDateColumn" prefWidth="81.0" text="Date" />
+            <TableColumn fx:id="currentDiagnosisColumn" prefWidth="146.0" text="Diagnosis" />
+            <TableColumn fx:id="currentDateColumn" prefWidth="98.0" text="Date" />
          </columns>
          <GridPane.margin>
             <Insets left="12.0" right="15.0" top="15.0" />
          </GridPane.margin>
       </TableView>
-      <CheckBox fx:id="isCuredCheckBox" mnemonicParsing="false" text="Is cured?" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+      <CheckBox fx:id="isCuredCheckBox" mnemonicParsing="false" text="Cured" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets bottom="40.0" left="5.0" />
+         </GridPane.margin></CheckBox>
+      <Label text="Medical History" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <GridPane.margin>
+            <Insets bottom="55.0" />
+         </GridPane.margin>
+      </Label>
    </children>
 </GridPane>

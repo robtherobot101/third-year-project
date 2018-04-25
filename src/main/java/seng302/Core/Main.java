@@ -119,10 +119,7 @@ public class Main extends Application {
         userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
 
-        medicationsController.setCurrentDonor(currentDonor);
-        medicationsController.populateMedications(true);
-
-        medicalHistoryController.setCurrentDonor(currentDonor);
+        medicalHistoryController.setCurrentUser(currentUser);
         //medicalHistoryController.populateDiseases(true);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
@@ -166,8 +163,6 @@ public class Main extends Application {
         medicalHistoryController.setControlsShown(true);
     }
 
-    public static void setCurrentDonorForAccountSettings(Donor currentDonor) {
-        accountSettingsController.setCurrentDonor(currentDonor);
     public static void setCurrentUserForAccountSettings(User currentUser) {
         accountSettingsController.setCurrentUser(currentUser);
         accountSettingsController.populateAccountDetails();

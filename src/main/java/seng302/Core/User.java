@@ -85,7 +85,6 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
-        System.out.println(getName());
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
@@ -160,14 +159,14 @@ public class User {
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
-        this.currentMedications.addAll(donor.currentMedications);
-        this.historicMedications.addAll(donor.historicMedications);
+        this.currentMedications.addAll(user.currentMedications);
+        this.historicMedications.addAll(user.historicMedications);
 
         this.currentDiseases = new ArrayList<>();
-        this.currentDiseases.addAll(donor.getCurrentDiseases());
+        this.currentDiseases.addAll(user.getCurrentDiseases());
 
         this.curedDiseases = new ArrayList<>();
-        this.curedDiseases.addAll(donor.getCuredDiseases());
+        this.curedDiseases.addAll(user.getCuredDiseases());
     }
 
     public void copyFieldsFrom(User user) {
@@ -193,12 +192,12 @@ public class User {
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
         waitingListItems.addAll(waitingListItems);
-        historicMedications.addAll(donor.getHistoricMedications());
+        historicMedications.addAll(user.getHistoricMedications());
         currentDiseases.clear();
-        currentDiseases.addAll(donor.getCurrentDiseases());
+        currentDiseases.addAll(user.getCurrentDiseases());
 
         curedDiseases.clear();
-        curedDiseases.addAll(donor.getCuredDiseases());
+        curedDiseases.addAll(user.getCuredDiseases());
     }
 
     public boolean fieldsEqual(User user) {
@@ -217,24 +216,6 @@ public class User {
                 organs.equals(user.getOrgans()) &&
                 currentMedications.equals(user.getCurrentMedications()) &&
                 historicMedications.equals(user.getHistoricMedications())
-    public boolean fieldsEqual(Donor donor) {
-        return (Arrays.equals(name, donor.getNameArray()) &&
-                dateOfBirth == donor.getDateOfBirth() &&
-                dateOfDeath == donor.getDateOfDeath() &&
-                gender == donor.getGender() &&
-                bloodType == donor.getBloodType() &&
-                height == donor.getHeight() &&
-                weight == donor.getWeight() &&
-                stringEqual(region, donor.getRegion()) &&
-                stringEqual(currentAddress, donor.getCurrentAddress()) &&
-                smokerStatus == donor.getSmokerStatus() &&
-                stringEqual(bloodPressure, donor.getBloodPressure()) &&
-                alcoholConsumption == donor.getAlcoholConsumption() &&
-                organs.equals(donor.getOrgans()) &&
-                currentMedications.equals(donor.getCurrentMedications()) &&
-                historicMedications.equals(donor.getHistoricMedications()) &&
-                currentDiseases.equals(donor.getCurrentDiseases()) &&
-                curedDiseases.equals(donor.getCuredDiseases())
         );
     }
 
