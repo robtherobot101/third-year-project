@@ -1,12 +1,11 @@
 package seng302;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Controllers.UserWindowController;
-import seng302.Core.User;
-import seng302.Core.Main;
-import seng302.Core.Organ;
+import seng302.GUI.Controllers.UserWindowController;
+import seng302.User.User;
+import seng302.Generic.Main;
+import seng302.User.Attribute.Organ;
 
 import java.util.ArrayList;
 

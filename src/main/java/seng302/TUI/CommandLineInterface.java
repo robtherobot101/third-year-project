@@ -10,13 +10,17 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import seng302.Core.*;
-import seng302.Files.History;
+import seng302.Generic.*;
+import seng302.User.Attribute.BloodType;
+import seng302.User.Attribute.Gender;
+import seng302.Generic.History;
 
 import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.logging.*;
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -538,7 +542,7 @@ public class CommandLineInterface {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
                 if (Main.importUsers(path, true)) {
-                    System.out.println("Users imported from " + path + ".");
+                    System.out.println("User imported from " + path + ".");
                     return true;
                 } else {
                     System.out.println("Failed to import from " + path + ". Make sure the program has access to this file.");
@@ -575,7 +579,7 @@ public class CommandLineInterface {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
                 if (Main.saveUsers(path, true)) {
-                    System.out.println("Users saved to " + path + ".");
+                    System.out.println("User saved to " + path + ".");
                     return true;
                 } else {
                     System.out.println("Failed to save to " + path + ". Make sure the program has access to this file.");
@@ -689,7 +693,7 @@ public class CommandLineInterface {
                             + "Example valid usage: list");
                     break;
                 case "listorgans":
-                    System.out.println("This command displays all of the organs that are currently offered by each user. Users that are "
+                    System.out.println("This command displays all of the organs that are currently offered by each user. User that are "
                             + "not yet offering any organs are not shown.\n"
                             + "Example valid usage: listOrgans");
                     break;
