@@ -395,7 +395,15 @@ public class MedicationsController implements Initializable {
             if(newMedicationField.getText().length() == 0) {
                 return null;
             }
-            ArrayList<String> medicines = Mapi.autocomplete(newMedicationField.getText());
+            String medicine = newMedicationField.getText();
+            if (medicine.contains(" ")) {
+                String[] temp = medicine.split(" ");
+                medicine = temp[0];
+                for (int i = 1; i < temp.length; i++){
+                    medicine += "+" + temp[i];
+                }
+            }
+            ArrayList<String> medicines = Mapi.autocomplete(medicine);
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
             } else {
