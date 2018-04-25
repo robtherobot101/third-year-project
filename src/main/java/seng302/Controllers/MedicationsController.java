@@ -130,8 +130,13 @@ public class MedicationsController implements Initializable {
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
-                if (Mapi.autocomplete(medicationChoice.replace(' ', '+')).contains(medicationChoice)) {
-                    List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
+                String sentMedicationChoice = medicationChoice.replace(' ', '+');
+                sentMedicationChoice = sentMedicationChoice.replace("%", "%25");
+                System.out.println(medicationChoice);
+                System.out.println(sentMedicationChoice);
+                System.out.println(Mapi.autocomplete(sentMedicationChoice));
+                if (Mapi.autocomplete(sentMedicationChoice).contains(medicationChoice)) {
+                    List<String> activeIngredients = Mapi.activeIngredients(sentMedicationChoice);
                     System.out.print(activeIngredients);
                     currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
                     // NOTE: I have created another constructor in the Medications class for a medication with a name and
@@ -397,6 +402,7 @@ public class MedicationsController implements Initializable {
             }
             String medicine = newMedicationField.getText();
             medicine = medicine.replace(' ', '+');
+            medicine = medicine.replace("%", "%25");
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
