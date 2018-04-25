@@ -29,6 +29,7 @@ import static seng302.Core.Main.streamOut;
  * Saving, Undo, Redo, All input fields and more.
  */
 public class UserWindowController implements Initializable {
+    private Stage stage;
     @FXML
     private Label userDisplayText, settingAttributesLabel, ageLabel, bmiLabel, bloodPressureLabel, userHistoryLabel;
     @FXML
@@ -69,6 +70,18 @@ public class UserWindowController implements Initializable {
     private Button waitingListButton;
 
 
+    public UserWindowController(){
+        this.stage = Main.getStage();
+    }
+
+    /**
+     * Set the stage the controller is associated with
+     * @param stage The stage on which the window is shown
+     */
+    public void setStage(Stage stage){
+        this.stage = stage;
+    }
+
     public ArrayList<User> getUserUndoStack() {
         return attributeUndoStack;
     }
@@ -91,6 +104,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
         bloodPressureLabel.setText("");
+        stage.setTitle("QQQQQQQQQQQ");
     }
 
     /**

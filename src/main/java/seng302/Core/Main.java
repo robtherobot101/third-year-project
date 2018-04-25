@@ -555,6 +555,7 @@ public class Main extends Application {
         Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
         Main.stage = stage;
+        stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {
             for(Stage userWindow:cliniciansUserWindows){

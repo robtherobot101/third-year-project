@@ -474,6 +474,7 @@ public class ClinicianController implements Initializable {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
+                            userWindowController.setStage(stage);
                             Main.setCurrentUser(row.getItem());
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
