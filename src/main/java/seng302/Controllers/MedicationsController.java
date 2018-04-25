@@ -130,7 +130,7 @@ public class MedicationsController implements Initializable {
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
-                if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
+                if (Mapi.autocomplete(medicationChoice.replace(' ', '+')).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
                     System.out.print(activeIngredients);
                     currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
@@ -396,13 +396,7 @@ public class MedicationsController implements Initializable {
                 return null;
             }
             String medicine = newMedicationField.getText();
-            if (medicine.contains(" ")) {
-                String[] temp = medicine.split(" ");
-                medicine = temp[0];
-                for (int i = 1; i < temp.length; i++){
-                    medicine += "+" + temp[i];
-                }
-            }
+            medicine = medicine.replace(' ', '+');
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
