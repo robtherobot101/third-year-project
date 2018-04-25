@@ -2,6 +2,9 @@ package seng302.Core;
 
 import java.util.Date;
 
+/**
+ * An object to store the necessary data for the transplant waiting list
+ */
 public class TransplantWaitingListItem {
 
     private String Name;
@@ -10,6 +13,15 @@ public class TransplantWaitingListItem {
     private Organ organ;
     private long id;
 
+    /**
+     * Constructor of the object.
+     *
+     * @param Name The name of the receiver.
+     * @param region The region of the receiver.
+     * @param date The date that the organ was registered.
+     * @param organ The organ that the receiver needs.
+     * @param id The id of the receiver.
+     */
     public TransplantWaitingListItem(String Name, String region, Date date, Organ organ, long id) {
         this.Name = Name;
         this.region = region;

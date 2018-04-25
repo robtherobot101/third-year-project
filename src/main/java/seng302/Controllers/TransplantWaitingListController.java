@@ -33,6 +33,9 @@ public class TransplantWaitingListController implements Initializable {
     private ArrayList transplantList;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
 
+    /**
+     * returns to the clinician view
+     */
     public void returnView(){
         Main.setScene(TFScene.clinician);
     }
@@ -44,6 +47,9 @@ public class TransplantWaitingListController implements Initializable {
         Platform.exit();
     }
 
+    /**
+     * Updates the transplant waiting list table
+     */
     private void updateTransplantList() {
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
