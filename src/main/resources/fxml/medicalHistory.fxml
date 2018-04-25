@@ -5,20 +5,22 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicalHistoryController">
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicalHistoryController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
   </columnConstraints>
@@ -44,23 +46,15 @@
             <Insets right="120.0" top="48.0" />
          </GridPane.margin>
       </Button>
-      <ListView fx:id="curedDiseaseListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets left="12.0" right="140.0" top="15.0" />
-         </GridPane.margin></ListView>
-      <ListView fx:id="currentDiseaseListView" prefHeight="252.0" prefWidth="260.0" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets left="80.0" right="20.0" top="15.0" />
-         </GridPane.margin></ListView>
       <Label alignment="BASELINE_LEFT" text="Current Diseases" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
          <GridPane.margin>
-            <Insets bottom="250.0" left="80.0" />
+            <Insets bottom="250.0" left="145.0" />
          </GridPane.margin>
       </Label>
-      <Label alignment="BASELINE_LEFT" text="Previous Diseases (Cured)" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label alignment="BASELINE_LEFT" text="Previous Diseases (Cured)" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -68,7 +62,7 @@
             <Insets bottom="250.0" left="12.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="saveDiseaseButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+      <Button fx:id="saveDiseaseButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets right="20.0" />
          </GridPane.margin></Button>
@@ -85,21 +79,40 @@
             <Insets top="20.0" />
          </GridPane.margin>
       </Label>
-      <DatePicker fx:id="dateOfDiagnosisInput" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <DatePicker fx:id="dateOfDiagnosisInput" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="19.0" />
          </GridPane.margin>
       </DatePicker>
-      <Label fx:id="newDiseaseDateLabel" text="Diagnosed on" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label fx:id="newDiseaseDateLabel" text="Diagnosed on" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
       </Label>
-      <CheckBox fx:id="chronicCheckBox" mnemonicParsing="false" text="Chronic Disease" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <CheckBox fx:id="chronicCheckBox" mnemonicParsing="false" text="Chronic Disease" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="58.0" />
          </GridPane.margin>
       </CheckBox>
       <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#deleteDisease" prefHeight="32.0" prefWidth="111.0" text="Delete Disease" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <TableView fx:id="curedDiseaseTableView" prefHeight="252.0" prefWidth="209.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
+        <columns>
+          <TableColumn fx:id="curedDiagnosisColumn" prefWidth="162.0" text="Diagnosis" />
+          <TableColumn fx:id="curedDateColumn" prefWidth="95.0" text="Date" />
+        </columns>
+         <GridPane.margin>
+            <Insets left="12.0" right="40.0" top="15.0" />
+         </GridPane.margin>
+      </TableView>
+      <TableView fx:id="currentDiseaseTableView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="2">
+         <columns>
+            <TableColumn fx:id="currentDiagnosisColumn" prefWidth="163.0" text="Diagnosis" />
+            <TableColumn fx:id="currentDateColumn" prefWidth="81.0" text="Date" />
+         </columns>
+         <GridPane.margin>
+            <Insets left="12.0" right="15.0" top="15.0" />
+         </GridPane.margin>
+      </TableView>
+      <CheckBox fx:id="isCuredCheckBox" mnemonicParsing="false" text="Is cured?" GridPane.columnIndex="4" GridPane.rowIndex="1" />
    </children>
 </GridPane>
