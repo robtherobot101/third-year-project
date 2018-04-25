@@ -122,6 +122,7 @@ public class Main extends Application {
         waitingListController.populateWaitingList();
 
         medicationsController.initializeUser(currentUser);
+        controlViewForUser();
     }
 
     public static void addCurrentToMedicationUndoStack() {
@@ -133,17 +134,21 @@ public class Main extends Application {
     }
 
     /**
-     * Sets the medications view to be unable to edit for a user.
+     * Sets which controls for each panel are visible to the user.
      */
-    public static void medicationsViewForUser() {
+    public static void controlViewForUser() {
         medicationsController.setControlsShown(false);
+        userWindowController.setControlsShown(false);
+        waitingListController.setControlsShown(false);
     }
 
     /**
-     * Sets the medications view to be able to edit for a clinican.
+     * Sets which controls for each panel are visible to the clinician.
      */
-    public static void medicationsViewForClinician() {
+    public static void controlViewForClinician() {
         medicationsController.setControlsShown(true);
+        userWindowController.setControlsShown(true);
+        waitingListController.setControlsShown(true);
     }
 
     public static void setCurrentUserForAccountSettings(User currentUser) {

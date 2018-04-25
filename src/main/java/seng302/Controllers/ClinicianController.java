@@ -1,16 +1,9 @@
 package seng302.Controllers;
 
-import com.sun.javafx.scene.control.Logging;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,8 +15,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import seng302.Core.*;
@@ -31,8 +22,6 @@ import seng302.Core.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import static seng302.Core.Main.streamOut;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -472,7 +461,7 @@ public class ClinicianController implements Initializable {
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
-                            Main.medicationsViewForClinician();
+                            Main.controlViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);

@@ -48,6 +48,9 @@ public class WaitingListController implements Initializable {
     @FXML
     private TableColumn organDeregisteredDate;
 
+    @FXML
+    private Label organComboBoxLabel;
+
     private User currentUser;
 
 
@@ -159,5 +162,12 @@ public class WaitingListController implements Initializable {
             }
         });
 
+    }
+
+    public void setControlsShown(boolean shown) {
+        this.registerOrganButton.setVisible(shown);
+        this.deregisterOrganButton.setVisible(shown);
+        this.organTypeComboBox.setVisible(shown);
+        this.organComboBoxLabel.setVisible(shown);
     }
 }

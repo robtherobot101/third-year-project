@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -565,7 +565,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false">
+            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" AnchorPane.rightAnchor="371.0">
                <font>
                   <Font size="14.0" />
                </font>
