@@ -1,16 +1,9 @@
 package seng302.Controllers;
 
-import com.sun.javafx.scene.control.Logging;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,8 +15,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import seng302.Core.*;
@@ -31,8 +22,6 @@ import seng302.Core.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import static seng302.Core.Main.streamOut;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -90,10 +79,10 @@ public class ClinicianController implements Initializable {
     private Button accountSettingsButton;
 
     @FXML
-    private Button undoButton;
+    private Button undoWelcomeButton;
 
     @FXML
-    private Button redoButton;
+    private Button redoWelcomeButton;
 
     @FXML
     private GridPane mainPane;
@@ -126,11 +115,19 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
+        updateTitle();
         System.out.print(clinician);
         nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
+    }
+
+    /**
+     * Update the window title
+     */
+    private void updateTitle(){
+        Main.setTitle("Clinician: " + clinician.getName());
     }
 
     /**
@@ -213,6 +210,7 @@ public class ClinicianController implements Initializable {
         clinician.setRegion(regionInput.getText());
         updatedSuccessfully.setOpacity(1.0);
         fadeIn.playFromStart();
+        updateTitle();
 
         System.out.println("Updated to: " + clinician);
     }
@@ -242,10 +240,10 @@ public class ClinicianController implements Initializable {
     public void undo(){
         clinician = clinicianUndo(clinician);
         updateDisplay();
-        redoButton.setDisable(false);
+        redoWelcomeButton.setDisable(false);
 
         if (clinicianUndoStack.isEmpty()){
-            undoButton.setDisable(true);
+            undoWelcomeButton.setDisable(true);
         }
     }
 
@@ -255,9 +253,9 @@ public class ClinicianController implements Initializable {
     public void redo(){
         clinician = clinicianRedo(clinician);
         updateDisplay();
-        undoButton.setDisable(false);
+        undoWelcomeButton.setDisable(false);
         if(clinicianRedoStack.isEmpty()){
-            redoButton.setDisable(true);
+            redoWelcomeButton.setDisable(true);
         }
     }
 
@@ -284,8 +282,8 @@ public class ClinicianController implements Initializable {
     public void addClinicianToUndoStack(Clinician clinician) {
         Clinician prevClinician = new Clinician(clinician);
         clinicianUndoStack.add(prevClinician);
-        if (undoButton.isDisable()) {
-            undoButton.setDisable(false);
+        if (undoWelcomeButton.isDisable()) {
+            undoWelcomeButton.setDisable(false);
         }
     }
 

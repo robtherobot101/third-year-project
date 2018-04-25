@@ -12,6 +12,9 @@ import java.util.*;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -639,6 +642,14 @@ public class Main extends Application {
             }
             stage.setResizable(false);
         }
+    }
+
+    /**
+     * Update the title of the window.
+     * @param title The title string.
+     */
+    public static void setTitle(String title){
+        stage.setTitle(title);
     }
 
     /**
