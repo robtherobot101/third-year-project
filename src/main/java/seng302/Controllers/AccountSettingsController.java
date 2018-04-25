@@ -3,9 +3,13 @@ package seng302.Controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.Core.Donor;
+import seng302.Core.User;
 import seng302.Core.Main;
+import seng302.Core.TFScene;
 import seng302.Files.History;
 
 import java.net.URL;
@@ -16,37 +20,30 @@ import java.util.ResourceBundle;
  * Class to handle all the logic for the Account Settings window.
  */
 public class AccountSettingsController implements Initializable {
+    @FXML
+    private TextField usernameField, emailField, passwordField;
+    @FXML
+    private Button updateButton, cancelButton;
+    @FXML
+    private Label userNameLabel, errorLabel;
+    @FXML
+    private AnchorPane background;
 
+    private User currentUser;
 
-    private Donor currentDonor;
-
-    public void setCurrentDonor(Donor currentDonor) {
-        this.currentDonor = currentDonor;
-        donorNameLabel.setText(currentDonor.getName());
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        userNameLabel.setText("user: " + currentUser.getName());
     }
 
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private TextField passwordField;
-    @FXML
-    private Button updateButton;
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private Label donorNameLabel;
-
-
     /**
-     * Populates the account details inputs based on the current donor's attributes.
+     * Populates the account details inputs based on the current user's attributes.
      */
     public void populateAccountDetails() {
-        donorNameLabel.setText(currentDonor.getName());
-        usernameField.setText(currentDonor.getUsername());
-        emailField.setText(currentDonor.getEmail());
-        passwordField.setText(currentDonor.getPassword());
+        userNameLabel.setText("user: " + currentUser.getName());
+        usernameField.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "");
+        emailField.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
+        passwordField.setText(currentUser.getPassword());
     }
 
     /**
@@ -54,27 +51,43 @@ public class AccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update account settings ? ");
-        alert.setContentText("The changes made will take place instantly.");
-
+        for (User user: Main.users) {
+            if (user != currentUser) {
+                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
+                    errorLabel.setText("That username is already taken.");
+                    errorLabel.setVisible(true);
+                    return;
+                } else if (!emailField.getText().isEmpty() && emailField.getText().equals(user.getEmail())) {
+                    errorLabel.setText("There is already a user account with that email.");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+            }
+        }
+        errorLabel.setVisible(false);
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
+            currentUser.setUsername(usernameField.getText());
+            currentUser.setEmail(emailField.getText());
+            currentUser.setPassword(passwordField.getText());
 
-            currentDonor.setUsername(usernameField.getText());
-            currentDonor.setEmail(emailField.getText());
-            currentDonor.setPassword(passwordField.getText());
-
-            String text = History.prepareFileStringGUI(currentDonor.getId(), "updateAccountSettings");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "updateAccountSettings");
             History.printToFile(Main.streamOut, text);
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            Main.setCurrentDonor(currentDonor);
+            Main.setCurrentUser(currentUser);
+            Main.saveUsers(Main.getUserPath(), true);
         } else {
             alert.close();
         }
+    }
+
+    /**
+     * Removes focus from all fields.
+     */
+    public void requestFocus() {
+        background.requestFocus();
     }
 
     /**
@@ -85,10 +98,23 @@ public class AccountSettingsController implements Initializable {
         stage.close();
     }
 
+    private void updateUpdateButtonState() {
+        updateButton.setDisable((usernameField.getText().isEmpty() && emailField.getText().isEmpty())|| passwordField.getText().isEmpty());
+    }
+
+    public void setEnterEvent() {
+        updateButton.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER && !updateButton.isDisable()) {
+                updateAccountDetails();
+            }
+        });
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setAccountSettingsController(this);
-
+        usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
+        passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
+        emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
     }
 }

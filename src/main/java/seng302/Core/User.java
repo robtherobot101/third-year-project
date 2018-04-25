@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
- * This class contains information about organ donors.
+ * This class contains information about organ users.
  */
-public class Donor {
+public class User {
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
-    public static final String tableHeader = "Donor ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
+    public static final String tableHeader = "User ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
             "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
     private String[] name;
     private LocalDate dateOfBirth, dateOfDeath;
@@ -36,7 +36,9 @@ public class Donor {
     private ArrayList<Disease> currentDiseases;
     private ArrayList<Disease> curedDiseases;
 
-    public Donor(String name, LocalDate dateOfBirth) {
+    private ArrayList<WaitingListItem> waitingListItems;
+
+    public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
@@ -52,9 +54,10 @@ public class Donor {
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
         this.curedDiseases = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
     }
 
-    public Donor(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
+    public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
         String currentAddress) throws DateTimeException, IllegalArgumentException {
         this.name = name.split(",");
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
@@ -69,11 +72,12 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
         this.curedDiseases = new ArrayList<>();
     }
 
-    public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
         this.name[0] = firstName;
@@ -99,9 +103,10 @@ public class Donor {
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
         this.curedDiseases = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
     }
 
-    public Donor(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
         double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
@@ -125,32 +130,36 @@ public class Donor {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
         this.curedDiseases = new ArrayList<>();
     }
 
     /**
      * Used to create a deep copy of the object.
-     * @param donor The donor to make a copy of
+     * @param user The user to make a copy of
      */
-    public Donor(Donor donor) {
-        this.name = donor.name;
-        this.dateOfBirth = donor.dateOfBirth;
-        this.dateOfDeath = donor.dateOfDeath;
-        this.gender = donor.gender;
-        this.height = donor.height;
-        this.weight = donor.weight;
-        this.bloodType = donor.bloodType;
-        this.region = donor.region;
-        this.currentAddress = donor.currentAddress;
-        this.creationTime = donor.creationTime;
-        this.id = donor.id;
-        this.smokerStatus = donor.smokerStatus;
-        this.bloodPressure = donor.bloodPressure;
-        this.alcoholConsumption = donor.alcoholConsumption;
-        this.organs.addAll(donor.organs);
+    public User(User user) {
+        this.name = user.name;
+        this.dateOfBirth = user.dateOfBirth;
+        this.dateOfDeath = user.dateOfDeath;
+        this.gender = user.gender;
+        this.height = user.height;
+        this.weight = user.weight;
+        this.bloodType = user.bloodType;
+        this.region = user.region;
+        this.currentAddress = user.currentAddress;
+        this.creationTime = user.creationTime;
+        this.id = user.id;
+        this.smokerStatus = user.smokerStatus;
+        this.bloodPressure = user.bloodPressure;
+        this.alcoholConsumption = user.alcoholConsumption;
+        this.organs.addAll(user.organs);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.currentMedications.addAll(user.currentMedications);
+        this.historicMedications.addAll(user.historicMedications);
+        this.waitingListItems = new ArrayList<>();
         this.currentMedications.addAll(donor.currentMedications);
         this.historicMedications.addAll(donor.historicMedications);
 
@@ -161,24 +170,29 @@ public class Donor {
         this.curedDiseases.addAll(donor.getCuredDiseases());
     }
 
-    public void copyFieldsFrom(Donor donor) {
-        name = donor.getNameArray();
-        dateOfBirth = donor.getDateOfBirth();
-        dateOfDeath = donor.getDateOfDeath();
-        gender = donor.getGender();
-        bloodType = donor.getBloodType();
-        height = donor.getHeight();
-        weight = donor.getWeight();
-        region = donor.getRegion();
-        currentAddress = donor.getCurrentAddress();
-        smokerStatus = donor.getSmokerStatus();
-        bloodPressure = donor.getBloodPressure();
-        alcoholConsumption = donor.getAlcoholConsumption();
+    public void copyFieldsFrom(User user) {
+        name = user.getNameArray();
+        dateOfBirth = user.getDateOfBirth();
+        dateOfDeath = user.getDateOfDeath();
+        gender = user.getGender();
+        bloodType = user.getBloodType();
+        height = user.getHeight();
+        weight = user.getWeight();
+        region = user.getRegion();
+        currentAddress = user.getCurrentAddress();
+        smokerStatus = user.getSmokerStatus();
+        bloodPressure = user.getBloodPressure();
+        alcoholConsumption = user.getAlcoholConsumption();
         organs.clear();
-        organs.addAll(donor.getOrgans());
+        organs.addAll(user.getOrgans());
+    }
+
+    public void copyMedicationListsFrom(User user) {
         currentMedications.clear();
-        currentMedications.addAll(donor.getCurrentMedications());
+        currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
+        historicMedications.addAll(user.getHistoricMedications());
+        waitingListItems.addAll(waitingListItems);
         historicMedications.addAll(donor.getHistoricMedications());
         currentDiseases.clear();
         currentDiseases.addAll(donor.getCurrentDiseases());
@@ -187,6 +201,22 @@ public class Donor {
         curedDiseases.addAll(donor.getCuredDiseases());
     }
 
+    public boolean fieldsEqual(User user) {
+        return (Arrays.equals(name, user.getNameArray()) &&
+                dateOfBirth == user.getDateOfBirth() &&
+                dateOfDeath == user.getDateOfDeath() &&
+                gender == user.getGender() &&
+                bloodType == user.getBloodType() &&
+                height == user.getHeight() &&
+                weight == user.getWeight() &&
+                stringEqual(region, user.getRegion()) &&
+                stringEqual(currentAddress, user.getCurrentAddress()) &&
+                smokerStatus == user.getSmokerStatus() &&
+                stringEqual(bloodPressure, user.getBloodPressure()) &&
+                alcoholConsumption == user.getAlcoholConsumption() &&
+                organs.equals(user.getOrgans()) &&
+                currentMedications.equals(user.getCurrentMedications()) &&
+                historicMedications.equals(user.getHistoricMedications())
     public boolean fieldsEqual(Donor donor) {
         return (Arrays.equals(name, donor.getNameArray()) &&
                 dateOfBirth == donor.getDateOfBirth() &&
@@ -279,11 +309,22 @@ public class Donor {
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
 
-    public String getAge() {
+    public ArrayList<WaitingListItem> getWaitingListItems(){
+        return waitingListItems;
+    }
+
+    public String getAgeString() {
         long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
         double years = days/365.00;
         String age = String.format("%.1f", years);
         return age + " years";
+    }
+
+    public double getAgeDouble() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        double years = days/365.00;
+        return years;
+
     }
 
 
@@ -373,7 +414,7 @@ public class Donor {
 
 
     /**
-     * Get a string containing key information about the donor. Can be formatted as a table row.
+     * Get a string containing key information about the user. Can be formatted as a table row.
      *
      * @param table Whether to format the information as a table row
      * @return The information string
@@ -406,7 +447,7 @@ public class Donor {
                     dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString,
                     weightString, bloodType, region, currentAddress, dateModifiedString, organs);
         } else {
-            return String.format("Donor (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
+            return String.format("User (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
                     "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
                     (creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString, weightString, bloodType,
                     region, currentAddress, dateModifiedString, organs);

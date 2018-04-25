@@ -26,7 +26,7 @@ public class History {
             actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory, true);
             PrintStream out = new PrintStream(fout);
-            out.println(Donor.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
+            out.println(User.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
             return out;
         } catch (IOException e) {
             System.out.println("I/O Error writing command history to file!");
@@ -53,7 +53,7 @@ public class History {
      * @return the modified string.
      */
     public static String prepareFileStringCLI(String[] nextCommand) {
-        String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " CLI";
+        String text = User.dateTimeFormat.format(LocalDateTime.now()) + " CLI";
         command = nextCommand[0];
         switch (command.toLowerCase()) {
             case "add":
@@ -64,41 +64,41 @@ public class History {
                     parameterOne = nextCommand[1];
                     parameterTwo = nextCommand[2];
                 }
-                description = "[Created a donor with name: " + parameterOne + ", and date of birth:" + parameterTwo + "]";
+                description = "[Created a user with name: " + parameterOne + ", and date of birth:" + parameterTwo + "]";
                 break;
             case "addorgan":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
-                description = "[Added organ of type " + parameterTwo + " to donor " + parameterOne + ".]";
+                description = "[Added organ of type " + parameterTwo + " to user " + parameterOne + ".]";
                 break;
             case "delete":
                 parameterOne = nextCommand[1];
-                description = "[Deleted donor " + parameterOne + " from the list.]";
+                description = "[Deleted user " + parameterOne + " from the list.]";
                 break;
             case "deleteorgan":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
-                description = "[Removed organ of type " + parameterTwo + " from donor " + parameterOne + ".]";
+                description = "[Removed organ of type " + parameterTwo + " from user " + parameterOne + ".]";
                 break;
             case "set":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
                 parameterThree = nextCommand[3];
-                description = "[Attempted to change the attribute " + parameterTwo + " of donor " + parameterOne + ".]";
+                description = "[Attempted to change the attribute " + parameterTwo + " of user " + parameterOne + ".]";
                 break;
             case "describe":
                 parameterOne = nextCommand[1];
-                description = "[Listed the attributes of donor " + nextCommand[1] + ".]";
+                description = "[Listed the attributes of user " + nextCommand[1] + ".]";
                 break;
             case "describeorgans":
                 parameterOne = nextCommand[1];
-                description = "[Listed organs available from donor " + parameterOne + ".]";
+                description = "[Listed organs available from user " + parameterOne + ".]";
                 break;
             case "list":
-                description = "[Listed all donors.]";
+                description = "[Listed all users.]";
                 break;
             case "listorgans":
-                description = "[Listed all organs available from all donors.]";
+                description = "[Listed all organs available from all users.]";
                 break;
             case "import":
                 if (nextCommand.length >= 2) {
@@ -109,14 +109,14 @@ public class History {
                         } else {
                             parameterTwo = nextCommand[2];
                         }
-                        description = "[Imported donors from relative path with filename " + parameterTwo + ".]";
+                        description = "[Imported users from relative path with filename " + parameterTwo + ".]";
                     } else {
                         if (nextCommand[1].contains("\"")) {
                             parameterOne = String.join(" ", nextCommand).split("\"")[1];
                         } else {
                             parameterOne = nextCommand[1];
                         }
-                        description = "[Imported donors from path " + parameterOne + ".]";
+                        description = "[Imported users from path " + parameterOne + ".]";
                     }
                 }
                 break;
@@ -129,14 +129,14 @@ public class History {
                         } else {
                             parameterTwo = nextCommand[2];
                         }
-                        description = "[Saved donors to relative path with filename " + parameterTwo + ".]";
+                        description = "[Saved users to relative path with filename " + parameterTwo + ".]";
                     } else {
                         if (nextCommand[1].contains("\"")) {
                             parameterOne = String.join(" ", nextCommand).split("\"")[1];
                         } else {
                             parameterOne = nextCommand[1];
                         }
-                        description = "[Saved donors to path " + parameterOne + ".]";
+                        description = "[Saved users to path " + parameterOne + ".]";
                     }
                 }
                 break;
@@ -176,8 +176,8 @@ public class History {
      * @return a string to be printed to file containing the action and a brief description.
      */
     public static String prepareFileStringGUI(long userId, String command){
-        String text = Donor.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
-        Donor donorInfo = Main.getDonorById(userId);
+        String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
+        User userInfo = Main.getUserById(userId);
         switch(command) {
             case "login":
                 description = "[User " + userId + " logged in successfully.]";
@@ -186,8 +186,8 @@ public class History {
                 description = "[User " + userId + " logged out successfully.]";
                 break;
             case "create":
-                if (donorInfo != null) {
-                    description = "[Created a new user profile with id of " + userId + " and name " + donorInfo.getName() + ".]";
+                if (userInfo != null) {
+                    description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
                 }
                 break;
             case "update":
@@ -209,20 +209,20 @@ public class History {
             //clinician exclusive
 
             case "view":
-                //TODO get donor viewed id (method in main or clinician or something)
-                description = "[Viewed donor " + " .]";
+                //TODO get user viewed id (method in main or clinician or something)
+                description = "[Viewed user " + " .]";
                 break;
-            case "modifyDonor":
-                description = "[Modified donor " + "'s attributes.]";
+            case "modifyUser":
+                description = "[Modified user " + "'s attributes.]";
                 break;
             case "addMed":
-                description = "[Added medications to donor " + ".]";
+                description = "[Added medications to user " + ".]";
                 break;
             case "removeMed":
-                description = "[Removed medications from donor " + ".]";
+                description = "[Removed medications from user " + ".]";
                 break;
             case "search":
-                description = "[Searched donor database.]";
+                description = "[Searched user database.]";
                 break;
         }
         text = String.join(" ", text, Long.toString(userId), command, description);
