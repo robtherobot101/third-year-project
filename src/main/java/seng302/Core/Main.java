@@ -648,8 +648,17 @@ public class Main extends Application {
      * Update the title of the window.
      * @param title The title string.
      */
-    public static void setTitle(String title){
+    public static void updateTitle(String title){
         stage.setTitle(title);
+    }
+
+    /**
+     * Append a * to the title bar when a change is made
+     */
+    public static void updateTitle(){
+        if(!stage.getTitle().endsWith("*")) {
+            stage.setTitle(stage.getTitle() + "*");
+        }
     }
 
     /**

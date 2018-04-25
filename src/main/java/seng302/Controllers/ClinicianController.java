@@ -127,7 +127,15 @@ public class ClinicianController implements Initializable {
      * Update the window title
      */
     private void updateTitle(){
-        Main.setTitle("Clinician: " + clinician.getName());
+        Main.updateTitle("Clinician: " + clinician.getName());
+    }
+
+    /**
+     * Update the window title when there are unsaved changes
+     */
+    @FXML
+    private void edited(){
+        Main.updateTitle();
     }
 
     /**
