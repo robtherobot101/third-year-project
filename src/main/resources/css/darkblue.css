@@ -259,3 +259,7 @@
 .tree-table-row-cell:selected {
 	-fx-background-color: #4785b8;
 }
+
+.status-bar {
+	-fx-background-color: #2b506e;
+}
