@@ -27,6 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
+ */
 public class TransplantWaitingListController implements Initializable {
 
     @FXML
@@ -59,7 +62,7 @@ public class TransplantWaitingListController implements Initializable {
     }
 
     /**
-     * Updates the transplant waiting list table
+     * Updates the transplant waiting list table and checks if reciever is waiting not complete
      */
     public void updateTransplantList() {
         transplantList.removeAll(transplantList);
@@ -79,6 +82,11 @@ public class TransplantWaitingListController implements Initializable {
         transplantTable.setItems(transplantList);
     }
 
+    /**
+     * Initilizes the gui display with the correct content in the table.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -99,6 +107,7 @@ public class TransplantWaitingListController implements Initializable {
             public TableRow<TransplantWaitingListItem> call(TableView<TransplantWaitingListItem> tableView) {
                 final TableRow<TransplantWaitingListItem> row = new TableRow<TransplantWaitingListItem>() {
                 };
+                //event to open receiver profile when clicked
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         Stage stage = new Stage();

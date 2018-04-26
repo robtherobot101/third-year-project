@@ -520,6 +520,10 @@ public class ClinicianController implements Initializable {
         });
     }
 
+    /**
+     * calls the transplantWaitingList controller and displays it.
+     * also refreshes the waitinglist table data
+     */
     public void transplantWaitingList() {
         Main.getTransplantWaitingListController().updateTransplantList();
         //background.setVisible(false);
