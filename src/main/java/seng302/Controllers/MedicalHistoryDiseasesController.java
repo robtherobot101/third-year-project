@@ -176,7 +176,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current donor? ");
+        alert.setHeaderText("Are you sure would like to update the current user? ");
         alert.setContentText("By doing so, the donor will be updated with the following disease details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {

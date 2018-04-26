@@ -132,7 +132,8 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.medicalHistoryViewForDonor();
+        Main.medicalHistoryDiseasesViewForDonor();
+        Main.medicalHistoryProceduresViewForDonor();
         Main.medicationsViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");

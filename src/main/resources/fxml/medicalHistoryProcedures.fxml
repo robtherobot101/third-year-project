@@ -31,7 +31,7 @@
       <RowConstraints minHeight="10.0" percentHeight="1.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label fx:id="newDiseaseLabel" text="New procedure" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+      <Label fx:id="newProcedureLabel" text="New procedure" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="TOP" />
       <TextField fx:id="summaryInput" prefHeight="27.0" prefWidth="75.0" promptText="Summary" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="19.0" />
@@ -56,7 +56,7 @@
             <Insets left="30.0" right="120.0" top="48.0" />
          </GridPane.margin>
       </Button>
-      <Label alignment="BASELINE_LEFT" text="Pending Procedures" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label fx:id="pendingProceduresLabel" alignment="BASELINE_LEFT" text="Pending Procedures" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -64,7 +64,7 @@
             <Insets bottom="250.0" left="15.0" />
          </GridPane.margin>
       </Label>
-      <Label alignment="BASELINE_LEFT" text="Previous Diseases" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label fx:id="previousProceduresLabel" alignment="BASELINE_LEFT" text="Previous Procedures" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -72,7 +72,7 @@
             <Insets bottom="250.0" left="12.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="saveProcedureButton" mnemonicParsing="false" text="Save" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+      <Button fx:id="saveProcedureButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets right="20.0" />
          </GridPane.margin>
@@ -95,12 +95,12 @@
             <Insets top="19.0" />
          </GridPane.margin>
       </DatePicker>
-      <Label fx:id="newDiseaseDateLabel" text="Due on" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label fx:id="newProcedureDateLabel" text="Due on" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
       </Label>
-      <Button fx:id="deleteProcedureButton" mnemonicParsing="false" prefHeight="32.0" prefWidth="125.0" text="Delete Procedure" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+      <Button fx:id="deleteProcedureButton" mnemonicParsing="false" onAction="#deleteProcedure" prefHeight="32.0" prefWidth="125.0" text="Delete Procedure" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
@@ -109,7 +109,7 @@
          <columns>
             <TableColumn fx:id="previousSummaryColumn" prefWidth="75.0" text="Summary" />
             <TableColumn fx:id="previousDescriptionColumn" prefWidth="123.0" text="Description" />
-            <TableColumn fx:id="previousDateColumn" prefWidth="70.0" text="Date" />
+            <TableColumn fx:id="previousDateColumn" prefWidth="100.0" text="Date" />
          </columns>
          <GridPane.margin>
             <Insets left="12.0" right="5.0" top="15.0" />
@@ -119,7 +119,7 @@
          <columns>
             <TableColumn fx:id="pendingSummaryColumn" prefWidth="72.0" text="Summary" />
             <TableColumn fx:id="pendingDescriptionColumn" minWidth="0.0" prefWidth="130.0" text="Description" />
-            <TableColumn fx:id="pendingDateColumn" prefWidth="66.0" text="Date" />
+            <TableColumn fx:id="pendingDateColumn" prefWidth="100.0" text="Date" />
          </columns>
          <GridPane.margin>
             <Insets left="12.0" right="15.0" top="15.0" />

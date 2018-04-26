@@ -152,17 +152,31 @@ public class Main extends Application {
     }
 
     /**
-     * Sets the medical history view to be unable to edit for a donor.
+     * Sets the medical history diseases view to be unable to edit for a donor.
      */
-    public static void medicalHistoryViewForDonor() {
+    public static void medicalHistoryDiseasesViewForDonor() {
         medicalHistoryDiseasesController.setControlsShown(false);
     }
 
     /**
-     * Sets the medical history view to be able to edit for a clinican.
+     * Sets the medical history view diseases to be able to edit for a clinican.
      */
-    public static void medicalHistoryViewForClinician() {
+    public static void medicalHistoryDiseasesViewForClinician() {
         medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history procedures view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryProceduresViewForDonor() {
+        medicalHistoryProceduresController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history procedures view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryProceduresViewForClinician() {
+        medicalHistoryProceduresController.setControlsShown(true);
     }
 
     public static void setCurrentUserForAccountSettings(User currentUser) {

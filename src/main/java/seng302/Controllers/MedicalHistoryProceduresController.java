@@ -41,6 +41,12 @@ public class MedicalHistoryProceduresController implements Initializable {
     @FXML
     private Label donorNameLabel;
 
+    @FXML
+    private Button addNewProcedureButton, deleteProcedureButton, saveProcedureButton;
+    @FXML
+    private Label newProcedureDateLabel, newProcedureLabel, pendingProceduresLabel, previousProceduresLabel;
+
+
     private User currentUser;
 
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
@@ -73,197 +79,201 @@ public class MedicalHistoryProceduresController implements Initializable {
         else if (dateOfProcedureInput.getValue() == null) {
             DialogWindowController.showWarning("Invalid Procedure", "",
                     "No date provided.");
-            // Check for a date in the future
-//        } else if (dateOfDiagnosisInput.getValue().isAfter(LocalDate.now())) {
-//            DialogWindowController.showWarning("Invalid Disease", "",
-//                    "Diagnosis date occurs in the future.");
-//            dateOfDiagnosisInput.getEditor().clear();
+        } else if (dateOfProcedureInput.getValue().isBefore(currentUser.getDateOfBirth())){
+            DialogWindowController.showWarning("Invalid Procedure", "",
+                    "Due date occurs before the user's date of birth.");
         } else {
             // Add the new procedure
             Procedure procedureToAdd = new Procedure(summaryInput.getText(), descriptionInput.getText(),
                     dateOfProcedureInput.getValue());
-            pendingProcedureItems.add(procedureToAdd);
+            if(dateOfProcedureInput.getValue().isBefore(LocalDate.now())){
+                previousProcedureItems.add(procedureToAdd);
+            } else {
+                pendingProcedureItems.add(procedureToAdd);
+            }
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
         }
     }
 
-//
-//    private void addCurrentDisease(Disease diseaseToAdd) {
-//        if (currentDiseaseItems.contains(diseaseToAdd)) {
-//            // Disease already exists in cured items
-//            DialogWindowController.showWarning("Invalid Disease", "",
-//                    "Disease already exists.");
-//        } else {
-//            currentDiseaseItems.add(diseaseToAdd);
-//        }
-//    }
-//
-//    /**
-//     * Deletes a disease from either the current or cured list views for the donor.
-//     */
-//    public void deleteDisease() {
-//        System.out.println("MedicalHistoryDiseasesController: Deleting disease");
-//
-//        if (currentDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
-//
-//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//            alert.setTitle("Are you sure?");
-//            alert.setHeaderText("Are you sure would like to delete the selected current disease? ");
-//            alert.setContentText("By doing so, the disease will be erased from the database.");
-//            Optional<ButtonType> result = alert.showAndWait();
-//            if (result.get() == ButtonType.OK) {
-//                Disease chosenDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-//                currentDiseaseItems.remove(chosenDisease);
-//            }
-//            alert.close();
-//        }
-//
-//        else if (curedDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
-//
-//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//            alert.setTitle("Are you sure?");
-//            alert.setHeaderText("Are you sure would like to delete the selected cured disease? ");
-//            alert.setContentText("By doing so, the disease will be erased from the database.");
-//            Optional<ButtonType> result = alert.showAndWait();
-//            if (result.get() == ButtonType.OK) {
-//                Disease chosenDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-//                curedDiseaseItems.remove(chosenDisease);
-//            }
-//            alert.close();
-//        }
-//
-//        //TODO create update for diseases for history when deleting
-////            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-////            History.printToFile(streamOut, text);
-//        //populateHistoryTable();
-//
-//    }
-//
-//    /**
-//     * Saves the current state of the donor's diseases for both their current and cured diseases.
-//     */
-//    public void save() {
-//
-//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setTitle("Are you sure?");
-//        alert.setHeaderText("Are you sure would like to update the current donor? ");
-//        alert.setContentText("By doing so, the donor will be updated with the following disease details.");
-//        Optional<ButtonType> result = alert.showAndWait();
-//        if (result.get() == ButtonType.OK) {
-//            currentDonor.getCurrentDiseases().clear();
-//            currentDonor.getCurrentDiseases().addAll(currentDiseaseItems);
-//
-//            currentDonor.getCuredDiseases().clear();
-//            currentDonor.getCuredDiseases().addAll(curedDiseaseItems);
-//
-//            Main.saveUsers(Main.getUserPath(), true);
-//            //TODO create update for diseases for history
-////            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-////            History.printToFile(streamOut, text);
-//            //populateHistoryTable();
-//            alert.close();
-//        } else {
-//            alert.close();
-//        }
-//    }
-//
-//    private void updateDiseasePopUp(Disease selectedDisease, boolean current) {
-//
-//        // Create the custom dialog.
-//        Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
-//        dialog.setTitle("Update Disease");
-//        dialog.setHeaderText("Update Disease Details");
-//
-//        // Set the button types.
-//        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
-//        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
-//
-//        // Create the username and password labels and fields.
-//        GridPane grid = new GridPane();
-//        grid.setHgap(10);
-//        grid.setVgap(10);
-//        grid.setPadding(new Insets(20, 10, 10, 10));
-//
-//        TextField diseaseName = new TextField();
-//        diseaseName.setPromptText(selectedDisease.getName());
-//        DatePicker dateOfDiagnosis = new DatePicker();
-//        dateOfDiagnosis.setPromptText(selectedDisease.getDiagnosisDate().toString());
-//
-//        grid.add(new Label("Name:"), 0, 0);
-//        grid.add(diseaseName, 1, 0);
-//        grid.add(new Label("Date of Diagnosis:"), 0, 1);
-//        grid.add(dateOfDiagnosis, 1, 1);
-//
-//        // Enable/Disable login button depending on whether a username was entered.
-//        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
-//        updateButton.setDisable(true);
-//
-//        // Do some validation (using the Java 8 lambda syntax).
-//        diseaseName.textProperty().addListener((observable, oldValue, newValue) -> {
-//            updateButton.setDisable(newValue.trim().isEmpty());
-//        });
-//
-//        dateOfDiagnosis.focusedProperty().addListener((observable, oldValue, newValue) -> {
-//            if(!newValue) updateButton.setDisable(false);
-//        });
-//
-//        dialog.getDialogPane().setContent(grid);
-//
-//        // Request focus on the username field by default.
-//        Platform.runLater(() -> diseaseName.requestFocus());
-//
-//        // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
-//        dialog.setResultConverter(dialogButton -> {
-//            if (dialogButton == updateButtonType) {
-//                if (dateOfDiagnosis.getValue().isAfter(LocalDate.now())) {
-//                    DialogWindowController.showWarning("Invalid Disease", "",
-//                            "Diagnosis date occurs in the future.");
-//                    dateOfDiagnosis.getEditor().clear();
-//                    if(current) {
-//                        updateDiseasePopUp(selectedDisease, true);
-//                    } else {
-//                        updateDiseasePopUp(selectedDisease, false);
-//                    }
-//
-//                } else {
-//                    return new Pair<>(diseaseName.getText(), dateOfDiagnosis.getValue());
-//                }
-//            }
-//            return null;
-//        });
-//
-//        Optional<Pair<String, LocalDate>> result = dialog.showAndWait();
-//
-//        result.ifPresent(newDiseaseDetails -> {
-//            System.out.println("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
-//            selectedDisease.setName(newDiseaseDetails.getKey());
-//            selectedDisease.setDiagnosisDate(newDiseaseDetails.getValue());
-//            if(current) {
-//                currentDiseaseItems.remove(selectedDisease);
-//                currentDiseaseItems.add(selectedDisease);
-//            } else {
-//                curedDiseaseItems.remove(selectedDisease);
-//                curedDiseaseItems.add(selectedDisease);
-//            }
-//
-//        });
-//    }
-//
-//
+
+    /**
+     * Deletes a procedure from either the pending or previous table views for the procedures.
+     */
+    public void deleteProcedure() {
+        System.out.println("MedicalHistoryProceduresController: Deleting disease");
+
+        if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Are you sure?");
+            alert.setHeaderText("Are you sure would like to delete the selected pending procedure? ");
+            alert.setContentText("By doing so, the procedure will be erased from the database.");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+                pendingProcedureItems.remove(chosenProcedure);
+            }
+            alert.close();
+        }
+
+        else if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Are you sure?");
+            alert.setHeaderText("Are you sure would like to delete the selected previous procedure? ");
+            alert.setContentText("By doing so, the procedure will be erased from the database.");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+                previousProcedureItems.remove(chosenProcedure);
+            }
+            alert.close();
+        }
+
+        //TODO create update for diseases for history when deleting
+//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+//            History.printToFile(streamOut, text);
+        //populateHistoryTable();
+
+    }
+
+    /**
+     * Saves the current state of the donor's procedures for both their previous and pending procedures.
+     */
+    public void save() {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Are you sure?");
+        alert.setHeaderText("Are you sure would like to update the current user? ");
+        alert.setContentText("By doing so, the donor will be updated with the following procedure details.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            currentUser.getPendingProcedures().clear();
+            currentUser.getPendingProcedures().addAll(pendingProcedureItems);
+
+            currentUser.getPreviousProcedures().clear();
+            currentUser.getPreviousProcedures().addAll(previousProcedureItems);
+
+            Main.saveUsers(Main.getUserPath(), true);
+            //TODO create update for diseases for history
+//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+//            History.printToFile(streamOut, text);
+            //populateHistoryTable();
+            alert.close();
+        } else {
+            alert.close();
+        }
+    }
+
+    private void updateProcedurePopUp(Procedure selectedProcedure, boolean pending) {
+
+        // Create the custom dialog.
+        Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
+        dialog.setTitle("Update Procedure");
+        dialog.setHeaderText("Update Procedure Details");
+
+        // Set the button types.
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 10, 10));
+
+        TextField procedureSummary = new TextField();
+        procedureSummary.setPromptText(selectedProcedure.getSummary());
+        DatePicker dateDue = new DatePicker();
+        dateDue.setPromptText(selectedProcedure.getDate().toString());
+
+        grid.add(new Label("Summary:"), 0, 0);
+        grid.add(procedureSummary, 1, 0);
+        grid.add(new Label("Date Due:"), 0, 1);
+        grid.add(dateDue, 1, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+        updateButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        procedureSummary.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dateDue.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue) updateButton.setDisable(false);
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> procedureSummary.requestFocus());
+
+        // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                if (dateDue.getValue().isBefore(currentUser.getDateOfBirth())) {
+                    DialogWindowController.showWarning("Invalid Procedure", "",
+                            "Due date occurs before the user's date of birth.");
+                    dateDue.getEditor().clear();
+                    if(pending) {
+                        updateProcedurePopUp(selectedProcedure, true);
+                    } else {
+                        updateProcedurePopUp(selectedProcedure, false);
+                    }
+
+                } else {
+                    return new Pair<>(procedureSummary.getText(), dateDue.getValue());
+                }
+            }
+            return null;
+        });
+
+        Optional<Pair<String, LocalDate>> result = dialog.showAndWait();
+
+        result.ifPresent(newProcedureDetails -> {
+            System.out.println("Summary=" + newProcedureDetails.getKey() + ", DateDue=" + newProcedureDetails.getValue());
+            selectedProcedure.setSummary(newProcedureDetails.getKey());
+            selectedProcedure.setDate(newProcedureDetails.getValue());
+            if(pending) {
+                if(newProcedureDetails.getValue().isAfter(LocalDate.now())) {
+                    pendingProcedureItems.remove(selectedProcedure);
+                    pendingProcedureItems.add(selectedProcedure);
+                } else {
+                    pendingProcedureItems.remove(selectedProcedure);
+                    previousProcedureItems.add(selectedProcedure);
+                }
+
+            } else {
+                if(newProcedureDetails.getValue().isAfter(LocalDate.now())) {
+                    previousProcedureItems.remove(selectedProcedure);
+                    pendingProcedureItems.add(selectedProcedure);
+                } else {
+                    previousProcedureItems.remove(selectedProcedure);
+                    previousProcedureItems.add(selectedProcedure);
+                }
+
+            }
+
+        });
+    }
+
+
     private void setupListeners() {
-//        final ContextMenu currentDiseaseListContextMenu = new ContextMenu();
-//
-//        // Update selected disease on the current disease table
-//        MenuItem updateCurrentDiseaseMenuItem = new MenuItem();
-//        updateCurrentDiseaseMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-//                updateDiseasePopUp(selectedDisease, true);
-//
-//            }
-//        });
-//        currentDiseaseListContextMenu.getItems().add(updateCurrentDiseaseMenuItem);
+        final ContextMenu pendingProcedureListContextMenu = new ContextMenu();
+
+        // Update selected procedure on the pending procedures table
+        MenuItem updatePendingProcedureMenuItem = new MenuItem();
+        updatePendingProcedureMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+                updateProcedurePopUp(selectedProcedure, true);
+
+            }
+        });
+        pendingProcedureListContextMenu.getItems().add(updatePendingProcedureMenuItem);
 //
 //        // Toggle selected disease from current diseases as chronic
 //        MenuItem toggleCurrentChronicMenuItem = new MenuItem();
@@ -302,18 +312,19 @@ public class MedicalHistoryProceduresController implements Initializable {
 //        currentDiseaseListContextMenu.getItems().add(setCuredMenuItem);
 //
 //
-//        final ContextMenu curedDiseaseContextMenu = new ContextMenu();
-//
-//        // Update selected disease from the cured disease table
-//        MenuItem updateCuredDiseaseMenuItem = new MenuItem();
-//        updateCuredDiseaseMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-//                updateDiseasePopUp(selectedDisease, false);
-//            }
-//        });
-//        curedDiseaseContextMenu.getItems().add(updateCuredDiseaseMenuItem);
+        final ContextMenu previousProcedureListContextMenu = new ContextMenu();
+
+        // Update selected procedure on the previous procedures table
+        MenuItem updatePreviousProcedureMenuItem = new MenuItem();
+        updatePreviousProcedureMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+                updateProcedurePopUp(selectedProcedure, false);
+
+            }
+        });
+        previousProcedureListContextMenu.getItems().add(updatePreviousProcedureMenuItem);
 //
 //        // Set the selected disease from the cured disease table as chronic (move to current disease table also)
 //        MenuItem setCuredChronicDiseaseMenuItem = new MenuItem();
@@ -346,49 +357,31 @@ public class MedicalHistoryProceduresController implements Initializable {
 //        });
 //        curedDiseaseContextMenu.getItems().add(setUncuredMenuItem);
 //
-//        /*Handles the right click action of showing a ContextMenu on the currentDiseaseListView and sets the MenuItem
-//        text depending on the disease chosen*/
-//        currentDiseaseTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                if (event.getButton().equals(MouseButton.SECONDARY)) {
-//                    Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-//                    if (selectedDisease.isChronic()) {
-//                        toggleCurrentChronicMenuItem.setText(String.format("Mark %s as not chronic",
-//                                selectedDisease.getName()));
-//                    } else {
-//                        toggleCurrentChronicMenuItem.setText(String.format("Mark %s as chronic",
-//                                selectedDisease.getName()));
-//                    }
-//                    setCuredMenuItem.setText(String.format("Mark %s as cured",
-//                            selectedDisease.getName()));
-//                    updateCurrentDiseaseMenuItem.setText("Update disease");
-//                    currentDiseaseListContextMenu.show(currentDiseaseTableView, event.getScreenX(), event.getScreenY());
-//                }
-//            }
-//        });
-//
-//        /*Handles the right click action of showing a ContextMenu on the curedDiseaseTableView and sets the MenuItem
-//        text depending on the disease chosen*/
-//        curedDiseaseTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                if (event.getButton().equals(MouseButton.SECONDARY)) {
-//                    Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-//                    if (selectedDisease.isChronic()) {
-//                        setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as not chronic",
-//                                selectedDisease.getName()));
-//                    } else {
-//                        setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as chronic",
-//                                selectedDisease.getName()));
-//                    }
-//                    setUncuredMenuItem.setText(String.format("Mark %s as uncured",
-//                            selectedDisease.getName()));
-//                    updateCuredDiseaseMenuItem.setText("Update disease");
-//                    curedDiseaseContextMenu.show(curedDiseaseTableView, event.getScreenX(), event.getScreenY());
-//                }
-//            }
-//        });
+        /*Handles the right click action of showing a ContextMenu on the pendingProcedureTableView and sets the MenuItem
+        text depending on the procedure chosen*/
+        pendingProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+                    updatePendingProcedureMenuItem.setText("Update pending procedure");
+                    pendingProcedureListContextMenu.show(pendingProcedureTableView, event.getScreenX(), event.getScreenY());
+                }
+            }
+        });
+
+        /*Handles the right click action of showing a ContextMenu on the previousProcedureTableView and sets the MenuItem
+        text depending on the procedure chosen*/
+        previousProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+                    updatePreviousProcedureMenuItem.setText("Update previous procedure");
+                    previousProcedureListContextMenu.show(previousProcedureTableView, event.getScreenX(), event.getScreenY());
+                }
+            }
+        });
 //
 //
 //        // Sets the cell factory to style each Procedure item depending on its details
@@ -450,22 +443,34 @@ public class MedicalHistoryProceduresController implements Initializable {
         previousDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
     }
 
-//    /**
-//     * Sets whether the control buttons are shown or not on the medications pane
-//     */
-//    public void setControlsShown(boolean shown) {
-//        dateOfDiagnosisInput.setVisible(shown);
-//        addNewDiseaseButton.setVisible(shown);
-//        newDiseaseDateLabel.setVisible(shown);
-//        newDiseaseLabel.setVisible(shown);
-//        chronicCheckBox.setVisible(shown);
-//        newDiseaseTextField.setVisible(shown);
-//        deleteDiseaseButton.setVisible(shown);
-//        saveDiseaseButton.setVisible(shown);
-//        isCuredCheckBox.setVisible(shown);
-//        currentDiseaseTableView.setDisable(!shown);
-//        curedDiseaseTableView.setDisable(!shown);
-//    }
+    /**
+     * Sets whether the control buttons are shown or not on the medications pane
+     */
+    public void setControlsShown(boolean shown) {
+        dateOfProcedureInput.setVisible(shown);
+        summaryInput.setVisible(shown);
+        descriptionInput.setVisible(shown);
+        newProcedureDateLabel.setVisible(shown);
+        newProcedureLabel.setVisible(shown);
+        pendingProceduresLabel.setVisible(shown);
+        previousProceduresLabel.setVisible(shown);
+        addNewProcedureButton.setVisible(shown);
+        pendingProcedureTableView.setDisable(!shown);
+        previousProcedureTableView.setDisable(!shown);
+        deleteProcedureButton.setVisible(shown);
+        saveProcedureButton.setVisible(shown);
+    }
+
+
+    public void updatePendingProcedures() {
+        //Check if pending procedure due date is now past the current date
+        for(Procedure procedure: currentUser.getPendingProcedures()) {
+            if(procedure.getDate().isBefore(LocalDate.now())) {
+                currentUser.getPendingProcedures().remove(procedure);
+                currentUser.getPreviousProcedures().add(procedure);
+            }
+        }
+    }
 
     /**
      * Function to set the current user of this class to that of the instance of the application.
@@ -474,6 +479,8 @@ public class MedicalHistoryProceduresController implements Initializable {
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         donorNameLabel.setText("User: " + currentUser.getName());
+
+        updatePendingProcedures();
 
         pendingProcedureItems = FXCollections.observableArrayList();
         pendingProcedureItems.addAll(currentUser.getPendingProcedures());
