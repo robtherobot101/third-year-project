@@ -84,17 +84,23 @@ public class UserWindowController implements Initializable {
 
     /**
      * Update the title of the window.
-     * @param title The title string.
+     * @param page The current page/tab.
      */
-    public void updateTitle(String title){
-        stage.setTitle(title);
+    private void updateTitle(String page){
+        stage.setTitle("User: " + currentUser.getName() + " - " + page);
     }
 
     /**
      * Append a * to the title bar when a change is made
      */
-    public void updateTitle(){
-        if(!stage.getTitle().endsWith("*")) {
+    private void updateTitle(boolean saved){
+        if(saved && stage.getTitle().endsWith("*")){
+            // Remove the asterisk
+            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 2));
+        }
+
+        else if(!saved && !stage.getTitle().endsWith("*") ) {
+            // Add the asterisk
             stage.setTitle(stage.getTitle() + "*");
         }
     }
@@ -121,7 +127,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
         bloodPressureLabel.setText("");
-        updateTitle("User: " + currentUser.getName());
+        updateTitle("Home");
     }
 
     /**
@@ -264,6 +270,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
+        updateTitle("Action History");
     }
 
 
@@ -275,6 +282,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
         setUndoRedoButtonsDisabled(true, true);
+        updateTitle("Waiting List");
     }
 
     /**
@@ -287,6 +295,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(true);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
+        updateTitle("Medications");
     }
 
     /**
@@ -299,6 +308,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        updateTitle("Attributes");
     }
 
     /**
@@ -311,6 +321,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
+        updateTitle("Home");
     }
 
     /**
@@ -556,6 +567,7 @@ public class UserWindowController implements Initializable {
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
             populateHistoryTable();
+            updateTitle(true);
         }
         alert.close();
     }
