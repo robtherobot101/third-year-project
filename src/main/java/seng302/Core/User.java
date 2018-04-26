@@ -26,11 +26,11 @@ public class User {
     public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     public static final String tableHeader = "User ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
             "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
-    private String[] name;
+    private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath;
     private LocalDateTime creationTime;
     private LocalDateTime lastModified = null;
-    private Gender gender;
+    private Gender gender, genderIdentity;
     private double height, weight;
     private BloodType bloodType;
     private long id;
@@ -47,9 +47,11 @@ public class User {
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
+        this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
+        this.genderIdentity = null;
         this.height = -1;
         this.weight = -1;
         this.bloodType = null;
@@ -65,9 +67,11 @@ public class User {
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
         String currentAddress) throws DateTimeException, IllegalArgumentException {
         this.name = name.split(",");
+        this.preferredName = this.name;
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
         this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
         this.gender = Gender.parse(gender);
+        this.genderIdentity = this.gender;
         this.height = height;
         this.weight = weight;
         this.bloodType = BloodType.parse(bloodType);
@@ -88,10 +92,12 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
+        this.preferredName = this.name;
         System.out.println(getName());
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
+        this.genderIdentity = null;
         this.height = -1;
         this.weight = -1;
         this.bloodType = null;
@@ -116,9 +122,11 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
+        this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
         this.gender = gender;
+        this.genderIdentity = gender;
         this.height = height;
         this.weight = weight;
         this.bloodType = bloodType;
@@ -140,9 +148,11 @@ public class User {
      */
     public User(User user) {
         this.name = user.name;
+        this.preferredName = user.preferredName;
         this.dateOfBirth = user.dateOfBirth;
         this.dateOfDeath = user.dateOfDeath;
         this.gender = user.gender;
+        this.genderIdentity = user.genderIdentity;
         this.height = user.height;
         this.weight = user.weight;
         this.bloodType = user.bloodType;
@@ -163,9 +173,11 @@ public class User {
 
     public void copyFieldsFrom(User user) {
         name = user.getNameArray();
+        preferredName = user.getPreferredNameArray();
         dateOfBirth = user.getDateOfBirth();
         dateOfDeath = user.getDateOfDeath();
         gender = user.getGender();
+        genderIdentity = user.getGenderIdentity();
         bloodType = user.getBloodType();
         height = user.getHeight();
         weight = user.getWeight();
@@ -188,9 +200,11 @@ public class User {
 
     public boolean fieldsEqual(User user) {
         return (Arrays.equals(name, user.getNameArray()) &&
+                Arrays.equals(preferredName, user.getPreferredNameArray()) &&
                 dateOfBirth == user.getDateOfBirth() &&
                 dateOfDeath == user.getDateOfDeath() &&
                 gender == user.getGender() &&
+                genderIdentity == user.genderIdentity &&
                 bloodType == user.getBloodType() &&
                 height == user.getHeight() &&
                 weight == user.getWeight() &&
@@ -217,6 +231,10 @@ public class User {
         return String.join(" ", name);
     }
 
+    public String getPreferredName() {
+        return String.join(" ", preferredName);
+    }
+
     public void setName(String name) {
         this.name = name.split(",");
         setLastModified();
@@ -224,6 +242,15 @@ public class User {
 
     public void setNameArray(String[] name) {
         this.name = name;
+    }
+
+    public void setPreferredName(String name) {
+        this.preferredName = name.split(",");
+        setLastModified();
+    }
+
+    public void setPreferredNameArray(String[] name) {
+        this.preferredName = name;
     }
 
     public void setUsername(String username) { this.username = username; }
@@ -237,6 +264,10 @@ public class User {
     }
 
     public String[] getNameArray() {
+        return name;
+    }
+
+    public String[] getPreferredNameArray() {
         return name;
     }
 
@@ -265,6 +296,10 @@ public class User {
     public String getRegion() { return region; }
 
     public Gender getGender() { return gender; }
+
+    public Gender getGenderIdentity() {
+        return genderIdentity;
+    }
 
     public double getHeight() { return height; }
 
@@ -317,6 +352,11 @@ public class User {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+        setLastModified();
+    }
+
+    public void setGenderIdentity(Gender gender) {
+        this.genderIdentity = gender;
         setLastModified();
     }
 
@@ -415,7 +455,7 @@ public class User {
         } else {
             return String.format("User (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
                     "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
-                    (creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString, weightString, bloodType,
+                    (creationTime), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString, weightString, bloodType,
                     region, currentAddress, dateModifiedString, organs);
         }
     }
