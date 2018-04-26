@@ -2,7 +2,6 @@ package seng302.GUI;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableRow;
 import javafx.scene.input.KeyCode;
@@ -112,48 +111,42 @@ public class DrugInteractionGUITest extends ApplicationTest {
     @Test
     public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException{
         clickOn("#newMedicationField"); write("diazepam");
-        sleep(2500);
-        type(KeyCode.ENTER);
         clickOn("#addNewMedicationButton");
         clickOn("#newMedicationField"); write("escitalopram");
-        sleep(2500);
-        type(KeyCode.DOWN);
-        type(KeyCode.ENTER);
         clickOn("#addNewMedicationButton");
-        Node drugARow = from(lookup("#currentListView")).lookup("Escitalopram").query();
+        Node drugARow = from(lookup("#currentListView")).lookup("escitalopram").query();
         clickOn(drugARow);
         clickOn("#compareButton");
-        Node drugBRow = from(lookup("#currentListView")).lookup("Diazepam").query();
+        Node drugBRow = from(lookup("#currentListView")).lookup("diazepam").query();
         clickOn(drugBRow);
         clickOn("#compareButton");
         waitForEnabled(5,"#compareButton");
-        Label results = lookup("#interactionsContentLabel").query();
-        System.out.println(results);
-        verifyThat(results, list -> list.getText().contains("fatigue: 1 - 6 months"));
-        verifyThat(results, list -> list.getText().contains("nausea: < 1 month"));
-        verifyThat(results, list -> list.getText().contains("drug ineffective: < 1 month"));
-        verifyThat(results, list -> list.getText().contains("weight increased: 1 - 2 years"));
-        verifyThat(results, list -> list.getText().contains("dizziness: 2 - 5 years"));
-        verifyThat(results, list -> list.getText().contains("headache"));
-        verifyThat(results, list -> list.getText().contains("suicidal ideation: 6 - 12 months"));
+        ListView results = (ListView)lookup("#interactionListView").query();
+        verifyThat(results, list -> list.getItems().contains("fatigue: 1 - 6 months"));
+        verifyThat(results, list -> list.getItems().contains("nausea: < 1 month"));
+        verifyThat(results, list -> list.getItems().contains("drug ineffective: < 1 month"));
+        verifyThat(results, list -> list.getItems().contains("weight increased: 1 - 2 years"));
+        verifyThat(results, list -> list.getItems().contains("dizziness: 2 - 5 years"));
+        verifyThat(results, list -> list.getItems().contains("headache: not specified"));
+        verifyThat(results, list -> list.getItems().contains("suicidal ideation: 6 - 12 months"));
     }
-//TODO as far as I'm aware, the below test is testing for an impossible scenario (You can no longer enter invalid drugs)
-//    @Test
-//    public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
-//        String badDrugA = "badDrugA";
-//        String badDrugB = "badDrugB";
-//        clickOn("#newMedicationField"); write("badDrugA");
-//        clickOn("#addNewMedicationButton");
-//        clickOn("#newMedicationField"); write("badDrugB");
-//        clickOn("#addNewMedicationButton");
-//        Node drugARow = from(lookup("#currentListView")).lookup("badDrugB").query();
-//        clickOn(drugARow);
-//        clickOn("#compareButton");
-//        Node drugBRow = from(lookup("#currentListView")).lookup("badDrugA").query();
-//        clickOn(drugBRow);
-//        clickOn("#compareButton");
-//        waitForEnabled(5,"#compareButton");
-//        ListView results = (ListView)lookup("#interactionListView").query();
-//        verifyThat(results, list -> list.getItems().contains("Invalid comparison."));
-//    }
+    
+    @Test
+    public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
+        String badDrugA = "badDrugA";
+        String badDrugB = "badDrugB";
+        clickOn("#newMedicationField"); write("badDrugA");
+        clickOn("#addNewMedicationButton");
+        clickOn("#newMedicationField"); write("badDrugB");
+        clickOn("#addNewMedicationButton");
+        Node drugARow = from(lookup("#currentListView")).lookup("badDrugB").query();
+        clickOn(drugARow);
+        clickOn("#compareButton");
+        Node drugBRow = from(lookup("#currentListView")).lookup("badDrugA").query();
+        clickOn(drugBRow);
+        clickOn("#compareButton");
+        waitForEnabled(5,"#compareButton");
+        ListView results = (ListView)lookup("#interactionListView").query();
+        verifyThat(results, list -> list.getItems().contains("Invalid comparison."));
+    }
 }
