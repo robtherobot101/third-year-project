@@ -8,8 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -30,8 +32,17 @@ public class TransplantWaitingListController implements Initializable {
     @FXML
     private TableView transplantTable;
 
-    private ArrayList transplantList;
+    @FXML
+    private TableColumn organColumn;
+    @FXML
+    private TableColumn nameColumn;
+    @FXML
+    private TableColumn dateColumn;
+    @FXML
+    private TableColumn regionColumn;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
+    private ObservableList<TransplantWaitingListItem> transplantList = FXCollections.observableArrayList();
 
     /**
      * returns to the clinician view
@@ -54,24 +65,32 @@ public class TransplantWaitingListController implements Initializable {
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (item.getOrganRegisteredDate().isEmpty()) {
-                        try {
-                            transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
-                        } catch (ParseException e) {
-
-                        }
+                    System.out.println(user.getName());
+                    try {
+                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
             }
         }
-        transplantTable.setItems(FXCollections.observableArrayList(transplantList));
+        transplantTable.setItems(transplantList);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+        transplantTable.setItems(transplantList);
+
         Main.setTransplantWaitingListController(this);
-        transplantList = new ArrayList<TransplantWaitingListItem>();
+
         updateTransplantList();
+        transplantTable.setItems(transplantList);
 
         transplantTable.setRowFactory(new Callback<TableView<TransplantWaitingListItem>, TableRow<TransplantWaitingListItem>>(){
             @Override
@@ -105,7 +124,9 @@ public class TransplantWaitingListController implements Initializable {
                         }
                     }
                 });
+                transplantTable.refresh();
                 return row;
+
             }
         });
     }

@@ -25,7 +25,7 @@
       <TableView fx:id="transplantTable" layoutX="56.0" layoutY="100.0" prefHeight="458.0" prefWidth="682.0">
         <columns>
           <TableColumn fx:id="organColumn" prefWidth="115.0" text="Organ" />
-          <TableColumn fx:id="firstNameColumn" prefWidth="340.0" text="Name" />
+          <TableColumn fx:id="nameColumn" prefWidth="340.0" text="Name" />
             <TableColumn fx:id="dateColumn" prefWidth="95.0" text="Date" />
             <TableColumn fx:id="regionColumn" prefWidth="135.0" text="Region" />
         </columns>
