@@ -268,7 +268,7 @@ public class User {
     }
 
     public String[] getPreferredNameArray() {
-        return name;
+        return preferredName;
     }
 
     public String getUsername() {

@@ -83,7 +83,7 @@ public class UserWindowController implements Initializable {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-        userDisplayText.setText("Currently logged in as: " + currentUser.getName());
+        userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         attributeUndoStack.clear();
         attributeRedoStack.clear();
         undoButton.setDisable(true);
@@ -288,7 +288,7 @@ public class UserWindowController implements Initializable {
      * Sorts these into tree nodes based on new sessions.
      */
     public void populateHistoryTable() {
-        userHistoryLabel.setText("History of actions for " + currentUser.getName());
+        userHistoryLabel.setText("History of actions for " + currentUser.getPreferredName());
         String[][] userHistory = History.getUserHistory(currentUser.getId());
         ArrayList<TreeItem<String>> treeItems = new ArrayList<>();
         if(userHistory[0][0] != null) {
@@ -333,7 +333,7 @@ public class UserWindowController implements Initializable {
                 new ReadOnlyStringWrapper(p.getValue().getValue()));
 
         actionColumn.setCellValueFactory(param -> {
-            String userName = currentUser.getName(), toCheck = param.getValue().getValue().substring(0, 12);
+            String userName = currentUser.getPreferredName(), toCheck = param.getValue().getValue().substring(0, 12);
             if (toCheck.equals("Update Account")) {
                 return new ReadOnlyStringWrapper("Updated account settings for user " + userName);
             }
@@ -367,8 +367,12 @@ public class UserWindowController implements Initializable {
      * takes all their attributes and populates the user attributes on the attributes pane accordingly.
      */
     public void populateUserFields() {
-        settingAttributesLabel.setText("Attributes for " + currentUser.getName());
-        String[] splitNames = currentUser.getNameArray();
+        settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
+        System.out.println(currentUser.getPreferredName());
+        String[] splitNames = currentUser.getPreferredNameArray();
+        System.out.println(splitNames[0]);
+        System.out.println(splitNames[1]);
+        System.out.println(splitNames[2]);
         firstNameField.setText(splitNames[0]);
         if (splitNames.length > 2) {
             String[] middleName = new String[splitNames.length - 2];
@@ -391,7 +395,7 @@ public class UserWindowController implements Initializable {
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
 
-        genderComboBox.setValue(currentUser.getGender());
+        genderComboBox.setValue(currentUser.getGenderIdentity());
         bloodTypeComboBox.setValue(currentUser.getBloodType());
         smokerStatusComboBox.setValue(currentUser.getSmokerStatus());
         alcoholConsumptionComboBox.setValue(currentUser.getAlcoholConsumption());
@@ -481,13 +485,18 @@ public class UserWindowController implements Initializable {
         }
 
         //Commit changes
-        currentUser.setNameArray(name);
+        currentUser.setPreferredNameArray(name);
         currentUser.setHeight(userHeight);
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
         currentUser.setDateOfDeath(dateOfDeathPicker.getValue());
-        currentUser.setGender(genderComboBox.getValue());
+        if (currentUser.getGender() == null) {
+            currentUser.setGender(genderComboBox.getValue());
+            currentUser.setGenderIdentity(genderComboBox.getValue());
+        } else {
+            currentUser.setGenderIdentity(genderComboBox.getValue());
+        }
         currentUser.setBloodType(bloodTypeComboBox.getValue());
         currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
@@ -504,8 +513,8 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
-        settingAttributesLabel.setText("Attributes for " + currentUser.getName());
-        userDisplayText.setText("Currently logged in as: " + currentUser.getName());
+        settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
+        userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         System.out.println(currentUser.toString());
         return true;
     }
