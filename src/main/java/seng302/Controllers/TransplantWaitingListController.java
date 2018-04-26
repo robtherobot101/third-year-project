@@ -65,9 +65,10 @@ public class TransplantWaitingListController implements Initializable {
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
-                    System.out.println(user.getName());
                     try {
-                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                        if (!(item.getOrganRegisteredDate() == null)) {
+                            transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
