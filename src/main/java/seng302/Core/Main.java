@@ -185,9 +185,13 @@ public class Main extends Application {
         Main.transplantWaitingListController = transplantWaitingListController;
     }
 
+
+
     public static ClinicianController getClinicianController() {
         return Main.clinicianController;
     }
+
+    public static TransplantWaitingListController getTransplantWaitingListController() { return Main.transplantWaitingListController; }
 
     public static ArrayList<Stage> getCliniciansUserWindows(){
         return cliniciansUserWindows;

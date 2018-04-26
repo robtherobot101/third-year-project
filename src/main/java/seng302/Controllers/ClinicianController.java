@@ -521,6 +521,7 @@ public class ClinicianController implements Initializable {
     }
 
     public void transplantWaitingList() {
+        Main.getTransplantWaitingListController().updateTransplantList();
         //background.setVisible(false);
         Main.setScene(TFScene.transplantList);
     }

@@ -61,7 +61,8 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * Updates the transplant waiting list table
      */
-    private void updateTransplantList() {
+    public void updateTransplantList() {
+        transplantList.removeAll(transplantList);
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
