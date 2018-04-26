@@ -96,7 +96,7 @@ public class UserWindowController implements Initializable {
     private void updateTitle(boolean saved){
         if(saved && stage.getTitle().endsWith("*")){
             // Remove the asterisk
-            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 2));
+            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
         }
 
         else if(!saved && !stage.getTitle().endsWith("*") ) {
@@ -231,6 +231,7 @@ public class UserWindowController implements Initializable {
             addUserToUndoStack(oldFields);
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
+            updateTitle(false);
         }
     }
 
@@ -577,6 +578,7 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
+        updateTitle(false);
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the redo stack
@@ -634,6 +636,7 @@ public class UserWindowController implements Initializable {
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
         }
+        updateTitle(false);
     }
 
     /**
