@@ -230,7 +230,7 @@ public class DrugInteraction {
             return maleInteractions();
         } else if (gender.equals(Gender.FEMALE)) {
             return femaleInteractions();
-        } else if(gender.equals(Gender.OTHER)){
+        } else if(gender.equals(Gender.NONBINARY)){
             return allGenderInteractions();
         } else {
             return new HashSet<String>();

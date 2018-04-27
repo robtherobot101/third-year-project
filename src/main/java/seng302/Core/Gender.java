@@ -4,7 +4,7 @@ package seng302.Core;
  * This enum represents the most common genders.
  */
 public enum Gender {
-    OTHER("Other"), FEMALE("Female"), MALE("Male");
+    NONBINARY("Non-Binary"), FEMALE("Female"), MALE("Male");
 
     private String gender;
 

@@ -105,7 +105,7 @@ public class DrugInteractionTest {
 
     @Test
     public void genderInteraction_validGender_returnsGenderSympmtoms() {
-        HashSet<String> symptoms = drugInteraction.genderInteraction(Gender.OTHER);
+        HashSet<String> symptoms = drugInteraction.genderInteraction(Gender.NONBINARY);
         assertEquals(new HashSet<String>(Arrays.asList("a", "b", "c", "d", "e")), symptoms);
     }
 
