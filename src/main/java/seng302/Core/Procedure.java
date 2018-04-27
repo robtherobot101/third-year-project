@@ -9,13 +9,15 @@ public class Procedure {
 
     private String summary;
     private String description;
-    private LocalDate Date;
+    private LocalDate date;
+    private boolean isOrganAffecting;
 
-    public Procedure(String summary, String description, LocalDate date) {
+    public Procedure(String summary, String description, LocalDate date, boolean isOrganAffecting) {
 
         this.summary = summary;
         this.description = description;
-        Date = date;
+        this.date = date;
+        this.isOrganAffecting = isOrganAffecting;
     }
 
     public String getSummary() {
@@ -35,11 +37,19 @@ public class Procedure {
     }
 
     public LocalDate getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(LocalDate date) {
-        Date = date;
+        this.date = date;
+    }
+
+    public boolean isOrganAffecting() {
+        return isOrganAffecting;
+    }
+
+    public void setOrganAffecting(boolean organAffecting) {
+        isOrganAffecting = organAffecting;
     }
 
 
