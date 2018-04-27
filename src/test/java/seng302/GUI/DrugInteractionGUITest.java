@@ -1,3 +1,4 @@
+
 package seng302.GUI;
 
 import javafx.scene.Node;
@@ -39,7 +40,6 @@ import java.util.concurrent.TimeoutException;
 
 
 public class DrugInteractionGUITest extends ApplicationTest {
-
     private Main mainGUI;
     private static final boolean runHeadless = true;
     User user = new User("test,user", LocalDate.of(1983,7,4));
@@ -173,7 +173,7 @@ public class DrugInteractionGUITest extends ApplicationTest {
         expected.add("-suicidal ideation: 6 - 12 months");
         assertEquals(expected,results);
     }
-    
+
     @Test
     public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException{
         String badDrugA = "badDrugA";
