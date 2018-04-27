@@ -267,24 +267,4 @@ public class MedicationsGUITest extends TestFXTest {
             TestCase.assertTrue(results.contains(item));
         }
     }
-
-    @Ignore //TODO Change this test - it no longer works as invalid drugs can not be added
-    @Test
-    public void compareInvalidDrugs_returnsZeroSymptoms() throws TimeoutException {
-        clickOn("#newMedicationField");
-        write("badDrugA");
-        clickOn("#addNewMedicationButton");
-        clickOn("#newMedicationField");
-        write("badDrugB");
-        clickOn("#addNewMedicationButton");
-        Node drugARow = from(lookup("#currentListView")).lookup("badDrugB").query();
-        clickOn(drugARow);
-        clickOn("#compareButton");
-        Node drugBRow = from(lookup("#currentListView")).lookup("badDrugA").query();
-        clickOn(drugBRow);
-        clickOn("#compareButton");
-        waitForEnabled(5, "#compareButton");
-        ListView results = lookup("#interactionListView").query();
-        verifyThat(results, list -> list.getItems().contains("Invalid comparison."));
-    }
 }
