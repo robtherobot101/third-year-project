@@ -74,12 +74,13 @@ public class MainTest {
 
     @Test
     public void testImportIOException(){
+        String invalidFile = "OrganDonation.jpg";
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
-        Main.importUsers("", true);
+        Main.importUsers(invalidFile, true);
         String text = out.toString();
-        String expected = "IOException on : Check your inputs and permissions!\r\n";
-        assertEquals(text, expected);
+        String expected = "IOException on "+ invalidFile +": Check your inputs and permissions!\n";
+        assertEquals(expected, text);
     }
 
     /**

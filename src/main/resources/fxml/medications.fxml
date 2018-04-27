@@ -151,7 +151,7 @@
          </children>
       </GridPane>
      <Button fx:id="saveMedicationButton" mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-      <Label text="Medications" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label prefHeight="35.0" prefWidth="227.0" text="Medications" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="3" GridPane.valignment="TOP">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>
@@ -159,7 +159,7 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <Label fx:id="userNameLabel" text="User: " GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Label fx:id="userNameLabel" text="User: " GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets top="33.0" />
          </GridPane.margin>
