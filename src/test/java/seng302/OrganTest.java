@@ -1,7 +1,7 @@
 package seng302;
 
 import org.junit.Test;
-import seng302.Core.Organ;
+import seng302.User.Attribute.Organ;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;

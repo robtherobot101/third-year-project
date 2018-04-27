@@ -1,7 +1,7 @@
 package seng302;
 
 import org.junit.Test;
-import seng302.Core.BloodType;
+import seng302.User.Attribute.BloodType;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;

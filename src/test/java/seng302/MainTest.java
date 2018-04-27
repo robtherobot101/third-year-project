@@ -1,20 +1,19 @@
 package seng302;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Core.User;
-import seng302.Core.Gender;
-import seng302.Core.Main;
-import seng302.Core.Organ;
+import seng302.User.User;
+import seng302.User.Attribute.Gender;
+import seng302.Generic.Main;
+import seng302.User.Attribute.Organ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -38,7 +37,7 @@ public class MainTest {
     public void testGetById() {
         assertEquals(Main.users.get(2), Main.getUserById(2));
         Main.users.remove(2);
-        assertEquals(null, Main.getUserById(2));
+        assertNull(Main.getUserById(2));
     }
 
     @Test
@@ -119,27 +118,27 @@ public class MainTest {
 
     @Test
     public void testMatches_stringEqualsTerm_returnsTrue(){
-        assertEquals(true, Main.matches("aaa", "aaa"));
+        assertTrue(Main.matches("aaa", "aaa"));
     }
     @Test
     public void testMatches_longerSearchTerm_returnsFalse(){
-        assertEquals(false, Main.matches("aaa", "aaaa"));
+        assertFalse(Main.matches("aaa", "aaaa"));
     }
     @Test
     public void testMatches_longerStringShouldMatch_returnsTrue(){
-        assertEquals(true, Main.matches("abcd", "abc"));
+        assertTrue(Main.matches("abcd", "abc"));
     }
     @Test
     public void testMatches_emptyStringAndTerm_returnsTrue(){
-        assertEquals(true, Main.matches("", ""));
+        assertTrue(Main.matches("", ""));
     }
     @Test
     public void testMatches_uppercaseTerm_returnsTrue(){
-        assertEquals(true, Main.matches("aa", "AA"));
+        assertTrue(Main.matches("aa", "AA"));
     }
     @Test
     public void testMatches_uppercaseString_returnsTrue(){
-        assertEquals(true, Main.matches("AA", "aa"));
+        assertTrue(Main.matches("AA", "aa"));
     }
 
     @Test
