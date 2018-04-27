@@ -1,5 +1,7 @@
 package seng302.GUI;
 
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -24,6 +26,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import static org.junit.Assert.assertEquals;
+import static org.testfx.util.NodeQueryUtils.isVisible;
 
 public class TransplantWaitingListTest extends ApplicationTest{
     private static final boolean runHeadless = false;
@@ -47,10 +50,6 @@ public class TransplantWaitingListTest extends ApplicationTest{
         registerPrimaryStage();
     }
 
-    @Before
-    public void setUp () throws Exception {
-
-    }
 
     @After
     public void tearDown () throws Exception {
@@ -66,6 +65,9 @@ public class TransplantWaitingListTest extends ApplicationTest{
         mainGUI.start(stage);
     }
 
+    /**
+     * helper function to create two new users. one a receiver and one a dummy
+     */
     private void createAccounts() {
         Main.users.clear();
         // Assumed that calling method is currently on login screen
@@ -108,6 +110,10 @@ public class TransplantWaitingListTest extends ApplicationTest{
         clickOn("OK");
     }
 
+
+    /**
+     * Tests to check if the waiting list table is empty when no users exist
+     */
     @Test
     public void checkForBlankTables() {
         //login as clinician
@@ -119,10 +125,12 @@ public class TransplantWaitingListTest extends ApplicationTest{
         clickOn("#transplantList");
 
         //check if no recivers in table
-        ListView currentWaitingList = lookup("#transplantTable").queryListView();
-        assertEquals(currentWaitingList, null);
+        verifyThat("No content in table", isVisible());
     }
 
+    /**
+     * Test to check if table correctly adds a new entry when a receiver is detected
+     */
     @Test
     public void checkForFullTable() {
         createAccounts();
@@ -132,10 +140,48 @@ public class TransplantWaitingListTest extends ApplicationTest{
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
 
-        //navigate to table
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#addOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //check the transplant list
         clickOn("#transplantList");
 
-        ListView currentWaitingList = lookup("#transplantTable").queryListView();
-        assertEquals(currentWaitingList, null);
+        //USE THIS TO CHECK FOR TEXT IN FIELDS (DECONSTRUCTING TABLES INTO OBJECTS UNDOCUMENTED/POORLY DOCUMENTED)
+        verifyThat("Bob Ross", isVisible());
+    }
+
+    /**
+     * Test to check if receiver is removed from transplant waiting list when an organ is deregistered
+     */
+    @Test
+    public void checkDeregister() {
+        //login as default clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        //deregister an organ
+        doubleClickOn("Bob Ross");
+        clickOn("#waitingListButton");
+        clickOn("heart");
+        clickOn("#removeOrganButton");
+
+        //close user window
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //show the transplant list
+        clickOn("#transplantList");
+        verifyThat("No content in table", isVisible());
     }
 }
