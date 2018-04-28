@@ -15,14 +15,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
-import seng302.Core.Main;
 import seng302.Core.Procedure;
-import seng302.Core.User;
+import seng302.Generic.History;
+import seng302.Generic.Main;
+import seng302.User.User;
+
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
+
+import static seng302.Generic.Main.streamOut;
 
 public class MedicalHistoryProceduresController implements Initializable {
 
@@ -128,10 +131,6 @@ public class MedicalHistoryProceduresController implements Initializable {
             alert.close();
         }
 
-        //TODO create update for diseases for history when deleting
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-//            History.printToFile(streamOut, text);
-        //populateHistoryTable();
 
     }
 
@@ -153,9 +152,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             currentUser.getPreviousProcedures().addAll(previousProcedureItems);
 
             Main.saveUsers(Main.getUserPath(), true);
-            //TODO create update for diseases for history
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-//            History.printToFile(streamOut, text);
+            String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
+            History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
         } else {

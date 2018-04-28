@@ -22,14 +22,17 @@ import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import seng302.Core.Disease;
-import seng302.Core.Main;
-import seng302.Core.User;
+import seng302.Generic.History;
+import seng302.Generic.Main;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import static seng302.Generic.Main.streamOut;
 
 public class MedicalHistoryDiseasesController implements Initializable {
     @FXML
@@ -56,7 +59,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
     private Button saveDiseaseButton;
 
 
-    private User currentDonor;
+    private User currentUser;
 
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
 
@@ -161,12 +164,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             }
             alert.close();
         }
-
-            //TODO create update for diseases for history when deleting
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-//            History.printToFile(streamOut, text);
-            //populateHistoryTable();
-
+         
     }
 
     /**
@@ -180,16 +178,15 @@ public class MedicalHistoryDiseasesController implements Initializable {
         alert.setContentText("By doing so, the donor will be updated with the following disease details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            currentDonor.getCurrentDiseases().clear();
-            currentDonor.getCurrentDiseases().addAll(currentDiseaseItems);
+            currentUser.getCurrentDiseases().clear();
+            currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
 
-            currentDonor.getCuredDiseases().clear();
-            currentDonor.getCuredDiseases().addAll(curedDiseaseItems);
+            currentUser.getCuredDiseases().clear();
+            currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
             Main.saveUsers(Main.getUserPath(), true);
-            //TODO create update for diseases for history
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
-//            History.printToFile(streamOut, text);
+            String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
+            History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
         } else {
@@ -500,7 +497,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
      * @param currentDonor The donor to set the current donor.
      */
     public void setCurrentUser(User currentDonor) {
-        this.currentDonor = currentDonor;
+        this.currentUser = currentDonor;
         donorNameLabel.setText("User: " + currentDonor.getName());
 
         currentDiseaseItems = FXCollections.observableArrayList();

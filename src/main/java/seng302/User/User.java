@@ -8,6 +8,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+
+import seng302.Core.Disease;
+import seng302.Core.Procedure;
 import seng302.Generic.Main;
 import seng302.User.Medication.Medication;
 import seng302.User.Attribute.Organ;
