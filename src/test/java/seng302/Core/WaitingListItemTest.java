@@ -2,6 +2,9 @@ package seng302.Core;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import seng302.Generic.WaitingListItem;
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

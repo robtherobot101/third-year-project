@@ -264,6 +264,6 @@
     -fx-background-color: #DD0000;
 }
 
-.table-view:row-selection .highlighted-row:selected {
+.highlighted-row:selected {
     -fx-background-color: #FF1111;
 }

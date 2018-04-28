@@ -1,5 +1,8 @@
 package seng302.GUI.Controllers;
 
+import com.sun.xml.internal.bind.v2.TODO;
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,18 +11,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import seng302.Generic.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import seng302.Core.*;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
+import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+import seng302.Generic.*;
+import java.net.URL;
+import java.util.*;
 
 
 public class WaitingListController implements Initializable {
@@ -139,6 +141,7 @@ public class WaitingListController implements Initializable {
             }
         });
 
+
         waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
             Boolean highlight = false;
             @Override
@@ -150,10 +153,10 @@ public class WaitingListController implements Initializable {
                         if (getStyleClass().contains("highlighted-row")) {
                             getStyleClass().remove("highlighted-row");
                         }
+                        setTooltip(null);
                         if(item != null && !empty) {
-
                             if(item.isDonatingOrgan(currentUser)){
-                                //TODO Highlight the row
+                                setTooltip(new Tooltip("User is currently donating this organ"));
                                 System.out.println("User is donating "+item.getOrganType());
                                 highlight = true;
                                 if (!getStyleClass().contains("highlighted-row")) {
@@ -166,7 +169,6 @@ public class WaitingListController implements Initializable {
                 };
             }
         });
-
     }
 
     public void setControlsShown(boolean shown) {
