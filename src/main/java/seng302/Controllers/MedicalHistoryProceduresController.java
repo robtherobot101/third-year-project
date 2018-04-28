@@ -27,6 +27,11 @@ import java.util.*;
 
 import static seng302.Generic.Main.streamOut;
 
+/**
+ * Class which handles all the logic for the Medical History (Procedures) Window.
+ * Handles all functions including:
+ * Adding, deleting, updating and marking procedures in the Table Views.
+ */
 public class MedicalHistoryProceduresController implements Initializable {
 
     @FXML
@@ -62,7 +67,7 @@ public class MedicalHistoryProceduresController implements Initializable {
 
     /**
      * Adds a new procedure to the unsaved Donor Procedures array list.
-     * Also checks for invalid input in both the disease text field and date field.
+     * Also checks for invalid input in the procedure summary, description and date fields.
      */
     public void addNewProcedure() {
         System.out.println("MedicalHistoryProceduresController: Adding new procedure");
@@ -161,6 +166,11 @@ public class MedicalHistoryProceduresController implements Initializable {
         }
     }
 
+    /**
+     * Function which produces a pop up window to update all the given fields for a procedure.
+     * @param selectedProcedure The selected procedure that the user wishes to update.
+     * @param pending If the procedure is a pending procedure or not.
+     */
     private void updateProcedurePopUp(Procedure selectedProcedure, boolean pending) {
 
         // Create the custom dialog.
@@ -288,7 +298,11 @@ public class MedicalHistoryProceduresController implements Initializable {
         });
     }
 
-
+    /**
+     * Function which sets up all the listeners for the text fields and also populates
+     * the table views based on the values in the observable array lists.
+     * Also creates the menu items for right clicking on a procedure.
+     */
     private void setupListeners() {
         final ContextMenu pendingProcedureListContextMenu = new ContextMenu();
 
@@ -472,17 +486,6 @@ public class MedicalHistoryProceduresController implements Initializable {
         isOrganAffectingCheckBox.setVisible(shown);
     }
 
-
-    public void updatePendingProcedures() {
-        //Check if pending procedure due date is now past the current date
-        for(Procedure procedure: currentUser.getPendingProcedures()) {
-            if(procedure.getDate().isBefore(LocalDate.now())) {
-                currentUser.getPendingProcedures().remove(procedure);
-                currentUser.getPreviousProcedures().add(procedure);
-            }
-        }
-    }
-
     /**
      * Function to set the current user of this class to that of the instance of the application.
      * @param currentUser The donor to set the current donor.
@@ -491,7 +494,13 @@ public class MedicalHistoryProceduresController implements Initializable {
         this.currentUser = currentUser;
         donorNameLabel.setText("User: " + currentUser.getName());
 
-        updatePendingProcedures();
+        //Check if pending procedure due date is now past the current date
+        for(Procedure procedure: currentUser.getPendingProcedures()) {
+            if(procedure.getDate().isBefore(LocalDate.now())) {
+                currentUser.getPendingProcedures().remove(procedure);
+                currentUser.getPreviousProcedures().add(procedure);
+            }
+        }
 
         pendingProcedureItems = FXCollections.observableArrayList();
         pendingProcedureItems.addAll(currentUser.getPendingProcedures());
