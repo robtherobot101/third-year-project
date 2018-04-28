@@ -15,9 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import seng302.Core.TransplantWaitingListItem;
 import seng302.GUI.TFScene;
 import seng302.Generic.Main;
-import seng302.Generic.TransplantWaitingListItem;
 import seng302.Generic.WaitingListItem;
 import seng302.User.User;
 

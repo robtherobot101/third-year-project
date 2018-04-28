@@ -1,5 +1,7 @@
 package seng302.Core;
 
+import seng302.User.Attribute.Organ;
+
 import java.util.Date;
 
 /**

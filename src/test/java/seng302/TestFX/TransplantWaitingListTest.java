@@ -7,8 +7,8 @@ import javafx.stage.Stage;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import seng302.Core.TransplantWaitingListItem;
 import seng302.Generic.Main;
-import seng302.Generic.TransplantWaitingListItem;
 import seng302.User.Attribute.Organ;
 
 import static org.testfx.api.FxAssert.verifyThat;
