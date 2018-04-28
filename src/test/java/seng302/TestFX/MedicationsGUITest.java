@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -14,6 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Main;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
@@ -46,6 +49,8 @@ public class MedicationsGUITest extends TestFXTest {
         clickOn("#newMedicationField").write(medication);
         clickOn("#addNewMedicationButton");
         clickOn("#newMedicationField");
+        // Not sure if there is a better way to do this
+        sleep(3000);
     }
 
     /**
