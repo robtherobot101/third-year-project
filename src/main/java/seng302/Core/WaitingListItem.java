@@ -1,6 +1,5 @@
 package seng302.Core;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class WaitingListItem {
@@ -15,6 +14,10 @@ public class WaitingListItem {
         this.stillWaitingOn = true;
     }
 
+    /**
+     * Updates an organs registration date and removes its deregistration date.
+     * Called when registering a previously deregistered organ.
+     */
     public void registerOrgan(){
         if (this.organRegisteredDate == null) {
             this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
@@ -22,6 +25,10 @@ public class WaitingListItem {
         this.organDeregisteredDate = null;
     }
 
+    /**
+     * Updates an organs deregistration date and removes its registration date.
+     * Called when deregistering a previously registered organ.
+     */
     public void deregisterOrgan(){
         if (this.organDeregisteredDate == null) {
             this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
@@ -34,6 +41,11 @@ public class WaitingListItem {
         return stillWaitingOn;
     }
 
+    /**
+     * Returns whether or not a user is also donating an organ they are hoping to receive.
+     * @param user the user being tested.
+     * @return true if the organ is also being donated, otherwise false.
+     */
     public boolean isDonatingOrgan(User user){
         return user.getOrgans().contains(organType);
     }
