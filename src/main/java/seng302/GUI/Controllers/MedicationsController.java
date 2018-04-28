@@ -212,37 +212,26 @@ public class MedicationsController implements Initializable {
      * Moves the selected medication from the current medications listview to the historic medications listview.
      */
     public void moveMedicationToHistory() {
-        moveMedication(historicItems, currentItems, currentListView);
+        moveMedication(historicItems, currentListView);
     }
 
     /**
      * Moves the selected medication from the historic medications listview to the current medications listview.
      */
     public void moveMedicationToCurrent() {
-        moveMedication(currentItems, historicItems, historyListView);
+        moveMedication(currentItems, historyListView);
     }
 
     /**
      * Move a selected Medication from its corresponding Medication list to another Medication list.
      *
      * @param to The Medication list to move the medication from
-     * @param from The Medication list to move the medication to
      * @param view The ListView to get the selected medication from
      */
-    private void moveMedication(ObservableList<Medication> to, ObservableList<Medication> from, ListView<Medication> view) {
+    private void moveMedication(ObservableList<Medication> to, ListView<Medication> view) {
         movingItem = true;
-        //Get the item the user has selected
-        Medication selectedMedication = view.getSelectionModel().getSelectedItem();
-        //Get the medication object reference
-        Medication medicationChoice = null;
-        for (Medication medication: from) {
-            if (medication.equals(selectedMedication)) {
-                medicationChoice = medication;
-                break;
-            }
-        }
-        to.add(medicationChoice);
-        from.remove(medicationChoice);
+        // Remove the medication from the ListView and add it to the 'to' list
+        to.add(view.getItems().remove(view.getSelectionModel().getSelectedIndex()));
         saveToUndoStack();
         movingItem = false;
     }
