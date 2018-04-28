@@ -89,7 +89,7 @@ public class ClinicianController implements Initializable {
     private GridPane mainPane;
 
     @FXML
-    private StatusBar statusBar;
+    public StatusBar statusBar;
 
     private int resultsPerPage;
     private int page = 1;

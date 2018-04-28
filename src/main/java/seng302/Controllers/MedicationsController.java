@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import org.controlsfx.control.StatusBar;
 import seng302.Core.*;
 
 import java.net.URL;
@@ -35,6 +36,16 @@ public class MedicationsController implements Initializable {
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
+    private StatusBar statusBar;
+
+    /**
+     * Set the status bar object from the user window the page is being displayed in
+     * @param statusBar
+     */
+    public void setStatusBar(StatusBar statusBar) {
+        this.statusBar = statusBar;
+    }
+
 
     /**
      * Initializes the medications pane to show medications for a specified user.
@@ -397,7 +408,9 @@ public class MedicationsController implements Initializable {
                 return null;
             }
             String medicine = newMedicationField.getText();
+            Platform.runLater(() -> statusBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS));
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
+            Platform.runLater(() -> statusBar.setProgress(0));
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
             } else {

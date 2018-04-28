@@ -193,6 +193,8 @@ public class Main extends Application {
 
     public static void setUserWindowController(UserWindowController userWindowController) {
         Main.userWindowController = userWindowController;
+        // Pass the status bar to the medications controller
+        medicationsController.setStatusBar(userWindowController.statusBar);
     }
 
     public static String getUserPath() {

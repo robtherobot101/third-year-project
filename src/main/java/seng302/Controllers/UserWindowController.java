@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.controlsfx.control.StatusBar;
 import seng302.Core.*;
 import seng302.Files.History;
 
@@ -68,6 +69,8 @@ public class UserWindowController implements Initializable {
     private User currentUser;
     @FXML
     private Button waitingListButton;
+    @FXML
+    public StatusBar statusBar;
 
 
     public UserWindowController(){
