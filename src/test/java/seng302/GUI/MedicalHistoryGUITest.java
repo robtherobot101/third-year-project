@@ -118,6 +118,7 @@ public class MedicalHistoryGUITest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
+        clickOn("#medicalHistoryButton");
         doubleClickOn(636, 435);
 
 
