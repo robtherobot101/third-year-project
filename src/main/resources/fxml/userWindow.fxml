@@ -23,7 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -416,22 +416,22 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-      				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="183.0" mnemonicParsing="false" onAction="#showHistoryPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Action History" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
+      				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="183.0" mnemonicParsing="false" onAction="#showHistoryPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Action History" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-      				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="247.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
+      				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="247.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="312.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-      				<Button fx:id="logoutButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="121.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Log out" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="312.0">
+      				<Button fx:id="logoutButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="121.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Log out" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="362.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-						<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="302.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="362.0">
+						<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="302.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="412.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -441,7 +441,12 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="58.0" layoutY="193.0" mnemonicParsing="false" onAction="#showMedicalHistoryPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Medical History" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
+                  <Button fx:id="proceduresButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#showMedicalHistoryProceduresPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Procedures" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="diseasesButton" alignment="BASELINE_LEFT" layoutX="58.0" layoutY="193.0" mnemonicParsing="false" onAction="#showMedicalHistoryDiseasesPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Diseases" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -453,7 +458,7 @@
 						<DropShadow />
 					</effect>
 					<children>
-						<Label layoutX="7.0" layoutY="239.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="203.0">
+						<Label layoutX="7.0" layoutY="239.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="253.0">
 							<font>
 								<Font size="36.0" />
 							</font>
@@ -473,23 +478,33 @@
 								<Font size="36.0" />
 							</font>
 						</Label>
-						<Label layoutX="7.0" layoutY="300.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="253.0">
+						<Label layoutX="7.0" layoutY="300.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="303.0">
 							<font>
 								<Font size="36.0" />
 							</font>
 						</Label>
-                  <Label layoutX="17.0" layoutY="310.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="303.0">
+                  <Label layoutX="17.0" layoutY="310.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="353.0">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </Label>
-                  <Label layoutX="27.0" layoutY="320.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="353.0">
+                  <Label layoutX="27.0" layoutY="320.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="403.0">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <Label text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="203.0">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </Label>
 					</children>
 				</AnchorPane>
+			<AnchorPane fx:id="medicalHistoryProceduresPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<children>
+					<fx:include source="medicalHistoryProcedures.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+				</children>
+			</AnchorPane>
             <GridPane fx:id="historyGridPane" layoutX="265.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="469.0" prefWidth="624.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.41766357421875" minWidth="10.0" prefWidth="328.41766357421875" />
@@ -520,9 +535,9 @@
                   </TreeTableView>
                </children>
             </GridPane>
-            <AnchorPane fx:id="medicalHistoryPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="medicalHistoryDiseasesPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <fx:include source="medicalHistory.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <fx:include source="medicalHistoryDiseases.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
 			</children>

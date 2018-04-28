@@ -57,7 +57,8 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
-    private static MedicalHistoryController medicalHistoryController;
+    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
     private static String dialogStyle;
@@ -119,8 +120,9 @@ public class Main extends Application {
         userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
 
-        medicalHistoryController.setCurrentUser(currentUser);
-        //medicalHistoryController.populateDiseases(true);
+        medicalHistoryDiseasesController.setCurrentUser(currentUser);
+        medicalHistoryProceduresController.setCurrentUser(currentUser);
+        //medicalHistoryDiseasesController.populateDiseases(true);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
 
@@ -150,17 +152,31 @@ public class Main extends Application {
     }
 
     /**
-     * Sets the medical history view to be unable to edit for a donor.
+     * Sets the medical history diseases view to be unable to edit for a donor.
      */
-    public static void medicalHistoryViewForDonor() {
-        medicalHistoryController.setControlsShown(false);
+    public static void medicalHistoryDiseasesViewForDonor() {
+        medicalHistoryDiseasesController.setControlsShown(false);
     }
 
     /**
-     * Sets the medical history view to be able to edit for a clinican.
+     * Sets the medical history view diseases to be able to edit for a clinican.
      */
-    public static void medicalHistoryViewForClinician() {
-        medicalHistoryController.setControlsShown(true);
+    public static void medicalHistoryDiseasesViewForClinician() {
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history procedures view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryProceduresViewForDonor() {
+        medicalHistoryProceduresController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history procedures view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryProceduresViewForClinician() {
+        medicalHistoryProceduresController.setControlsShown(true);
     }
 
     public static void setCurrentUserForAccountSettings(User currentUser) {
@@ -185,8 +201,12 @@ public class Main extends Application {
         Main.medicationsController = medicationsController;
     }
 
-    public static void setMedicalHistoryController(MedicalHistoryController medicalHistoryController) {
-        Main.medicalHistoryController = medicalHistoryController;
+    public static void setMedicalHistoryDiseasesController(MedicalHistoryDiseasesController medicalHistoryDiseasesController) {
+        Main.medicalHistoryDiseasesController = medicalHistoryDiseasesController;
+    }
+
+    public static void setMedicalHistoryProceduresController(MedicalHistoryProceduresController medicalHistoryProceduresController) {
+        Main.medicalHistoryProceduresController = medicalHistoryProceduresController;
     }
 
     public static void setWaitingListController(WaitingListController waitingListController) {
