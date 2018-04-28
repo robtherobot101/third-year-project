@@ -8,8 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import org.controlsfx.control.StatusBar;
-import seng302.Core.*;
 import seng302.GUI.StatusIndicator;
 import seng302.Generic.*;
 

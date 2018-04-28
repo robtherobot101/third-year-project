@@ -33,6 +33,7 @@ import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.Controllers.UserWindowController;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the

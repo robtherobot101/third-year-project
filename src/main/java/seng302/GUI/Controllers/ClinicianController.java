@@ -19,8 +19,8 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import seng302.Generic.*;
 import org.controlsfx.control.StatusBar;
-import seng302.Core.*;
 import seng302.GUI.StatusIndicator;
+import seng302.Controllers.UserWindowController;
 
 import java.io.IOException;
 import java.net.URL;
