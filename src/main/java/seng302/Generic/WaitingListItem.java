@@ -3,6 +3,9 @@ package seng302.Generic;
 import java.time.LocalDate;
 import seng302.User.Attribute.Organ;
 
+/**
+ * Contains information for a transplant waiting list record.
+ */
 public class WaitingListItem {
     private Organ organType;
     private LocalDate organRegisteredDate;

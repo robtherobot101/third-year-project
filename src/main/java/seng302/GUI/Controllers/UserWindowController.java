@@ -419,7 +419,6 @@ public class UserWindowController implements Initializable {
      * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
      */
     private boolean updateUser() {
-        Main.getClinicianController().updateUserTable();
         //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
@@ -514,6 +513,7 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
+        Main.getClinicianController().updateUserTable();
         return true;
     }
 

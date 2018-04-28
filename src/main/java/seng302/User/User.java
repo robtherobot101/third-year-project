@@ -280,9 +280,7 @@ public class User {
     }
 
     public String getAgeString() {
-        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
-        double years = days/365.00;
-        String age = String.format("%.1f", years);
+        String age = String.format("%.1f", getAgeDouble());
         return age + " years";
     }
 

@@ -398,7 +398,7 @@ public class ClinicianController implements Initializable {
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
+        profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
         
