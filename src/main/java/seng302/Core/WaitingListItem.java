@@ -16,18 +16,19 @@ public class WaitingListItem {
 
     /**
      * Updates an organs registration date and removes its deregistration date.
-     * Called when registering a previously deregistered organ.
+     * Can be called when registering a previously deregistered organ.
      */
     public void registerOrgan(){
         if (this.organRegisteredDate == null) {
             this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         }
+        this.stillWaitingOn = true;
         this.organDeregisteredDate = null;
     }
 
     /**
      * Updates an organs deregistration date and removes its registration date.
-     * Called when deregistering a previously registered organ.
+     * Can be called when deregistering a previously registered organ.
      */
     public void deregisterOrgan(){
         if (this.organDeregisteredDate == null) {

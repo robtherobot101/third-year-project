@@ -133,8 +133,10 @@ public class WaitingListController implements Initializable {
         waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue==null){
                 deregisterOrganButton.setDisable(true);
-            }else{
+            }else if(newValue.getStillWaitingOn()){
                 deregisterOrganButton.setDisable(false);
+            }else{
+                deregisterOrganButton.setDisable(true);
             }
         });
 
