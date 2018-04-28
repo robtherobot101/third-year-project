@@ -253,6 +253,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         Assert.assertEquals(Main.users.get(0).getDateOfDeath().toString(), "1997-07-10");
     }
 
+    @Ignore
     @Test
     public void changeHeightTest(){
 
@@ -295,6 +296,22 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getWeight(), 78.5, 0.001);
+
+        Assert.assertEquals(Main.users.get(0).getHeight(), -1.0,0.001);
+
+        doubleClickOn("#heightField").write("187");
+        clickOn("#saveButton");
+
+        push(KeyCode.getKeyCode("Enter"));
+
+        Assert.assertEquals(Main.users.get(0).getHeight(), 187,0.001);
+
+        doubleClickOn("#heightField").write("178.5");
+        clickOn("#saveButton");
+
+        push(KeyCode.getKeyCode("Enter"));
+
+        Assert.assertEquals(Main.users.get(0).getHeight(), 178.5, 0.001);
     }
 
     @Test
