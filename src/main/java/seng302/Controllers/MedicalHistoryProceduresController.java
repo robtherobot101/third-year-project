@@ -72,12 +72,12 @@ public class MedicalHistoryProceduresController implements Initializable {
     public void addNewProcedure() {
         System.out.println("MedicalHistoryProceduresController: Adding new procedure");
         // Check for empty disease name TODO could be a listener to disable the add button
-        if (summaryInput.getText() == "") {
+        if (summaryInput.getText().equals("")) {
             DialogWindowController.showWarning("Invalid Procedure", "",
                     "Invalid procedure summary provided.");
             summaryInput.clear();
             // Check for an empty date
-        } else if (descriptionInput.getText() == "") {
+        } else if (descriptionInput.getText().equals("")) {
             DialogWindowController.showWarning("Invalid Procedure", "",
                     "Invalid procedure description provided.");
             descriptionInput.clear();
@@ -97,6 +97,9 @@ public class MedicalHistoryProceduresController implements Initializable {
             } else {
                 pendingProcedureItems.add(procedureToAdd);
             }
+            summaryInput.clear();
+            descriptionInput.clear();
+            dateOfProcedureInput.getEditor().clear();
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
         }
     }
@@ -191,13 +194,15 @@ public class MedicalHistoryProceduresController implements Initializable {
         TextField procedureSummary = new TextField();
         procedureSummary.setPromptText(selectedProcedure.getSummary());
         TextField procedureDescription = new TextField();
+        procedureDescription.setId("procedureDescription");
         procedureDescription.setPromptText(selectedProcedure.getDescription());
         DatePicker dateDue = new DatePicker();
+        dateDue.setId("dateDue");
         dateDue.setPromptText(selectedProcedure.getDate().toString());
 
         grid.add(new Label("Summary:"), 0, 0);
         grid.add(procedureSummary, 1, 0);
-        grid.add(new Label("Description"), 0, 1);
+        grid.add(new Label("Description:"), 0, 1);
         grid.add(procedureDescription, 1, 1);
         grid.add(new Label("Date Due:"), 0, 2);
         grid.add(dateDue, 1, 2);
