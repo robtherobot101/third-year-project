@@ -51,6 +51,9 @@ public class WaitingListController implements Initializable {
     @FXML
     private Label organComboBoxLabel;
 
+    @FXML
+    private Label transplantWaitingListLabel;
+
     private User currentUser;
 
 
@@ -64,6 +67,7 @@ public class WaitingListController implements Initializable {
      */
     public void setCurrentUser(User user){
         this.currentUser = user;
+        transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
     /**
@@ -165,6 +169,7 @@ public class WaitingListController implements Initializable {
     }
 
     public void setControlsShown(boolean shown) {
+        this.transplantWaitingListLabel.setVisible(!shown);
         this.registerOrganButton.setVisible(shown);
         this.deregisterOrganButton.setVisible(shown);
         this.organTypeComboBox.setVisible(shown);
