@@ -3,6 +3,7 @@ package seng302.GUI;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -13,10 +14,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.TransplantWaitingListItem;
-import seng302.Core.User;
-import seng302.Core.Main;
-import seng302.Core.Medication;
+import seng302.Core.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +28,9 @@ import static org.testfx.util.NodeQueryUtils.isVisible;
 
 public class TransplantWaitingListTest extends ApplicationTest{
     private static final boolean runHeadless = false;
+
+    private TableView<TransplantWaitingListItem> transplantTable;
+    private TransplantWaitingListItem transplantRow;
 
     /**
      * Ensures the tests are run in background if the property runHeadless == true
@@ -63,7 +64,17 @@ public class TransplantWaitingListTest extends ApplicationTest{
     public void start (Stage stage) throws Exception {
         Main mainGUI = new Main();
         mainGUI.start(stage);
+        Main.users.clear();
     }
+
+    /**
+     * Refreshes the currently selected reciever in both tables of Medical History
+     */
+    private void refreshTableSelections() {
+        transplantTable = lookup("#transplantTable").query();
+        transplantRow = transplantTable.getSelectionModel().getSelectedItem();
+    }
+
 
     /**
      * helper function to create two new users. one a receiver and one a dummy
@@ -123,9 +134,14 @@ public class TransplantWaitingListTest extends ApplicationTest{
 
         //navigate to table
         clickOn("#transplantList");
-
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //check if no recivers in table
         verifyThat("No content in table", isVisible());
+
     }
 
     /**
@@ -154,8 +170,12 @@ public class TransplantWaitingListTest extends ApplicationTest{
         //check the transplant list
         clickOn("#transplantList");
 
-        //USE THIS TO CHECK FOR TEXT IN FIELDS (DECONSTRUCTING TABLES INTO OBJECTS UNDOCUMENTED/POORLY DOCUMENTED)
-        verifyThat("Bob Ross", isVisible());
+        //check the transplant table
+        clickOn("Bob Ross");
+        refreshTableSelections();
+
+        assertEquals(Organ.HEART, transplantRow.getOrgan());
+        assertEquals("Bob Ross", transplantRow.getName());
     }
 
     /**
@@ -163,10 +183,23 @@ public class TransplantWaitingListTest extends ApplicationTest{
      */
     @Test
     public void checkDeregister() {
-        //login as default clinician
+        createAccounts();
+
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#addOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
 
         //deregister an organ
         doubleClickOn("Bob Ross");
