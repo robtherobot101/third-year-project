@@ -14,7 +14,7 @@ public class BloodTypeTest {
         assertEquals(BloodType.parse("O-"), BloodType.O_NEG);
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testInvalidParse() {
         boolean invalidCaught = false;
         try {
