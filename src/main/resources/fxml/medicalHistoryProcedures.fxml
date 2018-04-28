@@ -139,5 +139,10 @@
             <Insets top="40.0" />
          </GridPane.margin>
       </CheckBox>
+      <Label text="* = Procedure affects a donatble organ" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Label>
    </children>
 </GridPane>

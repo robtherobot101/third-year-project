@@ -409,9 +409,8 @@ public class MedicalHistoryProceduresController implements Initializable {
 
                         // If the disease is chronic, update label + colour
                         if (currentProcedure.isOrganAffecting()) {
-                            setText("(TODO) " + item);
-                            //TODO ISSUE WITH SETTING COLOR HERE VS. EXTERNAL CSS FILE
-                            setTextFill(Color.GRAY);
+                            setText("* " + item);
+                            this.setStyle("-fx-background-color: GREY;");
                         }
                     }
                 }
