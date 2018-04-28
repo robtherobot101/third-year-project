@@ -79,6 +79,8 @@ public class UserWindowController implements Initializable {
     private Button waitingListButton;
     @FXML
     private StatusBar statusBar;
+    @FXML
+    private MedicationsController medicationsController;
 
     public StatusIndicator statusIndicator = new StatusIndicator();
 
@@ -99,14 +101,14 @@ public class UserWindowController implements Initializable {
      * Update the title of the window.
      * @param page The current page/tab.
      */
-    private void updateTitle(String page){
+    public void updateTitle(String page){
         stage.setTitle("User: " + currentUser.getName() + " - " + page);
     }
 
     /**
      * Append a * to the title bar when a change is made
      */
-    private void updateTitle(boolean saved){
+    public void updateTitle(boolean saved){
         if(saved && stage.getTitle().endsWith("*")){
             // Remove the asterisk
             stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
@@ -228,6 +230,7 @@ public class UserWindowController implements Initializable {
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
 
         statusIndicator.setStatusBar(statusBar);
+        medicationsController.setUserWindowController(this);
     }
 
     /**

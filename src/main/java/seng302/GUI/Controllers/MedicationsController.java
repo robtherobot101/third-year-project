@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 import seng302.GUI.StatusIndicator;
 import seng302.Generic.History;
 import seng302.Generic.Main;
@@ -45,6 +46,7 @@ public class MedicationsController implements Initializable {
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
     private StatusIndicator statusIndicator;
+    private UserWindowController userWindowController;
 
     /**
      * Set the status indicator object from the user window the page is being displayed in
@@ -54,6 +56,13 @@ public class MedicationsController implements Initializable {
         this.statusIndicator = statusIndicator;
     }
 
+    /**
+     * Assign the user window controller which created the pane
+     * @param userWindowController The controller of the pane in which this pane is located
+     */
+    public void setUserWindowController(UserWindowController userWindowController) {
+        this.userWindowController = userWindowController;
+    }
 
     /**
      * Initializes the medications pane to show medications for a specified user.
@@ -149,6 +158,7 @@ public class MedicationsController implements Initializable {
                             newMedicationField.clear();
                             saveToUndoStack();
                             statusIndicator.setStatus("Added " + medicationChoice, false);
+                            userWindowController.updateTitle(false);
                         } else {
                             Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
                         }
@@ -179,6 +189,7 @@ public class MedicationsController implements Initializable {
                 historicItems.remove(historyListView.getSelectionModel().getSelectedItem());
                 statusIndicator.setStatus("Deleted " + m + " from historic medications", false);
             }
+            userWindowController.updateTitle(false);
             saveToUndoStack();
 
             //TODO create update for medications for history when deleting
@@ -195,6 +206,7 @@ public class MedicationsController implements Initializable {
     public void moveMedicationToHistory() {
         Medication m = moveMedication(historicItems, currentListView);
         statusIndicator.setStatus("Moved " + m + " to history", false);
+        userWindowController.updateTitle(false);
     }
 
     /**
@@ -203,6 +215,7 @@ public class MedicationsController implements Initializable {
     public void moveMedicationToCurrent() {
         Medication m = moveMedication(currentItems, historyListView);
         statusIndicator.setStatus("Moved " + m + " to current", false);
+        userWindowController.updateTitle(false);
     }
 
     /**
@@ -243,6 +256,8 @@ public class MedicationsController implements Initializable {
             History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
+            statusIndicator.setStatus("Saved changes", false);
+            userWindowController.updateTitle(true);
         } else {
             alert.close();
         }
@@ -424,4 +439,5 @@ public class MedicationsController implements Initializable {
             checkSelections();
         });
     }
+
 }
