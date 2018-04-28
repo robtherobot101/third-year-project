@@ -375,11 +375,7 @@ public class UserWindowController implements Initializable {
      */
     public void populateUserFields() {
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        System.out.println(currentUser.getPreferredName());
         String[] splitNames = currentUser.getPreferredNameArray();
-        System.out.println(splitNames[0]);
-        System.out.println(splitNames[1]);
-        System.out.println(splitNames[2]);
         firstNameField.setText(splitNames[0]);
         if (splitNames.length > 2) {
             String[] middleName = new String[splitNames.length - 2];
@@ -698,7 +694,6 @@ public class UserWindowController implements Initializable {
                     Main.setAccountSettingsEnterEvent();
                     stage.showAndWait();
                 } catch (Exception e) {
-                    System.out.println("here");
                     e.printStackTrace();
                 }
             }else{ // Password incorrect

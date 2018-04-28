@@ -58,7 +58,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private TextField nameInput;
     @FXML
-    private Label staffIDLabel;
+    private Label staffIDLabel, clinicianDisplayText;
     @FXML
     private TextField addressInput;
     @FXML
