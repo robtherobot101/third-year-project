@@ -364,6 +364,10 @@ public class UserWindowController implements Initializable {
                         case "update":
                         case "undo":
                         case "redo":
+                        case "medications":
+                        case "procedures":
+                        case "diseases":
+                        case "logout":
                         case "quit":
                             sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]));
                             break;
@@ -371,11 +375,23 @@ public class UserWindowController implements Initializable {
                             sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
                                     " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
                             break;
+
+                        case "modifyUser":
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
+                                    " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
+                            break;
                         case "login":
                             sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
                                     1));
                             treeItems.add(sessionNode);
                             sessionNode.getChildren().add(new TreeItem<>("Login at " + userHistory[i][1]));
+                            sessionNumber++;
+                            break;
+                        case "view":
+                            sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
+                                    1));
+                            treeItems.add(sessionNode);
+                            sessionNode.getChildren().add(new TreeItem<>("View at " + userHistory[i][1]));
                             sessionNumber++;
                             break;
                     }
@@ -393,13 +409,15 @@ public class UserWindowController implements Initializable {
         actionColumn.setCellValueFactory(param -> {
             String userName = currentUser.getName(), toCheck = param.getValue().getValue().substring(0, 12);
             if (toCheck.equals("Update Account")) {
-                return new ReadOnlyStringWrapper("Updated account settings for user " + userName);
+                return new ReadOnlyStringWrapper("Updated account settings for user " + userName + ".");
             }
             switch (toCheck.substring(0, 6)) {
                 case "Create":
-                    return new ReadOnlyStringWrapper("Created a new user profile with name " + userName);
+                    return new ReadOnlyStringWrapper("Created a new user profile with name " + userName + ".");
                 case "Update":
-                    return new ReadOnlyStringWrapper("Updated user attributes for user " + userName);
+                    return new ReadOnlyStringWrapper("Updated user attributes for user " + userName + ".");
+                case "Logout":
+                    return new ReadOnlyStringWrapper("User with id: " + currentUser.getId() + " logged out successfully.");
             }
             if (toCheck.substring(0, 5).equals("Login")) {
                 return new ReadOnlyStringWrapper("User with id: " + currentUser.getId() + " logged in successfully.");
@@ -411,6 +429,20 @@ public class UserWindowController implements Initializable {
                     return new ReadOnlyStringWrapper("Reversed last undo.");
                 case "Quit":
                     return new ReadOnlyStringWrapper("Quit the application.");
+                case "View":
+                    return new ReadOnlyStringWrapper("-Clinician- Viewed user " + userName + " .");
+            }
+            if(toCheck.equals("Modify User")) {
+                return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s attributes.");
+            }
+            if(toCheck.substring(0,11).equals("Medications")) {
+                return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s medications.");
+            }
+            if(toCheck.substring(0,8).equals("Diseases")) {
+                return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s diseases.");
+            }
+            if(toCheck.substring(0,10).equals("Procedures")) {
+                return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s procedures.");
             }
             return null;
         });
@@ -767,7 +799,7 @@ public class UserWindowController implements Initializable {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            String text = History.prepareFileStringGUI(currentUser.getId(), "quit");
+            String text = History.prepareFileStringGUI(currentUser.getId(), "logout");
             History.printToFile(streamOut, text);
             Main.setScene(TFScene.login);
             Main.clearUserScreen();

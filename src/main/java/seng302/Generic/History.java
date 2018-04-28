@@ -177,53 +177,57 @@ public class History {
     public static String prepareFileStringGUI(long userId, String command){
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         User userInfo = Main.getUserById(userId);
-        switch(command) {
-            case "login":
-                description = "[User " + userId + " logged in successfully.]";
-                break;
-            case "logout":
-                description = "[User " + userId + " logged out successfully.]";
-                break;
-            case "create":
-                if (userInfo != null) {
-                    description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
-                }
-                break;
-            case "update":
-                description = "[Updated user attributes.]";
-                break;
-            case "updateAccountSettings":
-                description = "[Updated user account settings.]";
-                break;
-            case "undo":
-                description = "[Reversed last action.]";
-                break;
-            case "redo":
-                description = "[Reverted last undo.]";
-                break;
-            case "quit":
-                description = "[Quit the application.]";
-                break;
+            switch(command) {
+                case "login":
+                    description = "[User " + userId + " logged in successfully.]";
+                    break;
+                case "logout":
+                    description = "[User " + userId + " logged out successfully.]";
+                    break;
+                case "create":
+                    if (userInfo != null) {
+                        description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
+                    }
+                    break;
+                case "update":
+                    description = "[Updated user attributes.]";
+                    break;
+                case "updateAccountSettings":
+                    description = "[Updated user account settings.]";
+                    break;
+                case "undo":
+                    description = "[Reversed last action.]";
+                    break;
+                case "redo":
+                    description = "[Reverted last undo.]";
+                    break;
+                case "quit":
+                    description = "[Quit the application.]";
+                    break;
 
             //clinician exclusive
 
-            case "view":
-                //TODO get user viewed id (method in main or clinician or something)
-                description = "[Viewed user " + " .]";
-                break;
-            case "modifyUser":
-                description = "[Modified user " + "'s attributes.]";
-                break;
-            case "addMed":
-                description = "[Added medications to user " + ".]";
-                break;
-            case "removeMed":
-                description = "[Removed medications from user " + ".]";
-                break;
-            case "search":
-                description = "[Searched user database.]";
-                break;
-        }
+                case "view":
+                    //TODO get user viewed id (method in main or clinician or something)
+                    description = "[-Clinician- Viewed user " + userInfo.getName() + " .]";
+                    break;
+                case "modifyUser":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
+                    break;
+                case "medications":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
+                    break;
+                case "diseases":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s diseases.]";
+                    break;
+                case "procedures":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s procedures.]";
+                    break;
+                case "search":
+                    description = "[-Clinician- Searched user database.]";
+                    break;
+            }
+
         text = String.join(" ", text, Long.toString(userId), command, description);
         return text;
     }

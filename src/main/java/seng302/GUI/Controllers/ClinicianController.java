@@ -29,6 +29,7 @@ import seng302.GUI.TFScene;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import static seng302.Generic.Main.streamOut;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -74,6 +75,9 @@ public class ClinicianController implements Initializable {
     private Label updatedSuccessfully;
 
     @FXML
+    private Label userDisplayText;
+
+    @FXML
     private Button nextPageButton;
 
     @FXML
@@ -81,9 +85,6 @@ public class ClinicianController implements Initializable {
 
     @FXML
     private Label resultsDisplayLabel;
-
-    @FXML
-    private Button accountSettingsButton;
 
     @FXML
     private Button undoWelcomeButton;
@@ -129,6 +130,7 @@ public class ClinicianController implements Initializable {
     public void updateDisplay() {
         updateTitle();
         System.out.print(clinician);
+        userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
@@ -488,6 +490,10 @@ public class ClinicianController implements Initializable {
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setStage(stage);
                             Main.setCurrentUser(row.getItem());
+
+                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
+                            History.printToFile(streamOut, text);
+
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
