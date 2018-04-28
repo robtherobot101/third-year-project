@@ -2,6 +2,7 @@ package seng302.GUI.Controllers;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -139,7 +140,7 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.medicationsViewForUser();
+        Main.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -183,6 +184,11 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
+
+        waitingListButton.setOnAction((ActionEvent event) -> {
+            showWaitingListPane();
+            Main.getWaitingListController().populateWaitingList();
+        });
     }
 
     /**
@@ -510,11 +516,41 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
+        //Checks to see if the user is a donor or receiver
+        receiverCheck(currentUser);
+        donorCheck(currentUser);
+
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
         Main.getClinicianController().updateUserTable();
         return true;
+    }
+
+    /**
+     * Checks to see if a user is eligible to be a receiver.
+     * @param user the user being checked.
+     */
+    private void receiverCheck(User user) {
+        boolean waiting = false;
+        for (WaitingListItem item : user.getWaitingListItems()){
+            if (item.getOrganDeregisteredDate() == null){
+                waiting = true;
+            }
+        }
+        user.setReceiver(waiting);
+    }
+
+    /**
+     * Checks to see if a user is eligible to be a receiver.
+     * @param user the user being checked.
+     */
+    private void donorCheck(User user) {
+        boolean waiting = false;
+        if (!user.getOrgans().isEmpty()){
+            waiting = true;
+        }
+        user.setDonor(waiting);
     }
 
     /**
@@ -742,4 +778,12 @@ public class UserWindowController implements Initializable {
 
     }
 
+    public void setControlsShown(Boolean shown) {
+        if (currentUser != null){
+            if (currentUser.getReceiver())
+            waitingListButton.setVisible(true);
+        } else {
+            waitingListButton.setVisible(shown);
+        }
+    }
 }

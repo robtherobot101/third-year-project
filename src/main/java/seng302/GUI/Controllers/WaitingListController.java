@@ -3,11 +3,19 @@ package seng302.GUI.Controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import seng302.Generic.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import seng302.Core.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import seng302.User.Attribute.Organ;
@@ -16,10 +24,10 @@ import seng302.User.User;
 
 public class WaitingListController implements Initializable {
     @FXML
-    private Button addOrganButton;
+    private Button registerOrganButton;
 
     @FXML
-    private Button removeOrganButton;
+    private Button deregisterOrganButton;
 
     @FXML
     private TableView<WaitingListItem> waitingList;
@@ -31,10 +39,19 @@ public class WaitingListController implements Initializable {
     private TableColumn organType;
 
     @FXML
+    private TableColumn stillWaitingOn;
+
+    @FXML
     private TableColumn organRegisteredDate;
 
     @FXML
     private TableColumn organDeregisteredDate;
+
+    @FXML
+    private Label organComboBoxLabel;
+
+    @FXML
+    private Label transplantWaitingListLabel;
 
     private User currentUser;
 
@@ -49,18 +66,28 @@ public class WaitingListController implements Initializable {
      */
     public void setCurrentUser(User user){
         this.currentUser = user;
+        transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
     /**
      * If there is an Organ type selected in the combobox, a new WaitingListItem
      * is added to the user's profile.
      */
-    public void addOrgan(){
+    public void registerOrgan(){
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if(organTypeSelected != null){
-            System.out.println("Current user: "+currentUser);
-            System.out.println("Current user waiting list: "+currentUser.getWaitingListItems());
-            currentUser.getWaitingListItems().add(new WaitingListItem(organTypeSelected));
+            WaitingListItem temp = new WaitingListItem(organTypeSelected, currentUser);
+            boolean found = false;
+            for (WaitingListItem item : currentUser.getWaitingListItems()){
+                if (temp.getOrganType() == item.getOrganType()){
+                    item.registerOrgan();
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                currentUser.getWaitingListItems().add(temp);
+            }
             populateWaitingList();
         }
     }
@@ -69,10 +96,10 @@ public class WaitingListController implements Initializable {
      * Removes the selected item from the user's waiting list and refreshes
      * the waiting TableView
      */
-    public void removeOrgan(){
+    public void deregisterOrgan(){
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
         if(waitingListItemSelected != null){
-            currentUser.getWaitingListItems().remove(waitingListItemSelected);
+            waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
         }
     }
@@ -91,7 +118,62 @@ public class WaitingListController implements Initializable {
         organTypeComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
         waitingList.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
+        stillWaitingOn.setCellValueFactory(new PropertyValueFactory<>("stillWaitingOn"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         organDeregisteredDate.setCellValueFactory(new PropertyValueFactory<>("organDeregisteredDate"));
+
+        registerOrganButton.setDisable(true);
+        deregisterOrganButton.setDisable(true);
+
+        organTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            registerOrganButton.setDisable(false);
+        });
+
+        waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue==null){
+                deregisterOrganButton.setDisable(true);
+            }else if(newValue.getStillWaitingOn()){
+                deregisterOrganButton.setDisable(false);
+            }else{
+                deregisterOrganButton.setDisable(true);
+            }
+        });
+
+        waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
+            Boolean highlight = false;
+            @Override
+            public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
+                return new TableRow<WaitingListItem>() {
+                    @Override
+                    public void updateItem(WaitingListItem item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (getStyleClass().contains("highlighted-row")) {
+                            getStyleClass().remove("highlighted-row");
+                        }
+                        if(item != null && !empty) {
+
+                            if(item.isDonatingOrgan(currentUser)){
+                                //TODO Highlight the row
+                                System.out.println("User is donating "+item.getOrganType());
+                                highlight = true;
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
+                                }
+
+                            }
+                        }
+                    }
+                };
+            }
+        });
+
+    }
+
+    public void setControlsShown(boolean shown) {
+        this.transplantWaitingListLabel.setVisible(!shown);
+        this.registerOrganButton.setVisible(shown);
+        this.deregisterOrganButton.setVisible(shown);
+        this.organTypeComboBox.setVisible(shown);
+        this.organComboBoxLabel.setVisible(shown);
     }
 }

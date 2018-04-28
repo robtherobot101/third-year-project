@@ -576,7 +576,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false">
+            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" AnchorPane.rightAnchor="371.0">
                <font>
                   <Font size="14.0" />
                </font>
