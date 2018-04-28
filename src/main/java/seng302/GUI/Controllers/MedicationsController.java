@@ -179,9 +179,13 @@ public class MedicationsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(currentItems, currentListView.getSelectionModel().getSelectedItem());
+                Medication m = currentListView.getSelectionModel().getSelectedItem();
+                currentItems.remove(m);
+                statusIndicator.setStatus("Deleted " + m + " from current medications", false);
             } else if (historyListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(historicItems, historyListView.getSelectionModel().getSelectedItem());
+                Medication m = historyListView.getSelectionModel().getSelectedItem();
+                historicItems.remove(historyListView.getSelectionModel().getSelectedItem());
+                statusIndicator.setStatus("Deleted " + m + " from historic medications", false);
             }
 
             //TODO create update for medications for history when deleting
@@ -193,33 +197,19 @@ public class MedicationsController implements Initializable {
     }
 
     /**
-     * Deletes a medication from an ArrayList of medications using the medication name.
-     *
-     * @param deleteFrom The ArrayList of medications to delete the medication from
-     * @param toDelete The name of the medication
-     */
-    private void deleteMedication(ObservableList<Medication> deleteFrom, Medication toDelete) {
-        for (Medication medication: deleteFrom) {
-            if (medication.equals(toDelete)) {
-                deleteFrom.remove(medication);
-                break;
-            }
-        }
-        saveToUndoStack();
-    }
-
-    /**
      * Moves the selected medication from the current medications listview to the historic medications listview.
      */
     public void moveMedicationToHistory() {
-        moveMedication(historicItems, currentListView);
+        Medication m = moveMedication(historicItems, currentListView);
+        statusIndicator.setStatus("Moved " + m + " to history", false);
     }
 
     /**
      * Moves the selected medication from the historic medications listview to the current medications listview.
      */
     public void moveMedicationToCurrent() {
-        moveMedication(currentItems, historyListView);
+        Medication m = moveMedication(currentItems, historyListView);
+        statusIndicator.setStatus("Moved " + m + " to current", false);
     }
 
     /**
@@ -227,13 +217,17 @@ public class MedicationsController implements Initializable {
      *
      * @param to The Medication list to move the medication from
      * @param view The ListView to get the selected medication from
+     * @return The medication which was moved
      */
-    private void moveMedication(ObservableList<Medication> to, ListView<Medication> view) {
+    private Medication moveMedication(ObservableList<Medication> to, ListView<Medication> view) {
         movingItem = true;
-        // Remove the medication from the ListView and add it to the 'to' list
-        to.add(view.getItems().remove(view.getSelectionModel().getSelectedIndex()));
+        // Remove the medication from the ListView
+        Medication m = view.getItems().remove(view.getSelectionModel().getSelectedIndex());
+        // Add it to the 'to' list
+        to.add(m);
         saveToUndoStack();
         movingItem = false;
+        return m;
     }
 
     /**
