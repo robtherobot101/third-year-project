@@ -72,6 +72,9 @@ public class ClinicianController implements Initializable {
     private Label updatedSuccessfully;
 
     @FXML
+    private Label userDisplayText;
+
+    @FXML
     private Button nextPageButton;
 
     @FXML
@@ -81,13 +84,10 @@ public class ClinicianController implements Initializable {
     private Label resultsDisplayLabel;
 
     @FXML
-    private Button accountSettingsButton;
+    private Button undoWelcomeButton;
 
     @FXML
-    private Button undoButton;
-
-    @FXML
-    private Button redoButton;
+    private Button redoWelcomeButton;
 
     @FXML
     private GridPane mainPane;
@@ -121,6 +121,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateDisplay() {
         System.out.print(clinician);
+        userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
@@ -236,10 +237,10 @@ public class ClinicianController implements Initializable {
     public void undo(){
         clinician = clinicianUndo(clinician);
         updateDisplay();
-        redoButton.setDisable(false);
+        redoWelcomeButton.setDisable(false);
 
         if (clinicianUndoStack.isEmpty()){
-            undoButton.setDisable(true);
+            undoWelcomeButton.setDisable(true);
         }
     }
 
@@ -249,9 +250,9 @@ public class ClinicianController implements Initializable {
     public void redo(){
         clinician = clinicianRedo(clinician);
         updateDisplay();
-        undoButton.setDisable(false);
+        undoWelcomeButton.setDisable(false);
         if(clinicianRedoStack.isEmpty()){
-            redoButton.setDisable(true);
+            redoWelcomeButton.setDisable(true);
         }
     }
 
@@ -278,8 +279,8 @@ public class ClinicianController implements Initializable {
     public void addClinicianToUndoStack(Clinician clinician) {
         Clinician prevClinician = new Clinician(clinician);
         clinicianUndoStack.add(prevClinician);
-        if (undoButton.isDisable()) {
-            undoButton.setDisable(false);
+        if (undoWelcomeButton.isDisable()) {
+            undoWelcomeButton.setDisable(false);
         }
     }
 
