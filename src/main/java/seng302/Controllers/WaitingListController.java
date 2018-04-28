@@ -142,9 +142,11 @@ public class WaitingListController implements Initializable {
                     @Override
                     public void updateItem(WaitingListItem item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (item == null || empty) {
-                            //do nothing
-                        } else {
+                        if (getStyleClass().contains("highlighted-row")) {
+                            getStyleClass().remove("highlighted-row");
+                        }
+                        if(item != null && !empty) {
+
                             if(item.isDonatingOrgan(currentUser)){
                                 //TODO Highlight the row
                                 System.out.println("User is donating "+item.getOrganType());
@@ -153,8 +155,6 @@ public class WaitingListController implements Initializable {
                                     getStyleClass().add("highlighted-row");
                                 }
 
-                            }else{
-                                getStyleClass().remove("highlighted-row");
                             }
                         }
                     }
