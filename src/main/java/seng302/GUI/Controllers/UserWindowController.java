@@ -14,6 +14,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
+import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import seng302.User.Attribute.AlcoholConsumption;
 import seng302.User.Attribute.BloodType;
@@ -38,7 +39,7 @@ import static seng302.Generic.Main.streamOut;
  * Saving, Undo, Redo, All input fields and more.
  */
 public class UserWindowController implements Initializable {
-    private Stage stage;
+    private TitleBar titleBar;
     @FXML
     private Label userDisplayText, settingAttributesLabel, ageLabel, bmiLabel, bloodPressureLabel, userHistoryLabel;
     @FXML
@@ -86,39 +87,19 @@ public class UserWindowController implements Initializable {
 
 
     public UserWindowController(){
-        this.stage = Main.getStage();
+        this.titleBar = new TitleBar();
+        titleBar.setStage(Main.getStage());
     }
 
     /**
      * Set the stage the controller is associated with
      * @param stage The stage on which the window is shown
      */
-    public void setStage(Stage stage){
-        this.stage = stage;
+    public void setTitleBar(Stage stage){
+        titleBar.setStage(stage);
     }
 
-    /**
-     * Update the title of the window.
-     * @param page The current page/tab.
-     */
-    public void updateTitle(String page){
-        stage.setTitle("User: " + currentUser.getName() + " - " + page);
-    }
 
-    /**
-     * Append a * to the title bar when a change is made
-     */
-    public void updateTitle(boolean saved){
-        if(saved && stage.getTitle().endsWith("*")){
-            // Remove the asterisk
-            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
-        }
-
-        else if(!saved && !stage.getTitle().endsWith("*") ) {
-            // Add the asterisk
-            stage.setTitle(stage.getTitle() + "*");
-        }
-    }
 
     public ArrayList<User> getUserUndoStack() {
         return attributeUndoStack;
@@ -142,7 +123,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
         bloodPressureLabel.setText("");
-        updateTitle("Home");
+        titleBar.setTitle(currentUser, "Home");
     }
 
     /**
@@ -230,7 +211,7 @@ public class UserWindowController implements Initializable {
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
 
         statusIndicator.setStatusBar(statusBar);
-        medicationsController.setUserWindowController(this);
+        medicationsController.setTitleBar(titleBar);
     }
 
     /**
@@ -249,7 +230,7 @@ public class UserWindowController implements Initializable {
             addUserToUndoStack(oldFields);
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
-            updateTitle(false);
+            titleBar.saved(false);
         }
     }
 
@@ -289,7 +270,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        updateTitle("Action History");
+        titleBar.setTitle(currentUser, "Action History");
     }
 
 
@@ -301,7 +282,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
         setUndoRedoButtonsDisabled(true, true);
-        updateTitle("Waiting List");
+        titleBar.setTitle(currentUser, "Waiting List");
     }
 
     /**
@@ -314,7 +295,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(true);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
-        updateTitle("Medications");
+        titleBar.setTitle(currentUser, "Medications");
     }
 
     /**
@@ -327,7 +308,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        updateTitle("Attributes");
+        titleBar.setTitle(currentUser, "Attributes");
     }
 
     /**
@@ -340,7 +321,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        updateTitle("Home");
+        titleBar.setTitle(currentUser, "Home");
     }
 
     /**
@@ -618,7 +599,7 @@ public class UserWindowController implements Initializable {
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
             populateHistoryTable();
-            updateTitle(true);
+            titleBar.saved(true);
         }
         alert.close();
     }
@@ -628,7 +609,7 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
-        updateTitle(false);
+        titleBar.saved(false);
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the redo stack
@@ -686,7 +667,7 @@ public class UserWindowController implements Initializable {
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
         }
-        updateTitle(false);
+        titleBar.saved(false);
     }
 
     /**

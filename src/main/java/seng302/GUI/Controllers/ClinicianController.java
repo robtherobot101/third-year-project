@@ -488,7 +488,7 @@ public class ClinicianController implements Initializable {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
-                            userWindowController.setStage(stage);
+                            userWindowController.setTitleBar(stage);
                             Main.setCurrentUser(row.getItem());
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
