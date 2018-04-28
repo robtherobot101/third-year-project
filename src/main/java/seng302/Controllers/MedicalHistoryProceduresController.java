@@ -462,7 +462,7 @@ public class MedicalHistoryProceduresController implements Initializable {
     }
 
 
-    public void updatePendingProcedures() {
+    private void updatePendingProcedures() {
         //Check if pending procedure due date is now past the current date
         for(Procedure procedure: currentUser.getPendingProcedures()) {
             if(procedure.getDate().isBefore(LocalDate.now())) {

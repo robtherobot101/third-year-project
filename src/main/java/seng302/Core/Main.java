@@ -121,8 +121,7 @@ public class Main extends Application {
         userWindowController.populateHistoryTable();
 
         medicalHistoryDiseasesController.setCurrentUser(currentUser);
-        medicalHistoryProceduresController.setCurrentUser(currentUser);
-        //medicalHistoryDiseasesController.populateDiseases(true);
+        //medicalHistoryProceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
 

@@ -444,8 +444,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
                         // If the disease is chronic, update label + colour
                         if (currentDisease.isChronic()) {
                             setText("(CHRONIC) " + item);
-                            //TODO ISSUE WITH SETTING COLOR HERE VS. EXTERNAL CSS FILE
-                            setTextFill(Color.RED);
+                            this.setStyle("-fx-background-color: RED;");
                         }
                     }
                 }
@@ -454,7 +453,6 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
         currentDiseaseTableView.sortPolicyProperty().set(
             new Callback<TableView<Disease>, Boolean>() {
-
                 @Override
                 public Boolean call(TableView<Disease> param) {
                     Comparator<Disease> comparator = new Comparator<Disease>() {
