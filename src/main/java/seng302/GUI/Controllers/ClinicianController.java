@@ -26,6 +26,8 @@ import seng302.GUI.TFScene;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import static seng302.Generic.Main.streamOut;
+
 /**
  * Class to control all the logic for the clinician interactions with the application.
  */
@@ -461,6 +463,10 @@ public class ClinicianController implements Initializable {
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
                             Main.setCurrentUser(row.getItem());
+
+                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
+                            History.printToFile(streamOut, text);
+
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
