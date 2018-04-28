@@ -1,5 +1,6 @@
 package seng302.TestFX;
 
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -14,6 +15,7 @@ import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Disease;
 import seng302.Core.Procedure;
 import seng302.Generic.Main;
+import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.time.LocalDate;
@@ -29,7 +31,7 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
     private Main mainGUI;
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     private TableView<Procedure> pendingProcedureTableView, previousProcedureTableView;
     private Procedure pendingTableSelectedProcedure, previousTableSelectedProcedure;
@@ -124,6 +126,18 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
     }
 
+    /**
+     * Adds a new procedure to the user's pending procedures table view
+     */
+    private void addNewProcedureToPendingProcedures() {
+        enterMedicalHistoryProceduresView();
+
+        clickOn("#summaryInput").write("Arm Transplant");
+        clickOn("#descriptionInput").write("Transfer of arm");
+        clickOn("#dateOfProcedureInput").write("4/04/2020");
+        clickOn("#addNewProcedureButton");
+    }
+
 
     /**
      * Add a completely valid procedure
@@ -194,13 +208,10 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
      */
     @Test
     public void checkOrganAffectingToggle() {
-        enterMedicalHistoryProceduresView();
-        pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
 
-        clickOn("#summaryInput").write("Arm Transplant");
-        clickOn("#descriptionInput").write("Transfer of arm");
-        clickOn("#dateOfProcedureInput").write("4/04/2020");
-        clickOn("#addNewProcedureButton");
+
+        addNewProcedureToPendingProcedures();
+        pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
         // Check disease was added correctly
         clickOn("Arm Transplant");
         pendingTableSelectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
@@ -226,12 +237,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
      */
     @Test
     public void updateProcedure() {
-        enterMedicalHistoryProceduresView();
-
-        clickOn("#summaryInput").write("Arm Transplant");
-        clickOn("#descriptionInput").write("Transfer of arm");
-        clickOn("#dateOfProcedureInput").write("4/04/2020");
-        clickOn("#addNewProcedureButton");
+        addNewProcedureToPendingProcedures();
         // Check procedure was added correctly
         clickOn("Arm Transplant");
         refreshTableSelections();
@@ -265,6 +271,67 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         assertEquals("Removal of leg", previousTableSelectedProcedure.getDescription());
         assertEquals(LocalDate.of(2017, 4, 3), previousTableSelectedProcedure.getDate());
         assertNull(pendingTableSelectedProcedure);
+    }
+
+    /**
+     * Adds a procedure to the user and then deletes it, checking if the deletion is successful.
+     */
+    @Test
+    public void deleteProcedure() {
+        //Add Procedure for user.
+        addNewProcedureToPendingProcedures();
+
+        clickOn("Arm Transplant");
+        clickOn("#deleteProcedureButton");
+        sleep(200);
+        clickOn("OK");
+
+        //Check if medication added is correct.
+        pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
+        assertEquals(0, pendingProcedureTableView.getItems().size());
+    }
+
+
+    /**
+     * Adds a medication to the donor and then saves the medications, and then checks that the donor has been updated in the back end
+     * as well as checking that the current medications table has been populated.
+     */
+    @Test
+    public void saveProcedure() {
+        //Add Medication for donor.
+        addNewProcedureToPendingProcedures();
+
+        clickOn("#saveProcedureButton");
+        sleep(200);
+        clickOn("OK");
+        clickOn("Exit");
+        sleep(1000);
+        clickOn("OK");
+
+        //Check if procedure added is correct in the Medication Array List of the User.
+        TableView donorList = lookup("#profileTable").queryTableView();
+        User topDonor = (User) donorList.getItems().get(0);
+        assertTrue(topDonor.getPendingProcedures().get(0).getSummary().equalsIgnoreCase("Arm Transplant"));
+        assertTrue(topDonor.getPendingProcedures().get(0).getDescription().equalsIgnoreCase("Transfer of arm"));
+        assertEquals(LocalDate.of(2020, 4, 4), topDonor.getPendingProcedures().get(0).getDate());
+
+        doubleClickOn("Andrew Robert French");
+        WaitForAsyncUtils.waitForFxEvents();
+
+        // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
+        clickOn("#proceduresButton");
+
+        //Check if medication added is correct and is populated when the user re-enters the medications window.
+        pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
+        Procedure topProcedure = pendingProcedureTableView.getItems().get(0);
+        assertEquals("Arm Transplant", topProcedure.getSummary());
+        assertEquals("Transfer of arm", topProcedure.getDescription());
+        assertEquals(LocalDate.of(2020, 4, 4), topProcedure.getDate());
+
+        clickOn("Arm Transplant");
+        clickOn("#deleteProcedureButton");
+        sleep(200);
+        clickOn("OK");
     }
 
 }
