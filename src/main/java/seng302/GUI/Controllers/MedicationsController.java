@@ -9,15 +9,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.GUI.StatusIndicator;
-import seng302.Generic.*;
-
-import java.net.URL;
-import java.util.*;
+import seng302.Generic.History;
+import seng302.Generic.Main;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
+
+import java.net.URL;
+import java.util.*;
 
 import static seng302.Generic.Main.streamOut;
 
@@ -128,41 +129,32 @@ public class MedicationsController implements Initializable {
         if (medicationChoice.equals("")) {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
         } else {
-            boolean duplicate = false;
-            for (Medication medication: historicItems) {
-                if (medication.getName().equals(medicationChoice)) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
-                for (Medication medication : currentItems) {
-                    if (medication.getName().equals(medicationChoice)) {
-                        duplicate = true;
-                        break;
-                    }
-                }
-            }
-            if (duplicate) {
+            // Check for duplicates
+            if(historicItems.contains(new Medication(medicationChoice)) ||
+                    currentItems.contains(new Medication(medicationChoice))){
                 Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to this person.").show();
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
                 System.out.println(medicationChoice);
-                Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
-                if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
+                statusIndicator.setStatus("Fetching from API", true);
+                new Thread(() -> {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
-                    System.out.print(activeIngredients);
-                    currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
-                    // NOTE: I have created another constructor in the Medications class for a medication with a name and
-                    // active ingredients also.
+                    Platform.runLater(() -> {
+                        if (!activeIngredients.get(0).equals("")) {
+                            currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
+                            // NOTE: I have created another constructor in the Medications class for a medication with a name and
+                            // active ingredients also.
 
-                    newMedicationField.clear();
-                    saveToUndoStack();
-                } else {
-                    Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
-                }
-                Platform.runLater(() -> statusIndicator.ready());
+                            newMedicationField.clear();
+                            saveToUndoStack();
+                            statusIndicator.setStatus("Added " + medicationChoice, false);
+                        } else {
+                            Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
+                        }
+                    });
+                }).start();
+
             }
         }
         // After clicking the button, it becomes disabled
@@ -187,6 +179,7 @@ public class MedicationsController implements Initializable {
                 historicItems.remove(historyListView.getSelectionModel().getSelectedItem());
                 statusIndicator.setStatus("Deleted " + m + " from historic medications", false);
             }
+            saveToUndoStack();
 
             //TODO create update for medications for history when deleting
 //            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
