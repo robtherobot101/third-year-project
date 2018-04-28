@@ -20,10 +20,13 @@ import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 import seng302.Generic.*;
+
 import java.net.URL;
 import java.util.*;
 
-
+/**
+ * The controller for the waiting list pane
+ */
 public class WaitingListController implements Initializable {
     @FXML
     private Button registerOrganButton;
@@ -58,15 +61,14 @@ public class WaitingListController implements Initializable {
     private User currentUser;
 
 
-
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
 
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
-     * @param user
+     * @param user The user
      */
-    public void setCurrentUser(User user){
+    public void setCurrentUser(User user) {
         this.currentUser = user;
         transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
@@ -75,13 +77,13 @@ public class WaitingListController implements Initializable {
      * If there is an Organ type selected in the combobox, a new WaitingListItem
      * is added to the user's profile.
      */
-    public void registerOrgan(){
+    public void registerOrgan() {
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
-        if(organTypeSelected != null){
+        if (organTypeSelected != null) {
             WaitingListItem temp = new WaitingListItem(organTypeSelected, currentUser);
             boolean found = false;
-            for (WaitingListItem item : currentUser.getWaitingListItems()){
-                if (temp.getOrganType() == item.getOrganType()){
+            for (WaitingListItem item : currentUser.getWaitingListItems()) {
+                if (temp.getOrganType() == item.getOrganType()) {
                     item.registerOrgan();
                     found = true;
                     break;
@@ -98,9 +100,9 @@ public class WaitingListController implements Initializable {
      * Removes the selected item from the user's waiting list and refreshes
      * the waiting TableView
      */
-    public void deregisterOrgan(){
+    public void deregisterOrgan() {
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
-        if(waitingListItemSelected != null){
+        if (waitingListItemSelected != null) {
             waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
         }
@@ -109,7 +111,7 @@ public class WaitingListController implements Initializable {
     /**
      * Refreshes the list waiting list TableView
      */
-    public void populateWaitingList(){
+    public void populateWaitingList() {
         waitingListItems.clear();
         waitingListItems.addAll(currentUser.getWaitingListItems());
     }
@@ -132,18 +134,17 @@ public class WaitingListController implements Initializable {
         });
 
         waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue==null){
+            if (newValue == null) {
                 deregisterOrganButton.setDisable(true);
-            }else if(newValue.getStillWaitingOn()){
+            } else if (newValue.getStillWaitingOn()) {
                 deregisterOrganButton.setDisable(false);
-            }else{
+            } else {
                 deregisterOrganButton.setDisable(true);
             }
         });
 
 
         waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
-            Boolean highlight = false;
             @Override
             public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
                 return new TableRow<WaitingListItem>() {
@@ -154,11 +155,10 @@ public class WaitingListController implements Initializable {
                             getStyleClass().remove("highlighted-row");
                         }
                         setTooltip(null);
-                        if(item != null && !empty) {
-                            if(item.isDonatingOrgan(currentUser)){
+                        if (item != null && !empty) {
+                            if (item.isDonatingOrgan(currentUser) && item.getStillWaitingOn()) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
-                                System.out.println("User is donating "+item.getOrganType());
-                                highlight = true;
+                                System.out.println("User is donating " + item.getOrganType());
                                 if (!getStyleClass().contains("highlighted-row")) {
                                     getStyleClass().add("highlighted-row");
                                 }
@@ -171,6 +171,11 @@ public class WaitingListController implements Initializable {
         });
     }
 
+    /**
+     * Shows or hides the options for modifying the transplant waiting list
+     * depending on the value of shown
+     * @param shown True if the controls are to be shown, otherwise false
+     */
     public void setControlsShown(boolean shown) {
         this.transplantWaitingListLabel.setVisible(!shown);
         this.registerOrganButton.setVisible(shown);
