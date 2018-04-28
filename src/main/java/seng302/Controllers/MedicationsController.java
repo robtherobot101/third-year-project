@@ -143,6 +143,7 @@ public class MedicationsController implements Initializable {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
                 System.out.println(medicationChoice);
+                Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
                 if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
                     System.out.print(activeIngredients);
@@ -155,6 +156,7 @@ public class MedicationsController implements Initializable {
                 } else {
                     Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
                 }
+                Platform.runLater(() -> statusIndicator.ready());
             }
         }
         // After clicking the button, it becomes disabled

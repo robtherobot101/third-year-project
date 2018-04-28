@@ -19,6 +19,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import org.controlsfx.control.StatusBar;
 import seng302.Core.*;
+import seng302.GUI.StatusIndicator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -89,7 +90,9 @@ public class ClinicianController implements Initializable {
     private GridPane mainPane;
 
     @FXML
-    public StatusBar statusBar;
+    private StatusBar statusBar;
+
+    public StatusIndicator statusIndicator = new StatusIndicator();
 
     private int resultsPerPage;
     private int page = 1;
@@ -529,6 +532,6 @@ public class ClinicianController implements Initializable {
                 }
             }
         });
-        statusBar.setText("Ready");
+        statusIndicator.setStatusBar(statusBar);
     }
 }
