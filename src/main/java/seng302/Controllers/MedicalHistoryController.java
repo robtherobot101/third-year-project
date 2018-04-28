@@ -77,7 +77,7 @@ public class MedicalHistoryController implements Initializable {
     public void addNewDisease() {
         System.out.println("MedicalHistoryController: Adding new disease");
         // Check for empty disease name TODO could be a listener to disable the add button
-        if (newDiseaseTextField.getText() == "") {
+        if (newDiseaseTextField.getText().isEmpty()) {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Invalid disease name provided.");
             newDiseaseTextField.clear();
@@ -98,8 +98,13 @@ public class MedicalHistoryController implements Initializable {
             chronicCheckBox.setSelected(false);
         } else {
             // Add the new disease
+
             Disease diseaseToAdd = new Disease(newDiseaseTextField.getText(), dateOfDiagnosisInput.getValue(),
                     chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
+            newDiseaseTextField.clear();
+            dateOfDiagnosisInput.getEditor().clear();
+            isCuredCheckBox.setSelected(false);
+            chronicCheckBox.setSelected(false);
             if (diseaseToAdd.isCured()) {
                 addCuredDisease(diseaseToAdd);
             } else {
