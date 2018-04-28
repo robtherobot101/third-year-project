@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import org.controlsfx.control.StatusBar;
 import seng302.Core.*;
+import seng302.GUI.StatusIndicator;
 
 import java.net.URL;
 import java.util.*;
@@ -36,14 +37,14 @@ public class MedicationsController implements Initializable {
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
-    private StatusBar statusBar;
+    private StatusIndicator statusIndicator;
 
     /**
-     * Set the status bar object from the user window the page is being displayed in
-     * @param statusBar
+     * Set the status indicator object from the user window the page is being displayed in
+     * @param statusIndicator the statusIndicator object
      */
-    public void setStatusBar(StatusBar statusBar) {
-        this.statusBar = statusBar;
+    public void setStatusIndicator(StatusIndicator statusIndicator) {
+        this.statusIndicator = statusIndicator;
     }
 
 
@@ -408,9 +409,13 @@ public class MedicationsController implements Initializable {
                 return null;
             }
             String medicine = newMedicationField.getText();
-            Platform.runLater(() -> statusBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS));
+            // Show API call on status bar
+            Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
-            Platform.runLater(() -> statusBar.setProgress(0));
+            // Reset status bar
+            Platform.runLater(() -> {
+                Platform.runLater(() -> statusIndicator.ready());
+            });
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
             } else {

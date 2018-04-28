@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
 import seng302.Core.*;
 import seng302.Files.History;
+import seng302.GUI.StatusIndicator;
 
 import java.net.URL;
 import java.time.Duration;
@@ -70,7 +71,9 @@ public class UserWindowController implements Initializable {
     @FXML
     private Button waitingListButton;
     @FXML
-    public StatusBar statusBar;
+    private StatusBar statusBar;
+
+    public StatusIndicator statusIndicator = new StatusIndicator();
 
 
     public UserWindowController(){
@@ -216,6 +219,8 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
+
+        statusIndicator.setStatusBar(statusBar);
     }
 
     /**
