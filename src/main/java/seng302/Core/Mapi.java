@@ -17,6 +17,8 @@ public class Mapi {
      */
     public static ArrayList<String> autocomplete(String query) {
         try {
+            query = query.replace(" ", "+");
+            query = query.replace("%", "%25");
             String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s", query));
             String[] temp = result.split("\\[");
             result = temp[1];
@@ -38,6 +40,8 @@ public class Mapi {
      * @return Returns the active ingredients as a string arraylist
      */
     public static ArrayList<String> activeIngredients(String medicine) {
+        medicine = medicine.replace(" ", "+");
+        medicine = medicine.replace("%", "%25");
         String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/%s/substances.json", medicine));
         if (result.length() > 4) {
             result = result.substring(2, result.length() - 2);
