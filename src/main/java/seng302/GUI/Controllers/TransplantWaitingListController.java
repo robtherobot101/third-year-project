@@ -8,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -43,6 +41,10 @@ public class TransplantWaitingListController implements Initializable {
     private TableColumn dateColumn;
     @FXML
     private TableColumn regionColumn;
+    @FXML
+    private ComboBox organSearchTextField;
+    @FXML
+    private TextField regionSearchTextField;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
     private ObservableList<TransplantWaitingListItem> transplantList = FXCollections.observableArrayList();
@@ -82,6 +84,28 @@ public class TransplantWaitingListController implements Initializable {
         transplantTable.setItems(transplantList);
     }
 
+    public void updateFoundRegionUsers(String searchItems) {
+        transplantList.removeAll(transplantList);
+        for (User user : Main.users) {
+            if (!user.getWaitingListItems().isEmpty()) {
+                for (WaitingListItem item : user.getWaitingListItems()) {
+                    try {
+                        if (!(item.getOrganRegisteredDate() == null)) {
+                            if (searchItems.equals("") && (user.getRegion() == null)) {
+                                transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(searchItems.toLowerCase()))) {
+                                transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        transplantTable.setItems(transplantList);
+    }
+
     /**
      * Initilizes the gui display with the correct content in the table.
      * @param location
@@ -101,6 +125,10 @@ public class TransplantWaitingListController implements Initializable {
 
         updateTransplantList();
         transplantTable.setItems(transplantList);
+
+        regionSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateFoundRegionUsers(newValue);
+        });
 
         transplantTable.setRowFactory(new Callback<TableView<TransplantWaitingListItem>, TableRow<TransplantWaitingListItem>>(){
             @Override
