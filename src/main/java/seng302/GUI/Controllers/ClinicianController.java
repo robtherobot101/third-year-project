@@ -2,6 +2,7 @@ package seng302.GUI.Controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -41,6 +42,9 @@ public class ClinicianController implements Initializable {
     );
     @FXML
     private TableColumn profileName;
+
+    @FXML
+    private TableColumn profileUserType;
 
     @FXML
     private TableColumn profileAge;
@@ -401,7 +405,8 @@ public class ClinicianController implements Initializable {
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
+        profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
 

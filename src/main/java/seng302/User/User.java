@@ -436,4 +436,16 @@ public class User {
         }
         return receiver;
     }
+
+    public String getType(){
+        if(isDonor() && isReceiver()){
+            return "donor/receiver";
+        }else if(isDonor() && !isReceiver()){
+            return "donor";
+        }else if(!isDonor() && isReceiver()){
+            return "receiver";
+        }else{
+            return "neither";
+        }
+    }
 }

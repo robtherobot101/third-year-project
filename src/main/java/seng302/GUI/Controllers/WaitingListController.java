@@ -102,6 +102,7 @@ public class WaitingListController implements Initializable {
             populateWaitingList();
         }
         populateOrgansComboBox();
+        Main.getClinicianController().updateUserTable();
     }
 
 
@@ -116,6 +117,7 @@ public class WaitingListController implements Initializable {
             populateWaitingList();
         }
         populateOrgansComboBox();
+        Main.getClinicianController().updateUserTable();
     }
 
 

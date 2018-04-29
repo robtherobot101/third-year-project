@@ -100,6 +100,13 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Sets the medications view to be able to edit for a clinican.
+     */
+    public static void medicationsViewForClinician() {
+        medicationsController.setControlsShown(true);
+    }
+
 
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 

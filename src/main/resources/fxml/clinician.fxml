@@ -87,6 +87,7 @@
                             </columnResizePolicy>
                             <columns>
                                 <TableColumn fx:id="profileName" prefWidth="344.0" text="Name" />
+                        <TableColumn fx:id="profileUserType" prefWidth="75.0" text="User Type" />
                                 <TableColumn fx:id="profileAge" prefWidth="110.0" text="Age" />
                                 <TableColumn fx:id="profileGender" prefWidth="133.0" text="Gender" />
                                 <TableColumn fx:id="profileRegion" prefWidth="163.0" text="Region" />
