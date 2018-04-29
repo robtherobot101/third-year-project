@@ -299,7 +299,7 @@ public class ClinicianController implements Initializable {
 
 
     /**
-     * Updates theO ObservableList for the profile table
+     * Updates the ObservableList for the profile table
      */
     public void displayCurrentPage() {
         currentPage.clear();

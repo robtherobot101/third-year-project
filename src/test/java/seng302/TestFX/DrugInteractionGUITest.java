@@ -58,58 +58,6 @@ public class DrugInteractionGUITest extends TestFXTest {
     }
 
     /**
-     * Waits until the node denoted by the given id can be found and is visible.
-     * If the waiting time exceeds the given timeout in seconds, a TimeOutException
-     * is thrown.
-     * @param timeout The timeout in seconds
-     * @param id The fx identifier of the node
-     * @throws TimeoutException If the waiting time exceeds the given timeout.
-     */
-    private void waitForNodeVisible(int timeout, String id) throws TimeoutException{
-        Callable<Boolean> callable = () -> {
-            Node nodeFound = lookup(id).query();
-            if(nodeFound==null){
-                return false;
-            }else{
-                if(nodeFound.isVisible()){
-                    //Let the GUI skin catchup to the controller state
-                    waitForFxEvents();
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        };
-        WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
-    }
-
-    /**
-     * Waits until the node denoted by the given id can be found and is enabled.
-     * If the waiting time exceeds the given timeout in seconds, a TimeOutException
-     * is thrown.
-     * @param timeout The timeout in seconds
-     * @param id The fx identifier of the node
-     * @throws TimeoutException If the waiting time exceeds the given timeout.
-     */
-    private void waitForNodeEnabled(int timeout, String id) throws TimeoutException{
-        Callable<Boolean> callable = () -> {
-            Node nodeFound = lookup(id).query();
-            if(nodeFound==null){
-                return false;
-            }else{
-                if(!nodeFound.isDisable()){
-                    //Let the GUI skin catchup to the controller state
-                    waitForFxEvents();
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        };
-        WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
-    }
-
-    /**
      * Types the given drug into the add medication field and adds it to the
      * user's list of medications. Only medications which are recognised by the
      * auto-complete box should be passed here. This method should only be called while in a

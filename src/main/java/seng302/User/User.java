@@ -42,8 +42,6 @@ public class User {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
-    private Boolean donor = false;
-    private Boolean receiver = false;
 
     private ArrayList<WaitingListItem> waitingListItems;
 
@@ -380,14 +378,6 @@ public class User {
 
     public void setHistoricMedications(ArrayList<Medication> historicMedications) { this.historicMedications = historicMedications; }
 
-    public void setDonor(Boolean option){
-        donor = option;
-    }
-
-    public void setReceiver(Boolean option){
-        receiver = option;
-    }
-
     /**
      * Get a string containing key information about the user. Can be formatted as a table row.
      *
@@ -433,11 +423,17 @@ public class User {
         return getString(false);
     }
 
-    public Boolean getDonor() {
-        return donor;
+    public Boolean isDonor() {
+        return !organs.isEmpty();
     }
 
-    public Boolean getReceiver() {
+    public boolean isReceiver() {
+        boolean receiver = false;
+        for (WaitingListItem item : waitingListItems){
+            if (item.getOrganDeregisteredDate() == null){
+                receiver = true;
+            }
+        }
         return receiver;
     }
 }

@@ -20,7 +20,7 @@ class WaitingListItemTest {
     void setUp() {
         testUser = new User("Joe", LocalDate.parse("01/01/1999", User.dateFormat));
         heart = Organ.HEART;
-        item = new WaitingListItem(heart, testUser);
+        item = new WaitingListItem(heart);
         testUser.getWaitingListItems().add(item);
     }
 
@@ -33,17 +33,27 @@ class WaitingListItemTest {
             date = listItem.getOrganDeregisteredDate();
         }
         assertTrue(date == null);
-
     }
 
     @Test
-    void testNullRegisteredDateOnDeregister() {
-        String date = "notNull";
+    void testIsStillWaitingOnRegister() {
+        boolean stillWaitingOn = false;
+        item.deregisterOrgan();
+        item.registerOrgan();
+        for (WaitingListItem listItem : testUser.getWaitingListItems()) {
+            stillWaitingOn = listItem.getStillWaitingOn();
+        }
+        assertTrue(stillWaitingOn);
+    }
+
+    @Test
+    void testIsNotStillWaitingOnDeregister() {
+        boolean stillWaitingOn = true;
         item.deregisterOrgan();
         for (WaitingListItem listItem : testUser.getWaitingListItems()) {
-            date = listItem.getOrganRegisteredDate();
+            stillWaitingOn = listItem.getStillWaitingOn();
         }
-        assertTrue(date == null);
+        assertFalse(stillWaitingOn);
     }
 
     @Test
@@ -53,5 +63,4 @@ class WaitingListItemTest {
         System.out.println(listItem.getOrganType());
         assertTrue(listItem.isDonatingOrgan(testUser));
     }
-
 }

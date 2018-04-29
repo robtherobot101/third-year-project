@@ -15,7 +15,7 @@ public class WaitingListItem {
     private String organDeregisteredDate;
     private boolean stillWaitingOn;
 
-    public WaitingListItem(Organ organType, User user){
+    public WaitingListItem(Organ organType){
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         this.stillWaitingOn = true;
@@ -42,7 +42,6 @@ public class WaitingListItem {
             this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         }
         this.stillWaitingOn = false;
-        this.organRegisteredDate = null;
     }
 
     public boolean getStillWaitingOn(){

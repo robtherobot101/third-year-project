@@ -188,6 +188,7 @@ public class UserWindowController implements Initializable {
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
             Main.getWaitingListController().populateWaitingList();
+            Main.getWaitingListController().populateOrgansComboBox();
         });
     }
 
@@ -516,41 +517,12 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
-        //Checks to see if the user is a donor or receiver
-        receiverCheck(currentUser);
-        donorCheck(currentUser);
 
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
         Main.getClinicianController().updateUserTable();
         return true;
-    }
-
-    /**
-     * Checks to see if a user is eligible to be a receiver.
-     * @param user the user being checked.
-     */
-    private void receiverCheck(User user) {
-        boolean waiting = false;
-        for (WaitingListItem item : user.getWaitingListItems()){
-            if (item.getOrganDeregisteredDate() == null){
-                waiting = true;
-            }
-        }
-        user.setReceiver(waiting);
-    }
-
-    /**
-     * Checks to see if a user is eligible to be a receiver.
-     * @param user the user being checked.
-     */
-    private void donorCheck(User user) {
-        boolean waiting = false;
-        if (!user.getOrgans().isEmpty()){
-            waiting = true;
-        }
-        user.setDonor(waiting);
     }
 
     /**
@@ -778,9 +750,13 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Sets the waiting list button to visible if shown is true
+     * @param shown True if the waiting list button is to be shown, otherwise False
+     */
     public void setControlsShown(Boolean shown) {
         if (currentUser != null){
-            if (currentUser.getReceiver())
+            if (currentUser.isReceiver())
             waitingListButton.setVisible(true);
         } else {
             waitingListButton.setVisible(shown);

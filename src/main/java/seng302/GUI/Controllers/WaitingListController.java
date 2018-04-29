@@ -3,7 +3,9 @@ package seng302.GUI.Controllers;
 import com.sun.xml.internal.bind.v2.TODO;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import javafx.application.Platform;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,11 +18,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.controlsfx.control.PropertySheet;
 import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 import seng302.Generic.*;
 
+import javafx.beans.binding.Bindings;
 import java.net.URL;
 import java.util.*;
 
@@ -61,7 +65,10 @@ public class WaitingListController implements Initializable {
     private User currentUser;
 
 
+
+
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
+    private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
 
 
     /**
@@ -80,7 +87,7 @@ public class WaitingListController implements Initializable {
     public void registerOrgan() {
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
-            WaitingListItem temp = new WaitingListItem(organTypeSelected, currentUser);
+            WaitingListItem temp = new WaitingListItem(organTypeSelected);
             boolean found = false;
             for (WaitingListItem item : currentUser.getWaitingListItems()) {
                 if (temp.getOrganType() == item.getOrganType()) {
@@ -94,7 +101,9 @@ public class WaitingListController implements Initializable {
             }
             populateWaitingList();
         }
+        populateOrgansComboBox();
     }
+
 
     /**
      * Removes the selected item from the user's waiting list and refreshes
@@ -106,6 +115,29 @@ public class WaitingListController implements Initializable {
             waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
         }
+        populateOrgansComboBox();
+    }
+
+
+    public void populateOrgansComboBox(){
+        ArrayList<Organ> toBeRemoved = new ArrayList<Organ>();
+        ArrayList<Organ> toBeAdded = new ArrayList<Organ>(Arrays.asList(Organ.values()));
+        for(WaitingListItem waitingListItem: waitingListItems){
+            for(Organ type: Organ.values()){
+                if(waitingListItem.getOrganType() == type){
+                    if(waitingListItem.getStillWaitingOn()){
+                        toBeRemoved.add(type);
+                    }
+                }
+            }
+        }
+        toBeAdded.removeAll(toBeRemoved);
+        organsInDropDown.removeAll();
+        organsInDropDown.clear();
+        organsInDropDown.addAll(toBeAdded);
+        organTypeComboBox.setItems(null);
+        organTypeComboBox.setItems(organsInDropDown);
+        System.out.println(toBeAdded.size());
     }
 
     /**
@@ -119,19 +151,18 @@ public class WaitingListController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setWaitingListController(this);
-        organTypeComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+        organTypeComboBox.setItems(organsInDropDown);
         waitingList.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
         stillWaitingOn.setCellValueFactory(new PropertyValueFactory<>("stillWaitingOn"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         organDeregisteredDate.setCellValueFactory(new PropertyValueFactory<>("organDeregisteredDate"));
 
-        registerOrganButton.setDisable(true);
         deregisterOrganButton.setDisable(true);
 
-        organTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            registerOrganButton.setDisable(false);
-        });
+        registerOrganButton.disableProperty().bind(
+                Bindings.isNull(organTypeComboBox.getSelectionModel().selectedItemProperty())
+        );
 
         waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -142,7 +173,6 @@ public class WaitingListController implements Initializable {
                 deregisterOrganButton.setDisable(true);
             }
         });
-
 
         waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
             @Override
