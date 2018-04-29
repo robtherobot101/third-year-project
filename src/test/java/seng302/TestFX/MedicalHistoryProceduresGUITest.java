@@ -50,6 +50,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
     @Before
     public void setUp () throws Exception {
+
     }
 
     @After
@@ -140,11 +141,13 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
 
     /**
-     * Add a completely valid procedure
+     * Add a completely valid procedure (both a pending and previous procedure)
      */
     @Test
-    public void addAllValidDisease() {
+    public void addAllValidProcedure() {
         enterMedicalHistoryProceduresView();
+
+        //Pending Procedure
         clickOn("#summaryInput").write("Knee Replacement");
         clickOn("#descriptionInput").write("Elective Surgery; Making new knee");
         clickOn("#dateOfProcedureInput").write("9/1/2020");
@@ -156,8 +159,20 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         assertEquals("Knee Replacement", pendingTableSelectedProcedure.getSummary());
         assertEquals("Elective Surgery; Making new knee", pendingTableSelectedProcedure.getDescription());
         assertTrue(pendingTableSelectedProcedure.isOrganAffecting());
-
         verifyThat("* Knee Replacement", isVisible());
+
+        //Previous Procedure
+        clickOn("#summaryInput").write("Heart Transplant");
+        clickOn("#descriptionInput").write("Replacement of heart with new heart");
+        clickOn("#dateOfProcedureInput").write("9/1/2000");
+        clickOn("#addNewProcedureButton");
+        clickOn("Replacement of heart with new heart");
+        refreshTableSelections();
+        assertEquals(LocalDate.of(2000, 1, 9), previousTableSelectedProcedure.getDate());
+        assertEquals("Heart Transplant", previousTableSelectedProcedure.getSummary());
+        assertEquals("Replacement of heart with new heart", previousTableSelectedProcedure.getDescription());
+        assertFalse(previousTableSelectedProcedure.isOrganAffecting());
+        verifyThat("Heart Transplant", isVisible());
     }
 
 
@@ -248,11 +263,11 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
         rightClickOn("Arm Transplant");
         clickOn("Update pending procedure");
-        write("Leg Removal");
+        clickOn("#procedureSummary").write("Leg Removal");
         clickOn("#procedureDescription").write("Removal of leg");
         clickOn("#dateDue").write("3/04/2021");
         clickOn("Update");
-        clickOn("Leg Removal");
+        clickOn("Removal of leg");
         refreshTableSelections();
         assertEquals("Leg Removal", pendingTableSelectedProcedure.getSummary());
         assertEquals("Removal of leg", pendingTableSelectedProcedure.getDescription());
@@ -271,6 +286,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         assertEquals("Removal of leg", previousTableSelectedProcedure.getDescription());
         assertEquals(LocalDate.of(2017, 4, 3), previousTableSelectedProcedure.getDate());
         assertNull(pendingTableSelectedProcedure);
+
     }
 
     /**
@@ -305,7 +321,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         sleep(200);
         clickOn("OK");
         clickOn("Exit");
-        sleep(1000);
+        sleep(200);
         clickOn("OK");
 
         //Check if procedure added is correct in the Medication Array List of the User.
@@ -328,8 +344,12 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         assertEquals("Transfer of arm", topProcedure.getDescription());
         assertEquals(LocalDate.of(2020, 4, 4), topProcedure.getDate());
 
+        //Get rid of procedure to not affect further tests
         clickOn("Arm Transplant");
         clickOn("#deleteProcedureButton");
+        sleep(200);
+        clickOn("OK");
+        clickOn("#saveProcedureButton");
         sleep(200);
         clickOn("OK");
     }

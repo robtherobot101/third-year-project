@@ -100,6 +100,7 @@ public class MedicalHistoryProceduresController implements Initializable {
             summaryInput.clear();
             descriptionInput.clear();
             dateOfProcedureInput.getEditor().clear();
+            isOrganAffectingCheckBox.setSelected(false);
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
         }
     }
@@ -193,6 +194,7 @@ public class MedicalHistoryProceduresController implements Initializable {
 
         TextField procedureSummary = new TextField();
         procedureSummary.setPromptText(selectedProcedure.getSummary());
+        procedureSummary.setId("procedureSummary");
         TextField procedureDescription = new TextField();
         procedureDescription.setId("procedureDescription");
         procedureDescription.setPromptText(selectedProcedure.getDescription());
@@ -453,9 +455,8 @@ public class MedicalHistoryProceduresController implements Initializable {
 
                         // If the disease is chronic, update label + colour
                         if (currentProcedure.isOrganAffecting()) {
-                            setText("(TODO) " + item);
-                            //TODO ISSUE WITH SETTING COLOR HERE VS. EXTERNAL CSS FILE
-                            setTextFill(Color.GRAY);
+                            setText("* " + item);
+                            this.setStyle("-fx-background-color: GREY;");
                         }
                     }
                 }
