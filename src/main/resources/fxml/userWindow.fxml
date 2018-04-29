@@ -58,41 +58,6 @@
 				</Menu>
 			</menus>
 		</MenuBar>
-      <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="2">
-         <children>
-				<Label fx:id="userDisplayText" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="554.0" text="Welcome text." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="341.0" AnchorPane.topAnchor="0.0">
-					<font>
-						<Font size="20.0" />
-					</font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
-				</Label>
-            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="undoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="redoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
 		<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="3">
 			<children>
 				<AnchorPane fx:id="medicationsPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -563,5 +528,41 @@
             <StatusBar fx:id="statusBar" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
+		<AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="2">
+			<children>
+				<Label fx:id="userDisplayText" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="554.0" text="Welcome text." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="341.0" AnchorPane.topAnchor="0.0">
+					<font>
+						<Font size="20.0" />
+					</font>
+					<opaqueInsets>
+						<Insets />
+					</opaqueInsets>
+					<padding>
+						<Insets left="10.0" />
+					</padding>
+				</Label>
+				<Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="undoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="90.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="redoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="10.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false" AnchorPane.rightAnchor="315.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+			</children>
+		</AnchorPane>
+
 	</children>
 </GridPane>
