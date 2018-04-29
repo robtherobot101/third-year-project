@@ -74,6 +74,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
         //Now fix the mismatch and try again
         clickOn("#passwordInput"); write("4");
         clickOn("#createAccountButton");
+        sleep(250);
         //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
         assertNull(lookup("#createAccountButton").query());
     }

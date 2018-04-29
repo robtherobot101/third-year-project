@@ -119,6 +119,7 @@ public class MedicationsGUITest extends TestFXTest {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
+        sleep(1500);
         clickOn("Asacol");
         clickOn("#deleteMedicationButton");
         sleep(200);
