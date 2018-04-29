@@ -59,6 +59,7 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
+    private static TransplantWaitingListController transplantWaitingListController;
     private static WaitingListController waitingListController;
 
     private static String dialogStyle;
@@ -182,9 +183,17 @@ public class Main extends Application {
         Main.clinicianAccountSettingsController = clincianAccountSettingsController;
     }
 
+    public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
+        Main.transplantWaitingListController = transplantWaitingListController;
+    }
+
+
+
     public static ClinicianController getClinicianController() {
         return Main.clinicianController;
     }
+
+    public static TransplantWaitingListController getTransplantWaitingListController() { return Main.transplantWaitingListController; }
 
     public static ArrayList<Stage> getCliniciansUserWindows(){
         return cliniciansUserWindows;
@@ -596,6 +605,7 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),800,600));
 
             setScene(TFScene.login);
             stage.show();

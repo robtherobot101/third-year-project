@@ -23,6 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
+
 <GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
@@ -424,7 +425,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-      				<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="247.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
+      				<Button fx:id="saveUserButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="247.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -434,7 +435,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-						<Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="302.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="362.0">
+						<Button fx:id="exitUserButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="302.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="362.0">
                      <font>
                         <Font size="14.0" />
                      </font></Button>

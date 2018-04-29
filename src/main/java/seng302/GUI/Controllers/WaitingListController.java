@@ -58,9 +58,19 @@ public class WaitingListController implements Initializable {
     public void addOrgan(){
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if(organTypeSelected != null){
-            System.out.println("Current user: "+currentUser);
-            System.out.println("Current user waiting list: "+currentUser.getWaitingListItems());
-            currentUser.getWaitingListItems().add(new WaitingListItem(organTypeSelected));
+            WaitingListItem temp = new WaitingListItem(organTypeSelected);
+            boolean found = false;
+            for (WaitingListItem item : currentUser.getWaitingListItems()){
+                if (temp.getOrganType() == item.getOrganType()){
+                    item.registerOrgan();
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                currentUser.getWaitingListItems().add(temp);
+            }
             populateWaitingList();
         }
     }
@@ -72,7 +82,7 @@ public class WaitingListController implements Initializable {
     public void removeOrgan(){
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
         if(waitingListItemSelected != null){
-            currentUser.getWaitingListItems().remove(waitingListItemSelected);
+            waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
         }
     }

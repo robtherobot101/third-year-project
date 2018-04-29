@@ -190,7 +190,7 @@ public class ClinicianController implements Initializable {
                 }
             }else{ // Password incorrect
                 Main.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                    "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
             }
         }
     }
@@ -404,7 +404,7 @@ public class ClinicianController implements Initializable {
         profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
-        
+
 
         fadeIn.setNode(updatedSuccessfully);
         fadeIn.setDelay(Duration.millis(1000));
@@ -517,5 +517,15 @@ public class ClinicianController implements Initializable {
                 }
             }
         });
+    }
+
+    /**
+     * calls the transplantWaitingList controller and displays it.
+     * also refreshes the waitinglist table data
+     */
+    public void transplantWaitingList() {
+        Main.getTransplantWaitingListController().updateTransplantList();
+        //background.setVisible(false);
+        Main.setScene(TFScene.transplantList);
     }
 }

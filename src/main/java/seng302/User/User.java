@@ -1,5 +1,6 @@
 package seng302.User;
 
+import java.lang.reflect.Array;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -278,6 +279,7 @@ public class User {
     public ArrayList<WaitingListItem> getWaitingListItems(){
         return waitingListItems;
     }
+
 
     public String getAgeString() {
         long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
