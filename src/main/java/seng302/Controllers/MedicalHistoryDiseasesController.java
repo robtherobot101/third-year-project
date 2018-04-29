@@ -93,16 +93,19 @@ public class MedicalHistoryDiseasesController implements Initializable {
                     "Invalid disease name provided.");
             newDiseaseTextField.clear();
         // Check for an empty date
-
         } else if (dateOfDiagnosisInput.getValue() == null) {
-
             DialogWindowController.showWarning("Invalid Disease", "",
                     "No date provided.");
+        // Check if the date of diagnosis was before the current user's birthday
+        } else if (dateOfDiagnosisInput.getValue().isBefore(currentDonor.getDateOfBirth())) {
+            DialogWindowController.showWarning("Invalid Disease", "",
+                    "Date of diagnosis before date of birth.");
+            dateOfDiagnosisInput.setValue(null);
         // Check for a date in the future
         } else if (dateOfDiagnosisInput.getValue().isAfter(LocalDate.now())) {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Diagnosis date occurs in the future.");
-            dateOfDiagnosisInput.getEditor().clear();
+            dateOfDiagnosisInput.setValue(null);
         } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()){
             //TODO could make the checkboxs toeggle each other as only 1 can be selected
             DialogWindowController.showWarning("Invalid Disease", "",
@@ -306,10 +309,12 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 currentDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
                 sortCurrentDiseases(false);
+                currentDiseaseTableView.refresh();
             } else {
                 curedDiseaseItems.remove(selectedDisease);
                 curedDiseaseItems.add(selectedDisease);
                 sortCuredDiseases(false);
+                curedDiseaseTableView.refresh();
             }
         });
     }
