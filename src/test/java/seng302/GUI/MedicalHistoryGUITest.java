@@ -32,7 +32,7 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 public class MedicalHistoryGUITest extends ApplicationTest {
 
     private Main mainGUI;
-    private static final boolean runHeadless = false;
+    private static final boolean runHeadless = true;
 
     private TableView<Disease> currentDiseaseTableView, curedDiseaseTableView;
     private Disease currentTableSelectedDisease, curedTableSelectedDisease;
@@ -324,7 +324,7 @@ public class MedicalHistoryGUITest extends ApplicationTest {
         write("Lung cancer");
         doubleClickOn("4/04/2018").clickOn("4/04/2018");
         write("20/04/2018");
-        clickOn("Update");
+        doubleClickOn("Update");
         clickOn("Lung cancer");
         refreshTableSelections();
         assertEquals("Lung cancer", currentTableSelectedDisease.getName());

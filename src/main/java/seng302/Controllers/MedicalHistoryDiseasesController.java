@@ -18,8 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.util.Callback;
 import javafx.util.Pair;
 import seng302.Core.Disease;
 import seng302.Core.Main;
@@ -27,7 +25,7 @@ import seng302.Core.User;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -55,15 +53,24 @@ public class MedicalHistoryDiseasesController implements Initializable {
     @FXML
     private Button saveDiseaseButton;
 
+    private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
+
+    private boolean sortCuredDiagnosisAscending, sortCuredDatesAscending, sortCuredByDate;
 
     private User currentDonor;
 
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
 
+    private Label currentDiagnosisColumnLabel, currentDateColumnLabel;
+
+    private Label curedDiagnosisColumnLabel, curedDateColumnLabel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicalHistoryDiseasesController(this);
         setupListeners();
+        initialiseCurrentTableViewSorting();
+        initialiseCuredTableViewSorting();
     }
 
     /**
@@ -130,6 +137,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
                     "Disease already exists.");
         } else {
             curedDiseaseItems.add(diseaseToAdd);
+            sortCurrentDiseases(false);
         }
     }
 
@@ -144,6 +152,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
                     "Disease already exists.");
         } else {
             currentDiseaseItems.add(diseaseToAdd);
+            sortCurrentDiseases(false);
         }
     }
 
@@ -296,14 +305,194 @@ public class MedicalHistoryDiseasesController implements Initializable {
             if(current) {
                 currentDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
+                sortCurrentDiseases(false);
             } else {
                 curedDiseaseItems.remove(selectedDisease);
                 curedDiseaseItems.add(selectedDisease);
+                sortCuredDiseases(false);
             }
-
         });
     }
 
+    /**
+     * Initialises flags + listeners for the current disease table view sorting
+     */
+    private void initialiseCurrentTableViewSorting() {
+        // Stops the default TableColumn sorting behaviour
+        currentDiagnosisColumn.setSortable(false);
+        currentDateColumn.setSortable(false);
+
+        // Flag to toggle between sorting by date or diagnosis on the current disease TableView
+        sortCurrentByDate = true;
+
+        // Creates a label onto the current diagnosis column that can be clicked, and modified with emoji arrows ;)
+        currentDiagnosisColumnLabel = new Label("Diagnosis");
+        currentDiagnosisColumn.setGraphic(currentDiagnosisColumnLabel);
+        sortCurrentDiagnosisAscending = true;
+
+        // When the current diagnosis column label is clicked:
+        currentDiagnosisColumnLabel.setOnMouseClicked(event -> {
+            sortCurrentByDate = false;
+            sortCurrentDiseases(true);
+        });
+
+        // Creates a label onto the current date column that can be clicked, and modified with emoji arrows ;)
+        currentDateColumnLabel = new Label("Date");
+        currentDateColumn.setGraphic(currentDateColumnLabel);
+        sortCurrentDatesAscending = true;
+
+        // When the current date column label is clicked:
+        currentDateColumnLabel.setOnMouseClicked(event -> {
+            sortCurrentByDate = true;
+            sortCurrentDiseases(true);
+        });
+    }
+
+    /**
+     * Initialises flags + listeners for the cured disease table view sorting
+     */
+    private void initialiseCuredTableViewSorting() {
+        // Stops the default TableColumn sorting behaviour
+        curedDiagnosisColumn.setSortable(false);
+        curedDateColumn.setSortable(false);
+
+        // Flag to toggle between sorting by date or diagnosis on the cured disease TableView
+        sortCuredByDate = true;
+
+        // Creates a label onto the cured diagnosis column that can be clicked, and modified with emoji arrows ;)
+        curedDiagnosisColumnLabel = new Label("Diagnosis");
+        curedDiagnosisColumn.setGraphic(curedDiagnosisColumnLabel);
+        sortCuredDiagnosisAscending = true;
+
+        // When the cured diagnosis column label is clicked:
+        curedDiagnosisColumnLabel.setOnMouseClicked(event -> {
+            sortCuredByDate = false;
+            sortCuredDiseases(true);
+        });
+
+        // Creates a label onto the cured date column that can be clicked, and modified with emoji arrows ;)
+        curedDateColumnLabel = new Label("Date");
+        curedDateColumn.setGraphic(curedDateColumnLabel);
+        sortCuredDatesAscending = true;
+
+        // When the cured date column label is clicked:
+        curedDateColumnLabel.setOnMouseClicked(event -> {
+            sortCuredByDate = true;
+            sortCuredDiseases(true);
+        });
+    }
+
+    /**
+     * Sorts the current disease list according to flags sortCurrentDatesAscending and sortCurrentDiagnosisAscending
+     * @param toggle whether to just keep with the current sort settings or to flip the order
+     */
+    private void sortCurrentDiseases(boolean toggle) {
+        if (!sortCurrentByDate) {
+            // Sort by diagnosis
+            if (sortCurrentDiagnosisAscending) {
+                if (toggle) {
+                    sortCurrentDiagnosisAscending = false;
+                    sortCurrentDiseases(false);
+                    return;
+                }
+                FXCollections.sort(currentDiseaseItems, Disease.ascNameComparator);
+                currentDiagnosisColumnLabel.setText("Diagnosis ⬆️️");
+                currentDateColumnLabel.setText("Date");
+
+            } else {
+                if (toggle) {
+                    sortCurrentDiagnosisAscending = true;
+                    sortCurrentDiseases(false);
+                    return;
+                }
+                FXCollections.sort(currentDiseaseItems, Disease.descNameComparator);
+                currentDiagnosisColumnLabel.setText("Diagnosis ⬇️");
+                currentDateColumnLabel.setText("Date");
+            }
+            currentDiseaseTableView.getSelectionModel().select(null);
+            currentDiseaseTableView.setItems(currentDiseaseItems);
+        } else {
+            // Sort by date
+            if (sortCurrentDatesAscending) {
+                if (toggle) {
+                    sortCurrentDatesAscending = false;
+                    sortCurrentDiseases(false);
+                    return;
+                }
+                FXCollections.sort(currentDiseaseItems, Disease.ascDateComparator);
+                currentDiagnosisColumnLabel.setText("Diagnosis");
+                currentDateColumnLabel.setText("Date ⬆️️");
+
+            } else {
+                if (toggle) {
+                    sortCurrentDatesAscending = true;
+                    sortCurrentDiseases(false);
+                    return;
+                }
+                FXCollections.sort(currentDiseaseItems, Disease.descDateComparator);
+                currentDiagnosisColumnLabel.setText("Diagnosis");
+                currentDateColumnLabel.setText("Date ⬇️");
+            }
+            currentDiseaseTableView.getSelectionModel().select(null);
+            currentDiseaseTableView.setItems(currentDiseaseItems);
+        }
+    }
+
+    /**
+     * Sorts the cured disease list according to flags sortCuredDatesAscending and sortCuredDiagnosisAscending
+     * @param toggle whether to just keep with the cured sort settings or to flip the order
+     */
+    private void sortCuredDiseases(boolean toggle) {
+        if (!sortCuredByDate) {
+            // Sort by diagnosis
+            if (sortCuredDiagnosisAscending) {
+                if (toggle) {
+                    sortCuredDiagnosisAscending = false;
+                    sortCuredDiseases(false);
+                    return;
+                }
+                FXCollections.sort(curedDiseaseItems, Disease.ascNameComparator);
+                curedDiagnosisColumnLabel.setText("Diagnosis ⬆️️");
+                curedDateColumnLabel.setText("Date");
+
+            } else {
+                if (toggle) {
+                    sortCuredDiagnosisAscending = true;
+                    sortCuredDiseases(false);
+                    return;
+                }
+                FXCollections.sort(curedDiseaseItems, Disease.descNameComparator);
+                curedDiagnosisColumnLabel.setText("Diagnosis ⬇️");
+                curedDateColumnLabel.setText("Date");
+            }
+            curedDiseaseTableView.getSelectionModel().select(null);
+            curedDiseaseTableView.setItems(curedDiseaseItems);
+        } else {
+            // Sort by date
+            if (sortCuredDatesAscending) {
+                if (toggle) {
+                    sortCuredDatesAscending = false;
+                    sortCuredDiseases(false);
+                    return;
+                }
+                FXCollections.sort(curedDiseaseItems, Disease.ascDateComparator);
+                curedDiagnosisColumnLabel.setText("Diagnosis");
+                curedDateColumnLabel.setText("Date ⬆️️");
+
+            } else {
+                if (toggle) {
+                    sortCuredDatesAscending = true;
+                    sortCuredDiseases(false);
+                    return;
+                }
+                FXCollections.sort(curedDiseaseItems, Disease.descDateComparator);
+                curedDiagnosisColumnLabel.setText("Diagnosis");
+                curedDateColumnLabel.setText("Date ⬇️");
+            }
+            curedDiseaseTableView.getSelectionModel().select(null);
+            curedDiseaseTableView.setItems(curedDiseaseItems);
+        }
+    }
 
     /**
      * Creates required context menus and TableView related listeners to modify appearance of chronic diseases,
@@ -319,7 +508,6 @@ public class MedicalHistoryDiseasesController implements Initializable {
             public void handle(ActionEvent event) {
                 Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 updateDiseasePopUp(selectedDisease, true);
-
             }
         });
         currentDiseaseListContextMenu.getItems().add(updateCurrentDiseaseMenuItem);
@@ -340,6 +528,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 // To refresh the observableList to make chronic toggle visible
                 currentDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
+                currentDiseaseTableView.refresh();
+                sortCurrentDiseases(false);
             }
         });
         currentDiseaseListContextMenu.getItems().add(toggleCurrentChronicMenuItem);
@@ -356,6 +546,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
                 currentDiseaseItems.remove(selectedDisease);
                 curedDiseaseItems.add(selectedDisease);
+                sortCuredDiseases(false);
+
             }
         });
         currentDiseaseListContextMenu.getItems().add(setCuredMenuItem);
@@ -386,6 +578,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
                 curedDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
+                sortCurrentDiseases(false);
             }
         });
         curedDiseaseContextMenu.getItems().add(setCuredChronicDiseaseMenuItem);
@@ -401,6 +594,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
                 curedDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
+                sortCurrentDiseases(false);
             }
         });
         curedDiseaseContextMenu.getItems().add(setUncuredMenuItem);
@@ -464,38 +658,19 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
                         setText(item);
                         Disease currentDisease = getTableView().getItems().get(getIndex());
-
                         // If the disease is chronic, update label + colour
                         if (currentDisease.isChronic()) {
                             setText("(CHRONIC) " + item);
                             this.setStyle("-fx-background-color: RED;");
+                        } else {
+                            setText(item);
+                            // TODO missing the highlight style here
+                            this.setStyle("-fx-background-color: #396a93;");
                         }
                     }
                 }
             };
         });
-
-        currentDiseaseTableView.sortPolicyProperty().set(
-            new Callback<TableView<Disease>, Boolean>() {
-                @Override
-                public Boolean call(TableView<Disease> param) {
-                    Comparator<Disease> comparator = new Comparator<Disease>() {
-                        @Override
-                        public int compare(Disease d1, Disease d2) {
-                            if (d1.isChronic()) {
-                                return 0;
-                            } else if (d2.isChronic()) {
-                                return 1;
-                            } else {
-                                return d1.getName().compareTo(d2.getName());
-                            }
-                        }
-                    };
-                    FXCollections.sort(currentDiseaseTableView.getItems(), comparator);
-                    return true;
-                }
-            }
-        );
 
         // Set up columns to extract correct information from a Disease object
         currentDiagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
