@@ -20,13 +20,6 @@ class TitleBarTest extends ApplicationTest {
     private TitleBar titleBar;
     private User user;
 
-    @Override
-    public void start(Stage stage) {
-        System.out.println(stage);
-        this.stage = stage;
-        stage.show();
-    }
-
     @BeforeEach
     public void setUp() throws TimeoutException {
         stage = registerPrimaryStage();
