@@ -64,8 +64,13 @@ public class MedicalHistoryDiseasesController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicalHistoryDiseasesController(this);
         setupListeners();
+    }
 
-
+    /**
+     * Called when the 'Today' button is pressed -> fills in the current date
+     */
+    public void getCurrentDateFillDate() {
+        dateOfDiagnosisInput.setValue(LocalDate.now());
     }
 
     /**
@@ -75,13 +80,15 @@ public class MedicalHistoryDiseasesController implements Initializable {
      */
     public void addNewDisease() {
         System.out.println("MedicalHistoryDiseasesController: Adding new disease");
-        // Check for empty disease name TODO could be a listener to disable the add button
+        // Check for empty disease name
         if (newDiseaseTextField.getText().isEmpty()) {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Invalid disease name provided.");
             newDiseaseTextField.clear();
         // Check for an empty date
+
         } else if (dateOfDiagnosisInput.getValue() == null) {
+
             DialogWindowController.showWarning("Invalid Disease", "",
                     "No date provided.");
         // Check for a date in the future
@@ -97,11 +104,10 @@ public class MedicalHistoryDiseasesController implements Initializable {
             chronicCheckBox.setSelected(false);
         } else {
             // Add the new disease
-
             Disease diseaseToAdd = new Disease(newDiseaseTextField.getText(), dateOfDiagnosisInput.getValue(),
                     chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
             newDiseaseTextField.clear();
-            dateOfDiagnosisInput.getEditor().clear();
+            dateOfDiagnosisInput.setValue(null);
             isCuredCheckBox.setSelected(false);
             chronicCheckBox.setSelected(false);
             if (diseaseToAdd.isCured()) {
@@ -113,6 +119,10 @@ public class MedicalHistoryDiseasesController implements Initializable {
         }
     }
 
+    /**
+     * Adds a disease marked as cured to the cured disease item list and presents in table.
+     * @param diseaseToAdd new cured disease to add
+     */
     private void addCuredDisease(Disease diseaseToAdd) {
         if (curedDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
@@ -123,6 +133,10 @@ public class MedicalHistoryDiseasesController implements Initializable {
         }
     }
 
+    /**
+     * Adds a disease marked as not cured to the current disease item list and presents in table.
+     * @param diseaseToAdd new uncured disease to add
+     */
     private void addCurrentDisease(Disease diseaseToAdd) {
         if (currentDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
@@ -202,6 +216,11 @@ public class MedicalHistoryDiseasesController implements Initializable {
         }
     }
 
+    /**
+     * Creates a popup dialog to modify the name and date of the selectedDisease
+     * @param selectedDisease disease to update information of
+     * @param current
+     */
     private void updateDiseasePopUp(Disease selectedDisease, boolean current) {
 
         // Create the custom dialog.
@@ -222,7 +241,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
         TextField diseaseName = new TextField();
         diseaseName.setPromptText(selectedDisease.getName());
         DatePicker dateOfDiagnosis = new DatePicker();
-        dateOfDiagnosis.setPromptText(selectedDisease.getDiagnosisDate().toString());
+        diseaseName.setText(selectedDisease.getName());
+        dateOfDiagnosis.setValue(selectedDisease.getDiagnosisDate());
 
         grid.add(new Label("Name:"), 0, 0);
         grid.add(diseaseName, 1, 0);
@@ -253,7 +273,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 if (dateOfDiagnosis.getValue().isAfter(LocalDate.now())) {
                     DialogWindowController.showWarning("Invalid Disease", "",
                             "Diagnosis date occurs in the future.");
-                    dateOfDiagnosis.getEditor().clear();
+                    dateOfDiagnosis.setValue(null);
                     if(current) {
                         updateDiseasePopUp(selectedDisease, true);
                     } else {
@@ -285,6 +305,10 @@ public class MedicalHistoryDiseasesController implements Initializable {
     }
 
 
+    /**
+     * Creates required context menus and TableView related listeners to modify appearance of chronic diseases,
+     * sort diseases by custom criteria and present the context menus
+     */
     private void setupListeners() {
         final ContextMenu currentDiseaseListContextMenu = new ContextMenu();
 
@@ -514,9 +538,6 @@ public class MedicalHistoryDiseasesController implements Initializable {
         curedDiseaseItems.addAll(currentDonor.getCuredDiseases());
         curedDiseaseTableView.setItems(curedDiseaseItems);
 
-
-        //unsavedDonorDiseases = currentDonor.getDiseases();
-        //pastDiseasesCopy = currentDonor.getCuredDiseases();
         System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
     }
 }
