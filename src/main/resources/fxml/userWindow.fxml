@@ -23,8 +23,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -175,12 +174,12 @@
 								<Insets left="20.0" right="45.0" />
 							</GridPane.margin>
 						</TextField>
-						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="158.0" promptText="Gender" GridPane.columnIndex="1" GridPane.rowIndex="4">
+						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="158.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
 						</ComboBox>
-						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="167.0" promptText="Blood Type" GridPane.columnIndex="2" GridPane.rowIndex="4">
+						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="167.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
 							<GridPane.margin>
 								<Insets bottom="20.0" left="20.0" right="20.0" />
 							</GridPane.margin>
@@ -555,22 +554,22 @@
                   <Insets left="10.0" />
                </padding>
 				</Label>
-            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
+            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="undoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
+            <Button fx:id="undoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="90.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="redoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
+            <Button fx:id="redoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="10.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false">
+            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false" AnchorPane.rightAnchor="315.0">
                <font>
                   <Font size="14.0" />
                </font>

@@ -41,9 +41,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private GridPane attributesGridPane, historyGridPane, background;
     @FXML
-    private AnchorPane medicationsPane;
-    @FXML
-    private AnchorPane waitingListPane;
+    private AnchorPane medicationsPane, waitingListPane;
     @FXML
     private Pane welcomePane;
     @FXML
@@ -63,7 +61,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private MenuItem undoButton, redoButton, logoutMenuItem;
     @FXML
-    private Button logoutButton, undoWelcomeButton, redoWelcomeButton, medicationsButton, medicalHistoryButton;
+    private Button logoutButton, undoBannerButton, redoBannerButton, medicationsButton, medicalHistoryButton, waitingListButton;
     @FXML
     private TreeTableView<String> historyTreeTableView;
     @FXML
@@ -72,8 +70,6 @@ public class UserWindowController implements Initializable {
     private HashMap<Organ, CheckBox> organTickBoxes;
     private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
     private User currentUser;
-    @FXML
-    private Button waitingListButton;
 
 
     public ArrayList<User> getUserUndoStack() {
@@ -94,9 +90,9 @@ public class UserWindowController implements Initializable {
         attributeUndoStack.clear();
         attributeRedoStack.clear();
         undoButton.setDisable(true);
-        undoWelcomeButton.setDisable(true);
+        undoBannerButton.setDisable(true);
         redoButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
+        redoBannerButton.setDisable(true);
         bloodPressureLabel.setText("");
     }
 
@@ -221,9 +217,9 @@ public class UserWindowController implements Initializable {
      */
     private void setUndoRedoButtonsDisabled(boolean undoDisabled, boolean redoDisabled) {
         undoButton.setDisable(undoDisabled);
-        undoWelcomeButton.setDisable(undoDisabled);
+        undoBannerButton.setDisable(undoDisabled);
         redoButton.setDisable(redoDisabled);
-        redoWelcomeButton.setDisable(redoDisabled);
+        redoBannerButton.setDisable(redoDisabled);
     }
 
     public void showWaitingListButton(){
