@@ -74,8 +74,7 @@ public class UserWindowController implements Initializable {
     private HashMap<Organ, CheckBox> organTickBoxes;
     private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
     private User currentUser;
-    @FXML
-    private Button waitingListButton;
+
     @FXML
     private StatusBar statusBar;
     @FXML
