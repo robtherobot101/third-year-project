@@ -1,74 +1,40 @@
 package seng302.TestFX;
 
+
+import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
 import org.junit.*;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
 import seng302.Core.TransplantWaitingListItem;
 import seng302.Generic.Main;
 import seng302.User.Attribute.Organ;
-
+import java.util.concurrent.TimeoutException;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import static org.junit.Assert.assertEquals;
+import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
-public class TransplantWaitingListTest extends ApplicationTest{
-    private static final boolean runHeadless = false;
+public class ATransplantWaitingListTest extends TestFXTest{
 
     private TableView<TransplantWaitingListItem> transplantTable;
     private TransplantWaitingListItem transplantRow;
 
-    /**
-     * Ensures the tests are run in background if the property runHeadless == true
-     *
-     * Note: tests still take the same amount of time in background
-     *
-     * @throws Exception
-     */
     @BeforeClass
-    public static void setupSpec() throws Exception {
-        if (runHeadless) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1600x1200-32");
-        }
-        registerPrimaryStage();
-    }
-
-
-    @After
-    public void tearDown () throws Exception {
-        Main.users.clear();
-        FxToolkit.hideStage();
-        release(new KeyCode[]{});
-        release(new MouseButton[]{});
-    }
-
-    @Override
-    public void start (Stage stage) throws Exception {
-        Main mainGUI = new Main();
-        mainGUI.start(stage);
-        Main.users.clear();
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     /**
-     * Refreshes the currently selected reciever in both tables of Medical History
+     * Refreshes the currently selected receiver in both tables of Medical History.
      */
     private void refreshTableSelections() {
-        transplantTable = lookup("#transplantTable").query();
-        transplantRow = transplantTable.getSelectionModel().getSelectedItem();
+        transplantTable = lookup("#transplantTable").queryTableView();
+        transplantRow = transplantTable.getItems().get(0);
     }
 
 
     /**
-     * helper function to create two new users. one a receiver and one a dummy
+     * helper function to create two new users. One a receiver and one a dummy.
      */
     private void createAccounts() {
         Main.users.clear();
@@ -93,7 +59,6 @@ public class TransplantWaitingListTest extends ApplicationTest{
 
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
-
 
         // Create a valid user
         clickOn("#usernameInput").push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE).write("bobr");
@@ -162,13 +127,16 @@ public class TransplantWaitingListTest extends ApplicationTest{
         clickOn("#transplantList");
 
         //check the transplant table
-        clickOn("Bob Ross");
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        refreshTableSelections();
+//        clickOn("Bob Ross");
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        //refreshTableSelections();
+
+        transplantTable = lookup("#transplantTable").queryTableView();
+        transplantRow = transplantTable.getItems().get(0);
 
         assertEquals(Organ.HEART, transplantRow.getOrgan());
         assertEquals("Bob Ross", transplantRow.getName());
@@ -211,6 +179,8 @@ public class TransplantWaitingListTest extends ApplicationTest{
 
         //show the transplant list
         clickOn("#transplantList");
+        verifyThat("#transplantPane", Node::isVisible);
+        //verifyThat("#transplantPane", hasText("No content in table"));
         verifyThat("No content in table", isVisible());
     }
 }
