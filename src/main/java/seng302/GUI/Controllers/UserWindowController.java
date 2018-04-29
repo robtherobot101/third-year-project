@@ -2,6 +2,7 @@ package seng302.GUI.Controllers;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -135,7 +136,7 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.medicationsViewForUser();
+        Main.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -179,6 +180,12 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
+
+        waitingListButton.setOnAction((ActionEvent event) -> {
+            showWaitingListPane();
+            Main.getWaitingListController().populateWaitingList();
+            Main.getWaitingListController().populateOrgansComboBox();
+        });
     }
 
     /**
@@ -447,7 +454,6 @@ public class UserWindowController implements Initializable {
      * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
      */
     private boolean updateUser() {
-        Main.getClinicianController().updateUserTable();
         //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
@@ -539,9 +545,11 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
+
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
+        Main.getClinicianController().updateUserTable();
         return true;
     }
 
@@ -770,4 +778,16 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Sets the waiting list button to visible if shown is true
+     * @param shown True if the waiting list button is to be shown, otherwise False
+     */
+    public void setControlsShown(Boolean shown) {
+        if (currentUser != null){
+            if (currentUser.isReceiver())
+            waitingListButton.setVisible(true);
+        } else {
+            waitingListButton.setVisible(shown);
+        }
+    }
 }

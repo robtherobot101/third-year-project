@@ -1,6 +1,5 @@
 package seng302.Generic;
 
-import java.time.LocalDate;
 
 import java.time.LocalDateTime;
 
@@ -8,28 +7,57 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 
+import java.time.LocalDateTime;
+
+/**
+ * Contains information for a transplant waiting list record.
+ */
 public class WaitingListItem {
     private Organ organType;
     private String organRegisteredDate;
     private String organDeregisteredDate;
+    private boolean stillWaitingOn;
 
     public WaitingListItem(Organ organType){
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.stillWaitingOn = true;
     }
 
+    /**
+     * Updates an organs registration date and removes its deregistration date.
+     * Can be called when registering a previously deregistered organ.
+     */
     public void registerOrgan(){
         if (this.organRegisteredDate == null) {
             this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         }
+        this.stillWaitingOn = true;
         this.organDeregisteredDate = null;
     }
 
+    /**
+     * Updates an organs deregistration date and removes its registration date.
+     * Can be called when deregistering a previously registered organ.
+     */
     public void deregisterOrgan(){
         if (this.organDeregisteredDate == null) {
             this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         }
-        this.organRegisteredDate = null;
+        this.stillWaitingOn = false;
+    }
+
+    public boolean getStillWaitingOn(){
+        return stillWaitingOn;
+    }
+
+    /**
+     * Returns whether or not a user is also donating an organ they are hoping to receive.
+     * @param user the user being tested.
+     * @return true if the organ is also being donated, otherwise false.
+     */
+    public boolean isDonatingOrgan(User user){
+        return user.getOrgans().contains(organType);
     }
 
     public Organ getOrganType() {
