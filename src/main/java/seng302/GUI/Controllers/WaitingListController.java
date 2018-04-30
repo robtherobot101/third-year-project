@@ -87,11 +87,14 @@ public class WaitingListController implements Initializable {
     public void registerOrgan() {
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
+            addToUndoStack();
             WaitingListItem temp = new WaitingListItem(organTypeSelected);
             boolean found = false;
             for (WaitingListItem item : currentUser.getWaitingListItems()) {
                 if (temp.getOrganType() == item.getOrganType()) {
-                    item.registerOrgan();
+                    currentUser.getWaitingListItems().remove(item);
+                    currentUser.getWaitingListItems().add(new WaitingListItem(item));
+                    currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).registerOrgan();
                     found = true;
                     break;
                 }
@@ -100,6 +103,7 @@ public class WaitingListController implements Initializable {
                 currentUser.getWaitingListItems().add(temp);
             }
             populateWaitingList();
+
         }
         populateOrgansComboBox();
     }
@@ -112,7 +116,10 @@ public class WaitingListController implements Initializable {
     public void deregisterOrgan() {
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
-            waitingListItemSelected.deregisterOrgan();
+            addToUndoStack();
+            currentUser.getWaitingListItems().remove(waitingListItemSelected);
+            currentUser.getWaitingListItems().add(new WaitingListItem(waitingListItemSelected));
+            currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).deregisterOrgan();
             populateWaitingList();
         }
         populateOrgansComboBox();
@@ -213,4 +220,9 @@ public class WaitingListController implements Initializable {
         this.organTypeComboBox.setVisible(shown);
         this.organComboBoxLabel.setVisible(shown);
     }
+
+    public void addToUndoStack(){
+        Main.addCurrentToWaitingListUndoStack();
+    }
+
 }

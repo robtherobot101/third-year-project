@@ -63,6 +63,7 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
+
     /**
      * Class to serialize LocalDates without requiring reflective access
      */
@@ -133,6 +134,15 @@ public class Main extends Application {
 
     public static void updateMedications() {
         medicationsController.updateMedications();
+    }
+
+    public static void addCurrentToWaitingListUndoStack() {
+        userWindowController.addCurrentToWaitingListUndoStack();
+    }
+
+    public static void updateWaitingList() {
+        waitingListController.populateWaitingList();
+
     }
 
     /**

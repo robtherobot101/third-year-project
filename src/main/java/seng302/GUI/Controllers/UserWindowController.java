@@ -72,6 +72,7 @@ public class UserWindowController implements Initializable {
 
     private HashMap<Organ, CheckBox> organTickBoxes;
     private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
+    private ArrayList<User> waitingListUndoStack = new ArrayList<>(), waitingListRedoStack = new ArrayList<>();
     private User currentUser;
     @FXML
     private Button waitingListButton;
@@ -220,6 +221,16 @@ public class UserWindowController implements Initializable {
         setUndoRedoButtonsDisabled(false, true);
     }
 
+    public void addCurrentToWaitingListUndoStack() {
+        waitingListUndoStack.add(new User(currentUser));
+        for (WaitingListItem item : currentUser.getWaitingListItems()){
+            System.out.println("Organ Type: " + item.getOrganType());
+            System.out.println("Deregistered date" + item.getOrganDeregisteredDate());
+        }
+        waitingListRedoStack.clear();
+        setUndoRedoButtonsDisabled(false, true);
+    }
+
     /**
      * Set whether the undo and redo buttons are enabled.
      *
@@ -257,7 +268,7 @@ public class UserWindowController implements Initializable {
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
-        setUndoRedoButtonsDisabled(true, true);
+        setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
     }
 
     /**
@@ -573,6 +584,24 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
+        } else if (waitingListPane.isVisible()){
+            waitingListRedoStack.add(new User(currentUser));
+            System.out.println("Current User");
+            for (WaitingListItem item : currentUser.getWaitingListItems()){
+                System.out.println(item.getOrganType());
+                System.out.println(item.getOrganRegisteredDate());
+                System.out.println(item.getOrganDeregisteredDate());
+            }
+            System.out.println("Top of Stack");
+            for (WaitingListItem item : waitingListUndoStack.get(waitingListUndoStack.size()-1).getWaitingListItems()){
+                System.out.println(item.getOrganType());
+                System.out.println(item.getOrganRegisteredDate());
+                System.out.println(item.getOrganDeregisteredDate());
+            }
+            currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size()-1));
+            waitingListUndoStack.remove(waitingListUndoStack.size()-1);
+            setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
+            Main.updateWaitingList();
         }
     }
 
@@ -605,6 +634,12 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
+        } else if (waitingListPane.isVisible()){
+            waitingListUndoStack.add(new User(currentUser));
+            currentUser.copyWaitingListsFrom(waitingListRedoStack.get(waitingListRedoStack.size() - 1));
+            waitingListRedoStack.remove(waitingListRedoStack.size() - 1);
+            setUndoRedoButtonsDisabled(false, waitingListRedoStack.isEmpty());
+            Main.updateWaitingList();
         }
     }
 
@@ -752,14 +787,20 @@ public class UserWindowController implements Initializable {
 
     /**
      * Sets the waiting list button to visible if shown is true
+     *
      * @param shown True if the waiting list button is to be shown, otherwise False
      */
     public void setControlsShown(Boolean shown) {
-        if (currentUser != null){
+        if (currentUser != null) {
             if (currentUser.isReceiver())
-            waitingListButton.setVisible(true);
+                waitingListButton.setVisible(true);
         } else {
             waitingListButton.setVisible(shown);
         }
+    }
+
+
+    public ArrayList<User> getWaitingListUndoStack() {
+        return waitingListUndoStack;
     }
 }

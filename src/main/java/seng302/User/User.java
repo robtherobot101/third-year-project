@@ -42,7 +42,6 @@ public class User {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
-
     private ArrayList<WaitingListItem> waitingListItems;
 
     public User(String name, LocalDate dateOfBirth) {
@@ -159,6 +158,7 @@ public class User {
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
+        this.waitingListItems.addAll(user.waitingListItems);
     }
 
     public void copyFieldsFrom(User user) {
@@ -183,7 +183,13 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
+        // TODO - ask what this is
         waitingListItems.addAll(waitingListItems);
+    }
+
+    public void copyWaitingListsFrom(User user) {
+        waitingListItems.clear();
+        waitingListItems.addAll(user.getWaitingListItems());
     }
 
     public boolean fieldsEqual(User user) {
@@ -436,4 +442,6 @@ public class User {
         }
         return receiver;
     }
+
+
 }

@@ -22,6 +22,18 @@ public class WaitingListItem {
     }
 
     /**
+     * Creates a new object as a deep copy of a current object.
+     * Used to fix an error with undo/redo modifying old objects on the stack on deregister.
+     * @param copy the original waiting list item.
+     */
+    public WaitingListItem(WaitingListItem copy) {
+        this.organType = copy.organType;
+        this.organRegisteredDate = copy.organRegisteredDate;
+        this.organDeregisteredDate = copy.organDeregisteredDate;
+        this.stillWaitingOn = copy.stillWaitingOn;
+    }
+
+    /**
      * Updates an organs registration date and removes its deregistration date.
      * Can be called when registering a previously deregistered organ.
      */
