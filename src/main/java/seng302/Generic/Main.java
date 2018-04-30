@@ -25,6 +25,8 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import seng302.Controllers.MedicalHistoryDiseasesController;
+import seng302.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 
 import seng302.GUI.TFScene;
@@ -59,6 +61,9 @@ public class Main extends Application {
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
+    private static TransplantWaitingListController transplantWaitingListController;
+    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
     private static String dialogStyle;
@@ -120,6 +125,8 @@ public class Main extends Application {
         userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
 
+        medicalHistoryDiseasesController.setCurrentUser(currentUser);
+        //medicalHistoryProceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
 
@@ -153,6 +160,34 @@ public class Main extends Application {
         waitingListController.setControlsShown(true);
     }
 
+    /**
+     * Sets the medical history diseases view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryDiseasesViewForDonor() {
+        medicalHistoryDiseasesController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history view diseases to be able to edit for a clinican.
+     */
+    public static void medicalHistoryDiseasesViewForClinician() {
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history procedures view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryProceduresViewForDonor() {
+        medicalHistoryProceduresController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history procedures view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryProceduresViewForClinician() {
+        medicalHistoryProceduresController.setControlsShown(true);
+    }
+
     public static void setCurrentUserForAccountSettings(User currentUser) {
         accountSettingsController.setCurrentUser(currentUser);
         accountSettingsController.populateAccountDetails();
@@ -175,6 +210,14 @@ public class Main extends Application {
         Main.medicationsController = medicationsController;
     }
 
+    public static void setMedicalHistoryDiseasesController(MedicalHistoryDiseasesController medicalHistoryDiseasesController) {
+        Main.medicalHistoryDiseasesController = medicalHistoryDiseasesController;
+    }
+
+    public static void setMedicalHistoryProceduresController(MedicalHistoryProceduresController medicalHistoryProceduresController) {
+        Main.medicalHistoryProceduresController = medicalHistoryProceduresController;
+    }
+
     public static void setWaitingListController(WaitingListController waitingListController) {
         Main.waitingListController = waitingListController;
     }
@@ -187,9 +230,17 @@ public class Main extends Application {
         Main.clinicianAccountSettingsController = clincianAccountSettingsController;
     }
 
+    public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
+        Main.transplantWaitingListController = transplantWaitingListController;
+    }
+
+
+
     public static ClinicianController getClinicianController() {
         return Main.clinicianController;
     }
+
+    public static TransplantWaitingListController getTransplantWaitingListController() { return Main.transplantWaitingListController; }
 
     public static ArrayList<Stage> getCliniciansUserWindows(){
         return cliniciansUserWindows;
@@ -605,6 +656,7 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),800,600));
 
             setScene(TFScene.login);
             stage.show();
