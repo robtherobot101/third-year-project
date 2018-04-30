@@ -76,7 +76,7 @@ public class MedicalHistoryProceduresController implements Initializable {
     }
 
     /**
-     *
+     * Function to saving the most current versions of the previous and pending procedures to an undo stack
      */
     private void saveToUndoStack() {
         Main.addCurrentToProcedureUndoStack();
