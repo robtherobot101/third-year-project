@@ -10,12 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import seng302.Generic.Main;
+import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.SmokerStatus;
 import seng302.Generic.WaitingListItem;
 
 /**
@@ -56,7 +52,7 @@ public class User {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextId(true, true);
+        this.id = Main.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -74,7 +70,7 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextId(true, true);
+        this.id = Main.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -101,7 +97,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextId(true, true);
+        this.id = Main.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -128,7 +124,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextId(true, true);
+        this.id = Main.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();

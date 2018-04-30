@@ -28,6 +28,8 @@ import java.time.LocalDateTime;
 import seng302.GUI.Controllers.*;
 
 import seng302.GUI.TFScene;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -36,7 +38,7 @@ import seng302.User.User;
  * program.
  */
 public class Main extends Application {
-    private static long nextUserId = -1, nextClinicianId = -1;
+    private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
     public static ArrayList<User> users = new ArrayList<>();
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
     public static PrintStream streamOut;
@@ -110,6 +112,10 @@ public class Main extends Application {
         clinicianController.updatePageButtons();
         clinicianController.displayCurrentPage();
         clinicianController.updateResultsSummary();
+    }
+
+    public static void setAdmin(Admin admin) {
+        // TODO create adminController -> populate here
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -238,22 +244,34 @@ public class Main extends Application {
      * Get the unique id number for the next user or the last id number issued.
      *
      * @param increment Whether to increment the unique id counter before returning the unique id value.
-     * @param user Whether to increment and return clinician or user. True for user, false for clinician.
+     * @param type Whether to increment and return clinician, user or admin.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
-    public static long getNextId(boolean increment, boolean user) {
+    public static long getNextId(boolean increment, LoginType type) {
         if (increment) {
-            if (user) {
-                nextUserId++;
-            } else {
-                nextClinicianId++;
+            switch (type) {
+                case USER:
+                    nextUserId++;
+                    break;
+                case CLINICIAN:
+                    nextClinicianId++;
+                    break;
+                case ADMIN:
+                    nextAdminId++;
+                    break;
             }
         }
-        if (user) {
-            return nextUserId;
-        } else {
-            return nextClinicianId;
+        switch (type) {
+            case USER:
+                return nextUserId;
+            case CLINICIAN:
+                return nextClinicianId;
+            case ADMIN:
+                return nextAdminId;
+            default:
+                // Unreachable
+                return -69;
         }
     }
 
@@ -470,7 +488,7 @@ public class Main extends Application {
                 Main.users.clear();
                 nextUserId = -1;
                 Main.users.addAll(importedList);
-                recalculateNextId(true);
+                recalculateNextId(LoginType.USER);
                 System.out.println("Imported list successfully.");
                 return true;
             } else {
@@ -480,7 +498,7 @@ public class Main extends Application {
                 Main.clinicians.clear();
                 nextClinicianId = -1;
                 Main.clinicians.addAll(importedList);
-                recalculateNextId(false);
+                recalculateNextId(LoginType.CLINICIAN);
                 System.out.println("Imported list successfully.");
                 return true;
             }
@@ -497,24 +515,41 @@ public class Main extends Application {
 
     /**
      * Changes the next id to be issued to a new user to be correct for the current users list.
-     * @param user Whether to recalculate user or clinician id
+     * @param type Whether to recalculate user, clinician or admin ID
      */
-    public static void recalculateNextId(boolean user) {
-        if (user) {
-            nextUserId = -1;
-            for (User nextUser : Main.users) {
-                if (nextUser.getId() > nextUserId) {
-                    nextUserId = nextUser.getId();
+    public static void recalculateNextId(LoginType type) {
+        switch (type) {
+            case USER:
+                nextUserId = -1;
+                for (User nextUser : Main.users) {
+                    if (nextUser.getId() > nextUserId) {
+                        nextUserId = nextUser.getId();
+                    }
                 }
-            }
-        } else {
-            nextClinicianId = -1;
-            for (Clinician clinician : Main.clinicians) {
-                if (clinician.getStaffID() > nextClinicianId) {
-                    nextClinicianId = clinician.getStaffID();
+                break;
+            case CLINICIAN:
+                nextClinicianId = -1;
+                for (Clinician clinician : Main.clinicians) {
+                    if (clinician.getStaffID() > nextClinicianId) {
+                        nextClinicianId = clinician.getStaffID();
+                    }
                 }
-            }
+                break;
+            case ADMIN:
+                nextAdminId = -1;
+                for (Clinician clinician : Main.clinicians) {
+                    // Check it is an Admin
+                    if (clinician instanceof Admin) {
+                        if (((Admin) clinician).getAdminID() > nextAdminId) {
+                            nextAdminId = ((Admin) clinician).getAdminID();
+                        }
+                    }
+                }
+                break;
+
+
         }
+
     }
 
 
@@ -595,7 +630,9 @@ public class Main extends Application {
                     throw new IOException("Clinician save file could not be created.");
                 }
                 Clinician defaultClinician = new Clinician("default", "default", "default");
+                Admin defaultAdmin = new Admin("admin", "password", "default_admin");
                 Main.clinicians.add(defaultClinician);
+                Main.clinicians.add(defaultAdmin);
                 Main.saveUsers(clinicianPath, false);
             }
             streamOut = History.init();

@@ -1,19 +1,18 @@
 package seng302.User;
 
 import seng302.Generic.Main;
+import seng302.User.Attribute.LoginType;
 
 /**
  * This class contains information about admin.
  */
-public class Admin {
+public class Admin extends Clinician {
     private String name, username, password;
-    private long staffID;
+    private long adminID;
 
     public Admin(String username, String password, String name){
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.staffID = Main.getNextId(true, false);
+        super(username, password, name);
+        this.adminID = Main.getNextId(true, LoginType.ADMIN);
     }
 
     /**
@@ -21,17 +20,15 @@ public class Admin {
      * @param originalAdmin the original clinician object being copied.
      */
     public Admin(Admin originalAdmin){
-        this.username = originalAdmin.username;
-        this.password = originalAdmin.password;
-        this.name = originalAdmin.name;
-        this.staffID = originalAdmin.staffID;
+        super(originalAdmin.username, originalAdmin.password, originalAdmin.name);
+        this.adminID = originalAdmin.adminID;
     }
 
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
 
-    public long getStaffID() { return staffID; }
+    public long getAdminID() { return adminID; }
 
     public String getUsername() { return username; }
 
@@ -45,7 +42,7 @@ public class Admin {
     public String toString() {
         return "Admin{" +
                 "name='" + name + '\'' +
-                ", staffID='" + staffID + '\'' +
+                ", staffID='" + adminID + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';

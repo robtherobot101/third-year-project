@@ -1,6 +1,7 @@
 package seng302.User;
 
 import seng302.Generic.Main;
+import seng302.User.Attribute.LoginType;
 
 /**
  * This class contains information about clinicians.
@@ -13,7 +14,7 @@ public class Clinician {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = Main.getNextId(true, false);
+        this.staffID = Main.getNextId(true, LoginType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
     }
