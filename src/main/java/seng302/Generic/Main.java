@@ -630,7 +630,7 @@ public class Main extends Application {
                     throw new IOException("Clinician save file could not be created.");
                 }
                 Clinician defaultClinician = new Clinician("default", "default", "default");
-                Admin defaultAdmin = new Admin("admin", "password", "default_admin");
+                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
                 Main.clinicians.add(defaultClinician);
                 Main.clinicians.add(defaultAdmin);
                 Main.saveUsers(clinicianPath, false);

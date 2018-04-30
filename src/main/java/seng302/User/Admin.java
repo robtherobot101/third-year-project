@@ -7,7 +7,6 @@ import seng302.User.Attribute.LoginType;
  * This class contains information about admin.
  */
 public class Admin extends Clinician {
-    private String name, username, password;
     private long adminID;
 
     public Admin(String username, String password, String name){
@@ -20,31 +19,31 @@ public class Admin extends Clinician {
      * @param originalAdmin the original clinician object being copied.
      */
     public Admin(Admin originalAdmin){
-        super(originalAdmin.username, originalAdmin.password, originalAdmin.name);
+        super(originalAdmin);
         this.adminID = originalAdmin.adminID;
     }
 
-    public String getName() { return name; }
+    public String getName() { return super.getName(); }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) { super.setName(name); }
 
     public long getAdminID() { return adminID; }
 
-    public String getUsername() { return username; }
+    public String getUsername() { return super.getUsername(); }
 
-    public void setUsername(String username) { this.username = username; }
+    public void setUsername(String username) { super.setUsername(username); }
 
-    public String getPassword() { return password; }
+    public String getPassword() { return super.getPassword(); }
 
-    public void setPassword(String password) { this.password = password; }
+    public void setPassword(String password) { super.setPassword(password); }
 
     @Override
     public String toString() {
         return "Admin{" +
-                "name='" + name + '\'' +
+                "name='" + getName() + '\'' +
                 ", staffID='" + adminID + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", username='" + getUsername() + '\'' +
+                ", password='" + getPassword() + '\'' +
                 '}';
     }
 }

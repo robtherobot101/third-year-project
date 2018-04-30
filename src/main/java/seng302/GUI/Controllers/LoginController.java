@@ -62,7 +62,6 @@ public class LoginController implements Initializable {
         for (Clinician clinician: Main.clinicians) {
             // Check if the clinician is an admin
             if (clinician instanceof Admin) {
-                System.out.println("LoginController: Attempting admin login...");
                 if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
                     identificationMatched = true;
                     if (clinician.getPassword().equals(passwordInput.getText())) {
@@ -71,13 +70,15 @@ public class LoginController implements Initializable {
                         // TODO write login of admin to history
                     }
                 }
-            }
-            if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())){
-                identificationMatched = true;
-                if (clinician.getPassword().equals(passwordInput.getText())) {
-                    currentClinician = clinician;
-                    typeMatched = LoginType.CLINICIAN;
-                    // TODO write login of clinician to history
+            // Clinician is only a clinician
+            } else {
+                if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
+                    identificationMatched = true;
+                    if (clinician.getPassword().equals(passwordInput.getText())) {
+                        currentClinician = clinician;
+                        typeMatched = LoginType.CLINICIAN;
+                        // TODO write login of clinician to history
+                    }
                 }
             }
         }
@@ -101,7 +102,7 @@ public class LoginController implements Initializable {
                         break;
                     case ADMIN:
                         Main.setAdmin(currentAdmin);
-                        Main.setScene(TFScene.admin);
+                        Main.setScene(TFScene.clinician);
                 }
             } else {
                 errorMessage.setText("Incorrect password.");
