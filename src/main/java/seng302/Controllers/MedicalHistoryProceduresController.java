@@ -66,6 +66,27 @@ public class MedicalHistoryProceduresController implements Initializable {
     }
 
     /**
+     * Update the displayed user procedures to what is currently stored in the user object.
+     */
+    public void updateProcedures() {
+        pendingProcedureItems.clear();
+        pendingProcedureItems.addAll(currentUser.getPendingProcedures());
+        previousProcedureItems.clear();
+        previousProcedureItems.addAll(currentUser.getPreviousProcedures());
+    }
+
+    /**
+     *
+     */
+    private void saveToUndoStack() {
+        Main.addCurrentToProcedureUndoStack();
+        currentUser.getPendingProcedures().clear();
+        currentUser.getPendingProcedures().addAll(pendingProcedureItems);
+        currentUser.getPreviousProcedures().clear();
+        currentUser.getPreviousProcedures().addAll(previousProcedureItems);
+    }
+
+    /**
      * Adds a new procedure to the unsaved Donor Procedures array list.
      * Also checks for invalid input in the procedure summary, description and date fields.
      */
@@ -97,6 +118,7 @@ public class MedicalHistoryProceduresController implements Initializable {
             } else {
                 pendingProcedureItems.add(procedureToAdd);
             }
+            saveToUndoStack();
             summaryInput.clear();
             descriptionInput.clear();
             dateOfProcedureInput.getEditor().clear();

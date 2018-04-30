@@ -70,7 +70,7 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
+    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>(), procedureUndoStack = new ArrayList<>(), procedureRedoStack = new ArrayList<>();
     private User currentUser;
     @FXML
     private Button waitingListButton;
@@ -212,6 +212,15 @@ public class UserWindowController implements Initializable {
     public void addCurrentToMedicationUndoStack() {
         medicationUndoStack.add(new User(currentUser));
         medicationRedoStack.clear();
+        setUndoRedoButtonsDisabled(false, true);
+    }
+
+    /**
+     * Add the current user object to the procedures undo stack.
+     */
+    public void addCurrentToProceduresUndoStack() {
+        procedureUndoStack.add(new User(currentUser));
+        procedureRedoStack.clear();
         setUndoRedoButtonsDisabled(false, true);
     }
 
@@ -635,6 +644,16 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
+        } else if (medicalHistoryProceduresPane.isVisible()) {
+            //Add the current procedures lists to the redo stack
+            procedureRedoStack.add(new User(currentUser));
+            //Copy the proceudres lists from the top element of the undo stack
+            currentUser.copyProceduresListsFrom(procedureUndoStack.get(procedureUndoStack.size() - 1));
+            //Remove the top element of the undo stack
+            procedureUndoStack.remove(procedureUndoStack.size() - 1);
+
+            setUndoRedoButtonsDisabled(procedureUndoStack.isEmpty(), false);
+            Main.updateProcedures();
         }
     }
 
@@ -667,6 +686,16 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
+        } else if (medicalHistoryProceduresPane.isVisible()) {
+            //Add the current procedures lists to the redo stack
+            procedureUndoStack.add(new User(currentUser));
+            //Copy the proceudres lists from the top element of the undo stack
+            currentUser.copyProceduresListsFrom(procedureRedoStack.get(procedureRedoStack.size() - 1));
+            //Remove the top element of the undo stack
+            procedureRedoStack.remove(procedureRedoStack.size() - 1);
+
+            setUndoRedoButtonsDisabled(false, procedureRedoStack.isEmpty());
+            Main.updateProcedures();
         }
     }
 

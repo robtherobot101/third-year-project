@@ -141,6 +141,14 @@ public class Main extends Application {
         medicationsController.updateMedications();
     }
 
+    public static void addCurrentToProcedureUndoStack() {
+        userWindowController.addCurrentToProceduresUndoStack();
+    }
+
+    public static void updateProcedures() {
+        medicalHistoryProceduresController.updateProcedures();
+    }
+
     /**
      * Sets the medications view to be unable to edit for a user.
      */
