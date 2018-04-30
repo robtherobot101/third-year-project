@@ -158,6 +158,7 @@ public class MedicalHistoryProceduresController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 previousProcedureItems.remove(chosenProcedure);
+                saveToUndoStack();
             }
             alert.close();
         }
@@ -321,8 +322,8 @@ public class MedicalHistoryProceduresController implements Initializable {
                     previousProcedureItems.remove(selectedProcedure);
                     previousProcedureItems.add(selectedProcedure);
                 }
-
             }
+            saveToUndoStack();
 
         });
     }
@@ -333,6 +334,19 @@ public class MedicalHistoryProceduresController implements Initializable {
      * Also creates the menu items for right clicking on a procedure.
      */
     private void setupListeners() {
+
+        pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                previousProcedureTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                pendingProcedureTableView.getSelectionModel().clearSelection();
+            }
+        });
+
         final ContextMenu pendingProcedureListContextMenu = new ContextMenu();
 
         // Update selected procedure on the pending procedures table
@@ -362,6 +376,7 @@ public class MedicalHistoryProceduresController implements Initializable {
                 // To refresh the observableList to make chronic toggle visible
                 pendingProcedureItems.remove(selectedProcedure);
                 pendingProcedureItems.add(selectedProcedure);
+
             }
         });
         pendingProcedureListContextMenu.getItems().add(togglePendingProcedureOrganAffectingMenuItem);
@@ -395,6 +410,7 @@ public class MedicalHistoryProceduresController implements Initializable {
                 // To refresh the observableList to make chronic toggle visible
                 previousProcedureItems.remove(selectedProcedure);
                 previousProcedureItems.add(selectedProcedure);
+
             }
         });
         previousProcedureListContextMenu.getItems().add(togglePreviousProcedureOrganAffectingMenuItem);
