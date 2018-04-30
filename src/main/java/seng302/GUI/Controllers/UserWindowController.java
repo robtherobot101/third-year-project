@@ -87,6 +87,8 @@ public class UserWindowController implements Initializable {
     private MedicalHistoryDiseasesController medicalHistoryDiseasesController;
     @FXML
     private MedicalHistoryProceduresController medicalHistoryProceduresController;
+    @FXML
+    private WaitingListController waitingListController;
 
     public StatusIndicator statusIndicator = new StatusIndicator();
 
@@ -228,6 +230,9 @@ public class UserWindowController implements Initializable {
 
         medicalHistoryProceduresController.setStatusIndicator(statusIndicator);
         medicalHistoryProceduresController.setTitleBar(titleBar);
+
+        waitingListController.setStatusIndicator(statusIndicator);
+        waitingListController.setTitleBar(titleBar);
 
     }
 

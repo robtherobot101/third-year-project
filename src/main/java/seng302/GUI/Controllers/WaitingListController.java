@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 
 import java.net.URL;
@@ -37,6 +39,25 @@ public class WaitingListController implements Initializable {
     private TableColumn organDeregisteredDate;
 
     private User currentUser;
+
+    private StatusIndicator statusIndicator;
+    private TitleBar titleBar;
+
+    /**
+     * Set the status indicator object from the user window the page is being displayed in
+     * @param statusIndicator the statusIndicator object
+     */
+    public void setStatusIndicator(StatusIndicator statusIndicator) {
+        this.statusIndicator = statusIndicator;
+    }
+
+    /**
+     * Assign the title bar of the window
+     * @param titleBar The title bar of the pane in which this pane is located
+     */
+    public void setTitleBar(TitleBar titleBar) {
+        this.titleBar = titleBar;
+    }
 
 
 
@@ -70,6 +91,7 @@ public class WaitingListController implements Initializable {
 
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
+                statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
             }
             populateWaitingList();
         }
@@ -84,6 +106,7 @@ public class WaitingListController implements Initializable {
         if(waitingListItemSelected != null){
             waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
+            statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
         }
     }
 
