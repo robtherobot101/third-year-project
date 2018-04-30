@@ -240,6 +240,10 @@ public class User {
         previousProcedures.addAll(user.getPreviousProcedures());
     }
 
+    /**
+     * Copies all items in the given users waiting list and adds them to the current user.
+     * @param user the user being copied.
+     */
     public void copyWaitingListsFrom(User user) {
         waitingListItems.clear();
         waitingListItems.addAll(user.getWaitingListItems());

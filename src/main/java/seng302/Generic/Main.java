@@ -143,10 +143,16 @@ public class Main extends Application {
         medicationsController.updateMedications();
     }
 
+    /**
+     * Adds the current user to the waiting list undo stack.
+     */
     public static void addCurrentToWaitingListUndoStack() {
         userWindowController.addCurrentToWaitingListUndoStack();
     }
 
+    /**
+     * Calls the function which updates the waiting list pane.
+     */
     public static void updateWaitingList() {
         waitingListController.populateWaitingList();
 

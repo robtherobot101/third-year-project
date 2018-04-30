@@ -131,7 +131,10 @@ public class WaitingListController implements Initializable {
 
     }
 
-
+    /**
+     * Removes any currently registered organs from the combo box, as an already registered organ cannot be registered again.
+     * It is re added if the organ is deregistered.
+     */
     public void populateOrgansComboBox(){
         ArrayList<Organ> toBeRemoved = new ArrayList<Organ>();
         ArrayList<Organ> toBeAdded = new ArrayList<Organ>(Arrays.asList(Organ.values()));
@@ -227,6 +230,9 @@ public class WaitingListController implements Initializable {
         this.organComboBoxLabel.setVisible(shown);
     }
 
+    /**
+     * Calls the main class which has access to the static controller allowing it to manually add the user to the waitinglist undo stack.
+     */
     public void addToUndoStack(){
         Main.addCurrentToWaitingListUndoStack();
     }

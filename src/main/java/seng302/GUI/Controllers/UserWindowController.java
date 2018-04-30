@@ -221,12 +221,11 @@ public class UserWindowController implements Initializable {
         setUndoRedoButtonsDisabled(false, true);
     }
 
+    /**
+     * Adds the current user object to the waiting list undo stack.
+     */
     public void addCurrentToWaitingListUndoStack() {
         waitingListUndoStack.add(new User(currentUser));
-        for (WaitingListItem item : currentUser.getWaitingListItems()){
-            System.out.println("Organ Type: " + item.getOrganType());
-            System.out.println("Deregistered date" + item.getOrganDeregisteredDate());
-        }
         waitingListRedoStack.clear();
         setUndoRedoButtonsDisabled(false, true);
     }
@@ -655,18 +654,6 @@ public class UserWindowController implements Initializable {
             Main.updateMedications();
         } else if (waitingListPane.isVisible()){
             waitingListRedoStack.add(new User(currentUser));
-            System.out.println("Current User");
-            for (WaitingListItem item : currentUser.getWaitingListItems()){
-                System.out.println(item.getOrganType());
-                System.out.println(item.getOrganRegisteredDate());
-                System.out.println(item.getOrganDeregisteredDate());
-            }
-            System.out.println("Top of Stack");
-            for (WaitingListItem item : waitingListUndoStack.get(waitingListUndoStack.size()-1).getWaitingListItems()){
-                System.out.println(item.getOrganType());
-                System.out.println(item.getOrganRegisteredDate());
-                System.out.println(item.getOrganDeregisteredDate());
-            }
             currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size()-1));
             waitingListUndoStack.remove(waitingListUndoStack.size()-1);
             setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
