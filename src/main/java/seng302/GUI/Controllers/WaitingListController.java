@@ -16,7 +16,7 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 
-public class WaitingListController implements Initializable {
+public class WaitingListController extends PageController implements Initializable {
     @FXML
     private Button addOrganButton;
 
@@ -39,27 +39,6 @@ public class WaitingListController implements Initializable {
     private TableColumn organDeregisteredDate;
 
     private User currentUser;
-
-    private StatusIndicator statusIndicator;
-    private TitleBar titleBar;
-
-    /**
-     * Set the status indicator object from the user window the page is being displayed in
-     * @param statusIndicator the statusIndicator object
-     */
-    public void setStatusIndicator(StatusIndicator statusIndicator) {
-        this.statusIndicator = statusIndicator;
-    }
-
-    /**
-     * Assign the title bar of the window
-     * @param titleBar The title bar of the pane in which this pane is located
-     */
-    public void setTitleBar(TitleBar titleBar) {
-        this.titleBar = titleBar;
-    }
-
-
 
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
 

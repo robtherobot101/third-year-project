@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import seng302.Core.Disease;
+import seng302.GUI.Controllers.PageController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
@@ -34,7 +35,7 @@ import java.util.ResourceBundle;
 
 import static seng302.Generic.Main.streamOut;
 
-public class MedicalHistoryDiseasesController implements Initializable {
+public class MedicalHistoryDiseasesController extends PageController implements Initializable {
     @FXML
     private DatePicker dateOfDiagnosisInput;
     @FXML
@@ -69,25 +70,6 @@ public class MedicalHistoryDiseasesController implements Initializable {
     private Label currentDiagnosisColumnLabel, currentDateColumnLabel;
 
     private Label curedDiagnosisColumnLabel, curedDateColumnLabel;
-
-    private StatusIndicator statusIndicator;
-    private TitleBar titleBar;
-
-    /**
-     * Set the status indicator object from the user window the page is being displayed in
-     * @param statusIndicator the statusIndicator object
-     */
-    public void setStatusIndicator(StatusIndicator statusIndicator) {
-        this.statusIndicator = statusIndicator;
-    }
-
-    /**
-     * Assign the title bar of the window
-     * @param titleBar The title bar of the pane in which this pane is located
-     */
-    public void setTitleBar(TitleBar titleBar) {
-        this.titleBar = titleBar;
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

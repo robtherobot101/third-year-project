@@ -29,7 +29,7 @@ import static seng302.Generic.Main.streamOut;
  * Handles all functions including:
  * Saving, Adding new medications, moving medications between lists, deleting medications and comparing medications.
  */
-public class MedicationsController implements Initializable {
+public class MedicationsController extends PageController implements Initializable {
     @FXML
     private TextField newMedicationField;
     @FXML
@@ -45,24 +45,6 @@ public class MedicationsController implements Initializable {
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
-    private StatusIndicator statusIndicator;
-    private TitleBar titleBar;
-
-    /**
-     * Set the status indicator object from the user window the page is being displayed in
-     * @param statusIndicator the statusIndicator object
-     */
-    public void setStatusIndicator(StatusIndicator statusIndicator) {
-        this.statusIndicator = statusIndicator;
-    }
-
-    /**
-     * Assign the title bar of the window
-     * @param titleBar The title bar of the pane in which this pane is located
-     */
-    public void setTitleBar(TitleBar titleBar) {
-        this.titleBar = titleBar;
-    }
 
     /**
      * Initializes the medications pane to show medications for a specified user.
