@@ -189,8 +189,6 @@ public class User {
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
-        this.currentMedications.addAll(user.currentMedications);
-        this.historicMedications.addAll(user.historicMedications);
         this.currentDiseases = new ArrayList<>();
         this.currentDiseases.addAll(user.getCurrentDiseases());
         this.curedDiseases = new ArrayList<>();
@@ -224,7 +222,6 @@ public class User {
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
         waitingListItems.addAll(waitingListItems);
-        historicMedications.addAll(user.getHistoricMedications());
         currentDiseases.clear();
         currentDiseases.addAll(user.getCurrentDiseases());
 
