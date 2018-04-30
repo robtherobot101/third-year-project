@@ -14,6 +14,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
+import seng302.Controllers.MedicalHistoryDiseasesController;
+import seng302.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import seng302.User.Attribute.AlcoholConsumption;
@@ -81,6 +83,10 @@ public class UserWindowController implements Initializable {
     private StatusBar statusBar;
     @FXML
     private MedicationsController medicationsController;
+    @FXML
+    private MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    @FXML
+    private MedicalHistoryProceduresController medicalHistoryProceduresController;
 
     public StatusIndicator statusIndicator = new StatusIndicator();
 
@@ -212,7 +218,17 @@ public class UserWindowController implements Initializable {
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
 
         statusIndicator.setStatusBar(statusBar);
+
+        // Pass the status bar and title bar objects to the embedded controllers
+        medicationsController.setStatusIndicator(statusIndicator);
         medicationsController.setTitleBar(titleBar);
+
+        medicalHistoryDiseasesController.setStatusIndicator(statusIndicator);
+        medicalHistoryDiseasesController.setTitleBar(titleBar);
+
+        medicalHistoryProceduresController.setStatusIndicator(statusIndicator);
+        medicalHistoryProceduresController.setTitleBar(titleBar);
+
     }
 
     /**
