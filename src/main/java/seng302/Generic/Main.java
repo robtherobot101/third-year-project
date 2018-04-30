@@ -113,7 +113,7 @@ public class Main extends Application {
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
-        clinicianController.updateFoundUsers("");
+        clinicianController.updateFoundUsers();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -617,7 +617,7 @@ public class Main extends Application {
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
-            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 900, 600));
             scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),800,600));
 
             setScene(TFScene.login);

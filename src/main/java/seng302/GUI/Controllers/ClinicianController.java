@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,6 +26,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import seng302.GUI.TFScene;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -62,18 +66,13 @@ public class ClinicianController implements Initializable {
     @FXML
     private Pane background;
     @FXML
-    private TextField nameInput;
-    @FXML
     private Label staffIDLabel;
     @FXML
-    private TextField addressInput;
+    private Label nameLabel;
     @FXML
-    private TextField regionInput;
+    private Label addressLabel;
     @FXML
-    private MenuItem accountSettingsMenuItem;
-
-    @FXML
-    private Label updatedSuccessfully;
+    private Label regionLabel;
 
     @FXML
     private Label userDisplayText;
@@ -90,6 +89,18 @@ public class ClinicianController implements Initializable {
     @FXML
     private ComboBox numberOfResutsToDisplay;
 
+    @FXML
+    private TextField clinicianRegionField;
+    @FXML
+    private ComboBox clinicianGenderComboBox;
+    @FXML
+    private TextField clinicianAgeField;
+    @FXML
+    private ComboBox clinicianUserTypeComboBox;
+    @FXML
+    private ComboBox clinicianOrganComboBox;
+
+
     private int resultsPerPage;
     private int numberXofResults;
 
@@ -104,6 +115,11 @@ public class ClinicianController implements Initializable {
 
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
 
+    private String searchNameTerm = "";
+    private String searchRegionTerm;
+    private String searchGenderTerm;
+    private String searchAgeTerm;
+    private String searchOrganTerm;
 
     ObservableList<Object> users;
 
@@ -123,10 +139,10 @@ public class ClinicianController implements Initializable {
     public void updateDisplay() {
         System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
-        nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
-        addressInput.setText(clinician.getWorkAddress());
-        regionInput.setText(clinician.getRegion());
+        nameLabel.setText("Name: " + clinician.getName());
+        addressLabel.setText("Address: " + clinician.getWorkAddress());
+        regionLabel.setText("Region: " + clinician.getRegion());
     }
 
     /**
@@ -194,13 +210,105 @@ public class ClinicianController implements Initializable {
      */
     public void updateClinician() {
         addClinicianToUndoStack(clinician);
-        clinician.setName(nameInput.getText());
-        clinician.setWorkAddress(addressInput.getText());
-        clinician.setRegion(regionInput.getText());
-        updatedSuccessfully.setOpacity(1.0);
-        fadeIn.playFromStart();
+        System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
-        System.out.println("Updated to: " + clinician);
+
+        // Create the custom dialog.
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Update Clinician");
+        dialog.setHeaderText("Update Clinician Details");
+
+        // Set the button types.
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 10, 10));
+
+        TextField clinicianName = new TextField();
+        clinicianName.setPromptText(clinician.getName());
+        clinicianName.setId("clinicianName");
+        TextField clinicianAddress = new TextField();
+        clinicianAddress.setId("clinicianAddress");
+        clinicianAddress.setPromptText(clinician.getWorkAddress());
+        TextField clinicianRegion = new TextField();
+        clinicianRegion.setId("clinicianRegion");
+        clinicianRegion.setPromptText(clinician.getRegion());
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(clinicianName, 1, 0);
+        grid.add(new Label("Address:"), 0, 1);
+        grid.add(clinicianAddress, 1, 1);
+        grid.add(new Label("Region:"), 0, 2);
+        grid.add(clinicianRegion, 1, 2);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+        updateButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        clinicianName.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        // Do some validation (using the Java 8 lambda syntax).
+        clinicianAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        clinicianRegion.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> clinicianName.requestFocus());
+
+        // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                String newName;
+                String newAddress;
+                String newRegion;
+
+                if(clinicianName.getText().equals("")) {
+                    newName = clinician.getName();
+                } else {
+                    newName = clinicianName.getText();
+                }
+
+                if(clinicianAddress.getText().equals("")) {
+                    newAddress = clinician.getWorkAddress();
+                } else {
+                    newAddress = clinicianAddress.getText();
+                }
+
+                if(clinicianRegion.getText().equals("")) {
+                    newRegion = clinician.getRegion();
+                } else {
+                    newRegion = clinicianRegion.getText();
+                }
+
+                return new ArrayList<String>(Arrays.asList(newName, newAddress, newRegion));
+            }
+            return null;
+        });
+
+        Optional<ArrayList<String>> result = dialog.showAndWait();
+
+        result.ifPresent(newClinicianDetails -> {
+            System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails.get(2));
+            clinician.setName(newClinicianDetails.get(0));
+            clinician.setWorkAddress(newClinicianDetails.get(1));
+            clinician.setRegion(newClinicianDetails.get(2));
+            save();
+            updateDisplay();
+
+        });
     }
 
     /**
@@ -302,10 +410,9 @@ public class ClinicianController implements Initializable {
 
     /**
      * Updates the list of users found from the search
-     * @param searchTerm the search term
      */
-    public void updateFoundUsers(String searchTerm){
-        usersFound = Main.getUsersByNameAlternative(searchTerm);
+    public void updateFoundUsers(){
+        usersFound = Main.getUsersByNameAlternative(searchNameTerm);
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
         //displayPage(resultsPerPage);
@@ -317,7 +424,7 @@ public class ClinicianController implements Initializable {
         numberOfResutsToDisplay.getItems().add(firstPage);
         numberOfResutsToDisplay.getSelectionModel().select(firstPage);
         if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
-            numberOfResutsToDisplay.getItems().add("Sll " + numberOfSearchResults+" results");
+            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
             numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
@@ -349,13 +456,24 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
+        clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
+        clinicianOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+
         resultsPerPage = 3;
         numberXofResults = 5;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
-
-            updateFoundUsers(newValue);
+            searchNameTerm = newValue;
+            updateFoundUsers();
         });
+        clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            searchRegionTerm = newValue;
+            updateFoundUsers();
+        });
+
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
         profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -375,7 +493,6 @@ public class ClinicianController implements Initializable {
             }
         });
 
-        fadeIn.setNode(updatedSuccessfully);
         fadeIn.setDelay(Duration.millis(1000));
         fadeIn.setFromValue(1.0);
         fadeIn.setToValue(0.0);
@@ -386,7 +503,7 @@ public class ClinicianController implements Initializable {
 
         Main.setClinicianController(this);
 
-        updateFoundUsers("");
+        updateFoundUsers();
 
         profileTable.setItems(currentPage);
 
