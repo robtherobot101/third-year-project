@@ -25,6 +25,8 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import seng302.Controllers.MedicalHistoryDiseasesController;
+import seng302.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 
 import seng302.GUI.TFScene;
