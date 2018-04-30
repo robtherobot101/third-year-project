@@ -26,6 +26,8 @@ import seng302.GUI.TFScene;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import static seng302.Generic.Main.streamOut;
+
 /**
  * Class to control all the logic for the clinician interactions with the application.
  */
@@ -70,6 +72,9 @@ public class ClinicianController implements Initializable {
     private Label updatedSuccessfully;
 
     @FXML
+    private Label userDisplayText;
+
+    @FXML
     private Button nextPageButton;
 
     @FXML
@@ -79,13 +84,10 @@ public class ClinicianController implements Initializable {
     private Label resultsDisplayLabel;
 
     @FXML
-    private Button accountSettingsButton;
+    private Button undoWelcomeButton;
 
     @FXML
-    private Button undoButton;
-
-    @FXML
-    private Button redoButton;
+    private Button redoWelcomeButton;
 
     @FXML
     private GridPane mainPane;
@@ -119,6 +121,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateDisplay() {
         System.out.print(clinician);
+        userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
@@ -187,7 +190,7 @@ public class ClinicianController implements Initializable {
                 }
             }else{ // Password incorrect
                 Main.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                    "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
             }
         }
     }
@@ -234,10 +237,10 @@ public class ClinicianController implements Initializable {
     public void undo(){
         clinician = clinicianUndo(clinician);
         updateDisplay();
-        redoButton.setDisable(false);
+        redoWelcomeButton.setDisable(false);
 
         if (clinicianUndoStack.isEmpty()){
-            undoButton.setDisable(true);
+            undoWelcomeButton.setDisable(true);
         }
     }
 
@@ -247,9 +250,9 @@ public class ClinicianController implements Initializable {
     public void redo(){
         clinician = clinicianRedo(clinician);
         updateDisplay();
-        undoButton.setDisable(false);
+        undoWelcomeButton.setDisable(false);
         if(clinicianRedoStack.isEmpty()){
-            redoButton.setDisable(true);
+            redoWelcomeButton.setDisable(true);
         }
     }
 
@@ -276,8 +279,8 @@ public class ClinicianController implements Initializable {
     public void addClinicianToUndoStack(Clinician clinician) {
         Clinician prevClinician = new Clinician(clinician);
         clinicianUndoStack.add(prevClinician);
-        if (undoButton.isDisable()) {
-            undoButton.setDisable(false);
+        if (undoWelcomeButton.isDisable()) {
+            undoWelcomeButton.setDisable(false);
         }
     }
 
@@ -401,7 +404,7 @@ public class ClinicianController implements Initializable {
         profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
-        
+
 
         fadeIn.setNode(updatedSuccessfully);
         fadeIn.setDelay(Duration.millis(1000));
@@ -461,10 +464,16 @@ public class ClinicianController implements Initializable {
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
                             Main.setCurrentUser(row.getItem());
+
+                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
+                            History.printToFile(streamOut, text);
+
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
                             Main.controlViewForClinician();
+                            Main.medicalHistoryDiseasesViewForClinician();
+                            Main.medicalHistoryProceduresViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
@@ -510,5 +519,15 @@ public class ClinicianController implements Initializable {
                 }
             }
         });
+    }
+
+    /**
+     * calls the transplantWaitingList controller and displays it.
+     * also refreshes the waitinglist table data
+     */
+    public void transplantWaitingList() {
+        Main.getTransplantWaitingListController().updateTransplantList();
+        //background.setVisible(false);
+        Main.setScene(TFScene.transplantList);
     }
 }

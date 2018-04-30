@@ -18,6 +18,8 @@ import seng302.User.Medication.Mapi;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
 
+import static seng302.Generic.Main.streamOut;
+
 
 /**
  * Class which handles all the logic for the Medications Pane.
@@ -169,10 +171,6 @@ public class MedicationsController implements Initializable {
                 deleteMedication(historicItems, historyListView.getSelectionModel().getSelectedItem());
             }
 
-            //TODO create update for medications for history when deleting
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-//            History.printToFile(streamOut, text);
-            //populateHistoryTable();
         }
         alert.close();
     }
@@ -247,9 +245,9 @@ public class MedicationsController implements Initializable {
             currentUser.getCurrentMedications().clear();
             currentUser.getCurrentMedications().addAll(currentItems);
             Main.saveUsers(Main.getUserPath(), true);
-            //TODO create update for medications for history
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-//            History.printToFile(streamOut, text);
+
+            String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
+            History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
         } else {

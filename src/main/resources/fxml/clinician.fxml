@@ -25,7 +25,8 @@
    <rowConstraints>
       <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="470.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="200.0" prefHeight="467.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
@@ -102,7 +103,7 @@
                               <Button fx:id="nextPageButton" mnemonicParsing="false" onMouseClicked="#nextPage" text="Next" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
-            <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;">
                <effect>
                   <DropShadow />
                </effect>
@@ -127,9 +128,14 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
+                   <Button fx:id="transplantList" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant  List" textAlignment="CENTER">
+                       <font>
+                           <Font size="14.0" />
+                       </font>
+                   </Button>
                </children>
             </AnchorPane>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: #1d3549;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: #1d3549;">
                <effect>
                   <DropShadow />
                </effect>
@@ -188,7 +194,7 @@
             </Button>
          </children>
       </AnchorPane>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
          <children>
             <Label text="Organ Donation Management System">
                <font>
@@ -203,5 +209,10 @@
             </Label>
          </children>
       </HBox>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2b506e;" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
+         <GridPane.margin>
+            <Insets bottom="2.0" top="2.0" />
+         </GridPane.margin>
+      </Pane>
    </children>
 </GridPane>
