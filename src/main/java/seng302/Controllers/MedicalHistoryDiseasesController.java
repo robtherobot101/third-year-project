@@ -25,7 +25,6 @@ import seng302.Core.User;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -57,7 +56,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
     private boolean sortCuredDiagnosisAscending, sortCuredDatesAscending, sortCuredByDate;
 
-    private User currentDonor;
+    private User currentUser;
 
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
 
@@ -97,7 +96,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "No date provided.");
         // Check if the date of diagnosis was before the current user's birthday
-        } else if (dateOfDiagnosisInput.getValue().isBefore(currentDonor.getDateOfBirth())) {
+        } else if (dateOfDiagnosisInput.getValue().isBefore(currentUser.getDateOfBirth())) {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Date of diagnosis before date of birth.");
             dateOfDiagnosisInput.setValue(null);
@@ -142,6 +141,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             curedDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
         }
+        saveToUndoStack();
     }
 
     /**
@@ -157,6 +157,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             currentDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
         }
+        saveToUndoStack();
     }
 
     /**
@@ -175,6 +176,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Disease chosenDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 currentDiseaseItems.remove(chosenDisease);
+                saveToUndoStack();
             }
             alert.close();
         }
@@ -189,12 +191,13 @@ public class MedicalHistoryDiseasesController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Disease chosenDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
                 curedDiseaseItems.remove(chosenDisease);
+                saveToUndoStack();
             }
             alert.close();
         }
 
             //TODO create update for diseases for history when deleting
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
 //            History.printToFile(streamOut, text);
             //populateHistoryTable();
 
@@ -211,15 +214,15 @@ public class MedicalHistoryDiseasesController implements Initializable {
         alert.setContentText("By doing so, the donor will be updated with the following disease details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            currentDonor.getCurrentDiseases().clear();
-            currentDonor.getCurrentDiseases().addAll(currentDiseaseItems);
+            currentUser.getCurrentDiseases().clear();
+            currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
 
-            currentDonor.getCuredDiseases().clear();
-            currentDonor.getCuredDiseases().addAll(curedDiseaseItems);
+            currentUser.getCuredDiseases().clear();
+            currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
             Main.saveUsers(Main.getUserPath(), true);
             //TODO create update for diseases for history
-//            String text = History.prepareFileStringGUI(currentDonor.getId(), "update");
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
 //            History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
@@ -320,6 +323,32 @@ public class MedicalHistoryDiseasesController implements Initializable {
     }
 
     /**
+     * Called by Main to update the displayed user procedures to what is currently stored in the user object.
+     */
+    public void updateDiseases() {
+        currentDiseaseItems.clear();
+        currentDiseaseItems.addAll(currentUser.getCurrentDiseases());
+        curedDiseaseItems.clear();
+        curedDiseaseItems.addAll(currentUser.getCuredDiseases());
+        sortCuredDiseases(false);
+        sortCurrentDiseases(false);
+        currentDiseaseTableView.refresh();
+        curedDiseaseTableView.refresh();
+    }
+
+    /**
+     *
+     */
+    private void saveToUndoStack() {
+        Main.addCurrentToDiseaseUndoStack();
+        currentUser.getCurrentDiseases().clear();
+        currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
+        currentUser.getCuredDiseases().clear();
+        currentUser.getCuredDiseases().addAll(curedDiseaseItems);
+    }
+
+
+    /**
      * Initialises flags + listeners for the current disease table view sorting
      */
     private void initialiseCurrentTableViewSorting() {
@@ -389,12 +418,13 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
     /**
      * Sorts the current disease list according to flags sortCurrentDatesAscending and sortCurrentDiagnosisAscending
-     * @param toggle whether to just keep with the current sort settings or to flip the order
+     * @param toggle whether to just keep with the current sort settings or to flip the order then perform the sort
      */
     private void sortCurrentDiseases(boolean toggle) {
         if (!sortCurrentByDate) {
             // Sort by diagnosis
             if (sortCurrentDiagnosisAscending) {
+                // ...descending order
                 if (toggle) {
                     sortCurrentDiagnosisAscending = false;
                     sortCurrentDiseases(false);
@@ -405,6 +435,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 currentDateColumnLabel.setText("Date");
 
             } else {
+                // ...ascending order
                 if (toggle) {
                     sortCurrentDiagnosisAscending = true;
                     sortCurrentDiseases(false);
@@ -419,6 +450,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
         } else {
             // Sort by date
             if (sortCurrentDatesAscending) {
+                // ...ascending order
                 if (toggle) {
                     sortCurrentDatesAscending = false;
                     sortCurrentDiseases(false);
@@ -429,6 +461,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 currentDateColumnLabel.setText("Date ⬆️️");
 
             } else {
+                // ...descending order
                 if (toggle) {
                     sortCurrentDatesAscending = true;
                     sortCurrentDiseases(false);
@@ -677,6 +710,18 @@ public class MedicalHistoryDiseasesController implements Initializable {
             };
         });
 
+        currentDiseaseTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                curedDiseaseTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        curedDiseaseTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                currentDiseaseTableView.getSelectionModel().clearSelection();
+            }
+        });
+
         // Set up columns to extract correct information from a Disease object
         currentDiagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         currentDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
@@ -704,19 +749,21 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
-     * @param currentDonor The donor to set the current donor.
+     * @param currentUser The donor to set the current donor.
      */
-    public void setCurrentUser(User currentDonor) {
-        this.currentDonor = currentDonor;
-        donorNameLabel.setText("User: " + currentDonor.getName());
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        donorNameLabel.setText("User: " + currentUser.getName());
 
         currentDiseaseItems = FXCollections.observableArrayList();
-        currentDiseaseItems.addAll(currentDonor.getCurrentDiseases());
+        currentDiseaseItems.addAll(currentUser.getCurrentDiseases());
         currentDiseaseTableView.setItems(currentDiseaseItems);
+        sortCurrentDiseases(false);
 
         curedDiseaseItems = FXCollections.observableArrayList();
-        curedDiseaseItems.addAll(currentDonor.getCuredDiseases());
+        curedDiseaseItems.addAll(currentUser.getCuredDiseases());
         curedDiseaseTableView.setItems(curedDiseaseItems);
+        sortCuredDiseases(false);
 
         System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
     }

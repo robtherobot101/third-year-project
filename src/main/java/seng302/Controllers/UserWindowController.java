@@ -63,7 +63,9 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
+    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(),
+            medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>(),
+            diseaseUndoStack = new ArrayList<>(), diseaseRedoStack = new ArrayList<>();
     private User currentUser;
     @FXML
     private Button waitingListButton;
@@ -208,6 +210,12 @@ public class UserWindowController implements Initializable {
         setUndoRedoButtonsDisabled(false, true);
     }
 
+    public void addCurrentToDiseaseUndoStack() {
+        diseaseUndoStack.add(new User(currentUser));
+        diseaseRedoStack.clear();
+        setUndoRedoButtonsDisabled(false, true);
+    }
+
     /**
      * Set whether the undo and redo buttons are enabled.
      *
@@ -289,7 +297,7 @@ public class UserWindowController implements Initializable {
         medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
-        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), diseaseRedoStack.isEmpty());
     }
 
     /**
@@ -596,6 +604,16 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
+        } else if (medicalHistoryDiseasesPane.isVisible()) {
+            //Add the current disease lists to the redo stack
+            diseaseRedoStack.add(new User(currentUser));
+            //Copy the disease lists from the top element of the undo stack
+            currentUser.copyDiseaseListsFrom(diseaseUndoStack.get(diseaseUndoStack.size() - 1));
+            //Remove the top element of the undo stack
+            diseaseUndoStack.remove(diseaseUndoStack.size() - 1);
+
+            setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), false);
+            Main.updateDiseases();
         }
     }
 
@@ -628,6 +646,16 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
+        } else if (medicalHistoryDiseasesPane.isVisible()) {
+            //Add the current disease lists to the redo stack
+            diseaseUndoStack.add(new User(currentUser));
+            //Copy the disease lists from the top element of the undo stack
+            currentUser.copyDiseaseListsFrom(diseaseRedoStack.get(diseaseRedoStack.size() - 1));
+            //Remove the top element of the undo stack
+            diseaseRedoStack.remove(diseaseRedoStack.size() - 1);
+
+            setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
+            Main.updateDiseases();
         }
     }
 
