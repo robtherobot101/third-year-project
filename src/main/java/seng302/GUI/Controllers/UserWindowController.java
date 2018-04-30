@@ -549,7 +549,7 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
-        Main.getClinicianController().updateUserTable();
+        //Main.getClinicianController().updateUserTable();
         return true;
     }
 

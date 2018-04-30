@@ -79,15 +79,6 @@ public class ClinicianController implements Initializable {
     private Label userDisplayText;
 
     @FXML
-    private Button nextPageButton;
-
-    @FXML
-    private Button previousPageButton;
-
-    @FXML
-    private Label resultsDisplayLabel;
-
-    @FXML
     private Button undoWelcomeButton;
 
     @FXML
@@ -96,7 +87,12 @@ public class ClinicianController implements Initializable {
     @FXML
     private GridPane mainPane;
 
+    @FXML
+    private ComboBox numberOfResutsToDisplay;
+
     private int resultsPerPage;
+    private int numberXofResults;
+
     private int page = 1;
     private ArrayList<User> usersFound;
 
@@ -107,6 +103,7 @@ public class ClinicianController implements Initializable {
 
 
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
+
 
     ObservableList<Object> users;
 
@@ -130,16 +127,6 @@ public class ClinicianController implements Initializable {
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
-    }
-
-    /**
-     * Refreshes the results in the user profile table to match the values
-     * in the user ArrayList in Main
-     */
-    public void updateUserTable(){
-        updatePageButtons();
-        displayCurrentPage();
-        updateResultsSummary();
     }
 
     /**
@@ -308,9 +295,9 @@ public class ClinicianController implements Initializable {
     /**
      * Updates the ObservableList for the profile table
      */
-    public void displayCurrentPage() {
+    public void displayPage(int pageSize) {
         currentPage.clear();
-        currentPage.addAll(getCurrentPage());
+        currentPage.addAll(getPage(pageSize));
     }
 
     /**
@@ -320,7 +307,21 @@ public class ClinicianController implements Initializable {
     public void updateFoundUsers(String searchTerm){
         usersFound = Main.getUsersByNameAlternative(searchTerm);
         users = FXCollections.observableArrayList(usersFound);
+        populateNResultsComboBox(usersFound.size());
+        //displayPage(resultsPerPage);
+    }
 
+    public void populateNResultsComboBox(int numberOfSearchResults){
+        numberOfResutsToDisplay.getItems().clear();
+        String firstPage = "First page";
+        numberOfResutsToDisplay.getItems().add(firstPage);
+        numberOfResutsToDisplay.getSelectionModel().select(firstPage);
+        if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
+            numberOfResutsToDisplay.getItems().add("Sll " + numberOfSearchResults+" results");
+        }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
+            numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
+            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
+        }
     }
 
 
@@ -328,63 +329,14 @@ public class ClinicianController implements Initializable {
      * Splits the sorted list of found users and returns a page worth
      * @return The sorted page of results
      */
-    public ObservableList<User> getCurrentPage(){
-        int firstIndex = Math.max((page-1),0)*resultsPerPage;
-        int lastIndex = Math.min(users.size(), page*resultsPerPage);
+    public ObservableList<User> getPage(int pageSize){
+        int firstIndex = Math.max((page-1),0)*pageSize;
+        int lastIndex = Math.min(users.size(), page*pageSize);
         if(lastIndex<firstIndex){
             System.out.println(firstIndex+" to "+lastIndex+ " is an illegal page");
             return FXCollections.observableArrayList(new ArrayList<User>());
         }
         return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
-    }
-
-    /**
-     * Displays the next page of results.
-     */
-    public void nextPage(){
-        page++;
-        updateUserTable();
-    }
-
-    /**
-     * Updates the resultsDisplayLabel to show how many results were found,
-     * and how many are displayed.
-     */
-    public void updateResultsSummary(){
-        String text;
-        if(usersFound.size()==0){
-            text = "No results found";
-        }else{
-            int from = ((page-1)*resultsPerPage)+1;
-            int to = Math.min((page*resultsPerPage), usersFound.size());
-            int of = usersFound.size();
-            text = "Displaying " + from + "-" + to + " of " + of;
-        }
-        resultsDisplayLabel.setText(text);
-    }
-
-    /**
-     * Displays the next page of user search results
-     */
-    public void previousPage(){
-        page--;
-        updateUserTable();
-    }
-
-    /**
-     * Enables and disables the next and previous page buttons as necessary.
-     */
-    public void updatePageButtons(){
-        if((page)*resultsPerPage>=usersFound.size()){
-            nextPageButton.setDisable(true);
-        }else{
-            nextPageButton.setDisable(false);
-        }
-        if(page==1){
-            previousPageButton.setDisable(true);
-        }else{
-            previousPageButton.setDisable(false);
-        }
     }
 
     /**
@@ -397,11 +349,12 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        resultsPerPage = 15;
+        resultsPerPage = 3;
+        numberXofResults = 5;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
+
             updateFoundUsers(newValue);
-            updateUserTable();
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -410,6 +363,17 @@ public class ClinicianController implements Initializable {
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
 
+        numberOfResutsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null){
+                if(newValue.equals("First page")){
+                    displayPage(resultsPerPage);
+                }else if(((String)newValue).contains("Top")){
+                    displayPage(numberXofResults);
+                }else if (((String)newValue).contains("All")){
+                    displayPage(usersFound.size());
+                }
+            }
+        });
 
         fadeIn.setNode(updatedSuccessfully);
         fadeIn.setDelay(Duration.millis(1000));
@@ -423,7 +387,6 @@ public class ClinicianController implements Initializable {
         Main.setClinicianController(this);
 
         updateFoundUsers("");
-        updateUserTable();
 
         profileTable.setItems(currentPage);
 
@@ -493,35 +456,7 @@ public class ClinicianController implements Initializable {
             }
         });
 
-
-
         profileTable.refresh();
-        /**
-         * Sorts of the profileTable across all pages.
-         * As items are removed and re-added, multiple sort calls can trigger an
-         * IndexOutOfBoundsException exception.
-         */
-        profileTable.setSortPolicy(new Callback<TableView, Boolean>() {
-            @Override public Boolean call(TableView table) {
-                try{
-                    Comparator comparator = table.getComparator();
-                    if (comparator == null) {
-                        return true;
-                    }
-                    FXCollections.sort(users, comparator);
-                    displayCurrentPage();
-                    profileTable.getSelectionModel().select(0);
-                    return true;
-                }catch(IndexOutOfBoundsException e){
-                    System.out.println("Error");
-                    return false;
-                }catch(UnsupportedOperationException e){
-                    return false;
-                }catch(NullPointerException e){
-                    return false;
-                }
-            }
-        });
     }
 
     /**

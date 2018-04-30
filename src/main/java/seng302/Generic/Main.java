@@ -114,9 +114,6 @@ public class Main extends Application {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers("");
-        clinicianController.updatePageButtons();
-        clinicianController.displayCurrentPage();
-        clinicianController.updateResultsSummary();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
