@@ -3,7 +3,7 @@ package seng302.User;
 import seng302.Generic.Main;
 
 /**
- * This class contains information about clinicians.
+ * This class contains information about admin.
  */
 public class Admin {
     private String name, username, password;
