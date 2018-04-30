@@ -41,7 +41,9 @@ public class UserWindowController implements Initializable {
     @FXML
     private GridPane attributesGridPane, historyGridPane, background;
     @FXML
-    private AnchorPane medicationsPane, waitingListPane;
+    private AnchorPane medicationsPane, medicalHistoryDiseasesPane, medicalHistoryProceduresPane;
+    @FXML
+    private AnchorPane waitingListPane;
     @FXML
     private Pane welcomePane;
     @FXML
@@ -135,6 +137,8 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
+        Main.medicalHistoryDiseasesViewForDonor();
+        Main.medicalHistoryProceduresViewForDonor();
         Main.medicationsViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
@@ -233,6 +237,8 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(true);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
@@ -243,6 +249,8 @@ public class UserWindowController implements Initializable {
     public void showWaitingListPane(){
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
@@ -256,6 +264,8 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(true);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
@@ -268,6 +278,34 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
         historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
+        medicationsPane.setVisible(false);
+    }
+
+    /**
+     * Sets the diseases pane as the visible pane
+     */
+    public void showMedicalHistoryDiseasesPane() {
+        welcomePane.setVisible(false);
+        attributesGridPane.setVisible(false);
+        historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(true);
+        medicalHistoryProceduresPane.setVisible(false);
+        medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
+        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+    }
+
+    /**
+     * Sets the medical history pane as the visible pane
+     */
+    public void showMedicalHistoryProceduresPane() {
+        welcomePane.setVisible(false);
+        attributesGridPane.setVisible(false);
+        historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(true);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
@@ -280,6 +318,8 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);

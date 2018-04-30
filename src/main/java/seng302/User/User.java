@@ -42,6 +42,10 @@ public class User {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
+    private ArrayList<Disease> currentDiseases;
+    private ArrayList<Disease> curedDiseases;
+    private ArrayList<Procedure> pendingProcedures;
+    private ArrayList<Procedure> previousProcedures;
 
     private ArrayList<WaitingListItem> waitingListItems;
 
@@ -59,7 +63,11 @@ public class User {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -78,6 +86,10 @@ public class User {
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -88,7 +100,6 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
-        System.out.println(getName());
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
@@ -104,7 +115,11 @@ public class User {
         this.id = Main.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -132,6 +147,10 @@ public class User {
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     /**
@@ -159,6 +178,16 @@ public class User {
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
+        this.currentMedications.addAll(user.currentMedications);
+        this.historicMedications.addAll(user.historicMedications);
+        this.currentDiseases = new ArrayList<>();
+        this.currentDiseases.addAll(user.getCurrentDiseases());
+        this.curedDiseases = new ArrayList<>();
+        this.curedDiseases.addAll(user.getCuredDiseases());
+        this.pendingProcedures = new ArrayList<>();
+        this.pendingProcedures.addAll(user.getPendingProcedures());
+        this.previousProcedures = new ArrayList<>();
+        this.previousProcedures.addAll(user.getPreviousProcedures());
     }
 
     public void copyFieldsFrom(User user) {
@@ -184,6 +213,18 @@ public class User {
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
         waitingListItems.addAll(waitingListItems);
+        historicMedications.addAll(user.getHistoricMedications());
+        currentDiseases.clear();
+        currentDiseases.addAll(user.getCurrentDiseases());
+
+        curedDiseases.clear();
+        curedDiseases.addAll(user.getCuredDiseases());
+
+        pendingProcedures.clear();
+        pendingProcedures.addAll(user.getPendingProcedures());
+
+        previousProcedures.clear();
+        previousProcedures.addAll(user.getPreviousProcedures());
     }
 
     public boolean fieldsEqual(User user) {
@@ -380,6 +421,23 @@ public class User {
 
     public void setHistoricMedications(ArrayList<Medication> historicMedications) { this.historicMedications = historicMedications; }
 
+    public ArrayList<Procedure> getPendingProcedures() {
+        return pendingProcedures;
+    }
+
+    public void setPendingProcedures(ArrayList<Procedure> pendingProcedures) {
+        this.pendingProcedures = pendingProcedures;
+    }
+
+    public ArrayList<Procedure> getPreviousProcedures() {
+        return previousProcedures;
+    }
+
+    public void setPreviousProcedures(ArrayList<Procedure> previousProcedures) {
+        this.previousProcedures = previousProcedures;
+    }
+
+
     /**
      * Get a string containing key information about the user. Can be formatted as a table row.
      *
@@ -423,5 +481,21 @@ public class User {
 
     public String toString() {
         return getString(false);
+    }
+
+    public ArrayList<Disease> getCurrentDiseases() {
+        return currentDiseases;
+    }
+
+    public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
+    public ArrayList<Disease> getCuredDiseases() {
+        return curedDiseases;
+    }
+
+    public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
+        this.curedDiseases = curedDiseases;
     }
 }

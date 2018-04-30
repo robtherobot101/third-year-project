@@ -7,7 +7,7 @@
     ],
     "dateOfBirth": "01/02/1998",
     "dateOfDeath": "01/11/4000",
-    "creationTime": "30/04/2018, 01:39:16",
+    "creationTime": "28/04/2018, 16:07:03",
     "gender": "MALE",
     "height": 12.1,
     "weight": 50.45,
@@ -19,6 +19,10 @@
     "bloodPressure": "",
     "currentMedications": [],
     "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
     "waitingListItems": []
   },
   {
@@ -28,7 +32,7 @@
     ],
     "dateOfBirth": "01/04/1530",
     "dateOfDeath": "31/01/1565",
-    "creationTime": "30/04/2018, 01:39:16",
+    "creationTime": "28/04/2018, 16:07:03",
     "gender": "OTHER",
     "height": 1.234,
     "weight": 1.11111,
@@ -40,6 +44,10 @@
     "bloodPressure": "",
     "currentMedications": [],
     "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
     "waitingListItems": []
   },
   {
@@ -47,7 +55,7 @@
       "Singlename"
     ],
     "dateOfBirth": "12/06/1945",
-    "creationTime": "30/04/2018, 01:39:16",
+    "creationTime": "28/04/2018, 16:07:03",
     "height": -1.0,
     "weight": -1.0,
     "id": 2,
@@ -55,6 +63,10 @@
     "bloodPressure": "",
     "currentMedications": [],
     "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
     "waitingListItems": []
   },
   {
@@ -64,7 +76,7 @@
     ],
     "dateOfBirth": "01/12/1990",
     "dateOfDeath": "09/03/2090",
-    "creationTime": "30/04/2018, 01:39:16",
+    "creationTime": "28/04/2018, 16:07:03",
     "gender": "FEMALE",
     "height": 2.0,
     "weight": 60.0,
@@ -76,6 +88,10 @@
     "bloodPressure": "",
     "currentMedications": [],
     "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
     "waitingListItems": []
   },
   {
@@ -87,7 +103,7 @@
     ],
     "dateOfBirth": "01/11/3000",
     "dateOfDeath": "01/11/4000",
-    "creationTime": "30/04/2018, 01:39:16",
+    "creationTime": "28/04/2018, 16:07:03",
     "gender": "OTHER",
     "height": 0.1,
     "weight": 12.4,
@@ -99,6 +115,10 @@
     "bloodPressure": "",
     "currentMedications": [],
     "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
     "waitingListItems": []
   },
   {
@@ -106,7 +126,7 @@
       "extra"
     ],
     "dateOfBirth": "01/01/1000",
-    "creationTime": "30/04/2018, 01:39:16",
+    "creationTime": "28/04/2018, 16:07:03",
     "height": -1.0,
     "weight": -1.0,
     "id": 5,
@@ -114,6 +134,10 @@
     "bloodPressure": "",
     "currentMedications": [],
     "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
     "waitingListItems": []
   }
 ]
