@@ -99,7 +99,7 @@
                      <GridPane.margin>
                         <Insets left="5.0" />
                      </GridPane.margin></Label>
-                        <Button fx:id="updateClinician" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                        <Button fx:id="updateClinician" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Button>
@@ -166,6 +166,11 @@
                         <Insets left="20.0" />
                      </GridPane.margin>
                   </Label>
+                  <Button mnemonicParsing="false" onAction="#clearFilter" prefHeight="23.0" prefWidth="83.0" text="Clear Filter" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </Button>
                     </children>
                 </GridPane>
                 <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;">

@@ -439,13 +439,13 @@ public class User {
 
     public String getType(){
         if(isDonor() && isReceiver()){
-            return "donor/receiver";
+            return "Donor/Receiver";
         }else if(isDonor() && !isReceiver()){
-            return "donor";
+            return "Donor";
         }else if(!isDonor() && isReceiver()){
-            return "receiver";
+            return "Receiver";
         }else{
-            return "neither";
+            return "Neither";
         }
     }
 }

@@ -116,10 +116,11 @@ public class ClinicianController implements Initializable {
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
 
     private String searchNameTerm = "";
-    private String searchRegionTerm;
-    private String searchGenderTerm;
-    private String searchAgeTerm;
-    private String searchOrganTerm;
+    private String searchRegionTerm = null;
+    private String searchGenderTerm = null;
+    private String searchAgeTerm = null;
+    private String searchOrganTerm = null;
+    private String searchUserTypeTerm = null;
 
     ObservableList<Object> users;
 
@@ -409,10 +410,71 @@ public class ClinicianController implements Initializable {
     }
 
     /**
+     * Clears the filter fields of the advanced filters
+     */
+    public void clearFilter() {
+        clinicianRegionField.clear();
+        clinicianAgeField.clear();
+        clinicianGenderComboBox.setValue(null);
+        clinicianOrganComboBox.setValue(null);
+        clinicianUserTypeComboBox.setValue(null);
+
+    }
+
+    /**
      * Updates the list of users found from the search
      */
     public void updateFoundUsers(){
         usersFound = Main.getUsersByNameAlternative(searchNameTerm);
+
+       //Add in check for region
+//        if(searchRegionTerm != null) {
+//            for(User user: new ArrayList<>(usersFound)) {
+//                if(!searchRegionTerm.equals(user.getRegion())) {
+//                    usersFound.remove(user);
+//                }
+//            }
+//        }
+
+        //Add in check for age
+
+
+        //Add in check for gender
+
+        if(searchGenderTerm != null) {
+            ArrayList<User> newUsersFound = new ArrayList<>();
+            for(User user: usersFound) {
+                if(searchGenderTerm.equals(user.getGender().toString()) && (user.getGender() != null)) {
+                    newUsersFound.add(user);
+                }
+            }
+            usersFound = newUsersFound;
+        }
+
+        //Add in check for organ
+
+        if(searchOrganTerm != null) {
+            ArrayList<User> newUsersFound = new ArrayList<>();
+            for(User user: usersFound) {
+                if((user.getOrgans().contains(Organ.parse(searchOrganTerm))) && (user.getOrgans().size() != 0)) {
+                    newUsersFound.add(user);
+                }
+            }
+            usersFound = newUsersFound;
+        }
+
+        //Add in check for user type
+
+        if(searchUserTypeTerm != null) {
+            ArrayList<User> newUsersFound = new ArrayList<>();
+            for(User user: usersFound) {
+                if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
+                    newUsersFound.add(user);
+                }
+            }
+            usersFound = newUsersFound;
+        }
+
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
         //displayPage(resultsPerPage);
@@ -468,10 +530,47 @@ public class ClinicianController implements Initializable {
             searchNameTerm = newValue;
             updateFoundUsers();
         });
+
         clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchRegionTerm = newValue;
             updateFoundUsers();
+        });
+
+        clinicianGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            if(newValue == null) {
+                searchGenderTerm = null;
+
+            } else {
+                searchGenderTerm = newValue.toString();
+            }
+            updateFoundUsers();
+
+        });
+
+        clinicianUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            if(newValue == null) {
+                searchUserTypeTerm = null;
+
+            } else {
+                searchUserTypeTerm = newValue.toString();
+            }
+            updateFoundUsers();
+
+        });
+
+        clinicianOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            if(newValue == null) {
+                searchOrganTerm = null;
+
+            } else {
+                searchOrganTerm = newValue.toString();
+            }
+            updateFoundUsers();
+
         });
 
 
