@@ -140,7 +140,6 @@ public class UserWindowController implements Initializable {
 
         Main.medicalHistoryDiseasesViewForDonor();
         Main.medicalHistoryProceduresViewForDonor();
-        Main.medicationsViewForUser();
         Main.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
@@ -289,6 +288,7 @@ public class UserWindowController implements Initializable {
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
     }
 
     /**

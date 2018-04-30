@@ -100,7 +100,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "No date provided.");
         // Check if the date of diagnosis was before the current user's birthday
-        } else if (dateOfDiagnosisInput.getValue().isBefore(currentDonor.getDateOfBirth())) {
+        } else if (dateOfDiagnosisInput.getValue().isBefore(currentUser.getDateOfBirth())) {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Date of diagnosis before date of birth.");
             dateOfDiagnosisInput.setValue(null);

@@ -214,6 +214,9 @@ public class History {
                 case "modifyUser":
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
                     break;
+                case "waitingList":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
+                    break;
                 case "medications":
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
                     break;

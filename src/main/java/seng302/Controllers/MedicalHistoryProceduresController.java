@@ -19,6 +19,7 @@ import seng302.Core.Procedure;
 
 import seng302.Generic.History;
 import seng302.Generic.Main;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;

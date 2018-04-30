@@ -25,13 +25,17 @@ import seng302.User.User;
 import seng302.Generic.*;
 
 import javafx.beans.binding.Bindings;
+
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.*;
+import static seng302.Generic.Main.streamOut;
 
 /**
  * The controller for the waiting list pane
  */
 public class WaitingListController implements Initializable {
+
     @FXML
     private Button registerOrganButton;
 
@@ -64,12 +68,8 @@ public class WaitingListController implements Initializable {
 
     private User currentUser;
 
-
-
-
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
     private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
-
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
@@ -102,6 +102,8 @@ public class WaitingListController implements Initializable {
             populateWaitingList();
         }
         populateOrgansComboBox();
+        String text = History.prepareFileStringGUI(currentUser.getId(), "waitingList");
+        History.printToFile(streamOut, text);
     }
 
 
@@ -116,6 +118,8 @@ public class WaitingListController implements Initializable {
             populateWaitingList();
         }
         populateOrgansComboBox();
+        String text = History.prepareFileStringGUI(currentUser.getId(), "waitingList");
+        History.printToFile(streamOut, text);
     }
 
 

@@ -12,8 +12,8 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Disease;
-import seng302.Core.Main;
-import seng302.Core.User;
+import seng302.Generic.Main;
+import seng302.User.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
