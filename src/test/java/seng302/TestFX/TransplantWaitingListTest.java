@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
-public class ATransplantWaitingListTest extends TestFXTest{
+public class TransplantWaitingListTest extends TestFXTest{
 
     private TableView<TransplantWaitingListItem> transplantTable;
     private TransplantWaitingListItem transplantRow;
