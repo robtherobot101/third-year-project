@@ -40,9 +40,6 @@ public class ClinicianController implements Initializable {
 
     private Clinician clinician;
 
-    private FadeTransition fadeIn = new FadeTransition(
-            Duration.millis(1000)
-    );
     @FXML
     private TableColumn profileName;
 
@@ -71,9 +68,6 @@ public class ClinicianController implements Initializable {
     private TextField regionInput;
     @FXML
     private MenuItem accountSettingsMenuItem;
-
-    @FXML
-    private Label updatedSuccessfully;
 
     @FXML
     private Label userDisplayText;
@@ -225,8 +219,6 @@ public class ClinicianController implements Initializable {
         clinician.setName(nameInput.getText());
         clinician.setWorkAddress(addressInput.getText());
         clinician.setRegion(regionInput.getText());
-        updatedSuccessfully.setOpacity(1.0);
-        fadeIn.playFromStart();
         titleBar.setTitle(clinician.getName(), "Clinician", null);
         statusIndicator.setStatus("Updated clinician details", false);
 
@@ -429,14 +421,6 @@ public class ClinicianController implements Initializable {
         profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
-
-
-        fadeIn.setNode(updatedSuccessfully);
-        fadeIn.setDelay(Duration.millis(1000));
-        fadeIn.setFromValue(1.0);
-        fadeIn.setToValue(0.0);
-        fadeIn.setCycleCount(0);
-        fadeIn.setAutoReverse(false);
 
         profileTable.setItems(currentPage);
 

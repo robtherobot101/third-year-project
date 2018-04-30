@@ -76,7 +76,6 @@
                         <TextField fx:id="addressInput" onKeyPressed="#edited" GridPane.columnIndex="3" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
                         <TextField fx:id="regionInput" onKeyPressed="#edited" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
                         <Label fx:id="staffIDLabel" text="ID#" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                        <Label fx:id="updatedSuccessfully" opacity="0.0" text="Updated Successfully" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                         <Label text="Staff ID: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Name" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
                         <Label text="Address" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
