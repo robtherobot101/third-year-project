@@ -192,10 +192,6 @@ public class MedicationsController implements Initializable {
             titleBar.saved(false);
             saveToUndoStack();
 
-            //TODO create update for medications for history when deleting
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-//            History.printToFile(streamOut, text);
-            //populateHistoryTable();
         }
         alert.close();
     }
