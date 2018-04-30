@@ -211,7 +211,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         enterMedicalHistoryProceduresView();
         clickOn("#summaryInput").write("Arm Transplant");
         clickOn("#descriptionInput").write("Transfer of arm");
-        clickOn("#dateOfProcedureInput").write("4/04/1996");
+        clickOn("#dateOfProcedureInput").write("4/04/2002");
         clickOn("#addNewProcedureButton");
 
         // Checks an alert dialog was presented -> this checks disease was not added

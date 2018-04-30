@@ -23,7 +23,7 @@ import seng302.Generic.Main;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
-
+import seng302.User.User;
 import static seng302.Generic.Main.streamOut;
 
 /**

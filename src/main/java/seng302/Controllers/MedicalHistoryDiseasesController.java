@@ -100,7 +100,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "No date provided.");
         // Check if the date of diagnosis was before the current user's birthday
-        } else if (dateOfDiagnosisInput.getValue().isBefore(currentDonor.getDateOfBirth())) {
+        } else if (dateOfDiagnosisInput.getValue().isBefore(currentUser.getDateOfBirth())) {
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Date of diagnosis before date of birth.");
             dateOfDiagnosisInput.setValue(null);
@@ -249,9 +249,11 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
         TextField diseaseName = new TextField();
         diseaseName.setPromptText(selectedDisease.getName());
+        diseaseName.setId("diseaseName");
         DatePicker dateOfDiagnosis = new DatePicker();
-        diseaseName.setText(selectedDisease.getName());
-        dateOfDiagnosis.setValue(selectedDisease.getDiagnosisDate());
+        //diseaseName.setText(selectedDisease.getName());
+        dateOfDiagnosis.setPromptText(selectedDisease.getDiagnosisDate().toString());
+        dateOfDiagnosis.setId("dateOfDiagnosis");
 
         grid.add(new Label("Name:"), 0, 0);
         grid.add(diseaseName, 1, 0);
@@ -701,18 +703,18 @@ public class MedicalHistoryDiseasesController implements Initializable {
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
-     * @param currentDonor The donor to set the current donor.
+     * @param currentUser The donor to set the current donor.
      */
-    public void setCurrentUser(User currentDonor) {
-        this.currentUser = currentDonor;
-        donorNameLabel.setText("User: " + currentDonor.getName());
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        donorNameLabel.setText("User: " + currentUser.getName());
 
         currentDiseaseItems = FXCollections.observableArrayList();
-        currentDiseaseItems.addAll(currentDonor.getCurrentDiseases());
+        currentDiseaseItems.addAll(currentUser.getCurrentDiseases());
         currentDiseaseTableView.setItems(currentDiseaseItems);
 
         curedDiseaseItems = FXCollections.observableArrayList();
-        curedDiseaseItems.addAll(currentDonor.getCuredDiseases());
+        curedDiseaseItems.addAll(currentUser.getCuredDiseases());
         curedDiseaseTableView.setItems(curedDiseaseItems);
 
         System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");

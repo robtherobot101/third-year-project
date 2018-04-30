@@ -12,8 +12,8 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Disease;
-import seng302.Core.Main;
-import seng302.Core.User;
+import seng302.Generic.Main;
+import seng302.User.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -315,10 +315,12 @@ public class MedicalHistoryGUITest extends ApplicationTest {
 
         rightClickOn("Asthma");
         clickOn("Update disease");
-        write("Lung cancer");
-        doubleClickOn("4/04/2018").clickOn("4/04/2018");
-        write("20/04/2018");
+        clickOn("#diseaseName").write("Lung cancer");
+        //doubleClickOn("4/04/2018").clickOn("4/04/2018");
+        clickOn("#dateOfDiagnosis").write("20/04/2018");
         doubleClickOn("Update");
+        sleep(250);
+        //clickOn("20/04/2018");
         clickOn("Lung cancer");
         refreshTableSelections();
         assertEquals("Lung cancer", currentTableSelectedDisease.getName());
