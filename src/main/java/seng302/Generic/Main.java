@@ -392,6 +392,69 @@ public class Main extends Application {
     }
 
     /**
+     * Returns a list of users matching the given search term for region.
+     * If every token matches at least part of the
+     * beginning of a one of part of a users name, that user will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<User> getUsersByRegionAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User d: users){
+            if(d.getRegion() != null) {
+                boolean allTokensMatchAName = true;
+                for(String token:tokens){
+                    if(!matchesAtleastOne(d.getRegion().split(" "), token)){
+                        allTokensMatchAName = false;
+                    }
+                }
+                if(allTokensMatchAName){
+                    matched.add(d);
+                }
+            }
+
+        }
+        return matched;
+    }
+
+    /**
+     * Returns a list of users matching the given search term for age.
+     * If every token matches at least part of the
+     * beginning of a one of part of a users name, that user will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<User> getUsersByAgeAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User d: users){
+            if(d.getRegion() != null) {
+                boolean allTokensMatchAName = true;
+                for(String token:tokens){
+                    if(!matches(d.getAgeString(), token)){
+                        allTokensMatchAName = false;
+                    }
+                }
+                if(allTokensMatchAName){
+                    matched.add(d);
+                }
+            }
+
+        }
+        return matched;
+    }
+
+
+    /**
      * Returns the length of the longest matched common substring starting from the
      * beginning of string and searchTerm, minus the length of the string.
      * The maximum value returned is zero. This method is used for scoring different

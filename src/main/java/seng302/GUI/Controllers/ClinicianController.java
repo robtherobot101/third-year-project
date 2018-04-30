@@ -116,9 +116,9 @@ public class ClinicianController implements Initializable {
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
 
     private String searchNameTerm = "";
-    private String searchRegionTerm = null;
+    private String searchRegionTerm = "";
     private String searchGenderTerm = null;
-    private String searchAgeTerm = null;
+    private String searchAgeTerm = "";
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
 
@@ -428,15 +428,19 @@ public class ClinicianController implements Initializable {
         usersFound = Main.getUsersByNameAlternative(searchNameTerm);
 
        //Add in check for region
-//        if(searchRegionTerm != null) {
-//            for(User user: new ArrayList<>(usersFound)) {
-//                if(!searchRegionTerm.equals(user.getRegion())) {
-//                    usersFound.remove(user);
-//                }
-//            }
-//        }
+
+        if(!searchRegionTerm.equals("")) {
+            ArrayList<User> newUsersFound = Main.getUsersByRegionAlternative(searchRegionTerm);
+            usersFound.retainAll(newUsersFound);
+
+        }
 
         //Add in check for age
+
+        if(!searchAgeTerm.equals("")) {
+            ArrayList<User> newUsersFound = Main.getUsersByAgeAlternative(searchAgeTerm);
+            usersFound.retainAll(newUsersFound);
+        }
 
 
         //Add in check for gender
@@ -525,6 +529,7 @@ public class ClinicianController implements Initializable {
 
         resultsPerPage = 3;
         numberXofResults = 5;
+
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchNameTerm = newValue;
@@ -534,6 +539,12 @@ public class ClinicianController implements Initializable {
         clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchRegionTerm = newValue;
+            updateFoundUsers();
+        });
+
+        clinicianAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            searchAgeTerm = newValue;
             updateFoundUsers();
         });
 
