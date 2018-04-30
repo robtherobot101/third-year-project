@@ -107,7 +107,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         }
         System.out.println("MedicalHistoryProceduresGUITest: Logging in as default clinician");
         // Login as default clinician
-        clickOn("#identificationInput");
+        //clickOn("#identificationInput");
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         doubleClickOn("#loginButton");
