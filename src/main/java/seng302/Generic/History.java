@@ -177,7 +177,9 @@ public class History {
     public static String prepareFileStringGUI(long userId, String command){
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         User userInfo = Main.getUserById(userId);
-            switch(command) {
+        System.out.println("Command: "+command);
+
+        switch(command) {
                 case "login":
                     description = "[User " + userId + " logged in successfully.]";
                     break;
@@ -215,6 +217,7 @@ public class History {
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
                     break;
                 case "waitingList":
+                    System.out.println("found waitingList command");
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
                     break;
                 case "medications":
