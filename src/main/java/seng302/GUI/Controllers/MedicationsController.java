@@ -171,10 +171,6 @@ public class MedicationsController implements Initializable {
                 deleteMedication(historicItems, historyListView.getSelectionModel().getSelectedItem());
             }
 
-            //TODO create update for medications for history when deleting
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-//            History.printToFile(streamOut, text);
-            //populateHistoryTable();
         }
         alert.close();
     }

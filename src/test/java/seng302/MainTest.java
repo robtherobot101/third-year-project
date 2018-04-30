@@ -79,8 +79,8 @@ public class MainTest {
         System.setOut(new java.io.PrintStream(out));
         Main.importUsers(invalidFile, true);
         String text = out.toString();
-        String expected = "IOException on "+ invalidFile +": Check your inputs and permissions!\n";
-        assertEquals(expected, text);
+        String expected = "IOException on "+ invalidFile +": Check your inputs and permissions!";
+        assertEquals(expected, text.trim());
     }
 
     /**
