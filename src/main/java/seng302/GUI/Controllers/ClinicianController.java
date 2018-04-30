@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
@@ -98,7 +99,8 @@ public class ClinicianController implements Initializable {
     @FXML
     private StatusBar statusBar;
 
-    public StatusIndicator statusIndicator = new StatusIndicator();
+    private StatusIndicator statusIndicator = new StatusIndicator();
+    private TitleBar titleBar = new TitleBar();
 
     private int resultsPerPage;
     private int page = 1;
@@ -128,7 +130,7 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
-        updateTitle();
+        titleBar.setTitle(clinician.getName(), "Clinician", null);
         System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
@@ -138,18 +140,11 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * Update the window title
-     */
-    private void updateTitle(){
-        Main.updateTitle("Clinician: " + clinician.getName());
-    }
-
-    /**
      * Update the window title when there are unsaved changes
      */
     @FXML
     private void edited(){
-        Main.updateTitle();
+        titleBar.saved(false);
     }
 
     /**
@@ -232,7 +227,8 @@ public class ClinicianController implements Initializable {
         clinician.setRegion(regionInput.getText());
         updatedSuccessfully.setOpacity(1.0);
         fadeIn.playFromStart();
-        updateTitle();
+        titleBar.setTitle(clinician.getName(), "Clinician", null);
+        statusIndicator.setStatus("Updated clinician details", false);
 
         System.out.println("Updated to: " + clinician);
     }
@@ -267,6 +263,8 @@ public class ClinicianController implements Initializable {
         if (clinicianUndoStack.isEmpty()){
             undoWelcomeButton.setDisable(true);
         }
+        titleBar.saved(false);
+        statusIndicator.setStatus("Undid last action", false);
     }
 
     /**
@@ -279,6 +277,8 @@ public class ClinicianController implements Initializable {
         if(clinicianRedoStack.isEmpty()){
             redoWelcomeButton.setDisable(true);
         }
+        titleBar.saved(false);
+        statusIndicator.setStatus("Redid last action", false);
     }
 
     /**
@@ -544,6 +544,7 @@ public class ClinicianController implements Initializable {
             }
         });
         statusIndicator.setStatusBar(statusBar);
+        titleBar.setStage(Main.getStage());
     }
 
     /**

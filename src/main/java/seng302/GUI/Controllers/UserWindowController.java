@@ -120,7 +120,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoBannerButton.setDisable(true);
         bloodPressureLabel.setText("");
-        titleBar.setTitle(currentUser, "Home");
+        titleBar.setTitle(currentUser.getName(), "User", "Home");
     }
 
     /**
@@ -267,7 +267,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        titleBar.setTitle(currentUser, "Action History");
+        titleBar.setTitle(currentUser.getName(), "User", "Action History");
     }
 
 
@@ -279,7 +279,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
         setUndoRedoButtonsDisabled(true, true);
-        titleBar.setTitle(currentUser, "Waiting List");
+        titleBar.setTitle(currentUser.getName(), "User", "Waiting List");
     }
 
     /**
@@ -292,7 +292,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(true);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
-        titleBar.setTitle(currentUser, "Medications");
+        titleBar.setTitle(currentUser.getName(), "User", "Medications");
     }
 
     /**
@@ -305,7 +305,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        titleBar.setTitle(currentUser, "Attributes");
+        titleBar.setTitle(currentUser.getName(), "User", "Attributes");
     }
 
     /**
@@ -318,7 +318,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        titleBar.setTitle(currentUser, "Home");
+        titleBar.setTitle(currentUser.getName(), "User", "Home");
     }
 
     /**

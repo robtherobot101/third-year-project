@@ -38,11 +38,10 @@ class TitleBarTest extends ApplicationTest {
 
     @Test
     void setTitle1() {
-        titleBar.setTitle(user, "Home");
+        titleBar.setTitle(user.getName(), "User", "Home");
         assertEquals("User: William Shakespeare - Home", stage.getTitle());
-        user.setName("");
-        titleBar.setTitle(user, "");
-        assertEquals("User:  - ", stage.getTitle());
+        titleBar.setTitle(user.getName(), "User", null);
+        assertEquals("User: William Shakespeare", stage.getTitle());
     }
 
     @Test

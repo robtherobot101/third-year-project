@@ -21,11 +21,16 @@ public class TitleBar {
 
     /**
      * Set the title for a user and a page.
-     * @param user The logged in user
+     * @param user The name of the currently logged in user
+     * @param type The type of user (User, Clinician etc)
      * @param page The currently visible page
      */
-    public void setTitle(User user, String page){
-        stage.setTitle("User: " + user.getName() + " - " + page);
+    public void setTitle(String user, String type, String page){
+        String title = type + ": " + user;
+        if(page != null){
+            title = title.concat(" - " + page);
+        }
+        stage.setTitle(title);
     }
 
     /**
