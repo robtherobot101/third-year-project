@@ -379,6 +379,10 @@ public class UserWindowController implements Initializable {
                                     " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
                             break;
 
+                        case "waitinglist":
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1,7) +" "+ userHistory[i][4].substring(7) + " modified " + " at " + userHistory[i][1]));
+                            break;
+
                         case "modifyUser":
                             sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
                                     " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
@@ -411,6 +415,10 @@ public class UserWindowController implements Initializable {
 
         actionColumn.setCellValueFactory(param -> {
             String userName = currentUser.getName(), toCheck = param.getValue().getValue().substring(0, 12);
+            if(!toCheck.substring(0,7).equals("Session")){
+                //System.out.println("toCheck: "+toCheck);
+
+            }
             if (toCheck.equals("Update Account")) {
                 return new ReadOnlyStringWrapper("Updated account settings for user " + userName + ".");
             }
@@ -440,6 +448,9 @@ public class UserWindowController implements Initializable {
             }
             if(toCheck.substring(0,11).equals("Medications")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s medications.");
+            }
+            if(toCheck.substring(0,12).equals("Waiting list")) {
+                return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s waiting list.");
             }
             if(toCheck.substring(0,8).equals("Diseases")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s diseases.");

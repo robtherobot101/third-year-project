@@ -85,7 +85,7 @@ public class WaitingListController implements Initializable {
      * is added to the user's profile.
      */
     public void registerOrgan() {
-        String text = History.prepareFileStringGUI(currentUser.getId(), "waitingList");
+        String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
@@ -117,7 +117,7 @@ public class WaitingListController implements Initializable {
      * the waiting TableView
      */
     public void deregisterOrgan() {
-        String text = History.prepareFileStringGUI(currentUser.getId(), "waitingList");
+        String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {

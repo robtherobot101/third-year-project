@@ -216,8 +216,7 @@ public class History {
                 case "modifyUser":
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
                     break;
-                case "waitingList":
-                    System.out.println("found waitingList command");
+                case "waitinglist":
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
                     break;
                 case "medications":
