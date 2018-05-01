@@ -3,27 +3,14 @@ package seng302.TestFX;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
 import org.junit.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
 import seng302.User.*;
 import seng302.User.Attribute.*;
-import seng302.Generic.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DrugInteractionGUITest extends TestFXTest {
@@ -43,7 +30,7 @@ public class DrugInteractionGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        defaultTestSetup();
+        headedTestSetup();
     }
 
     @Before
@@ -132,12 +119,16 @@ public class DrugInteractionGUITest extends TestFXTest {
     @Test
     public void compareDrugsWithInteractionSymptomsFromHistory_returnsCorrectResults() throws TimeoutException{
         waitForNodeVisible(10, "#moveToHistoryButton");
+
         addValidMedication(testDrugA);
+        addValidMedication(testDrugB);
+
         clickOn(testDrugA);
+        waitForNodeEnabled(10, "#moveToHistoryButton");
         clickOn("#moveToHistoryButton");
 
-        addValidMedication(testDrugB);
         clickOn(testDrugB);
+        waitForNodeEnabled(10, "#moveToHistoryButton");
         clickOn("#moveToHistoryButton");
 
         compareMedications(testDrugA, testDrugB);
