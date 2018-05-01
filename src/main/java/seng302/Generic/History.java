@@ -1,8 +1,9 @@
 package seng302.Generic;
 
+import seng302.User.User;
+
 import java.io.*;
 import java.time.LocalDateTime;
-import seng302.User.User;
 
 public class History {
 
@@ -22,7 +23,7 @@ public class History {
      */
     public static PrintStream init() {
         try {
-            actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
+            actionHistory = new File(IO.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory, true);
             PrintStream out = new PrintStream(fout);
             out.println(User.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
@@ -256,7 +257,7 @@ public class History {
             // Always close files.
             bufferedReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found / initilized");
+            System.out.println("File not found / initialized");
         } catch (IOException e) {
             System.out.println("Error Reading file");
             e.printStackTrace();
@@ -275,12 +276,12 @@ public class History {
         String[] historyList = history.split("\n");
         String[][] userHistory = new String[historyList.length][6];
         int index = 0;
-        for(int i = 0; i < historyList.length; i++) {
-            String[] actionDetails = historyList[i].split(" ");
-            if(actionDetails[2].equals("====")) {
+        for (String action : historyList) {
+            String[] actionDetails = action.split(" ");
+            if (actionDetails[2].equals("====")) {
 
-            } else if(actionDetails[3].length() < 4) {
-                if(Long.parseLong(actionDetails[3]) == userid) {
+            } else if (actionDetails[3].length() < 4) {
+                if (Long.parseLong(actionDetails[3]) == userid) {
                     userHistory[index] = actionDetails;
                     index++;
                 }

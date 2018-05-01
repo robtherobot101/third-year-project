@@ -17,94 +17,52 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import seng302.Generic.*;
+import seng302.GUI.TFScene;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.Clinician;
+import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import seng302.GUI.TFScene;
-import seng302.User.Clinician;
-import seng302.User.User;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
  */
 public class ClinicianController implements Initializable {
-
-
-    private Clinician clinician;
+    @FXML
+    private TableColumn profileName, profileAge, profileGender, profileRegion;
+    @FXML
+    private TableView profileTable;
+    @FXML
+    private TextField profileSearchTextField, nameInput, addressInput, regionInput;
+    @FXML
+    private Pane background;
+    @FXML
+    private Label staffIDLabel, updatedSuccessfully, userDisplayText, resultsDisplayLabel;
+    @FXML
+    private MenuItem accountSettingsMenuItem;
+    @FXML
+    private Button nextPageButton, previousPageButton, undoWelcomeButton, redoWelcomeButton;
+    @FXML
+    private GridPane mainPane;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
     );
-    @FXML
-    private TableColumn profileName;
-
-    @FXML
-    private TableColumn profileAge;
-
-    @FXML
-    private TableColumn profileGender;
-
-    @FXML
-    private TableColumn profileRegion;
-
-    @FXML
-    private TableView profileTable;
-    @FXML
-    private TextField profileSearchTextField;
-    @FXML
-    private Pane background;
-    @FXML
-    private TextField nameInput;
-    @FXML
-    private Label staffIDLabel;
-    @FXML
-    private TextField addressInput;
-    @FXML
-    private TextField regionInput;
-    @FXML
-    private MenuItem accountSettingsMenuItem;
-
-    @FXML
-    private Label updatedSuccessfully;
-
-    @FXML
-    private Label userDisplayText;
-
-    @FXML
-    private Button nextPageButton;
-
-    @FXML
-    private Button previousPageButton;
-
-    @FXML
-    private Label resultsDisplayLabel;
-
-    @FXML
-    private Button undoWelcomeButton;
-
-    @FXML
-    private Button redoWelcomeButton;
-
-    @FXML
-    private GridPane mainPane;
-
+    private Clinician clinician;
     private int resultsPerPage;
     private int page = 1;
     private ArrayList<User> usersFound;
 
-    private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
-
-    private ArrayList<Clinician> clinicianUndoStack = new ArrayList<>();
-    private ArrayList<Clinician> clinicianRedoStack = new ArrayList<>();
-
+    private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
-
-    ObservableList<Object> users;
+    private ObservableList<Object> users;
 
     /**
      * Sets the current clinician
@@ -112,6 +70,12 @@ public class ClinicianController implements Initializable {
      */
     public void setClinician(Clinician clinician) {
         this.clinician = clinician;
+        if (clinician.getRegion() == null) {
+            clinician.setRegion("");
+        }
+        if (clinician.getWorkAddress() == null) {
+            clinician.setWorkAddress("");
+        }
         updateDisplay();
     }
 
@@ -120,10 +84,9 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
-        System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
-        staffIDLabel.setText(Long.toString(clinician.getStaffID()));
+        staffIDLabel.setText("Staff ID: " + Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
     }
@@ -143,10 +106,8 @@ public class ClinicianController implements Initializable {
      * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
      */
     public void logout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to log out? ");
-        alert.setContentText("Logging out without saving loses your non-saved data.");
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
+                "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -167,6 +128,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
@@ -175,13 +137,15 @@ public class ClinicianController implements Initializable {
         if(password.isPresent()){ //Ok was pressed, Else cancel
             if(password.get().equals(clinician.getPassword())){
                 try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettingsClinician.fxml"));
                     Stage stage = new Stage();
+                    stage.setResizable(false);
                     stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 290, 350));
+                    stage.setScene(new Scene(root, 290, 280));
                     stage.initModality(Modality.APPLICATION_MODAL);
 
                     Main.setCurrentClinicianForAccountSettings(clinician);
+                    Main.setClinicianAccountSettingsEnterEvent();
 
                     stage.showAndWait();
                 } catch (Exception e) {
@@ -195,34 +159,42 @@ public class ClinicianController implements Initializable {
         }
     }
 
-
-
     /**
      * Updates the current clinicians attributes to
      * reflect those of the values in the displayed TextFields
      */
-    public void updateClinician() {
-        addClinicianToUndoStack(clinician);
-        clinician.setName(nameInput.getText());
-        clinician.setWorkAddress(addressInput.getText());
-        clinician.setRegion(regionInput.getText());
-        updatedSuccessfully.setOpacity(1.0);
-        fadeIn.playFromStart();
-
-        System.out.println("Updated to: " + clinician);
+    public boolean updateClinician() {
+        if (clinician.getName().equals(nameInput.getText()) &&
+                clinician.getRegion().equals(regionInput.getText()) &&
+                clinician.getWorkAddress().equals(addressInput.getText())) {
+            return false;
+        } else {
+            clinician.setName(nameInput.getText());
+            clinician.setWorkAddress(addressInput.getText());
+            clinician.setRegion(regionInput.getText());
+            updatedSuccessfully.setOpacity(1.0);
+            fadeIn.playFromStart();
+            return true;
+        }
     }
 
     /**
      * Saves the clinician ArrayList to a JSON file
      */
-    public void save(){
-        Main.saveUsers(Main.getClinicianPath(), false);
+    public void save() {
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            IO.saveUsers(IO.getClinicianPath(), false);
+        }
+        alert.close();
     }
 
     /**
      * Closes the application
      */
-    public void close(){
+    public void close() {
         Platform.exit();
     }
 
@@ -231,78 +203,48 @@ public class ClinicianController implements Initializable {
      */
     public void requestFocus() { background.requestFocus(); }
 
-    /**
-     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
-     */
-    public void undo(){
-        clinician = clinicianUndo(clinician);
-        updateDisplay();
-        redoWelcomeButton.setDisable(false);
-
-        if (clinicianUndoStack.isEmpty()){
-            undoWelcomeButton.setDisable(true);
-        }
-    }
 
     /**
-     * The main clincian redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
+     * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
-    public void redo(){
-        clinician = clinicianRedo(clinician);
-        updateDisplay();
-        undoWelcomeButton.setDisable(false);
-        if(clinicianRedoStack.isEmpty()){
+    private void attributeFieldUnfocused() {
+        Clinician oldFields = new Clinician(clinician);
+        if (updateClinician()) {
+            clinicianUndoStack.add(new Clinician(oldFields));
+            clinicianRedoStack.clear();
+            undoWelcomeButton.setDisable(false);
             redoWelcomeButton.setDisable(true);
         }
     }
 
     /**
-     * Reads the top element of the undo stack and removes it, while placing the current clinician in the redo stack.
-     * Then returns the clinician from the undo stack.
-     * @param oldClinician the clincian being placed in the redo stack.
-     * @return the previous iteration of the clinician object.
+     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
      */
-    public Clinician clinicianUndo(Clinician oldClinician) {
-        if (clinicianUndoStack != null) {
-            Clinician newClinician = clinicianUndoStack.get(clinicianUndoStack.size() - 1);
-            clinicianUndoStack.remove(clinicianUndoStack.size() - 1);
-            clinicianRedoStack.add(oldClinician);
-            return newClinician;
-        }
-        return null;
+    public void undo() {
+        clinicianRedoStack.add(new Clinician(clinician));
+        clinician.copyFieldsFrom(clinicianUndoStack.getLast());
+        clinicianUndoStack.removeLast();
+
+        updateDisplay();
+        redoWelcomeButton.setDisable(false);
+        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
     }
 
     /**
-     * Creates a deep copy of the current clinician and adds that copy to the undo stack. Then updates the GUI button to be usable.
-     * @param clinician the clinician object being copied.
+     * The main clinician redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
      */
-    public void addClinicianToUndoStack(Clinician clinician) {
-        Clinician prevClinician = new Clinician(clinician);
-        clinicianUndoStack.add(prevClinician);
-        if (undoWelcomeButton.isDisable()) {
-            undoWelcomeButton.setDisable(false);
-        }
+    public void redo() {
+        clinicianUndoStack.add(new Clinician(clinician));
+        clinician.copyFieldsFrom(clinicianRedoStack.getLast());
+        clinicianRedoStack.removeLast();
+
+        updateDisplay();
+        undoWelcomeButton.setDisable(false);
+        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
     }
 
     /**
-     * Pops the topmost clinician object from the redo stack and returns it, while adding the provided clinician object to the undo stack.
-     * @param newClinician the clinican being placed on the undo stack.
-     * @return the topmost clinician object on the redo stack.
-     */
-    public Clinician clinicianRedo(Clinician newClinician){
-        if (clinicianRedoStack != null) {
-            Clinician oldClinician = clinicianRedoStack.get(clinicianRedoStack.size() - 1);
-            addClinicianToUndoStack(newClinician);
-            clinicianRedoStack.remove(clinicianRedoStack.size() - 1);
-            return oldClinician;
-        } else{
-            return null;
-        }
-    }
-
-
-    /**
-     * Updates theO ObservableList for the profile table
+     * Updates the ObservableList for the profile table
      */
     public void displayCurrentPage() {
         currentPage.clear();
@@ -316,7 +258,6 @@ public class ClinicianController implements Initializable {
     public void updateFoundUsers(String searchTerm){
         usersFound = Main.getUsersByNameAlternative(searchTerm);
         users = FXCollections.observableArrayList(usersFound);
-
     }
 
 
@@ -324,7 +265,7 @@ public class ClinicianController implements Initializable {
      * Splits the sorted list of found users and returns a page worth
      * @return The sorted page of results
      */
-    public ObservableList<User> getCurrentPage(){
+    private ObservableList<User> getCurrentPage(){
         int firstIndex = Math.max((page-1),0)*resultsPerPage;
         int lastIndex = Math.min(users.size(), page*resultsPerPage);
         if(lastIndex<firstIndex){
@@ -390,9 +331,18 @@ public class ClinicianController implements Initializable {
         mainPane.setVisible(true);
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        nameInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) attributeFieldUnfocused();
+        });
+        addressInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) attributeFieldUnfocused();
+        });
+        regionInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) attributeFieldUnfocused();
+        });
+
         resultsPerPage = 15;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
@@ -422,7 +372,7 @@ public class ClinicianController implements Initializable {
 
         profileTable.setItems(currentPage);
 
-        /**
+        /*
          * RowFactory for the profileTable.
          * Displays a tooltip when the mouse is over a table entry.
          * Adds a mouse click listener to each row in the table so that a user window
@@ -451,10 +401,11 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount()==2) {
-                        System.out.println(row.getItem());
                         Stage stage = new Stage();
-                        stage.setMinHeight(550);
-                        stage.setMinWidth(650);
+                        stage.setMinHeight(Main.mainWindowMinHeight);
+                        stage.setMinWidth(Main.mainWindowMinWidth);
+                        stage.setHeight(Main.mainWindowPrefHeight);
+                        stage.setWidth(Main.mainWindowPrefWidth);
 
                         Main.addCliniciansUserWindow(stage);
                         stage.initModality(Modality.NONE);
@@ -489,9 +440,8 @@ public class ClinicianController implements Initializable {
         });
 
 
-
         profileTable.refresh();
-        /**
+        /*
          * Sorts of the profileTable across all pages.
          * As items are removed and re-added, multiple sort calls can trigger an
          * IndexOutOfBoundsException exception.
@@ -507,12 +457,10 @@ public class ClinicianController implements Initializable {
                     displayCurrentPage();
                     profileTable.getSelectionModel().select(0);
                     return true;
-                }catch(IndexOutOfBoundsException e){
+                } catch(IndexOutOfBoundsException e){
                     System.out.println("Error");
                     return false;
-                }catch(UnsupportedOperationException e){
-                    return false;
-                }catch(NullPointerException e){
+                } catch(UnsupportedOperationException | NullPointerException e){
                     return false;
                 }
             }
