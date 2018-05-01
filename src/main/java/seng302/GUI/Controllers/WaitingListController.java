@@ -70,9 +70,9 @@ public class WaitingListController extends PageController implements Initializab
 
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
-                statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
             }
             populateWaitingList();
+            statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
         }
     }
 
