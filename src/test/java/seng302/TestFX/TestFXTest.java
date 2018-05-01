@@ -21,7 +21,7 @@ import seng302.Generic.Main;
 import seng302.User.User;
 
 abstract class TestFXTest extends ApplicationTest {
-    protected static final boolean runHeadless = true;
+    protected static final boolean runHeadless = false;
 
     @Override
     public void start(Stage stage) {

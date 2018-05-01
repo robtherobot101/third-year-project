@@ -51,6 +51,8 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
     @Before
     public void setUp () throws Exception {
 
+
+
     }
 
     @After
