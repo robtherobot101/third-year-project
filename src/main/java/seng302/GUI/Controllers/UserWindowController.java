@@ -152,8 +152,6 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.medicalHistoryDiseasesViewForDonor();
-        Main.medicalHistoryProceduresViewForDonor();
         Main.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
@@ -648,7 +646,7 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
-        Main.getClinicianController().updateUserTable();
+        //Main.getClinicianController().updateUserTable();
         return true;
     }
 

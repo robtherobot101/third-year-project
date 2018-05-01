@@ -24,7 +24,7 @@
 <?import javafx.scene.paint.Color?>
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -566,27 +566,27 @@
 						<Insets left="10.0" />
 					</padding>
 				</Label>
-				<Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Button>
-				<Button fx:id="undoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="90.0">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Button>
-				<Button fx:id="redoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="10.0">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Button>
-				<Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false" AnchorPane.rightAnchor="315.0">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Button>
-			</children>
-		</AnchorPane>
+            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="undoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="90.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="redoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="10.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false" AnchorPane.rightAnchor="315.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
 	</children>
 </GridPane>

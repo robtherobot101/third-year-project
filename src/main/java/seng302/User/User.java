@@ -496,20 +496,6 @@ public class User {
         return getString(false);
     }
 
-    public Boolean isDonor() {
-        return !organs.isEmpty();
-    }
-
-    public boolean isReceiver() {
-        boolean receiver = false;
-        for (WaitingListItem item : waitingListItems){
-            if (item.getOrganDeregisteredDate() == null){
-                receiver = true;
-            }
-        }
-        return receiver;
-    }
-
     public ArrayList<Disease> getCurrentDiseases() {
         return currentDiseases;
     }
@@ -524,5 +510,31 @@ public class User {
 
     public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
         this.curedDiseases = curedDiseases;
+    }
+
+    public Boolean isDonor() {
+        return !organs.isEmpty();
+    }
+
+    public boolean isReceiver() {
+        boolean receiver = false;
+        for (WaitingListItem item : waitingListItems){
+            if (item.getOrganDeregisteredDate() == null){
+                receiver = true;
+            }
+        }
+        return receiver;
+    }
+
+    public String getType(){
+        if(isDonor() && isReceiver()){
+            return "Donor/Receiver";
+        }else if(isDonor() && !isReceiver()){
+            return "Donor";
+        }else if(!isDonor() && isReceiver()){
+            return "Receiver";
+        }else{
+            return "Neither";
+        }
     }
 }

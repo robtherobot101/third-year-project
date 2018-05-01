@@ -52,6 +52,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private Button deleteDiseaseButton;
     @FXML
     private Button saveDiseaseButton;
+    @FXML
+    private Button todayButton;
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
 
@@ -718,6 +720,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         deleteDiseaseButton.setVisible(shown);
         saveDiseaseButton.setVisible(shown);
         isCuredCheckBox.setVisible(shown);
+        todayButton.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
     }

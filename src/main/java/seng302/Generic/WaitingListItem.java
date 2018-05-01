@@ -11,6 +11,14 @@ import seng302.User.User;
 
 import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
+
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
+
+
+import java.time.LocalDateTime;
+
 /**
  * Contains information for a transplant waiting list record.
  */

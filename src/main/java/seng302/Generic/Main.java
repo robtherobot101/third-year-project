@@ -55,15 +55,38 @@ public class Main extends Application {
         return stage;
     }
 
+    /**
+     * Class to deserialize LocalDates without requiring reflective access
+     */
+    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+        public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
+            return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
+        }
+    }
+
+    /**
+     * Class to deserialize LocalDateTimes without requiring reflective access
+     */
+    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+        public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
+            return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
+        }
+    }
+
+    /**
+     * Sets the medications view to be able to edit for a clinican.
+     */
+    public static void medicationsViewForClinician() {
+        medicationsController.setControlsShown(true);
+    }
+
+
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
-        clinicianController.updateFoundUsers("");
-        clinicianController.updatePageButtons();
-        clinicianController.displayCurrentPage();
-        clinicianController.updateResultsSummary();
+        clinicianController.updateFoundUsers();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -114,6 +137,8 @@ public class Main extends Application {
         medicationsController.setControlsShown(false);
         userWindowController.setControlsShown(false);
         waitingListController.setControlsShown(false);
+        medicalHistoryProceduresController.setControlsShown(false);
+        medicalHistoryDiseasesController.setControlsShown(false);
     }
 
     /**
@@ -123,6 +148,8 @@ public class Main extends Application {
         medicationsController.setControlsShown(true);
         userWindowController.setControlsShown(true);
         waitingListController.setControlsShown(true);
+        medicalHistoryProceduresController.setControlsShown(true);
+        medicalHistoryDiseasesController.setControlsShown(true);
     }
 
     /**
@@ -346,6 +373,69 @@ public class Main extends Application {
         });
         return matched;
     }
+
+    /**
+     * Returns a list of users matching the given search term for region.
+     * If every token matches at least part of the
+     * beginning of a one of part of a users name, that user will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<User> getUsersByRegionAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User d: users){
+            if(d.getRegion() != null) {
+                boolean allTokensMatchAName = true;
+                for(String token:tokens){
+                    if(!matchesAtleastOne(d.getRegion().split(" "), token)){
+                        allTokensMatchAName = false;
+                    }
+                }
+                if(allTokensMatchAName){
+                    matched.add(d);
+                }
+            }
+
+        }
+        return matched;
+    }
+
+    /**
+     * Returns a list of users matching the given search term for age.
+     * If every token matches at least part of the
+     * beginning of a one of part of a users name, that user will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<User> getUsersByAgeAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User d: users){
+            if(d.getRegion() != null) {
+                boolean allTokensMatchAName = true;
+                for(String token:tokens){
+                    if(!matches(d.getAgeString(), token)){
+                        allTokensMatchAName = false;
+                    }
+                }
+                if(allTokensMatchAName){
+                    matched.add(d);
+                }
+            }
+
+        }
+        return matched;
+    }
+
 
     /**
      * Returns the length of the longest matched common substring starting from the

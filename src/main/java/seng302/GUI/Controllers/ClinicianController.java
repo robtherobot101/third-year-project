@@ -2,11 +2,14 @@ package seng302.GUI.Controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,6 +23,8 @@ import javafx.util.Duration;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.Organ;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
@@ -38,7 +43,20 @@ import static seng302.Generic.IO.streamOut;
  */
 public class ClinicianController implements Initializable {
     @FXML
-    private TableColumn profileName, profileAge, profileGender, profileRegion;
+    private TableColumn profileName;
+
+    @FXML
+    private TableColumn profileUserType;
+
+    @FXML
+    private TableColumn profileAge;
+
+    @FXML
+    private TableColumn profileGender;
+
+    @FXML
+    private TableColumn profileRegion;
+
     @FXML
     private TableView profileTable;
     @FXML
@@ -46,14 +64,42 @@ public class ClinicianController implements Initializable {
     @FXML
     private Pane background;
     @FXML
-    private Label staffIDLabel, updatedSuccessfully, userDisplayText, resultsDisplayLabel;
+    private Label staffIDLabel;
     @FXML
-    private MenuItem accountSettingsMenuItem;
+    private Label nameLabel;
     @FXML
-    private Button nextPageButton, previousPageButton, undoWelcomeButton, redoWelcomeButton;
+    private Label addressLabel;
+    @FXML
+    private Label regionLabel;
+
+    @FXML
+    private Label userDisplayText;
+
+    @FXML
+    private Button undoWelcomeButton;
+
+    @FXML
+    private Button redoWelcomeButton;
+
     @FXML
     private GridPane mainPane;
+
     @FXML
+    private ComboBox numberOfResutsToDisplay;
+
+    @FXML
+    private TextField clinicianRegionField;
+    private MenuItem accountSettingsMenuItem;
+    @FXML
+    private ComboBox clinicianGenderComboBox;
+    @FXML
+    private TextField clinicianAgeField;
+    private GridPane mainPane;
+    @FXML
+    private ComboBox clinicianUserTypeComboBox;
+    @FXML
+    private ComboBox clinicianOrganComboBox;
+
     private StatusBar statusBar;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -66,6 +112,8 @@ public class ClinicianController implements Initializable {
     private TitleBar titleBar = new TitleBar();
 
     private int resultsPerPage;
+    private int numberXofResults;
+
     private int page = 1;
     private ArrayList<User> usersFound;
 
@@ -74,6 +122,14 @@ public class ClinicianController implements Initializable {
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
     private ObservableList<Object> users;
 
+    private String searchNameTerm = "";
+    private String searchRegionTerm = "";
+    private String searchGenderTerm = null;
+    private String searchAgeTerm = "";
+    private String searchOrganTerm = null;
+    private String searchUserTypeTerm = null;
+
+    ObservableList<Object> users;
     public ClinicianController() {
     }
 
@@ -104,6 +160,10 @@ public class ClinicianController implements Initializable {
         titleBar.setTitle(clinician.getName(), "Clinician", null);
         System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
+        staffIDLabel.setText(Long.toString(clinician.getStaffID()));
+        nameLabel.setText("Name: " + clinician.getName());
+        addressLabel.setText("Address: " + clinician.getWorkAddress());
+        regionLabel.setText("Region: " + clinician.getRegion());
         nameInput.setText(clinician.getName());
         staffIDLabel.setText("Staff ID: " + Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
@@ -190,6 +250,111 @@ public class ClinicianController implements Initializable {
      * Updates the current clinicians attributes to
      * reflect those of the values in the displayed TextFields
      */
+    public void updateClinicianPopUp() {
+        addClinicianToUndoStack(clinician);
+        System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
+
+
+        // Create the custom dialog.
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Update Clinician");
+        dialog.setHeaderText("Update Clinician Details");
+
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+
+        // Set the button types.
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 10, 10));
+
+        TextField clinicianName = new TextField();
+        clinicianName.setPromptText(clinician.getName());
+        clinicianName.setId("clinicianName");
+        TextField clinicianAddress = new TextField();
+        clinicianAddress.setId("clinicianAddress");
+        clinicianAddress.setPromptText(clinician.getWorkAddress());
+        TextField clinicianRegion = new TextField();
+        clinicianRegion.setId("clinicianRegion");
+        clinicianRegion.setPromptText(clinician.getRegion());
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(clinicianName, 1, 0);
+        grid.add(new Label("Address:"), 0, 1);
+        grid.add(clinicianAddress, 1, 1);
+        grid.add(new Label("Region:"), 0, 2);
+        grid.add(clinicianRegion, 1, 2);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+        updateButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        clinicianName.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        // Do some validation (using the Java 8 lambda syntax).
+        clinicianAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        clinicianRegion.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> clinicianName.requestFocus());
+
+        // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                String newName;
+                String newAddress;
+                String newRegion;
+
+                if (clinicianName.getText().equals("")) {
+                    newName = clinician.getName();
+                } else {
+                    newName = clinicianName.getText();
+                }
+
+                if (clinicianAddress.getText().equals("")) {
+                    newAddress = clinician.getWorkAddress();
+                } else {
+                    newAddress = clinicianAddress.getText();
+                }
+
+                if (clinicianRegion.getText().equals("")) {
+                    newRegion = clinician.getRegion();
+                } else {
+                    newRegion = clinicianRegion.getText();
+                }
+
+                return new ArrayList<String>(Arrays.asList(newName, newAddress, newRegion));
+            }
+            return null;
+        });
+
+        Optional<ArrayList<String>> result = dialog.showAndWait();
+
+        result.ifPresent(newClinicianDetails -> {
+            System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails.get(2));
+            clinician.setName(newClinicianDetails.get(0));
+            clinician.setWorkAddress(newClinicianDetails.get(1));
+            clinician.setRegion(newClinicianDetails.get(2));
+            save();
+            updateDisplay();
+
+        });
+    }
+
     public boolean updateClinician() {
         if (clinician.getName().equals(nameInput.getText()) &&
                 clinician.getRegion().equals(regionInput.getText()) &&
@@ -279,18 +444,97 @@ public class ClinicianController implements Initializable {
     /**
      * Updates the ObservableList for the profile table
      */
-    public void displayCurrentPage() {
+    public void displayPage(int pageSize) {
         currentPage.clear();
-        currentPage.addAll(getCurrentPage());
+        currentPage.addAll(getPage(pageSize));
+    }
+
+    /**
+     * Clears the filter fields of the advanced filters
+     */
+    public void clearFilter() {
+        clinicianRegionField.clear();
+        clinicianAgeField.clear();
+        clinicianGenderComboBox.setValue(null);
+        clinicianOrganComboBox.setValue(null);
+        clinicianUserTypeComboBox.setValue(null);
+
     }
 
     /**
      * Updates the list of users found from the search
-     * @param searchTerm the search term
      */
-    public void updateFoundUsers(String searchTerm){
-        usersFound = Main.getUsersByNameAlternative(searchTerm);
+    public void updateFoundUsers(){
+        usersFound = Main.getUsersByNameAlternative(searchNameTerm);
+
+       //Add in check for region
+
+        if(!searchRegionTerm.equals("")) {
+            ArrayList<User> newUsersFound = Main.getUsersByRegionAlternative(searchRegionTerm);
+            usersFound.retainAll(newUsersFound);
+
+        }
+
+        //Add in check for age
+
+        if(!searchAgeTerm.equals("")) {
+            ArrayList<User> newUsersFound = Main.getUsersByAgeAlternative(searchAgeTerm);
+            usersFound.retainAll(newUsersFound);
+        }
+
+
+        //Add in check for gender
+
+        if(searchGenderTerm != null) {
+            ArrayList<User> newUsersFound = new ArrayList<>();
+            for(User user: usersFound) {
+                if(searchGenderTerm.equals(user.getGender().toString()) && (user.getGender() != null)) {
+                    newUsersFound.add(user);
+                }
+            }
+            usersFound = newUsersFound;
+        }
+
+        //Add in check for organ
+
+        if(searchOrganTerm != null) {
+            ArrayList<User> newUsersFound = new ArrayList<>();
+            for(User user: usersFound) {
+                if((user.getOrgans().contains(Organ.parse(searchOrganTerm))) && (user.getOrgans().size() != 0)) {
+                    newUsersFound.add(user);
+                }
+            }
+            usersFound = newUsersFound;
+        }
+
+        //Add in check for user type
+
+        if(searchUserTypeTerm != null) {
+            ArrayList<User> newUsersFound = new ArrayList<>();
+            for(User user: usersFound) {
+                if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
+                    newUsersFound.add(user);
+                }
+            }
+            usersFound = newUsersFound;
+        }
+
         users = FXCollections.observableArrayList(usersFound);
+        populateNResultsComboBox(usersFound.size());
+        //displayPage(resultsPerPage);
+    }
+
+    public void populateNResultsComboBox(int numberOfSearchResults){
+        numberOfResutsToDisplay.getItems().clear();
+        String firstPage = "First page";
+        numberOfResutsToDisplay.getItems().add(firstPage);
+        numberOfResutsToDisplay.getSelectionModel().select(firstPage);
+        if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
+            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
+        }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
+            numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
+            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
+        }
     }
 
 
@@ -298,63 +542,14 @@ public class ClinicianController implements Initializable {
      * Splits the sorted list of found users and returns a page worth
      * @return The sorted page of results
      */
-    private ObservableList<User> getCurrentPage(){
-        int firstIndex = Math.max((page-1),0)*resultsPerPage;
-        int lastIndex = Math.min(users.size(), page*resultsPerPage);
+    public ObservableList<User> getPage(int pageSize){
+        int firstIndex = Math.max((page-1),0)*pageSize;
+        int lastIndex = Math.min(users.size(), page*pageSize);
         if(lastIndex<firstIndex){
             System.out.println(firstIndex+" to "+lastIndex+ " is an illegal page");
             return FXCollections.observableArrayList(new ArrayList<User>());
         }
         return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
-    }
-
-    /**
-     * Displays the next page of results.
-     */
-    public void nextPage(){
-        page++;
-        updateUserTable();
-    }
-
-    /**
-     * Updates the resultsDisplayLabel to show how many results were found,
-     * and how many are displayed.
-     */
-    public void updateResultsSummary(){
-        String text;
-        if(usersFound.size()==0){
-            text = "No results found";
-        }else{
-            int from = ((page-1)*resultsPerPage)+1;
-            int to = Math.min((page*resultsPerPage), usersFound.size());
-            int of = usersFound.size();
-            text = "Displaying " + from + "-" + to + " of " + of;
-        }
-        resultsDisplayLabel.setText(text);
-    }
-
-    /**
-     * Displays the next page of user search results
-     */
-    public void previousPage(){
-        page--;
-        updateUserTable();
-    }
-
-    /**
-     * Enables and disables the next and previous page buttons as necessary.
-     */
-    public void updatePageButtons(){
-        if((page)*resultsPerPage>=usersFound.size()){
-            nextPageButton.setDisable(true);
-        }else{
-            nextPageButton.setDisable(false);
-        }
-        if(page==1){
-            previousPageButton.setDisable(true);
-        }else{
-            previousPageButton.setDisable(false);
-        }
     }
 
     /**
@@ -366,34 +561,98 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        nameInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
-        });
-        addressInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
-        });
-        regionInput.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
-        });
 
-        resultsPerPage = 15;
+        clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
+        clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
+        clinicianOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+
+        resultsPerPage = 3;
+        numberXofResults = 5;
+
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
-            updateFoundUsers(newValue);
-            updateUserTable();
+            searchNameTerm = newValue;
+            updateFoundUsers();
         });
 
+        clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            searchRegionTerm = newValue;
+            updateFoundUsers();
+        });
+
+        clinicianAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            searchAgeTerm = newValue;
+            updateFoundUsers();
+        });
+
+        clinicianGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            if(newValue == null) {
+                searchGenderTerm = null;
+
+            } else {
+                searchGenderTerm = newValue.toString();
+            }
+            updateFoundUsers();
+
+        });
+
+        clinicianUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            if(newValue == null) {
+                searchUserTypeTerm = null;
+
+            } else {
+                searchUserTypeTerm = newValue.toString();
+            }
+            updateFoundUsers();
+
+        });
+
+        clinicianOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            page = 1;
+            if(newValue == null) {
+                searchOrganTerm = null;
+
+            } else {
+                searchOrganTerm = newValue.toString();
+            }
+            updateFoundUsers();
+
+        });
+
+
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
+        profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+        numberOfResutsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null){
+                if(newValue.equals("First page")){
+                    displayPage(resultsPerPage);
+                }else if(((String)newValue).contains("Top")){
+                    displayPage(numberXofResults);
+                }else if (((String)newValue).contains("All")){
+                    displayPage(usersFound.size());
+                }
+            }
+        });
+
+        fadeIn.setDelay(Duration.millis(1000));
+        fadeIn.setFromValue(1.0);
+        fadeIn.setToValue(0.0);
+        fadeIn.setCycleCount(0);
+        fadeIn.setAutoReverse(false);
 
         profileTable.setItems(currentPage);
 
         Main.setClinicianController(this);
 
-        updateFoundUsers("");
-        updateUserTable();
+        updateFoundUsers();
 
         profileTable.setItems(currentPage);
 
@@ -449,8 +708,6 @@ public class ClinicianController implements Initializable {
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
                             Main.controlViewForClinician();
-                            Main.medicalHistoryDiseasesViewForClinician();
-                            Main.medicalHistoryProceduresViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
@@ -467,34 +724,7 @@ public class ClinicianController implements Initializable {
             }
         });
 
-
         profileTable.refresh();
-        /*
-         * Sorts of the profileTable across all pages.
-         * As items are removed and re-added, multiple sort calls can trigger an
-         * IndexOutOfBoundsException exception.
-         */
-        profileTable.setSortPolicy(new Callback<TableView, Boolean>() {
-            @Override public Boolean call(TableView table) {
-                try{
-                    Comparator comparator = table.getComparator();
-                    if (comparator == null) {
-                        return true;
-                    }
-                    FXCollections.sort(users, comparator);
-                    displayCurrentPage();
-                    profileTable.getSelectionModel().select(0);
-                    return true;
-                } catch(IndexOutOfBoundsException e){
-                    System.out.println("Error");
-                    return false;
-                } catch(UnsupportedOperationException | NullPointerException e){
-                    return false;
-                }
-            }
-        });
-        statusIndicator.setStatusBar(statusBar);
-        titleBar.setStage(Main.getStage());
     }
 
     /**
