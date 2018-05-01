@@ -186,8 +186,6 @@ public class User {
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
         this.waitingListItems.addAll(user.waitingListItems);
-        this.currentMedications.addAll(user.currentMedications);
-        this.historicMedications.addAll(user.historicMedications);
         this.currentDiseases = new ArrayList<>();
         this.currentDiseases.addAll(user.getCurrentDiseases());
         this.curedDiseases = new ArrayList<>();
