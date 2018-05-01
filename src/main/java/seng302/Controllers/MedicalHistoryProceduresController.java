@@ -22,6 +22,7 @@ import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.Main;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;

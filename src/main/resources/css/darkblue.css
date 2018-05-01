@@ -112,6 +112,11 @@
 	-fx-background-color: #325d81;
 }
 
+.combo-box-popup .list-view .list-cell:disabled {
+    -fx-background-color: #56636E;
+    -fx-text-fill: #C0C0C0;
+}
+
 
 .text-field:focused {
 	-fx-background-color: #325d81;
@@ -246,6 +251,8 @@
 	-fx-text-fill: #edf3f8;
 }
 
+
+
 .list-view .list-cell,
 .tree-view .tree-cell,
 .table-row-cell,
@@ -262,4 +269,12 @@
 
 .status-bar {
 	-fx-background-color: #2b506e;
+}
+
+.highlighted-row {
+    -fx-background-color: #DD0000;
+}
+
+.highlighted-row:selected {
+    -fx-background-color: #FF1111;
 }

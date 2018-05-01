@@ -323,7 +323,7 @@ public class ClinicianController implements Initializable {
 
 
     /**
-     * Updates theO ObservableList for the profile table
+     * Updates the ObservableList for the profile table
      */
     public void displayCurrentPage() {
         currentPage.clear();
@@ -422,7 +422,7 @@ public class ClinicianController implements Initializable {
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
+        profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
 
@@ -485,7 +485,7 @@ public class ClinicianController implements Initializable {
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
-                            Main.medicationsViewForClinician();
+                            Main.controlViewForClinician();
                             Main.medicalHistoryDiseasesViewForClinician();
                             Main.medicalHistoryProceduresViewForClinician();
 
