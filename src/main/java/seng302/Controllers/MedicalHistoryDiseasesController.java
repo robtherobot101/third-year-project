@@ -240,6 +240,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
         dialog.setTitle("Update Disease");
         dialog.setHeaderText("Update Disease Details");
 
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
