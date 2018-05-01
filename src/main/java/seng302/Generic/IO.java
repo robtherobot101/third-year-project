@@ -2,6 +2,7 @@ package seng302.Generic;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class IO {
-    private static long nextUserId = -1, nextClinicianId = -1;
+    private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
     private static String jarPath, userPath, clinicianPath;
     public static PrintStream streamOut;
 
@@ -83,44 +84,60 @@ public class IO {
      * Get the unique id number for the next user or the last id number issued.
      *
      * @param increment Whether to increment the unique id counter before returning the unique id value.
-     * @param user Whether to increment and return clinician or user. True for user, false for clinician.
+     * @param type Whether to increment and return clinician, user or admin.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
-    public static long getNextId(boolean increment, boolean user) {
+    public static long getNextId(boolean increment, LoginType type) {
         if (increment) {
-            if (user) {
-                nextUserId++;
-            } else {
-                nextClinicianId++;
+            switch (type) {
+                case USER:
+                    nextUserId++;
+                    break;
+                case CLINICIAN:
+                    nextClinicianId++;
+                    break;
+                case ADMIN:
+                    nextAdminId++;
+                    break;
             }
         }
-        if (user) {
-            return nextUserId;
-        } else {
-            return nextClinicianId;
+        switch (type) {
+            case USER:
+                return nextUserId;
+            case CLINICIAN:
+                return nextClinicianId;
+            case ADMIN:
+                return nextAdminId;
+            default:
+                // Unreachable
+                return -69;
         }
     }
 
+
     /**
      * Changes the next id to be issued to a new user to be correct for the current users list.
-     * @param user Whether to recalculate user or clinician id
+     * @param type Whether to recalculate user, clinician or admin ID
      */
-    public static void recalculateNextId(boolean user) {
-        if (user) {
-            nextUserId = -1;
-            for (User nextUser : Main.users) {
-                if (nextUser.getId() > nextUserId) {
-                    nextUserId = nextUser.getId();
+    public static void recalculateNextId(LoginType type) {
+        switch (type) {
+            case USER:
+                nextUserId = -1;
+                for (User nextUser : Main.users) {
+                    if (nextUser.getId() > nextUserId) {
+                        nextUserId = nextUser.getId();
+                    }
                 }
-            }
-        } else {
-            nextClinicianId = -1;
-            for (Clinician clinician : Main.clinicians) {
-                if (clinician.getStaffID() > nextClinicianId) {
-                    nextClinicianId = clinician.getStaffID();
+                break;
+            case CLINICIAN:
+                nextClinicianId = -1;
+                for (Clinician clinician : Main.clinicians) {
+                    if (clinician.getStaffID() > nextClinicianId) {
+                        nextClinicianId = clinician.getStaffID();
+                    }
                 }
-            }
+                break;
         }
     }
 
@@ -178,7 +195,7 @@ public class IO {
                 Main.users.clear();
                 nextUserId = -1;
                 Main.users.addAll(importedList);
-                recalculateNextId(true);
+                recalculateNextId(LoginType.USER);
                 System.out.println("Imported list successfully.");
                 return true;
             } else {
@@ -188,7 +205,7 @@ public class IO {
                 Main.clinicians.clear();
                 nextClinicianId = -1;
                 Main.clinicians.addAll(importedList);
-                recalculateNextId(false);
+                recalculateNextId(LoginType.CLINICIAN);
                 System.out.println("Imported list successfully.");
                 return true;
             }

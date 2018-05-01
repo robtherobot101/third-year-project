@@ -494,111 +494,6 @@ public class Main extends Application {
         return string.matches(token + ".*");
     }
 
-    /**
-     * Save the user or clinician list to a json file.
-     *
-     * @param path The path of the file to save to
-     * @param users whether to save the users or clinicians
-     * @return Whether the save completed successfully
-     */
-    public static boolean saveUsers(String path, boolean users) {
-        PrintStream outputStream = null;
-        File outputFile;
-        boolean success;
-        try {
-            outputFile = new File(path);
-            outputStream = new PrintStream(new FileOutputStream(outputFile));
-            if (users) {
-                gson.toJson(Main.users, outputStream);
-            } else {
-                gson.toJson(Main.clinicians, outputStream);
-            }
-            success = true;
-        } catch (IOException e) {
-            success = false;
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
-        }
-        return success;
-    }
-
-    /**
-     * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
-     *
-     * @param path path of the file.
-     * @param users whether the imported file contains users or clinicians
-     * @return Whether the command executed successfully
-     */
-    public static boolean importUsers(String path, boolean users) {
-        File inputFile = new File(path);
-        Path filePath;
-        try {
-            filePath = inputFile.toPath();
-        } catch (InvalidPathException e) {
-            return false;
-        }
-        Type type;
-        try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            if (users) {
-                type = new TypeToken<ArrayList<User>>() {}.getType();
-                ArrayList<User> importedList = gson.fromJson(reader, type);
-                System.out.println("Opened file successfully.");
-                Main.users.clear();
-                nextUserId = -1;
-                Main.users.addAll(importedList);
-                recalculateNextId(LoginType.USER);
-                System.out.println("Imported list successfully.");
-                return true;
-            } else {
-                type = new TypeToken<ArrayList<Clinician>>() {}.getType();
-                ArrayList<Clinician> importedList = gson.fromJson(reader, type);
-                System.out.println("Opened file successfully.");
-                Main.clinicians.clear();
-                nextClinicianId = -1;
-                Main.clinicians.addAll(importedList);
-                recalculateNextId(LoginType.CLINICIAN);
-                System.out.println("Imported list successfully.");
-                return true;
-            }
-        } catch (IOException e) {
-            System.out.println("IOException on " + path + ": Check your inputs and permissions!");
-        } catch (JsonSyntaxException | DateTimeException e1) {
-            System.out.println("Invalid syntax in input file.");
-        } catch (NullPointerException e2) {
-            System.out.println("Input file was empty.");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Changes the next id to be issued to a new user to be correct for the current users list.
-     * @param type Whether to recalculate user, clinician or admin ID
-     */
-    public static void recalculateNextId(LoginType type) {
-        switch (type) {
-            case USER:
-                nextUserId = -1;
-                for (User nextUser : Main.users) {
-                    if (nextUser.getId() > nextUserId) {
-                        nextUserId = nextUser.getId();
-                    }
-                }
-                break;
-            case CLINICIAN:
-                nextClinicianId = -1;
-                for (Clinician clinician : Main.clinicians) {
-                    if (clinician.getStaffID() > nextClinicianId) {
-                        nextClinicianId = clinician.getStaffID();
-                    }
-                }
-                break;
-        }
-
-    }
-
 
     /**
      * Run the GUI.
@@ -696,7 +591,7 @@ public class Main extends Application {
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
             scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),mainWindowPrefWidth, mainWindowPrefHeight));
-            scenes.put(TFScene.admin, new Scene(FXMLLoader.load(getClass().getResource("/fxml/admin.fxml")), 800, 600));
+            scenes.put(TFScene.admin, new Scene(FXMLLoader.load(getClass().getResource("/fxml/admin.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
 
             setScene(TFScene.login);
             stage.show();

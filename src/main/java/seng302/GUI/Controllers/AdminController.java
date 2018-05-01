@@ -2,7 +2,6 @@ package seng302.GUI.Controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,20 +25,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import seng302.GUI.TFScene;
+import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import static seng302.Generic.Main.streamOut;
-
 /**
- * Class to control all the logic for the clinician interactions with the application.
+ * Class to control all the logic for the currentAdmin interactions with the application.
  */
 public class AdminController implements Initializable {
 
 
-    private Clinician clinician;
+    private Admin currentAdmin;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
@@ -126,30 +124,30 @@ public class AdminController implements Initializable {
     ObservableList<Object> users;
 
     /**
-     * Sets the current clinician
-     * @param clinician The clinician to se as the current
+     * Sets the current currentAdmin
+     * @param currentAdmin The currentAdmin to se as the current
      */
-    public void setClinician(Clinician clinician) {
-        this.clinician = clinician;
+    public void setAdmin(Admin currentAdmin) {
+        this.currentAdmin = currentAdmin;
         updateDisplay();
     }
 
     /**
      * Updates all the displayed TextFields to the values
-     * from the current clinician
+     * from the current currentAdmin
      */
     public void updateDisplay() {
-        System.out.print(clinician);
-        userDisplayText.setText("Welcome " + clinician.getName());
-        staffIDLabel.setText(Long.toString(clinician.getStaffID()));
-        nameLabel.setText("Name: " + clinician.getName());
-        addressLabel.setText("Address: " + clinician.getWorkAddress());
-        regionLabel.setText("Region: " + clinician.getRegion());
+        System.out.print(currentAdmin);
+        userDisplayText.setText("Welcome " + currentAdmin.getName());
+        staffIDLabel.setText(Long.toString(currentAdmin.getStaffID()));
+        nameLabel.setText("Name: " + currentAdmin.getName());
+        addressLabel.setText("Address: " + currentAdmin.getWorkAddress());
+        regionLabel.setText("Region: " + currentAdmin.getRegion());
     }
 
     /**
-     * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
-     * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
+     * Logs out the currentAdmin. The user is asked if they're sure they want to log out, if yes,
+     * all open user windows spawned by the currentAdmin are closed and the main scene is returned to the logout screen.
      */
     public void logout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -182,7 +180,7 @@ public class AdminController implements Initializable {
 
         Optional<String> password = dialog.showAndWait();
         if(password.isPresent()){ //Ok was pressed, Else cancel
-            if(password.get().equals(clinician.getPassword())){
+            if(password.get().equals(currentAdmin.getPassword())){
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
                     Stage stage = new Stage();
@@ -190,7 +188,7 @@ public class AdminController implements Initializable {
                     stage.setScene(new Scene(root, 290, 350));
                     stage.initModality(Modality.APPLICATION_MODAL);
 
-                    Main.setCurrentClinicianForAccountSettings(clinician);
+                    Main.setCurrentClinicianForAccountSettings(currentAdmin);
 
                     stage.showAndWait();
                 } catch (Exception e) {
@@ -211,8 +209,8 @@ public class AdminController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateClinician() {
-        addClinicianToUndoStack(clinician);
-        System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
+        addClinicianToUndoStack(currentAdmin);
+        System.out.println("Name=" + currentAdmin.getName() + ", Address=" + currentAdmin.getWorkAddress() + ", Region=" + currentAdmin.getRegion());
 
 
         // Create the custom dialog.
@@ -233,14 +231,14 @@ public class AdminController implements Initializable {
         grid.setPadding(new Insets(20, 10, 10, 10));
 
         TextField clinicianName = new TextField();
-        clinicianName.setPromptText(clinician.getName());
+        clinicianName.setPromptText(currentAdmin.getName());
         clinicianName.setId("clinicianName");
         TextField clinicianAddress = new TextField();
         clinicianAddress.setId("clinicianAddress");
-        clinicianAddress.setPromptText(clinician.getWorkAddress());
+        clinicianAddress.setPromptText(currentAdmin.getWorkAddress());
         TextField clinicianRegion = new TextField();
         clinicianRegion.setId("clinicianRegion");
-        clinicianRegion.setPromptText(clinician.getRegion());
+        clinicianRegion.setPromptText(currentAdmin.getRegion());
 
         grid.add(new Label("Name:"), 0, 0);
         grid.add(clinicianName, 1, 0);
@@ -280,19 +278,19 @@ public class AdminController implements Initializable {
                 String newRegion;
 
                 if(clinicianName.getText().equals("")) {
-                    newName = clinician.getName();
+                    newName = currentAdmin.getName();
                 } else {
                     newName = clinicianName.getText();
                 }
 
                 if(clinicianAddress.getText().equals("")) {
-                    newAddress = clinician.getWorkAddress();
+                    newAddress = currentAdmin.getWorkAddress();
                 } else {
                     newAddress = clinicianAddress.getText();
                 }
 
                 if(clinicianRegion.getText().equals("")) {
-                    newRegion = clinician.getRegion();
+                    newRegion = currentAdmin.getRegion();
                 } else {
                     newRegion = clinicianRegion.getText();
                 }
@@ -306,9 +304,9 @@ public class AdminController implements Initializable {
 
         result.ifPresent(newClinicianDetails -> {
             System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails.get(2));
-            clinician.setName(newClinicianDetails.get(0));
-            clinician.setWorkAddress(newClinicianDetails.get(1));
-            clinician.setRegion(newClinicianDetails.get(2));
+            currentAdmin.setName(newClinicianDetails.get(0));
+            currentAdmin.setWorkAddress(newClinicianDetails.get(1));
+            currentAdmin.setRegion(newClinicianDetails.get(2));
             save();
             updateDisplay();
 
@@ -316,10 +314,10 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Saves the clinician ArrayList to a JSON file
+     * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save(){
-        Main.saveUsers(Main.getClinicianPath(), false);
+        IO.saveUsers(IO.getClinicianPath(), false);
     }
 
     /**
@@ -338,32 +336,34 @@ public class AdminController implements Initializable {
      * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
      */
     public void undo(){
-        clinician = clinicianUndo(clinician);
+        // TODO implement undo
+        /*currentAdmin = clinicianUndo(currentAdmin);
         updateDisplay();
         redoWelcomeButton.setDisable(false);
 
         if (clinicianUndoStack.isEmpty()){
             undoWelcomeButton.setDisable(true);
-        }
+        }*/
     }
 
     /**
      * The main clincian redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
      */
     public void redo(){
-        clinician = clinicianRedo(clinician);
+        // TODO implement redo
+        /*currentAdmin = clinicianRedo(currentAdmin);
         updateDisplay();
         undoWelcomeButton.setDisable(false);
         if(clinicianRedoStack.isEmpty()){
             redoWelcomeButton.setDisable(true);
-        }
+        }*/
     }
 
     /**
-     * Reads the top element of the undo stack and removes it, while placing the current clinician in the redo stack.
-     * Then returns the clinician from the undo stack.
+     * Reads the top element of the undo stack and removes it, while placing the current currentAdmin in the redo stack.
+     * Then returns the currentAdmin from the undo stack.
      * @param oldClinician the clincian being placed in the redo stack.
-     * @return the previous iteration of the clinician object.
+     * @return the previous iteration of the currentAdmin object.
      */
     public Clinician clinicianUndo(Clinician oldClinician) {
         if (clinicianUndoStack != null) {
@@ -376,8 +376,8 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Creates a deep copy of the current clinician and adds that copy to the undo stack. Then updates the GUI button to be usable.
-     * @param clinician the clinician object being copied.
+     * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the GUI button to be usable.
+     * @param clinician the currentAdmin object being copied.
      */
     public void addClinicianToUndoStack(Clinician clinician) {
         Clinician prevClinician = new Clinician(clinician);
@@ -388,9 +388,9 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Pops the topmost clinician object from the redo stack and returns it, while adding the provided clinician object to the undo stack.
+     * Pops the topmost currentAdmin object from the redo stack and returns it, while adding the provided currentAdmin object to the undo stack.
      * @param newClinician the clinican being placed on the undo stack.
-     * @return the topmost clinician object on the redo stack.
+     * @return the topmost currentAdmin object on the redo stack.
      */
     public Clinician clinicianRedo(Clinician newClinician){
         if (clinicianRedoStack != null) {
@@ -614,7 +614,8 @@ public class AdminController implements Initializable {
 
         profileTable.setItems(currentPage);
 
-        Main.setClinicianController(this);
+        System.out.println("AdminController: Setting main controller of myself");
+        Main.setAdminController(this);
 
         updateFoundUsers();
 
@@ -664,7 +665,7 @@ public class AdminController implements Initializable {
                             Main.setCurrentUser(row.getItem());
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
-                            History.printToFile(streamOut, text);
+                            History.printToFile(IO.streamOut, text);
 
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
