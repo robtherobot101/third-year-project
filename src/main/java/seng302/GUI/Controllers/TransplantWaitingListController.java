@@ -6,13 +6,18 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Pair;
+import seng302.Controllers.DialogWindowController;
+import seng302.Core.Disease;
 import seng302.Core.TransplantWaitingListItem;
 import seng302.GUI.TFScene;
 import seng302.Generic.Main;
@@ -80,7 +85,7 @@ public class TransplantWaitingListController implements Initializable {
                 for (WaitingListItem item : user.getWaitingListItems()) {
                     try {
                         if (!(item.getOrganRegisteredDate() == null)) {
-                            transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                            transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -105,9 +110,9 @@ public class TransplantWaitingListController implements Initializable {
                         if (!(item.getOrganRegisteredDate() == null)) {
                             if (organSearch.equals("None") || organSearch == item.getOrganType().toString()) {
                                 if (regionSearch.equals("") && (user.getRegion() == null)) {
-                                    transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                                    transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                                 } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase()))) {
-                                    transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                                    transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                                 }
                             }
                         }
@@ -146,8 +151,113 @@ public class TransplantWaitingListController implements Initializable {
         result.ifPresent(option -> processDeregister(option));
     }
 
+    public void showDiseaseDeregisterDialog() {
+        TransplantWaitingListItem selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+        User selectedUser = Main.getUserById(selectedWaitingListItem.getId());
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Cure Disease");
+        dialog.setHeaderText("Select a disease to cure.");
+
+        ButtonType loginButtonType = new ButtonType("Cure", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        ObservableList<Disease> diseaseComboList = FXCollections.observableArrayList(selectedUser.getCurrentDiseases());
+        final ComboBox diseaseComboBox = new ComboBox(diseaseComboList);
+        diseaseComboBox.setCellFactory(new Callback<ListView<Disease>, ListCell<Disease>>() {
+            @Override
+            public ListCell<Disease> call(ListView<Disease> param) {
+                final ListCell<Disease> cell = new ListCell<Disease>(){
+
+                    @Override
+                    protected void updateItem(Disease t, boolean bln) {
+                        super.updateItem(t, bln);
+
+                        if(t != null){
+                            setText(t.getName());
+                        }else{
+                            setText(null);
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
+
+        grid.add(diseaseComboBox, 1, 1);
+        dialog.getDialogPane().setContent(grid);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        result.ifPresent(option -> {
+            if (diseaseComboBox.getValue() != null) {
+                Disease selected = (Disease) diseaseComboBox.getValue();
+                selected.setCured(true);
+                ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+                selectedWaitingListItem.getId();
+                for (WaitingListItem i: selectedUserWaitingListItems) {
+                    if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+                        i.deregisterOrgan(2);
+                        DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
+                    }
+                }
+            } else {
+                ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+                selectedWaitingListItem.getId();
+                for (WaitingListItem i: selectedUserWaitingListItems) {
+                    if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+                        i.deregisterOrgan(2);
+                        DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                    }
+                }
+            }
+        });
+    }
+
+    public void confirmDiseaseCuring() {
+        TransplantWaitingListItem selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+        User selectedUser = Main.getUserById(selectedWaitingListItem.getId());
+        if (!selectedUser.getCurrentDiseases().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Cure Disease?");
+            alert.setHeaderText("Would you like to select the cured disease?");
+            alert.setContentText("Cure a Disease?");
+
+            ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+            ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeOne) {
+                showDiseaseDeregisterDialog();
+            } else {
+                ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+                selectedWaitingListItem.getId();
+                for (WaitingListItem i: selectedUserWaitingListItems) {
+                    if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+                        i.deregisterOrgan(2);
+                        DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                    }
+                }
+            }
+        }
+    }
+
     public void processDeregister(String reason) {
-        
+        if (reason == "1: Error Registering") {
+            //Jono put ya code call here
+        } else if (reason == "2: Disease Cured") {
+            confirmDiseaseCuring();
+        } else if (reason == "3: Receiver Deceased") {
+            //Jono put ya code call here
+        } else if (reason == "4: Successful Transplant") {
+
+        }
     }
 
     /**

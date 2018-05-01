@@ -14,6 +14,7 @@ public class TransplantWaitingListItem {
     private Date date;
     private Organ organ;
     private long id;
+    private Integer waitingListId;
 
     /**
      * Constructor of the object.
@@ -24,12 +25,13 @@ public class TransplantWaitingListItem {
      * @param organ The organ that the receiver needs.
      * @param id The id of the receiver.
      */
-    public TransplantWaitingListItem(String Name, String region, Date date, Organ organ, long id) {
+    public TransplantWaitingListItem(String Name, String region, Date date, Organ organ, long id, Integer waitingListId) {
         this.Name = Name;
         this.region = region;
         this.date = date;
         this.organ = organ;
         this.id = id;
+        this.waitingListId = waitingListId;
     }
 
     public String getRegion() {
@@ -51,4 +53,7 @@ public class TransplantWaitingListItem {
     public long getId() {
         return id;
     }
+
+    public Integer getWaitingListId() { return waitingListId; }
+
 }

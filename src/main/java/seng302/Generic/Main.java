@@ -43,6 +43,7 @@ import seng302.GUI.Controllers.UserWindowController;
  */
 public class Main extends Application {
     private static long nextUserId = -1, nextClinicianId = -1;
+    private static Integer nextWaitingListId = -1;
     public static ArrayList<User> users = new ArrayList<>();
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
     public static PrintStream streamOut;
@@ -324,6 +325,10 @@ public class Main extends Application {
         }
     }
 
+    public static Integer getNextWaitingListId() {
+        nextWaitingListId++;
+        return nextWaitingListId;
+    }
     /**
      * Find a specific user from the user list based on their id.
      *

@@ -20,11 +20,13 @@ public class WaitingListItem {
     private String organDeregisteredDate;
     private boolean stillWaitingOn;
     private Integer organDeregisteredCode;
+    private Integer waitingListItemId;
 
     public WaitingListItem(Organ organType){
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         this.stillWaitingOn = true;
+        this.waitingListItemId = Main.getNextWaitingListId();
     }
 
     /**
@@ -37,6 +39,8 @@ public class WaitingListItem {
         this.organRegisteredDate = copy.organRegisteredDate;
         this.organDeregisteredDate = copy.organDeregisteredDate;
         this.stillWaitingOn = copy.stillWaitingOn;
+        this.waitingListItemId = copy.waitingListItemId;
+        this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
     /**
@@ -87,4 +91,12 @@ public class WaitingListItem {
     public String getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
+
+    public boolean isStillWaitingOn() { return stillWaitingOn; }
+
+    public Integer getOrganDeregisteredCode() { return organDeregisteredCode; }
+
+    public Integer getWaitingListItemId() { return waitingListItemId; }
+
+
 }
