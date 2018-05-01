@@ -17,7 +17,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import seng302.GUI.TitleBar;
 import seng302.Generic.*;
+import org.controlsfx.control.StatusBar;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.Controllers.UserWindowController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,9 +40,6 @@ public class ClinicianController implements Initializable {
 
     private Clinician clinician;
 
-    private FadeTransition fadeIn = new FadeTransition(
-            Duration.millis(1000)
-    );
     @FXML
     private TableColumn profileName;
 
@@ -69,9 +70,6 @@ public class ClinicianController implements Initializable {
     private MenuItem accountSettingsMenuItem;
 
     @FXML
-    private Label updatedSuccessfully;
-
-    @FXML
     private Label userDisplayText;
 
     @FXML
@@ -91,6 +89,12 @@ public class ClinicianController implements Initializable {
 
     @FXML
     private GridPane mainPane;
+
+    @FXML
+    private StatusBar statusBar;
+
+    private StatusIndicator statusIndicator = new StatusIndicator();
+    private TitleBar titleBar = new TitleBar();
 
     private int resultsPerPage;
     private int page = 1;
@@ -120,12 +124,21 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
+        titleBar.setTitle(clinician.getName(), "Clinician", null);
         System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
+    }
+
+    /**
+     * Update the window title when there are unsaved changes
+     */
+    @FXML
+    private void edited(){
+        titleBar.saved(false);
     }
 
     /**
@@ -206,8 +219,8 @@ public class ClinicianController implements Initializable {
         clinician.setName(nameInput.getText());
         clinician.setWorkAddress(addressInput.getText());
         clinician.setRegion(regionInput.getText());
-        updatedSuccessfully.setOpacity(1.0);
-        fadeIn.playFromStart();
+        titleBar.setTitle(clinician.getName(), "Clinician", null);
+        statusIndicator.setStatus("Updated clinician details", false);
 
         System.out.println("Updated to: " + clinician);
     }
@@ -242,6 +255,8 @@ public class ClinicianController implements Initializable {
         if (clinicianUndoStack.isEmpty()){
             undoWelcomeButton.setDisable(true);
         }
+        titleBar.saved(false);
+        statusIndicator.setStatus("Undid last action", false);
     }
 
     /**
@@ -254,6 +269,8 @@ public class ClinicianController implements Initializable {
         if(clinicianRedoStack.isEmpty()){
             redoWelcomeButton.setDisable(true);
         }
+        titleBar.saved(false);
+        statusIndicator.setStatus("Redid last action", false);
     }
 
     /**
@@ -405,14 +422,6 @@ public class ClinicianController implements Initializable {
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
 
-
-        fadeIn.setNode(updatedSuccessfully);
-        fadeIn.setDelay(Duration.millis(1000));
-        fadeIn.setFromValue(1.0);
-        fadeIn.setToValue(0.0);
-        fadeIn.setCycleCount(0);
-        fadeIn.setAutoReverse(false);
-
         profileTable.setItems(currentPage);
 
         Main.setClinicianController(this);
@@ -463,6 +472,7 @@ public class ClinicianController implements Initializable {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
+                            userWindowController.setTitleBar(stage);
                             Main.setCurrentUser(row.getItem());
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
@@ -519,6 +529,8 @@ public class ClinicianController implements Initializable {
                 }
             }
         });
+        statusIndicator.setStatusBar(statusBar);
+        titleBar.setStage(Main.getStage());
     }
 
     /**

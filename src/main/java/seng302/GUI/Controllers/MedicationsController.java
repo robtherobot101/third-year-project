@@ -8,15 +8,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import seng302.Generic.*;
-
-import java.net.URL;
-import java.util.*;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
+import seng302.Generic.History;
+import seng302.Generic.Main;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
+
+import java.net.URL;
+import java.util.*;
 
 import static seng302.Generic.Main.streamOut;
 
@@ -26,7 +29,7 @@ import static seng302.Generic.Main.streamOut;
  * Handles all functions including:
  * Saving, Adding new medications, moving medications between lists, deleting medications and comparing medications.
  */
-public class MedicationsController implements Initializable {
+public class MedicationsController extends PageController implements Initializable {
     @FXML
     private TextField newMedicationField;
     @FXML
@@ -117,39 +120,33 @@ public class MedicationsController implements Initializable {
         if (medicationChoice.equals("")) {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
         } else {
-            boolean duplicate = false;
-            for (Medication medication: historicItems) {
-                if (medication.getName().equals(medicationChoice)) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
-                for (Medication medication : currentItems) {
-                    if (medication.getName().equals(medicationChoice)) {
-                        duplicate = true;
-                        break;
-                    }
-                }
-            }
-            if (duplicate) {
+            // Check for duplicates
+            if(historicItems.contains(new Medication(medicationChoice)) ||
+                    currentItems.contains(new Medication(medicationChoice))){
                 Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to this person.").show();
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
                 System.out.println(medicationChoice);
-                if (Mapi.autocomplete(medicationChoice).contains(medicationChoice)) {
+                statusIndicator.setStatus("Fetching from API", true);
+                new Thread(() -> {
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
-                    System.out.print(activeIngredients);
-                    currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
-                    // NOTE: I have created another constructor in the Medications class for a medication with a name and
-                    // active ingredients also.
+                    Platform.runLater(() -> {
+                        if (!activeIngredients.get(0).equals("")) {
+                            currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
+                            // NOTE: I have created another constructor in the Medications class for a medication with a name and
+                            // active ingredients also.
 
-                    newMedicationField.clear();
-                    saveToUndoStack();
-                } else {
-                    Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
-                }
+                            newMedicationField.clear();
+                            saveToUndoStack();
+                            statusIndicator.setStatus("Added " + medicationChoice, false);
+                            titleBar.saved(false);
+                        } else {
+                            Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
+                        }
+                    });
+                }).start();
+
             }
         }
         // After clicking the button, it becomes disabled
@@ -166,68 +163,55 @@ public class MedicationsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(currentItems, currentListView.getSelectionModel().getSelectedItem());
+                Medication m = currentListView.getSelectionModel().getSelectedItem();
+                currentItems.remove(m);
+                statusIndicator.setStatus("Deleted " + m + " from current medications", false);
             } else if (historyListView.getSelectionModel().getSelectedItem() != null) {
-                deleteMedication(historicItems, historyListView.getSelectionModel().getSelectedItem());
+                Medication m = historyListView.getSelectionModel().getSelectedItem();
+                historicItems.remove(historyListView.getSelectionModel().getSelectedItem());
+                statusIndicator.setStatus("Deleted " + m + " from historic medications", false);
             }
+            titleBar.saved(false);
+            saveToUndoStack();
 
         }
         alert.close();
     }
 
     /**
-     * Deletes a medication from an ArrayList of medications using the medication name.
-     *
-     * @param deleteFrom The ArrayList of medications to delete the medication from
-     * @param toDelete The name of the medication
-     */
-    private void deleteMedication(ObservableList<Medication> deleteFrom, Medication toDelete) {
-        for (Medication medication: deleteFrom) {
-            if (medication.equals(toDelete)) {
-                deleteFrom.remove(medication);
-                break;
-            }
-        }
-        saveToUndoStack();
-    }
-
-    /**
      * Moves the selected medication from the current medications listview to the historic medications listview.
      */
     public void moveMedicationToHistory() {
-        moveMedication(historicItems, currentItems, currentListView);
+        Medication m = moveMedication(historicItems, currentListView);
+        statusIndicator.setStatus("Moved " + m + " to history", false);
+        titleBar.saved(false);
     }
 
     /**
      * Moves the selected medication from the historic medications listview to the current medications listview.
      */
     public void moveMedicationToCurrent() {
-        moveMedication(currentItems, historicItems, historyListView);
+        Medication m = moveMedication(currentItems, historyListView);
+        statusIndicator.setStatus("Moved " + m + " to current", false);
+        titleBar.saved(false);
     }
 
     /**
      * Move a selected Medication from its corresponding Medication list to another Medication list.
      *
      * @param to The Medication list to move the medication from
-     * @param from The Medication list to move the medication to
      * @param view The ListView to get the selected medication from
+     * @return The medication which was moved
      */
-    private void moveMedication(ObservableList<Medication> to, ObservableList<Medication> from, ListView<Medication> view) {
+    private Medication moveMedication(ObservableList<Medication> to, ListView<Medication> view) {
         movingItem = true;
-        //Get the item the user has selected
-        Medication selectedMedication = view.getSelectionModel().getSelectedItem();
-        //Get the medication object reference
-        Medication medicationChoice = null;
-        for (Medication medication: from) {
-            if (medication.equals(selectedMedication)) {
-                medicationChoice = medication;
-                break;
-            }
-        }
-        to.add(medicationChoice);
-        from.remove(medicationChoice);
+        // Remove the medication from the ListView
+        Medication m = view.getItems().remove(view.getSelectionModel().getSelectedIndex());
+        // Add it to the 'to' list
+        to.add(m);
         saveToUndoStack();
         movingItem = false;
+        return m;
     }
 
     /**
@@ -250,6 +234,8 @@ public class MedicationsController implements Initializable {
             History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
+            statusIndicator.setStatus("Saved changes", false);
+            titleBar.saved(true);
         } else {
             alert.close();
         }
@@ -400,7 +386,13 @@ public class MedicationsController implements Initializable {
                 return null;
             }
             String medicine = newMedicationField.getText();
+            // Show API call on status bar
+            Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
+            // Reset status bar
+            Platform.runLater(() -> {
+                Platform.runLater(() -> statusIndicator.ready());
+            });
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
             } else {
@@ -425,4 +417,5 @@ public class MedicationsController implements Initializable {
             checkSelections();
         });
     }
+
 }

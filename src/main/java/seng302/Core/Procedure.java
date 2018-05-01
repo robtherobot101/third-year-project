@@ -52,5 +52,10 @@ public class Procedure {
         isOrganAffecting = organAffecting;
     }
 
+    @Override
+    public String toString(){
+        return summary;
+    }
+
 
 }

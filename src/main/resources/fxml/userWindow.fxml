@@ -17,13 +17,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.StatusBar?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>
@@ -63,12 +62,12 @@
 			<children>
 				<AnchorPane fx:id="medicationsPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
    <children>
-   					<fx:include source="medications.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   					<fx:include fx:id="medications" source="medications.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 				</AnchorPane>
                 <AnchorPane fx:id="waitingListPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                    <children>
-   					<fx:include source="waitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   					<fx:include fx:id="waitingList" source="waitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                    </children>
 				</AnchorPane>
 				<Pane fx:id="welcomePane" layoutX="226.0" prefHeight="295.0" prefWidth="398.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -425,7 +424,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-      				<Button fx:id="saveUserButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="247.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
+      				<Button fx:id="saveUserButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="312.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="312.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -435,7 +434,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-						<Button fx:id="exitUserButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="302.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="362.0">
+						<Button fx:id="exitUserButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="412.0" mnemonicParsing="false" onAction="#stop" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="412.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -506,7 +505,7 @@
 				</AnchorPane>
 			<AnchorPane fx:id="medicalHistoryProceduresPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 				<children>
-					<fx:include source="medicalHistoryProcedures.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+					<fx:include fx:id="medicalHistoryProcedures" source="medicalHistoryProcedures.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 				</children>
 			</AnchorPane>
             <GridPane fx:id="historyGridPane" layoutX="265.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="469.0" prefWidth="624.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -541,62 +540,51 @@
             </GridPane>
             <AnchorPane fx:id="medicalHistoryDiseasesPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <fx:include source="medicalHistoryDiseases.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <fx:include fx:id="medicalHistoryDiseases" source="medicalHistoryDiseases.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
 			</children>
 		</AnchorPane>
-		<HBox id="HBox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="579.0" spacing="5.0" GridPane.rowIndex="4">
-			<children>
-				<Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Organ Donation Management System" HBox.hgrow="ALWAYS">
-					<font>
-						<Font size="11.0" fx:id="x3" />
-					</font>
-					<textFill>
-						<Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-					</textFill>
-				</Label>
-				<Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-				<Label font="$x3" maxWidth="-1.0" text="SENG302 - Team 300" textFill="$x4" HBox.hgrow="NEVER" />
-			</children>
-			<padding>
-				<Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-			</padding>
-		</HBox>
-      <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="2">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
          <children>
+            <StatusBar fx:id="statusBar" prefHeight="200.0" prefWidth="200.0" text="Ready" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
+		<AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="2">
+			<children>
 				<Label fx:id="userDisplayText" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="554.0" text="Welcome text." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="341.0" AnchorPane.topAnchor="0.0">
 					<font>
 						<Font size="20.0" />
 					</font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
+					<opaqueInsets>
+						<Insets />
+					</opaqueInsets>
+					<padding>
+						<Insets left="10.0" />
+					</padding>
 				</Label>
-            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="undoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="90.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="redoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="10.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false" AnchorPane.rightAnchor="315.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
+				<Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="undoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="90.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="redoBannerButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="75.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="10.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+				<Button fx:id="waitingListButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="371.0" layoutY="3.0" mnemonicParsing="false" onAction="#showWaitingListPane" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="View Waiting List" textAlignment="CENTER" visible="false" AnchorPane.rightAnchor="315.0">
+					<font>
+						<Font size="14.0" />
+					</font>
+				</Button>
+			</children>
+		</AnchorPane>
+
 	</children>
 </GridPane>

@@ -17,6 +17,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import seng302.Core.Procedure;
 
+import seng302.GUI.Controllers.PageController;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.Main;
 
@@ -31,7 +34,7 @@ import static seng302.Generic.Main.streamOut;
  * Handles all functions including:
  * Adding, deleting, updating and marking procedures in the Table Views.
  */
-public class MedicalHistoryProceduresController implements Initializable {
+public class MedicalHistoryProceduresController extends PageController implements Initializable {
 
     @FXML
     private DatePicker dateOfProcedureInput;
@@ -56,12 +59,13 @@ public class MedicalHistoryProceduresController implements Initializable {
 
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
+    private StatusIndicator statusIndicator;
+    private TitleBar titleBar;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicalHistoryProceduresController(this);
         setupListeners();
-
-
     }
 
     /**
@@ -101,6 +105,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             dateOfProcedureInput.getEditor().clear();
             isOrganAffectingCheckBox.setSelected(false);
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
+            statusIndicator.setStatus("Added " + procedureToAdd, false);
+            titleBar.saved(false);
         }
     }
 
@@ -121,6 +127,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 pendingProcedureItems.remove(chosenProcedure);
+                statusIndicator.setStatus("Deleted " + chosenProcedure, false);
+                titleBar.saved(false);
             }
             alert.close();
         }
@@ -135,6 +143,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 previousProcedureItems.remove(chosenProcedure);
+                statusIndicator.setStatus("Deleted " + chosenProcedure, false);
+                titleBar.saved(false);
             }
             alert.close();
         }
@@ -164,6 +174,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
+            statusIndicator.setStatus("Saved", false);
+            titleBar.saved(true);
         } else {
             alert.close();
         }
@@ -319,7 +331,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             public void handle(ActionEvent event) {
                 Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 updateProcedurePopUp(selectedProcedure, true);
-
+                statusIndicator.setStatus("Edited " + selectedProcedure, false);
+                titleBar.saved(false);
             }
         });
         pendingProcedureListContextMenu.getItems().add(updatePendingProcedureMenuItem);
@@ -332,9 +345,12 @@ public class MedicalHistoryProceduresController implements Initializable {
                 Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 if (selectedProcedure.isOrganAffecting()) {
                     selectedProcedure.setOrganAffecting(false);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
                 } else {
                     selectedProcedure.setOrganAffecting(true);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
                 }
+                titleBar.saved(false);
 
                 // To refresh the observableList to make chronic toggle visible
                 pendingProcedureItems.remove(selectedProcedure);
@@ -352,6 +368,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             public void handle(ActionEvent event) {
                 Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 updateProcedurePopUp(selectedProcedure, false);
+                statusIndicator.setStatus("Edited " + selectedProcedure, false);
+                titleBar.saved(false);
 
             }
         });
@@ -365,10 +383,12 @@ public class MedicalHistoryProceduresController implements Initializable {
                 Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 if (selectedProcedure.isOrganAffecting()) {
                     selectedProcedure.setOrganAffecting(false);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
                 } else {
                     selectedProcedure.setOrganAffecting(true);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
                 }
-
+                titleBar.saved(false);
                 // To refresh the observableList to make chronic toggle visible
                 previousProcedureItems.remove(selectedProcedure);
                 previousProcedureItems.add(selectedProcedure);
