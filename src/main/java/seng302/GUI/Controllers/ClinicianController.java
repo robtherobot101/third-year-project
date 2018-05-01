@@ -219,6 +219,8 @@ public class ClinicianController implements Initializable {
         dialog.setTitle("Update Clinician");
         dialog.setHeaderText("Update Clinician Details");
 
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
