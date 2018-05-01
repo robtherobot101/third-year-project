@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 public class DrugInteractionGUITest extends TestFXTest {
-    private static final boolean runHeadless = true;
     private User user = new User("test,user", LocalDate.of(1983,7,4));
     private String testDrugA = "Escitalopram";
     private String testDrugB = "Diazepam";
@@ -30,7 +29,7 @@ public class DrugInteractionGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        headedTestSetup();
+        defaultTestSetup();
     }
 
     @Before

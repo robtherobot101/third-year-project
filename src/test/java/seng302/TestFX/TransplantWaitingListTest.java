@@ -128,7 +128,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("heart");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -162,7 +162,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("heart");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -172,7 +172,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         doubleClickOn("Bob Ross");
         clickOn("#waitingListButton");
         clickOn("heart");
-        clickOn("#removeOrganButton");
+        clickOn("#deregisterOrganButton");
 
         //close user window
         clickOn("#saveUserButton");
@@ -204,7 +204,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("heart");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -215,7 +215,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("liver");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -250,7 +250,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("heart");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -261,7 +261,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("liver");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
