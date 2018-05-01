@@ -60,7 +60,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private TableView profileTable;
     @FXML
-    private TextField profileSearchTextField, nameInput, addressInput, regionInput;
+    private TextField profileSearchTextField;
     @FXML
     private Pane background;
     @FXML
@@ -89,17 +89,19 @@ public class ClinicianController implements Initializable {
 
     @FXML
     private TextField clinicianRegionField;
+
+    @FXML
     private MenuItem accountSettingsMenuItem;
     @FXML
     private ComboBox clinicianGenderComboBox;
     @FXML
     private TextField clinicianAgeField;
-    private GridPane mainPane;
     @FXML
     private ComboBox clinicianUserTypeComboBox;
     @FXML
     private ComboBox clinicianOrganComboBox;
 
+    @FXML
     private StatusBar statusBar;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -129,8 +131,9 @@ public class ClinicianController implements Initializable {
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
 
-    ObservableList<Object> users;
     public ClinicianController() {
+        this.titleBar = new TitleBar();
+        titleBar.setStage(Main.getStage());
     }
 
     public void setTitle(){
@@ -164,10 +167,7 @@ public class ClinicianController implements Initializable {
         nameLabel.setText("Name: " + clinician.getName());
         addressLabel.setText("Address: " + clinician.getWorkAddress());
         regionLabel.setText("Region: " + clinician.getRegion());
-        nameInput.setText(clinician.getName());
         staffIDLabel.setText("Staff ID: " + Long.toString(clinician.getStaffID()));
-        addressInput.setText(clinician.getWorkAddress());
-        regionInput.setText(clinician.getRegion());
     }
 
     /**
@@ -178,15 +178,15 @@ public class ClinicianController implements Initializable {
         titleBar.saved(false);
     }
 
-    /**
-     * Refreshes the results in the user profile table to match the values
-     * in the user ArrayList in Main
-     */
-    public void updateUserTable(){
-        updatePageButtons();
-        displayCurrentPage();
-        updateResultsSummary();
-    }
+//    /**
+//     * Refreshes the results in the user profile table to match the values
+//     * in the user ArrayList in Main
+//     */
+//    public void updateUserTable(){
+//        updatePageButtons();
+//        displayCurrentPage();
+//        updateResultsSummary();
+//    }
 
     /**
      * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
@@ -251,7 +251,7 @@ public class ClinicianController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateClinicianPopUp() {
-        addClinicianToUndoStack(clinician);
+        //addClinicianToUndoStack(clinician);
         System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
 
@@ -356,20 +356,21 @@ public class ClinicianController implements Initializable {
     }
 
     public boolean updateClinician() {
-        if (clinician.getName().equals(nameInput.getText()) &&
-                clinician.getRegion().equals(regionInput.getText()) &&
-                clinician.getWorkAddress().equals(addressInput.getText())) {
-            return false;
-        } else {
-            clinician.setName(nameInput.getText());
-            clinician.setWorkAddress(addressInput.getText());
-            clinician.setRegion(regionInput.getText());
-            updatedSuccessfully.setOpacity(1.0);
-            fadeIn.playFromStart();
-            titleBar.setTitle(clinician.getName(), "Clinician", null);
-            statusIndicator.setStatus("Updated clinician details", false);
-            return true;
-        }
+//        if (clinician.getName().equals(nameInput.getText()) &&
+//                clinician.getRegion().equals(regionInput.getText()) &&
+//                clinician.getWorkAddress().equals(addressInput.getText())) {
+//            return false;
+//        } else {
+//            clinician.setName(nameInput.getText());
+//            clinician.setWorkAddress(addressInput.getText());
+//            clinician.setRegion(regionInput.getText());
+//            //updatedSuccessfully.setOpacity(1.0);
+//            fadeIn.playFromStart();
+//            titleBar.setTitle(clinician.getName(), "Clinician", null);
+//            statusIndicator.setStatus("Updated clinician details", false);
+//            return true;
+//        }
+        return true;
     }
 
     /**
@@ -398,18 +399,18 @@ public class ClinicianController implements Initializable {
     public void requestFocus() { background.requestFocus(); }
 
 
-    /**
-     * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
-     */
-    private void attributeFieldUnfocused() {
-        Clinician oldFields = new Clinician(clinician);
-        if (updateClinician()) {
-            clinicianUndoStack.add(new Clinician(oldFields));
-            clinicianRedoStack.clear();
-            undoWelcomeButton.setDisable(false);
-            redoWelcomeButton.setDisable(true);
-        }
-    }
+//    /**
+//     * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
+//     */
+//    private void attributeFieldUnfocused() {
+//        Clinician oldFields = new Clinician(clinician);
+//        if (updateClinician()) {
+//            clinicianUndoStack.add(new Clinician(oldFields));
+//            clinicianRedoStack.clear();
+//            undoWelcomeButton.setDisable(false);
+//            redoWelcomeButton.setDisable(true);
+//        }
+//    }
 
     /**
      * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
