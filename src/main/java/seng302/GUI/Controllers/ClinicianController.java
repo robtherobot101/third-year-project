@@ -17,12 +17,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import seng302.GUI.TitleBar;
-import seng302.Generic.*;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
-import seng302.GUI.Controllers.UserWindowController;
 import seng302.GUI.TFScene;
+import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
@@ -32,9 +30,6 @@ import seng302.User.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import seng302.GUI.TFScene;
-import seng302.User.Clinician;
-import seng302.User.User;
 
 import static seng302.Generic.IO.streamOut;
 
@@ -42,13 +37,6 @@ import static seng302.Generic.IO.streamOut;
  * Class to control all the logic for the clinician interactions with the application.
  */
 public class ClinicianController implements Initializable {
-
-
-    private Clinician clinician;
-
-    @FXML
-    private TableColumn profileName;
-
     @FXML
     private TableColumn profileName, profileAge, profileGender, profileRegion;
     @FXML
@@ -61,27 +49,18 @@ public class ClinicianController implements Initializable {
     private Label staffIDLabel, updatedSuccessfully, userDisplayText, resultsDisplayLabel;
     @FXML
     private MenuItem accountSettingsMenuItem;
-
-    @FXML
-    private Label userDisplayText;
-
-    @FXML
-    private Button nextPageButton;
-
-    @FXML
-    private Button previousPageButton;
-
     @FXML
     private Button nextPageButton, previousPageButton, undoWelcomeButton, redoWelcomeButton;
     @FXML
     private GridPane mainPane;
+    @FXML
+    private StatusBar statusBar;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
     );
+
     private Clinician clinician;
-    @FXML
-    private StatusBar statusBar;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar = new TitleBar();
@@ -94,6 +73,9 @@ public class ClinicianController implements Initializable {
 
     private ObservableList<User> currentPage = FXCollections.observableArrayList();
     private ObservableList<Object> users;
+
+    public ClinicianController() {
+    }
 
     /**
      * Sets the current clinician

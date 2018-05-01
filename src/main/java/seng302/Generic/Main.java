@@ -1,32 +1,19 @@
 package seng302.Generic;
 
-import com.google.gson.*;
-
-import java.io.*;
-import java.lang.reflect.Type;
-import java.net.URISyntaxException;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.util.*;
-
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import seng302.Controllers.MedicalHistoryDiseasesController;
+import seng302.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
-
 import seng302.GUI.TFScene;
 import seng302.TUI.CommandLineInterface;
 import seng302.User.Clinician;
 import seng302.User.User;
-import seng302.GUI.Controllers.UserWindowController;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +50,10 @@ public class Main extends Application {
     private static WaitingListController waitingListController;
 
     private static String dialogStyle;
+
+    public static Stage getStage() {
+        return stage;
+    }
 
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 

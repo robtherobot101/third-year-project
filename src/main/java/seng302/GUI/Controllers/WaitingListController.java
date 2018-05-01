@@ -1,32 +1,27 @@
 package seng302.GUI.Controllers;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import javafx.application.Platform;
-import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import org.controlsfx.control.PropertySheet;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
+import seng302.Generic.History;
+import seng302.Generic.Main;
 import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
-import seng302.Generic.*;
 
-import javafx.beans.binding.Bindings;
-
-import java.io.PrintStream;
 import java.net.URL;
-import java.util.*;
-import static seng302.Generic.Main.streamOut;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 
 /**
