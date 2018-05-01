@@ -8,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -19,8 +17,10 @@ import seng302.Core.TransplantWaitingListItem;
 import seng302.GUI.TFScene;
 import seng302.Generic.Main;
 import seng302.Generic.WaitingListItem;
+import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
@@ -43,6 +43,10 @@ public class TransplantWaitingListController implements Initializable {
     private TableColumn dateColumn;
     @FXML
     private TableColumn regionColumn;
+    @FXML
+    private ComboBox organSearchComboBox;
+    @FXML
+    private TextField regionSearchTextField;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
     private ObservableList<TransplantWaitingListItem> transplantList = FXCollections.observableArrayList();
@@ -83,6 +87,42 @@ public class TransplantWaitingListController implements Initializable {
     }
 
     /**
+     * updates the transplant waiting list table and filters users by a region.
+     * @param regionSearch the search text to be applied to the user regions given by a user.
+     * @param organSearch the organ to specifically search for given by a user.
+     */
+    public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+        transplantList.removeAll(transplantList);
+        for (User user : Main.users) {
+            if (!user.getWaitingListItems().isEmpty()) {
+                for (WaitingListItem item : user.getWaitingListItems()) {
+                    try {
+                        if (!(item.getOrganRegisteredDate() == null)) {
+                            if (organSearch.equals("None") || organSearch == item.getOrganType().toString()) {
+                                if (regionSearch.equals("") && (user.getRegion() == null)) {
+                                    transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                                } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase()))) {
+                                    transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId()));
+                                }
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        transplantTable.setItems(transplantList);
+    }
+
+    /**
+     * method to handle when the organ filter combo box is changed a nd thben updates the transplant waiting list
+     */
+    public void updateFoundUsersOnOrganChange() {
+        updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
+    }
+
+    /**
      * Initilizes the gui display with the correct content in the table.
      * @param location
      * @param resources
@@ -101,6 +141,23 @@ public class TransplantWaitingListController implements Initializable {
 
         updateTransplantList();
         transplantTable.setItems(transplantList);
+
+        //add options to organ filter combobox
+        ObservableList<String> organSearchlist = FXCollections.observableArrayList();
+        Organ[] organsList = Organ.values();
+        organSearchlist.add("None");
+        for (Organ o : organsList) {
+            String v = o.toString();
+            organSearchlist.add(v);
+        }
+        organSearchComboBox.setItems(organSearchlist);
+        organSearchComboBox.setValue("None");
+
+        //listener for when text is input into the region search text box
+        regionSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateFoundUsersWithFiltering(newValue, organSearchComboBox.getValue().toString());
+        });
+
 
         transplantTable.setRowFactory(new Callback<TableView<TransplantWaitingListItem>, TableRow<TransplantWaitingListItem>>(){
             @Override
@@ -122,7 +179,7 @@ public class TransplantWaitingListController implements Initializable {
                             Main.setCurrentUser(Main.getUserById(row.getItem().getId()));
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
-                            Main.medicationsViewForClinician();
+                            Main.controlViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);

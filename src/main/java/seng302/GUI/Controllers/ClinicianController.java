@@ -17,6 +17,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import seng302.GUI.TitleBar;
+import seng302.Generic.*;
+import org.controlsfx.control.StatusBar;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.Controllers.UserWindowController;
 import seng302.GUI.TFScene;
 import seng302.Generic.History;
 import seng302.Generic.IO;
@@ -27,6 +32,9 @@ import seng302.User.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import seng302.GUI.TFScene;
+import seng302.User.Clinician;
+import seng302.User.User;
 
 import static seng302.Generic.IO.streamOut;
 
@@ -34,6 +42,13 @@ import static seng302.Generic.IO.streamOut;
  * Class to control all the logic for the clinician interactions with the application.
  */
 public class ClinicianController implements Initializable {
+
+
+    private Clinician clinician;
+
+    @FXML
+    private TableColumn profileName;
+
     @FXML
     private TableColumn profileName, profileAge, profileGender, profileRegion;
     @FXML
@@ -46,6 +61,16 @@ public class ClinicianController implements Initializable {
     private Label staffIDLabel, updatedSuccessfully, userDisplayText, resultsDisplayLabel;
     @FXML
     private MenuItem accountSettingsMenuItem;
+
+    @FXML
+    private Label userDisplayText;
+
+    @FXML
+    private Button nextPageButton;
+
+    @FXML
+    private Button previousPageButton;
+
     @FXML
     private Button nextPageButton, previousPageButton, undoWelcomeButton, redoWelcomeButton;
     @FXML
@@ -55,6 +80,12 @@ public class ClinicianController implements Initializable {
             Duration.millis(1000)
     );
     private Clinician clinician;
+    @FXML
+    private StatusBar statusBar;
+
+    private StatusIndicator statusIndicator = new StatusIndicator();
+    private TitleBar titleBar = new TitleBar();
+
     private int resultsPerPage;
     private int page = 1;
     private ArrayList<User> usersFound;
@@ -84,11 +115,21 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
+        titleBar.setTitle(clinician.getName(), "Clinician", null);
+        System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         nameInput.setText(clinician.getName());
         staffIDLabel.setText("Staff ID: " + Long.toString(clinician.getStaffID()));
         addressInput.setText(clinician.getWorkAddress());
         regionInput.setText(clinician.getRegion());
+    }
+
+    /**
+     * Update the window title when there are unsaved changes
+     */
+    @FXML
+    private void edited(){
+        titleBar.saved(false);
     }
 
     /**
@@ -174,6 +215,8 @@ public class ClinicianController implements Initializable {
             clinician.setRegion(regionInput.getText());
             updatedSuccessfully.setOpacity(1.0);
             fadeIn.playFromStart();
+            titleBar.setTitle(clinician.getName(), "Clinician", null);
+            statusIndicator.setStatus("Updated clinician details", false);
             return true;
         }
     }
@@ -228,6 +271,8 @@ public class ClinicianController implements Initializable {
         updateDisplay();
         redoWelcomeButton.setDisable(false);
         undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
+        titleBar.saved(false);
+        statusIndicator.setStatus("Undid last action", false);
     }
 
     /**
@@ -241,6 +286,8 @@ public class ClinicianController implements Initializable {
         updateDisplay();
         undoWelcomeButton.setDisable(false);
         redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
+        titleBar.saved(false);
+        statusIndicator.setStatus("Redid last action", false);
     }
 
     /**
@@ -351,17 +398,9 @@ public class ClinicianController implements Initializable {
         });
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
+        profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
-
-
-        fadeIn.setNode(updatedSuccessfully);
-        fadeIn.setDelay(Duration.millis(1000));
-        fadeIn.setFromValue(1.0);
-        fadeIn.setToValue(0.0);
-        fadeIn.setCycleCount(0);
-        fadeIn.setAutoReverse(false);
 
         profileTable.setItems(currentPage);
 
@@ -414,6 +453,7 @@ public class ClinicianController implements Initializable {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
+                            userWindowController.setTitleBar(stage);
                             Main.setCurrentUser(row.getItem());
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
@@ -422,7 +462,9 @@ public class ClinicianController implements Initializable {
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
                             userWindowController.showWaitingListButton();
-                            Main.medicationsViewForClinician();
+                            Main.controlViewForClinician();
+                            Main.medicalHistoryDiseasesViewForClinician();
+                            Main.medicalHistoryProceduresViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
@@ -465,6 +507,8 @@ public class ClinicianController implements Initializable {
                 }
             }
         });
+        statusIndicator.setStatusBar(statusBar);
+        titleBar.setStage(Main.getStage());
     }
 
     /**

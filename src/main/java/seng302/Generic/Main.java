@@ -1,17 +1,32 @@
 package seng302.Generic;
 
+import com.google.gson.*;
+
+import java.io.*;
+import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.util.*;
+
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.*;
+
 import seng302.GUI.TFScene;
 import seng302.TUI.CommandLineInterface;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.GUI.Controllers.UserWindowController;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +58,8 @@ public class Main extends Application {
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
     private static TransplantWaitingListController transplantWaitingListController;
+    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
     private static String dialogStyle;
@@ -67,10 +84,13 @@ public class Main extends Application {
         userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
 
+        medicalHistoryDiseasesController.setCurrentUser(currentUser);
+        medicalHistoryProceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
 
         medicationsController.initializeUser(currentUser);
+        controlViewForUser();
     }
 
     public static void addCurrentToMedicationUndoStack() {
@@ -82,17 +102,64 @@ public class Main extends Application {
     }
 
     /**
-     * Sets the medications view to be unable to edit for a user.
+     * Adds the current user to the waiting list undo stack.
      */
-    public static void medicationsViewForUser() {
-        medicationsController.setControlsShown(false);
+    public static void addCurrentToWaitingListUndoStack() {
+        userWindowController.addCurrentToWaitingListUndoStack();
     }
 
     /**
-     * Sets the medications view to be able to edit for a clinican.
+     * Calls the function which updates the waiting list pane.
      */
-    public static void medicationsViewForClinician() {
+    public static void updateWaitingList() {
+        waitingListController.populateWaitingList();
+
+    }
+
+    /**
+     * Sets which controls for each panel are visible to the user.
+     */
+    public static void controlViewForUser() {
+        medicationsController.setControlsShown(false);
+        userWindowController.setControlsShown(false);
+        waitingListController.setControlsShown(false);
+    }
+
+    /**
+     * Sets which controls for each panel are visible to the clinician.
+     */
+    public static void controlViewForClinician() {
         medicationsController.setControlsShown(true);
+        userWindowController.setControlsShown(true);
+        waitingListController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history diseases view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryDiseasesViewForDonor() {
+        medicalHistoryDiseasesController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history view diseases to be able to edit for a clinican.
+     */
+    public static void medicalHistoryDiseasesViewForClinician() {
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history procedures view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryProceduresViewForDonor() {
+        medicalHistoryProceduresController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history procedures view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryProceduresViewForClinician() {
+        medicalHistoryProceduresController.setControlsShown(true);
     }
 
     public static void setCurrentUserForAccountSettings(User currentUser) {
@@ -115,6 +182,14 @@ public class Main extends Application {
 
     public static void setMedicationsController(MedicationsController medicationsController) {
         Main.medicationsController = medicationsController;
+    }
+
+    public static void setMedicalHistoryDiseasesController(MedicalHistoryDiseasesController medicalHistoryDiseasesController) {
+        Main.medicalHistoryDiseasesController = medicalHistoryDiseasesController;
+    }
+
+    public static void setMedicalHistoryProceduresController(MedicalHistoryProceduresController medicalHistoryProceduresController) {
+        Main.medicalHistoryProceduresController = medicalHistoryProceduresController;
     }
 
     public static void setWaitingListController(WaitingListController waitingListController) {
@@ -157,6 +232,10 @@ public class Main extends Application {
 
     public static void setClinicianAccountSettingsEnterEvent() {
         clinicianAccountSettingsController.setEnterEvent();
+    }
+
+    public static WaitingListController getWaitingListController(){
+        return waitingListController;
     }
 
     /**
@@ -366,6 +445,7 @@ public class Main extends Application {
         Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
         Main.stage = stage;
+        stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {
             for(Stage userWindow:cliniciansUserWindows){
