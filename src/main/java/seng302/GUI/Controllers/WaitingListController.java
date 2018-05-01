@@ -14,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.controlsfx.control.PropertySheet;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
 import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -67,6 +69,9 @@ public class WaitingListController implements Initializable {
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
     private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
 
+    public StatusIndicator statusIndicator = new StatusIndicator();
+    private TitleBar titleBar;
+
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
      * @param user The user
@@ -99,7 +104,7 @@ public class WaitingListController implements Initializable {
             }
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
-                statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
+                //statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
             }
             populateWaitingList();
 
@@ -107,6 +112,7 @@ public class WaitingListController implements Initializable {
         populateOrgansComboBox();
 
     }
+
 
 
     /**
@@ -123,11 +129,22 @@ public class WaitingListController implements Initializable {
             currentUser.getWaitingListItems().add(new WaitingListItem(waitingListItemSelected));
             currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).deregisterOrgan();
             populateWaitingList();
-            statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
+            //statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
         }
         populateOrgansComboBox();
 
     }
+
+
+    public void setStatusIndicator(StatusIndicator statusIndicator){
+        this.statusIndicator = statusIndicator;
+    }
+
+
+    public void setTitleBar(TitleBar titleBar){
+        this.titleBar = titleBar;
+    }
+
 
     /**
      * Removes any currently registered organs from the combo box, as an already registered organ cannot be registered again.
