@@ -134,6 +134,7 @@ public class ClinicianController implements Initializable {
     public ClinicianController() {
         this.titleBar = new TitleBar();
         titleBar.setStage(Main.getStage());
+        
     }
 
     public void setTitle(){
