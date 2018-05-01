@@ -179,7 +179,7 @@ public class TransplantWaitingListController implements Initializable {
                             Main.setCurrentUser(Main.getUserById(row.getItem().getId()));
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();
-                            Main.medicationsViewForClinician();
+                            Main.controlViewForClinician();
 
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);

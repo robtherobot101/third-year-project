@@ -270,7 +270,7 @@ public class MedicationsController extends PageController implements Initializab
                 LinkedList<String> symptoms = makeComparison(drugA, drugB);
                 interactionsTitleLabel.setText(String.format("Interactions between %s and %s", drugA, drugB));
                 if (symptoms.isEmpty()) {
-                    interactionsContentLabel.setText("No interactions found.");
+                    interactionsContentLabel.setText("No interactions.");
                 } else {
                     interactionsContentLabel.setText(String.join("\n", symptoms));
                 }
@@ -295,6 +295,8 @@ public class MedicationsController extends PageController implements Initializab
      */
     private LinkedList<String> makeComparison(String drugA, String drugB) {
         LinkedList<String> symptoms = new LinkedList<>();
+        drugA = drugA.replace(' ', '-');
+        drugB = drugB.replace(' ', '-');
         DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
         // Check to see if the api call was successful
         if (!result.getError()) {

@@ -72,6 +72,7 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
+
     /**
      * Class to serialize LocalDates without requiring reflective access
      */
@@ -135,6 +136,7 @@ public class Main extends Application {
         waitingListController.populateWaitingList();
 
         medicationsController.initializeUser(currentUser);
+        controlViewForUser();
     }
 
     public static void addCurrentToMedicationUndoStack() {
@@ -146,17 +148,36 @@ public class Main extends Application {
     }
 
     /**
-     * Sets the medications view to be unable to edit for a user.
+     * Adds the current user to the waiting list undo stack.
      */
-    public static void medicationsViewForUser() {
-        medicationsController.setControlsShown(false);
+    public static void addCurrentToWaitingListUndoStack() {
+        userWindowController.addCurrentToWaitingListUndoStack();
     }
 
     /**
-     * Sets the medications view to be able to edit for a clinican.
+     * Calls the function which updates the waiting list pane.
      */
-    public static void medicationsViewForClinician() {
+    public static void updateWaitingList() {
+        waitingListController.populateWaitingList();
+
+    }
+
+    /**
+     * Sets which controls for each panel are visible to the user.
+     */
+    public static void controlViewForUser() {
+        medicationsController.setControlsShown(false);
+        userWindowController.setControlsShown(false);
+        waitingListController.setControlsShown(false);
+    }
+
+    /**
+     * Sets which controls for each panel are visible to the clinician.
+     */
+    public static void controlViewForClinician() {
         medicationsController.setControlsShown(true);
+        userWindowController.setControlsShown(true);
+        waitingListController.setControlsShown(true);
     }
 
     /**
@@ -321,6 +342,10 @@ public class Main extends Application {
             }
         }
         return found;
+    }
+
+    public static WaitingListController getWaitingListController(){
+        return waitingListController;
     }
 
     /**

@@ -189,6 +189,9 @@ public class User {
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
+        this.waitingListItems.addAll(user.waitingListItems);
+        this.currentMedications.addAll(user.currentMedications);
+        this.historicMedications.addAll(user.historicMedications);
         this.currentDiseases = new ArrayList<>();
         this.currentDiseases.addAll(user.getCurrentDiseases());
         this.curedDiseases = new ArrayList<>();
@@ -221,6 +224,7 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
+        // TODO - ask what this is
         waitingListItems.addAll(waitingListItems);
         currentDiseases.clear();
         currentDiseases.addAll(user.getCurrentDiseases());
@@ -233,6 +237,15 @@ public class User {
 
         previousProcedures.clear();
         previousProcedures.addAll(user.getPreviousProcedures());
+    }
+
+    /**
+     * Copies all items in the given users waiting list and adds them to the current user.
+     * @param user the user being copied.
+     */
+    public void copyWaitingListsFrom(User user) {
+        waitingListItems.clear();
+        waitingListItems.addAll(user.getWaitingListItems());
     }
 
     public boolean fieldsEqual(User user) {
@@ -331,9 +344,7 @@ public class User {
 
 
     public String getAgeString() {
-        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
-        double years = days/365.00;
-        String age = String.format("%.1f", years);
+        String age = String.format("%.1f", getAgeDouble());
         return age + " years";
     }
 
@@ -489,6 +500,20 @@ public class User {
 
     public String toString() {
         return getString(false);
+    }
+
+    public Boolean isDonor() {
+        return !organs.isEmpty();
+    }
+
+    public boolean isReceiver() {
+        boolean receiver = false;
+        for (WaitingListItem item : waitingListItems){
+            if (item.getOrganDeregisteredDate() == null){
+                receiver = true;
+            }
+        }
+        return receiver;
     }
 
     public ArrayList<Disease> getCurrentDiseases() {

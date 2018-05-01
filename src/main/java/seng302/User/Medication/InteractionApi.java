@@ -7,9 +7,13 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Requests interactions from the medication interaction API
+ */
 public class InteractionApi {
-    private String serverErr = "Internal server error.";
-    private String emptyReportErr = "No report comparing the two medications exists.";
+    private String serverErr = "Could not retrieve interaction symptoms (an error occurred on the server).";
+    private String emptyReportErr = "Could not retrieve interaction symptoms (no information available).";
+
 
     /**
      * Takes two drug names as Strings and returns a Json String from the
@@ -20,9 +24,11 @@ public class InteractionApi {
      */
     public String interactions(String drugA, String drugB) {
         String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
+        System.out.println("RESULT: " + result);
         if (result.equals(serverErr) || result.equals(emptyReportErr)){
             result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugB, drugA));
         }
+
         return result;
     }
 
