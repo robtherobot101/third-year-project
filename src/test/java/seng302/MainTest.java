@@ -240,7 +240,6 @@ public class MainTest {
         assertEquals(3 + 5,Main.scoreUserOnSearch(user, tokens));
     }
 
-
     @After
     public void tearDown() {
         Main.users = new ArrayList<>();

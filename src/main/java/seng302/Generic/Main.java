@@ -382,6 +382,33 @@ public class Main extends Application {
         return 0;
     }
 
+    public static ArrayList<User> getUsersByNameAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User user: users){
+            if(scoreUserOnSearch(user, tokens) > 0){
+                matched.add(user);
+            }
+        }
+        Collections.sort(matched, new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                Integer o1Score= scoreUserOnSearch(o1, tokens);
+                Integer o2Score = scoreUserOnSearch(o2, tokens);
+
+                int scoreComparison = o2Score.compareTo(o1Score);
+                if(scoreComparison == 0){
+                    return o1.getName().compareTo(o2.getName());
+                }
+                return scoreComparison;
+            }
+        });
+        return matched;
+    }
 
     /**
      * Returns the token which matches the largest part of name exactly. Tokens which

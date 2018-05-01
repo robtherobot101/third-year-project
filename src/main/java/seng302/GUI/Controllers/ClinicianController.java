@@ -305,10 +305,10 @@ public class ClinicianController implements Initializable {
      * @param searchTerm the search term
      */
     public void updateFoundUsers(String searchTerm){
-        //usersFound = Main.getUsersByNameAlternative(searchTerm);
+        usersFound = Main.getUsersByNameAlternative(searchTerm);
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
-        //displayPage(resultsPerPage);
+        displayPage(resultsPerPage);
     }
 
     public void populateNResultsComboBox(int numberOfSearchResults){
