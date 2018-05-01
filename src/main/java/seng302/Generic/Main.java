@@ -130,7 +130,7 @@ public class Main extends Application {
         userWindowController.populateHistoryTable();
 
         medicalHistoryDiseasesController.setCurrentUser(currentUser);
-        //medicalHistoryProceduresController.setCurrentUser(currentUser);
+        medicalHistoryProceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
 
@@ -153,6 +153,8 @@ public class Main extends Application {
         medicationsController.setControlsShown(false);
         userWindowController.setControlsShown(false);
         waitingListController.setControlsShown(false);
+        medicalHistoryProceduresController.setControlsShown(false);
+        medicalHistoryDiseasesController.setControlsShown(false);
     }
 
     /**
@@ -162,6 +164,8 @@ public class Main extends Application {
         medicationsController.setControlsShown(true);
         userWindowController.setControlsShown(true);
         waitingListController.setControlsShown(true);
+        medicalHistoryProceduresController.setControlsShown(true);
+        medicalHistoryDiseasesController.setControlsShown(true);
     }
 
     /**

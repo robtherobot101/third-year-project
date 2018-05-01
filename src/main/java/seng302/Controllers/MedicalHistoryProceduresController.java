@@ -481,8 +481,8 @@ public class MedicalHistoryProceduresController implements Initializable {
         descriptionInput.setVisible(shown);
         newProcedureDateLabel.setVisible(shown);
         newProcedureLabel.setVisible(shown);
-        pendingProceduresLabel.setVisible(shown);
-        previousProceduresLabel.setVisible(shown);
+        pendingProceduresLabel.setVisible(!shown);
+        previousProceduresLabel.setVisible(!shown);
         addNewProcedureButton.setVisible(shown);
         pendingProcedureTableView.setDisable(!shown);
         previousProcedureTableView.setDisable(!shown);

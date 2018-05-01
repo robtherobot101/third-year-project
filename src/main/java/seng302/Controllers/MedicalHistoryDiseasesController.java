@@ -55,6 +55,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
     private Button deleteDiseaseButton;
     @FXML
     private Button saveDiseaseButton;
+    @FXML
+    private Button todayButton;
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
 
@@ -697,6 +699,7 @@ public class MedicalHistoryDiseasesController implements Initializable {
         deleteDiseaseButton.setVisible(shown);
         saveDiseaseButton.setVisible(shown);
         isCuredCheckBox.setVisible(shown);
+        todayButton.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
     }

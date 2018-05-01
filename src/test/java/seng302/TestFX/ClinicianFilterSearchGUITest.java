@@ -10,7 +10,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         defaultTestSetup();
     }
 
-    
+
 
 
 }
