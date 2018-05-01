@@ -10,13 +10,17 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import seng302.Core.*;
-import seng302.Files.History;
+import seng302.Generic.*;
+import seng302.User.Attribute.BloodType;
+import seng302.User.Attribute.Gender;
+import seng302.Generic.History;
 
 import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.logging.*;
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -58,37 +62,37 @@ public class CommandLineInterface {
             } while (nextCommand.length == 0);
             switch (nextCommand[0].toLowerCase()) {
                 case "add":
-                    success = addDonor(nextCommand);
+                    success = addUser(nextCommand);
                     break;
                 case "addorgan":
                     success = addOrgan(nextCommand);
                     break;
                 case "delete":
-                    success = deleteDonor(nextCommand);
+                    success = deleteUser(nextCommand);
                     break;
                 case "deleteorgan":
                     success = deleteOrgan(nextCommand);
                     break;
                 case "set":
-                    success = setDonorAttribute(nextCommand);
+                    success = setUserAttribute(nextCommand);
                     break;
                 case "describe":
-                    success = describeDonor(nextCommand);
+                    success = describeUser(nextCommand);
                     break;
                 case "describeorgans":
-                    success = listDonorOrgans(nextCommand);
+                    success = listUserOrgans(nextCommand);
                     break;
                 case "list":
-                    success = listDonors(nextCommand);
+                    success = listUsers(nextCommand);
                     break;
                 case "listorgans":
                     success = listOrgans(nextCommand);
                     break;
                 case "import":
-                    success = importDonors(nextCommand);
+                    success = importUsers(nextCommand);
                     break;
                 case "save":
-                    success = saveDonors(nextCommand);
+                    success = saveUsers(nextCommand);
                     break;
                 case "help":
                     success = showHelp(nextCommand);
@@ -136,16 +140,16 @@ public class CommandLineInterface {
     }
 
     /**
-     * Creates a new donor with a name and date of birth.
+     * Creates a new user with a name and date of birth.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean addDonor(String[] nextCommand) {
+    private boolean addUser(String[] nextCommand) {
         if (nextCommand.length == 3) {
             try {
-                Main.donors.add(new Donor(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], Donor.dateFormat)));
-                System.out.println("New donor created.");
+                Main.users.add(new User(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], User.dateFormat)));
+                System.out.println("New user created.");
                 return true;
             } catch (DateTimeException e) {
                 System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
@@ -155,8 +159,8 @@ public class CommandLineInterface {
             nextCommand = String.join(" ", nextCommand).split("\"");
             if (nextCommand.length == 3) {
                 try {
-                    Main.donors.add(new Donor(nextCommand[1], LocalDate.parse(date, Donor.dateFormat)));
-                    System.out.println("New donor added.");
+                    Main.users.add(new User(nextCommand[1], LocalDate.parse(date, User.dateFormat)));
+                    System.out.println("New user added.");
                     return true;
                 } catch (DateTimeException e) {
                     System.out.println("Please enter a valid date of birth in the format dd/mm/yyyy.");
@@ -171,16 +175,16 @@ public class CommandLineInterface {
     }
 
     /**
-     * Adds an organ object to a donors list of available organs.
+     * Adds an organ object to a users list of available organs.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
     private boolean addOrgan(String[] nextCommand) {
-        Donor toSet;
+        User toSet;
         if (nextCommand.length == 3) {
             try {
-                toSet = Main.getDonorById(Long.parseLong(nextCommand[1]));
+                toSet = Main.getUserById(Long.parseLong(nextCommand[1]));
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid ID number.");
                 return false;
@@ -191,7 +195,7 @@ public class CommandLineInterface {
         }
 
         if (toSet == null) {
-            System.out.println(String.format("Donor with ID %s not found.", nextCommand[1]));
+            System.out.println(String.format("User with ID %s not found.", nextCommand[1]));
             return false;
         }
         try {
@@ -205,30 +209,30 @@ public class CommandLineInterface {
     }
 
     /**
-     * Ask for confirmation to delete the specified donor, and then delete it if the user confirms the action.
+     * Ask for confirmation to delete the specified user, and then delete it if the user confirms the action.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    public boolean deleteDonor(String[] nextCommand) {
+    public boolean deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
                 long id = Long.parseLong(nextCommand[1]);
-                Donor donor = Main.getDonorById(id);
-                if (donor == null) {
-                    System.out.println(String.format("Donor with ID %d not found.", id));
+                User user = Main.getUserById(id);
+                if (user == null) {
+                    System.out.println(String.format("User with ID %d not found.", id));
                     return false;
                 }
-                String nextLine = scanner.readLine(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", donor.getName(), donor.getId
+                String nextLine = scanner.readLine(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId
                         ()));
                 while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
                     nextLine = scanner.readLine("Answer not recognised. Please enter y or n: ");
                 }
                 if (nextLine.equals("y")) {
-                    Main.donors.remove(donor);
-                    System.out.println("Donor removed. This change will permanent once the donor list is saved.");
+                    Main.users.remove(user);
+                    System.out.println("User removed. This change will permanent once the user list is saved.");
                 } else {
-                    System.out.println("Donor was not removed.");
+                    System.out.println("User was not removed.");
                 }
                 return true;
             } catch (NumberFormatException e) {
@@ -241,16 +245,16 @@ public class CommandLineInterface {
     }
 
     /**
-     * Deletes an organ object from a donors available organ set, if it exists.
+     * Deletes an organ object from a users available organ set, if it exists.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
     private boolean deleteOrgan(String[] nextCommand) {
-        Donor toSet;
+        User toSet;
         if (nextCommand.length == 3) {
             try {
-                toSet = Main.getDonorById(Long.parseLong(nextCommand[1]));
+                toSet = Main.getUserById(Long.parseLong(nextCommand[1]));
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid ID number.");
                 return false;
@@ -261,7 +265,7 @@ public class CommandLineInterface {
         }
 
         if (toSet == null) {
-            System.out.println(String.format("Donor with ID %s not found.", nextCommand[1]));
+            System.out.println(String.format("User with ID %s not found.", nextCommand[1]));
             return false;
         }
         try {
@@ -275,12 +279,12 @@ public class CommandLineInterface {
     }
 
     /**
-     * Sets a new value for one attribute of a donor.
+     * Sets a new value for one attribute of a user.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean setDonorAttribute(String[] nextCommand) {
+    private boolean setUserAttribute(String[] nextCommand) {
         long id;
         String attribute, value;
         if (nextCommand.length >= 4 && nextCommand[2].toLowerCase().equals("name") && nextCommand[3].contains("\"")) {
@@ -312,9 +316,9 @@ public class CommandLineInterface {
             return false;
         }
 
-        Donor toSet = Main.getDonorById(id);
+        User toSet = Main.getUserById(id);
         if (toSet == null) {
-            System.out.println(String.format("Donor with ID %d not found.", id));
+            System.out.println(String.format("User with ID %d not found.", id));
             return false;
         }
         switch (attribute.toLowerCase()) {
@@ -324,7 +328,7 @@ public class CommandLineInterface {
                 return true;
             case "dateofbirth":
                 try {
-                    toSet.setDateOfBirth(LocalDate.parse(value, Donor.dateFormat));
+                    toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
                     System.out.println("New date of birth set.");
                     return true;
                 } catch (DateTimeException e) {
@@ -333,7 +337,7 @@ public class CommandLineInterface {
                 return false;
             case "dateofdeath":
                 try {
-                    toSet.setDateOfDeath(LocalDate.parse(value, Donor.dateFormat));
+                    toSet.setDateOfDeath(LocalDate.parse(value, User.dateFormat));
                     System.out.println("New date of death set.");
                     return true;
                 } catch (DateTimeException e) {
@@ -402,12 +406,12 @@ public class CommandLineInterface {
     }
 
     /**
-     * Searches for donors and displays information about them.
+     * Searches for users and displays information about them.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean describeDonor(String[] nextCommand) {
+    private boolean describeUser(String[] nextCommand) {
         String idString;
         if (nextCommand.length > 1 && nextCommand[1].contains("\"")) {
             idString = String.join(" ", nextCommand).split("\"")[1];
@@ -419,20 +423,20 @@ public class CommandLineInterface {
         }
 
         try {
-            Donor toDescribe = Main.getDonorById(Long.parseLong(idString));
+            User toDescribe = Main.getUserById(Long.parseLong(idString));
             if (toDescribe == null) {
-                System.out.println(String.format("Donor with ID %s not found.", idString));
+                System.out.println(String.format("User with ID %s not found.", idString));
             } else {
                 System.out.println(toDescribe);
             }
         } catch (NumberFormatException e) {
-            ArrayList<Donor> toDescribe = Main.getDonorByName(idString.split(","));
+            ArrayList<User> toDescribe = Main.getUserByName(idString.split(","));
             if (toDescribe.size() == 0) {
-                System.out.println(String.format("No donors with names matching %s were found.", idString));
+                System.out.println(String.format("No users with names matching %s were found.", idString));
             } else {
-                System.out.println(Donor.tableHeader);
-                for (Donor donor : toDescribe) {
-                    System.out.println(donor.getString(true));
+                System.out.println(User.tableHeader);
+                for (User user : toDescribe) {
+                    System.out.println(user.getString(true));
                 }
             }
         }
@@ -440,22 +444,22 @@ public class CommandLineInterface {
     }
 
     /**
-     * Lists a specific donor and their available organs. If they have none a message is displayed.
+     * Lists a specific user and their available organs. If they have none a message is displayed.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean listDonorOrgans(String[] nextCommand) {
+    private boolean listUserOrgans(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
-                Donor donor = Main.getDonorById(Long.parseLong(nextCommand[1]));
-                if (donor == null) {
-                    System.out.println(String.format("Donor with ID %s not found.", nextCommand[1]));
-                } else if (!donor.getOrgans().isEmpty()) {
-                    System.out.println(donor.getName() + ": " + donor.getOrgans());
+                User user = Main.getUserById(Long.parseLong(nextCommand[1]));
+                if (user == null) {
+                    System.out.println(String.format("User with ID %s not found.", nextCommand[1]));
+                } else if (!user.getOrgans().isEmpty()) {
+                    System.out.println(user.getName() + ": " + user.getOrgans());
                     return true;
                 } else {
-                    System.out.println("No organs available from donor!");
+                    System.out.println("No organs available from user!");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid ID number.");
@@ -467,20 +471,20 @@ public class CommandLineInterface {
     }
 
     /**
-     * Displays a table containing information about all donors.
+     * Displays a table containing information about all users.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean listDonors(String[] nextCommand) {
+    private boolean listUsers(String[] nextCommand) {
         if (nextCommand.length == 1) {
-            if (Main.donors.size() > 0) {
-                System.out.println(Donor.tableHeader);
-                for (Donor donor : Main.donors) {
-                    System.out.println(donor.getString(true));
+            if (Main.users.size() > 0) {
+                System.out.println(User.tableHeader);
+                for (User user : Main.users) {
+                    System.out.println(user.getString(true));
                 }
             } else {
-                System.out.println("There are no donors to list. Please add or import some before using list.");
+                System.out.println("There are no users to list. Please add or import some before using list.");
             }
             return true;
         } else {
@@ -490,7 +494,7 @@ public class CommandLineInterface {
     }
 
     /**
-     * Lists all donors who have at least 1 organ to donate and their available organs.
+     * Lists all users who have at least 1 organ to donate and their available organs.
      * If none exist, a message is displayed.
      *
      * @param nextCommand The command entered by the user
@@ -499,14 +503,14 @@ public class CommandLineInterface {
     private boolean listOrgans(String[] nextCommand) {
         if (nextCommand.length == 1) {
             boolean organsAvailable = false;
-            for (Donor donor : Main.donors) {
-                if (!donor.getOrgans().isEmpty()) {
-                    System.out.println(donor.getName() + ": " + donor.getOrgans());
+            for (User user : Main.users) {
+                if (!user.getOrgans().isEmpty()) {
+                    System.out.println(user.getName() + ": " + user.getOrgans());
                     organsAvailable = true;
                 }
             }
             if (!organsAvailable) {
-                System.out.println("No organs available from any donor!");
+                System.out.println("No organs available from any user!");
             }
             return true;
         } else {
@@ -516,12 +520,12 @@ public class CommandLineInterface {
     }
 
     /**
-     * Clear the donor list and load a new one from a file.
+     * Clear the user list and load a new one from a file.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean importDonors(String[] nextCommand) {
+    private boolean importUsers(String[] nextCommand) {
         if (nextCommand.length >= 2) {
             boolean relative = nextCommand[1].equals("-r");
             String path = null;
@@ -538,7 +542,7 @@ public class CommandLineInterface {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
                 if (Main.importUsers(path, true)) {
-                    System.out.println("Donors imported from " + path + ".");
+                    System.out.println("User imported from " + path + ".");
                     return true;
                 } else {
                     System.out.println("Failed to import from " + path + ". Make sure the program has access to this file.");
@@ -553,12 +557,12 @@ public class CommandLineInterface {
     }
 
     /**
-     * Save the donor list to a file.
+     * Save the user list to a file.
      *
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean saveDonors(String[] nextCommand) {
+    private boolean saveUsers(String[] nextCommand) {
         if (nextCommand.length >= 2) {
             boolean relative = nextCommand[1].equals("-r");
             String path = null;
@@ -575,7 +579,7 @@ public class CommandLineInterface {
                     path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
                 if (Main.saveUsers(path, true)) {
-                    System.out.println("Donors saved to " + path + ".");
+                    System.out.println("User saved to " + path + ".");
                     return true;
                 } else {
                     System.out.println("Failed to save to " + path + ". Make sure the program has access to this file.");
@@ -614,7 +618,7 @@ public class CommandLineInterface {
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
                 case "add":
-                    System.out.println("This command adds a new donor with a name and date of birth.\n"
+                    System.out.println("This command adds a new user with a name and date of birth.\n"
                             + "The syntax is: add <name> <date of birth>\n"
                             + "Rules:\n"
                             + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
@@ -623,7 +627,7 @@ public class CommandLineInterface {
                             + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
                     break;
                 case "addorgan":
-                    System.out.println("This command adds one organ to donate to a donor. To find the id of a donor, use the list and "
+                    System.out.println("This command adds one organ to donate to a user. To find the id of a user, use the list and "
                             + "describe commands.\n"
                             + "The syntax is: addOrgan <id> <organ>\n"
                             + "Rules:\n"
@@ -633,15 +637,15 @@ public class CommandLineInterface {
                             + "Example valid usage: addOrgan 0 skin");
                     break;
                 case "delete":
-                    System.out.println("This command deletes one donor. To find the id of a donor, use the list and describe commands.\n"
+                    System.out.println("This command deletes one user. To find the id of a user, use the list and describe commands.\n"
                             + "The syntax is: delete <id>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
-                            + "-You will be asked to confirm that you want to delete this donor\n"
+                            + "-You will be asked to confirm that you want to delete this user\n"
                             + "Example valid usage: delete 1");
                     break;
                 case "deleteorgan":
-                    System.out.println("This command removes one offered organ from a donor. To find the id of a donor, use the list and "
+                    System.out.println("This command removes one offered organ from a user. To find the id of a user, use the list and "
                             + "describe commands.\n"
                             + "The syntax is: deleteOrgan <id> <organ>\n"
                             + "Rules:\n"
@@ -651,14 +655,14 @@ public class CommandLineInterface {
                             + "Example valid usage: deleteOrgan 5 kidney");
                     break;
                 case "set":
-                    System.out.println("This command sets one attribute (apart from organs to be donated) of a donor. To find the id of a donor, "
+                    System.out.println("This command sets one attribute (apart from organs to be donated) of a user. To find the id of a user, "
                             + "use the list and describe commands. To add or delete organs, instead use the addOrgan and deleteOrgan commands.\n"
                             + "The syntax is: set <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
                             + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
                             + "weight, bloodType, region, currentAddress\n"
-                            + "-If a name or names are used, all donors whose names contain the input names in order will be returned as matches\n"
+                            + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-The gender must be: male, female, or other\n"
                             + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
                             + "-The height and weight must be numbers that are larger than 0\n"
@@ -666,18 +670,18 @@ public class CommandLineInterface {
                             + "Example valid usage: set 2 bloodtype ab+");
                     break;
                 case "describe":
-                    System.out.println("This command searches donors and displays information about them. To find the id of a donor, use the list "
+                    System.out.println("This command searches users and displays information about them. To find the id of a user, use the list "
                             + "and describe commands.\n"
                             + "The syntax is: describe <id> OR describe <name>\n"
                             + "Rules:\n"
                             + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
                             + "-If a name or names are used, the names must be comma separated without a space around the comma (eg. drew,david)\n"
-                            + "-If a name or names are used, all donors whose names contain the input names in order will be returned as matches\n"
+                            + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
                             + "Example valid usage: describe \"andrew,son\'");
                     break;
                 case "describeorgans":
-                    System.out.println("This command displays the organs which a donor will donate or has donated. To find the id of a donor, "
+                    System.out.println("This command displays the organs which a user will donate or has donated. To find the id of a user, "
                             + "use the list and describe commands.\n"
                             + "The syntax is: describeOrgans <id>\n"
                             + "Rules:\n"
@@ -685,32 +689,32 @@ public class CommandLineInterface {
                             + "Example valid usage: describeOrgans 4");
                     break;
                 case "list":
-                    System.out.println("This command lists all information about all donors in a table.\n"
+                    System.out.println("This command lists all information about all users in a table.\n"
                             + "Example valid usage: list");
                     break;
                 case "listorgans":
-                    System.out.println("This command displays all of the organs that are currently offered by each donor. Donors that are "
+                    System.out.println("This command displays all of the organs that are currently offered by each user. User that are "
                             + "not yet offering any organs are not shown.\n"
                             + "Example valid usage: listOrgans");
                     break;
                 case "import":
-                    System.out.println("This command replaces all donor data in the system with an imported JSON object.\n"
+                    System.out.println("This command replaces all user data in the system with an imported JSON object.\n"
                             + "The syntax is: import [-r] <filename>\n"
                             + "Rules:\n"
                             + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                             + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
                             + "-The file must be of the same format as those saved from this application\n"
-                            + "Example valid usage: import -r ../donor_list_FINAL.txt");
+                            + "Example valid usage: import -r ../user_list_FINAL.txt");
                     break;
                 case "save":
-                    System.out.println("This command saves the current donor database to a file in JSON format.\n"
+                    System.out.println("This command saves the current user database to a file in JSON format.\n"
                             + "The syntax is: save [-r] <filepath>\n"
                             + "Rules:\n"
                             + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                             + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "Example valid usage: save -r \"new folder/donors.json\"");
+                            + "Example valid usage: save -r \"new folder/users.json\"");
                     break;
                 case "help":
                     System.out.println("This command displays information about how to use this program.\n"

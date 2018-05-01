@@ -7,7 +7,7 @@
     ],
     "dateOfBirth": "01/02/1998",
     "dateOfDeath": "01/11/4000",
-    "creationTime": "22/03/2018, 14:36:07",
+    "creationTime": "30/04/2018, 14:59:34",
     "gender": "MALE",
     "height": 12.1,
     "weight": 50.45,
@@ -15,16 +15,24 @@
     "id": 0,
     "currentAddress": "1235 abc Street",
     "region": "Canterbury",
-    "organs": []
+    "organs": [],
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
-      "Test Donor",
+      "Test User",
       "Testperson"
     ],
     "dateOfBirth": "01/04/1530",
     "dateOfDeath": "31/01/1565",
-    "creationTime": "22/03/2018, 14:36:07",
+    "creationTime": "30/04/2018, 14:59:34",
     "gender": "OTHER",
     "height": 1.234,
     "weight": 1.11111,
@@ -32,27 +40,43 @@
     "id": 1,
     "currentAddress": "street sample text",
     "region": "Auckland",
-    "organs": []
+    "organs": [],
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
       "Singlename"
     ],
     "dateOfBirth": "12/06/1945",
-    "creationTime": "22/03/2018, 14:36:07",
+    "creationTime": "30/04/2018, 14:59:34",
     "height": -1.0,
     "weight": -1.0,
     "id": 2,
-    "organs": []
+    "organs": [],
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
-      "Donor 2",
+      "User 2",
       "Person"
     ],
     "dateOfBirth": "01/12/1990",
     "dateOfDeath": "09/03/2090",
-    "creationTime": "22/03/2018, 14:36:07",
+    "creationTime": "30/04/2018, 14:59:34",
     "gender": "FEMALE",
     "height": 2.0,
     "weight": 60.0,
@@ -60,7 +84,15 @@
     "id": 3,
     "currentAddress": "Sample Address",
     "region": "Sample Region",
-    "organs": []
+    "organs": [],
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
@@ -71,7 +103,7 @@
     ],
     "dateOfBirth": "01/11/3000",
     "dateOfDeath": "01/11/4000",
-    "creationTime": "22/03/2018, 14:36:07",
+    "creationTime": "30/04/2018, 14:59:34",
     "gender": "OTHER",
     "height": 0.1,
     "weight": 12.4,
@@ -79,17 +111,33 @@
     "id": 4,
     "currentAddress": "Example Address 12345",
     "region": "Example region",
-    "organs": []
+    "organs": [],
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
       "extra"
     ],
     "dateOfBirth": "01/01/1000",
-    "creationTime": "22/03/2018, 14:36:07",
+    "creationTime": "30/04/2018, 14:59:34",
     "height": -1.0,
     "weight": -1.0,
     "id": 5,
-    "organs": []
+    "organs": [],
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   }
 ]

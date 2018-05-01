@@ -3,8 +3,8 @@ package seng302;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Core.Main;
-import seng302.Files.History;
+import seng302.Generic.Main;
+import seng302.Generic.History;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -34,7 +34,7 @@ public class HistoryTest {
     public void prepareFileStringTest() {
         String[] testCommand = new String[]{"list"};
         String result = History.prepareFileStringCLI(testCommand);
-        assertEquals(result.substring(25), "list null null null [Listed all donors.]");
+        assertEquals(result.substring(25), "list null null null [Listed all users.]");
     }
 
     @After
