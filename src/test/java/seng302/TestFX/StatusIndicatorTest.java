@@ -8,8 +8,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.GUI.StatusIndicator;
 import seng302.User.User;
@@ -17,20 +18,25 @@ import seng302.User.User;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
-class StatusIndicatorTest extends ApplicationTest {
+public class StatusIndicatorTest extends TestFXTest {
 
     private StatusBar statusBar;
     private StatusIndicator statusIndicator;
+
+    @BeforeClass
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
+    }
 
     @Override
     public void start(Stage stage) {
         statusBar = new StatusBar();
     }
 
-    @BeforeEach
+    @Before
     public void setUp() throws TimeoutException {
         Stage stage = registerPrimaryStage();
         statusBar = new StatusBar();
@@ -42,19 +48,19 @@ class StatusIndicatorTest extends ApplicationTest {
     }
 
     @Test
-    void setStatus() {
+    public void setStatus() {
         statusIndicator.setStatus("Status nominal", false);
         assertEquals("Status nominal", statusBar.getText());
-        assertEquals(0, statusBar.getProgress());
+        assertEquals(0, statusBar.getProgress(),0.0001);
         statusIndicator.setStatus("Working...", true);
         assertEquals("Working...", statusBar.getText());
-        assertEquals(ProgressBar.INDETERMINATE_PROGRESS, statusBar.getProgress());
+        assertEquals(ProgressBar.INDETERMINATE_PROGRESS, statusBar.getProgress(),0.0001);
     }
 
     @Test
-    void ready() {
+    public void ready() {
         statusIndicator.ready();
         assertEquals("Ready", statusBar.getText());
-        assertEquals(0, statusBar.getProgress());
+        assertEquals(0, statusBar.getProgress(),0.0001);
     }
 }

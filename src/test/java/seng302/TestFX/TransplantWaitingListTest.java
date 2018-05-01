@@ -21,9 +21,13 @@ public class TransplantWaitingListTest extends TestFXTest{
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        Main.users.clear();
         defaultTestSetup();
     }
+
+    @Before
+    public void setup() {
+        Main.users.clear();
+        }
 
     /**
      * Refreshes the currently selected receiver in both tables of Medical History.
@@ -184,6 +188,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#transplantList");
         verifyThat("#transplantPane", Node::isVisible);
         //verifyThat("#transplantPane", hasText("No content in table"));
+        sleep(1000);
         verifyThat("No content in table", isVisible());
     }
 

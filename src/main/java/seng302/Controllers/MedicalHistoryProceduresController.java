@@ -62,8 +62,6 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
-    private StatusIndicator statusIndicator;
-    private TitleBar titleBar;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

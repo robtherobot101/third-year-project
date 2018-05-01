@@ -20,6 +20,7 @@ import seng302.User.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -28,42 +29,15 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
-public class MedicalHistoryProceduresGUITest extends ApplicationTest {
+public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
-    private Main mainGUI;
-    private static final boolean runHeadless = true;
 
     private TableView<Procedure> pendingProcedureTableView, previousProcedureTableView;
     private Procedure pendingTableSelectedProcedure, previousTableSelectedProcedure;
 
     @BeforeClass
-    public static void setupSpec() throws Exception {
-        if (runHeadless) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1920x1080-32");
-        }
-        registerPrimaryStage();
-    }
-
-    @Before
-    public void setUp () throws Exception {
-
-    }
-
-    @After
-    public void tearDown () throws Exception {
-        FxToolkit.hideStage();
-        release(new KeyCode[]{});
-        release(new MouseButton[]{});
-    }
-
-    @Override
-    public void start (Stage stage) throws Exception {
-        mainGUI = new Main();
-        mainGUI.start(stage);
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     /**
@@ -85,7 +59,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
         // Checks if our test user already exists
         String[] names = new String[]{"Andrew", "French"};
-        ArrayList<User> results = mainGUI.getUserByName(names);
+        ArrayList<User> results = Main.getUserByName(names);
 
         // If it doesn't exist -> add the user
         if (results.isEmpty()) {
@@ -211,7 +185,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         enterMedicalHistoryProceduresView();
         clickOn("#summaryInput").write("Arm Transplant");
         clickOn("#descriptionInput").write("Transfer of arm");
-        clickOn("#dateOfProcedureInput").write("4/04/2002");
+        clickOn("#dateOfProcedureInput").write("4/04/1923");
         clickOn("#addNewProcedureButton");
 
         // Checks an alert dialog was presented -> this checks disease was not added
