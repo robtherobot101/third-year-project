@@ -47,6 +47,8 @@ public class TransplantWaitingListController implements Initializable {
     private ComboBox organSearchComboBox;
     @FXML
     private TextField regionSearchTextField;
+    @FXML
+    private Button deregisterReceiverButton;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
     private ObservableList<TransplantWaitingListItem> transplantList = FXCollections.observableArrayList();
@@ -113,6 +115,7 @@ public class TransplantWaitingListController implements Initializable {
             }
         }
         transplantTable.setItems(transplantList);
+        deregisterReceiverButton.setDisable(true);
     }
 
     /**
@@ -136,6 +139,7 @@ public class TransplantWaitingListController implements Initializable {
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
         transplantTable.setItems(transplantList);
+        deregisterReceiverButton.setDisable(true);
 
         Main.setTransplantWaitingListController(this);
 
@@ -156,6 +160,10 @@ public class TransplantWaitingListController implements Initializable {
         //listener for when text is input into the region search text box
         regionSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             updateFoundUsersWithFiltering(newValue, organSearchComboBox.getValue().toString());
+        });
+
+        transplantTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            deregisterReceiverButton.setDisable(false);
         });
 
 

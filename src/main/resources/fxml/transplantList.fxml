@@ -39,6 +39,6 @@
       </Label>
       <ComboBox fx:id="organSearchComboBox" layoutX="613.0" layoutY="84.0" onAction="#updateFoundUsersOnOrganChange" prefHeight="25.0" prefWidth="121.0" promptText="Organ" />
       <TextField fx:id="regionSearchTextField" layoutX="614.0" layoutY="118.0" prefHeight="25.0" prefWidth="121.0" promptText="Region" />
-      <Button fx:id="deregisterReceiverButton" layoutX="56.0" layoutY="108.0" mnemonicParsing="false" text="De-Register" />
+      <Button fx:id="deregisterReceiverButton" layoutX="56.0" layoutY="115.0" mnemonicParsing="false" text="De-Register" />
    </children>
 </AnchorPane>
