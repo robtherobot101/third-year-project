@@ -1,7 +1,7 @@
 package seng302.User;
 
-import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
+import seng302.Generic.IO;
 
 /**
  * This class contains information about clinicians.
@@ -14,7 +14,7 @@ public class Clinician {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = Main.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
     }
@@ -53,6 +53,12 @@ public class Clinician {
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public void copyFieldsFrom(Clinician clinician) {
+        this.name = clinician.name;
+        this.region = clinician.region;
+        this.workAddress = clinician.workAddress;
+    }
 
     @Override
     public String toString() {

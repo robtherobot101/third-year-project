@@ -1,8 +1,9 @@
 package seng302.Generic;
 
+import seng302.User.User;
+
 import java.io.*;
 import java.time.LocalDateTime;
-import seng302.User.User;
 
 public class History {
 
@@ -22,7 +23,7 @@ public class History {
      */
     public static PrintStream init() {
         try {
-            actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
+            actionHistory = new File(IO.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory, true);
             PrintStream out = new PrintStream(fout);
             out.println(User.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
@@ -177,7 +178,9 @@ public class History {
     public static String prepareFileStringGUI(long userId, String command){
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         User userInfo = Main.getUserById(userId);
-            switch(command) {
+        System.out.println("Command: "+command);
+
+        switch(command) {
                 case "login":
                     description = "[User " + userId + " logged in successfully.]";
                     break;
@@ -213,6 +216,9 @@ public class History {
                     break;
                 case "modifyUser":
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
+                    break;
+                case "waitinglist":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
                     break;
                 case "medications":
                     description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
@@ -256,7 +262,7 @@ public class History {
             // Always close files.
             bufferedReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found / initilized");
+            System.out.println("File not found / initialized");
         } catch (IOException e) {
             System.out.println("Error Reading file");
             e.printStackTrace();
@@ -275,12 +281,12 @@ public class History {
         String[] historyList = history.split("\n");
         String[][] userHistory = new String[historyList.length][6];
         int index = 0;
-        for(int i = 0; i < historyList.length; i++) {
-            String[] actionDetails = historyList[i].split(" ");
-            if(actionDetails[2].equals("====")) {
+        for (String action : historyList) {
+            String[] actionDetails = action.split(" ");
+            if (actionDetails[2].equals("====")) {
 
-            } else if(actionDetails[3].length() < 4) {
-                if(Long.parseLong(actionDetails[3]) == userid) {
+            } else if (actionDetails[3].length() < 4) {
+                if (Long.parseLong(actionDetails[3]) == userid) {
                     userHistory[index] = actionDetails;
                     index++;
                 }

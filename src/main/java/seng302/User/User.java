@@ -1,6 +1,10 @@
 package seng302.User;
 
-import java.lang.reflect.Array;
+import seng302.Generic.IO;
+import seng302.Generic.WaitingListItem;
+import seng302.User.Attribute.*;
+import seng302.User.Medication.Medication;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -9,6 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+
+import seng302.Core.Disease;
+import seng302.Core.Procedure;
 import seng302.Generic.Main;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
@@ -38,6 +45,10 @@ public class User {
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications;
     private ArrayList<Medication> historicMedications;
+    private ArrayList<Disease> currentDiseases;
+    private ArrayList<Disease> curedDiseases;
+    private ArrayList<Procedure> pendingProcedures;
+    private ArrayList<Procedure> previousProcedures;
 
     private ArrayList<WaitingListItem> waitingListItems;
 
@@ -52,10 +63,14 @@ public class User {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextId(true, LoginType.USER);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -70,10 +85,14 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextId(true, LoginType.USER);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -84,7 +103,6 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
-        System.out.println(getName());
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
@@ -97,10 +115,14 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextId(true, LoginType.USER);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
@@ -124,10 +146,14 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextId(true, LoginType.USER);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
     }
 
     /**
@@ -155,6 +181,15 @@ public class User {
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
+        this.waitingListItems.addAll(user.waitingListItems);
+        this.currentDiseases = new ArrayList<>();
+        this.currentDiseases.addAll(user.getCurrentDiseases());
+        this.curedDiseases = new ArrayList<>();
+        this.curedDiseases.addAll(user.getCuredDiseases());
+        this.pendingProcedures = new ArrayList<>();
+        this.pendingProcedures.addAll(user.getPendingProcedures());
+        this.previousProcedures = new ArrayList<>();
+        this.previousProcedures.addAll(user.getPreviousProcedures());
     }
 
     public void copyFieldsFrom(User user) {
@@ -179,7 +214,28 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
+        // TODO - ask what this is
         waitingListItems.addAll(waitingListItems);
+        currentDiseases.clear();
+        currentDiseases.addAll(user.getCurrentDiseases());
+
+        curedDiseases.clear();
+        curedDiseases.addAll(user.getCuredDiseases());
+
+        pendingProcedures.clear();
+        pendingProcedures.addAll(user.getPendingProcedures());
+
+        previousProcedures.clear();
+        previousProcedures.addAll(user.getPreviousProcedures());
+    }
+
+    /**
+     * Copies all items in the given users waiting list and adds them to the current user.
+     * @param user the user being copied.
+     */
+    public void copyWaitingListsFrom(User user) {
+        waitingListItems.clear();
+        waitingListItems.addAll(user.getWaitingListItems());
     }
 
     public boolean fieldsEqual(User user) {
@@ -278,9 +334,7 @@ public class User {
 
 
     public String getAgeString() {
-        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
-        double years = days/365.00;
-        String age = String.format("%.1f", years);
+        String age = String.format("%.1f", getAgeDouble());
         return age + " years";
     }
 
@@ -376,6 +430,23 @@ public class User {
 
     public void setHistoricMedications(ArrayList<Medication> historicMedications) { this.historicMedications = historicMedications; }
 
+    public ArrayList<Procedure> getPendingProcedures() {
+        return pendingProcedures;
+    }
+
+    public void setPendingProcedures(ArrayList<Procedure> pendingProcedures) {
+        this.pendingProcedures = pendingProcedures;
+    }
+
+    public ArrayList<Procedure> getPreviousProcedures() {
+        return previousProcedures;
+    }
+
+    public void setPreviousProcedures(ArrayList<Procedure> previousProcedures) {
+        this.previousProcedures = previousProcedures;
+    }
+
+
     /**
      * Get a string containing key information about the user. Can be formatted as a table row.
      *
@@ -419,5 +490,47 @@ public class User {
 
     public String toString() {
         return getString(false);
+    }
+
+    public ArrayList<Disease> getCurrentDiseases() {
+        return currentDiseases;
+    }
+
+    public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
+    public ArrayList<Disease> getCuredDiseases() {
+        return curedDiseases;
+    }
+
+    public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
+        this.curedDiseases = curedDiseases;
+    }
+
+    public Boolean isDonor() {
+        return !organs.isEmpty();
+    }
+
+    public boolean isReceiver() {
+        boolean receiver = false;
+        for (WaitingListItem item : waitingListItems){
+            if (item.getOrganDeregisteredDate() == null){
+                receiver = true;
+            }
+        }
+        return receiver;
+    }
+
+    public String getType(){
+        if(isDonor() && isReceiver()){
+            return "Donor/Receiver";
+        }else if(isDonor() && !isReceiver()){
+            return "Donor";
+        }else if(!isDonor() && isReceiver()){
+            return "Receiver";
+        }else{
+            return "Neither";
+        }
     }
 }

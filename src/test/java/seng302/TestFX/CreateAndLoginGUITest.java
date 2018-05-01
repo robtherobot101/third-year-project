@@ -1,15 +1,15 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.sql.Time;
-import java.util.concurrent.TimeoutException;
+import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.User.User;
+
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateAndLoginGUITest extends TestFXTest {
     @BeforeClass
@@ -69,14 +69,21 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
         clickOn("#createAccountButton");
         //Make sure the scene did not change
-        assertNotNull(lookup("#createAccountButton").query());
+
+        verifyThat("Passwords do not match", Node::isVisible);
+
+        //assertNotNull(lookup("#createAccountButton").query());
 
         //Now fix the mismatch and try again
-        clickOn("#passwordInput"); write("4");
+        clickOn("#passwordInput");
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.DELETE);
+        write("password1234");
+        //verifyThat("#passwordInput", hasText("password1234"));
         clickOn("#createAccountButton");
-        sleep(250);
+        //sleep(250);
         //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
         assertNull(lookup("#createAccountButton").query());
+        //verifyThat("#userDisplayText", Node::isVisible);
     }
 
     @Test

@@ -2,6 +2,7 @@ package seng302.GUI.Controllers;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,22 +14,24 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Generic.*;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.SmokerStatus;
+import org.controlsfx.control.StatusBar;
+import seng302.Controllers.MedicalHistoryDiseasesController;
+import seng302.Controllers.MedicalHistoryProceduresController;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TFScene;
+import seng302.GUI.TitleBar;
 import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.Attribute.*;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
-import seng302.GUI.TFScene;
-import seng302.User.User;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -36,12 +39,15 @@ import static seng302.Generic.Main.streamOut;
  * Saving, Undo, Redo, All input fields and more.
  */
 public class UserWindowController implements Initializable {
+    private TitleBar titleBar;
     @FXML
     private Label userDisplayText, settingAttributesLabel, ageLabel, bmiLabel, bloodPressureLabel, userHistoryLabel;
     @FXML
     private GridPane attributesGridPane, historyGridPane, background;
     @FXML
-    private AnchorPane medicationsPane, waitingListPane;
+    private AnchorPane medicationsPane, medicalHistoryDiseasesPane, medicalHistoryProceduresPane;
+    @FXML
+    private AnchorPane waitingListPane;
     @FXML
     private Pane welcomePane;
     @FXML
@@ -68,16 +74,35 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
+    private ArrayList<User> waitingListUndoStack = new ArrayList<>(), waitingListRedoStack = new ArrayList<>();
+    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private User currentUser;
 
+    @FXML
+    private StatusBar statusBar;
+    @FXML
+    private MedicationsController medicationsController;
+    @FXML
+    private MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    @FXML
+    private MedicalHistoryProceduresController medicalHistoryProceduresController;
+    @FXML
+    private WaitingListController waitingListController;
 
-    public ArrayList<User> getUserUndoStack() {
-        return attributeUndoStack;
+    public StatusIndicator statusIndicator = new StatusIndicator();
+
+
+    public UserWindowController(){
+        this.titleBar = new TitleBar();
+        titleBar.setStage(Main.getStage());
     }
 
-    public ArrayList<User> getUserRedoStack() {
-        return attributeRedoStack;
+    /**
+     * Set the stage the controller is associated with
+     * @param stage The stage on which the window is shown
+     */
+    public void setTitleBar(Stage stage){
+        titleBar.setStage(stage);
     }
 
     public User getCurrentUser() {
@@ -94,15 +119,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoBannerButton.setDisable(true);
         bloodPressureLabel.setText("");
-    }
-
-    /**
-     * Adds a user object to the user undo stack. This is called whenever a user saves any changes in the GUI.
-     *
-     * @param user user object being added to the top of the stack.
-     */
-    public void addUserToUndoStack(User user) {
-        attributeUndoStack.add(new User(user));
+        titleBar.setTitle(currentUser.getName(), "User", "Home");
     }
 
     /**
@@ -135,7 +152,7 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.medicationsViewForUser();
+        Main.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -179,6 +196,27 @@ public class UserWindowController implements Initializable {
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         bloodPressureTextField.textProperty().addListener((observable, oldValue, newValue) -> updateBloodPressure());
+
+        waitingListButton.setOnAction((ActionEvent event) -> {
+            showWaitingListPane();
+            Main.getWaitingListController().populateWaitingList();
+            Main.getWaitingListController().populateOrgansComboBox();
+        });
+
+        statusIndicator.setStatusBar(statusBar);
+
+        // Pass the status bar and title bar objects to the embedded controllers
+        medicationsController.setStatusIndicator(statusIndicator);
+        medicationsController.setTitleBar(titleBar);
+
+        medicalHistoryDiseasesController.setStatusIndicator(statusIndicator);
+        medicalHistoryDiseasesController.setTitleBar(titleBar);
+
+        medicalHistoryProceduresController.setStatusIndicator(statusIndicator);
+        medicalHistoryProceduresController.setTitleBar(titleBar);
+
+        waitingListController.setStatusIndicator(statusIndicator);
+        waitingListController.setTitleBar(titleBar);
     }
 
     /**
@@ -194,9 +232,11 @@ public class UserWindowController implements Initializable {
     public void attributeFieldUnfocused() {
         User oldFields = new User(currentUser);
         if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
-            addUserToUndoStack(oldFields);
+            attributeUndoStack.add(new User(oldFields));
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
+            titleBar.saved(false);
+            statusIndicator.setStatus("Edited user details", false);
         }
     }
 
@@ -206,6 +246,15 @@ public class UserWindowController implements Initializable {
     public void addCurrentToMedicationUndoStack() {
         medicationUndoStack.add(new User(currentUser));
         medicationRedoStack.clear();
+        setUndoRedoButtonsDisabled(false, true);
+    }
+
+    /**
+     * Adds the current user object to the waiting list undo stack.
+     */
+    public void addCurrentToWaitingListUndoStack() {
+        waitingListUndoStack.add(new User(currentUser));
+        waitingListRedoStack.clear();
         setUndoRedoButtonsDisabled(false, true);
     }
 
@@ -233,9 +282,12 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(true);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
+        titleBar.setTitle(currentUser.getName(), "User", "Action History");
     }
 
 
@@ -243,10 +295,13 @@ public class UserWindowController implements Initializable {
     public void showWaitingListPane(){
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
-        setUndoRedoButtonsDisabled(true, true);
+        setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getName(), "User", "Waiting List");
     }
 
     /**
@@ -256,9 +311,12 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(true);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getName(), "User", "Medications");
     }
 
     /**
@@ -268,9 +326,41 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(true);
         historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
+        medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
+        titleBar.setTitle(currentUser.getName(), "User", "Attributes");
+    }
+
+    /**
+     * Sets the diseases pane as the visible pane
+     */
+    public void showMedicalHistoryDiseasesPane() {
+        welcomePane.setVisible(false);
+        attributesGridPane.setVisible(false);
+        historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(true);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getName(), "User", "Disease History");
+    }
+
+    /**
+     * Sets the medical history pane as the visible pane
+     */
+    public void showMedicalHistoryProceduresPane() {
+        welcomePane.setVisible(false);
+        attributesGridPane.setVisible(false);
+        historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(true);
+        medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
+        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getName(), "User", "Procedure History");
     }
 
     /**
@@ -280,9 +370,12 @@ public class UserWindowController implements Initializable {
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
+        medicalHistoryDiseasesPane.setVisible(false);
+        medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
+        titleBar.setTitle(currentUser.getName(), "User", "Home");
     }
 
     /**
@@ -321,6 +414,10 @@ public class UserWindowController implements Initializable {
                                     " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
                             break;
 
+                        case "waitinglist":
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1,7) +" "+ userHistory[i][4].substring(7) + " modified " + " at " + userHistory[i][1]));
+                            break;
+
                         case "modifyUser":
                             sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
                                     " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
@@ -353,6 +450,10 @@ public class UserWindowController implements Initializable {
 
         actionColumn.setCellValueFactory(param -> {
             String userName = currentUser.getName(), toCheck = param.getValue().getValue().substring(0, 12);
+            if(!toCheck.substring(0,7).equals("Session")){
+                //System.out.println("toCheck: "+toCheck);
+
+            }
             if (toCheck.equals("Update Account")) {
                 return new ReadOnlyStringWrapper("Updated account settings for user " + userName + ".");
             }
@@ -382,6 +483,9 @@ public class UserWindowController implements Initializable {
             }
             if(toCheck.substring(0,11).equals("Medications")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s medications.");
+            }
+            if(toCheck.substring(0,12).equals("Waiting list")) {
+                return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s waiting list.");
             }
             if(toCheck.substring(0,8).equals("Diseases")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s diseases.");
@@ -447,7 +551,6 @@ public class UserWindowController implements Initializable {
      * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
      */
     private boolean updateUser() {
-        Main.getClinicianController().updateUserTable();
         //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
@@ -539,9 +642,11 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
+
         settingAttributesLabel.setText("Attributes for " + currentUser.getName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getName());
         System.out.println(currentUser.toString());
+        //Main.getClinicianController().updateUserTable();
         return true;
     }
 
@@ -555,11 +660,13 @@ public class UserWindowController implements Initializable {
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
             populateHistoryTable();
+            titleBar.saved(true);
+            statusIndicator.setStatus("Saved", false);
         }
         alert.close();
     }
@@ -569,14 +676,15 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be undone and adjusts the buttons accordingly.
      */
     public void undo() {
+        titleBar.saved(false);
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the redo stack
             attributeRedoStack.add(new User(currentUser));
             //Copy the attribute information from the top element of the undo stack
-            currentUser.copyFieldsFrom(attributeUndoStack.get(attributeUndoStack.size() - 1));
+            currentUser.copyFieldsFrom(attributeUndoStack.getLast());
             //Remove the top element of the undo stack
-            attributeUndoStack.remove(attributeUndoStack.size() - 1);
+            attributeUndoStack.removeLast();
             populateUserFields();
 
             setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), false);
@@ -587,13 +695,21 @@ public class UserWindowController implements Initializable {
             //Add the current medication lists to the redo stack
             medicationRedoStack.add(new User(currentUser));
             //Copy the medication lists from the top element of the undo stack
-            currentUser.copyMedicationListsFrom(medicationUndoStack.get(medicationUndoStack.size() - 1));
+            currentUser.copyMedicationListsFrom(medicationUndoStack.getLast());
             //Remove the top element of the undo stack
-            medicationUndoStack.remove(medicationUndoStack.size() - 1);
+            medicationUndoStack.removeLast();
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
+        } else if (waitingListPane.isVisible()){
+            waitingListRedoStack.add(new User(currentUser));
+            currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size()-1));
+            waitingListUndoStack.remove(waitingListUndoStack.size()-1);
+            setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
+            Main.updateWaitingList();
         }
+        statusIndicator.setStatus("Undid last action", false);
+        titleBar.saved(false);
     }
 
     /**
@@ -604,11 +720,11 @@ public class UserWindowController implements Initializable {
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the undo stack
-            addUserToUndoStack(currentUser);
+            attributeUndoStack.add(new User(currentUser));
             //Copy the attribute information from the top element of the redo stack
-            currentUser.copyFieldsFrom(attributeRedoStack.get(attributeRedoStack.size() - 1));
+            currentUser.copyFieldsFrom(attributeRedoStack.getLast());
             //Remove the top element of the redo stack
-            attributeRedoStack.remove(attributeRedoStack.size() - 1);
+            attributeRedoStack.removeLast();
             populateUserFields();
 
             setUndoRedoButtonsDisabled(false, attributeRedoStack.isEmpty());
@@ -619,13 +735,21 @@ public class UserWindowController implements Initializable {
             //Add the current medication lists to the undo stack
             medicationUndoStack.add(new User(currentUser));
             //Copy the medications lists from the top element of the redo stack
-            currentUser.copyMedicationListsFrom(medicationRedoStack.get(medicationRedoStack.size() - 1));
+            currentUser.copyMedicationListsFrom(medicationRedoStack.getLast());
             //Remove the top element of the redo stack
-            medicationRedoStack.remove(medicationRedoStack.size() - 1);
+            medicationRedoStack.removeLast();
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
+        } else if (waitingListPane.isVisible()){
+            waitingListUndoStack.add(new User(currentUser));
+            currentUser.copyWaitingListsFrom(waitingListRedoStack.get(waitingListRedoStack.size() - 1));
+            waitingListRedoStack.remove(waitingListRedoStack.size() - 1);
+            setUndoRedoButtonsDisabled(false, waitingListRedoStack.isEmpty());
+            Main.updateWaitingList();
         }
+        statusIndicator.setStatus("Redid last action", false);
+        titleBar.saved(false);
     }
 
     /**
@@ -717,7 +841,6 @@ public class UserWindowController implements Initializable {
                     Main.setAccountSettingsEnterEvent();
                     stage.showAndWait();
                 } catch (Exception e) {
-                    System.out.println("here");
                     e.printStackTrace();
                 }
             }else{ // Password incorrect
@@ -770,4 +893,22 @@ public class UserWindowController implements Initializable {
 
     }
 
+    /**
+     * Sets the waiting list button to visible if shown is true
+     *
+     * @param shown True if the waiting list button is to be shown, otherwise False
+     */
+    public void setControlsShown(Boolean shown) {
+        if (currentUser != null) {
+            if (currentUser.isReceiver())
+                waitingListButton.setVisible(true);
+        } else {
+            waitingListButton.setVisible(shown);
+        }
+    }
+
+
+    public ArrayList<User> getWaitingListUndoStack() {
+        return waitingListUndoStack;
+    }
 }
