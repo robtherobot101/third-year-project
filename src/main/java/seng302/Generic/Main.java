@@ -25,6 +25,8 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import seng302.Controllers.MedicalHistoryDiseasesController;
+import seng302.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 
 import seng302.GUI.TFScene;
@@ -62,6 +64,8 @@ public class Main extends Application {
     private static UserWindowController userWindowController;
     private static MedicationsController medicationsController;
     private static TransplantWaitingListController transplantWaitingListController;
+    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
     private static String dialogStyle;
@@ -115,7 +119,7 @@ public class Main extends Application {
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
-        clinicianController.updateFoundUsers("");
+        clinicianController.updateFoundUsers();
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -127,6 +131,8 @@ public class Main extends Application {
         userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
 
+        medicalHistoryDiseasesController.setCurrentUser(currentUser);
+        medicalHistoryProceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
 
@@ -149,6 +155,8 @@ public class Main extends Application {
         medicationsController.setControlsShown(false);
         userWindowController.setControlsShown(false);
         waitingListController.setControlsShown(false);
+        medicalHistoryProceduresController.setControlsShown(false);
+        medicalHistoryDiseasesController.setControlsShown(false);
     }
 
     /**
@@ -158,6 +166,36 @@ public class Main extends Application {
         medicationsController.setControlsShown(true);
         userWindowController.setControlsShown(true);
         waitingListController.setControlsShown(true);
+        medicalHistoryProceduresController.setControlsShown(true);
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history diseases view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryDiseasesViewForDonor() {
+        medicalHistoryDiseasesController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history view diseases to be able to edit for a clinican.
+     */
+    public static void medicalHistoryDiseasesViewForClinician() {
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history procedures view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryProceduresViewForDonor() {
+        medicalHistoryProceduresController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history procedures view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryProceduresViewForClinician() {
+        medicalHistoryProceduresController.setControlsShown(true);
     }
 
     public static void setCurrentUserForAccountSettings(User currentUser) {
@@ -180,6 +218,14 @@ public class Main extends Application {
 
     public static void setMedicationsController(MedicationsController medicationsController) {
         Main.medicationsController = medicationsController;
+    }
+
+    public static void setMedicalHistoryDiseasesController(MedicalHistoryDiseasesController medicalHistoryDiseasesController) {
+        Main.medicalHistoryDiseasesController = medicalHistoryDiseasesController;
+    }
+
+    public static void setMedicalHistoryProceduresController(MedicalHistoryProceduresController medicalHistoryProceduresController) {
+        Main.medicalHistoryProceduresController = medicalHistoryProceduresController;
     }
 
     public static void setWaitingListController(WaitingListController waitingListController) {
@@ -341,7 +387,7 @@ public class Main extends Application {
     /**
      * Returns a score for a user based on how well their name matches the given search tokens.
      * Every token needs to entirely match all or some of one of the user's names starting at the beginning of each, otherwise
-     * the lowest possible score zero is returned. 
+     * the lowest possible score zero is returned.
      *
      * For example, the tokens {"abc","def","ghi"} would match a user with the name "adcd defg ghij", so some positive integer
      * would be returned. But for a user with the name "abc def", zero would be returned as one token is unmatched. Likewise,
@@ -431,6 +477,69 @@ public class Main extends Application {
         }
         return bestToken;
     }
+
+    /**
+     * Returns a list of users matching the given search term for region.
+     * If every token matches at least part of the
+     * beginning of a one of part of a users name, that user will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<User> getUsersByRegionAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User d: users){
+            if(d.getRegion() != null) {
+                boolean allTokensMatchAName = true;
+                for(String token:tokens){
+                    if(!matchesAtleastOne(d.getRegion().split(" "), token)){
+                        allTokensMatchAName = false;
+                    }
+                }
+                if(allTokensMatchAName){
+                    matched.add(d);
+                }
+            }
+
+        }
+        return matched;
+    }
+
+    /**
+     * Returns a list of users matching the given search term for age.
+     * If every token matches at least part of the
+     * beginning of a one of part of a users name, that user will be returned.
+     * @param term The search term containing space separated tokens
+     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     */
+    public static ArrayList<User> getUsersByAgeAlternative(String term){
+        String[] t = term.split(" ",-1);
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        if(tokens.contains("")){
+            tokens.remove("");
+        }
+        ArrayList<User> matched = new ArrayList<User>();
+        for(User d: users){
+            if(d.getRegion() != null) {
+                boolean allTokensMatchAName = true;
+                for(String token:tokens){
+                    if(!matches(d.getAgeString(), token)){
+                        allTokensMatchAName = false;
+                    }
+                }
+                if(allTokensMatchAName){
+                    matched.add(d);
+                }
+            }
+
+        }
+        return matched;
+    }
+
 
     /**
      * Returns the length of the longest matched common substring starting from the
@@ -657,7 +766,7 @@ public class Main extends Application {
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
-            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 900, 600));
             scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),800,600));
 
             setScene(TFScene.login);
