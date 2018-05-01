@@ -335,84 +335,91 @@ public class Main extends Application {
         return false;
     }
 
+
     /**
-     * Returns a list of users matching the given search term.
-     * Results are sorted by their score first, and alphabetically second.
-     * The search term is broken into tokens, which should be separated by spaces in the term param.
-     * If every token matches at least part of the
-     * beginning of a one of part of a users name, that user will be returned.
-     * @param term The search term containing space separated tokens
-     * @return An ArrayList of users sorted by score first, and alphabetically by name second
+     * Returns a score for a user based on how well their name matches the given search tokens.
+     * Every token needs to entirely match all or some of one of the user's names starting at the beginning of each, otherwise
+     * the lowest possible score zero is returned. 
+     *
+     * For example, the tokens {"abc","def","ghi"} would match a user with the name "adcd defg ghij", so some positive integer
+     * would be returned. But for a user with the name "abc def", zero would be returned as one token is unmatched. Likewise,
+     * a user with the name "abw d ghi" would score zero because the tokens "abc" and "def" are un-matched.
+     * @param user
+     * @param tokens
+     * @return
      */
-    public static ArrayList<User> getUsersByNameAlternative(String term){
-        String[] t = term.split(" ",-1);
-        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
-        if(tokens.contains("")){
-            tokens.remove("");
+    public static int scoreUserOnSearch(User user, List<String> tokens){
+        String firstName = user.getNameArray()[0];
+        String lastName = user.getNameArray()[user.getNameArray().length-1];
+        String[] middleNames = Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length-1);
+
+        int score = 0;
+
+        String lastNameToken = bestMatchingToken(lastName, tokens);
+        if(!lastNameToken.equals("")){
+            score += 16;
+            tokens.remove(lastNameToken);
         }
-        ArrayList<User> matched = new ArrayList<User>();
-        for(User d: users){
-            boolean allTokensMatchAName = true;
-            for(String token:tokens){
-                if(!matchesAtleastOne(d.getNameArray(), token)){
-                    allTokensMatchAName = false;
-                }
-            }
-            if(allTokensMatchAName){
-                matched.add(d);
+
+        String firstNameToken = bestMatchingToken(firstName, tokens);
+        if(!firstNameToken.equals("")){
+            score += 4;
+            tokens.remove(firstNameToken);
+        }
+
+        for(String middleName:middleNames){
+            String bestToken = bestMatchingToken(middleName, tokens);
+            if(!bestToken.equals("")){
+                score += 2;
+                tokens.remove(bestToken);
             }
         }
-        Collections.sort(matched, new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                Integer o1Score = 0;
-                for(String name: o1.getNameArray()){
-                    for(String token:tokens){
-                        if(matches(name, token)){
-                            o1Score += lengthMatchedScore(name, token);
-                        }
-                    }
-                }
-                Integer o2Score = 0;
-                for(String name: o2.getNameArray()){
-                    for(String token:tokens) {
-                        if(matches(name, token)){
-                            o2Score += lengthMatchedScore(name, token);
-                        }
-                    }
-                }
-                int scoreComparison = o2Score.compareTo(o1Score);
-                if(scoreComparison == 0){
-                    return o1.getName().compareTo(o2.getName());
-                }
-                return scoreComparison;
+        return tokens.isEmpty() ? score : 0;
+    }
+
+    /**
+     * Returns the token which matches the largest part of name exactly. Tokens which
+     * which have additional unmatched characters are treated the same way as tokens which
+     * match zero characters, so they will never be returned. If no tokens match at all,
+     * an empty string is returned.
+     * Empty tokens should not be passed to this function.
+     * @param name The string which the tokens will be compared with
+     * @param tokens The list of tokens to compare
+     * @return The best matching token otherwise an empty String
+     */
+    public static String bestMatchingToken(String name, List<String> tokens){
+        String bestToken = "";
+        int bestScore = 0;
+        for(String token:tokens){
+            if(lengthMatchedScore(name, token) > bestScore){
+                bestToken = token;
+                bestScore = lengthMatchedScore(name, token);
             }
-        });
-        return matched;
+        }
+        return bestToken;
     }
 
     /**
      * Returns the length of the longest matched common substring starting from the
-     * beginning of string and searchTerm, minus the length of the string.
-     * The maximum value returned is zero. This method is used for scoring different
-     * strings against a search term.
+     * beginning of string and searchTerm as long as the entire searchTerm is matched. If there
+     * are unmatched characters in the searchTerm, zero is returned
      * @param string The string which is being searched
      * @param searchTerm The term which is being looked for
-     * @return The length of the longest substring minus the length of string
+     * @return The length of the longest substring if the searchTerm is matched entirely
      */
     public static int lengthMatchedScore(String string, String searchTerm)
     {
         string = string.toLowerCase();
         searchTerm = searchTerm.toLowerCase();
-        int maxLength = Math.min(string.length(), searchTerm.length());
         int i;
-        for (i = 0; i < maxLength; i++)
+        if(searchTerm.length() > string.length()) return 0;
+        for (i = 0; i < searchTerm.length(); i++)
         {
             if (searchTerm.charAt(i) != string.charAt(i)) {
-                return i-string.length();
+                return 0;
             }
         }
-        return i-string.length();
+        return i;
     }
 
     /**

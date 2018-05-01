@@ -305,7 +305,7 @@ public class ClinicianController implements Initializable {
      * @param searchTerm the search term
      */
     public void updateFoundUsers(String searchTerm){
-        usersFound = Main.getUsersByNameAlternative(searchTerm);
+        //usersFound = Main.getUsersByNameAlternative(searchTerm);
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
         //displayPage(resultsPerPage);
@@ -317,7 +317,7 @@ public class ClinicianController implements Initializable {
         numberOfResutsToDisplay.getItems().add(firstPage);
         numberOfResutsToDisplay.getSelectionModel().select(firstPage);
         if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
-            numberOfResutsToDisplay.getItems().add("Sll " + numberOfSearchResults+" results");
+            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
             numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
@@ -349,8 +349,8 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        resultsPerPage = 3;
-        numberXofResults = 5;
+        resultsPerPage = 10;
+        numberXofResults = 50;
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
 
