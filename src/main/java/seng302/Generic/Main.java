@@ -31,6 +31,8 @@ import seng302.GUI.TFScene;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import static sun.swing.MenuItemLayoutHelper.max;
+
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
  * program.
@@ -345,37 +347,41 @@ public class Main extends Application {
      * would be returned. But for a user with the name "abc def", zero would be returned as one token is unmatched. Likewise,
      * a user with the name "abw d ghi" would score zero because the tokens "abc" and "def" are un-matched.
      * @param user
-     * @param tokens
+     * @param searchTokens
      * @return
      */
-    public static int scoreUserOnSearch(User user, List<String> tokens){
-        String firstName = user.getNameArray()[0];
-        String lastName = user.getNameArray()[user.getNameArray().length-1];
-        String[] middleNames = Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length-1);
-
+    public static int scoreUserOnSearch(User user, List<String> searchTokens){
+        List<String> tokens = new ArrayList<String>();
+        tokens.addAll(searchTokens);
         int score = 0;
+        String[] names = user.getNameArray();
+        // Last name
+        score += scoreNames(user.getNameArray(), tokens, max(names.length-1,1), names.length, 5);
 
-        String lastNameToken = bestMatchingToken(lastName, tokens);
-        if(!lastNameToken.equals("")){
-            score += 16;
-            tokens.remove(lastNameToken);
-        }
+        //first name
+        score += scoreNames(user.getNameArray(), tokens, 0, 1, 3);
 
-        String firstNameToken = bestMatchingToken(firstName, tokens);
-        if(!firstNameToken.equals("")){
-            score += 4;
-            tokens.remove(firstNameToken);
-        }
-
-        for(String middleName:middleNames){
-            String bestToken = bestMatchingToken(middleName, tokens);
-            if(!bestToken.equals("")){
-                score += 2;
-                tokens.remove(bestToken);
-            }
-        }
+        //middle names
+        score += scoreNames(user.getNameArray(), tokens, 1, names.length-1, 2);
         return tokens.isEmpty() ? score : 0;
     }
+
+    public static int scoreNames(String[] names, List<String> tokens, int from, int to, int weight){
+        if(names.length >= to && to > from){
+            String[] middleNames = Arrays.copyOfRange(names, from, to);
+            int score = 0;
+            for(String middleName:middleNames){
+                String bestToken = bestMatchingToken(middleName, tokens);
+                if(!bestToken.equals("")){
+                    score += weight;
+                    tokens.remove(bestToken);
+                }
+            }
+            return score;
+        }
+        return 0;
+    }
+
 
     /**
      * Returns the token which matches the largest part of name exactly. Tokens which
