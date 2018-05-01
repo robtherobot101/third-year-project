@@ -661,6 +661,7 @@ public class UserWindowController implements Initializable {
             History.printToFile(streamOut, text);
             populateHistoryTable();
             titleBar.saved(true);
+            statusIndicator.setStatus("Saved", false);
         }
         alert.close();
     }
