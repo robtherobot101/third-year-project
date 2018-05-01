@@ -14,21 +14,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import seng302.Core.Procedure;
-
 import seng302.GUI.Controllers.PageController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
+import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.*;
-import seng302.User.User;
-import static seng302.Generic.Main.streamOut;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the Medical History (Procedures) Window.
@@ -170,7 +172,7 @@ public class MedicalHistoryProceduresController extends PageController implement
             currentUser.getPreviousProcedures().clear();
             currentUser.getPreviousProcedures().addAll(previousProcedureItems);
 
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
             String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
             History.printToFile(streamOut, text);
             //populateHistoryTable();

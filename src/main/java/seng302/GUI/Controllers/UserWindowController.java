@@ -17,24 +17,21 @@ import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
 import seng302.Controllers.MedicalHistoryDiseasesController;
 import seng302.Controllers.MedicalHistoryProceduresController;
-import seng302.GUI.TitleBar;
-import seng302.Generic.*;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.SmokerStatus;
-import seng302.Generic.History;
 import seng302.GUI.StatusIndicator;
+import seng302.GUI.TFScene;
+import seng302.GUI.TitleBar;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.Attribute.*;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
-import seng302.GUI.TFScene;
-import seng302.User.User;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -77,8 +74,8 @@ public class UserWindowController implements Initializable {
     private TreeTableColumn<String, String> dateTimeColumn, actionColumn;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private ArrayList<User> attributeUndoStack = new ArrayList<>(), attributeRedoStack = new ArrayList<>(), medicationUndoStack = new ArrayList<>(), medicationRedoStack = new ArrayList<>();
     private ArrayList<User> waitingListUndoStack = new ArrayList<>(), waitingListRedoStack = new ArrayList<>();
+    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private User currentUser;
 
     @FXML
@@ -108,16 +105,6 @@ public class UserWindowController implements Initializable {
         titleBar.setStage(stage);
     }
 
-
-
-    public ArrayList<User> getUserUndoStack() {
-        return attributeUndoStack;
-    }
-
-    public ArrayList<User> getUserRedoStack() {
-        return attributeRedoStack;
-    }
-
     public User getCurrentUser() {
         return currentUser;
     }
@@ -133,15 +120,6 @@ public class UserWindowController implements Initializable {
         redoBannerButton.setDisable(true);
         bloodPressureLabel.setText("");
         titleBar.setTitle(currentUser.getName(), "User", "Home");
-    }
-
-    /**
-     * Adds a user object to the user undo stack. This is called whenever a user saves any changes in the GUI.
-     *
-     * @param user user object being added to the top of the stack.
-     */
-    public void addUserToUndoStack(User user) {
-        attributeUndoStack.add(new User(user));
     }
 
     /**
@@ -256,7 +234,7 @@ public class UserWindowController implements Initializable {
     public void attributeFieldUnfocused() {
         User oldFields = new User(currentUser);
         if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
-            addUserToUndoStack(oldFields);
+            attributeUndoStack.add(new User(oldFields));
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
             titleBar.saved(false);
@@ -681,7 +659,7 @@ public class UserWindowController implements Initializable {
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
@@ -702,9 +680,9 @@ public class UserWindowController implements Initializable {
             //Add the current fields to the redo stack
             attributeRedoStack.add(new User(currentUser));
             //Copy the attribute information from the top element of the undo stack
-            currentUser.copyFieldsFrom(attributeUndoStack.get(attributeUndoStack.size() - 1));
+            currentUser.copyFieldsFrom(attributeUndoStack.getLast());
             //Remove the top element of the undo stack
-            attributeUndoStack.remove(attributeUndoStack.size() - 1);
+            attributeUndoStack.removeLast();
             populateUserFields();
 
             setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), false);
@@ -715,9 +693,9 @@ public class UserWindowController implements Initializable {
             //Add the current medication lists to the redo stack
             medicationRedoStack.add(new User(currentUser));
             //Copy the medication lists from the top element of the undo stack
-            currentUser.copyMedicationListsFrom(medicationUndoStack.get(medicationUndoStack.size() - 1));
+            currentUser.copyMedicationListsFrom(medicationUndoStack.getLast());
             //Remove the top element of the undo stack
-            medicationUndoStack.remove(medicationUndoStack.size() - 1);
+            medicationUndoStack.removeLast();
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
@@ -738,11 +716,11 @@ public class UserWindowController implements Initializable {
         if (attributesGridPane.isVisible()) {
             attributeFieldUnfocused();
             //Add the current fields to the undo stack
-            addUserToUndoStack(currentUser);
+            attributeUndoStack.add(new User(currentUser));
             //Copy the attribute information from the top element of the redo stack
-            currentUser.copyFieldsFrom(attributeRedoStack.get(attributeRedoStack.size() - 1));
+            currentUser.copyFieldsFrom(attributeRedoStack.getLast());
             //Remove the top element of the redo stack
-            attributeRedoStack.remove(attributeRedoStack.size() - 1);
+            attributeRedoStack.removeLast();
             populateUserFields();
 
             setUndoRedoButtonsDisabled(false, attributeRedoStack.isEmpty());
@@ -753,9 +731,9 @@ public class UserWindowController implements Initializable {
             //Add the current medication lists to the undo stack
             medicationUndoStack.add(new User(currentUser));
             //Copy the medications lists from the top element of the redo stack
-            currentUser.copyMedicationListsFrom(medicationRedoStack.get(medicationRedoStack.size() - 1));
+            currentUser.copyMedicationListsFrom(medicationRedoStack.getLast());
             //Remove the top element of the redo stack
-            medicationRedoStack.remove(medicationRedoStack.size() - 1);
+            medicationRedoStack.removeLast();
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
@@ -858,7 +836,6 @@ public class UserWindowController implements Initializable {
                     Main.setAccountSettingsEnterEvent();
                     stage.showAndWait();
                 } catch (Exception e) {
-                    System.out.println("here");
                     e.printStackTrace();
                 }
             }else{ // Password incorrect

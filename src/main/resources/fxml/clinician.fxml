@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
+<GridPane onMouseClicked="#requestFocus" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -64,21 +64,20 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="1.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
+                        <RowConstraints maxHeight="8.0" minHeight="8.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <TextField fx:id="nameInput" onKeyPressed="#edited" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                        <TextField fx:id="addressInput" onKeyPressed="#edited" GridPane.columnIndex="3" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                        <TextField fx:id="regionInput" onKeyPressed="#edited" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                        <Label fx:id="staffIDLabel" text="ID#" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                        <TextField fx:id="nameInput" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                        <TextField fx:id="addressInput" GridPane.columnIndex="3" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                        <TextField fx:id="regionInput" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
                         <Label fx:id="updatedSuccessfully" opacity="0.0" text="Updated Successfully" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                        <Label text="Staff ID: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="staffIDLabel" text="Staff ID: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Name" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
                         <Label text="Address" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
                         <Label text="Region" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
@@ -97,46 +96,52 @@
                             </GridPane.margin>
                         </TableView>
                         <TextField fx:id="profileSearchTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                        <Label fx:id="resultsDisplayLabel" text="Displaying # of # results" GridPane.columnIndex="3" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+                        <Label fx:id="resultsDisplayLabel" text="Displaying # of # results" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets top="15.0" />
+                     </GridPane.margin></Label>
                         <Label text="Search" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP" />
-                        <Button fx:id="previousPageButton" mnemonicParsing="false" onMouseClicked="#previousPage" text="Previous" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
-                        <Button fx:id="save" mnemonicParsing="false" onMouseClicked="#updateClinician" text="Update Clinician" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                        <Button fx:id="previousPageButton" mnemonicParsing="false" onMouseClicked="#previousPage" text="Previous" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets right="50.0" />
+                     </GridPane.margin></Button>
+                        <Button fx:id="save" mnemonicParsing="false" onMouseClicked="#save" text="Update Clinician" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
                         <Button fx:id="nextPageButton" mnemonicParsing="false" onMouseClicked="#nextPage" text="Next" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                     </children>
                 </GridPane>
-                <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;">
+                <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <effect>
                         <DropShadow />
                     </effect>
                     <children>
-                        <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="66.0" mnemonicParsing="false" onAction="#showMainPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Main" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="62.0">
+                        <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="66.0" mnemonicParsing="false" onAction="#showMainPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Home" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="62.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="260.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="260.0">
+                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="260.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="medicationsButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="160.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="160.0">
+                        <Button fx:id="saveButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="160.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="210.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="210.0">
+                        <Button fx:id="logoutButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="210.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="transplantList" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant  List" textAlignment="CENTER">
+                        <Button fx:id="transplantList" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant List" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="112.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
                     </children>
                 </AnchorPane>
-                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: #1d3549;">
+                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: #1d3549;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <effect>
                         <DropShadow />
                     </effect>
@@ -161,7 +166,7 @@
                                 <Font size="36.0" />
                             </font>
                         </Label>
-                        <Label layoutX="6.0" layoutY="257.0" text="→">
+                        <Label layoutX="6.0" layoutY="257.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="253.0">
                             <font>
                                 <Font size="36.0" />
                             </font>

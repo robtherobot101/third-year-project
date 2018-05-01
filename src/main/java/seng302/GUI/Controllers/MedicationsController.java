@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
@@ -21,7 +24,7 @@ import seng302.User.User;
 import java.net.URL;
 import java.util.*;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 
 /**
@@ -218,27 +221,23 @@ public class MedicationsController extends PageController implements Initializab
      * Saves the current state of the user's medications lists for both their historic and current medications.
      */
     public void save() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current user? ");
-        alert.setContentText("By doing so, the user will be updated with the following medication details.");
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ",
+                "By doing so, the user will be updated with the following medication details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentUser.getHistoricMedications().clear();
             currentUser.getHistoricMedications().addAll(historicItems);
             currentUser.getCurrentMedications().clear();
             currentUser.getCurrentMedications().addAll(currentItems);
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
             History.printToFile(streamOut, text);
             //populateHistoryTable();
-            alert.close();
             statusIndicator.setStatus("Saved changes", false);
             titleBar.saved(true);
-        } else {
-            alert.close();
         }
+        alert.close();
     }
 
     /**
@@ -301,9 +300,9 @@ public class MedicationsController extends PageController implements Initializab
         // Check to see if the api call was successful
         if (!result.getError()) {
             HashSet<String> ageSymptoms = result.ageInteraction(currentUser.getAgeDouble());
-            System.out.println("age symptoms: "+ ageSymptoms);
+            //System.out.println("age symptoms: "+ ageSymptoms);
             HashSet<String> genderSymptoms = result.genderInteraction(currentUser.getGender());
-            System.out.println("gender symptoms: " + genderSymptoms);
+            //System.out.println("gender symptoms: " + genderSymptoms);
             ageSymptoms.retainAll(genderSymptoms);
 
             for (String symptom : ageSymptoms) {

@@ -10,10 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -21,19 +17,17 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import seng302.Core.Disease;
 import seng302.GUI.Controllers.PageController;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
 import seng302.Generic.History;
+import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 public class MedicalHistoryDiseasesController extends PageController implements Initializable {
     @FXML
@@ -224,7 +218,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             currentUser.getCuredDiseases().clear();
             currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
             String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
             History.printToFile(streamOut, text);
             //populateHistoryTable();

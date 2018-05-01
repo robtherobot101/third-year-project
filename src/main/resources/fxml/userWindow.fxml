@@ -22,7 +22,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.paint.Color?>
-
 <?import org.controlsfx.control.StatusBar?>
 
 <GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="575.0" prefWidth="900.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserWindowController">
@@ -84,33 +83,34 @@
 				</Pane>
 				<GridPane fx:id="attributesGridPane" layoutX="226.0" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="674.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<columnConstraints>
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="118.0" prefWidth="0.0" />
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="104.0" prefWidth="100.0" />
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="108.0" prefWidth="100.0" />
+						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.0" prefWidth="0.0" />
+						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+						<ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
 					</columnConstraints>
 					<rowConstraints>
-						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="7.0" prefHeight="30.022438049316406" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="14.0" prefHeight="55.692840576171875" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="15.0" prefHeight="54.307159423828125" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="15.0" prefHeight="86.79380798339844" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="270.576416015625" minHeight="10.0" percentHeight="20.0" prefHeight="67.20619201660156" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="10.0" prefHeight="34.27349853515625" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="10.0" prefHeight="59.72650146484375" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="270.576416015625" minHeight="10.0" percentHeight="10.0" prefHeight="57.27349853515625" vgrow="SOMETIMES" />
-						<RowConstraints maxHeight="266.8590087890625" minHeight="10.0" percentHeight="12.0" prefHeight="58.204071044921875" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="1.7976931348623157E308" minHeight="0.0" percentHeight="6.0" prefHeight="0.0" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="12.0" prefHeight="0.0" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="12.0" prefHeight="54.307159423828125" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="14.0" prefHeight="86.79380798339844" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="270.576416015625" minHeight="10.0" percentHeight="12.0" prefHeight="67.20619201660156" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="188.20193481445312" minHeight="10.0" percentHeight="12.0" prefHeight="34.27349853515625" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="1.7976931348623157E308" minHeight="0.0" percentHeight="6.0" prefHeight="59.72650146484375" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="270.576416015625" minHeight="10.0" percentHeight="7.0" prefHeight="57.27349853515625" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="270.576416015625" minHeight="10.0" percentHeight="7.0" prefHeight="57.27349853515625" vgrow="SOMETIMES" />
+						<RowConstraints maxHeight="266.8590087890625" minHeight="10.0" prefHeight="58.204071044921875" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
-						<TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308" promptText="First Name" GridPane.rowIndex="1">
+						<TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1">
 							<GridPane.margin>
 								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="middleNameField" maxWidth="1.7976931348623157E308" promptText="Middle Names" GridPane.columnIndex="1" GridPane.rowIndex="1">
+						<TextField fx:id="middleNameField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
 							<GridPane.margin>
 								<Insets left="20.0" right="20.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" promptText="Last Name" GridPane.columnIndex="2" GridPane.rowIndex="1">
+						<TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="1">
 							<GridPane.margin>
 								<Insets left="20.0" right="25.0" />
 							</GridPane.margin>
@@ -124,7 +124,7 @@
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 							</columnConstraints>
 							<children>
-								<TextField fx:id="regionField" maxWidth="1.7976931348623157E308" promptText="Region" GridPane.columnIndex="3" GridPane.rowIndex="1">
+								<TextField fx:id="regionField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="1">
 									<GridPane.margin>
 										<Insets />
 									</GridPane.margin>
@@ -145,7 +145,7 @@
 										<Insets bottom="40.0" />
 									</GridPane.margin>
 								</Label>
-								<TextField fx:id="addressField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="310.0" promptText="Address" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<TextField fx:id="addressField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="310.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 									<GridPane.margin>
 										<Insets />
 									</GridPane.margin>
@@ -156,37 +156,37 @@
                         <RowConstraints />
                      </rowConstraints>
 						</GridPane>
-						<DatePicker fx:id="dateOfBirthPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" promptText="Date of Birth" GridPane.rowIndex="3">
+						<DatePicker fx:id="dateOfBirthPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" promptText="Format: dd/mm/yyyy" GridPane.rowIndex="3">
 							<GridPane.margin>
 								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</DatePicker>
-						<DatePicker fx:id="dateOfDeathPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" promptText="Date of Death" GridPane.rowIndex="4">
+						<DatePicker fx:id="dateOfDeathPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" promptText="Format: dd/mm/yyyy" GridPane.rowIndex="4">
 							<GridPane.margin>
-								<Insets bottom="20.0" left="25.0" right="20.0" />
+								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</DatePicker>
-						<TextField fx:id="heightField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="139.0" promptText="Height (cm)" GridPane.columnIndex="1" GridPane.rowIndex="3">
+						<TextField fx:id="heightField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="139.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
 							<GridPane.margin>
 								<Insets left="20.0" right="45.0" />
 							</GridPane.margin>
 						</TextField>
-						<TextField fx:id="weightField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="139.0" promptText="Weight (kg)" GridPane.columnIndex="2" GridPane.rowIndex="3">
+						<TextField fx:id="weightField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="139.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
 							<GridPane.margin>
 								<Insets left="20.0" right="45.0" />
 							</GridPane.margin>
 						</TextField>
-						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="158.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+						<ComboBox fx:id="genderComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="158.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
 							<GridPane.margin>
-								<Insets bottom="20.0" left="20.0" right="20.0" />
+								<Insets left="20.0" right="20.0" />
 							</GridPane.margin>
 						</ComboBox>
-						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="167.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+						<ComboBox fx:id="bloodTypeComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="167.0" GridPane.rowIndex="5">
 							<GridPane.margin>
-								<Insets bottom="20.0" left="20.0" right="20.0" />
+								<Insets left="25.0" right="20.0" />
 							</GridPane.margin>
 						</ComboBox>
-                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
+                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="7">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="8.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" />
@@ -208,7 +208,7 @@
       						<CheckBox fx:id="intestineCheckBox" mnemonicParsing="false" onAction="#attributeFieldUnfocused" text="Intestine" GridPane.columnIndex="6" />
                      </children>
                   </GridPane>
-                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
+                  <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" GridPane.columnSpan="3" GridPane.rowIndex="8">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="11.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="14.0" prefWidth="100.0" />
@@ -248,17 +248,17 @@
       						</CheckBox>
                      </children>
                   </GridPane>
-						<TextField fx:id="bloodPressureTextField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="159.0" promptText="Blood Pressure (eg 20/30)" GridPane.columnIndex="1" GridPane.rowIndex="7">
+						<TextField fx:id="bloodPressureTextField" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="159.0" promptText="Format: x/y, eg 20/30" GridPane.columnIndex="1" GridPane.rowIndex="4">
 							<GridPane.margin>
-								<Insets left="10.0" right="45.0" />
+								<Insets left="20.0" right="45.0" />
 							</GridPane.margin>
 						</TextField>
-						<Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="27.0" prefWidth="86.0" text="Save" GridPane.columnIndex="2" GridPane.rowIndex="8">
+						<Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="27.0" prefWidth="86.0" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER">
 							<GridPane.margin>
 								<Insets left="20.0" />
 							</GridPane.margin>
 						</Button>
-						<Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="165.0" text="Organs to donate:" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
+						<Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="165.0" text="Organs to donate:" GridPane.columnSpan="3" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
 							<font>
 								<Font name="System Bold" size="18.0" />
 							</font>
@@ -274,14 +274,14 @@
 								<Insets left="25.0" />
 							</GridPane.margin>
 						</Label>
-						<Label fx:id="ageLabel" text="Age: " GridPane.rowIndex="2" GridPane.rowSpan="2">
+						<Label fx:id="ageLabel" text="Age: " GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
 							<GridPane.margin>
-								<Insets bottom="10.0" left="50.0" />
+								<Insets left="25.0" />
 							</GridPane.margin>
 						</Label>
-						<Label fx:id="bmiLabel" text="BMI: " GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+						<Label fx:id="bmiLabel" text="BMI: " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
 							<GridPane.margin>
-								<Insets bottom="-5.0" right="10.0" />
+								<Insets bottom="-10.0" right="20.0" />
 							</GridPane.margin>
 						</Label>
 						<Label text="cm" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
@@ -331,7 +331,7 @@
 								<Font name="System Bold" size="10.0" />
 							</font>
 							<GridPane.margin>
-								<Insets bottom="60.0" left="25.0" />
+								<Insets bottom="40.0" left="25.0" />
 							</GridPane.margin>
 						</Label>
 						<Label text="Height" GridPane.columnIndex="1" GridPane.rowIndex="3">
@@ -350,31 +350,7 @@
 								<Insets bottom="40.0" left="20.0" />
 							</GridPane.margin>
 						</Label>
-						<Label text="Gender" GridPane.columnIndex="1" GridPane.rowIndex="4">
-							<font>
-								<Font name="System Bold" size="10.0" />
-							</font>
-							<GridPane.margin>
-								<Insets bottom="60.0" left="20.0" />
-							</GridPane.margin>
-						</Label>
-						<Label text="Blood Type" GridPane.columnIndex="2" GridPane.rowIndex="4">
-							<font>
-								<Font name="System Bold" size="10.0" />
-							</font>
-							<GridPane.margin>
-								<Insets bottom="60.0" left="20.0" />
-							</GridPane.margin>
-						</Label>
-						<Label text="Smoker Status" GridPane.rowIndex="7">
-							<font>
-								<Font name="System Bold" size="10.0" />
-							</font>
-							<GridPane.margin>
-								<Insets bottom="40.0" left="25.0" />
-							</GridPane.margin>
-						</Label>
-						<Label text="Blood Pressure" GridPane.columnIndex="1" GridPane.rowIndex="7">
+						<Label text="Gender" GridPane.columnIndex="2" GridPane.rowIndex="4">
 							<font>
 								<Font name="System Bold" size="10.0" />
 							</font>
@@ -382,7 +358,7 @@
 								<Insets bottom="40.0" left="20.0" />
 							</GridPane.margin>
 						</Label>
-						<Label text="Alcohol Consumption" GridPane.columnIndex="2" GridPane.rowIndex="7">
+						<Label text="Blood Type" GridPane.rowIndex="5">
 							<font>
 								<Font name="System Bold" size="10.0" />
 							</font>
@@ -390,22 +366,46 @@
 								<Insets bottom="40.0" left="25.0" />
 							</GridPane.margin>
 						</Label>
-                  <ComboBox fx:id="smokerStatusComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="7">
-                     <GridPane.margin>
-                        <Insets left="25.0" right="20.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <ComboBox fx:id="alcoholConsumptionComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
+						<Label text="Smoker Status" GridPane.columnIndex="1" GridPane.rowIndex="5">
+							<font>
+								<Font name="System Bold" size="10.0" />
+							</font>
+							<GridPane.margin>
+								<Insets bottom="40.0" left="20.0" />
+							</GridPane.margin>
+						</Label>
+						<Label text="Blood Pressure" GridPane.columnIndex="1" GridPane.rowIndex="4">
+							<font>
+								<Font name="System Bold" size="10.0" />
+							</font>
+							<GridPane.margin>
+								<Insets bottom="40.0" left="20.0" />
+							</GridPane.margin>
+						</Label>
+						<Label text="Alcohol Consumption" GridPane.columnIndex="2" GridPane.rowIndex="5">
+							<font>
+								<Font name="System Bold" size="10.0" />
+							</font>
+							<GridPane.margin>
+								<Insets bottom="40.0" left="20.0" />
+							</GridPane.margin>
+						</Label>
+                  <ComboBox fx:id="smokerStatusComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets left="20.0" right="20.0" />
                      </GridPane.margin>
                   </ComboBox>
-                  <Label text="mmHg" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                  <ComboBox fx:id="alcoholConsumptionComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+                  <Label text="mmHg" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets left="160.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="bloodPressureLabel" prefHeight="17.0" prefWidth="116.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                  <Label fx:id="bloodPressureLabel" prefHeight="17.0" prefWidth="116.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                      <GridPane.margin>
                         <Insets bottom="50.0" left="50.0" />
                      </GridPane.margin>
