@@ -132,6 +132,15 @@ public class Main extends Application {
         userWindowController.addCurrentToMedicationUndoStack();
     }
 
+    public static void addCurrentToDiseaseUndoStack() {
+        userWindowController.addCurrentToDiseaseUndoStack();
+    }
+
+    public static void updateDiseases() {
+        medicalHistoryDiseasesController.updateDiseases();
+    }
+
+
     public static void updateMedications() {
         medicationsController.updateMedications();
     }

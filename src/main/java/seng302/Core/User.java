@@ -205,17 +205,21 @@ public class User {
         historicMedications.addAll(user.getHistoricMedications());
         waitingListItems.addAll(waitingListItems);
         historicMedications.addAll(user.getHistoricMedications());
-        currentDiseases.clear();
-        currentDiseases.addAll(user.getCurrentDiseases());
 
-        curedDiseases.clear();
-        curedDiseases.addAll(user.getCuredDiseases());
 
         pendingProcedures.clear();
         pendingProcedures.addAll(user.getPendingProcedures());
 
         previousProcedures.clear();
         previousProcedures.addAll(user.getPreviousProcedures());
+    }
+
+    public void copyDiseaseListsFrom(User user) {
+        currentDiseases.clear();
+        currentDiseases.addAll(user.getCurrentDiseases());
+
+        curedDiseases.clear();
+        curedDiseases.addAll(user.getCuredDiseases());
     }
 
     public boolean fieldsEqual(User user) {
