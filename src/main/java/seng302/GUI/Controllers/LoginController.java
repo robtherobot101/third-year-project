@@ -60,27 +60,23 @@ public class LoginController implements Initializable {
         Clinician currentClinician = null;
         Admin currentAdmin = null;
         for (Clinician clinician: Main.clinicians) {
-            // Check if the clinician is an admin
-            if (clinician instanceof Admin) {
-                if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
-                    identificationMatched = true;
-                    if (clinician.getPassword().equals(passwordInput.getText())) {
+            if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
+                identificationMatched = true;
+                if (clinician.getPassword().equals(passwordInput.getText())) {
+                    System.out.println(clinician instanceof Admin);
+                    if (clinician instanceof Admin) {
+                        System.out.println("LoginController: Logging in as admin...");
                         currentAdmin = (Admin) clinician;
                         typeMatched = LoginType.ADMIN;
-                        // TODO write login of admin to history
-                    }
-                }
-            // Clinician is only a clinician
-            } else {
-                if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
-                    identificationMatched = true;
-                    if (clinician.getPassword().equals(passwordInput.getText())) {
+                    } else {
+                        System.out.println("LoginController: Logging in as clinician...");
                         currentClinician = clinician;
                         typeMatched = LoginType.CLINICIAN;
-                        // TODO write login of clinician to history
                     }
+                    // TODO write login of clinician to history
                 }
             }
+
         }
 
         if (identificationMatched) {
@@ -102,7 +98,8 @@ public class LoginController implements Initializable {
                         break;
                     case ADMIN:
                         Main.setAdmin(currentAdmin);
-                        Main.setScene(TFScene.clinician);
+                        System.out.println("LoginController: Setting scene to admin...");
+                        Main.setScene(TFScene.admin);
                 }
             } else {
                 errorMessage.setText("Incorrect password.");

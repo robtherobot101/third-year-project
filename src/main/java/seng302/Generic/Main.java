@@ -56,6 +56,7 @@ public class Main extends Application {
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
+    private static AdminController adminController;
 
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
@@ -115,11 +116,8 @@ public class Main extends Application {
     }
 
     public static void setAdmin(Admin admin) {
-        // TODO create adminController -> populate here
-    }
-
-    public static void setClinicianController(ClinicianController clinicianController) {
-        Main.clinicianController = clinicianController;
+        System.out.println("Main: Called set admin");
+        adminController.setAdmin(admin);
     }
 
     public static void setCurrentUser(User currentUser) {
@@ -193,6 +191,13 @@ public class Main extends Application {
         Main.transplantWaitingListController = transplantWaitingListController;
     }
 
+    public static void setClinicianController(ClinicianController clinicianController) {
+        Main.clinicianController = clinicianController;
+    }
+
+    public static void setAdminController(AdminController adminController) {
+        Main.adminController = adminController;
+    }
 
 
     public static ClinicianController getClinicianController() {
@@ -535,19 +540,6 @@ public class Main extends Application {
                     }
                 }
                 break;
-            case ADMIN:
-                nextAdminId = -1;
-                for (Clinician clinician : Main.clinicians) {
-                    // Check it is an Admin
-                    if (clinician instanceof Admin) {
-                        if (((Admin) clinician).getAdminID() > nextAdminId) {
-                            nextAdminId = ((Admin) clinician).getAdminID();
-                        }
-                    }
-                }
-                break;
-
-
         }
 
     }
@@ -642,6 +634,7 @@ public class Main extends Application {
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), 900, 575));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), 800, 600));
+            scenes.put(TFScene.admin, new Scene(FXMLLoader.load(getClass().getResource("/fxml/admin.fxml")), 800, 600));
             scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),800,600));
 
             setScene(TFScene.login);
@@ -675,7 +668,7 @@ public class Main extends Application {
 
     public static void setScene(TFScene scene) {
         stage.setScene(scenes.get(scene));
-        if (scene == TFScene.userWindow || scene == TFScene.clinician) {
+        if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.admin) {
             stage.setMinWidth(650);
             stage.setMinHeight(550);
             stage.setResizable(true);

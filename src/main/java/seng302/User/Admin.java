@@ -1,17 +1,18 @@
 package seng302.User;
 
-import seng302.Generic.Main;
-import seng302.User.Attribute.LoginType;
+import java.util.Random;
 
 /**
  * This class contains information about admin.
  */
 public class Admin extends Clinician {
-    private long adminID;
+    private String accessLevel;
 
     public Admin(String username, String password, String name){
         super(username, password, name);
-        this.adminID = Main.getNextId(true, LoginType.ADMIN);
+        String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
+        Random r = new Random();
+        accessLevel = levels[r.nextInt(levels.length)];
     }
 
     /**
@@ -20,14 +21,11 @@ public class Admin extends Clinician {
      */
     public Admin(Admin originalAdmin){
         super(originalAdmin);
-        this.adminID = originalAdmin.adminID;
     }
 
     public String getName() { return super.getName(); }
 
     public void setName(String name) { super.setName(name); }
-
-    public long getAdminID() { return adminID; }
 
     public String getUsername() { return super.getUsername(); }
 
@@ -41,7 +39,7 @@ public class Admin extends Clinician {
     public String toString() {
         return "Admin{" +
                 "name='" + getName() + '\'' +
-                ", staffID='" + adminID + '\'' +
+                ", staffID='" + getStaffID() + '\'' +
                 ", username='" + getUsername() + '\'' +
                 ", password='" + getPassword() + '\'' +
                 '}';
