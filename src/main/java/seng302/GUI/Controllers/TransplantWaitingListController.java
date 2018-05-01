@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import seng302.Core.TransplantWaitingListItem;
 import seng302.GUI.TFScene;
+import seng302.GUI.TitleBar;
 import seng302.Generic.Main;
 import seng302.Generic.WaitingListItem;
 import seng302.User.User;
@@ -52,6 +53,7 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void returnView(){
         Main.setScene(TFScene.clinician);
+        Main.getClinicianController().setTitle();
     }
 
     /**
