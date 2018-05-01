@@ -5,10 +5,16 @@
       "Neil",
       "Davidson"
     ],
+    "preferredName": [
+      "Andrew",
+      "Neil",
+      "Davidson"
+    ],
     "dateOfBirth": "01/02/1998",
     "dateOfDeath": "01/11/4000",
     "creationTime": "30/04/2018, 14:59:34",
     "gender": "MALE",
+    "genderIdentity": "MALE",
     "height": 12.1,
     "weight": 50.45,
     "bloodType": "O_POS",
@@ -30,8 +36,15 @@
       "Test User",
       "Testperson"
     ],
+    "preferredName": [
+      "Test User",
+      "Testperson"
+    ],
     "dateOfBirth": "01/04/1530",
     "dateOfDeath": "31/01/1565",
+    "creationTime": "28/04/2018, 17:37:34",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
     "creationTime": "30/04/2018, 01:39:16",
     "gender": "OTHER",
     "height": 1.234,
@@ -54,7 +67,11 @@
     "name": [
       "Singlename"
     ],
+    "preferredName": [
+      "Singlename"
+    ],
     "dateOfBirth": "12/06/1945",
+    "creationTime": "28/04/2018, 17:37:34",
     "creationTime": "30/04/2018, 01:39:16",
     "height": -1.0,
     "weight": -1.0,
@@ -74,10 +91,16 @@
       "User 2",
       "Person"
     ],
+    "preferredName": [
+      "User 2",
+      "Person"
+    ],
     "dateOfBirth": "01/12/1990",
     "dateOfDeath": "09/03/2090",
+    "creationTime": "28/04/2018, 17:37:34",
     "creationTime": "30/04/2018, 01:39:16",
     "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
     "height": 2.0,
     "weight": 60.0,
     "bloodType": "B_NEG",
@@ -101,8 +124,17 @@
       "long",
       "name"
     ],
+    "preferredName": [
+      "a",
+      "long",
+      "long",
+      "name"
+    ],
     "dateOfBirth": "01/11/3000",
     "dateOfDeath": "01/11/4000",
+    "creationTime": "28/04/2018, 17:37:34",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
     "creationTime": "30/04/2018, 01:39:16",
     "gender": "OTHER",
     "height": 0.1,
@@ -125,7 +157,11 @@
     "name": [
       "extra"
     ],
+    "preferredName": [
+      "extra"
+    ],
     "dateOfBirth": "01/01/1000",
+    "creationTime": "28/04/2018, 17:37:34",
     "creationTime": "30/04/2018, 01:39:16",
     "height": -1.0,
     "weight": -1.0,

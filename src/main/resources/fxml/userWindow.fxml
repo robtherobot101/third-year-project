@@ -62,9 +62,9 @@
 		<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="476.0" prefWidth="585.0" GridPane.rowIndex="3">
 			<children>
 				<AnchorPane fx:id="medicationsPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-   <children>
-   					<fx:include source="medications.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-   </children>
+   					<children>
+   						<fx:include source="medications.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   					</children>
 				</AnchorPane>
                 <AnchorPane fx:id="waitingListPane" layoutX="226.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                    <children>
@@ -415,7 +415,7 @@
 						<DropShadow />
 					</effect>
 					<children>
-						<Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="66.0" mnemonicParsing="false" onAction="#showAttributesPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Attributes" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="62.0">
+						<Button fx:id="attributesButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="66.0" mnemonicParsing="false" onAction="#showAttributesPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Attributes" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="62.0">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -576,7 +576,7 @@
                   <Insets left="10.0" />
                </padding>
 				</Label>
-            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="140.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="170.0">
+            <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
                <font>
                   <Font size="14.0" />
                </font>

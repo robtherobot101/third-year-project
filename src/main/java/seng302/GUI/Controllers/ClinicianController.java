@@ -67,6 +67,10 @@ public class ClinicianController implements Initializable {
     private Pane background;
     @FXML
     private Label staffIDLabel;
+
+    @FXML
+    private Label clinicianDisplayText;
+
     @FXML
     private Label nameLabel;
     @FXML
