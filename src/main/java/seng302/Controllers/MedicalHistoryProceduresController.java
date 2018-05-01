@@ -204,6 +204,7 @@ public class MedicalHistoryProceduresController implements Initializable {
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Procedure");
         dialog.setHeaderText("Update Procedure Details");
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
