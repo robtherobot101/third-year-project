@@ -253,6 +253,7 @@ public class UserWindowController implements Initializable {
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
             titleBar.saved(false);
+            statusIndicator.setStatus("Edited user details", false);
         }
     }
 
@@ -695,6 +696,8 @@ public class UserWindowController implements Initializable {
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
         }
+        statusIndicator.setStatus("Undid last action", false);
+        titleBar.saved(false);
     }
 
     /**
@@ -727,6 +730,7 @@ public class UserWindowController implements Initializable {
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
         }
+        statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
     }
 
