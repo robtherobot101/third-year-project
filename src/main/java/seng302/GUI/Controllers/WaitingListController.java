@@ -27,7 +27,7 @@ import static seng302.Generic.IO.streamOut;
 /**
  * The controller for the waiting list pane
  */
-public class WaitingListController implements Initializable {
+public class WaitingListController extends PageController implements Initializable {
 
     @FXML
     private Button registerOrganButton;
@@ -64,9 +64,6 @@ public class WaitingListController implements Initializable {
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
     private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
 
-    public StatusIndicator statusIndicator = new StatusIndicator();
-    private TitleBar titleBar;
-
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
      * @param user The user
@@ -99,9 +96,9 @@ public class WaitingListController implements Initializable {
             }
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
-                //statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
             }
             populateWaitingList();
+            statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
 
         }
         populateOrgansComboBox();

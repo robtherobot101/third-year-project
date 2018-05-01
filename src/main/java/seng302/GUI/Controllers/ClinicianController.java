@@ -77,6 +77,10 @@ public class ClinicianController implements Initializable {
     public ClinicianController() {
     }
 
+    public void setTitle(){
+        titleBar.setTitle(clinician.getName(), "Clinician", null);
+    }
+
     /**
      * Sets the current clinician
      * @param clinician The clinician to se as the current
@@ -501,5 +505,6 @@ public class ClinicianController implements Initializable {
         Main.getTransplantWaitingListController().updateTransplantList();
         //background.setVisible(false);
         Main.setScene(TFScene.transplantList);
+        titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
 }

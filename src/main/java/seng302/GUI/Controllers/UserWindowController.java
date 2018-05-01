@@ -238,6 +238,7 @@ public class UserWindowController implements Initializable {
             attributeRedoStack.clear();
             setUndoRedoButtonsDisabled(false, true);
             titleBar.saved(false);
+            statusIndicator.setStatus("Edited user details", false);
         }
     }
 
@@ -331,6 +332,7 @@ public class UserWindowController implements Initializable {
         medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
+        titleBar.setTitle(currentUser.getName(), "User", "Attributes");
     }
 
     /**
@@ -345,6 +347,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getName(), "User", "Disease History");
     }
 
     /**
@@ -359,7 +362,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getName(), "User", "Attributes");
+        titleBar.setTitle(currentUser.getName(), "User", "Procedure History");
     }
 
     /**
@@ -665,6 +668,7 @@ public class UserWindowController implements Initializable {
             History.printToFile(streamOut, text);
             populateHistoryTable();
             titleBar.saved(true);
+            statusIndicator.setStatus("Saved", false);
         }
         alert.close();
     }
@@ -706,6 +710,8 @@ public class UserWindowController implements Initializable {
             setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
             Main.updateWaitingList();
         }
+        statusIndicator.setStatus("Undid last action", false);
+        titleBar.saved(false);
     }
 
     /**
@@ -744,6 +750,7 @@ public class UserWindowController implements Initializable {
             setUndoRedoButtonsDisabled(false, waitingListRedoStack.isEmpty());
             Main.updateWaitingList();
         }
+        statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
     }
 
