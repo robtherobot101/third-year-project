@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 
 import java.net.URL;
@@ -14,7 +16,7 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 
-public class WaitingListController implements Initializable {
+public class WaitingListController extends PageController implements Initializable {
     @FXML
     private Button addOrganButton;
 
@@ -37,8 +39,6 @@ public class WaitingListController implements Initializable {
     private TableColumn organDeregisteredDate;
 
     private User currentUser;
-
-
 
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
 
@@ -70,6 +70,7 @@ public class WaitingListController implements Initializable {
 
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
+                statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
             }
             populateWaitingList();
         }
@@ -84,6 +85,7 @@ public class WaitingListController implements Initializable {
         if(waitingListItemSelected != null){
             waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
+            statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
         }
     }
 

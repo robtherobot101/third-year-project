@@ -20,6 +20,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import seng302.Core.Disease;
+import seng302.GUI.Controllers.PageController;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.Main;
 import seng302.User.User;
@@ -32,7 +35,7 @@ import java.util.ResourceBundle;
 
 import static seng302.Generic.Main.streamOut;
 
-public class MedicalHistoryDiseasesController implements Initializable {
+public class MedicalHistoryDiseasesController extends PageController implements Initializable {
     @FXML
     private DatePicker dateOfDiagnosisInput;
     @FXML
@@ -129,6 +132,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 addCurrentDisease(diseaseToAdd);
             }
             System.out.println("MedicalHistoryDiseasesController: Finished adding new disease");
+            statusIndicator.setStatus("Added " + diseaseToAdd, false);
+            titleBar.saved(false);
         }
     }
 
@@ -178,6 +183,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Disease chosenDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 currentDiseaseItems.remove(chosenDisease);
+                statusIndicator.setStatus("Removed " + chosenDisease, false);
+                titleBar.saved(false);
             }
             alert.close();
         }
@@ -192,6 +199,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Disease chosenDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
                 curedDiseaseItems.remove(chosenDisease);
+                statusIndicator.setStatus("Removed " + chosenDisease, false);
+                titleBar.saved(false);
             }
             alert.close();
         }
@@ -220,6 +229,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
             History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
+            statusIndicator.setStatus("Saved", false);
+            titleBar.saved(true);
         } else {
             alert.close();
         }
@@ -512,6 +523,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
             public void handle(ActionEvent event) {
                 Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 updateDiseasePopUp(selectedDisease, true);
+                statusIndicator.setStatus("Edited " + selectedDisease, false);
+                titleBar.saved(false);
             }
         });
         currentDiseaseListContextMenu.getItems().add(updateCurrentDiseaseMenuItem);
@@ -524,9 +537,12 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 if (selectedDisease.isChronic()) {
                     selectedDisease.setChronic(false);
+                    statusIndicator.setStatus("Marked " + selectedDisease + " as not chronic", false);
                 } else {
                     selectedDisease.setChronic(true);
+                    statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
                 }
+                titleBar.saved(false);
                 selectedDisease.setDiagnosisDate(LocalDate.now());
 
                 // To refresh the observableList to make chronic toggle visible
@@ -552,6 +568,9 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 curedDiseaseItems.add(selectedDisease);
                 sortCuredDiseases(false);
 
+                statusIndicator.setStatus("Marked " + selectedDisease + " as cured", false);
+                titleBar.saved(false);
+
             }
         });
         currentDiseaseListContextMenu.getItems().add(setCuredMenuItem);
@@ -566,6 +585,8 @@ public class MedicalHistoryDiseasesController implements Initializable {
             public void handle(ActionEvent event) {
                 Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
                 updateDiseasePopUp(selectedDisease, false);
+                statusIndicator.setStatus("Edited " + selectedDisease, false);
+                titleBar.saved(false);
             }
         });
         curedDiseaseContextMenu.getItems().add(updateCuredDiseaseMenuItem);
@@ -583,6 +604,9 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 curedDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
                 sortCurrentDiseases(false);
+
+                statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
+                titleBar.saved(false);
             }
         });
         curedDiseaseContextMenu.getItems().add(setCuredChronicDiseaseMenuItem);
@@ -599,6 +623,9 @@ public class MedicalHistoryDiseasesController implements Initializable {
                 curedDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
                 sortCurrentDiseases(false);
+
+                statusIndicator.setStatus("Marked " + selectedDisease + " as uncured", false);
+                titleBar.saved(false);
             }
         });
         curedDiseaseContextMenu.getItems().add(setUncuredMenuItem);

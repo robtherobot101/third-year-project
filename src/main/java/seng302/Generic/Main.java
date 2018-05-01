@@ -12,6 +12,9 @@ import java.util.*;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -32,6 +35,7 @@ import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.GUI.Controllers.UserWindowController;
 
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -605,6 +609,7 @@ public class Main extends Application {
         Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
         Main.stage = stage;
+        stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {
             for(Stage userWindow:cliniciansUserWindows){
