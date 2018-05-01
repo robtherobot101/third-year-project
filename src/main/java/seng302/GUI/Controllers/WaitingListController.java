@@ -36,7 +36,7 @@ public class WaitingListController implements Initializable {
     private Button deregisterOrganButton;
 
     @FXML
-    private TableView<WaitingListItem> waitingList;
+    private TableView<WaitingListItem> waitingListTableView;
 
     @FXML
     private ComboBox<Organ> organTypeComboBox;
@@ -117,7 +117,7 @@ public class WaitingListController implements Initializable {
     public void deregisterOrgan() {
         String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
-        WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
+        WaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             addToUndoStack();
             currentUser.getWaitingListItems().remove(waitingListItemSelected);
@@ -178,7 +178,7 @@ public class WaitingListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Main.setWaitingListController(this);
         organTypeComboBox.setItems(organsInDropDown);
-        waitingList.setItems(waitingListItems);
+        waitingListTableView.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
         stillWaitingOn.setCellValueFactory(new PropertyValueFactory<>("stillWaitingOn"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
@@ -190,7 +190,7 @@ public class WaitingListController implements Initializable {
                 Bindings.isNull(organTypeComboBox.getSelectionModel().selectedItemProperty())
         );
 
-        waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        waitingListTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 deregisterOrganButton.setDisable(true);
             } else if (newValue.getStillWaitingOn()) {
@@ -200,7 +200,7 @@ public class WaitingListController implements Initializable {
             }
         });
 
-        waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
+        waitingListTableView.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
             @Override
             public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
                 return new TableRow<WaitingListItem>() {

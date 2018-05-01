@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Disease;
+import seng302.Generic.Disease;
 import seng302.Generic.Main;
 import seng302.User.User;
 

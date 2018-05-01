@@ -15,8 +15,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
-import seng302.Controllers.MedicalHistoryDiseasesController;
-import seng302.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;

@@ -1,4 +1,4 @@
-package seng302.Controllers;
+package seng302.GUI.Controllers;
 
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
