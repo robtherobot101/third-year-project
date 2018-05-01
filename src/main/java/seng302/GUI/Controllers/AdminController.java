@@ -699,4 +699,65 @@ public class AdminController implements Initializable {
         //background.setVisible(false);
         Main.setScene(TFScene.transplantList);
     }
+
+    @FXML
+    private void createAdmin(){
+        Stage stage = new Stage();
+        stage.setMinHeight(Main.mainWindowMinHeight);
+        stage.setMinWidth(Main.mainWindowMinWidth);
+        stage.setHeight(Main.mainWindowPrefHeight);
+        stage.setWidth(Main.mainWindowPrefWidth);
+        stage.initModality(Modality.NONE);
+
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createAdmin.fxml"));
+            Parent root = (Parent) loader.load();
+            CreateAdminController createAdminController = loader.getController();
+
+            Scene newScene = new Scene(root, 900, 575);
+            stage.setScene(newScene);
+            Admin newAdmin = createAdminController.showAndWait(stage);
+            System.out.println(newAdmin);
+            if(newAdmin != null){
+                //TODO add the new admin to the admin list
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
+    }
+
+    @FXML
+    private void createClinician(){
+        Stage stage = new Stage();
+        stage.setMinHeight(Main.mainWindowMinHeight);
+        stage.setMinWidth(Main.mainWindowMinWidth);
+        stage.setHeight(Main.mainWindowPrefHeight);
+        stage.setWidth(Main.mainWindowPrefWidth);
+        stage.initModality(Modality.NONE);
+
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createClinician.fxml"));
+            Parent root = (Parent) loader.load();
+            CreateClinicianController createClinicianController = loader.getController();
+
+            Scene newScene = new Scene(root, 900, 575);
+            stage.setScene(newScene);
+            Clinician newClinician = createClinicianController.showAndWait(stage);
+            System.out.println(newClinician);
+            if(newClinician != null){
+                //TODO add the new clinician to the admin list
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
+    }
+
+    @FXML
+    private void createUser(){
+
+    }
 }
