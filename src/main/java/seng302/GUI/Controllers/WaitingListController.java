@@ -81,12 +81,15 @@ public class WaitingListController extends PageController implements Initializab
      * the waiting TableView
      */
     public void removeOrgan(){
+        System.out.println("Button disabled");
+        /*
         WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
         if(waitingListItemSelected != null){
             waitingListItemSelected.deregisterOrgan();
             populateWaitingList();
             statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
         }
+        */
     }
 
     /**

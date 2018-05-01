@@ -12,6 +12,7 @@ public class WaitingListItem {
     private Organ organType;
     private String organRegisteredDate;
     private String organDeregisteredDate;
+    private Integer organDeregisteredCode;
 
     public WaitingListItem(Organ organType){
         this.organType = organType;
@@ -25,9 +26,10 @@ public class WaitingListItem {
         this.organDeregisteredDate = null;
     }
 
-    public void deregisterOrgan(){
+    public void deregisterOrgan(Integer reasonCode){
         if (this.organDeregisteredDate == null) {
             this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+            this.organDeregisteredCode = reasonCode;
         }
         this.organRegisteredDate = null;
     }
