@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -123,6 +126,28 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void updateFoundUsersOnOrganChange() {
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
+    }
+
+    public void showDeregisterDialog() {
+        //Set dialog window
+        List<String> reasonCodes = new ArrayList<>();
+        reasonCodes.add("1: Error Registering");
+        reasonCodes.add("2: Disease Cured");
+        reasonCodes.add("3: Receiver Deceased");
+        reasonCodes.add("4: Successful Transplant");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("4: Successful Transplant", reasonCodes);
+        dialog.setTitle("De-Registering Reason Code");
+        dialog.setHeaderText("Select a reason code");
+        dialog.setContentText("Reason Code: ");
+
+        //Get Input Code
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(option -> processDeregister(option));
+    }
+
+    public void processDeregister(String reason) {
+        
     }
 
     /**
