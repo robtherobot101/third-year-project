@@ -74,6 +74,8 @@ public class Main extends Application {
     private static String dialogStyle;
 
 
+
+
     /**
      * Class to serialize LocalDates without requiring reflective access
      */
@@ -161,6 +163,13 @@ public class Main extends Application {
     public static void updateWaitingList() {
         waitingListController.populateWaitingList();
 
+    }
+
+    /**
+     * Calls the function which updates the transplant waiting list pane.
+     */
+    public static void updateTransplantWaitingList() {
+        transplantWaitingListController.updateTransplantList();
     }
 
     /**

@@ -20,6 +20,7 @@ import seng302.Controllers.DialogWindowController;
 import seng302.Core.Disease;
 import seng302.Core.TransplantWaitingListItem;
 import seng302.GUI.TFScene;
+import seng302.Generic.History;
 import seng302.Generic.Main;
 import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
@@ -30,10 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
@@ -84,7 +82,8 @@ public class TransplantWaitingListController implements Initializable {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
                     try {
-                        if (!(item.getOrganRegisteredDate() == null)) {
+                        List<Integer> codes = Arrays.asList(1,2,3,4);
+                        if (!(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
                             transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), sdf.parse(item.getOrganRegisteredDate()), item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                         }
                     } catch (ParseException e) {
@@ -242,6 +241,7 @@ public class TransplantWaitingListController implements Initializable {
                     if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
                         i.deregisterOrgan(2);
                         DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                        break;
                     }
                 }
             }
@@ -250,12 +250,57 @@ public class TransplantWaitingListController implements Initializable {
 
     public void processDeregister(String reason) {
         if (reason == "1: Error Registering") {
-            //Jono put ya code call here
+            errorDeregister();
         } else if (reason == "2: Disease Cured") {
             confirmDiseaseCuring();
         } else if (reason == "3: Receiver Deceased") {
-            //Jono put ya code call here
+            deathDeregister();
         } else if (reason == "4: Successful Transplant") {
+            transplantDeregister();
+        }
+        Main.updateTransplantWaitingList();
+    }
+
+    private void transplantDeregister(){
+        TransplantWaitingListItem selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+        User user = Main.getUserById(selectedWaitingListItem.getId());
+        for (WaitingListItem i: user.getWaitingListItems()) {
+            if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+                i.deregisterOrgan(1);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Removes an organ from the transplant waiting list and writes it as an error to the history log.
+     */
+    private void errorDeregister(){
+        TransplantWaitingListItem selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+        User user = Main.getUserById(selectedWaitingListItem.getId());
+        Long userId = user.getId();
+        for (WaitingListItem i: user.getWaitingListItems()) {
+            if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+                i.deregisterOrgan(1);
+                History.prepareFileStringGUI(userId, "deregisterError");
+                break;
+            }
+        }
+    }
+
+    /**
+     * Removes all organs waiting on transplant for a user.
+     * Called when a receiver has deceased.
+     */
+    private void deathDeregister() {
+        TransplantWaitingListItem selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+        User selectedUser = Main.getUserById(selectedWaitingListItem.getId());
+        Long userId = selectedUser.getId();
+        if (selectedUser.getWaitingListItems() != null) {
+            History.prepareFileStringGUI(userId, "deregisterDeath");
+            for (WaitingListItem item : selectedUser.getWaitingListItems()){
+                item.deregisterOrgan(3);
+            }
 
         }
     }
