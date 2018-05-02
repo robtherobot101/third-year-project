@@ -72,10 +72,6 @@
                      <GridPane.margin>
                         <Insets bottom="10.0" />
                      </GridPane.margin></Label>
-                        <Label text="Staff ID: " GridPane.columnIndex="3" GridPane.halignment="RIGHT">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="5.0" />
-                     </GridPane.margin></Label>
                         <TableView fx:id="profileTable" GridPane.columnSpan="5" GridPane.rowIndex="3">
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
