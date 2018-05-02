@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import seng302.Controllers.DialogWindowController;
 import seng302.Core.Disease;
 import seng302.Core.TransplantWaitingListItem;
@@ -30,6 +31,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -274,7 +277,7 @@ public class TransplantWaitingListController implements Initializable {
         } else if (reason == "2: Disease Cured") {
             confirmDiseaseCuring();
         } else if (reason == "3: Receiver Deceased") {
-            deathDeregister();
+            showDeathDateDialog();
         } else if (reason == "4: Successful Transplant") {
             transplantDeregister();
         }
@@ -320,11 +323,69 @@ public class TransplantWaitingListController implements Initializable {
         }
     }
 
+    public void showDeathDateDialog() {
+
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Date of Death");
+        dialog.setHeaderText("Please provide the date of death");
+
+        ButtonType loginButtonType = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        DatePicker deathDatePicker = new DatePicker();
+        deathDatePicker.setConverter(new StringConverter<LocalDate>() {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+
+        grid.add(deathDatePicker, 1, 1);
+        dialog.getDialogPane().setContent(grid);
+
+
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        result.ifPresent(option -> {
+            if (deathDatePicker.getValue() == null) {
+                DialogWindowController.showWarning("Invaild Date", "Date needs to be in format dd/mm/yyyy", "Please enter a date that is either today or earlier");
+                showDeathDateDialog();
+            } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
+                DialogWindowController.showWarning("Invaild Date", "Date is in the future", "Please enter a date that is either today or earlier");
+                showDeathDateDialog();
+            } else {
+                deathDeregister(deathDatePicker.getValue());
+            }
+        });
+    }
+
+
     /**
      * Removes all organs waiting on transplant for a user.
      * Called when a receiver has deceased.
      */
-    public void deathDeregister() {
+    public void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
             selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
@@ -339,8 +400,8 @@ public class TransplantWaitingListController implements Initializable {
             for (ReceiverWaitingListItem item : selectedUser.getWaitingListItems()){
                 item.deregisterOrgan(3);
             }
-
         }
+        selectedUser.setDateOfDeath(deathDateInput);
     }
 
     /**
