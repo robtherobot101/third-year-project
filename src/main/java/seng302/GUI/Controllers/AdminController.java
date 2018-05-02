@@ -768,22 +768,24 @@ public class AdminController implements Initializable {
         switch(tableTabPane.getSelectionModel().getSelectedItem().getId()){
             case "usersTab":
                 User user = userTableView.getSelectionModel().getSelectedItem();
-                if(Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + user.getName() + "?", "Are you sure you want to delete this user?").showAndWait().get() == ButtonType.OK){
+                if(user != null &&
+                        Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + user.getName() + "?", "Are you sure you want to delete this user?").showAndWait().get() == ButtonType.OK){
                     currentUsers.remove(user);
                 }
                 break;
             case "administratorsTab":
                 Admin admin = adminTableView.getSelectionModel().getSelectedItem();
-                if(admin.getName().equals("default_admin")){
+                if(admin != null &&
+                        admin.getName().equals("default_admin")){
                     Main.createAlert(Alert.AlertType.ERROR, "Forbidden", "Cannot delete default admin", "This account is protected and cannot be removed").showAndWait();
                 }
-                else if(Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + admin.getName() + "?", "Are you sure you want to delete this admin?").showAndWait().get() == ButtonType.OK){
+                else if(admin != null && Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + admin.getName() + "?", "Are you sure you want to delete this admin?").showAndWait().get() == ButtonType.OK){
                     currentAdmins.remove(admin);
                 }
                 break;
             case "cliniciansTab":
                 Clinician clinician = clinicianTableView.getSelectionModel().getSelectedItem();
-                if(Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + clinician.getName() + "?", "Are you sure you want to delete this clinician?").showAndWait().get() == ButtonType.OK){
+                if(clinician != null && Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + clinician.getName() + "?", "Are you sure you want to delete this clinician?").showAndWait().get() == ButtonType.OK){
                     currentClinicians.remove(clinician);
                 }
                 break;
