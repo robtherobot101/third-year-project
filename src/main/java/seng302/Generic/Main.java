@@ -1,8 +1,6 @@
 package seng302.Generic;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -359,26 +357,6 @@ public class Main extends Application {
             }
             if (matched == names.length) {
                 found.add(user);
-            }
-        }
-        return found;
-    }
-
-    /**
-     * Find a specific user from the user list based on their id.
-     *
-     * @param id The id of the user to search for
-     * @return The user object or null if the user was not found
-     */
-    public static User getUserById(long id) {
-        if (id < 0) {
-            return null;
-        }
-        User found = null;
-        for (User user : Main.users) {
-            if (user.getId() == id) {
-                found = user;
-                break;
             }
         }
         return found;
