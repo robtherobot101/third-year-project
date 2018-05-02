@@ -37,10 +37,10 @@ public class WaitingListItem {
     public WaitingListItem(WaitingListItem copy) {
         this.organType = copy.organType;
         this.organRegisteredDate = copy.organRegisteredDate;
-        this.organDeregisteredDate = copy.organDeregisteredDate;
+        //this.organDeregisteredDate = copy.organDeregisteredDate;
         this.stillWaitingOn = copy.stillWaitingOn;
         this.waitingListItemId = copy.waitingListItemId;
-        this.organDeregisteredCode = copy.organDeregisteredCode;
+        //this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
     /**

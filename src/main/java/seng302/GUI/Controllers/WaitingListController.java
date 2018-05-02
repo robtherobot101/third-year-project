@@ -94,7 +94,7 @@ public class WaitingListController implements Initializable {
             WaitingListItem temp = new WaitingListItem(organTypeSelected);
             boolean found = false;
             for (WaitingListItem item : currentUser.getWaitingListItems()) {
-                if (temp.getOrganType() == item.getOrganType()) {
+                if (temp.getWaitingListItemId() == item.getWaitingListItemId()) {
                     currentUser.getWaitingListItems().remove(item);
                     currentUser.getWaitingListItems().add(new WaitingListItem(item));
                     currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).registerOrgan();

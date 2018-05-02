@@ -197,6 +197,13 @@ public class TransplantWaitingListController implements Initializable {
                 Disease selected = (Disease) diseaseComboBox.getValue();
                 selected.setCured(true);
                 ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+                ArrayList<Disease> currentDiseases = selectedUser.getCurrentDiseases();
+                ArrayList<Disease> curedDiseases = selectedUser.getCuredDiseases();
+                curedDiseases.add(selected);
+                selectedUser.setCuredDiseases(curedDiseases);
+                currentDiseases.remove(selected);
+                selectedUser.setCurrentDiseases(currentDiseases);
+
                 selectedWaitingListItem.getId();
                 for (WaitingListItem i: selectedUserWaitingListItems) {
                     if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
@@ -243,6 +250,16 @@ public class TransplantWaitingListController implements Initializable {
                         DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
                         break;
                     }
+                }
+            }
+        } else {
+            ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+            selectedWaitingListItem.getId();
+            for (WaitingListItem i: selectedUserWaitingListItems) {
+                if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+                    i.deregisterOrgan(2);
+                    DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                    break;
                 }
             }
         }
