@@ -37,7 +37,6 @@ import seng302.User.User;
  */
 public class AdminController implements Initializable {
 
-
     private Admin currentAdmin;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -45,34 +44,46 @@ public class AdminController implements Initializable {
     );
 
     @FXML
-    private TableColumn profileName;
+    private TabPane TableTabPane;
+
+    // User Tab Pane FXML elements
+    @FXML
+    private TableView<User> userTableView;
 
     @FXML
-    private TableColumn profileUserType;
+    private TableColumn<User, String> userNameTableColumn, userTypeTableColumn, userGenderTableColumn,
+            userRegionTableColumn;
+    @FXML
+    private TableColumn<User, Double> userAgeTableColumn;
+
+    // Clinician Tab Pane FXML elements
+    @FXML
+    private TableView<Clinician> clinicianTableView;
 
     @FXML
-    private TableColumn profileAge;
-
+    private TableColumn<Clinician, String> clinicianUsernameTableColumn, clinicianNameTableColumn,
+            clinicianAddressTableColumn, clinicianRegionTableColumn;
     @FXML
-    private TableColumn profileGender;
+    private TableColumn<Clinician, Long> clinicianIDTableColumn;
 
-    @FXML
-    private TableColumn profileRegion;
 
+    // Admin Tab Pane FXML elements
     @FXML
-    private TableView profileTable;
+    private TableView<Admin> adminTableView;
+    @FXML
+    private TableColumn<Admin, String> adminUsernameTableColumn, adminNameTableColumn;
+
+
+
+
+
+
     @FXML
     private TextField profileSearchTextField;
     @FXML
     private Pane background;
     @FXML
     private Label staffIDLabel;
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private Label addressLabel;
-    @FXML
-    private Label regionLabel;
 
     @FXML
     private Label userDisplayText;
@@ -113,7 +124,9 @@ public class AdminController implements Initializable {
     private ArrayList<Clinician> clinicianRedoStack = new ArrayList<>();
 
 
-    private ObservableList<User> currentPage = FXCollections.observableArrayList();
+    private ObservableList<User> currentUsers;
+    private ObservableList<Clinician> currentClinicians;
+    private ObservableList<Admin> currentAdmins;
 
     private String searchNameTerm = "";
     private String searchRegionTerm = "";
@@ -129,6 +142,10 @@ public class AdminController implements Initializable {
      * @param currentAdmin The currentAdmin to se as the current
      */
     public void setAdmin(Admin currentAdmin) {
+        // Fetch all profiles when the currentAdmin is set, saves time by not performing this when the admin fxml is
+        // initialised but now
+
+
         this.currentAdmin = currentAdmin;
         updateDisplay();
     }
@@ -137,13 +154,13 @@ public class AdminController implements Initializable {
      * Updates all the displayed TextFields to the values
      * from the current currentAdmin
      */
-    public void updateDisplay() {
+    private void updateDisplay() {
+
+
+
         System.out.print(currentAdmin);
         userDisplayText.setText("Welcome " + currentAdmin.getName());
         staffIDLabel.setText(Long.toString(currentAdmin.getStaffID()));
-        nameLabel.setText("Name: " + currentAdmin.getName());
-        addressLabel.setText("Address: " + currentAdmin.getWorkAddress());
-        regionLabel.setText("Region: " + currentAdmin.getRegion());
     }
 
     /**
@@ -526,10 +543,34 @@ public class AdminController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialise observable lists that correlate to the three TableViews
+        currentUsers = FXCollections.observableArrayList(Main.users);
+        currentClinicians = FXCollections.observableArrayList(Main.clinicians);
+        currentAdmins = FXCollections.observableArrayList(Main.admins);
 
-        clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
-        clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
-        clinicianOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+        // Set the items of the TableView to populate objects
+        userTableView.setItems(currentUsers);
+        clinicianTableView.setItems(currentClinicians);
+        adminTableView.setItems(currentAdmins);
+
+        // Set User TableColumns to point at correct attributes
+        userNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        userTypeTableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        userAgeTableColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        userGenderTableColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
+        userRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+        // Set Clinician TableColumns to point at correct attributes
+        clinicianUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        clinicianNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        clinicianAddressTableColumn.setCellValueFactory(new PropertyValueFactory<>("workAddress"));
+        clinicianRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        clinicianIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+
+
+
+
+
 
         resultsPerPage = 3;
         numberXofResults = 5;
@@ -589,11 +630,9 @@ public class AdminController implements Initializable {
         });
 
 
-        profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
-        profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
-        profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+
+        
 
         numberOfResutsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue!=null){
@@ -613,22 +652,22 @@ public class AdminController implements Initializable {
         fadeIn.setCycleCount(0);
         fadeIn.setAutoReverse(false);
 
-        profileTable.setItems(currentPage);
+        userTableView.setItems(currentPage);
 
         System.out.println("AdminController: Setting main controller of myself");
         Main.setAdminController(this);
 
         updateFoundUsers();
 
-        profileTable.setItems(currentPage);
+        userTableView.setItems(currentPage);
 
         /**
-         * RowFactory for the profileTable.
+         * RowFactory for the userTableView.
          * Displays a tooltip when the mouse is over a table entry.
          * Adds a mouse click listener to each row in the table so that a user window
          * is opened when the event is triggered
          */
-        profileTable.setRowFactory(new Callback<TableView<User>, TableRow<User>>() {
+        userTableView.setRowFactory(new Callback<TableView<User>, TableRow<User>>() {
             @Override
             public TableRow<User> call(TableView<User> tableView) {
                 final TableRow<User> row = new TableRow<User>() {
@@ -689,7 +728,7 @@ public class AdminController implements Initializable {
             }
         });
 
-        profileTable.refresh();
+        userTableView.refresh();
     }
 
     /**

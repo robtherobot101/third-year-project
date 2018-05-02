@@ -77,6 +77,7 @@ public class LoginController implements Initializable {
 
         }
 
+        // Check for an admin match
         Admin currentAdmin = null;
         for (Admin admin: Main.admins) {
             if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
@@ -85,7 +86,7 @@ public class LoginController implements Initializable {
                     System.out.println("LoginController: Logging in as admin...");
                     currentAdmin = admin;
                     typeMatched = LoginType.ADMIN;
-                    // TODO write login of clinician to history
+                    // TODO write login of admin to history
                 }
             }
 
@@ -110,7 +111,6 @@ public class LoginController implements Initializable {
                         break;
                     case ADMIN:
                         Main.setAdmin(currentAdmin);
-                        System.out.println("LoginController: Setting scene to admin...");
                         Main.setScene(TFScene.admin);
                 }
             } else {
