@@ -8,9 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
 import seng302.Generic.History;
+import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
@@ -21,7 +20,7 @@ import seng302.User.User;
 import java.net.URL;
 import java.util.*;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 
 /**
@@ -33,7 +32,8 @@ public class MedicationsController extends PageController implements Initializab
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel;
+    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel,
+            interactionsTitleLabel, interactionsContentLabel, historyTitleLabel, historyContentLabel;
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
@@ -133,7 +133,9 @@ public class MedicationsController extends PageController implements Initializab
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
                     Platform.runLater(() -> {
                         if (!activeIngredients.get(0).equals("")) {
-                            currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
+                            Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
+                            newMedication.startedTaking();
+                            currentItems.add(newMedication);
                             // NOTE: I have created another constructor in the Medications class for a medication with a name and
                             // active ingredients also.
 
@@ -183,6 +185,7 @@ public class MedicationsController extends PageController implements Initializab
      */
     public void moveMedicationToHistory() {
         Medication m = moveMedication(historicItems, currentListView);
+        m.stoppedTaking();
         statusIndicator.setStatus("Moved " + m + " to history", false);
         titleBar.saved(false);
     }
@@ -192,6 +195,7 @@ public class MedicationsController extends PageController implements Initializab
      */
     public void moveMedicationToCurrent() {
         Medication m = moveMedication(currentItems, historyListView);
+        m.startedTaking();
         statusIndicator.setStatus("Moved " + m + " to current", false);
         titleBar.saved(false);
     }
@@ -218,27 +222,23 @@ public class MedicationsController extends PageController implements Initializab
      * Saves the current state of the user's medications lists for both their historic and current medications.
      */
     public void save() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current user? ");
-        alert.setContentText("By doing so, the user will be updated with the following medication details.");
+        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ",
+                "By doing so, the user will be updated with the following medication details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentUser.getHistoricMedications().clear();
             currentUser.getHistoricMedications().addAll(historicItems);
             currentUser.getCurrentMedications().clear();
             currentUser.getCurrentMedications().addAll(currentItems);
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
             History.printToFile(streamOut, text);
             //populateHistoryTable();
-            alert.close();
             statusIndicator.setStatus("Saved changes", false);
             titleBar.saved(true);
-        } else {
-            alert.close();
         }
+        alert.close();
     }
 
     /**
@@ -301,9 +301,9 @@ public class MedicationsController extends PageController implements Initializab
         // Check to see if the api call was successful
         if (!result.getError()) {
             HashSet<String> ageSymptoms = result.ageInteraction(currentUser.getAgeDouble());
-            System.out.println("age symptoms: "+ ageSymptoms);
+            //System.out.println("age symptoms: "+ ageSymptoms);
             HashSet<String> genderSymptoms = result.genderInteraction(currentUser.getGender());
-            System.out.println("gender symptoms: " + genderSymptoms);
+            //System.out.println("gender symptoms: " + genderSymptoms);
             ageSymptoms.retainAll(genderSymptoms);
 
             for (String symptom : ageSymptoms) {
@@ -366,14 +366,22 @@ public class MedicationsController extends PageController implements Initializab
             // Display the ingredients
             activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
             activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+            // Display the usage history
+            historyTitleLabel.setText("History of usage for " + selected.getName());
+            historyContentLabel.setText(String.join("\n", selected.getHistory()));
         } else if (!currentSelectionIsNull) {
             selected = currentListView.getSelectionModel().getSelectedItem();
             // Display the ingredients
             activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
             activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+            // Display the usage history
+            historyTitleLabel.setText("History of usage for " + selected.getName());
+            historyContentLabel.setText(String.join("\n", selected.getHistory()));
         } else {
             activeIngredientsTitleLabel.setText("");
             activeIngredientsContentLabel.setText("");
+            historyTitleLabel.setText("");
+            historyContentLabel.setText("");
         }
     }
 
@@ -392,15 +400,13 @@ public class MedicationsController extends PageController implements Initializab
             Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
             // Reset status bar
-            Platform.runLater(() -> {
-                Platform.runLater(() -> statusIndicator.ready());
-            });
+            Platform.runLater(() -> Platform.runLater(() -> statusIndicator.ready()));
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
             } else {
                 return medicines;
             }
-        })/*.setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false))*/;
+        });
         newMedicationField.textProperty().addListener(((observable, oldValue, newValue) -> addNewMedicationButton.setDisable(newValue.isEmpty())));
 
         interactionsTitleLabel.setText("");

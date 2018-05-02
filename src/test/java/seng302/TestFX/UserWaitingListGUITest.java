@@ -1,4 +1,3 @@
-
 package seng302.TestFX;
 
 import javafx.scene.Node;
@@ -8,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Generic.ReceiverWaitingListItem;
+import seng302.TestFX.TestFXTest;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -18,15 +18,13 @@ import java.util.concurrent.TimeoutException;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class UserWaitingListGUITest extends TestFXTest {
     private User user;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        headedTestSetup();
+        defaultTestSetup();
     }
 
     @Before
@@ -102,7 +100,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      * @return The table row with the given organ type
      */
     public Node getWaitingListOrgan(Organ type){
-        return (Node)from(lookup("#waitingList")).lookup(type.toString().toLowerCase()).query().getParent();
+        return (Node)from(lookup("#waitingListTableView")).lookup(type.toString().toLowerCase()).query().getParent();
     }
 
     /**

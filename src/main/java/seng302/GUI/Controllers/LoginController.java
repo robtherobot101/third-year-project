@@ -1,7 +1,5 @@
 package seng302.GUI.Controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -10,11 +8,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import seng302.User.Clinician;
-import seng302.User.User;
-import seng302.Generic.Main;
 import seng302.GUI.TFScene;
 import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.Clinician;
+import seng302.User.User;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * A controller class for the log in screen.
@@ -46,7 +48,7 @@ public class LoginController implements Initializable {
                 if (user.getPassword().equals(passwordInput.getText())) {
                     currentUser = user;
                     String text = History.prepareFileStringGUI(user.getId(), "login");
-                    History.printToFile(Main.streamOut, text);
+                    History.printToFile(IO.streamOut, text);
                 }
             }
         }

@@ -3,31 +3,17 @@ package seng302.TestFX;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
 import org.junit.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
 import seng302.User.*;
 import seng302.User.Attribute.*;
-import seng302.Generic.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DrugInteractionGUITest extends TestFXTest {
-    private static final boolean runHeadless = true;
     private User user = new User("test,user", LocalDate.of(1983,7,4));
     private String testDrugA = "Escitalopram";
     private String testDrugB = "Diazepam";
@@ -117,33 +103,41 @@ public class DrugInteractionGUITest extends TestFXTest {
         return new HashSet<>(Arrays.asList(resultLabel.getText().split(System.lineSeparator())));
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException{
         addAndCompare(testDrugA,testDrugB);
         assertEquals(symptomsForAAndB,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptomsPassedInReverseOrder_returnsCorrectResults() throws TimeoutException{
         addAndCompare(testDrugA,testDrugB);
         assertEquals(symptomsForAAndB,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptomsFromHistory_returnsCorrectResults() throws TimeoutException{
         waitForNodeVisible(10, "#moveToHistoryButton");
+
         addValidMedication(testDrugA);
+        addValidMedication(testDrugB);
+
         clickOn(testDrugA);
+        waitForNodeEnabled(10, "#moveToHistoryButton");
         clickOn("#moveToHistoryButton");
 
-        addValidMedication(testDrugB);
         clickOn(testDrugB);
+        waitForNodeEnabled(10, "#moveToHistoryButton");
         clickOn("#moveToHistoryButton");
 
         compareMedications(testDrugA, testDrugB);
         assertEquals(symptomsForAAndB,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWhichHaveNoInteractionsForUser_noResults() throws TimeoutException{
         addAndCompare("Marinol","Codeine sulfate");
@@ -154,6 +148,7 @@ public class DrugInteractionGUITest extends TestFXTest {
         assertEquals(expected,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithoutInformation_noResultsAndUserNotified() throws TimeoutException{
         addAndCompare("Selsun","Inversine");
@@ -164,6 +159,7 @@ public class DrugInteractionGUITest extends TestFXTest {
         assertEquals(expected,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWhichCauseInternalServerError_noResultsAndUserNotified() throws TimeoutException{
         addAndCompare("Codeine sulfate","Maxolon");

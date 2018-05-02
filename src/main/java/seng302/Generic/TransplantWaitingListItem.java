@@ -1,4 +1,4 @@
-package seng302.Core;
+package seng302.Generic;
 
 import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;

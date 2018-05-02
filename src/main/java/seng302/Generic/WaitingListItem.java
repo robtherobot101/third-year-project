@@ -6,6 +6,10 @@ import seng302.User.User;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+
+/**
+ * Contains information for a transplant waiting list record.
+ */
 public class WaitingListItem {
 
     protected Organ organType;
