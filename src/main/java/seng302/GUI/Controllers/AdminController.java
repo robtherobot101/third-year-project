@@ -713,8 +713,8 @@ public class AdminController implements Initializable {
 
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createAdmin.fxml"));
-            CreateAdminController createAdminController = loader.getController();
             Parent root = (Parent) loader.load();
+            CreateAdminController createAdminController = loader.getController();
             Scene newScene = new Scene(root, 900, 575);
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
