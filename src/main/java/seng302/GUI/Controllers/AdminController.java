@@ -662,6 +662,7 @@ public class AdminController implements Initializable {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
+                            userWindowController.setTitleBar(stage);
                             Main.setCurrentUser(row.getItem());
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
@@ -711,9 +712,8 @@ public class AdminController implements Initializable {
 
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createAdmin.fxml"));
-            Parent root = (Parent) loader.load();
             CreateAdminController createAdminController = loader.getController();
-
+            Parent root = (Parent) loader.load();
             Scene newScene = new Scene(root, 900, 575);
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
