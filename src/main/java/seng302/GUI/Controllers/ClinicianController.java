@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import seng302.Controllers.DialogWindowController;
 import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import org.controlsfx.control.StatusBar;
@@ -230,6 +231,8 @@ public class ClinicianController implements Initializable {
      */
     public void save(){
         Main.saveUsers(Main.getClinicianPath(), false);
+        Main.saveUsers(Main.getUserPath(), true);
+        DialogWindowController.showInformation("Saved", "Changes Saved", "Saved changes to clinician and users");
     }
 
     /**

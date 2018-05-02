@@ -36,9 +36,8 @@ public class ReceiverWaitingListItem extends WaitingListItem{
      * Can be called when registering a previously deregistered organ.
      */
     public void registerOrgan(){
-        if (this.getOrganRegisteredDate() == null) {
-            this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-        }
+        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.organDeregisteredCode = null;
         this.stillWaitingOn = true;
         this.organDeregisteredDate = null;
     }
@@ -57,6 +56,7 @@ public class ReceiverWaitingListItem extends WaitingListItem{
                 selectedUser.getWaitingListItems().add(temp);
                 temp.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
                 temp.organDeregisteredCode = reasonCode;
+                temp.stillWaitingOn = false;
             } else {
                 this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
                 this.organDeregisteredCode = reasonCode;

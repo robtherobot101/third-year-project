@@ -106,9 +106,10 @@ public class TransplantWaitingListController implements Initializable {
                 for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
                     if (!(item.getOrganRegisteredDate() == null)) {
                         if (organSearch.equals("None") || organSearch == item.getOrganType().toString()) {
-                            if (regionSearch.equals("") && (user.getRegion() == null)) {
+                            List<Integer> codes = Arrays.asList(1,2,3,4);
+                            if (regionSearch.equals("") && (user.getRegion() == null) && !(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
                                 transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(), item.getOrganType(), user.getId(), item.getWaitingListItemId()));
-                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase()))) {
+                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && !(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
                                 transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(), item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                             }
                         }
@@ -213,14 +214,8 @@ public class TransplantWaitingListController implements Initializable {
                     }
                 }
             } else {
-                ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
-                selectedWaitingListItem.getUserId();
-                for (ReceiverWaitingListItem i: selectedUserWaitingListItems) {
-                    if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
-                        i.deregisterOrgan(2);
-                        DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
-                    }
-                }
+                DialogWindowController.showInformation("Invaild Disease", "Please Select a disease", "Select a disease to cure");
+                showDiseaseDeregisterDialog();
             }
         });
     }
@@ -288,6 +283,7 @@ public class TransplantWaitingListController implements Initializable {
         } else {
             Main.updateTransplantWaitingList();
         }
+        deregisterReceiverButton.setDisable(true);
     }
 
     public void transplantDeregister(){
@@ -365,7 +361,7 @@ public class TransplantWaitingListController implements Initializable {
                 }
             }
         });
-
+        deathDatePicker.setValue(LocalDate.now());
         grid.add(deathDatePicker, 1, 1);
         dialog.getDialogPane().setContent(grid);
 
@@ -394,7 +390,6 @@ public class TransplantWaitingListController implements Initializable {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
             selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
-
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }

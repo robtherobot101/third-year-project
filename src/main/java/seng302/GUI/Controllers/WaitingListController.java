@@ -129,7 +129,7 @@ public class WaitingListController implements Initializable {
 
         }
         populateOrgansComboBox();
-
+        Main.getUserWindowController().populateUserFields();
     }
 
 
