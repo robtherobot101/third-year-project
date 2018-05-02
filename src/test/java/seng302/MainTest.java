@@ -1,5 +1,6 @@
 package seng302;
 
+import javafx.collections.FXCollections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,9 +9,7 @@ import seng302.User.User;
 import seng302.User.Attribute.Gender;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
-import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
-import seng302.User.User;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -24,7 +23,7 @@ import static org.junit.Assert.*;
 public class MainTest {
     @Before
     public void setup() {
-        Main.users = new ArrayList<>();
+        Main.users = FXCollections.observableArrayList();
         IO.recalculateNextId(LoginType.USER);
         Main.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
         Main.users.add(new User("Test User,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "Auckland", "street sample " +
@@ -195,6 +194,6 @@ public class MainTest {
 
     @After
     public void tearDown() {
-        Main.users = new ArrayList<>();
+        Main.users = FXCollections.observableArrayList();
     }
 }

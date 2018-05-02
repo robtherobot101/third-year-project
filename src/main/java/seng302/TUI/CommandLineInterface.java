@@ -1,5 +1,6 @@
 package seng302.TUI;
 
+import javafx.collections.ObservableList;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -432,7 +432,7 @@ public class CommandLineInterface {
                 System.out.println(toDescribe);
             }
         } catch (NumberFormatException e) {
-            ArrayList<User> toDescribe = Main.getUserByName(idString.split(","));
+            ObservableList<User> toDescribe = Main.getUserByName(idString.split(","));
             if (toDescribe.size() == 0) {
                 System.out.println(String.format("No users with names matching %s were found.", idString));
             } else {

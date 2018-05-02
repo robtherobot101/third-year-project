@@ -1,10 +1,9 @@
 package seng302.Generic;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -22,10 +21,7 @@ import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,9 +33,9 @@ import java.util.HashMap;
 public class Main extends Application {
     public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
     private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
-    public static ArrayList<User> users = new ArrayList<>();
-    public static ArrayList<Clinician> clinicians = new ArrayList<>();
-    public static ArrayList<Admin> admins = new ArrayList<>();
+    public static ObservableList<User> users = FXCollections.observableArrayList();
+    public static ObservableList<Clinician> clinicians = FXCollections.observableArrayList();
+    public static ObservableList<Admin> admins = FXCollections.observableArrayList();
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
@@ -264,8 +260,8 @@ public class Main extends Application {
      * @param names The names of the user to search for
      * @return The user objects that matched the input names
      */
-    public static ArrayList<User> getUserByName(String[] names) {
-        ArrayList<User> found = new ArrayList<>();
+    public static ObservableList<User> getUserByName(String[] names) {
+        ObservableList<User> found = FXCollections.observableArrayList();
         if (names.length == 0) {
             return Main.users;
         }

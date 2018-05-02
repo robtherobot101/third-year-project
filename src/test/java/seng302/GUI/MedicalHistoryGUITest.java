@@ -1,5 +1,6 @@
 package seng302.GUI;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -16,7 +17,6 @@ import seng302.Generic.Main;
 import seng302.User.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -79,7 +79,7 @@ public class MedicalHistoryGUITest extends ApplicationTest {
 
         // Checks if our test user already exists
         String[] names = new String[]{"Matthew", "Knight"};
-        ArrayList<User> results = mainGUI.getUserByName(names);
+        ObservableList<User> results = mainGUI.getUserByName(names);
 
         // If it doesn't exist -> add the user
         if (results.isEmpty()) {

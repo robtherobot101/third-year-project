@@ -11,7 +11,6 @@ import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
-import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.net.URL;

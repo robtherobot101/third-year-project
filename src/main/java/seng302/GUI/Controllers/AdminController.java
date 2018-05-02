@@ -1,6 +1,5 @@
 package seng302.GUI.Controllers;
 
-import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +17,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.Duration;
 import seng302.Generic.*;
 
 import java.io.IOException;
@@ -26,9 +24,7 @@ import java.net.URL;
 import java.util.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
-import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
-import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -164,9 +160,9 @@ public class AdminController implements Initializable {
 
     private void refreshLatestProfiles() {
         // Initialise observable lists that correlate to the three TableViews
-        currentUsers = FXCollections.observableArrayList(Main.users);
-        currentClinicians = FXCollections.observableArrayList(Main.clinicians);
-        currentAdmins = FXCollections.observableArrayList(Main.admins);
+        currentUsers = Main.users;
+        currentClinicians = Main.clinicians;
+        currentAdmins = Main.admins;
     }
 
     /**
