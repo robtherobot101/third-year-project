@@ -3,6 +3,8 @@ package seng302.GUI.Controllers;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -138,12 +142,9 @@ public class AdminController implements Initializable {
      * @param currentAdmin The currentAdmin to se as the current
      */
     public void setAdmin(Admin currentAdmin) {
-        // Fetch all profiles when the currentAdmin is set, saves time by not performing this when the admin fxml is
-        // initialised but now
-
-
         this.currentAdmin = currentAdmin;
         updateDisplay();
+        refreshLatestProfiles();
     }
 
     /**
@@ -151,7 +152,6 @@ public class AdminController implements Initializable {
      * from the current currentAdmin
      */
     private void updateDisplay() {
-        System.out.print(currentAdmin);
         userDisplayText.setText("Welcome " + currentAdmin.getName());
         adminNameLabel.setText("Name: " + currentAdmin.getName());
         adminAddressLabel.setText("Address: " + currentAdmin.getWorkAddress());
@@ -159,6 +159,7 @@ public class AdminController implements Initializable {
     }
 
     private void refreshLatestProfiles() {
+        System.out.println("AdminController: User List from main: " + Main.users);
         // Initialise observable lists that correlate to the three TableViews
         currentUsers = Main.users;
         currentClinicians = Main.clinicians;
@@ -321,6 +322,8 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save(){
+        IO.saveUsers(IO.getAdminPath(), LoginType.USER);
+        IO.saveUsers(IO.getAdminPath(), LoginType.CLINICIAN);
         IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
         IO.saveUsers(IO.getUserPath(), LoginType.USER);
         IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
@@ -536,6 +539,116 @@ public class AdminController implements Initializable {
         adminNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         adminUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
+        // Set up listeners that only allow 1 item to be selected at a time across the three tables
+        userTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                clinicianTableView.getSelectionModel().clearSelection();
+                adminTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        clinicianTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                userTableView.getSelectionModel().clearSelection();
+                adminTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        adminTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                userTableView.getSelectionModel().clearSelection();
+                clinicianTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        // Set up a context menu containing a delete option for admins
+        final ContextMenu profileMenu = new ContextMenu();
+
+        MenuItem deleteProfile = new MenuItem();
+        deleteProfile.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                User selectedUser = userTableView.getSelectionModel().getSelectedItem();
+                Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
+                Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Are you sure?");
+                alert.setHeaderText("Confirm profile deletion");
+                alert.setContentText("Are you sure you want to delete this profile? This cannot be undone.");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    if (selectedUser != null) {
+                        // A user has been selected for deletion
+                        System.out.println("Deleting User: " + selectedUser);
+                        Main.users.remove(selectedUser);
+                        IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                    } else if (selectedClinician != null) {
+                        // A clinician has been selected for deletion
+                        System.out.println("Deleting Clinician: " + selectedClinician);
+                        Main.clinicians.remove(selectedClinician);
+                        IO.saveUsers(IO.getUserPath(), LoginType.CLINICIAN);
+                    } else if (selectedAdmin != null) {
+                        // An admin has been selected for deletion
+                        System.out.println("Deleting Admin: " + selectedAdmin);
+                        Main.admins.remove(selectedAdmin);
+                        IO.saveUsers(IO.getUserPath(), LoginType.ADMIN);
+                    }
+                    System.out.println(Main.users);
+                    refreshLatestProfiles();
+                }
+            }
+        });
+        profileMenu.getItems().add(deleteProfile);
+
+
+        userTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    User selectedUser = userTableView.getSelectionModel().getSelectedItem();
+                    // No need to check for default user
+                    deleteProfile.setText("Delete " + selectedUser.getName());
+                    profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
+                }
+            }
+        });
+
+        clinicianTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
+                    // Check if this is the default clinician
+                    if (selectedClinician.getStaffID() == 0) {
+                        deleteProfile.setDisable(true);
+                        deleteProfile.setText("Cannot delete default clinician");
+                    } else {
+                        deleteProfile.setDisable(false);
+                        deleteProfile.setText("Delete " + selectedClinician.getName());
+                    }
+                    profileMenu.show(clinicianTableView, event.getScreenX(), event.getScreenY());
+                }
+            }
+        });
+
+        adminTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
+                    // Check if this is the default clinician
+                    if (selectedAdmin.getStaffID() == 1) {
+                        deleteProfile.setDisable(true);
+                        deleteProfile.setText("Cannot delete default admin");
+                    } else {
+                        deleteProfile.setDisable(false);
+                        deleteProfile.setText("Delete " + selectedAdmin.getName());
+                    }
+                    profileMenu.show(adminTableView, event.getScreenX(), event.getScreenY());
+                }
+            }
+        });
 
         /*profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
@@ -754,6 +867,8 @@ public class AdminController implements Initializable {
             if(user != null){
                 Main.users.add(user);
                 IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            } else {
+                System.out.println("AdminController: Failed to create user");
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");

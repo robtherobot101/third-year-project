@@ -110,7 +110,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                     "Diagnosis date occurs in the future.");
             dateOfDiagnosisInput.setValue(null);
         } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()){
-            //TODO could make the checkboxs toeggle each other as only 1 can be selected
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Disease cannot be chronic and cured.");
             isCuredCheckBox.setSelected(false);

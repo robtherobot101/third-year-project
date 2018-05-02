@@ -83,9 +83,11 @@ public class CreateAccountController implements Initializable {
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
             errorText.setVisible(true);
+            return null;
         } else if (dateOfBirthInput.getValue().isAfter(LocalDate.now())) {
             errorText.setText("Date of birth is in the future");
             errorText.setVisible(true);
+            return null;
         } else {
             errorText.setVisible(false);
             String username = usernameInput.getText().isEmpty() ? null : usernameInput.getText();
@@ -94,7 +96,7 @@ public class CreateAccountController implements Initializable {
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             // If we are creating from the login screen
-            if(background.getScene().getWindow() == Main.getStage()) {
+            if (background.getScene().getWindow() == Main.getStage()) {
                 Main.users.add(user);
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
@@ -103,6 +105,7 @@ public class CreateAccountController implements Initializable {
                 Main.setScene(TFScene.userWindow);
                 return null;
             }
+
         }
         stage.close();
         return user;
