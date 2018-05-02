@@ -138,6 +138,17 @@ public class ClinicianController implements Initializable {
 
     }
 
+    public int getResultsPerPage(){
+        return resultsPerPage;
+    }
+    public int getNumberXofResults(){
+        return numberXofResults;
+    }
+    public Clinician getClinician(){
+        return clinician;
+    }
+
+
     public void setTitle(){
         titleBar.setTitle(clinician.getName(), "Clinician", null);
     }
@@ -535,11 +546,14 @@ public class ClinicianController implements Initializable {
     public void populateNResultsComboBox(int numberOfSearchResults){
         numberOfResutsToDisplay.getItems().clear();
         String firstPage = "First page";
+        numberOfResutsToDisplay.setDisable(true);
         numberOfResutsToDisplay.getItems().add(firstPage);
         numberOfResutsToDisplay.getSelectionModel().select(firstPage);
         if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
+            numberOfResutsToDisplay.setDisable(false);
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
+            numberOfResutsToDisplay.setDisable(false);
             numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }
