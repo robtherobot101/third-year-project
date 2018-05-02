@@ -15,6 +15,7 @@ import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.Main;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
@@ -229,7 +230,7 @@ public class MedicationsController extends PageController implements Initializab
             currentUser.getHistoricMedications().addAll(historicItems);
             currentUser.getCurrentMedications().clear();
             currentUser.getCurrentMedications().addAll(currentItems);
-            IO.saveUsers(IO.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
             History.printToFile(streamOut, text);

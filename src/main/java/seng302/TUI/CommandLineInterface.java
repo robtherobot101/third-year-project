@@ -11,6 +11,7 @@ import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -542,7 +543,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = IO.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (IO.importUsers(path, true)) {
+                if (IO.importUsers(path, LoginType.USER)) {
                     System.out.println("User imported from " + path + ".");
                     return true;
                 } else {
@@ -579,7 +580,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = IO.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (IO.saveUsers(path, true)) {
+                if (IO.saveUsers(path, LoginType.USER)) {
                     System.out.println("User saved to " + path + ".");
                     return true;
                 } else {

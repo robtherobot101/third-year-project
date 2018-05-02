@@ -27,6 +27,7 @@ import java.util.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -317,7 +318,7 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save(){
-        IO.saveUsers(IO.getClinicianPath(), false);
+        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
     }
 
     /**

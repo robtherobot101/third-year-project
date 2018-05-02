@@ -63,21 +63,27 @@ public class LoginController implements Initializable {
 
         // Check for a clinician match
         Clinician currentClinician = null;
-        Admin currentAdmin = null;
         for (Clinician clinician: Main.clinicians) {
             if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
-                if (clinician.getPassword().equals(passwordInput.getText())) {
-                    System.out.println(clinician instanceof Admin);
-                    if (clinician instanceof Admin) {
-                        System.out.println("LoginController: Logging in as admin...");
-                        currentAdmin = (Admin) clinician;
-                        typeMatched = LoginType.ADMIN;
-                    } else {
-                        System.out.println("LoginController: Logging in as clinician...");
-                        currentClinician = clinician;
-                        typeMatched = LoginType.CLINICIAN;
-                    }
+                if (clinician.getPassword().equals(passwordInput.getText())){
+                    System.out.println("LoginController: Logging in as clinician...");
+                    currentClinician = clinician;
+                    typeMatched = LoginType.CLINICIAN;
+                    // TODO write login of clinician to history
+                }
+            }
+
+        }
+
+        Admin currentAdmin = null;
+        for (Admin admin: Main.admins) {
+            if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
+                identificationMatched = true;
+                if (admin.getPassword().equals(passwordInput.getText())){
+                    System.out.println("LoginController: Logging in as clinician...");
+                    currentAdmin = admin;
+                    typeMatched = LoginType.ADMIN;
                     // TODO write login of clinician to history
                 }
             }

@@ -39,6 +39,7 @@ public class Main extends Application {
     private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
     public static ArrayList<User> users = new ArrayList<>();
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
+    public static ArrayList<Admin> admins = new ArrayList<>();
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
@@ -559,7 +560,7 @@ public class Main extends Application {
             IO.setPaths();
             File users = new File(IO.getUserPath());
             if (users.exists()) {
-                if (!IO.importUsers(users.getAbsolutePath(), true)) {
+                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
                     throw new IOException("User save file could not be loaded.");
                 }
             } else {
@@ -569,7 +570,7 @@ public class Main extends Application {
             }
             File clinicians = new File(IO.getClinicianPath());
             if (clinicians.exists()) {
-                if (!IO.importUsers(clinicians.getAbsolutePath(), false)) {
+                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
                     throw new IOException("Clinician save file could not be loaded.");
                 }
             } else {
@@ -577,10 +578,22 @@ public class Main extends Application {
                     throw new IOException("Clinician save file could not be created.");
                 }
                 Clinician defaultClinician = new Clinician("default", "default", "default");
-                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
                 Main.clinicians.add(defaultClinician);
-                Main.clinicians.add(defaultAdmin);
-                IO.saveUsers(IO.getClinicianPath(), false);
+                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+
+            }
+            File admins = new File(IO.getAdminPath());
+            if (admins.exists()) {
+                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
+                    throw new IOException("Admin save file could not be loaded.");
+                }
+            } else {
+                if (!admins.createNewFile()) {
+                    throw new IOException("Admin save file could not be created.");
+                }
+                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
+                Main.admins.add(defaultAdmin);
+                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
 
             }
             IO.streamOut = History.init();

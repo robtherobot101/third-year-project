@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.Generic.IO;
+import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 import seng302.Generic.Main;
 import seng302.Generic.History;
@@ -79,7 +80,7 @@ public class AccountSettingsController implements Initializable {
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             Main.setCurrentUser(currentUser);
-            IO.saveUsers(IO.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();
         }
