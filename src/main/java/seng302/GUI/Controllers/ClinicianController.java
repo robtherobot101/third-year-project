@@ -102,7 +102,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private ComboBox clinicianOrganComboBox;
 
-    @FXML
+    //@FXML
     private StatusBar statusBar;
 
     private FadeTransition fadeIn = new FadeTransition(
