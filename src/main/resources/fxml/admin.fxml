@@ -135,8 +135,8 @@
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                        </columnResizePolicy>
                                        <columns>
+                                          <TableColumn fx:id="clinicianUsernameTableColumn" prefWidth="344.0" text="Username" />
                                           <TableColumn fx:id="clinicianNameTableColumn" prefWidth="344.0" text="Name" />
-                                          <TableColumn fx:id="clinicianGenderTableColumn" prefWidth="133.0" text="Gender" />
                                           <TableColumn fx:id="clinicianRegionTableColumn" prefWidth="163.0" text="Region" />
                                           <TableColumn fx:id="clinicianAddressTableColumn" prefWidth="133.0" text="Work Address" />
                                           <TableColumn fx:id="clinicianIDTableColumn" prefWidth="133.0" text="Staff ID" />
@@ -155,11 +155,8 @@
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                        </columnResizePolicy>
                                        <columns>
-                                          <TableColumn fx:id="profileName2" prefWidth="344.0" text="Name" />
-                                          <TableColumn fx:id="profileUserType2" prefWidth="75.0" text="User Type" />
-                                          <TableColumn fx:id="profileAge2" prefWidth="110.0" text="Age" />
-                                          <TableColumn fx:id="profileGender2" prefWidth="133.0" text="Gender" />
-                                          <TableColumn fx:id="profileRegion2" prefWidth="163.0" text="Region" />
+                                          <TableColumn fx:id="adminUsernameTableColumn" prefWidth="344.0" text="Username" />
+                                          <TableColumn fx:id="adminNameTableColumn" prefWidth="344.0" text="Name" />
                                        </columns>
                                     </TableView>
                                  </children>

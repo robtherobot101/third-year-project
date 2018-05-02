@@ -39,10 +39,6 @@ public class AdminController implements Initializable {
 
     private Admin currentAdmin;
 
-    private FadeTransition fadeIn = new FadeTransition(
-            Duration.millis(1000)
-    );
-
     @FXML
     private TabPane TableTabPane;
 
@@ -155,12 +151,16 @@ public class AdminController implements Initializable {
      * from the current currentAdmin
      */
     private void updateDisplay() {
-
-
-
         System.out.print(currentAdmin);
         userDisplayText.setText("Welcome " + currentAdmin.getName());
         staffIDLabel.setText(Long.toString(currentAdmin.getStaffID()));
+    }
+
+    private void refreshLatestProfiles() {
+        // Initialise observable lists that correlate to the three TableViews
+        currentUsers = FXCollections.observableArrayList(Main.users);
+        currentClinicians = FXCollections.observableArrayList(Main.clinicians);
+        currentAdmins = FXCollections.observableArrayList(Main.admins);
     }
 
     /**
@@ -423,14 +423,6 @@ public class AdminController implements Initializable {
 
 
     /**
-     * Updates the ObservableList for the profile table
-     */
-    public void displayPage(int pageSize) {
-        currentPage.clear();
-        currentPage.addAll(getPage(pageSize));
-    }
-
-    /**
      * Clears the filter fields of the advanced filters
      */
     public void clearFilter() {
@@ -440,11 +432,11 @@ public class AdminController implements Initializable {
         clinicianOrganComboBox.setValue(null);
         clinicianUserTypeComboBox.setValue(null);
 
-    }
+    } /*
 
-    /**
+    *//**
      * Updates the list of users found from the search
-     */
+     *//*
     public void updateFoundUsers(){
         usersFound = Main.getUsersByNameAlternative(searchNameTerm);
 
@@ -517,21 +509,9 @@ public class AdminController implements Initializable {
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }
     }
+*/
 
 
-    /**
-     * Splits the sorted list of found users and returns a page worth
-     * @return The sorted page of results
-     */
-    public ObservableList<User> getPage(int pageSize){
-        int firstIndex = Math.max((page-1),0)*pageSize;
-        int lastIndex = Math.min(users.size(), page*pageSize);
-        if(lastIndex<firstIndex){
-            System.out.println(firstIndex+" to "+lastIndex+ " is an illegal page");
-            return FXCollections.observableArrayList(new ArrayList<User>());
-        }
-        return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
-    }
 
     /**
      * Sets the User Attribute pane as the visible pane
@@ -543,10 +523,7 @@ public class AdminController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialise observable lists that correlate to the three TableViews
-        currentUsers = FXCollections.observableArrayList(Main.users);
-        currentClinicians = FXCollections.observableArrayList(Main.clinicians);
-        currentAdmins = FXCollections.observableArrayList(Main.admins);
+        refreshLatestProfiles();
 
         // Set the items of the TableView to populate objects
         userTableView.setItems(currentUsers);
@@ -567,15 +544,12 @@ public class AdminController implements Initializable {
         clinicianRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         clinicianIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
 
+        // Set Admin TableColumns to point at correct attributes
+        adminNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        adminUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
 
-
-
-
-        resultsPerPage = 3;
-        numberXofResults = 5;
-
-        profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        /*profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchNameTerm = newValue;
             updateFoundUsers();
@@ -627,39 +601,12 @@ public class AdminController implements Initializable {
             }
             updateFoundUsers();
 
-        });
+        });*/
 
-
-
-
-        
-
-        numberOfResutsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue!=null){
-                if(newValue.equals("First page")){
-                    displayPage(resultsPerPage);
-                }else if(((String)newValue).contains("Top")){
-                    displayPage(numberXofResults);
-                }else if (((String)newValue).contains("All")){
-                    displayPage(usersFound.size());
-                }
-            }
-        });
-
-        fadeIn.setDelay(Duration.millis(1000));
-        fadeIn.setFromValue(1.0);
-        fadeIn.setToValue(0.0);
-        fadeIn.setCycleCount(0);
-        fadeIn.setAutoReverse(false);
-
-        userTableView.setItems(currentPage);
 
         System.out.println("AdminController: Setting main controller of myself");
         Main.setAdminController(this);
 
-        updateFoundUsers();
-
-        userTableView.setItems(currentPage);
 
         /**
          * RowFactory for the userTableView.

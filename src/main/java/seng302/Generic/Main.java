@@ -66,24 +66,6 @@ public class Main extends Application {
     }
 
     /**
-     * Class to deserialize LocalDates without requiring reflective access
-     */
-    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
-        public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
-            return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
-        }
-    }
-
-    /**
-     * Class to deserialize LocalDateTimes without requiring reflective access
-     */
-    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
-        public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
-            return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
-        }
-    }
-
-    /**
      * Sets the medications view to be able to edit for a clinican.
      */
     public static void medicationsViewForClinician() {
