@@ -241,6 +241,7 @@ public class TransplantWaitingListTest extends TestFXTest{
     /**
      * Test to see if organ filtering removes recievers that dont have the given organ on the waiting list
      */
+    @Ignore
     @Test
     public void checkOrganFilter() {
         createAccounts();

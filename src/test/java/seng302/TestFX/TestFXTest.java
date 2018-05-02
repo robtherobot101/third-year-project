@@ -43,7 +43,7 @@ abstract class TestFXTest extends ApplicationTest {
             System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1600x1200-32");
+            System.setProperty("headless.geometry", "1920x1080-32");
         } else {
             System.setProperty("testfx.robot.write_sleep", "1");
         }
