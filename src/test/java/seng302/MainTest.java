@@ -154,34 +154,25 @@ public class MainTest {
     }
 
     @Test
-    public void testBestMatchingToken_emptyString_returnsEmptyString(){
-        List<String> tokens = new ArrayList<String>(Arrays.asList("abc","def","egh"));
-        assertEquals("",Main.bestMatchingToken("",tokens));
+    public void testNameMatchesOneOf_matchesNoneOf_returnsFalse(){
+        String name = "daniel";
+        List tokens = new ArrayList<String>(Arrays.asList("Logan","Paul"));
+        assertFalse(Main.nameMatchesOneOf(name, tokens));
     }
     @Test
-    public void testBestMatchingToken_noTokens_returnsEmptyString(){
-        List<String> tokens = new ArrayList<String>(Arrays.asList());
-        assertEquals("",Main.bestMatchingToken("name",tokens));
+    public void testNameMatchesOneOf_matchesOneOf_returnsTrue(){
+        String name = "daniel";
+        List tokens = new ArrayList<String>(Arrays.asList("daniel","Paul"));
+        assertTrue(Main.nameMatchesOneOf(name, tokens));
     }
     @Test
-    public void testBestMatchingToken_multipleTokens_returnsBestMatchingToken(){
-        List<String> tokens = new ArrayList<String>(Arrays.asList(
-                "dan",
-                "da",
-                "danie",
-                "shawn",
-                "daniel",
-                "dani"
-        ));
-        assertEquals("daniel",Main.bestMatchingToken("daniella",tokens));
+    public void testNameMatchesOneOf_emptyStringNonEmptyTokens_returnsFalse(){
+        String name = "";
+        List tokens = new ArrayList<String>(Arrays.asList("daniel","dan"));
+        assertFalse(Main.nameMatchesOneOf(name, tokens));
     }
-    @Test
-    public void testBestMatchingToken_oneTokens_returnsOnlyToken(){
-        List<String> tokens = new ArrayList<String>(Arrays.asList(
-                "Potter"
-        ));
-        assertEquals("Potter",Main.bestMatchingToken("Potter",tokens));
-    }
+
+
 
     @Test
     public void testScoreNames_singleNameMatched_returnsWeight(){
@@ -216,12 +207,32 @@ public class MainTest {
 
 
     @Test
+    public void testAllTokensMatched_zeroTokens_returnsTrue(){
+        User user = new User("a,w,c,x,e,y,g,z", LocalDate.now());
+        List tokens = new ArrayList<String>(Arrays.asList());
+        assertTrue(Main.allTokensMatched(user, tokens));
+    }
+    @Test
+    public void testAllTokensMatched_notAllTokensMatched_returnsFalse(){
+        User user = new User("a,b,c", LocalDate.now());
+        List tokens = new ArrayList<String>(Arrays.asList("a","b"));
+        assertTrue(Main.allTokensMatched(user, tokens));
+    }
+    @Test
+    public void testAllTokensMatched_allTokensMatched_returnsTrue(){
+        User user = new User("a,b,c", LocalDate.now());
+        user.setPreferredNameArray(new String[]{"c","d","e"});
+        List tokens = new ArrayList<String>(Arrays.asList("a","b","c","d","e"));
+        assertTrue(Main.allTokensMatched(user, tokens));
+    }
+
+    @Test
     public void testScoreUserOnSearch_firstMiddleAndLastMatched_returnsCorrectScore(){
         User user = new User("Logan,Potter,Robbie,Rambo", LocalDate.now());
         List tokens = new ArrayList<String>(Arrays.asList(
                 "Logan","Potter","Robbie","Rambo"
         ));
-        assertEquals(3+2+2+5,Main.scoreUserOnSearch(user, tokens));
+        assertEquals(6+1+1+2,Main.scoreUserOnSearch(user, tokens));
     }
     @Test
     public void testScoreUserOnSearch_onlyMatchedFirstName_returnsScoreForMatchedFirstName(){
@@ -229,7 +240,7 @@ public class MainTest {
         List tokens = new ArrayList<String>(Arrays.asList(
                 "Logan"
         ));
-        assertEquals(3,Main.scoreUserOnSearch(user, tokens));
+        assertEquals(2,Main.scoreUserOnSearch(user, tokens));
     }
     @Test
     public void testScoreUserOnSearch_onlyMatchedFirstAndLastNames_returnsCorrectScore(){
@@ -237,8 +248,120 @@ public class MainTest {
         List tokens = new ArrayList<String>(Arrays.asList(
                 "Logan","Rambo"
         ));
-        assertEquals(3 + 5,Main.scoreUserOnSearch(user, tokens));
+        assertEquals(6 + 2,Main.scoreUserOnSearch(user, tokens));
     }
+    @Test
+    public void testScoreUserOnSearch_firstMatchedLastUnmatched_returnsCorrectScore(){
+        User user = new User("Logan,Rambo", LocalDate.now());
+        List tokens = new ArrayList<String>(Arrays.asList(
+                "Logan"
+        ));
+        assertEquals(2,Main.scoreUserOnSearch(user, tokens));
+    }
+    @Test
+    public void testScoreUserOnSearch_preferredFirstAndLastNamesMatch_returnsCorrectScore(){
+        User user = new User("Logan,Potter,Robbie,Rambo", LocalDate.now());
+        user.setPreferredNameArray(new String[]{"Herman","Walter","Benjamin"});
+        List tokens = new ArrayList<String>(Arrays.asList(
+                "Herman","Walter","Benjamin"
+        ));
+        assertEquals(5+4+3,Main.scoreUserOnSearch(user, tokens));
+    }
+    @Test
+    public void testScoreUserOnSearch_unchangedPreferredNameMatched_returnsScoreForNameMatched(){
+        User user = new User("Logan,Potter,Robbie,Rambo", LocalDate.now());
+        user.setPreferredNameArray(new String[]{"Logan","Potter","Robbie","Rambo"});
+        List tokens = new ArrayList<String>(Arrays.asList(
+                "Logan","Potter","Robbie","Rambo"
+        ));
+        assertEquals(2+1+1+6,Main.scoreUserOnSearch(user, tokens));
+    }
+    @Test
+    public void testScoreUserOnSearch_preferredAndNamePartiallyMatched_returnsScoreOfMatchedNames(){
+        User user = new User("Logan,Potter,Robbie,Rambo", LocalDate.now());
+        user.setPreferredNameArray(new String[]{"Herman","Walter","Benjamin"});
+
+        List tokens = new ArrayList<String>(Arrays.asList(
+                "Logan","Ra","B","Potter"
+        ));
+        assertEquals(2 + 6 + 5 + 1,Main.scoreUserOnSearch(user, tokens));
+    }
+    @Test
+    public void testScoreUserOnSearch_unmatchedName_returnsZero(){
+        User user = new User("Logan,Potter,Robbie,Rambo", LocalDate.now());
+        user.setPreferredNameArray(new String[]{"Herman","Walter","Benjamin"});
+
+        List tokens = new ArrayList<String>(Arrays.asList(
+                "Logan","Potter","Crumb"
+        ));
+        assertEquals(0,Main.scoreUserOnSearch(user, tokens));
+    }
+
+    public void createTestUsersForSearchingTests(){
+        Main.users.clear();
+        Main.users.add(new User("Andy,Barry,Zeta", LocalDate.now()));
+        Main.users.add(new User("Barry,Arnold,Francis", LocalDate.now()));
+        Main.users.add(new User("Cole,Sam,Paul", LocalDate.now()));
+        Main.users.add(new User("Doug,Arthur,Garry", LocalDate.now()));
+        Main.users.add(new User("Ellie,Rose,Dwight", LocalDate.now()));
+        Main.users.add(new User("Francis,Brian,Crumb", LocalDate.now()));
+        Main.users.add(new User("Garry,Cody,Rojo", LocalDate.now()));
+        Main.users.add(new User("Garry,Beta,Rambo", LocalDate.now()));
+
+    }
+
+    @Test
+    public void testGetUsersByNameAlternative_equallyWeightedNames_sortedAlphabetically(){
+        User u1 = new User("Garry,Cody,Rojo", LocalDate.now());
+        User u2 = new User("Garry,Beta,Rambo", LocalDate.now());
+        Main.users.add(u1);
+        Main.users.add(u2);
+        List<User> results = Main.getUsersByNameAlternative("garry");
+        assertEquals(0,results.indexOf(u2));
+        assertEquals(1,results.indexOf(u1));
+    }
+    @Test
+    public void testGetUsersByNameAlternative_someUsersMatched_matchedUsersReturned(){
+        User u1 = new User("Andy,Barry,Zeta", LocalDate.now());
+        User u2 = new User("Barry,Arnold,Francis", LocalDate.now());
+        User u3 = new User("Garry,Beta,Rambo", LocalDate.now());
+        Main.users.add(u1);
+        Main.users.add(u2);
+        Main.users.add(u3);
+        List<User> results = Main.getUsersByNameAlternative("barry");
+        assertTrue(results.contains(u1));
+        assertTrue(results.contains(u2));
+        assertFalse(results.contains(u3));
+    }
+    @Test
+    public void testGetUsersByNameAlternative_zeroUsersMatched_zeroUsersReturned(){
+        User u1 = new User("Andy,Barry,Zeta", LocalDate.now());
+        User u2 = new User("Barry,Arnold,Francis", LocalDate.now());
+        User u3 = new User("Garry,Beta,Rambo", LocalDate.now());
+        Main.users.add(u1);
+        Main.users.add(u2);
+        Main.users.add(u3);
+        List<User> results = Main.getUsersByNameAlternative("victor");
+        assertEquals(0, results.size());
+    }
+    @Test
+    public void testGetUsersByNameAlternative_allUsersMatched_allUsersReturned(){
+        User u1 = new User("Doug,Arthur,Garry", LocalDate.now());
+        User u2 = new User("Garry,Cody,Rojo", LocalDate.now());
+        User u3 = new User("Garry,Beta,Rambo", LocalDate.now());
+        Main.users.add(u1);
+        Main.users.add(u2);
+        Main.users.add(u3);
+        List<User> results = Main.getUsersByNameAlternative("garry");
+        assertTrue(results.contains(u1));
+        assertTrue(results.contains(u2));
+        assertTrue(results.contains(u3));
+    }
+
+
+
+
+
 
     @After
     public void tearDown() {

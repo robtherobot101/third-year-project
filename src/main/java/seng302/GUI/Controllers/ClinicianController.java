@@ -171,6 +171,15 @@ public class ClinicianController implements Initializable {
         }
     }
 
+    public int getResultsPerPage(){
+        return resultsPerPage;
+    }
+    public int getNumberXofResults(){
+        return numberXofResults;
+    }
+    public Clinician getClinician(){
+        return clinician;
+    }
 
 
     /**
@@ -182,6 +191,8 @@ public class ClinicianController implements Initializable {
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
+
+        dialog.getDialogPane().lookupButton(ButtonType.OK).setId("updateAccountSettingsOKButton");
 
         Optional<String> password = dialog.showAndWait();
         if(password.isPresent()){ //Ok was pressed, Else cancel
@@ -207,8 +218,6 @@ public class ClinicianController implements Initializable {
         }
     }
 
-
-
     /**
      * Updates the current clinicians attributes to
      * reflect those of the values in the displayed TextFields
@@ -217,17 +226,19 @@ public class ClinicianController implements Initializable {
         addClinicianToUndoStack(clinician);
         System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
-
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Clinician");
         dialog.setHeaderText("Update Clinician Details");
 
         dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
-
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        dialog.getDialogPane().lookupButton(updateButtonType).setId("confirmUpdateButton");
+
+
 
         // Create the username and password labels and fields.
         GridPane grid = new GridPane();
@@ -312,9 +323,7 @@ public class ClinicianController implements Initializable {
             clinician.setName(newClinicianDetails.get(0));
             clinician.setWorkAddress(newClinicianDetails.get(1));
             clinician.setRegion(newClinicianDetails.get(2));
-            save();
             updateDisplay();
-
         });
     }
 
@@ -431,7 +440,12 @@ public class ClinicianController implements Initializable {
      * Updates the list of users found from the search
      */
     public void updateFoundUsers(){
-        usersFound = Main.getUsersByNameAlternative(searchNameTerm);
+        profileTable.setDisable(true);
+        if(searchNameTerm.equals("")){
+            usersFound = Main.users;
+        }else{
+            usersFound = Main.getUsersByNameAlternative(searchNameTerm);
+        }
 
        //Add in check for region
 
@@ -488,16 +502,21 @@ public class ClinicianController implements Initializable {
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
         displayPage(resultsPerPage);
+        profileTable.setDisable(false);
+
     }
 
     public void populateNResultsComboBox(int numberOfSearchResults){
         numberOfResutsToDisplay.getItems().clear();
         String firstPage = "First page";
+        numberOfResutsToDisplay.setDisable(true);
         numberOfResutsToDisplay.getItems().add(firstPage);
         numberOfResutsToDisplay.getSelectionModel().select(firstPage);
         if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
+            numberOfResutsToDisplay.setDisable(false);
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
+            numberOfResutsToDisplay.setDisable(false);
             numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
             numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
         }
@@ -528,6 +547,8 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        profileSearchTextField.setPromptText("There are "+Main.users.size()+" users");
+
         resultsPerPage = 10;
         numberXofResults = 50;
 
@@ -590,9 +611,9 @@ public class ClinicianController implements Initializable {
         });
 
 
-        profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        profileName.setCellValueFactory(new PropertyValueFactory<>("nameExt"));
         profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        profileAge.setCellValueFactory(new PropertyValueFactory<>("age"));
+        profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
 

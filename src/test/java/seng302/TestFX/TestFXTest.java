@@ -21,7 +21,7 @@ import seng302.Generic.Main;
 import seng302.User.User;
 
 abstract class TestFXTest extends ApplicationTest {
-    protected static final boolean runHeadless = true;
+    protected static final boolean runHeadless = false;
 
     @Override
     public void start(Stage stage) {
@@ -45,6 +45,9 @@ abstract class TestFXTest extends ApplicationTest {
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
             System.setProperty("headless.geometry", "1600x1200-32");
+            System.setProperty("testfx.robot.write_sleep", "1");
+
+
         }
         registerPrimaryStage();
     }

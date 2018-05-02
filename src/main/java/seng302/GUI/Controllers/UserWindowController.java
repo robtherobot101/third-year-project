@@ -286,6 +286,8 @@ public class UserWindowController implements Initializable {
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
+        waitingListPane.setVisible(false);
+
     }
 
     /**
@@ -592,7 +594,6 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         System.out.println(currentUser.toString());
-        //Main.getClinicianController().updateUserTable();
         return true;
     }
 
@@ -608,6 +609,7 @@ public class UserWindowController implements Initializable {
         if (result.get() == ButtonType.OK && updateUser()) {
             Main.saveUsers(Main.getUserPath(), true);
             populateUserFields();
+            Main.getClinicianController().updateFoundUsers();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
             populateHistoryTable();

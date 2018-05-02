@@ -385,42 +385,25 @@ public class Main extends Application {
 
 
     /**
-     * Returns a score for a user based on how well their name matches the given search tokens.
-     * Every token needs to entirely match all or some of one of the user's names starting at the beginning of each, otherwise
-     * the lowest possible score zero is returned.
+     * Calculates a score based on the number of names between from and to which match at least one of the given tokens.
+     * For each name which matches at least one token, the value of weight is added to the total score.
      *
-     * For example, the tokens {"abc","def","ghi"} would match a user with the name "adcd defg ghij", so some positive integer
-     * would be returned. But for a user with the name "abc def", zero would be returned as one token is unmatched. Likewise,
-     * a user with the name "abw d ghi" would score zero because the tokens "abc" and "def" are un-matched.
-     * @param user
-     * @param searchTokens
-     * @return
+     * For a token to match a name, both must begin the same and there must be no unmatched characters in the
+     * token. For example, the token "dani" would not match the name "dan", but would match "daniel".
+     * @param names The names which the tokens will attempt to match
+     * @param tokens The list of tokens which will compared against the names
+     * @param from The index of the first name to try
+     * @param to One less than the last index which will be tried
+     * @param weight The weight which will be awarded for each matched name
+     * @return An integer score
      */
-    public static int scoreUserOnSearch(User user, List<String> searchTokens){
-        List<String> tokens = new ArrayList<String>();
-        tokens.addAll(searchTokens);
-        int score = 0;
-        String[] names = user.getNameArray();
-        // Last name
-        score += scoreNames(user.getNameArray(), tokens, max(names.length-1,1), names.length, 5);
-
-        //first name
-        score += scoreNames(user.getNameArray(), tokens, 0, 1, 3);
-
-        //middle names
-        score += scoreNames(user.getNameArray(), tokens, 1, names.length-1, 2);
-        return tokens.isEmpty() ? score : 0;
-    }
-
     public static int scoreNames(String[] names, List<String> tokens, int from, int to, int weight){
         if(names.length >= to && to > from){
             String[] middleNames = Arrays.copyOfRange(names, from, to);
             int score = 0;
             for(String middleName:middleNames){
-                String bestToken = bestMatchingToken(middleName, tokens);
-                if(!bestToken.equals("")){
+                if(nameMatchesOneOf(middleName, tokens)){
                     score += weight;
-                    tokens.remove(bestToken);
                 }
             }
             return score;
@@ -428,9 +411,103 @@ public class Main extends Application {
         return 0;
     }
 
+    /**
+     * Returns true if all given tokens match at least one name from the given user's name array
+     * or preferred name array. For a token to match a name, the beginning of each must be the same.
+     * @param user The use whose names will be checked against the tokens
+     * @param searchTokens The tokens
+     * @return True if all tokens match at least one name, otherwise false
+     */
+    public static boolean allTokensMatched(User user, List<String> searchTokens){
+        List<String> tokens = new ArrayList<String>();
+        tokens.addAll(searchTokens);
+        for(String name:user.getNameArray()){
+            for(String token: new ArrayList<String>(tokens)){
+                if(lengthMatchedScore(name, token)>0){
+                    tokens.remove(token);
+                }
+            }
+        }
+
+        for(String name:user.getPreferredNameArray()){
+            for(String token: new ArrayList<String>(tokens)){
+                if(lengthMatchedScore(name, token)>0){
+                    tokens.remove(token);
+                }
+            }
+        }
+        return tokens.isEmpty();
+    }
+
+
+    /**
+     * Returns a score for a user based on how well their name matches the given search tokens.
+     * Every token needs to entirely match all or some of one of the user's names starting at the beginning of each, otherwise
+     * the lowest possible score, zero, is returned.
+     *
+     * For example, the tokens {"abc","def","ghi"} would match a user with the name "adcd defg ghij", so some positive integer
+     * would be returned. But for a user with the name "abc def", zero would be returned as one token is unmatched. Likewise,
+     * a user with the name "abw d ghi" would score zero because the tokens "abc" and "def" are un-matched.
+     *
+     * Matches on different parts of a name add different amounts to the total score. Last name matches contribute the most to the total score,
+     * followed by, preferred last name, preferred first name, preferred middle names, first name, and middle names in descending order.
+     * @param user The user whose name will be be scored
+     * @param searchTokens The search tokens which will be compared with the given user's name
+     * @return An integer score
+     */
+    public static int scoreUserOnSearch(User user, List<String> searchTokens){
+        List<String> tokens = new ArrayList<String>();
+        tokens.addAll(searchTokens);
+
+
+        if(!allTokensMatched(user, tokens)){
+            return 0;
+        }
+        int score = 0;
+        String[] names = user.getNameArray();
+        String[] prefNames = user.getPreferredNameArray();
+        // Last name
+        score += scoreNames(names, tokens, max(names.length-1,1), names.length, 6);
+
+        if(!Arrays.equals(names, prefNames)) {
+            // Preferred last name
+            score += scoreNames(prefNames, tokens, max(prefNames.length - 1, 1), prefNames.length, 5);
+
+            // Preferred first name
+            score += scoreNames(prefNames, tokens, 0, 1, 4);
+
+            // Preferred middle names
+            score += scoreNames(prefNames, tokens, 1, prefNames.length - 1, 3);
+        }
+
+        //first name
+        score += scoreNames(names, tokens, 0, 1, 2);
+
+        //middle names
+        score += scoreNames(names, tokens, 1, names.length-1, 1);
+
+        return score;
+    }
+
+    /**
+     * Searches through all the users using the given search term and returns the results which match.
+     * The search term is broken into tokens separated by spaces. Each token must match at least one
+     * part of the user's given or preferred names.
+     *
+     * For a token to match a name, both must begin the same and there must be no unmatched characters in the
+     * token. For example, the token "dani" would not match the name "dan", but would match "daniel".
+     *
+     * The results are returned sorted by a score according to which names were matched.
+     * See scoreUserOnSearch(User, List<String>)
+     * If two users are ranked the same, they're sorted alphabetically
+     * @param term The search term which will be broken into space separated tokens
+     * @return A sorted list of results
+     */
     public static ArrayList<User> getUsersByNameAlternative(String term){
         String[] t = term.split(" ",-1);
         ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
+        System.out.println("token 1: " + "'"+tokens.get(0)+"'");
+        //System.out.println("token 2: " + "'"+tokens.get(1)+"'");
         if(tokens.contains("")){
             tokens.remove("");
         }
@@ -456,26 +533,24 @@ public class Main extends Application {
         return matched;
     }
 
+
     /**
-     * Returns the token which matches the largest part of name exactly. Tokens which
-     * which have additional unmatched characters are treated the same way as tokens which
-     * match zero characters, so they will never be returned. If no tokens match at all,
-     * an empty string is returned.
-     * Empty tokens should not be passed to this function.
-     * @param name The string which the tokens will be compared with
-     * @param tokens The list of tokens to compare
-     * @return The best matching token otherwise an empty String
+     * Returns true if at least of of the given tokens matches the given name.
+     * For a token to match a name, both must begin the same and there must be no unmatched characters in the
+     * token.
+     *
+     * For example, the token "dani" would not match the name "dan", but would match "daniel"
+     * @param name The name which is compared with each token until a match is found
+     * @param tokens The list of tokens to try against the name
+     * @return True if a match was found, otherwise false
      */
-    public static String bestMatchingToken(String name, List<String> tokens){
-        String bestToken = "";
-        int bestScore = 0;
+    public static boolean nameMatchesOneOf(String name, List<String> tokens){
         for(String token:tokens){
-            if(lengthMatchedScore(name, token) > bestScore){
-                bestToken = token;
-                bestScore = lengthMatchedScore(name, token);
+            if(lengthMatchedScore(name, token) > 0){
+                return true;
             }
         }
-        return bestToken;
+        return false;
     }
 
     /**

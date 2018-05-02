@@ -563,6 +563,11 @@ public class User {
         return receiver;
     }
 
+    public String getNameExt(){
+        return getPreferredName() + "("+getName()+")";
+    }
+
+
     public String getType(){
         if(isDonor() && isReceiver()){
             return "Donor/Receiver";
@@ -571,7 +576,7 @@ public class User {
         }else if(!isDonor() && isReceiver()){
             return "Receiver";
         }else{
-            return "Neither";
+            return "";
         }
     }
 }

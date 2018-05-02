@@ -5,8 +5,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import seng302.Generic.History;
 import seng302.User.Clinician;
 import seng302.Generic.Main;
+import seng302.User.User;
 
 import java.net.URL;
 import java.util.Optional;
@@ -28,7 +30,7 @@ public class ClinicianAccountSettingsController implements Initializable {
     @FXML
     private TextField passwordField;
     @FXML
-    private Button updateButton;
+    private Button accountSettingsUpdateButton;
     @FXML
     private Button cancelButton;
     @FXML
@@ -51,6 +53,7 @@ public class ClinicianAccountSettingsController implements Initializable {
      */
     public void updateAccountDetails() {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("updateAccountSettingsConfirmationOKButton");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
 
@@ -61,7 +64,7 @@ public class ClinicianAccountSettingsController implements Initializable {
             //String text = History.prepareFileStringGUI(currentClinician.getId(), "updateAccountSettings");
             //History.printToFile(Main.streamOut, text);
 
-            Stage stage = (Stage) updateButton.getScene().getWindow();
+            Stage stage = (Stage) accountSettingsUpdateButton.getScene().getWindow();
             stage.close();
 
 
@@ -73,11 +76,12 @@ public class ClinicianAccountSettingsController implements Initializable {
         }
     }
 
+
     /**
      * Function which closes the current stage upon the user pressing the 'cancel' button.
      */
     public void exit() {
-        Stage stage = (Stage) updateButton.getScene().getWindow();
+        Stage stage = (Stage) accountSettingsUpdateButton.getScene().getWindow();
         stage.close();
     }
 

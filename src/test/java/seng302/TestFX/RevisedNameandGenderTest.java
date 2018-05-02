@@ -37,24 +37,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
     private Main mainGUI;
 
-    /**
-     * Ensures the tests are run in background if the property runHeadless == true
-     *
-     * Note: tests still take the same amount of time in background
-     *
-     * @throws Exception
-     */
-    @BeforeClass
-    public static void setupSpec() throws Exception {
-        if (runHeadless) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1600x1200-32");
-        }
-        registerPrimaryStage();
-    }
+
 
     @Before
     public void setUp () throws Exception {
