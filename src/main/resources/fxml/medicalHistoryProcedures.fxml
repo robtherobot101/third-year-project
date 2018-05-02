@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controllers.MedicalHistoryProceduresController">
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.MedicalHistoryProceduresController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="38.0" prefWidth="100.0" />
@@ -48,12 +49,12 @@
             <Font size="10.0" />
          </font>
       </TextField>
-      <Button fx:id="addNewProcedureButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewProcedure" text="Add Procedure" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <Button fx:id="addNewProcedureButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#addNewProcedure" text="Add Procedure" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <font>
             <Font size="14.0" />
          </font>
          <GridPane.margin>
-            <Insets left="30.0" right="120.0" top="48.0" />
+            <Insets right="30.0" top="50.0" />
          </GridPane.margin>
       </Button>
       <Label fx:id="pendingProceduresLabel" alignment="BASELINE_LEFT" text="Pending Procedures" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
@@ -131,6 +132,16 @@
          </font>
          <GridPane.margin>
             <Insets bottom="55.0" />
+         </GridPane.margin>
+      </Label>
+      <CheckBox fx:id="isOrganAffectingCheckBox" mnemonicParsing="false" text="Affecting a donatable organ?" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets top="40.0" />
+         </GridPane.margin>
+      </CheckBox>
+      <Label text="* = Procedure affects a donatble organ" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets left="10.0" />
          </GridPane.margin>
       </Label>
    </children>

@@ -1,27 +1,17 @@
 package seng302;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import seng302.Core.DrugInteraction;
-import seng302.Core.Gender;
-import seng302.Core.Main;
+import static junit.framework.TestCase.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
+import seng302.User.Attribute.Gender;
+import seng302.User.Medication.DrugInteraction;
 
 public class DrugInteractionTest {
     private static DrugInteraction drugInteraction;
@@ -31,10 +21,9 @@ public class DrugInteractionTest {
         try {
             String json = new String(Files.readAllBytes(Paths.get("src/test/java/seng302/DrugInteractionTestingJson")));
             drugInteraction = new DrugInteraction(json);
-        } catch (IOException e) {
-            System.out.println(e);
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
+            fail();
         }
     }
 
@@ -46,73 +35,73 @@ public class DrugInteractionTest {
     @Test
     public void ageInteraction_lowerBoundaryAge_returnsNANSymptomsAndSymptomsInRange() {
         HashSet<String> symptoms = drugInteraction.ageInteraction(0);
-        assertEquals(new HashSet<String>(Arrays.asList("a", "h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("a", "h")), symptoms);
     }
 
     @Test
     public void ageInteraction_upperBoundaryAge_returnsNANSymptomsAndSymptomsInRange() {
         HashSet<String> symptoms = drugInteraction.ageInteraction(1);
-        assertEquals(new HashSet<String>(Arrays.asList("a", "h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("a", "h")), symptoms);
     }
 
     @Test
     public void ageInteraction_ageAtLeastSixty_returnsNanSymptomsAndSymptomsInRange() {
         HashSet<String> symptoms = drugInteraction.ageInteraction(60);
-        assertEquals(new HashSet<String>(Arrays.asList("g", "h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("g", "h")), symptoms);
     }
 
     @Test
     public void ageRangeInteraction_bottomRange_returnsSymptomsFromNANAndBottomRange() {
         HashSet<String> symptoms = drugInteraction.ageRangeInteraction("0-1");
-        assertEquals(new HashSet<String>(Arrays.asList("a", "h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("a", "h")), symptoms);
     }
 
     @Test
     public void ageRangeInteraction_topRange_returnsSymptomsFromNANAndTopRange() {
         HashSet<String> symptoms = drugInteraction.ageRangeInteraction("60+");
-        assertEquals(new HashSet<String>(Arrays.asList("g", "h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("g", "h")), symptoms);
     }
 
     @Test
     public void ageRangeInteraction_undefinedRange_returnsSymptomsFromNAN() {
         HashSet<String> symptoms = drugInteraction.ageRangeInteraction("SomeUndefinedRangeKey");
-        assertEquals(new HashSet<String>(Arrays.asList("h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("h")), symptoms);
     }
 
     @Test
     public void nanAgeInteraction_called_returnsSymptomsFromNAN() {
         HashSet<String> symptoms = drugInteraction.nanAgeInteraction();
-        assertEquals(new HashSet<String>(Arrays.asList("h")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("h")), symptoms);
     }
 
     @Test
     public void allGenderInteractions_called_returnsMaleAndFemaleSymtoms() {
         HashSet<String> symptoms = drugInteraction.allGenderInteractions();
-        assertEquals(new HashSet<String>(Arrays.asList("a", "b", "c", "d", "e")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("a", "b", "c", "d", "e")), symptoms);
     }
 
     @Test
     public void maleInteractions_called_returnsMaleSymtoms() {
         HashSet<String> symptoms = drugInteraction.maleInteractions();
-        assertEquals(new HashSet<String>(Arrays.asList("c", "d", "e")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("c", "d", "e")), symptoms);
     }
 
     @Test
     public void femaleInteractions_called_returnsMaleSymtoms() {
         HashSet<String> symptoms = drugInteraction.femaleInteractions();
-        assertEquals(new HashSet<String>(Arrays.asList("a", "b", "c")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("a", "b", "c")), symptoms);
     }
 
     @Test
     public void genderInteraction_validGender_returnsGenderSympmtoms() {
-        HashSet<String> symptoms = drugInteraction.genderInteraction(Gender.OTHER);
+        HashSet<String> symptoms = drugInteraction.genderInteraction(Gender.NONBINARY);
         assertEquals(new HashSet<String>(Arrays.asList("a", "b", "c", "d", "e")), symptoms);
     }
 
     @Test
     public void genderInteraction_nullGender_returnsAllGenderSymtoms() {
         HashSet<String> symptoms = drugInteraction.genderInteraction(null);
-        assertEquals(new HashSet<String>(Arrays.asList("a", "b", "c", "d", "e")), symptoms);
+        assertEquals(new HashSet<>(Arrays.asList("a", "b", "c", "d", "e")), symptoms);
     }
 
     @Test
@@ -132,7 +121,7 @@ public class DrugInteractionTest {
 
     @Test
     public void invertDurationMap_givenEmptyDurationMap_returnsEmptyInvertedDurationMap() {
-        HashMap<String, HashSet<String>> originalDurationMap = new HashMap<String, HashSet<String>>();
+        HashMap<String, HashSet<String>> originalDurationMap = new HashMap<>();
         HashMap<String, String> invertedDurationMap =
                 drugInteraction.invertDurationMap(originalDurationMap);
         assertEquals(0, invertedDurationMap.keySet().size());

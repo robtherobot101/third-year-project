@@ -1,7 +1,7 @@
 package seng302;
 
 import org.junit.Test;
-import seng302.Core.Gender;
+import seng302.User.Attribute.Gender;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -12,7 +12,7 @@ public class GenderTest {
         assertEquals(Gender.parse("malE"), Gender.MALE);
         assertEquals(Gender.parse("fEmAlE"), Gender.FEMALE);
         assertEquals(Gender.parse("female"), Gender.FEMALE);
-        assertEquals(Gender.parse("OTHER"), Gender.OTHER);
+        assertEquals(Gender.parse("Non-Binary"), Gender.NONBINARY);
     }
 
     @Test

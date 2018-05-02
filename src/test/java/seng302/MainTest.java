@@ -1,21 +1,19 @@
 package seng302;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Core.User;
-import seng302.Core.Gender;
-import seng302.Core.Main;
-import seng302.Core.Organ;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for simple Main.
@@ -24,13 +22,13 @@ public class MainTest {
     @Before
     public void setup() {
         Main.users = new ArrayList<>();
-        Main.recalculateNextId(true);
+        IO.recalculateNextId(true);
         Main.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
-        Main.users.add(new User("Test User,Testperson", "01/04/1530", "31/01/1565", "other", 1.234, 1.11111, "a-", "Auckland", "street sample " +
+        Main.users.add(new User("Test User,Testperson", "01/04/1530", "31/01/1565", "Non-Binary", 1.234, 1.11111, "a-", "Auckland", "street sample " +
                 "text"));
         Main.users.add(new User("Singlename", LocalDate.parse("12/06/1945", User.dateFormat)));
         Main.users.add(new User("User 2,Person", "01/12/1990", "09/03/2090", "female", 2, 60, "b-", "Sample Region", "Sample Address"));
-        Main.users.add(new User("a,long,long,name", "01/11/3000", "01/11/4000", "other", 0.1, 12.4, "b-", "Example region", "Example Address " +
+        Main.users.add(new User("a,long,long,name", "01/11/3000", "01/11/4000", "Non-Binary", 0.1, 12.4, "b-", "Example region", "Example Address " +
                 "12345"));
     }
 
@@ -38,7 +36,7 @@ public class MainTest {
     public void testGetById() {
         assertEquals(Main.users.get(2), Main.getUserById(2));
         Main.users.remove(2);
-        assertEquals(null, Main.getUserById(2));
+        assertNull(Main.getUserById(2));
     }
 
     @Test
@@ -53,11 +51,12 @@ public class MainTest {
     @Test
     public void testImportSave() {
         Main.users.add(new User("extra", LocalDate.parse("01/01/1000", User.dateFormat)));
-        Main.saveUsers("testsave", true);
+        IO.saveUsers("testsave", true);
         Main.users.remove(5);
         assertEquals(5, Main.users.size());
-        Main.importUsers("testsave", true);
+        IO.importUsers("testsave", true);
         assertEquals("extra", Main.users.get(5).getName());
+        new File("testsave").delete();
     }
 
     @Test
@@ -67,20 +66,22 @@ public class MainTest {
         oldUser.setWeight(100);
         oldUser.setGender(Gender.MALE);
         Main.users.add(oldUser);
-        Main.saveUsers("testsave", true);
+        IO.saveUsers("testsave", true);
         Main.users.remove(5);
-        Main.importUsers("testsave", true);
+        IO.importUsers("testsave", true);
         assertEquals(Main.users.get(5).toString(), oldUser.toString());
+        new File("testsave").delete();
     }
 
     @Test
     public void testImportIOException(){
+        String invalidFile = "OrganDonation.jpg";
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
-        Main.importUsers("", true);
+        IO.importUsers(invalidFile, true);
         String text = out.toString();
-        String expected = "IOException on : Check your inputs and permissions!\r\n";
-        assertEquals(text, expected);
+        String expected = "IOException on "+ invalidFile +": Check your inputs and permissions!";
+        assertEquals(expected, text.trim());
     }
 
     /**
@@ -88,7 +89,7 @@ public class MainTest {
      */
     @Test
     public void testSaveIOException(){
-        assertFalse(Main.saveUsers("", true));
+        assertFalse(IO.saveUsers("", true));
     }
 
     @Test
@@ -118,27 +119,27 @@ public class MainTest {
 
     @Test
     public void testMatches_stringEqualsTerm_returnsTrue(){
-        assertEquals(true, Main.matches("aaa", "aaa"));
+        assertTrue(Main.matches("aaa", "aaa"));
     }
     @Test
     public void testMatches_longerSearchTerm_returnsFalse(){
-        assertEquals(false, Main.matches("aaa", "aaaa"));
+        assertFalse(Main.matches("aaa", "aaaa"));
     }
     @Test
     public void testMatches_longerStringShouldMatch_returnsTrue(){
-        assertEquals(true, Main.matches("abcd", "abc"));
+        assertTrue(Main.matches("abcd", "abc"));
     }
     @Test
     public void testMatches_emptyStringAndTerm_returnsTrue(){
-        assertEquals(true, Main.matches("", ""));
+        assertTrue(Main.matches("", ""));
     }
     @Test
     public void testMatches_uppercaseTerm_returnsTrue(){
-        assertEquals(true, Main.matches("aa", "AA"));
+        assertTrue(Main.matches("aa", "AA"));
     }
     @Test
     public void testMatches_uppercaseString_returnsTrue(){
-        assertEquals(true, Main.matches("AA", "aa"));
+        assertTrue(Main.matches("AA", "aa"));
     }
 
     @Test
