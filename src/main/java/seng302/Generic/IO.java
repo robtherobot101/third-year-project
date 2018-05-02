@@ -226,11 +226,11 @@ public class IO {
                 case ADMIN:
                     type = new TypeToken<ArrayList<Admin>>() {
                     }.getType();
-                    ArrayList<Clinician> importedAdmins = gson.fromJson(reader, type);
+                    ArrayList<Admin> importedAdmins = gson.fromJson(reader, type);
                     System.out.println("Opened file successfully.");
-                    Main.clinicians.clear();
+                    Main.admins.clear();
                     nextClinicianId = -1;
-                    Main.clinicians.addAll(importedAdmins);
+                    Main.admins.addAll(importedAdmins);
                     recalculateNextId(LoginType.CLINICIAN);
                     System.out.println("Imported list successfully.");
                     return true;

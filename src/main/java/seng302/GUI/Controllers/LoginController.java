@@ -64,6 +64,7 @@ public class LoginController implements Initializable {
         // Check for a clinician match
         Clinician currentClinician = null;
         for (Clinician clinician: Main.clinicians) {
+            System.out.println(clinician);
             if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (clinician.getPassword().equals(passwordInput.getText())){
@@ -81,7 +82,7 @@ public class LoginController implements Initializable {
             if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (admin.getPassword().equals(passwordInput.getText())){
-                    System.out.println("LoginController: Logging in as clinician...");
+                    System.out.println("LoginController: Logging in as admin...");
                     currentAdmin = admin;
                     typeMatched = LoginType.ADMIN;
                     // TODO write login of clinician to history
