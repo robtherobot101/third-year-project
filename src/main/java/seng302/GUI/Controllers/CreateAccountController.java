@@ -51,9 +51,11 @@ public class CreateAccountController implements Initializable {
      * Switches the currently displayed scene to the log in screen.
      */
     public void returnToLogin() {
+        // If we are creating from login window, return us to login
         if(background.getScene().getWindow() == Main.getStage()) {
             Main.setScene(TFScene.login);
         }
+        // Otherwise close the stage and return us to wherever we were before
         else stage.close();
     }
 
