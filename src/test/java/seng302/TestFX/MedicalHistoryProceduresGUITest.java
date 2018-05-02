@@ -290,10 +290,10 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
         clickOn("#saveProcedureButton");
         sleep(200);
-        clickOn("OK");
-        clickOn("Exit");
+        clickOn("#saveProcedureOK");
+        clickOn("#exitUserButton");
         sleep(200);
-        clickOn("OK");
+        clickOn("#exitOK");
 
         //Check if procedure added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();

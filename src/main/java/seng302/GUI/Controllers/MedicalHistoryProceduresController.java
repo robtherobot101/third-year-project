@@ -161,7 +161,10 @@ public class MedicalHistoryProceduresController extends PageController implement
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current user? ");
         alert.setContentText("By doing so, the donor will be updated with the following procedure details.");
+
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
         Optional<ButtonType> result = alert.showAndWait();
+
         if (result.get() == ButtonType.OK) {
             currentUser.getPendingProcedures().clear();
             currentUser.getPendingProcedures().addAll(pendingProcedureItems);

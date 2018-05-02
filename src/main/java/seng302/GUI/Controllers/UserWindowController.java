@@ -878,6 +878,7 @@ public class UserWindowController implements Initializable {
     public void stop() {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
             "Are you sure would like to exit the window? ", "Exiting without saving loses your non-saved data.");
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("exitOK");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             System.out.println("Exiting GUI");
