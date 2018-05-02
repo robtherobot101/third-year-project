@@ -1,5 +1,15 @@
 package seng302.Generic;
 
+import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
+
+import seng302.User.User;
+
+import java.time.LocalDateTime;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +32,18 @@ public class WaitingListItem {
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
         this.stillWaitingOn = true;
+    }
+
+    /**
+     * Creates a new object as a deep copy of a current object.
+     * Used to fix an error with undo/redo modifying old objects on the stack on deregister.
+     * @param copy the original waiting list item.
+     */
+    public WaitingListItem(WaitingListItem copy) {
+        this.organType = copy.organType;
+        this.organRegisteredDate = copy.organRegisteredDate;
+        this.organDeregisteredDate = copy.organDeregisteredDate;
+        this.stillWaitingOn = copy.stillWaitingOn;
     }
 
     /**

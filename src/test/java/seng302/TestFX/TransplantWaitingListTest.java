@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
-public class ATransplantWaitingListTest extends TestFXTest{
+public class TransplantWaitingListTest extends TestFXTest{
 
     private TableView<TransplantWaitingListItem> transplantTable;
     private TransplantWaitingListItem transplantRow;
@@ -23,6 +23,11 @@ public class ATransplantWaitingListTest extends TestFXTest{
     public static void setupClass() throws TimeoutException {
         defaultTestSetup();
     }
+
+    @Before
+    public void setup() {
+        Main.users.clear();
+        }
 
     /**
      * Refreshes the currently selected receiver in both tables of Medical History.
@@ -53,10 +58,20 @@ public class ATransplantWaitingListTest extends TestFXTest{
 
         doubleClickOn("#createAccountButton");
 
+        clickOn("#userAttributesButton");
+        clickOn("#regionField").push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE).write("Canterbury");
+        clickOn("#saveButton");
+        clickOn("OK");
+
         // Logout to be able to create another account
         clickOn("#logoutButton");
         clickOn("OK");
 
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -117,7 +132,7 @@ public class ATransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("heart");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -127,14 +142,6 @@ public class ATransplantWaitingListTest extends TestFXTest{
         clickOn("#transplantList");
 
         //check the transplant table
-//        clickOn("Bob Ross");
-//        try {
-//            Thread.sleep(10000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //refreshTableSelections();
-
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
 
@@ -159,7 +166,7 @@ public class ATransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
         clickOn("heart");
-        clickOn("#addOrganButton");
+        clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -169,7 +176,7 @@ public class ATransplantWaitingListTest extends TestFXTest{
         doubleClickOn("Bob Ross");
         clickOn("#waitingListButton");
         clickOn("heart");
-        clickOn("#removeOrganButton");
+        clickOn("#deregisterOrganButton");
 
         //close user window
         clickOn("#saveUserButton");
@@ -181,6 +188,102 @@ public class ATransplantWaitingListTest extends TestFXTest{
         clickOn("#transplantList");
         verifyThat("#transplantPane", Node::isVisible);
         //verifyThat("#transplantPane", hasText("No content in table"));
+        sleep(1000);
         verifyThat("No content in table", isVisible());
     }
+
+    /**
+     * Test to check if region filtering removes recievers that don't have the region searched.
+     */
+    @Test
+    public void checkRegionFilter() {
+        createAccounts();
+
+        //login as clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        doubleClickOn("Bobby Dong Flame");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("liver");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //check the transplant list
+        clickOn("#transplantList");
+
+        clickOn("#regionSearchTextField").write("Canterb");
+        //check the transplant table
+        transplantTable = lookup("#transplantTable").queryTableView();
+        transplantRow = transplantTable.getItems().get(0);
+        assertEquals(Organ.LIVER, transplantRow.getOrgan());
+        assertEquals("Bobby Dong Flame", transplantRow.getName());
+        assertEquals(transplantTable.getItems().size(), 1);
+    }
+
+    /**
+     * Test to see if organ filtering removes recievers that dont have the given organ on the waiting list
+     */
+    @Test
+    public void checkOrganFilter() {
+        createAccounts();
+
+        //login as clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        doubleClickOn("Bobby Dong Flame");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("liver");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //check the transplant list
+        clickOn("#transplantList");
+
+        clickOn("#organSearchComboBox");
+        clickOn("heart");
+        //check the transplant table
+        transplantTable = lookup("#transplantTable").queryTableView();
+        transplantRow = transplantTable.getItems().get(0);
+        assertEquals(Organ.HEART, transplantRow.getOrgan());
+        assertEquals("Bob Ross", transplantRow.getName());
+        assertEquals(transplantTable.getItems().size(), 1);
+    }
 }
+
+

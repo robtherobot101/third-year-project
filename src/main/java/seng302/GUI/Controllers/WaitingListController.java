@@ -1,37 +1,34 @@
 package seng302.GUI.Controllers;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import javafx.application.Platform;
-import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.controlsfx.control.PropertySheet;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
+import seng302.Generic.History;
+import seng302.Generic.Main;
 import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
-import seng302.Generic.*;
 
-import javafx.beans.binding.Bindings;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
+
 
 /**
  * The controller for the waiting list pane
  */
-public class WaitingListController implements Initializable {
+public class WaitingListController extends PageController implements Initializable {
+
     @FXML
     private Button registerOrganButton;
 
@@ -39,7 +36,7 @@ public class WaitingListController implements Initializable {
     private Button deregisterOrganButton;
 
     @FXML
-    private TableView<WaitingListItem> waitingList;
+    private TableView<WaitingListItem> waitingListTableView;
 
     @FXML
     private ComboBox<Organ> organTypeComboBox;
@@ -64,12 +61,8 @@ public class WaitingListController implements Initializable {
 
     private User currentUser;
 
-
-
-
     private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
     private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
-
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
@@ -85,13 +78,18 @@ public class WaitingListController implements Initializable {
      * is added to the user's profile.
      */
     public void registerOrgan() {
+        String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
+        History.printToFile(streamOut, text);
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
+            addToUndoStack();
             WaitingListItem temp = new WaitingListItem(organTypeSelected);
             boolean found = false;
             for (WaitingListItem item : currentUser.getWaitingListItems()) {
                 if (temp.getOrganType() == item.getOrganType()) {
-                    item.registerOrgan();
+                    currentUser.getWaitingListItems().remove(item);
+                    currentUser.getWaitingListItems().add(new WaitingListItem(item));
+                    currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).registerOrgan();
                     found = true;
                     break;
                 }
@@ -100,10 +98,13 @@ public class WaitingListController implements Initializable {
                 currentUser.getWaitingListItems().add(temp);
             }
             populateWaitingList();
+            statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
+
         }
         populateOrgansComboBox();
-        //Main.getClinicianController().updateUserTable();
+
     }
+
 
 
     /**
@@ -111,16 +112,36 @@ public class WaitingListController implements Initializable {
      * the waiting TableView
      */
     public void deregisterOrgan() {
-        WaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
+        String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
+        History.printToFile(streamOut, text);
+        WaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
-            waitingListItemSelected.deregisterOrgan();
+            addToUndoStack();
+            currentUser.getWaitingListItems().remove(waitingListItemSelected);
+            currentUser.getWaitingListItems().add(new WaitingListItem(waitingListItemSelected));
+            currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).deregisterOrgan();
             populateWaitingList();
+            //statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
         }
         populateOrgansComboBox();
-        //Main.getClinicianController().updateUserTable();
+
     }
 
 
+    public void setStatusIndicator(StatusIndicator statusIndicator){
+        this.statusIndicator = statusIndicator;
+    }
+
+
+    public void setTitleBar(TitleBar titleBar){
+        this.titleBar = titleBar;
+    }
+
+
+    /**
+     * Removes any currently registered organs from the combo box, as an already registered organ cannot be registered again.
+     * It is re added if the organ is deregistered.
+     */
     public void populateOrgansComboBox(){
         ArrayList<Organ> toBeRemoved = new ArrayList<Organ>();
         ArrayList<Organ> toBeAdded = new ArrayList<Organ>(Arrays.asList(Organ.values()));
@@ -154,7 +175,7 @@ public class WaitingListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Main.setWaitingListController(this);
         organTypeComboBox.setItems(organsInDropDown);
-        waitingList.setItems(waitingListItems);
+        waitingListTableView.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
         stillWaitingOn.setCellValueFactory(new PropertyValueFactory<>("stillWaitingOn"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
@@ -166,7 +187,7 @@ public class WaitingListController implements Initializable {
                 Bindings.isNull(organTypeComboBox.getSelectionModel().selectedItemProperty())
         );
 
-        waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        waitingListTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 deregisterOrganButton.setDisable(true);
             } else if (newValue.getStillWaitingOn()) {
@@ -176,7 +197,7 @@ public class WaitingListController implements Initializable {
             }
         });
 
-        waitingList.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
+        waitingListTableView.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
             @Override
             public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
                 return new TableRow<WaitingListItem>() {
@@ -215,4 +236,12 @@ public class WaitingListController implements Initializable {
         this.organTypeComboBox.setVisible(shown);
         this.organComboBoxLabel.setVisible(shown);
     }
+
+    /**
+     * Calls the main class which has access to the static controller allowing it to manually add the user to the waitinglist undo stack.
+     */
+    public void addToUndoStack(){
+        Main.addCurrentToWaitingListUndoStack();
+    }
+
 }

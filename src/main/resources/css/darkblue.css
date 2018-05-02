@@ -1,11 +1,10 @@
 .root,
 .pane,
 .stack-pane {
-	-fx-background-color: #1d3549;
+  -fx-background-color: #1d3549;
   -fx-focus-color: transparent;
   -fx-faint-focus-color: transparent;
 }
-
 
 .date-picker,
 .date-picker-popup > .calendar-grid {
@@ -265,6 +264,10 @@
 .table-row-cell:selected,
 .tree-table-row-cell:selected {
 	-fx-background-color: #4785b8;
+}
+
+.status-bar {
+	-fx-background-color: #2b506e;
 }
 
 .highlighted-row {

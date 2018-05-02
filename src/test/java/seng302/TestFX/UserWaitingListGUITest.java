@@ -1,17 +1,13 @@
-
 package seng302.TestFX;
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import seng302.Generic.Main;
 import seng302.Generic.WaitingListItem;
+import seng302.TestFX.TestFXTest;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -22,15 +18,13 @@ import java.util.concurrent.TimeoutException;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class UserWaitingListGUITest extends TestFXTest {
     private User user;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        headedTestSetup();
+        defaultTestSetup();
     }
 
     @Before
@@ -105,7 +99,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      * @return The table row with the given organ type
      */
     public Node getWaitingListOrgan(Organ type){
-        return (Node)from(lookup("#waitingList")).lookup(type.toString().toLowerCase()).query().getParent();
+        return (Node)from(lookup("#waitingListTableView")).lookup(type.toString().toLowerCase()).query().getParent();
     }
 
     /**
@@ -114,7 +108,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      */
     public List<WaitingListItem> waitingListItems(){
         ArrayList waitingListItems = new ArrayList<>();
-        for(Object o: lookup("#waitingList").queryTableView().getItems())
+        for(Object o: lookup("#waitingListTableView").queryTableView().getItems())
             waitingListItems.add((WaitingListItem)o);
         return waitingListItems;
     }

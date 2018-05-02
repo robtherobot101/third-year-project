@@ -1,4 +1,4 @@
-package seng302.GUI;
+package seng302.TestFX;
 
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -11,53 +11,27 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Disease;
+import seng302.Generic.Disease;
 import seng302.Generic.Main;
 import seng302.User.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
-public class MedicalHistoryGUITest extends ApplicationTest {
-
-    private Main mainGUI;
-    private static final boolean runHeadless = true;
+public class MedicalHistoryGUITest extends TestFXTest {
 
     private TableView<Disease> currentDiseaseTableView, curedDiseaseTableView;
     private Disease currentTableSelectedDisease, curedTableSelectedDisease;
 
     @BeforeClass
-    public static void setupSpec() throws Exception {
-        if (runHeadless) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1920x1080-32");
-        }
-        registerPrimaryStage();
-    }
-
-    @Before
-    public void setUp () throws Exception {
-    }
-
-    @After
-    public void tearDown () throws Exception {
-        FxToolkit.hideStage();
-        release(new KeyCode[]{});
-        release(new MouseButton[]{});
-    }
-
-    @Override
-    public void start (Stage stage) throws Exception {
-        mainGUI = new Main();
-        mainGUI.start(stage);
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     /**
@@ -79,7 +53,7 @@ public class MedicalHistoryGUITest extends ApplicationTest {
 
         // Checks if our test user already exists
         String[] names = new String[]{"Matthew", "Knight"};
-        ArrayList<User> results = mainGUI.getUserByName(names);
+        ArrayList<User> results = Main.getUserByName(names);
 
         // If it doesn't exist -> add the user
         if (results.isEmpty()) {
@@ -112,7 +86,7 @@ public class MedicalHistoryGUITest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
-        clickOn("#medicalHistoryButton");
+        clickOn("#diseasesButton");
         doubleClickOn(636, 435);
 
 

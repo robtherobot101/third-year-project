@@ -1,4 +1,4 @@
-package seng302.Core;
+package seng302.Generic;
 
 import java.time.LocalDate;
 
@@ -50,6 +50,11 @@ public class Procedure {
 
     public void setOrganAffecting(boolean organAffecting) {
         isOrganAffecting = organAffecting;
+    }
+
+    @Override
+    public String toString(){
+        return summary;
     }
 
 
