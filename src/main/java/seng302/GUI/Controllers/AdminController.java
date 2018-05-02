@@ -720,7 +720,8 @@ public class AdminController implements Initializable {
             Admin newAdmin = createAdminController.showAndWait(stage);
             System.out.println(newAdmin);
             if(newAdmin != null){
-                //TODO add the new admin to the admin list
+                Main.admins.add(newAdmin);
+                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
@@ -748,7 +749,8 @@ public class AdminController implements Initializable {
             Clinician newClinician = createClinicianController.showAndWait(stage);
             System.out.println(newClinician);
             if(newClinician != null){
-                //TODO add the new clinician to the admin list
+                Main.clinicians.add(newClinician);
+                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
