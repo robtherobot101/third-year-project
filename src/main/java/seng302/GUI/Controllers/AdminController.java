@@ -106,6 +106,10 @@ public class AdminController implements Initializable {
     private ComboBox clinicianUserTypeComboBox;
     @FXML
     private ComboBox clinicianOrganComboBox;
+    @FXML
+    private Label adminNameLabel;
+    @FXML
+    private Label adminAddressLabel;
 
 
     private int resultsPerPage;
@@ -116,8 +120,8 @@ public class AdminController implements Initializable {
 
     private ArrayList<UserWindowController> userWindows = new ArrayList<UserWindowController>();
 
-    private ArrayList<Clinician> clinicianUndoStack = new ArrayList<>();
-    private ArrayList<Clinician> clinicianRedoStack = new ArrayList<>();
+    private LinkedList<Admin> adminUndoStack = new LinkedList<>();
+    private LinkedList<Admin> adminRedoStack = new LinkedList<>();
 
 
     private ObservableList<User> currentUsers;
@@ -153,6 +157,8 @@ public class AdminController implements Initializable {
     private void updateDisplay() {
         System.out.print(currentAdmin);
         userDisplayText.setText("Welcome " + currentAdmin.getName());
+        adminNameLabel.setText("Name: " + currentAdmin.getName());
+        adminAddressLabel.setText("Address: " + currentAdmin.getWorkAddress());
         staffIDLabel.setText(Long.toString(currentAdmin.getStaffID()));
     }
 
@@ -226,15 +232,15 @@ public class AdminController implements Initializable {
      * Updates the current clinicians attributes to
      * reflect those of the values in the displayed TextFields
      */
-    public void updateClinician() {
-        addClinicianToUndoStack(currentAdmin);
-        System.out.println("Name=" + currentAdmin.getName() + ", Address=" + currentAdmin.getWorkAddress() + ", Region=" + currentAdmin.getRegion());
+    public void updateAdminPopUp() {
+        addAdminToUndoStack(currentAdmin);
+        System.out.println("Name=" + currentAdmin.getName() + ", Address=" + currentAdmin.getWorkAddress());
 
 
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
-        dialog.setTitle("Update Clinician");
-        dialog.setHeaderText("Update Clinician Details");
+        dialog.setTitle("Update Admin");
+        dialog.setHeaderText("Update Admin Details");
 
         dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
 
@@ -248,83 +254,67 @@ public class AdminController implements Initializable {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 10, 10, 10));
 
-        TextField clinicianName = new TextField();
-        clinicianName.setPromptText(currentAdmin.getName());
-        clinicianName.setId("clinicianName");
-        TextField clinicianAddress = new TextField();
-        clinicianAddress.setId("clinicianAddress");
-        clinicianAddress.setPromptText(currentAdmin.getWorkAddress());
-        TextField clinicianRegion = new TextField();
-        clinicianRegion.setId("clinicianRegion");
-        clinicianRegion.setPromptText(currentAdmin.getRegion());
+        TextField adminName = new TextField();
+        adminName.setPromptText(currentAdmin.getName());
+        adminName.setId("adminName");
+        TextField adminAddress = new TextField();
+        adminAddress.setId("adminAddress");
+        adminAddress.setPromptText(currentAdmin.getWorkAddress());
 
         grid.add(new Label("Name:"), 0, 0);
-        grid.add(clinicianName, 1, 0);
+        grid.add(adminName, 1, 0);
         grid.add(new Label("Address:"), 0, 1);
-        grid.add(clinicianAddress, 1, 1);
-        grid.add(new Label("Region:"), 0, 2);
-        grid.add(clinicianRegion, 1, 2);
+        grid.add(adminAddress, 1, 1);
 
         // Enable/Disable login button depending on whether a username was entered.
         Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
         updateButton.setDisable(true);
 
         // Do some validation (using the Java 8 lambda syntax).
-        clinicianName.textProperty().addListener((observable, oldValue, newValue) -> {
+        adminName.textProperty().addListener((observable, oldValue, newValue) -> {
             updateButton.setDisable(newValue.trim().isEmpty());
         });
 
         // Do some validation (using the Java 8 lambda syntax).
-        clinicianAddress.textProperty().addListener((observable, oldValue, newValue) -> {
+        adminAddress.textProperty().addListener((observable, oldValue, newValue) -> {
             updateButton.setDisable(newValue.trim().isEmpty());
         });
 
-        clinicianRegion.textProperty().addListener((observable, oldValue, newValue) -> {
-            updateButton.setDisable(newValue.trim().isEmpty());
-        });
 
         dialog.getDialogPane().setContent(grid);
 
         // Request focus on the username field by default.
-        Platform.runLater(() -> clinicianName.requestFocus());
+        Platform.runLater(() -> adminName.requestFocus());
 
         // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
                 String newName;
                 String newAddress;
-                String newRegion;
 
-                if(clinicianName.getText().equals("")) {
+                if(adminName.getText().equals("")) {
                     newName = currentAdmin.getName();
                 } else {
-                    newName = clinicianName.getText();
+                    newName = adminName.getText();
                 }
 
-                if(clinicianAddress.getText().equals("")) {
+                if(adminAddress.getText().equals("")) {
                     newAddress = currentAdmin.getWorkAddress();
                 } else {
-                    newAddress = clinicianAddress.getText();
+                    newAddress = adminAddress.getText();
                 }
 
-                if(clinicianRegion.getText().equals("")) {
-                    newRegion = currentAdmin.getRegion();
-                } else {
-                    newRegion = clinicianRegion.getText();
-                }
-
-                return new ArrayList<String>(Arrays.asList(newName, newAddress, newRegion));
+                return new ArrayList<String>(Arrays.asList(newName, newAddress));
             }
             return null;
         });
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
 
-        result.ifPresent(newClinicianDetails -> {
-            System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails.get(2));
-            currentAdmin.setName(newClinicianDetails.get(0));
-            currentAdmin.setWorkAddress(newClinicianDetails.get(1));
-            currentAdmin.setRegion(newClinicianDetails.get(2));
+        result.ifPresent(newAdminDetails -> {
+            System.out.println("Name=" + newAdminDetails.get(0) + ", Address=" + newAdminDetails.get(1));
+            currentAdmin.setName(newAdminDetails.get(0));
+            currentAdmin.setWorkAddress(newAdminDetails.get(1));
             save();
             updateDisplay();
 
@@ -380,26 +370,26 @@ public class AdminController implements Initializable {
     /**
      * Reads the top element of the undo stack and removes it, while placing the current currentAdmin in the redo stack.
      * Then returns the currentAdmin from the undo stack.
-     * @param oldClinician the clincian being placed in the redo stack.
+     * @param oldAdmin the admin being placed in the redo stack.
      * @return the previous iteration of the currentAdmin object.
      */
-    public Clinician clinicianUndo(Clinician oldClinician) {
-        if (clinicianUndoStack != null) {
-            Clinician newClinician = clinicianUndoStack.get(clinicianUndoStack.size() - 1);
-            clinicianUndoStack.remove(clinicianUndoStack.size() - 1);
-            clinicianRedoStack.add(oldClinician);
-            return newClinician;
+    public Admin adminUndo(Admin oldAdmin) {
+        if (adminUndoStack != null) {
+            Admin newAdmin = adminUndoStack.get(adminUndoStack.size() - 1);
+            adminUndoStack.remove(adminUndoStack.size() - 1);
+            adminRedoStack.add(oldAdmin);
+            return newAdmin;
         }
         return null;
     }
 
     /**
      * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the GUI button to be usable.
-     * @param clinician the currentAdmin object being copied.
+     * @param admin the currentAdmin object being copied.
      */
-    public void addClinicianToUndoStack(Clinician clinician) {
-        Clinician prevClinician = new Clinician(clinician);
-        clinicianUndoStack.add(prevClinician);
+    public void addAdminToUndoStack(Admin admin) {
+        Admin prevAdmin = new Admin(admin);
+        adminUndoStack.add(prevAdmin);
         if (undoWelcomeButton.isDisable()) {
             undoWelcomeButton.setDisable(false);
         }
@@ -407,15 +397,15 @@ public class AdminController implements Initializable {
 
     /**
      * Pops the topmost currentAdmin object from the redo stack and returns it, while adding the provided currentAdmin object to the undo stack.
-     * @param newClinician the clinican being placed on the undo stack.
+     * @param newAdmin the admin being placed on the undo stack.
      * @return the topmost currentAdmin object on the redo stack.
      */
-    public Clinician clinicianRedo(Clinician newClinician){
-        if (clinicianRedoStack != null) {
-            Clinician oldClinician = clinicianRedoStack.get(clinicianRedoStack.size() - 1);
-            addClinicianToUndoStack(newClinician);
-            clinicianRedoStack.remove(clinicianRedoStack.size() - 1);
-            return oldClinician;
+    public Admin adminRedo(Admin newAdmin){
+        if (adminRedoStack != null) {
+            Admin oldAdmin = adminRedoStack.get(adminRedoStack.size() - 1);
+            addAdminToUndoStack(newAdmin);
+            adminRedoStack.remove(adminRedoStack.size() - 1);
+            return oldAdmin;
         } else{
             return null;
         }
