@@ -103,18 +103,21 @@ public class DrugInteractionGUITest extends TestFXTest {
         return new HashSet<>(Arrays.asList(resultLabel.getText().split(System.lineSeparator())));
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException{
         addAndCompare(testDrugA,testDrugB);
         assertEquals(symptomsForAAndB,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptomsPassedInReverseOrder_returnsCorrectResults() throws TimeoutException{
         addAndCompare(testDrugA,testDrugB);
         assertEquals(symptomsForAAndB,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptomsFromHistory_returnsCorrectResults() throws TimeoutException{
         waitForNodeVisible(10, "#moveToHistoryButton");
@@ -134,6 +137,7 @@ public class DrugInteractionGUITest extends TestFXTest {
         assertEquals(symptomsForAAndB,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWhichHaveNoInteractionsForUser_noResults() throws TimeoutException{
         addAndCompare("Marinol","Codeine sulfate");
@@ -144,6 +148,7 @@ public class DrugInteractionGUITest extends TestFXTest {
         assertEquals(expected,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWithoutInformation_noResultsAndUserNotified() throws TimeoutException{
         addAndCompare("Selsun","Inversine");
@@ -154,6 +159,7 @@ public class DrugInteractionGUITest extends TestFXTest {
         assertEquals(expected,getResultSet());
     }
 
+    @Ignore
     @Test
     public void compareDrugsWhichCauseInternalServerError_noResultsAndUserNotified() throws TimeoutException{
         addAndCompare("Codeine sulfate","Maxolon");

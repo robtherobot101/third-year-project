@@ -229,7 +229,6 @@ public class User {
         historicMedications.addAll(user.getHistoricMedications());
         // TODO - ask what this is
         waitingListItems.addAll(waitingListItems);
-        historicMedications.addAll(user.getHistoricMedications());
 
 
     }

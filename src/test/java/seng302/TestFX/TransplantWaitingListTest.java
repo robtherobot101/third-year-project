@@ -185,9 +185,10 @@ public class TransplantWaitingListTest extends TestFXTest{
 
         //show the transplant list
         clickOn("#transplantList");
+        sleep(1000);
         verifyThat("#transplantPane", Node::isVisible);
         //verifyThat("#transplantPane", hasText("No content in table"));
-        sleep(1000);
+        //sleep(1000);
         verifyThat("No content in table", isVisible());
     }
 
@@ -264,6 +265,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         //add organ to waiting list
         clickOn("#waitingListButton");
         clickOn("#organTypeComboBox");
+        sleep(300);
         clickOn("liver");
         clickOn("#registerOrganButton");
         clickOn("#saveUserButton");
@@ -276,6 +278,7 @@ public class TransplantWaitingListTest extends TestFXTest{
 
         clickOn("#organSearchComboBox");
         clickOn("heart");
+        sleep(3000);
         //check the transplant table
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);

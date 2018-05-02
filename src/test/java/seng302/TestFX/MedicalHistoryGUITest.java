@@ -51,38 +51,33 @@ public class MedicalHistoryGUITest extends TestFXTest {
     private void enterMedicalHistoryView() {
         // Assumed that calling method is currently on login screen
 
-        // Checks if our test user already exists
-        String[] names = new String[]{"Matthew", "Knight"};
-        ArrayList<User> results = Main.getUserByName(names);
-
-        // If it doesn't exist -> add the user
-        if (results.isEmpty()) {
-            System.out.println("MedicalHistoryGUITest: Test user not found -> adding test user");
-            clickOn("#createAccountButton");
-            clickOn("#usernameInput").write("buzz");
-            clickOn("#emailInput").write("mkn29@uclive.ac.nz");
-            clickOn("#passwordInput").write("password123");
-            clickOn("#passwordConfirmInput").write("password123");
-            clickOn("#firstNameInput").write("Matthew");
-            clickOn("#middleNamesInput").write("Pieter");
-            clickOn("#lastNameInput").write("Knight");
-            clickOn("#dateOfBirthInput").write("12/06/1997");
-            doubleClickOn("#createAccountButton");
-
-            // Logout to be able to login as a clinician
-            clickOn("#logoutButton");
-            clickOn("OK");
-        }
-        System.out.println("MedicalHistoryGUITest: Logging in as default clinician");
+        Main.users.clear();
+//        System.out.println("MedicalHistoryGUITest: Test user not found -> adding test user");
+//        clickOn("#createAccountButton");
+//        clickOn("#usernameInput").write("buzz");
+//        clickOn("#emailInput").write("mkn29@uclive.ac.nz");
+//        clickOn("#passwordInput").write("password123");
+//        clickOn("#passwordConfirmInput").write("password123");
+//        clickOn("#firstNameInput").write("Matthew");
+//        clickOn("#middleNamesInput").write("Pieter");
+//        clickOn("#lastNameInput").write("Knight");
+//        clickOn("#dateOfBirthInput").write("12/06/1997");
+//        doubleClickOn("#createAccountButton");
+//
+//        // Logout to be able to login as a clinician
+//        clickOn("#logoutButton");
+//        clickOn("OK");
+//        System.out.println("MedicalHistoryGUITest: Logging in as default clinician");
+        addTestUser();
         // Login as default clinician
         clickOn("#identificationInput");
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
-        doubleClickOn("#loginButton");
+        clickOn("#loginButton");
 
         System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
         // Click on the Created User in clinician table and enter the medications panel.
-        doubleClickOn("Matthew Pieter Knight");
+        doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug

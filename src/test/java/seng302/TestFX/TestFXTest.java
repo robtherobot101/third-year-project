@@ -44,6 +44,8 @@ abstract class TestFXTest extends ApplicationTest {
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
             System.setProperty("headless.geometry", "1600x1200-32");
+        } else {
+            System.setProperty("testfx.robot.write_sleep", "1");
         }
         registerPrimaryStage();
     }

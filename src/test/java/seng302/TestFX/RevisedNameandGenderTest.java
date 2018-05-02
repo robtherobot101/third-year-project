@@ -22,6 +22,7 @@ import seng302.User.Medication.Medication;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.concurrent.TimeoutException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.testfx.api.FxAssert.assertContext;
@@ -31,80 +32,34 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
-public class RevisedNameandGenderTest extends ApplicationTest {
+public class RevisedNameandGenderTest extends TestFXTest {
 
-    private static final boolean runHeadless = true;
-
-    private Main mainGUI;
-
-    /**
-     * Ensures the tests are run in background if the property runHeadless == true
-     *
-     * Note: tests still take the same amount of time in background
-     *
-     * @throws Exception
-     */
     @BeforeClass
-    public static void setupSpec() throws Exception {
-        if (runHeadless) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1600x1200-32");
-        }
-        registerPrimaryStage();
-    }
-
-    @Before
-    public void setUp () throws Exception {
-    }
-
-    @After
-    public void tearDown () throws Exception {
-        FxToolkit.hideStage();
-        release(new KeyCode[]{});
-        release(new MouseButton[]{});
-    }
-
-    @Override
-    public void start (Stage stage) throws Exception {
-        mainGUI = new Main();
-        mainGUI.start(stage);
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     private void enterAttributesPanel() {
 
         Main.users.clear();
         // Assumed that calling method is currently on login screen
-        clickOn("#createAccountButton");
+//        clickOn("#createAccountButton");
+//
+//        // Create a valid user
+//        clickOn("#usernameInput").write("test");
+//        clickOn("#emailInput").write("testie@testmail.com");
+//        clickOn("#passwordInput").write("password123");
+//        clickOn("#passwordConfirmInput").write("password123");
+//        clickOn("#firstNameInput").write("Testie");
+//        clickOn("#middleNamesInput").write("Test");
+//        clickOn("#lastNameInput").write("McTest");
+//        clickOn("#dateOfBirthInput").write("20/4/1969");
+//
+//        doubleClickOn("#createAccountButton");
+        addTestUser();
+        loginAs(Main.users.get(0));
 
-        // Create a valid user
-        clickOn("#usernameInput").write("test");
-        clickOn("#emailInput").write("testie@testmail.com");
-        clickOn("#passwordInput").write("password123");
-        clickOn("#passwordConfirmInput").write("password123");
-        clickOn("#firstNameInput").write("Testie");
-        clickOn("#middleNamesInput").write("Test");
-        clickOn("#lastNameInput").write("McTest");
-        clickOn("#dateOfBirthInput").write("20/4/1969");
-
-        doubleClickOn("#createAccountButton");
-
-        // Logout to be able to login as a clinician
-        clickOn("#logoutButton");
-        clickOn("OK");
-
-        // Login as default clinician
-        clickOn("#identificationInput");
-        clickOn("#identificationInput").write("default");
-        clickOn("#passwordInput").write("default");
-        clickOn("#loginButton");
-
-
-        //Click on the Created User in clinician table and enter the medications panel.
-        doubleClickOn("Testie Test McTest");
-        clickOn("#attributesButton");
+        clickOn("#userAttributesButton");
     }
 
 
@@ -113,16 +68,17 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         enterAttributesPanel();
 
-        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Testie Test McTest"));
-        verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Testie Test McTest"));
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Bobby Dong Flame"));
+        verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
 
         //Add a new medication for the user.
         doubleClickOn("#firstNameField").write("New");
         doubleClickOn("#middleNameField").write("Name");
         doubleClickOn("#lastNameField").write("Test");
         clickOn("#saveButton");
-
-        Assert.assertEquals(Main.users.get(0).getName(), "Testie Test McTest");
+        sleep(100);
+        push(KeyCode.ENTER);
+        Assert.assertEquals(Main.users.get(0).getName(), "Bobby Dong Flame");
         Assert.assertEquals(Main.users.get(0).getPreferredName(),"New Name Test");
         verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: New Name Test"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for New Name Test"));
@@ -139,7 +95,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#genderComboBox").clickOn("Male");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getGender().toString(), "Male");
@@ -147,7 +103,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#genderComboBox").clickOn("Female");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getGender().toString(), "Male");
@@ -164,7 +120,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         doubleClickOn("#addressField").write("3 Test Street");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getCurrentAddress(), "3 Test Street");
@@ -174,7 +130,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
         clickOn("#addressField").write("8 Trial Road");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getCurrentAddress(), "8 Trial Road");
@@ -189,14 +145,14 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         doubleClickOn("#regionField").write("Testchurch");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getRegion(), "Testchurch");
 
         doubleClickOn("#regionField").write("Trialton");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getRegion(), "Trialton");
@@ -207,13 +163,13 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         enterAttributesPanel();
 
-        Assert.assertEquals(Main.users.get(0).getDateOfBirth().toString(), "1969-04-20");
+        Assert.assertEquals(Main.users.get(0).getDateOfBirth().toString(), "1969-08-04");
 
         clickOn("#dateOfBirthPicker");
         push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#dateOfBirthPicker").write("01/05/1970");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getDateOfBirth().toString(), "1970-05-01");
@@ -222,7 +178,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#dateOfBirthPicker").write("10/07/1997");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getDateOfBirth().toString(), "1997-07-10");
@@ -238,7 +194,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         clickOn("#dateOfDeathPicker");
         doubleClickOn("#dateOfDeathPicker").write("01/05/1970");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getDateOfDeath().toString(), "1970-05-01");
@@ -247,72 +203,12 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#dateOfDeathPicker").write("10/07/1997");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getDateOfDeath().toString(), "1997-07-10");
     }
 
-    @Ignore
-    @Test
-    public void changeHeightTest(){
-
-        enterAttributesPanel();
-
-        Assert.assertEquals(Main.users.get(0).getHeight(), -1.0,0.001);
-
-        doubleClickOn("#heightField").write("187");
-        clickOn("#saveButton");
-
-        push(KeyCode.getKeyCode("Enter"));
-
-        Assert.assertEquals(Main.users.get(0).getHeight(), 187,0.001);
-
-        doubleClickOn("#heightField").write("178.5");
-        clickOn("#saveButton");
-
-        push(KeyCode.getKeyCode("Enter"));
-
-        Assert.assertEquals(Main.users.get(0).getHeight(), 178.5, 0.001);
-    }
-
-    @Test
-    public void changeWeightTest(){
-
-        enterAttributesPanel();
-
-        Assert.assertEquals(Main.users.get(0).getWeight(), -1.0,0.001);
-
-        doubleClickOn("#weightField").write("87");
-        clickOn("#saveButton");
-
-        push(KeyCode.getKeyCode("Enter"));
-
-        Assert.assertEquals(Main.users.get(0).getWeight(), 87,0.001);
-
-        doubleClickOn("#weightField").write("78.5");
-        clickOn("#saveButton");
-
-        push(KeyCode.getKeyCode("Enter"));
-
-        Assert.assertEquals(Main.users.get(0).getWeight(), 78.5, 0.001);
-
-        Assert.assertEquals(Main.users.get(0).getHeight(), -1.0,0.001);
-
-        doubleClickOn("#heightField").write("187");
-        clickOn("#saveButton");
-
-        push(KeyCode.getKeyCode("Enter"));
-
-        Assert.assertEquals(Main.users.get(0).getHeight(), 187,0.001);
-
-        doubleClickOn("#heightField").write("178.5");
-        clickOn("#saveButton");
-
-        push(KeyCode.getKeyCode("Enter"));
-
-        Assert.assertEquals(Main.users.get(0).getHeight(), 178.5, 0.001);
-    }
 
     @Test
     public void changeBloodTypeTest(){
@@ -323,14 +219,14 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#bloodTypeComboBox").clickOn("O+");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getBloodType().toString(), "O+");
 
         clickOn("#bloodTypeComboBox").clickOn("AB-");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getBloodType().toString(), "AB-");
@@ -348,7 +244,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#liverCheckBox");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         organs.add(Organ.LIVER);
@@ -356,7 +252,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#kidneyCheckBox");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         organs.add(Organ.KIDNEY);
@@ -366,7 +262,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         clickOn("#liverCheckBox");
         clickOn("#connectiveTissueCheckBox");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         organs = EnumSet.noneOf(Organ.class);
@@ -384,14 +280,14 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#smokerStatusComboBox").clickOn("Never");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getSmokerStatus().toString(), "Never");
 
         clickOn("#smokerStatusComboBox").clickOn("Current");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getSmokerStatus().toString(), "Current");
@@ -407,7 +303,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         doubleClickOn("#bloodPressureTextField").write("21/30");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getBloodPressure(), "21/30");
@@ -416,7 +312,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#bloodPressureTextField").write("30/10");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getBloodPressure(), "30/10");
@@ -431,14 +327,14 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         clickOn("#alcoholConsumptionComboBox").clickOn("Alcoholic");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getAlcoholConsumption().toString(), "Alcoholic");
 
         clickOn("#alcoholConsumptionComboBox").clickOn("None");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getAlcoholConsumption().toString(), "None");
@@ -456,7 +352,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         doubleClickOn("#weightField").write("83");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getWeight(), 83, 0.001);
@@ -465,7 +361,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
 
         doubleClickOn("#heightField").write("178");
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getWeight(), 83, 0.001);
@@ -477,7 +373,7 @@ public class RevisedNameandGenderTest extends ApplicationTest {
         clickOn("#weightField").write("72");
 
         clickOn("#saveButton");
-
+        sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(Main.users.get(0).getWeight(), 72, 0.001);

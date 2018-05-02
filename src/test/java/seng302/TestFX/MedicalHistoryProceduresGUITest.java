@@ -53,39 +53,12 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      */
     private void enterMedicalHistoryProceduresView() {
         // Assumed that calling method is currently on login screen
-
-        // Checks if our test user already exists
-        String[] names = new String[]{"Andrew", "French"};
-        ArrayList<User> results = Main.getUserByName(names);
-
-        // If it doesn't exist -> add the user
-        if (results.isEmpty()) {
-            System.out.println("MedicalHistoryProceduresGUITest: Test user not found -> adding test user");
-            clickOn("#createAccountButton");
-            clickOn("#usernameInput").write("andy");
-            clickOn("#emailInput").write("afr66@uclive.ac.nz");
-            clickOn("#passwordInput").write("password123");
-            clickOn("#passwordConfirmInput").write("password123");
-            clickOn("#firstNameInput").write("Andrew");
-            clickOn("#middleNamesInput").write("Robert");
-            clickOn("#lastNameInput").write("French");
-            clickOn("#dateOfBirthInput").write("04/08/1997");
-            doubleClickOn("#createAccountButton");
-
-            // Logout to be able to login as a clinician
-            clickOn("#logoutButton");
-            clickOn("OK");
-        }
-        System.out.println("MedicalHistoryProceduresGUITest: Logging in as default clinician");
-        // Login as default clinician
-        //clickOn("#identificationInput");
-        clickOn("#identificationInput").write("default");
-        clickOn("#passwordInput").write("default");
-        doubleClickOn("#loginButton");
+        addTestUser();
+        loginAsDefaultClinician();
 
         System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
         // Click on the Created User in clinician table and enter the medications panel.
-        doubleClickOn("Andrew Robert French");
+        doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
@@ -302,7 +275,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         assertTrue(topDonor.getPendingProcedures().get(0).getDescription().equalsIgnoreCase("Transfer of arm"));
         assertEquals(LocalDate.of(2020, 4, 4), topDonor.getPendingProcedures().get(0).getDate());
 
-        doubleClickOn("Andrew Robert French");
+        doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug

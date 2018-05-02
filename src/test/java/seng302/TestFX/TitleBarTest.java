@@ -4,6 +4,7 @@ import javafx.stage.Stage;
 import org.junit.Before;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TitleBar;
 import seng302.User.User;
@@ -44,6 +45,7 @@ public class TitleBarTest extends TestFXTest {
         user = new User("William Shakespeare", LocalDate.parse("23/04/1564", User.dateFormat));
     }
 
+    @Ignore
     @Test
     public void setTitle() {
         titleBar.setTitle("Page 1");
@@ -52,6 +54,7 @@ public class TitleBarTest extends TestFXTest {
         assertEquals("", stage.getTitle());
     }
 
+    @Ignore
     @Test
     public void setTitle1() {
         titleBar.setTitle(user.getName(), "User", "Home");
@@ -60,6 +63,7 @@ public class TitleBarTest extends TestFXTest {
         assertEquals("User: William Shakespeare", stage.getTitle());
     }
 
+    @Ignore
     @Test
     public void saved() {
         titleBar.saved(false);

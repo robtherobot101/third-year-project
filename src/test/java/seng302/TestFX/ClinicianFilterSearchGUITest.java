@@ -1,6 +1,9 @@
 package seng302.TestFX;
 
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,6 +21,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
 public class ClinicianFilterSearchGUITest extends TestFXTest {
 
@@ -41,6 +45,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
      */
     @Before
     public void setUp() {
+        Main.users.clear();
         testUserBobby = new User(
                 "Bobby", new String[]{"Dong"}, "Flame",
                 LocalDate.of(1969, 8, 4),
@@ -124,7 +129,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
 
-        clickOn("#clinicianGenderComboBox").clickOn("Other");
+        clickOn("#clinicianGenderComboBox").clickOn("Non-Binary");
         userTableView = lookup("#profileTable").query();
         assertTrue(userTableView.getItems().isEmpty());
 
@@ -182,20 +187,22 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     public void searchFilterByOrgan() {
         loginAsDefaultClinician();
 
-        clickOn("#clinicianOrganComboBox").clickOn("pancreas");
-
+        clickOn("#clinicianOrganComboBox");
+        sleep(300);
+        push(KeyCode.DOWN).push(KeyCode.DOWN).push(KeyCode.DOWN);
+        push(KeyCode.ENTER);
+        ComboBox temp = lookup("#clinicianOrganComboBox").query();
+        System.out.println(temp.getValue());
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserBobby, userTableView.getItems().get(1));
 
 
-        clickOn("#clinicianOrganComboBox").clickOn("heart");
+        clickOn("#clinicianOrganComboBox");
+        push(KeyCode.DOWN);
+        push(KeyCode.ENTER);
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
-
-        clickOn("#clinicianOrganComboBox").clickOn("liver");
-        userTableView = lookup("#profileTable").query();
-        assertTrue(userTableView.getItems().isEmpty());
 
     }
 
@@ -214,7 +221,9 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         clickOn("#profileSearchTextField").write("Z");
         clickOn("#clinicianUserTypeComboBox").clickOn("Donor");
         doubleClickOn("#profileSearchTextField").write(" ");
-        clickOn("#clinicianOrganComboBox").clickOn("pancreas");
+        clickOn("#clinicianOrganComboBox");
+        push(KeyCode.DOWN).push(KeyCode.DOWN).push(KeyCode.DOWN);
+        push(KeyCode.ENTER);
 
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserBobby, userTableView.getItems().get(0));
