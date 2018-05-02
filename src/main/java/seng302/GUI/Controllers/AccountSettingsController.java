@@ -7,6 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import seng302.Generic.IO;
 import seng302.User.User;
 import seng302.Generic.Main;
 import seng302.Generic.History;
@@ -14,6 +15,8 @@ import seng302.Generic.History;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class to handle all the logic for the Account Settings window.
@@ -72,11 +75,11 @@ public class AccountSettingsController implements Initializable {
             currentUser.setPassword(passwordField.getText());
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "updateAccountSettings");
-            History.printToFile(Main.streamOut, text);
+            History.printToFile(streamOut, text);
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             Main.setCurrentUser(currentUser);
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
         } else {
             alert.close();
         }

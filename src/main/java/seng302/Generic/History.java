@@ -1,8 +1,9 @@
 package seng302.Generic;
 
+import seng302.User.User;
+
 import java.io.*;
 import java.time.LocalDateTime;
-import seng302.User.User;
 
 public class History {
 
@@ -22,7 +23,7 @@ public class History {
      */
     public static PrintStream init() {
         try {
-            actionHistory = new File(Main.getJarPath() + File.separatorChar + "actionHistory.txt");
+            actionHistory = new File(IO.getJarPath() + File.separatorChar + "actionHistory.txt");
             FileOutputStream fout = new FileOutputStream(actionHistory, true);
             PrintStream out = new PrintStream(fout);
             out.println(User.dateTimeFormat.format(LocalDateTime.now()) + " ==== NEW SESSION ====");
@@ -177,53 +178,62 @@ public class History {
     public static String prepareFileStringGUI(long userId, String command){
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         User userInfo = Main.getUserById(userId);
+        System.out.println("Command: "+command);
+
         switch(command) {
-            case "login":
-                description = "[User " + userId + " logged in successfully.]";
-                break;
-            case "logout":
-                description = "[User " + userId + " logged out successfully.]";
-                break;
-            case "create":
-                if (userInfo != null) {
-                    description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
-                }
-                break;
-            case "update":
-                description = "[Updated user attributes.]";
-                break;
-            case "updateAccountSettings":
-                description = "[Updated user account settings.]";
-                break;
-            case "undo":
-                description = "[Reversed last action.]";
-                break;
-            case "redo":
-                description = "[Reverted last undo.]";
-                break;
-            case "quit":
-                description = "[Quit the application.]";
-                break;
+                case "login":
+                    description = "[User " + userId + " logged in successfully.]";
+                    break;
+                case "logout":
+                    description = "[User " + userId + " logged out successfully.]";
+                    break;
+                case "create":
+                    if (userInfo != null) {
+                        description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
+                    }
+                    break;
+                case "update":
+                    description = "[Updated user attributes.]";
+                    break;
+                case "updateAccountSettings":
+                    description = "[Updated user account settings.]";
+                    break;
+                case "undo":
+                    description = "[Reversed last action.]";
+                    break;
+                case "redo":
+                    description = "[Reverted last undo.]";
+                    break;
+                case "quit":
+                    description = "[Quit the application.]";
+                    break;
 
             //clinician exclusive
 
-            case "view":
-                //TODO get user viewed id (method in main or clinician or something)
-                description = "[Viewed user " + " .]";
-                break;
-            case "modifyUser":
-                description = "[Modified user " + "'s attributes.]";
-                break;
-            case "addMed":
-                description = "[Added medications to user " + ".]";
-                break;
-            case "removeMed":
-                description = "[Removed medications from user " + ".]";
-                break;
-            case "search":
-                description = "[Searched user database.]";
-                break;
-        }
+                case "view":
+                    //TODO get user viewed id (method in main or clinician or something)
+                    description = "[-Clinician- Viewed user " + userInfo.getName() + " .]";
+                    break;
+                case "modifyUser":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
+                    break;
+                case "waitinglist":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
+                    break;
+                case "medications":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
+                    break;
+                case "diseases":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s diseases.]";
+                    break;
+                case "procedures":
+                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s procedures.]";
+                    break;
+                case "search":
+                    description = "[-Clinician- Searched user database.]";
+                    break;
+            }
+
         text = String.join(" ", text, Long.toString(userId), command, description);
         return text;
     }
@@ -252,7 +262,7 @@ public class History {
             // Always close files.
             bufferedReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found / initilized");
+            System.out.println("File not found / initialized");
         } catch (IOException e) {
             System.out.println("Error Reading file");
             e.printStackTrace();
@@ -271,12 +281,12 @@ public class History {
         String[] historyList = history.split("\n");
         String[][] userHistory = new String[historyList.length][6];
         int index = 0;
-        for(int i = 0; i < historyList.length; i++) {
-            String[] actionDetails = historyList[i].split(" ");
-            if(actionDetails[2].equals("====")) {
+        for (String action : historyList) {
+            String[] actionDetails = action.split(" ");
+            if (actionDetails[2].equals("====")) {
 
-            } else if(actionDetails[3].length() < 4) {
-                if(Long.parseLong(actionDetails[3]) == userid) {
+            } else if (actionDetails[3].length() < 4) {
+                if (Long.parseLong(actionDetails[3]) == userid) {
                     userHistory[index] = actionDetails;
                     index++;
                 }

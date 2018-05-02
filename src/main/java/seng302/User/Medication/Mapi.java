@@ -27,8 +27,11 @@ public class Mapi {
                 result = "";
             }
             temp = result.split("\",\"");
+            System.out.println(Arrays.toString(temp));
+
             return new ArrayList<String>(Arrays.asList(temp));
         } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("aioobe");
             return new ArrayList<String>();
         }
     }

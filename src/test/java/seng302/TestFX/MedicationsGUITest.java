@@ -2,8 +2,9 @@ package seng302.TestFX;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.testfx.api.FxAssert.verifyThat;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -12,8 +13,8 @@ import javafx.scene.control.TableView;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Main;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
@@ -46,6 +47,8 @@ public class MedicationsGUITest extends TestFXTest {
         clickOn("#newMedicationField").write(medication);
         clickOn("#addNewMedicationButton");
         clickOn("#newMedicationField");
+        // Not sure if there is a better way to do this
+        sleep(3000);
     }
 
     /**
@@ -122,6 +125,7 @@ public class MedicationsGUITest extends TestFXTest {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
+        sleep(1500);
         clickOn("Asacol");
         clickOn("#deleteMedicationButton");
         sleep(200);
@@ -179,21 +183,21 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals(1, historicMedicationList.getItems().size());
         assertEquals("Asacol", ((Medication) historicMedicationList.getItems().get(0)).getName());
 
-        clickOn("#undoWelcomeButton");
+        clickOn("#undoBannerButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
         assertEquals(0, currentMedicationList.getItems().size());
         assertEquals(1, historicMedicationList.getItems().size());
         assertEquals("Asacol", ((Medication) historicMedicationList.getItems().get(0)).getName());
 
-        clickOn("#undoWelcomeButton");
+        clickOn("#undoBannerButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
         assertEquals(1, currentMedicationList.getItems().size());
         assertEquals("Asacol", ((Medication) currentMedicationList.getItems().get(0)).getName());
         assertEquals(0, historicMedicationList.getItems().size());
 
-        clickOn("#undoWelcomeButton");
+        clickOn("#undoBannerButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
         assertEquals(0, currentMedicationList.getItems().size());
@@ -212,22 +216,22 @@ public class MedicationsGUITest extends TestFXTest {
         //Action 3 to undo and then redo
         addNewMedicationToCurrentMedications("Ibuprofen");
 
-        clickOn("#undoWelcomeButton");
-        clickOn("#undoWelcomeButton");
-        clickOn("#undoWelcomeButton");
+        clickOn("#undoBannerButton");
+        clickOn("#undoBannerButton");
+        clickOn("#undoBannerButton");
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         ListView historicMedicationList = lookup("#historyListView").queryListView();
         assertEquals(0, currentMedicationList.getItems().size());
         assertEquals(0, historicMedicationList.getItems().size());
 
-        clickOn("#redoWelcomeButton");
+        clickOn("#redoBannerButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
         assertEquals(1, currentMedicationList.getItems().size());
         assertEquals("Cidofovir", ((Medication) currentMedicationList.getItems().get(0)).getName());
         assertEquals(0, historicMedicationList.getItems().size());
 
-        clickOn("#redoWelcomeButton");
+        clickOn("#redoBannerButton");
         currentMedicationList = lookup("#currentListView").queryListView();
         historicMedicationList = lookup("#historyListView").queryListView();
         assertEquals(0, currentMedicationList.getItems().size());
@@ -242,7 +246,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals(0, historicMedicationList.getItems().size());
 
         //The redo button should now be disabled and the GUI should not change when it is clicked
-        clickOn("#redoWelcomeButton");
+        clickOn("#redoBannerButton");
         assertEquals(1, currentMedicationList.getItems().size());
         assertEquals("Cidofovir", ((Medication) currentMedicationList.getItems().get(0)).getName());
         assertEquals(0, historicMedicationList.getItems().size());
