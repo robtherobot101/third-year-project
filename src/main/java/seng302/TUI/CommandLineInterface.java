@@ -1,26 +1,27 @@
 package seng302.TUI;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import seng302.Generic.*;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
-import seng302.Generic.History;
+import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.logging.*;
-import seng302.User.Attribute.Organ;
-import seng302.User.User;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -539,9 +540,9 @@ public class CommandLineInterface {
             }
             if (path != null) {
                 if (relative) {
-                    path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
+                    path = IO.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.importUsers(path, true)) {
+                if (IO.importUsers(path, true)) {
                     System.out.println("User imported from " + path + ".");
                     return true;
                 } else {
@@ -576,9 +577,9 @@ public class CommandLineInterface {
             }
             if (path != null) {
                 if (relative) {
-                    path = Main.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
+                    path = IO.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (Main.saveUsers(path, true)) {
+                if (IO.saveUsers(path, true)) {
                     System.out.println("User saved to " + path + ".");
                     return true;
                 } else {

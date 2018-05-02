@@ -1,4 +1,4 @@
-package seng302.Controllers;
+package seng302.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,25 +14,29 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import seng302.Core.Procedure;
+import seng302.Generic.Procedure;
+import seng302.GUI.StatusIndicator;
+import seng302.GUI.TitleBar;
 import seng302.Generic.History;
+import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.User;
 
-
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
-import static seng302.Generic.Main.streamOut;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the Medical History (Procedures) Window.
  * Handles all functions including:
  * Adding, deleting, updating and marking procedures in the Table Views.
  */
-public class MedicalHistoryProceduresController implements Initializable {
+public class MedicalHistoryProceduresController extends PageController implements Initializable {
 
     @FXML
     private DatePicker dateOfProcedureInput;
@@ -57,12 +61,11 @@ public class MedicalHistoryProceduresController implements Initializable {
 
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicalHistoryProceduresController(this);
         setupListeners();
-
-
     }
 
     /**
@@ -124,6 +127,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             dateOfProcedureInput.getEditor().clear();
             isOrganAffectingCheckBox.setSelected(false);
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
+            statusIndicator.setStatus("Added " + procedureToAdd, false);
+            titleBar.saved(false);
         }
     }
 
@@ -144,6 +149,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 pendingProcedureItems.remove(chosenProcedure);
+                statusIndicator.setStatus("Deleted " + chosenProcedure, false);
+                titleBar.saved(false);
             }
             alert.close();
         }
@@ -158,6 +165,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 previousProcedureItems.remove(chosenProcedure);
+                statusIndicator.setStatus("Deleted " + chosenProcedure, false);
+                titleBar.saved(false);
                 saveToUndoStack();
             }
             alert.close();
@@ -175,7 +184,10 @@ public class MedicalHistoryProceduresController implements Initializable {
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current user? ");
         alert.setContentText("By doing so, the donor will be updated with the following procedure details.");
+
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
         Optional<ButtonType> result = alert.showAndWait();
+
         if (result.get() == ButtonType.OK) {
             currentUser.getPendingProcedures().clear();
             currentUser.getPendingProcedures().addAll(pendingProcedureItems);
@@ -183,11 +195,13 @@ public class MedicalHistoryProceduresController implements Initializable {
             currentUser.getPreviousProcedures().clear();
             currentUser.getPreviousProcedures().addAll(previousProcedureItems);
 
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
             String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
             History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
+            statusIndicator.setStatus("Saved", false);
+            titleBar.saved(true);
         } else {
             alert.close();
         }
@@ -357,7 +371,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             public void handle(ActionEvent event) {
                 Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 updateProcedurePopUp(selectedProcedure, true);
-
+                statusIndicator.setStatus("Edited " + selectedProcedure, false);
+                titleBar.saved(false);
             }
         });
         pendingProcedureListContextMenu.getItems().add(updatePendingProcedureMenuItem);
@@ -370,9 +385,12 @@ public class MedicalHistoryProceduresController implements Initializable {
                 Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 if (selectedProcedure.isOrganAffecting()) {
                     selectedProcedure.setOrganAffecting(false);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
                 } else {
                     selectedProcedure.setOrganAffecting(true);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
                 }
+                titleBar.saved(false);
 
                 // To refresh the observableList to make chronic toggle visible
                 pendingProcedureItems.remove(selectedProcedure);
@@ -391,6 +409,8 @@ public class MedicalHistoryProceduresController implements Initializable {
             public void handle(ActionEvent event) {
                 Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 updateProcedurePopUp(selectedProcedure, false);
+                statusIndicator.setStatus("Edited " + selectedProcedure, false);
+                titleBar.saved(false);
 
             }
         });
@@ -404,10 +424,12 @@ public class MedicalHistoryProceduresController implements Initializable {
                 Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 if (selectedProcedure.isOrganAffecting()) {
                     selectedProcedure.setOrganAffecting(false);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
                 } else {
                     selectedProcedure.setOrganAffecting(true);
+                    statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
                 }
-
+                titleBar.saved(false);
                 // To refresh the observableList to make chronic toggle visible
                 previousProcedureItems.remove(selectedProcedure);
                 previousProcedureItems.add(selectedProcedure);
@@ -521,14 +543,25 @@ public class MedicalHistoryProceduresController implements Initializable {
         descriptionInput.setVisible(shown);
         newProcedureDateLabel.setVisible(shown);
         newProcedureLabel.setVisible(shown);
-        pendingProceduresLabel.setVisible(shown);
-        previousProceduresLabel.setVisible(shown);
+        pendingProceduresLabel.setVisible(!shown);
+        previousProceduresLabel.setVisible(!shown);
         addNewProcedureButton.setVisible(shown);
         pendingProcedureTableView.setDisable(!shown);
         previousProcedureTableView.setDisable(!shown);
         deleteProcedureButton.setVisible(shown);
         saveProcedureButton.setVisible(shown);
         isOrganAffectingCheckBox.setVisible(shown);
+    }
+
+
+    private void updatePendingProcedures() {
+        //Check if pending procedure due date is now past the current date
+        for(Procedure procedure: currentUser.getPendingProcedures()) {
+            if(procedure.getDate().isBefore(LocalDate.now())) {
+                currentUser.getPendingProcedures().remove(procedure);
+                currentUser.getPreviousProcedures().add(procedure);
+            }
+        }
     }
 
     /**

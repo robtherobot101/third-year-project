@@ -8,6 +8,9 @@ import org.json.JSONObject;
 import java.util.*;
 import seng302.User.Attribute.Gender;
 
+/**
+ * Contains information about a response from the medication interaction API.
+ */
 public class DrugInteraction {
     private Map<String, HashSet<String>> ageMap;
     private Map<String, HashSet<String>> genderMap;
@@ -231,7 +234,7 @@ public class DrugInteraction {
             return maleInteractions();
         } else if (gender.equals(Gender.FEMALE)) {
             return femaleInteractions();
-        } else if(gender.equals(Gender.OTHER)){
+        } else if(gender.equals(Gender.NONBINARY)){
             return allGenderInteractions();
         } else {
             return new HashSet<String>();

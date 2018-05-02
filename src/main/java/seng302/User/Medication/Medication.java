@@ -1,5 +1,9 @@
 package seng302.User.Medication;
 
+import seng302.User.User;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -9,6 +13,7 @@ public class Medication {
 
     private String name;
     private String[] activeIngredients;
+    private ArrayList<String> history;
 
     public Medication(String name) {
         this.name = name;
@@ -17,6 +22,7 @@ public class Medication {
     public Medication(String name, String[] activeIngredients) {
         this.name = name;
         this.activeIngredients = activeIngredients;
+        history = new ArrayList<>();
     }
 
     public String getName() { return name; }
@@ -24,6 +30,24 @@ public class Medication {
     public void setName(String name) { this.name = name; }
 
     public String[] getActiveIngredients() { return activeIngredients; }
+
+    public ArrayList<String> getHistory() {
+        return history;
+    }
+
+    /**
+     * Add a line to the user history that states that they started taking this medication now.
+     */
+    public void startedTaking() {
+        history.add("Started taking on " + User.dateTimeFormat.format(LocalDateTime.now()));
+    }
+
+    /**
+     * Add a line to the user history that states that they stopped taking this medication now.
+     */
+    public void stoppedTaking() {
+        history.add("Stopped taking on " + User.dateTimeFormat.format(LocalDateTime.now()));
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -35,7 +59,6 @@ public class Medication {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(name);
     }
 

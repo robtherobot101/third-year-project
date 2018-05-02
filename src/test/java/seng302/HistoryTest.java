@@ -3,6 +3,7 @@ package seng302;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.Generic.History;
 
@@ -18,7 +19,7 @@ public class HistoryTest {
     @Before
     public void setup() throws URISyntaxException {
         jarpath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-        Main.setJarPath(jarpath);
+        IO.setJarPath(jarpath);
     }
 
 
@@ -39,6 +40,6 @@ public class HistoryTest {
 
     @After
     public void tearDown() {
-        Main.setJarPath(null);
+        IO.setJarPath(null);
     }
 }
