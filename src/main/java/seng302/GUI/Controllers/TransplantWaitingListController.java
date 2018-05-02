@@ -194,15 +194,13 @@ public class TransplantWaitingListController implements Initializable {
             if (diseaseComboBox.getValue() != null) {
                 Disease selected = (Disease) diseaseComboBox.getValue();
                 selected.setCured(true);
-                ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+                ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
                 ArrayList<Disease> currentDiseases = selectedUser.getCurrentDiseases();
                 ArrayList<Disease> curedDiseases = selectedUser.getCuredDiseases();
                 curedDiseases.add(selected);
                 selectedUser.setCuredDiseases(curedDiseases);
                 currentDiseases.remove(selected);
                 selectedUser.setCurrentDiseases(currentDiseases);
-
-                ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
                 selectedWaitingListItem.getUserId();
                 for (ReceiverWaitingListItem i: selectedUserWaitingListItems) {
                     if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
@@ -258,10 +256,9 @@ public class TransplantWaitingListController implements Initializable {
                 }
             }
         } else {
-            ArrayList<WaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
-            selectedWaitingListItem.getId();
-            for (WaitingListItem i: selectedUserWaitingListItems) {
-                if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListId()) {
+            ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
+            for (ReceiverWaitingListItem i: selectedUserWaitingListItems) {
+                if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                     i.deregisterOrgan(2);
                     DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
                     break;
