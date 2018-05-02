@@ -36,7 +36,7 @@ public class AdminController implements Initializable {
     private Admin currentAdmin;
 
     @FXML
-    private TabPane TableTabPane;
+    private TabPane tableTabPane;
 
     // User Tab Pane FXML elements
     @FXML
@@ -322,6 +322,8 @@ public class AdminController implements Initializable {
      */
     public void save(){
         IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+        IO.saveUsers(IO.getUserPath(), LoginType.USER);
+        IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
     }
 
     /**
@@ -759,5 +761,32 @@ public class AdminController implements Initializable {
             Platform.exit();
         }
 
+    }
+
+    @FXML
+    private void delete(){
+        switch(tableTabPane.getSelectionModel().getSelectedItem().getId()){
+            case "usersTab":
+                User user = userTableView.getSelectionModel().getSelectedItem();
+                if(Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + user.getName() + "?", "Are you sure you want to delete this user?").showAndWait().get() == ButtonType.OK){
+                    currentUsers.remove(user);
+                }
+                break;
+            case "administratorsTab":
+                Admin admin = adminTableView.getSelectionModel().getSelectedItem();
+                if(admin.getName().equals("default_admin")){
+                    Main.createAlert(Alert.AlertType.ERROR, "Forbidden", "Cannot delete default admin", "This account is protected and cannot be removed").showAndWait();
+                }
+                else if(Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + admin.getName() + "?", "Are you sure you want to delete this admin?").showAndWait().get() == ButtonType.OK){
+                    currentAdmins.remove(admin);
+                }
+                break;
+            case "cliniciansTab":
+                Clinician clinician = clinicianTableView.getSelectionModel().getSelectedItem();
+                if(Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + clinician.getName() + "?", "Are you sure you want to delete this clinician?").showAndWait().get() == ButtonType.OK){
+                    currentClinicians.remove(clinician);
+                }
+                break;
+        }
     }
 }

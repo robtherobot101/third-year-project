@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -50,9 +50,9 @@
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit" visible="false">
+                <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help" visible="false">
@@ -96,9 +96,9 @@
                                 <Font size="30.0" />
                             </font>
                         </Label>
-                  <TabPane fx:id="TableTabPane" prefHeight="470.0" prefWidth="1021.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
+                  <TabPane fx:id="tableTabPane" prefHeight="470.0" prefWidth="1021.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
                     <tabs>
-                      <Tab text="Users">
+                      <Tab fx:id="usersTab" text="Users">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -126,7 +126,7 @@
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Clinicians">
+                      <Tab fx:id="cliniciansTab" text="Clinicians">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -146,7 +146,7 @@
                               </AnchorPane>
                         </content>
                       </Tab>
-                        <Tab text="Administrators">
+                        <Tab fx:id="administratorsTab" text="Administrators">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
