@@ -1,83 +1,41 @@
 package seng302.Generic;
 
-import java.time.LocalDate;
-
-import java.time.LocalDateTime;
-
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import seng302.User.User;
-
 import java.time.LocalDateTime;
+import java.util.Date;
 
-/**
- * Contains information for a transplant waiting list record.
- */
 public class WaitingListItem {
-    private Organ organType;
-    private String organRegisteredDate;
-    private String organDeregisteredDate;
-    private boolean stillWaitingOn;
-    private Integer organDeregisteredCode;
-    private Integer waitingListItemId;
 
-    public WaitingListItem(Organ organType){
+    protected Organ organType;
+    protected String organRegisteredDate;
+    protected Integer waitingListItemId;
+    protected Long userId;
+
+
+    public WaitingListItem(Organ organType) {
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-        this.stillWaitingOn = true;
         this.waitingListItemId = Main.getNextWaitingListId();
+        this.userId = Main.getUserWindowController().getCurrentUser().getId();
     }
 
-    /**
-     * Creates a new object as a deep copy of a current object.
-     * Used to fix an error with undo/redo modifying old objects on the stack on deregister.
-     * @param copy the original waiting list item.
-     */
-    public WaitingListItem(WaitingListItem copy) {
+    public WaitingListItem(ReceiverWaitingListItem copy) {
         this.organType = copy.organType;
         this.organRegisteredDate = copy.organRegisteredDate;
-        //this.organDeregisteredDate = copy.organDeregisteredDate;
-        this.stillWaitingOn = copy.stillWaitingOn;
         this.waitingListItemId = copy.waitingListItemId;
-        //this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
-    /**
-     * Updates an organs registration date and removes its deregistration date.
-     * Can be called when registering a previously deregistered organ.
-     */
-    public void registerOrgan(){
-        if (this.organRegisteredDate == null) {
-            this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-        }
-        this.stillWaitingOn = true;
-        this.organDeregisteredDate = null;
+    public WaitingListItem(Organ organ, String date, long id, Integer waitingListId) {
+        this.organType = organ;
+        this.organRegisteredDate = date;
+        this.userId = id;
+        this.waitingListItemId = waitingListId;
     }
 
-    /**
-     * Updates an organs deregistration date and removes its registration date.
-     * Can be called when deregistering a previously registered organ.
-     */
-    public void deregisterOrgan(Integer reasonCode){
-        if (this.organDeregisteredDate == null) {
-            this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-            this.organDeregisteredCode = reasonCode;
-        }
-        this.stillWaitingOn = false;
-    }
+    public WaitingListItem() {
 
-    public boolean getStillWaitingOn(){
-        return stillWaitingOn;
-    }
-
-    /**
-     * Returns whether or not a user is also donating an organ they are hoping to receive.
-     * @param user the user being tested.
-     * @return true if the organ is also being donated, otherwise false.
-     */
-    public boolean isDonatingOrgan(User user){
-        return user.getOrgans().contains(organType);
     }
 
     public Organ getOrganType() {
@@ -88,15 +46,9 @@ public class WaitingListItem {
         return organRegisteredDate;
     }
 
-    public String getOrganDeregisteredDate() {
-        return organDeregisteredDate;
+    public Long getUserId(){
+        return userId;
     }
 
-    public boolean isStillWaitingOn() { return stillWaitingOn; }
-
-    public Integer getOrganDeregisteredCode() { return organDeregisteredCode; }
-
-    public Integer getWaitingListItemId() { return waitingListItemId; }
-
-
+    public Integer getWaitingListItemId(){return waitingListItemId;}
 }

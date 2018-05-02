@@ -2,25 +2,24 @@ package seng302.Core;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng302.Generic.WaitingListItem;
+import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WaitingListItemTest {
+class ReceiverWaitingListItemTest {
     private User testUser;
-    private WaitingListItem item;
+    private ReceiverWaitingListItem item;
     private Organ heart;
 
     @BeforeEach
     void setUp() {
         testUser = new User("Joe", LocalDate.parse("01/01/1999", User.dateFormat));
         heart = Organ.HEART;
-        item = new WaitingListItem(heart);
+        item = new ReceiverWaitingListItem(heart);
         testUser.getWaitingListItems().add(item);
     }
 
@@ -30,7 +29,7 @@ class WaitingListItemTest {
         //TODO fix this test
         //item.deregisterOrgan();
         item.registerOrgan();
-        for (WaitingListItem listItem : testUser.getWaitingListItems()) {
+        for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             date = listItem.getOrganDeregisteredDate();
         }
         assertTrue(date == null);
@@ -42,7 +41,7 @@ class WaitingListItemTest {
         //TODO fix this test
         //item.deregisterOrgan();
         item.registerOrgan();
-        for (WaitingListItem listItem : testUser.getWaitingListItems()) {
+        for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
         }
         assertTrue(stillWaitingOn);
@@ -53,7 +52,7 @@ class WaitingListItemTest {
         boolean stillWaitingOn = true;
         //TODO fix this test
         //item.deregisterOrgan();
-        for (WaitingListItem listItem : testUser.getWaitingListItems()) {
+        for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
         }
         assertFalse(stillWaitingOn);
@@ -62,7 +61,7 @@ class WaitingListItemTest {
     @Test
     void isDonatingOrgan() {
         testUser.setOrgan(Organ.HEART);
-        WaitingListItem listItem = testUser.getWaitingListItems().get(0);
+        ReceiverWaitingListItem listItem = testUser.getWaitingListItems().get(0);
         System.out.println(listItem.getOrganType());
         assertTrue(listItem.isDonatingOrgan(testUser));
     }

@@ -3,15 +3,11 @@ package seng302.TestFX;
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import seng302.Generic.Main;
-import seng302.Generic.WaitingListItem;
+import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -112,10 +108,10 @@ public class UserWaitingListGUITest extends TestFXTest {
      * Returns all the WaitingListItems from the transplant waiting list TableView
      * @return The items in the transplant waiting list
      */
-    public List<WaitingListItem> waitingListItems(){
+    public List<ReceiverWaitingListItem> waitingListItems(){
         ArrayList waitingListItems = new ArrayList<>();
         for(Object o: lookup("#waitingList").queryTableView().getItems())
-            waitingListItems.add((WaitingListItem)o);
+            waitingListItems.add((ReceiverWaitingListItem)o);
         return waitingListItems;
     }
 
@@ -129,7 +125,7 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     @Test
     public void receiverCannotUpdateTransplantWaitingList() throws TimeoutException {
-        user.getWaitingListItems().add(new WaitingListItem(Organ.BONE));
+        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.BONE));
         usersTransplantWaitingListAsUser();
         assert(!lookup("#registerOrganButton").query().isVisible());
         assert(!lookup("#deregisterOrganButton").query().isVisible());

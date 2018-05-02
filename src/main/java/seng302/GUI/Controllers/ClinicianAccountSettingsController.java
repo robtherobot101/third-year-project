@@ -58,7 +58,7 @@ public class ClinicianAccountSettingsController implements Initializable {
             currentClinician.setPassword(passwordField.getText());
 
 
-            //String text = History.prepareFileStringGUI(currentClinician.getId(), "updateAccountSettings");
+            //String text = History.prepareFileStringGUI(currentClinician.getUserId(), "updateAccountSettings");
             //History.printToFile(Main.streamOut, text);
 
             Stage stage = (Stage) updateButton.getScene().getWindow();

@@ -11,7 +11,6 @@ import seng302.User.Attribute.Organ;
 import java.util.concurrent.TimeoutException;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.junit.Assert.assertEquals;
-import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
 public class TransplantWaitingListTest extends TestFXTest{
@@ -141,7 +140,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
 
-        assertEquals(Organ.HEART, transplantRow.getOrgan());
+        assertEquals(Organ.HEART, transplantRow.getOrganType());
         assertEquals("Bob Ross", transplantRow.getName());
     }
 
@@ -228,7 +227,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         //check the transplant table
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
-        assertEquals(Organ.LIVER, transplantRow.getOrgan());
+        assertEquals(Organ.LIVER, transplantRow.getOrganType());
         assertEquals("Bobby Dong Flame", transplantRow.getName());
         assertEquals(transplantTable.getItems().size(), 1);
     }
@@ -275,7 +274,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         //check the transplant table
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
-        assertEquals(Organ.HEART, transplantRow.getOrgan());
+        assertEquals(Organ.HEART, transplantRow.getOrganType());
         assertEquals("Bob Ross", transplantRow.getName());
         assertEquals(transplantTable.getItems().size(), 1);
     }

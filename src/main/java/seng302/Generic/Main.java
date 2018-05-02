@@ -270,6 +270,10 @@ public class Main extends Application {
         return Main.clinicianController;
     }
 
+    public static UserWindowController getUserWindowController() {
+        return userWindowController;
+    }
+
     public static TransplantWaitingListController getTransplantWaitingListController() { return Main.transplantWaitingListController; }
 
     public static ArrayList<Stage> getCliniciansUserWindows(){
