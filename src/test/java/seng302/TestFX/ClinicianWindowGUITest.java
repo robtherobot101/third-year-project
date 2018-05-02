@@ -97,7 +97,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         clickOn("#profileSearchTextField").write("victor");
         waitForNodeEnabled(10,"#profileTable");
         TableView profileTable = lookup("#profileTable").queryTableView();
-        doubleClickOn((Node)from(profileTable).lookup(u1.getNameExt()).query());
+        doubleClickOn((Node)from(profileTable).lookup(u1.getName()).query());
         waitForEnabled(10,"#attributesGridPane");
     }
 
