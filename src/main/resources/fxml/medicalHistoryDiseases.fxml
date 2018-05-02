@@ -128,7 +128,7 @@
             <Insets bottom="55.0" />
          </GridPane.margin>
       </Label>
-      <Button mnemonicParsing="false" onAction="#getCurrentDateFillDate" text="Today" GridPane.columnIndex="6" GridPane.rowIndex="1">
+      <Button fx:id="currentDateButton" mnemonicParsing="false" onAction="#getCurrentDateFillDate" text="Today" GridPane.columnIndex="6" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets left="85.0" top="48.0" />
          </GridPane.margin>

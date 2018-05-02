@@ -19,15 +19,14 @@ class ReceiverWaitingListItemTest {
     void setUp() {
         testUser = new User("Joe", LocalDate.parse("01/01/1999", User.dateFormat));
         heart = Organ.HEART;
-        item = new ReceiverWaitingListItem(heart);
+        item = new ReceiverWaitingListItem(heart, Long.parseLong("-1"));
         testUser.getWaitingListItems().add(item);
     }
 
     @Test
     void testNullDeregisteredDateOnRegister() {
         String date = "notNull";
-        //TODO fix this test
-        //item.deregisterOrgan();
+        item.deregisterOrgan(3);
         item.registerOrgan();
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             date = listItem.getOrganDeregisteredDate();
@@ -38,8 +37,7 @@ class ReceiverWaitingListItemTest {
     @Test
     void testIsStillWaitingOnRegister() {
         boolean stillWaitingOn = false;
-        //TODO fix this test
-        //item.deregisterOrgan();
+        item.deregisterOrgan(3);
         item.registerOrgan();
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
@@ -50,8 +48,7 @@ class ReceiverWaitingListItemTest {
     @Test
     void testIsNotStillWaitingOnDeregister() {
         boolean stillWaitingOn = true;
-        //TODO fix this test
-        //item.deregisterOrgan();
+        item.deregisterOrgan(3);
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
         }

@@ -58,6 +58,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private Button deleteDiseaseButton;
     @FXML
     private Button saveDiseaseButton;
+    @FXML
+    private Button currentDateButton;
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
 

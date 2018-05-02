@@ -31,6 +31,13 @@ public class ReceiverWaitingListItem extends WaitingListItem{
         this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
+    public ReceiverWaitingListItem(Organ heart, Long id) {
+        this.organType = heart;
+        this.userId = id;
+        this.organRegisteredDate = User.dateFormat.format(LocalDateTime.now());
+        this.stillWaitingOn = true;
+    }
+
     /**
      * Updates an organs registration date and removes its deregistration date.
      * Can be called when registering a previously deregistered organ.

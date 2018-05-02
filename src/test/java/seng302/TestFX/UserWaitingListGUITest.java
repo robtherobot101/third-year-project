@@ -74,6 +74,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     public void deregister(Organ type){
         clickOn(getWaitingListOrgan(type));
         clickOn("#deregisterOrganButton");
+        clickOn("OK");
     }
 
     /**

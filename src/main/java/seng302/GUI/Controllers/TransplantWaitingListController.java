@@ -210,6 +210,7 @@ public class TransplantWaitingListController implements Initializable {
                     if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                         i.deregisterOrgan(2);
                         DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
+                        break;
                     }
                 }
             } else {
@@ -234,6 +235,7 @@ public class TransplantWaitingListController implements Initializable {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
         User selectedUser = Main.getUserById(selectedWaitingListItem.getUserId());
+        System.out.println(selectedUser.getCurrentDiseases().get(0));
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Cure Disease?");
@@ -329,13 +331,11 @@ public class TransplantWaitingListController implements Initializable {
     }
 
     public void showDeathDateDialog() {
-
-
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Date of Death");
         dialog.setHeaderText("Please provide the date of death");
 
-        ButtonType loginButtonType = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        ButtonType loginButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
@@ -379,6 +379,9 @@ public class TransplantWaitingListController implements Initializable {
             } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
                 DialogWindowController.showWarning("Invaild Date", "Date is in the future", "Please enter a date that is either today or earlier");
                 showDeathDateDialog();
+            } else if (option == ButtonType.CANCEL) {
+                System.out.println("llll");
+                return;
             } else {
                 deathDeregister(deathDatePicker.getValue());
             }
@@ -412,6 +415,9 @@ public class TransplantWaitingListController implements Initializable {
             selectedUser.getWaitingListItems().addAll(tempItems);
         }
         selectedUser.setDateOfDeath(deathDateInput);
+        if (Main.getWaitingListController().getDeregisterPressed()){
+            Main.getUserWindowController().populateUserFields();
+        }
     }
 
     /**
