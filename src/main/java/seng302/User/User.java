@@ -2,7 +2,6 @@ package seng302.User;
 
 import seng302.Generic.IO;
 import seng302.Generic.WaitingListItem;
-import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
 import java.time.DateTimeException;
@@ -14,16 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-import seng302.Core.Disease;
-import seng302.Core.Procedure;
-import seng302.Generic.Main;
-import seng302.User.Medication.Medication;
+import seng302.Generic.Disease;
+import seng302.Generic.Procedure;
 import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.AlcoholConsumption;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.SmokerStatus;
-import seng302.Generic.WaitingListItem;
 
 /**
  * This class contains information about organ users.

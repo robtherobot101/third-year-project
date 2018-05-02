@@ -10,8 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import seng302.Controllers.MedicalHistoryDiseasesController;
-import seng302.Controllers.MedicalHistoryProceduresController;
+import seng302.GUI.Controllers.MedicalHistoryDiseasesController;
+import seng302.GUI.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.TUI.CommandLineInterface;
@@ -567,14 +567,19 @@ public class Main extends Application {
                 IO.saveUsers(IO.getClinicianPath(), false);
             }
             IO.streamOut = History.init();
-            scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")), 400, 250));
-            loginController.setEnterEvent();
-            scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")), 400, 415));
-            createAccountController.setEnterEvent();
-            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
-            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
-            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")),
+                    TFScene.login.getWidth(), TFScene.login.getHeight()));
+            scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")),
+                    TFScene.createAccount.getWidth(), TFScene.createAccount.getHeight()));
+            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")),
+                    mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")),
+                    mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),
+                    mainWindowPrefWidth, mainWindowPrefHeight));
 
+            loginController.setEnterEvent();
+            createAccountController.setEnterEvent();
             setScene(TFScene.login);
             stage.show();
 
@@ -603,21 +608,26 @@ public class Main extends Application {
         return scenes.get(scene);
     }
 
+    /**
+     * Set the currently displayed scene on the main window. Sets the width, height, and resizability appropriately.
+     *
+     * @param scene The scene to switch to
+     */
     public static void setScene(TFScene scene) {
-        stage.setScene(scenes.get(scene));
-        if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.transplantList) {
+        stage.setResizable(true);
+        if (scene.getWidth() == mainWindowPrefWidth) {
             stage.setMinWidth(mainWindowMinWidth);
             stage.setMinHeight(mainWindowMinHeight);
-            stage.setWidth(mainWindowPrefWidth);
-            stage.setHeight(mainWindowPrefHeight);
-            stage.setResizable(true);
         } else {
             stage.setMinWidth(0);
             stage.setMinHeight(0);
-            if (scene == TFScene.login) {
-                stage.setScene(null);
-                stage.setScene(scenes.get(scene));
-            }
+        }
+        stage.setWidth(scene.getWidth());
+        stage.setHeight(scene.getHeight());
+        stage.setScene(null);
+        stage.setScene(scenes.get(scene));
+
+        if (!(scene.getWidth() == mainWindowPrefWidth)) {
             stage.setResizable(false);
         }
     }

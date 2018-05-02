@@ -1,4 +1,4 @@
-package seng302.Controllers;
+package seng302.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,8 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import seng302.Core.Procedure;
-import seng302.GUI.Controllers.PageController;
+import seng302.Generic.Procedure;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;

@@ -1,6 +1,5 @@
 package seng302.TestFX;
 
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -12,10 +11,8 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Disease;
-import seng302.Core.Procedure;
+import seng302.Generic.Procedure;
 import seng302.Generic.Main;
-import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.time.LocalDate;
