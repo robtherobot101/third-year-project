@@ -5,11 +5,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import seng302.GUI.TFScene;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
+import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.net.URL;
@@ -35,6 +37,16 @@ public class CreateAccountController implements Initializable {
     @FXML
     private AnchorPane background;
 
+    private User user;
+
+    private Stage stage;
+
+    public User showAndWait(Stage stage){
+        this.stage = stage;
+        stage.showAndWait();
+        return user;
+    }
+
     /**
      * Switches the currently displayed scene to the log in screen.
      */
@@ -52,16 +64,16 @@ public class CreateAccountController implements Initializable {
     /**
      * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
      */
-    public void createAccount() {
+    public User createAccount() {
         for (User user: Main.users) {
             if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(user.getUsername())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
-                return;
+                return null;
             } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(user.getEmail())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
-                return;
+                return null;
             }
         }
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
@@ -75,15 +87,21 @@ public class CreateAccountController implements Initializable {
             String username = usernameInput.getText().isEmpty() ? null : usernameInput.getText();
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
-            User newUser = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
+            user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
-            Main.users.add(newUser);
-            History.printToFile(streamOut, History.prepareFileStringGUI(newUser.getId(), "create"));
-            History.printToFile(streamOut, History.prepareFileStringGUI(newUser.getId(), "login"));
-            Main.setCurrentUser(newUser);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            Main.setScene(TFScene.userWindow);
+            // If we are creating from the login screen
+            if(background.getScene().getWindow() == Main.getStage()) {
+                Main.users.add(user);
+                History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
+                History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
+                Main.setCurrentUser(user);
+                IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                Main.setScene(TFScene.userWindow);
+                return null;
+            }
         }
+        stage.close();
+        return user;
     }
 
     /**

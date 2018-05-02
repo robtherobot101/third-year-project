@@ -761,6 +761,31 @@ public class AdminController implements Initializable {
 
     @FXML
     private void createUser(){
+        Stage stage = new Stage();
+        stage.setMinHeight(Main.mainWindowMinHeight);
+        stage.setMinWidth(Main.mainWindowMinWidth);
+        stage.setHeight(Main.mainWindowPrefHeight);
+        stage.setWidth(Main.mainWindowPrefWidth);
+        stage.initModality(Modality.NONE);
+
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createAccount.fxml"));
+            Parent root = (Parent) loader.load();
+            CreateAccountController createAccountController = loader.getController();
+
+            Scene newScene = new Scene(root, 900, 575);
+            stage.setScene(newScene);
+            User user = createAccountController.showAndWait(stage);
+            System.out.println(user);
+            if(user != null){
+                Main.users.add(user);
+                IO.saveUsers(IO.getClinicianPath(), LoginType.USER);
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
 
     }
 }
