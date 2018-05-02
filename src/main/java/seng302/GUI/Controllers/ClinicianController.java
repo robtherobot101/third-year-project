@@ -72,7 +72,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private Label regionLabel;
     @FXML
-    private Label staffIDLabel, clinicianDisplayText;
+    private Label clinicianDisplayText;
     @FXML
     private Label userDisplayText;
 

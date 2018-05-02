@@ -119,7 +119,7 @@ public class UserWindowController implements Initializable {
         redoButton.setDisable(true);
         redoBannerButton.setDisable(true);
         bloodPressureLabel.setText("");
-        titleBar.setTitle(currentUser.getName(), "User", "Home");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
     }
 
     /**
@@ -287,7 +287,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        titleBar.setTitle(currentUser.getName(), "User", "Action History");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Action History");
     }
 
 
@@ -301,7 +301,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(true);
         setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getName(), "User", "Waiting List");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Waiting List");
     }
 
     /**
@@ -316,7 +316,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(true);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getName(), "User", "Medications");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Medications");
     }
 
     /**
@@ -330,7 +330,7 @@ public class UserWindowController implements Initializable {
         medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
-        titleBar.setTitle(currentUser.getName(), "User", "Attributes");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Attributes");
     }
 
     /**
@@ -345,7 +345,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getName(), "User", "Disease History");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Disease History");
     }
 
     /**
@@ -360,7 +360,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getName(), "User", "Procedure History");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Procedure History");
     }
 
     /**
@@ -375,7 +375,7 @@ public class UserWindowController implements Initializable {
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        titleBar.setTitle(currentUser.getName(), "User", "Home");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
     }
 
     /**
@@ -666,6 +666,7 @@ public class UserWindowController implements Initializable {
             History.printToFile(streamOut, text);
             populateHistoryTable();
             titleBar.saved(true);
+            titleBar.setTitle(currentUser.getPreferredName(),"User");
             statusIndicator.setStatus("Saved", false);
         }
         alert.close();
