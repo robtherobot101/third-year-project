@@ -218,8 +218,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserBobby, userTableView.getItems().get(0));
-
-
+        
     }
 
 
