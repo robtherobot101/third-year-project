@@ -468,6 +468,7 @@ public class ClinicianController implements Initializable {
      * Updates the list of users found from the search
      */
     public void updateFoundUsers(){
+        profileSearchTextField.setPromptText("There are " + Main.users.size()+ " users");
         usersFound = Main.getUsersByNameAlternative(searchNameTerm);
 
        //Add in check for region
@@ -568,13 +569,14 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        profileSearchTextField.setPromptText("There are " + Main.users.size()+ " users");
 
         clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
         clinicianOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
 
-        resultsPerPage = 3;
-        numberXofResults = 5;
+        resultsPerPage = 15;
+        numberXofResults = 200;
 
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
