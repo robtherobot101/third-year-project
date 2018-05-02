@@ -486,6 +486,10 @@ public class ClinicianController implements Initializable {
         //displayPage(resultsPerPage);
     }
 
+    /**
+     * Function which populates the combo box for displaying a certain number of results based on the search fields.
+     * @param numberOfSearchResults the number of results of the users found
+     */
     public void populateNResultsComboBox(int numberOfSearchResults){
         numberOfResutsToDisplay.getItems().clear();
         String firstPage = "First page";

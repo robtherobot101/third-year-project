@@ -36,6 +36,9 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     }
 
+    /**
+     * Adds three new users to be used for all of the tests.
+     */
     @Before
     public void setUp() {
         testUserBobby = new User(
@@ -51,7 +54,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
         testUserAndy = new User(
                 "Andy", new String[]{"Pandy"}, "Fandy",
-                LocalDate.of(1997, 8, 4),
+                LocalDate.of(1997, 1, 4),
                 "andy",
                 "andy@hotmail.com",
                 "andyANDY");
@@ -77,6 +80,10 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     //Each test checks for a correct response showing when results should be shown and with invalid input to have
     // nothing shown
+
+    /**
+     * Checks if the users shown in the table view are correct based on different inputs in the region field.
+     */
     @Test
     public void searchFilterByRegion() {
         loginAsDefaultClinician();
@@ -97,38 +104,121 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     }
 
+    /**
+     * Checks if the users shown in the table view are correct based on different inputs in the gender combo box.
+     */
     @Test
     public void searchFilterByGender() {
         loginAsDefaultClinician();
-        sleep(3000);
+
+        clickOn("#profileSearchTextField").write("Z");
+        clickOn("#clinicianGenderComboBox").clickOn("Male");
+        doubleClickOn("#profileSearchTextField").write(" ");
+
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserTest, userTableView.getItems().get(0));
+        assertEquals(testUserBobby, userTableView.getItems().get(1));
+
+
+        clickOn("#clinicianGenderComboBox").clickOn("Female");
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserAndy, userTableView.getItems().get(0));
+
+        clickOn("#clinicianGenderComboBox").clickOn("Other");
+        userTableView = lookup("#profileTable").query();
+        assertTrue(userTableView.getItems().isEmpty());
 
     }
 
+    /**
+     * Checks if the users shown in the table view are correct based on different inputs in the age field.
+     */
     @Test
     public void searchFilterByAge() {
         loginAsDefaultClinician();
-        sleep(3000);
+        clickOn("#clinicianAgeField").write("21");
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserAndy, userTableView.getItems().get(0));
+        assertEquals(testUserTest, userTableView.getItems().get(1));
+
+
+        doubleClickOn("#clinicianAgeField").write("48");
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserBobby, userTableView.getItems().get(0));
+
+        doubleClickOn("#clinicianAgeField").write("100");
+        userTableView = lookup("#profileTable").query();
+        assertTrue(userTableView.getItems().isEmpty());
 
     }
 
+    /**
+     * Checks if the users shown in the table view are correct based on different inputs in the user type combo box.
+     */
     @Test
     public void searchFilterByUserType() {
         loginAsDefaultClinician();
-        sleep(3000);
+
+        clickOn("#profileSearchTextField").write("Z");
+        clickOn("#clinicianUserTypeComboBox").clickOn("Donor");
+        doubleClickOn("#profileSearchTextField").write(" ");
+
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserAndy, userTableView.getItems().get(0));
+        assertEquals(testUserBobby, userTableView.getItems().get(1));
+
+
+        clickOn("#clinicianUserTypeComboBox").clickOn("Neither");
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserTest, userTableView.getItems().get(0));
+
 
     }
 
+    /**
+     * Checks if the users shown in the table view are correct based on different inputs in the organ combo box.
+     */
     @Test
     public void searchFilterByOrgan() {
         loginAsDefaultClinician();
-        sleep(3000);
+
+        clickOn("#clinicianOrganComboBox").clickOn("pancreas");
+
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserAndy, userTableView.getItems().get(0));
+        assertEquals(testUserBobby, userTableView.getItems().get(1));
+
+
+        clickOn("#clinicianOrganComboBox").clickOn("heart");
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserAndy, userTableView.getItems().get(0));
+
+        clickOn("#clinicianOrganComboBox").clickOn("liver");
+        userTableView = lookup("#profileTable").query();
+        assertTrue(userTableView.getItems().isEmpty());
 
     }
 
+    /**
+     * Checks if the users shown in the table view are correct based on different inputs into all of
+     * the different filtering fields.
+     */
     @Test
     public void searchFilterByMultipleFields() {
         loginAsDefaultClinician();
-        sleep(3000);
+        clickOn("#clinicianRegionField").write("A");
+        clickOn("#profileSearchTextField").write("Z");
+        clickOn("#clinicianGenderComboBox").clickOn("Male");
+        doubleClickOn("#profileSearchTextField").write(" ");
+        clickOn("#clinicianAgeField").write("48");
+        clickOn("#profileSearchTextField").write("Z");
+        clickOn("#clinicianUserTypeComboBox").clickOn("Donor");
+        doubleClickOn("#profileSearchTextField").write(" ");
+        clickOn("#clinicianOrganComboBox").clickOn("pancreas");
+
+        userTableView = lookup("#profileTable").query();
+        assertEquals(testUserBobby, userTableView.getItems().get(0));
+
 
     }
 
