@@ -339,9 +339,14 @@ public class Main extends Application {
     }
 
     public static Integer getNextWaitingListId() {
-        nextWaitingListId++;
+        if (!userWindowController.getCurrentUser().getWaitingListItems().isEmpty()){
+            nextWaitingListId = userWindowController.getCurrentUser().getWaitingListItems().size();
+        } else {
+            nextWaitingListId++;
+        }
         return nextWaitingListId;
     }
+
     /**
      * Find a specific user from the user list based on their id.
      *

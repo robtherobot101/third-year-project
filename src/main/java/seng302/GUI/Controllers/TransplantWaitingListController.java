@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -278,14 +279,18 @@ public class TransplantWaitingListController implements Initializable {
         } else if (reason == "4: Successful Transplant") {
             transplantDeregister();
         }
-        Main.updateTransplantWaitingList();
+
+        if (Main.getWaitingListController().deregisterPressed){
+            Main.updateWaitingList();
+        } else {
+            Main.updateTransplantWaitingList();
+        }
     }
 
     public void transplantDeregister(){
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
-            selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
-
+            selectedWaitingListItem = (ReceiverWaitingListItem) Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -304,7 +309,7 @@ public class TransplantWaitingListController implements Initializable {
     public void errorDeregister(){
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
-            selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = (ReceiverWaitingListItem) Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -336,10 +341,14 @@ public class TransplantWaitingListController implements Initializable {
         Long userId = selectedUser.getId();
         if (selectedUser.getWaitingListItems() != null) {
             History.prepareFileStringGUI(userId, "deregisterDeath");
+            ArrayList<ReceiverWaitingListItem> tempItems = new ArrayList<>();
             for (ReceiverWaitingListItem item : selectedUser.getWaitingListItems()){
-                item.deregisterOrgan(3);
+                ReceiverWaitingListItem temp = new ReceiverWaitingListItem(item);
+                temp.deregisterOrgan(3);
+                tempItems.add(temp);
             }
-
+            selectedUser.getWaitingListItems().clear();
+            selectedUser.getWaitingListItems().addAll(tempItems);
         }
     }
 

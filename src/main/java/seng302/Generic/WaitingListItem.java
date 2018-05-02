@@ -25,6 +25,7 @@ public class WaitingListItem {
         this.organType = copy.organType;
         this.organRegisteredDate = copy.organRegisteredDate;
         this.waitingListItemId = copy.waitingListItemId;
+        this.userId = copy.userId;
     }
 
     public WaitingListItem(Organ organ, String date, long id, Integer waitingListId) {

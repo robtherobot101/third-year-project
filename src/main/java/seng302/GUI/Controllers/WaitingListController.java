@@ -86,8 +86,9 @@ public class WaitingListController implements Initializable {
             addToUndoStack();
             ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected);
             boolean found = false;
-            for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()) {
-                if (temp.getWaitingListItemId() == item.getWaitingListItemId()) {
+            for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()){
+                System.out.println(temp.getWaitingListItemId() + "\t" + temp.getOrganType() + "\t" + item.getWaitingListItemId() + "\t" + item.getOrganType());
+                if (temp.getOrganType() == item.getOrganType() && item.getOrganDeregisteredDate() != null) {
                     currentUser.getWaitingListItems().remove(item);
                     currentUser.getWaitingListItems().add(new ReceiverWaitingListItem(item));
                     currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).registerOrgan();
@@ -113,7 +114,6 @@ public class WaitingListController implements Initializable {
      * the waiting TableView
      */
     public void deregisterOrgan() {
-        System.out.println("Button disabled");
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
@@ -122,13 +122,11 @@ public class WaitingListController implements Initializable {
             addToUndoStack();
             deregisterPressed = true;
             Main.getTransplantWaitingListController().showDeregisterDialog();
-//            currentUser.getWaitingListItems().remove(waitingListItemSelected);
-//            currentUser.getWaitingListItems().add(new ReceiverWaitingListItem(waitingListItemSelected));
-//            currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).deregisterOrgan();
-//            populateWaitingList();
             //statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
             deregisterPressed = false;
             populateWaitingList();
+
+
         }
         populateOrgansComboBox();
 

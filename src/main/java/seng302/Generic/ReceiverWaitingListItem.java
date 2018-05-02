@@ -28,7 +28,6 @@ public class ReceiverWaitingListItem extends WaitingListItem{
         super(copy);
         this.organDeregisteredDate = copy.organDeregisteredDate;
         this.stillWaitingOn = copy.stillWaitingOn;
-
         this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
@@ -50,8 +49,19 @@ public class ReceiverWaitingListItem extends WaitingListItem{
      */
     public void deregisterOrgan(Integer reasonCode){
         if (this.organDeregisteredDate == null) {
-            this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-            this.organDeregisteredCode = reasonCode;
+            ReceiverWaitingListItem temp;
+            if (reasonCode != 3){
+                User selectedUser = Main.getUserById(this.getUserId());
+                selectedUser.getWaitingListItems().remove(this);
+                temp = new ReceiverWaitingListItem(this);
+                selectedUser.getWaitingListItems().add(temp);
+                temp.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+                temp.organDeregisteredCode = reasonCode;
+            } else {
+                this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+                this.organDeregisteredCode = reasonCode;
+            }
+
         }
         this.stillWaitingOn = false;
     }
