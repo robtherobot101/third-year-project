@@ -154,7 +154,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         doubleClickOn("#clinicianAgeField").write("100");
         userTableView = lookup("#profileTable").query();
         assertTrue(userTableView.getItems().isEmpty());
-
     }
 
     /**
@@ -203,7 +202,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         push(KeyCode.ENTER);
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
-
     }
 
     /**
