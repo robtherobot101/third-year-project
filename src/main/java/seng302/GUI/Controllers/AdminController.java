@@ -751,7 +751,7 @@ public class AdminController implements Initializable {
             System.out.println(user);
             if(user != null){
                 Main.users.add(user);
-                IO.saveUsers(IO.getClinicianPath(), LoginType.USER);
+                IO.saveUsers(IO.getUserPath(), LoginType.USER);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
