@@ -5,13 +5,12 @@ import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import org.junit.*;
-import seng302.Core.TransplantWaitingListItem;
+import seng302.Generic.TransplantWaitingListItem;
 import seng302.Generic.Main;
 import seng302.User.Attribute.Organ;
 import java.util.concurrent.TimeoutException;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.junit.Assert.assertEquals;
-import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
 public class TransplantWaitingListTest extends TestFXTest{
