@@ -1,21 +1,21 @@
 package seng302.GUI.Controllers;
 
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
+import seng302.GUI.TFScene;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.User;
+
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import seng302.User.User;
-import seng302.Generic.Main;
-import seng302.GUI.TFScene;
-import seng302.Generic.History;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * A controller class for the create account screen.
@@ -77,10 +77,10 @@ public class CreateAccountController implements Initializable {
             User newUser = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             Main.users.add(newUser);
-            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newUser.getId(), "create"));
-            History.printToFile(Main.streamOut, History.prepareFileStringGUI(newUser.getId(), "login"));
+            History.printToFile(streamOut, History.prepareFileStringGUI(newUser.getId(), "create"));
+            History.printToFile(streamOut, History.prepareFileStringGUI(newUser.getId(), "login"));
             Main.setCurrentUser(newUser);
-            Main.saveUsers(Main.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), true);
             Main.setScene(TFScene.userWindow);
         }
     }

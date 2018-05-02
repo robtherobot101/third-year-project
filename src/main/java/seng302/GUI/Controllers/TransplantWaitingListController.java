@@ -16,14 +16,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import seng302.Controllers.DialogWindowController;
-import seng302.Core.Disease;
-import seng302.Core.TransplantWaitingListItem;
+
 import seng302.GUI.TFScene;
-import seng302.Generic.History;
-import seng302.Generic.Main;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.Generic.WaitingListItem;
+import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -67,6 +62,7 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void returnView(){
         Main.setScene(TFScene.clinician);
+        Main.getClinicianController().setTitle();
     }
 
     /**
@@ -217,6 +213,7 @@ public class TransplantWaitingListController implements Initializable {
                     if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                         i.deregisterOrgan(2);
                         DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
+                        Main.updateDiseases();
                     }
                 }
             } else {

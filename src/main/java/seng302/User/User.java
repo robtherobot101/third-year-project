@@ -1,5 +1,9 @@
 package seng302.User;
 
+import seng302.Generic.IO;
+import seng302.Generic.WaitingListItem;
+import seng302.User.Medication.Medication;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -17,8 +21,14 @@ import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.SmokerStatus;
 
-import seng302.Core.Disease;
-import seng302.Core.Procedure;
+
+import seng302.Generic.Disease;
+import seng302.Generic.Procedure;
+import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.AlcoholConsumption;
+import seng302.User.Attribute.BloodType;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.SmokerStatus;
 
 /**
  * This class contains information about organ users.
@@ -28,11 +38,11 @@ public class User {
     public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     public static final String tableHeader = "User ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
             "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
-    private String[] name;
+    private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath;
     private LocalDateTime creationTime;
     private LocalDateTime lastModified = null;
-    private Gender gender;
+    private Gender gender, genderIdentity;
     private double height, weight;
     private BloodType bloodType;
     private long id;
@@ -53,16 +63,18 @@ public class User {
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
+        this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
+        this.genderIdentity = null;
         this.height = -1;
         this.weight = -1;
         this.bloodType = null;
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextId(true, true);
+        this.id = IO.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -75,16 +87,18 @@ public class User {
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
         String currentAddress) throws DateTimeException, IllegalArgumentException {
         this.name = name.split(",");
+        this.preferredName = this.name;
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
         this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
         this.gender = Gender.parse(gender);
+        this.genderIdentity = this.gender;
         this.height = height;
         this.weight = weight;
         this.bloodType = BloodType.parse(bloodType);
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = Main.getNextId(true, true);
+        this.id = IO.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -102,9 +116,12 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
+        this.preferredName = this.name;
+        System.out.println(getName());
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = null;
         this.gender = null;
+        this.genderIdentity = null;
         this.height = -1;
         this.weight = -1;
         this.bloodType = null;
@@ -114,7 +131,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextId(true, true);
+        this.id = IO.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -133,9 +150,11 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length-1] = lastName;
         }
+        this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
         this.gender = gender;
+        this.genderIdentity = gender;
         this.height = height;
         this.weight = weight;
         this.bloodType = bloodType;
@@ -145,7 +164,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = Main.getNextId(true, true);
+        this.id = IO.getNextId(true, true);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -161,9 +180,11 @@ public class User {
      */
     public User(User user) {
         this.name = user.name;
+        this.preferredName = user.preferredName;
         this.dateOfBirth = user.dateOfBirth;
         this.dateOfDeath = user.dateOfDeath;
         this.gender = user.gender;
+        this.genderIdentity = user.genderIdentity;
         this.height = user.height;
         this.weight = user.weight;
         this.bloodType = user.bloodType;
@@ -181,8 +202,6 @@ public class User {
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems = new ArrayList<>();
         this.waitingListItems.addAll(user.waitingListItems);
-        this.currentMedications.addAll(user.currentMedications);
-        this.historicMedications.addAll(user.historicMedications);
         this.currentDiseases = new ArrayList<>();
         this.currentDiseases.addAll(user.getCurrentDiseases());
         this.curedDiseases = new ArrayList<>();
@@ -195,9 +214,11 @@ public class User {
 
     public void copyFieldsFrom(User user) {
         name = user.getNameArray();
+        preferredName = user.getPreferredNameArray();
         dateOfBirth = user.getDateOfBirth();
         dateOfDeath = user.getDateOfDeath();
         gender = user.getGender();
+        genderIdentity = user.getGenderIdentity();
         bloodType = user.getBloodType();
         height = user.getHeight();
         weight = user.getWeight();
@@ -217,17 +238,24 @@ public class User {
         historicMedications.addAll(user.getHistoricMedications());
         // TODO - ask what this is
         waitingListItems.addAll(waitingListItems);
-        currentDiseases.clear();
-        currentDiseases.addAll(user.getCurrentDiseases());
 
-        curedDiseases.clear();
-        curedDiseases.addAll(user.getCuredDiseases());
 
+    }
+
+    public void copyProceduresListsFrom(User user) {
         pendingProcedures.clear();
         pendingProcedures.addAll(user.getPendingProcedures());
 
         previousProcedures.clear();
         previousProcedures.addAll(user.getPreviousProcedures());
+    }
+
+    public void copyDiseaseListsFrom(User user) {
+        currentDiseases.clear();
+        currentDiseases.addAll(user.getCurrentDiseases());
+
+        curedDiseases.clear();
+        curedDiseases.addAll(user.getCuredDiseases());
     }
 
     /**
@@ -241,9 +269,11 @@ public class User {
 
     public boolean fieldsEqual(User user) {
         return (Arrays.equals(name, user.getNameArray()) &&
+                Arrays.equals(preferredName, user.getPreferredNameArray()) &&
                 dateOfBirth == user.getDateOfBirth() &&
                 dateOfDeath == user.getDateOfDeath() &&
                 gender == user.getGender() &&
+                genderIdentity == user.genderIdentity &&
                 bloodType == user.getBloodType() &&
                 height == user.getHeight() &&
                 weight == user.getWeight() &&
@@ -270,6 +300,10 @@ public class User {
         return String.join(" ", name);
     }
 
+    public String getPreferredName() {
+        return String.join(" ", preferredName);
+    }
+
     public void setName(String name) {
         this.name = name.split(",");
         setLastModified();
@@ -277,6 +311,15 @@ public class User {
 
     public void setNameArray(String[] name) {
         this.name = name;
+    }
+
+    public void setPreferredName(String name) {
+        this.preferredName = name.split(",");
+        setLastModified();
+    }
+
+    public void setPreferredNameArray(String[] name) {
+        this.preferredName = name;
     }
 
     public void setUsername(String username) { this.username = username; }
@@ -291,6 +334,10 @@ public class User {
 
     public String[] getNameArray() {
         return name;
+    }
+
+    public String[] getPreferredNameArray() {
+        return preferredName;
     }
 
     public String getUsername() {
@@ -318,6 +365,10 @@ public class User {
     public String getRegion() { return region; }
 
     public Gender getGender() { return gender; }
+
+    public Gender getGenderIdentity() {
+        return genderIdentity;
+    }
 
     public double getHeight() { return height; }
 
@@ -369,6 +420,11 @@ public class User {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+        setLastModified();
+    }
+
+    public void setGenderIdentity(Gender gender) {
+        this.genderIdentity = gender;
         setLastModified();
     }
 
@@ -484,27 +540,13 @@ public class User {
         } else {
             return String.format("User (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
                     "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
-                    (creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString, weightString, bloodType,
+                    (creationTime), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString, weightString, bloodType,
                     region, currentAddress, dateModifiedString, organs);
         }
     }
 
     public String toString() {
         return getString(false);
-    }
-
-    public Boolean isDonor() {
-        return !organs.isEmpty();
-    }
-
-    public boolean isReceiver() {
-        boolean receiver = false;
-        for (ReceiverWaitingListItem item : waitingListItems){
-            if (item.getOrganDeregisteredDate() == null){
-                receiver = true;
-            }
-        }
-        return receiver;
     }
 
     public ArrayList<Disease> getCurrentDiseases() {
@@ -521,5 +563,31 @@ public class User {
 
     public void setCuredDiseases(ArrayList<Disease> curedDiseases) {
         this.curedDiseases = curedDiseases;
+    }
+
+    public Boolean isDonor() {
+        return !organs.isEmpty();
+    }
+
+    public boolean isReceiver() {
+        boolean receiver = false;
+        for (ReceiverWaitingListItem item : waitingListItems){
+            if (item.getOrganDeregisteredDate() == null){
+                receiver = true;
+            }
+        }
+        return receiver;
+    }
+
+    public String getType(){
+        if(isDonor() && isReceiver()){
+            return "Donor/Receiver";
+        }else if(isDonor() && !isReceiver()){
+            return "Donor";
+        }else if(!isDonor() && isReceiver()){
+            return "Receiver";
+        }else{
+            return "Neither";
+        }
     }
 }

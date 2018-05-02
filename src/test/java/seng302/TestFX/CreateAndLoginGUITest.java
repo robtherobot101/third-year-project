@@ -1,20 +1,15 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
-
-import java.sql.Time;
-import java.util.concurrent.TimeoutException;
-
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.User.User;
+
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateAndLoginGUITest extends TestFXTest {
     @BeforeClass

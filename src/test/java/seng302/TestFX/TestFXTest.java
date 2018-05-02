@@ -1,24 +1,23 @@
 package seng302.TestFX;
 
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
-
-import java.time.LocalDate;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Main;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 abstract class TestFXTest extends ApplicationTest {
     protected static final boolean runHeadless = true;
@@ -44,7 +43,9 @@ abstract class TestFXTest extends ApplicationTest {
             System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1600x1200-32");
+            System.setProperty("headless.geometry", "3840x2060-32");
+        } else {
+            System.setProperty("testfx.robot.write_sleep", "1");
         }
         registerPrimaryStage();
     }

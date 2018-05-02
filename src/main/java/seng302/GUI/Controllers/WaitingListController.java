@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,22 +10,25 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
+import seng302.Generic.History;
+import seng302.Generic.Main;
+import seng302.Generic.WaitingListItem;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
-import seng302.Generic.*;
-
-import javafx.beans.binding.Bindings;
 
 import java.net.URL;
-import java.util.*;
-import static seng302.Generic.Main.streamOut;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 
 /**
  * The controller for the waiting list pane
  */
-public class WaitingListController implements Initializable {
+public class WaitingListController extends PageController implements Initializable {
 
     @FXML
     private Button registerOrganButton;
@@ -98,9 +102,9 @@ public class WaitingListController implements Initializable {
             }
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
-                //statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
             }
             populateWaitingList();
+            statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
 
         }
         populateOrgansComboBox();

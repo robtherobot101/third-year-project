@@ -4,9 +4,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.User.Clinician;
+import seng302.Generic.IO;
 import seng302.Generic.Main;
+import seng302.User.Clinician;
 
 import java.net.URL;
 import java.util.Optional;
@@ -16,33 +19,34 @@ import java.util.ResourceBundle;
  * Class to handle all the logic for the Account Settings window.
  */
 public class ClinicianAccountSettingsController implements Initializable {
-    private Clinician currentClinician;
+    @FXML
+    private TextField usernameField, passwordField;
+    @FXML
+    private Button updateButton, cancelButton;
+    @FXML
+    private Label userNameLabel, errorLabel;
+    @FXML
+    private AnchorPane background;
 
-    public void setCurrentClinician(Clinician currentClinician) {
-        this.currentClinician = currentClinician;
-        //clinicianNameLabel.setText(currentClinician.getName());
+    private Clinician clinician;
+
+    public void setCurrentClinician(Clinician clinician) {
+        this.clinician = clinician;
+        if (clinician.getName() == null) {
+            clinician.setName("Name not set");
+        }
+        System.out.println(clinician);
+        System.out.println(clinician.getName());
+        userNameLabel.setText("clinician: " + clinician.getName());
     }
-
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private TextField passwordField;
-    @FXML
-    private Button updateButton;
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private Label clinicianNameLabel;
-
 
     /**
      * Populates the account details inputs based on the current user's attributes.
      */
     public void populateAccountDetails() {
-        System.out.println(currentClinician);
-        clinicianNameLabel.setText(currentClinician.getName());
-        usernameField.setText(currentClinician.getUsername());
-        passwordField.setText(currentClinician.getPassword());
+        userNameLabel.setText("clinician: " + clinician.getName());
+        usernameField.setText(clinician.getUsername() != null ? clinician.getUsername() : "");
+        passwordField.setText(clinician.getPassword());
     }
 
     /**
@@ -50,27 +54,36 @@ public class ClinicianAccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
+        for (Clinician user: Main.clinicians) {
+            if (user != clinician) {
+                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
+                    errorLabel.setText("That username is already taken.");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+            }
+        }
+        errorLabel.setVisible(false);
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-
-            currentClinician.setUsername(usernameField.getText());
-            currentClinician.setPassword(passwordField.getText());
-
-
-            //String text = History.prepareFileStringGUI(currentClinician.getUserId(), "updateAccountSettings");
-            //History.printToFile(Main.streamOut, text);
+            clinician.setUsername(usernameField.getText());
+            clinician.setPassword(passwordField.getText());
 
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-
-
-            //Very unsure about this
-            Main.setClinician(currentClinician);
-
+            Main.setClinician(clinician);
+            IO.saveUsers(IO.getClinicianPath(), false);
         } else {
             alert.close();
         }
+    }
+
+    /**
+     * Removes focus from all fields.
+     */
+    public void requestFocus() {
+        background.requestFocus();
     }
 
     /**
@@ -81,9 +94,22 @@ public class ClinicianAccountSettingsController implements Initializable {
         stage.close();
     }
 
+    private void updateUpdateButtonState() {
+        updateButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty());
+    }
+
+    public void setEnterEvent() {
+        updateButton.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER && !updateButton.isDisable()) {
+                updateAccountDetails();
+            }
+        });
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setClincianAccountSettingsController(this);
-
+        usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
+        passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
     }
 }
