@@ -95,7 +95,7 @@
                      <GridPane.margin>
                         <Insets left="5.0" />
                      </GridPane.margin></Label>
-                        <Button mnemonicParsing="false" onAction="#updateClinicianPopUp" onMouseClicked="#updateClinician" text="Update Clinician" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                        <Button fx:id="updateClinicianButton" mnemonicParsing="false" onAction="#updateClinicianPopUp" onMouseClicked="#updateClinician" text="Update Clinician" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Button>
