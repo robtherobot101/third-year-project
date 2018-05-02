@@ -129,6 +129,9 @@ public class TransplantWaitingListController implements Initializable {
     }
 
 
+    /**
+     * Method to show de-registering reason code for a user to make a selection
+     */
     public void showDeregisterDialog() {
         //Set dialog window
         List<String> reasonCodes = new ArrayList<>();
@@ -147,6 +150,9 @@ public class TransplantWaitingListController implements Initializable {
         result.ifPresent(option -> processDeregister(option));
     }
 
+    /**
+     * method to show dialog for a clinician to choose from a receivers listed diseases, if any, to cure.
+     */
     public void showDiseaseDeregisterDialog() {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
@@ -220,6 +226,9 @@ public class TransplantWaitingListController implements Initializable {
         });
     }
 
+    /**
+     * method to show dialog to confirm the curing of a disease and then to perform the operations.
+     */
     public void confirmDiseaseCuring() {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
@@ -266,6 +275,10 @@ public class TransplantWaitingListController implements Initializable {
         }
     }
 
+    /**
+     * method to call the correct handling de-registering method based on the reason code given
+     * @param reason the reason code given by the clinician
+     */
     public void processDeregister(String reason) {
         System.out.println("\n"+reason);
         if (reason == "1: Error Registering") {
@@ -286,6 +299,9 @@ public class TransplantWaitingListController implements Initializable {
         deregisterReceiverButton.setDisable(true);
     }
 
+    /**
+     * Method to deregister an organ when a successful transplant is complete
+     */
     public void transplantDeregister(){
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
@@ -324,9 +340,10 @@ public class TransplantWaitingListController implements Initializable {
         }
     }
 
+    /**
+     * method to show dialog the prompts the user asking for a select receivers date of death
+     */
     public void showDeathDateDialog() {
-
-
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Date of Death");
         dialog.setHeaderText("Please provide the date of death");
@@ -385,6 +402,7 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * Removes all organs waiting on transplant for a user.
      * Called when a receiver has deceased.
+     * @param deathDateInput LocalDate date to be set for a users date of death
      */
     public void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
@@ -411,8 +429,8 @@ public class TransplantWaitingListController implements Initializable {
 
     /**
      * Initilizes the gui display with the correct content in the table.
-     * @param location
-     * @param resources
+     * @param location Not Used
+     * @param resources Not Used
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
