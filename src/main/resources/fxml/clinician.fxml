@@ -20,7 +20,7 @@
 
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
+<GridPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -163,7 +163,7 @@
                         <Insets left="20.0" />
                      </GridPane.margin>
                   </Label>
-                  <Button mnemonicParsing="false" onAction="#clearFilter" prefHeight="23.0" prefWidth="83.0" text="Clear Filter" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+                  <Button mnemonicParsing="false" onAction="#clearFilter" text="Clear Filter" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
