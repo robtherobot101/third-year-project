@@ -663,7 +663,6 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         System.out.println(currentUser.toString());
-        //Main.getClinicianController().updateUserTable();
         return true;
     }
 
@@ -685,6 +684,7 @@ public class UserWindowController implements Initializable {
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(),"User");
             statusIndicator.setStatus("Saved", false);
+            Main.getClinicianController().updateFoundUsers();
         }
         alert.close();
     }
