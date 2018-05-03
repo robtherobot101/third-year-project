@@ -16,7 +16,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
@@ -24,11 +23,9 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**

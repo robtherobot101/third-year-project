@@ -653,7 +653,7 @@ public class AdminController implements Initializable {
                     Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
                     if (selectedAdmin != null) {
                         // Check if this is the default clinician
-                        if (selectedAdmin.getStaffID() == 1) {
+                        if (selectedAdmin.getStaffID() == 0) {
                             deleteProfile.setDisable(true);
                             deleteProfile.setText("Cannot delete default admin");
                         } else {

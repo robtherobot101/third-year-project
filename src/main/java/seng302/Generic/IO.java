@@ -255,6 +255,11 @@ public class IO {
         return false;
     }
 
+    /**
+     * Set the class variables for the currently running jar location, and locations for the user and clinician json files.
+     *
+     * @throws URISyntaxException If the jar path is unreadable
+     */
     public static void setPaths() throws URISyntaxException {
         jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
         userPath = jarPath + File.separatorChar + "users.json";

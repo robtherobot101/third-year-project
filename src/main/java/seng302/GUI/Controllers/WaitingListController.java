@@ -12,7 +12,6 @@ import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.Main;
-import seng302.Generic.WaitingListItem;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;

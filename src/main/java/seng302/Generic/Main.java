@@ -1,6 +1,5 @@
 package seng302.Generic;
 
-import com.google.gson.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -10,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.MedicalHistoryDiseasesController;
-import seng302.GUI.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
@@ -22,10 +19,7 @@ import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.lang.Integer.max;
@@ -63,48 +57,9 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
-
-
-
-    /**
-     * Class to serialize LocalDates without requiring reflective access
-     */
-    private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
-        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(User.dateFormat.format(date));
-        }
-    }
-
     public static Stage getStage() {
         return stage;
     }
-
-
-    /**
-     * Class to deserialize LocalDates without requiring reflective access
-     */
-    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
-        public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
-            return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
-        }
-    }
-
-    /**
-     * Class to deserialize LocalDateTimes without requiring reflective access
-     */
-    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
-        public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
-            return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
-        }
-    }
-
-    /**
-     * Sets the medications view to be able to edit for a clinican.
-     */
-    public static void medicationsViewForClinician() {
-        medicationsController.setControlsShown(true);
-    }
-
 
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 
@@ -200,34 +155,6 @@ public class Main extends Application {
         waitingListController.setControlsShown(true);
         medicalHistoryProceduresController.setControlsShown(true);
         medicalHistoryDiseasesController.setControlsShown(true);
-    }
-
-    /**
-     * Sets the medical history diseases view to be unable to edit for a donor.
-     */
-    public static void medicalHistoryDiseasesViewForDonor() {
-        medicalHistoryDiseasesController.setControlsShown(false);
-    }
-
-    /**
-     * Sets the medical history view diseases to be able to edit for a clinican.
-     */
-    public static void medicalHistoryDiseasesViewForClinician() {
-        medicalHistoryDiseasesController.setControlsShown(true);
-    }
-
-    /**
-     * Sets the medical history procedures view to be unable to edit for a donor.
-     */
-    public static void medicalHistoryProceduresViewForDonor() {
-        medicalHistoryProceduresController.setControlsShown(false);
-    }
-
-    /**
-     * Sets the medical history procedures view to be able to edit for a clinican.
-     */
-    public static void medicalHistoryProceduresViewForClinician() {
-        medicalHistoryProceduresController.setControlsShown(true);
     }
 
     public static void setCurrentUserForAccountSettings(User currentUser) {
@@ -411,8 +338,7 @@ public class Main extends Application {
         System.out.println("search: "+"'"+term+"'");
         if(term.equals("")){
             System.out.println("Empty");
-            ArrayList<User> sorted = new ArrayList<User>();
-            sorted.addAll(Main.users);
+            ArrayList<User> sorted = new ArrayList<>(Main.users);
             Collections.sort(sorted, new Comparator<User>() {
                 @Override
                 public int compare(User o1, User o2) {
@@ -482,17 +408,14 @@ public class Main extends Application {
         if(!Arrays.equals(names, prefNames)) {
             // Preferred last name
             score += scoreNames(prefNames, tokens, max(prefNames.length - 1, 1), prefNames.length, 5);
-
             // Preferred first name
             score += scoreNames(prefNames, tokens, 0, 1, 4);
-
             // Preferred middle names
             score += scoreNames(prefNames, tokens, 1, prefNames.length - 1, 3);
         }
 
         //first name
         score += scoreNames(names, tokens, 0, 1, 2);
-
         //middle names
         score += scoreNames(names, tokens, 1, names.length-1, 1);
 
@@ -729,7 +652,6 @@ public class Main extends Application {
         Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
         Main.stage = stage;
-        stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {
             for(Stage userWindow:cliniciansUserWindows){
@@ -842,8 +764,6 @@ public class Main extends Application {
         }
         stage.setWidth(scene.getWidth());
         stage.setHeight(scene.getHeight());
-        stage.setScene(null);
-        stage.setScene(scenes.get(scene));
 
         if (!(scene.getWidth() == mainWindowPrefWidth)) {
             stage.setResizable(false);
