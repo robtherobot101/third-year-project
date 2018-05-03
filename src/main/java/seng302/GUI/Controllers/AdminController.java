@@ -595,13 +595,13 @@ public class AdminController implements Initializable {
                         // A clinician has been selected for deletion
                         System.out.println("Deleting Clinician: " + selectedClinician);
                         Main.clinicians.remove(selectedClinician);
-                        IO.saveUsers(IO.getUserPath(), LoginType.CLINICIAN);
+                        IO.saveUsers(IO.getUserPath(), LoginType.USER);
                         statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                     } else if (selectedAdmin != null) {
                         // An admin has been selected for deletion
                         System.out.println("Deleting Admin: " + selectedAdmin);
                         Main.admins.remove(selectedAdmin);
-                        IO.saveUsers(IO.getUserPath(), LoginType.ADMIN);
+                        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                         statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                     }
                     System.out.println(Main.users);
