@@ -8,12 +8,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
+import seng302.TUI.CommandLineInterface;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
-import seng302.TUI.CommandLineInterface;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -659,7 +660,7 @@ public class Main extends Application {
             }
         });
         dialogStyle = Main.class.getResource("/css/dialog.css").toExternalForm();
-        //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
         try {
             IO.setPaths();
             File users = new File(IO.getUserPath());

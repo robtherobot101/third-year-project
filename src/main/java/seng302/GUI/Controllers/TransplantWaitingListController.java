@@ -445,6 +445,7 @@ public class TransplantWaitingListController implements Initializable {
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
         transplantTable.setItems(transplantList);
+        transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
         Main.setTransplantWaitingListController(this);
