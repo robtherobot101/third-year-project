@@ -70,7 +70,7 @@ public class CreateAdminController implements Initializable {
         else {
             errorText.setVisible(false);
             String username = usernameInput.getText();
-            String name = firstNameInput.getText() + " " + middleNamesInput + " " + lastNameInput;
+            String name = firstNameInput.getText() + " " + middleNamesInput.getText() + " " + lastNameInput.getText();
             String password = passwordInput.getText();
             admin = new Admin(username, password, name);
             stage.close();

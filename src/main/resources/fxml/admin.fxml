@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -36,14 +36,14 @@
     <children>
         <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="639.0">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" text="Save" visible="false" />
-                  <Menu mnemonicParsing="false" text="Create">
+                  <Menu fx:id="createMenu" mnemonicParsing="false" text="Create">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#createAdmin" text="Admin" />
+                      <MenuItem fx:id="adminMenuItem" mnemonicParsing="false" onAction="#createAdmin" text="Admin" />
                         <MenuItem mnemonicParsing="false" onAction="#createClinician" text="Clinician" />
-                        <MenuItem mnemonicParsing="false" onAction="#createUser" text="User" />
+                        <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
                     </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
