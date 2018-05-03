@@ -24,7 +24,7 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B -DskipTests clean site package
+    - mvn -B clean site package
   artifacts:
     paths:
     - target/*.jar
