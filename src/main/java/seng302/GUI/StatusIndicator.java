@@ -12,7 +12,7 @@ public class StatusIndicator {
     /**
      * Default constructor
      */
-    public StatusIndicator(){};
+    public StatusIndicator(){}
 
     /**
      * Set the status and progress bar on the status bar
@@ -25,11 +25,18 @@ public class StatusIndicator {
         else statusBar.setProgress(0);
     }
 
+    /**
+     * sets the status bar text to Ready
+     */
     public void ready(){
         statusBar.setText("Ready");
         statusBar.setProgress(0);
     }
 
+    /**
+     * sets the current status bar
+     * @param statusBar the current status bar
+     */
     public void setStatusBar(StatusBar statusBar) {
         this.statusBar = statusBar;
     }

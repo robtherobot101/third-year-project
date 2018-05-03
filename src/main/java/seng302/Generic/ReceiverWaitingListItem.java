@@ -14,6 +14,10 @@ public class ReceiverWaitingListItem extends WaitingListItem{
     public Integer organDeregisteredCode;
 
 
+    /**
+     * creates a new object with a given object type
+     * @param organType type of organ to use
+     */
     public ReceiverWaitingListItem(Organ organType){
         super(organType);
         this.stillWaitingOn = true;
@@ -31,6 +35,12 @@ public class ReceiverWaitingListItem extends WaitingListItem{
         this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
+    /**
+     * Creates a new object with restricted parameters
+     * Used in testing
+     * @param heart objects organType
+     * @param id objects user id
+     */
     public ReceiverWaitingListItem(Organ heart, Long id) {
         this.organType = heart;
         this.userId = id;
@@ -52,6 +62,7 @@ public class ReceiverWaitingListItem extends WaitingListItem{
     /**
      * Updates an organs deregistration date and removes its registration date.
      * Can be called when deregistering a previously registered organ.
+     * @param reasonCode reason code to assign to an organ upon deregister
      */
     public void deregisterOrgan(Integer reasonCode){
         if (this.organDeregisteredDate == null) {
@@ -73,9 +84,11 @@ public class ReceiverWaitingListItem extends WaitingListItem{
         this.stillWaitingOn = false;
     }
 
-    public boolean getStillWaitingOn(){
-        return stillWaitingOn;
-    }
+    /**
+     * gets the still waiting on attribute of a reciever object
+     * @return boolean if an organ transplant is still pending
+     */
+    public boolean getStillWaitingOn(){ return stillWaitingOn; }
 
     /**
      * Returns whether or not a user is also donating an organ they are hoping to receive.
@@ -86,14 +99,22 @@ public class ReceiverWaitingListItem extends WaitingListItem{
         return user.getOrgans().contains(getOrganType());
     }
 
-    public String getOrganDeregisteredDate() {
-        return organDeregisteredDate;
-    }
+    /**
+     * returns the de-registered date of the object selected
+     * @return de-registered date of an object
+     */
+    public String getOrganDeregisteredDate() { return organDeregisteredDate; }
 
-    public boolean isStillWaitingOn() { return stillWaitingOn; }
-
+    /**
+     * returns the de-registered code of the object selected
+     * @return de-registered code of an object
+     */
     public Integer getOrganDeregisteredCode() { return organDeregisteredCode; }
 
+    /**
+     * returns the waitingListItemId of a given object
+     * @return waitingListItemId of an object
+     */
     public Integer getWaitingListItemId() { return waitingListItemId; }
 
 
