@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -261,11 +261,11 @@
                         <Insets left="10.0" />
                     </padding>
                 </Label>
-                <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
+                <!--<Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
                     <font>
                         <Font size="14.0" />
                     </font>
-                </Button>
+                </Button>-->
                 <Button fx:id="undoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
                     <font>
                         <Font size="14.0" />

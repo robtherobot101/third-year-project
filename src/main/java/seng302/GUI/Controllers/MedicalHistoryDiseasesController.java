@@ -757,7 +757,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Sets whether the control buttons are shown or not on the medications pane
-     * @param shown boolean defines what controls to show
+     *
+     * @param shown Boolean that sets if the fxml items are visible or not
      */
     public void setControlsShown(boolean shown) {
         dateOfDiagnosisInput.setVisible(shown);
