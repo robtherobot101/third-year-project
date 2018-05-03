@@ -445,7 +445,7 @@ public class Main extends Application {
      * token. For example, the token "dani" would not match the name "dan", but would match "daniel".
      *
      * The results are returned sorted by a score according to which names were matched.
-     * See scoreUserOnSearch(User, List<String>)
+     * See scoreUserOnSearch(User, List(String))
      * If two users are ranked the same, they're sorted alphabetically
      * @param term The search term which will be broken into space separated tokens
      * @return A sorted list of results

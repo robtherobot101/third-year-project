@@ -21,6 +21,7 @@ public class TransplantWaitingListItem extends WaitingListItem {
      * @param date The date that the organ was registered.
      * @param organ The organ that the receiver needs.
      * @param id The id of the receiver.
+     * @param waitingListId The id of the waiting list
      */
     public TransplantWaitingListItem(String Name, String region, String date, Organ organ, long id, Integer waitingListId) {
         super(organ, date, id, waitingListId);
