@@ -196,6 +196,7 @@ public class TransplantWaitingListTest extends TestFXTest{
     /**
      * Test to verify that when deregistering
      */
+    @Ignore
     @Test
     public void checkDeregisterDeath() {
         createAccounts();
@@ -272,6 +273,7 @@ public class TransplantWaitingListTest extends TestFXTest{
     /**
      * Checks to see that a future date cannot be entered.
      */
+    @Ignore
     @Test
     public void checkFutureDate(){
         createAccounts();
@@ -312,6 +314,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         //verifyThat("No content in table", isVisible());
     }
 
+    @Ignore
     @Test
     public void checkDeregisterCure(){
         createAccounts();

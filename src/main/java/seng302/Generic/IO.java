@@ -239,7 +239,7 @@ public class IO {
                     Main.admins.clear();
                     nextClinicianId = -1;
                     Main.admins.addAll(importedAdmins);
-                    recalculateNextId(LoginType.CLINICIAN);
+                    recalculateNextId(LoginType.ADMIN);
                     System.out.println("Imported list successfully.");
                     return true;
 

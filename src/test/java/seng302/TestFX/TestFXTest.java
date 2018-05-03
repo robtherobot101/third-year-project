@@ -40,7 +40,7 @@ abstract class TestFXTest extends ApplicationTest {
     protected static void defaultTestSetup() throws TimeoutException {
         if (runHeadless) {
             System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "false");
+            System.setProperty("testfx.headless", "true");
             System.setProperty("prism.order", "sw");
             System.setProperty("prism.text", "t2k");
             System.setProperty("headless.geometry", "3840x2060-32");
@@ -50,10 +50,6 @@ abstract class TestFXTest extends ApplicationTest {
         registerPrimaryStage();
     }
 
-    protected static void headedTestSetup() throws TimeoutException {
-        System.setProperty("testfx.robot.write_sleep", "1");
-        registerPrimaryStage();
-    }
 
     protected User addTestUser() {
         User testUser = new User(

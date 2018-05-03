@@ -243,6 +243,9 @@ public class Main extends Application {
     }
 
     public static Integer getNextWaitingListId() {
+        System.out.println(userWindowController);
+        System.out.println(userWindowController.getCurrentUser());
+        System.out.println(userWindowController.getCurrentUser().getWaitingListItems());
         if (!userWindowController.getCurrentUser().getWaitingListItems().isEmpty()){
             nextWaitingListId = userWindowController.getCurrentUser().getWaitingListItems().size();
         } else {
