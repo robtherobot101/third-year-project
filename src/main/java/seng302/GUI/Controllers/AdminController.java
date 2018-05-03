@@ -70,6 +70,8 @@ public class AdminController implements Initializable {
     private TableView<Admin> adminTableView;
     @FXML
     private TableColumn<Admin, String> adminUsernameTableColumn, adminNameTableColumn;
+    @FXML
+    private TableColumn<Admin, Long> adminIDTableColumn;
 
 
     @FXML
@@ -534,6 +536,7 @@ public class AdminController implements Initializable {
         // Set Admin TableColumns to point at correct attributes
         adminNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         adminUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        adminIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
 
         // Set up listeners that only allow 1 item to be selected at a time across the three tables
         userTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {

@@ -21,6 +21,23 @@ public class Clinician {
         this.accountType = LoginType.CLINICIAN;
     }
 
+    /**
+     * Used by Admin to pick its own ID
+     * @param username
+     * @param password
+     * @param name
+     * @param staffID
+     */
+    public Clinician(String username, String password, String name, LoginType accountType, long staffID){
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.staffID = staffID;
+        this.region = null;
+        this.workAddress = null;
+        this.accountType = accountType;
+    }
+
     public Clinician(String username, String password, String name, LoginType accountType){
         this.username = username;
         this.password = password;

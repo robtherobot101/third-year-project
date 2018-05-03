@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -42,7 +42,7 @@
                   <Menu fx:id="createMenu" mnemonicParsing="false" text="Create">
                     <items>
                       <MenuItem fx:id="adminMenuItem" mnemonicParsing="false" onAction="#createAdmin" text="Admin" />
-                        <MenuItem mnemonicParsing="false" onAction="#createClinician" text="Clinician" />
+                        <MenuItem fx:id="clinicianMenuItem" mnemonicParsing="false" onAction="#createClinician" text="Clinician" />
                         <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
                     </items>
                   </Menu>
@@ -158,6 +158,7 @@
                                        <columns>
                                           <TableColumn fx:id="adminUsernameTableColumn" prefWidth="344.0" text="Username" />
                                           <TableColumn fx:id="adminNameTableColumn" prefWidth="344.0" text="Name" />
+                                          <TableColumn fx:id="adminIDTableColumn" prefWidth="133.0" text="Admin ID" />
                                        </columns>
                                     </TableView>
                                  </children>

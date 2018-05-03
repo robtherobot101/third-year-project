@@ -144,6 +144,14 @@ public class IO {
                     }
                 }
                 break;
+            case ADMIN:
+                nextAdminId = -1;
+                for (Admin admin : Main.admins) {
+                    if (admin.getStaffID() > nextAdminId) {
+                        nextAdminId = admin.getStaffID();
+                    }
+                }
+                break;
         }
     }
 

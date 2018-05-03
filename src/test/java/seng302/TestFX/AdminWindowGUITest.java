@@ -96,6 +96,10 @@ public class AdminWindowGUITest extends TestFXTest {
         refreshTableSelections();
         // Check this is the user:
         assertEquals(LocalDate.of(1997, 6, 12), currentSelectedUser.getDateOfBirth());
+
+        rightClickOn("Matthew Pieter Knight");
+        clickOn("Delete Matthew Pieter Knight");
+        clickOn("OK");
     }
 
     /**
@@ -126,13 +130,17 @@ public class AdminWindowGUITest extends TestFXTest {
         refreshTableSelections();
         // Check this is the user:
         assertEquals("buzz", currentSelectedAdmin.getUsername());
+
+        rightClickOn("buzz");
+        clickOn("Delete Matthew Pieter Knight");
+        clickOn("OK");
     }
 
     /**
      * Add a simple user and verify it appears with appropriate details in the TabPane
      */
     @Test
-    public void addClinician() {
+    public void addThenDeleteClinician() {
         loginAsDefaultAdmin();
         clickOn("#fileMenu");
         moveTo("#createMenu");
@@ -158,8 +166,16 @@ public class AdminWindowGUITest extends TestFXTest {
         refreshTableSelections();
         // Check this is the user:
         assertEquals("buzz", currentSelectedClinician.getUsername());
+
+        rightClickOn("Matthew Pieter Knight");
+        clickOn("Delete Matthew Pieter Knight");
+        clickOn("OK");
     }
 
+    @Test
+    public void deleteProfiles() {
+
+    }
 
 
     @Test
