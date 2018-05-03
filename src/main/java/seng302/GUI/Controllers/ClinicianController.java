@@ -211,6 +211,7 @@ public class ClinicianController implements Initializable {
     public void logout() {
         Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -519,7 +520,7 @@ public class ClinicianController implements Initializable {
         if(searchOrganTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if((user.getOrgans().contains(Organ.parse(searchOrganTerm))) && (user.getOrgans().size() != 0)) {
+                if((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
                     newUsersFound.add(user);
                 }
             }
@@ -534,7 +535,7 @@ public class ClinicianController implements Initializable {
             }
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
+                if((user.getType() != null) && (searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }

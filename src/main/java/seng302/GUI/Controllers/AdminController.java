@@ -181,6 +181,7 @@ public class AdminController implements Initializable {
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to log out? ");
         alert.setContentText("Logging out without saving loses your non-saved data.");
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -470,7 +471,7 @@ public class AdminController implements Initializable {
         if(searchOrganTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if((user.getOrgans().contains(Organ.parse(searchOrganTerm))) && (user.getOrgans().size() != 0)) {
+                if((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
                     newUsersFound.add(user);
                 }
             }
@@ -482,7 +483,7 @@ public class AdminController implements Initializable {
         if(searchUserTypeTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
+                if((user.getType() != null) && (searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }
@@ -530,7 +531,7 @@ public class AdminController implements Initializable {
         // Set User TableColumns to point at correct attributes
         userNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         userTypeTableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        userAgeTableColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        userAgeTableColumn.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         userGenderTableColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
         userRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
@@ -583,6 +584,7 @@ public class AdminController implements Initializable {
                 alert.setTitle("Are you sure?");
                 alert.setHeaderText("Confirm profile deletion");
                 alert.setContentText("Are you sure you want to delete this profile? This cannot be undone.");
+                alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     if (selectedUser != null) {
