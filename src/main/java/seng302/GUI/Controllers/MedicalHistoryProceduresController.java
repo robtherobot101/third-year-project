@@ -20,6 +20,7 @@ import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
+import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -195,7 +196,7 @@ public class MedicalHistoryProceduresController extends PageController implement
             currentUser.getPreviousProcedures().clear();
             currentUser.getPreviousProcedures().addAll(previousProcedureItems);
 
-            IO.saveUsers(IO.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
             String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
             History.printToFile(streamOut, text);
             //populateHistoryTable();

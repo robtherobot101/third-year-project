@@ -7,6 +7,9 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -14,13 +17,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
 <?import org.controlsfx.control.StatusBar?>
-<GridPane stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
+
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -34,9 +36,17 @@
     <children>
         <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="639.0">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" text="Save" visible="false" />
+                  <Menu fx:id="createMenu" mnemonicParsing="false" text="Create">
+                    <items>
+                      <MenuItem fx:id="adminMenuItem" mnemonicParsing="false" onAction="#createAdmin" text="Admin" />
+                        <MenuItem fx:id="clinicianMenuItem" mnemonicParsing="false" onAction="#createClinician" text="Clinician" />
+                        <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
+                    </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>
                 </Menu>
@@ -70,104 +80,106 @@
                     </rowConstraints>
                     <children>
                         <Label fx:id="staffIDLabel" text="ID#" GridPane.columnIndex="4" GridPane.halignment="LEFT">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" />
-                     </GridPane.margin></Label>
-                        <TableView fx:id="profileTable" GridPane.columnSpan="5" GridPane.rowIndex="3">
-                            <columnResizePolicy>
-                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                            </columnResizePolicy>
-                            <columns>
-                                <TableColumn fx:id="profileName" prefWidth="344.0" text="Name" />
-                        <TableColumn fx:id="profileUserType" prefWidth="75.0" text="User Type" />
-                                <TableColumn fx:id="profileAge" prefWidth="110.0" text="Age" />
-                                <TableColumn fx:id="profileGender" prefWidth="133.0" text="Gender" />
-                                <TableColumn fx:id="profileRegion" prefWidth="163.0" text="Region" />
-                            </columns>
                             <GridPane.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" />
-                            </GridPane.margin>
-                        </TableView>
-                        <TextField fx:id="profileSearchTextField" promptText="Name" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                     <GridPane.margin>
-                        <Insets left="5.0" right="5.0" top="10.0" />
-                     </GridPane.margin></TextField>
-                        <Label text="Profile Search" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                     <GridPane.margin>
-                        <Insets left="5.0" />
-                     </GridPane.margin></Label>
-                        <Button fx:id="updateClinicianButton" mnemonicParsing="false" onAction="#updateClinicianPopUp" onMouseClicked="#updateClinician" text="Update Clinician" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                     <GridPane.margin>
-                        <Insets right="5.0" />
-                     </GridPane.margin></Button>
-                  <ComboBox fx:id="numberOfResutsToDisplay" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                     <GridPane.margin>
-                        <Insets left="5.0" top="10.0" />
-                     </GridPane.margin></ComboBox>
-                  <Label text="Display" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                     <GridPane.margin>
-                        <Insets left="5.0" />
-                     </GridPane.margin></Label>
-                  <Label text="Filter Search" GridPane.rowIndex="2" GridPane.valignment="TOP">
-                     <GridPane.margin>
-                        <Insets left="5.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <TextField fx:id="clinicianRegionField" prefHeight="27.0" prefWidth="102.0" promptText="Region" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="5.0" right="5.0" top="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <ComboBox fx:id="clinicianGenderComboBox" prefHeight="27.0" prefWidth="126.0" promptText="Gender" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="5.0" top="10.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <TextField fx:id="clinicianAgeField" promptText="Age" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="5.0" top="10.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <ComboBox fx:id="clinicianUserTypeComboBox" prefWidth="150.0" promptText="User Type" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="5.0" top="10.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <ComboBox fx:id="clinicianOrganComboBox" prefWidth="150.0" promptText="Organ" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="5.0" right="5.0" top="10.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <Label text="Clinician Main View" GridPane.columnSpan="3">
+                                <Insets bottom="10.0" />
+                            </GridPane.margin></Label>
+                        <Label text="Staff ID: " GridPane.columnIndex="3" GridPane.halignment="RIGHT">
+                            <GridPane.margin>
+                                <Insets bottom="10.0" left="5.0" />
+                            </GridPane.margin></Label>
+                        <Button mnemonicParsing="false" onAction="#updateAdminPopUp" text="Update Admin" GridPane.columnIndex="4" GridPane.valignment="TOP">
+                            <GridPane.margin>
+                                <Insets left="100.0" top="8.0" />
+                            </GridPane.margin></Button>
+                        <Label text="Administrator Home" GridPane.columnSpan="3">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Label>
+                  <TabPane fx:id="tableTabPane" prefHeight="470.0" prefWidth="1021.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
+                    <tabs>
+                      <Tab fx:id="usersTab" text="Users">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="userTableView" prefHeight="300.0" prefWidth="571.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                       <columns>
+                                          <TableColumn fx:id="userNameTableColumn" prefWidth="344.0" text="Name" />
+                                          <TableColumn fx:id="userTypeTableColumn" prefWidth="75.0" text="User Type" />
+                                          <TableColumn fx:id="userAgeTableColumn" prefWidth="110.0" text="Age" />
+                                          <TableColumn fx:id="userGenderTableColumn" prefWidth="133.0" text="Gender" />
+                                          <TableColumn fx:id="userRegionTableColumn" prefWidth="163.0" text="Region" />
+                                       </columns>
+                                    </TableView>
+                                          <TextField fx:id="adminRegionField" layoutX="577.0" layoutY="16.0" prefHeight="27.0" prefWidth="150.0" promptText="Region" />
+                                          <ComboBox fx:id="adminGenderComboBox" layoutX="440.0" layoutY="16.0" prefHeight="27.0" prefWidth="126.0" promptText="Gender" />
+                                          <ComboBox fx:id="adminUserTypeComboBox" layoutX="184.0" layoutY="16.0" prefWidth="150.0" promptText="User Type" />
+                                          <TextField fx:id="adminAgeField" layoutX="344.0" layoutY="16.0" prefHeight="27.0" prefWidth="89.0" promptText="Age" />
+                                          <TextField fx:id="profileSearchTextField" layoutX="14.0" layoutY="17.0" prefHeight="26.0" prefWidth="150.0" promptText="Name" />
+                                          <Button layoutX="872.0" layoutY="14.0" mnemonicParsing="false" onAction="#clearFilter" prefHeight="31.0" prefWidth="125.0" text="Clear Filter" />
+                                          <Label layoutX="14.0" layoutY="-1.0" text="Profile Search" />
+                                    <Label layoutX="184.0" layoutY="-1.0" text="Profile Filters" />
+                                    <ComboBox fx:id="adminOrganComboBox" layoutX="735.0" layoutY="16.0" prefHeight="27.0" prefWidth="125.0" promptText="Organ" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab fx:id="cliniciansTab" text="Clinicians">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="clinicianTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                       <columns>
+                                          <TableColumn fx:id="clinicianUsernameTableColumn" prefWidth="344.0" text="Username" />
+                                          <TableColumn fx:id="clinicianNameTableColumn" prefWidth="344.0" text="Name" />
+                                          <TableColumn fx:id="clinicianRegionTableColumn" prefWidth="163.0" text="Region" />
+                                          <TableColumn fx:id="clinicianAddressTableColumn" prefWidth="133.0" text="Work Address" />
+                                          <TableColumn fx:id="clinicianIDTableColumn" prefWidth="133.0" text="Staff ID" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab fx:id="administratorsTab" text="Administrators">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="adminTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                       <columns>
+                                          <TableColumn fx:id="adminUsernameTableColumn" prefWidth="344.0" text="Username" />
+                                          <TableColumn fx:id="adminNameTableColumn" prefWidth="344.0" text="Name" />
+                                          <TableColumn fx:id="adminIDTableColumn" prefWidth="133.0" text="Admin ID" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+                  <Label fx:id="adminNameLabel" text="Name: " GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.valignment="TOP">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="15.0" />
                      </font>
-                  </Label>
-                  <Label fx:id="nameLabel" text="Label" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="addressLabel" text="Label" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label text="Clinician Details" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
-                     <GridPane.margin>
-                        <Insets left="20.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Button mnemonicParsing="false" onAction="#clearFilter" prefHeight="23.0" prefWidth="83.0" text="Clear Filter" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
-                  </Button>
+                  </Label>
+                  <Label fx:id="adminAddressLabel" text="Address: " GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
                     </children>
                 </GridPane>
                 <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -180,22 +192,22 @@
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="260.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
+                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="260.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="260.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="saveButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="160.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
+                        <Button fx:id="medicationsButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="160.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="160.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="logoutButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="210.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
+                        <Button fx:id="medicalHistoryButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="210.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="210.0">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
-                        <Button fx:id="transplantList" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant List" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="112.0">
+                        <Button fx:id="transplantList" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant  List" textAlignment="CENTER">
                             <font>
                                 <Font size="14.0" />
                             </font>
@@ -227,7 +239,7 @@
                                 <Font size="36.0" />
                             </font>
                         </Label>
-                        <Label layoutX="6.0" layoutY="257.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="253.0">
+                        <Label layoutX="6.0" layoutY="257.0" text="→">
                             <font>
                                 <Font size="36.0" />
                             </font>
@@ -249,7 +261,7 @@
                         <Insets left="10.0" />
                     </padding>
                 </Label>
-                <Button fx:id="updateAccountSettingsClinicianButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
+                <Button alignment="CENTER" blendMode="SRC_ATOP" layoutX="514.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateAccountSettings" prefHeight="44.0" prefWidth="158.0" style="-fx-label-padding: 0;" stylesheets="@../css/flatbutton.css" text="Account Settings" textAlignment="CENTER" AnchorPane.rightAnchor="206.0">
                     <font>
                         <Font size="14.0" />
                     </font>

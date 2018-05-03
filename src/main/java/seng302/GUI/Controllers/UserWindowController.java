@@ -663,7 +663,6 @@ public class UserWindowController implements Initializable {
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         System.out.println(currentUser.toString());
-        //Main.getClinicianController().updateUserTable();
         return true;
     }
 
@@ -677,7 +676,7 @@ public class UserWindowController implements Initializable {
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            IO.saveUsers(IO.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
@@ -685,6 +684,7 @@ public class UserWindowController implements Initializable {
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(),"User");
             statusIndicator.setStatus("Saved", false);
+            Main.getClinicianController().updateFoundUsers();
         }
         alert.close();
     }

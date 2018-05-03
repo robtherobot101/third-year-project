@@ -72,6 +72,12 @@ abstract class TestFXTest extends ApplicationTest {
         clickOn("#loginButton");
     }
 
+    protected void loginAsDefaultAdmin() {
+        clickOn("#identificationInput").write("admin");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+    }
+
     protected void loginAs(User user) {
         clickOn("#identificationInput"); write(user.getEmail());
         clickOn("#passwordInput"); write(user.getPassword());

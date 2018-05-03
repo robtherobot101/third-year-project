@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class IO {
-    private static long nextUserId = -1, nextClinicianId = -1;
-    private static String jarPath, userPath, clinicianPath;
+    private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
+    private static String jarPath, userPath, clinicianPath, adminPath;
     public static PrintStream streamOut;
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting()
@@ -75,6 +75,10 @@ public class IO {
         return clinicianPath;
     }
 
+    public static String getAdminPath() {
+        return adminPath;
+    }
+
     public static void setJarPath(String jarPath) {
         IO.jarPath = jarPath;
     }
@@ -83,45 +87,69 @@ public class IO {
      * Get the unique id number for the next user or the last id number issued.
      *
      * @param increment Whether to increment the unique id counter before returning the unique id value.
-     * @param user      Whether to increment and return clinician or user. True for user, false for clinician.
+     * @param type      Whether to increment and return clinician, user or admin.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
-    public static long getNextId(boolean increment, boolean user) {
+    public static long getNextId(boolean increment, LoginType type) {
         if (increment) {
-            if (user) {
-                nextUserId++;
-            } else {
-                nextClinicianId++;
+            switch (type) {
+                case USER:
+                    nextUserId++;
+                    break;
+                case CLINICIAN:
+                    nextClinicianId++;
+                    break;
+                case ADMIN:
+                    nextAdminId++;
+                    break;
             }
         }
-        if (user) {
-            return nextUserId;
-        } else {
-            return nextClinicianId;
+        switch (type) {
+            case USER:
+                return nextUserId;
+            case CLINICIAN:
+                return nextClinicianId;
+            case ADMIN:
+                return nextAdminId;
+            default:
+                // Unreachable
+                return -69;
         }
     }
+
 
     /**
      * Changes the next id to be issued to a new user to be correct for the current users list.
      *
-     * @param user Whether to recalculate user or clinician id
+     * @param type Whether to recalculate user, clinician or admin ID
      */
-    public static void recalculateNextId(boolean user) {
-        if (user) {
-            nextUserId = -1;
-            for (User nextUser : Main.users) {
-                if (nextUser.getId() > nextUserId) {
-                    nextUserId = nextUser.getId();
+    public static void recalculateNextId(LoginType type) {
+        switch (type) {
+            case USER:
+                nextUserId = -1;
+                for (User nextUser : Main.users) {
+                    if (nextUser.getId() > nextUserId) {
+                        nextUserId = nextUser.getId();
+                    }
                 }
-            }
-        } else {
-            nextClinicianId = -1;
-            for (Clinician clinician : Main.clinicians) {
-                if (clinician.getStaffID() > nextClinicianId) {
-                    nextClinicianId = clinician.getStaffID();
+                break;
+            case CLINICIAN:
+                nextClinicianId = -1;
+                for (Clinician clinician : Main.clinicians) {
+                    if (clinician.getStaffID() > nextClinicianId) {
+                        nextClinicianId = clinician.getStaffID();
+                    }
                 }
-            }
+                break;
+            case ADMIN:
+                nextAdminId = -1;
+                for (Admin admin : Main.admins) {
+                    if (admin.getStaffID() > nextAdminId) {
+                        nextAdminId = admin.getStaffID();
+                    }
+                }
+                break;
         }
     }
 
@@ -129,20 +157,26 @@ public class IO {
      * Save the user or clinician list to a json file.
      *
      * @param path  The path of the file to save to
-     * @param users whether to save the users or clinicians
+     * @param loginType the type of user being saved
      * @return Whether the save completed successfully
      */
-    public static boolean saveUsers(String path, boolean users) {
+    public static boolean saveUsers(String path, LoginType loginType) {
         PrintStream outputStream = null;
         File outputFile;
         boolean success;
         try {
             outputFile = new File(path);
             outputStream = new PrintStream(new FileOutputStream(outputFile));
-            if (users) {
-                gson.toJson(Main.users, outputStream);
-            } else {
-                gson.toJson(Main.clinicians, outputStream);
+            switch(loginType){
+                case USER:
+                    gson.toJson(Main.users, outputStream);
+                    break;
+                case CLINICIAN:
+                    gson.toJson(Main.clinicians, outputStream);
+                    break;
+                case ADMIN:
+                    gson.toJson(Main.admins, outputStream);
+                    break;
             }
             success = true;
         } catch (IOException e) {
@@ -159,10 +193,10 @@ public class IO {
      * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
      *
      * @param path  path of the file.
-     * @param users whether the imported file contains users or clinicians
+     * @param loginType the account type of the users
      * @return Whether the command executed successfully
      */
-    public static boolean importUsers(String path, boolean users) {
+    public static boolean importUsers(String path, LoginType loginType) {
         File inputFile = new File(path);
         Path filePath;
         try {
@@ -172,28 +206,41 @@ public class IO {
         }
         Type type;
         try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            if (users) {
-                type = new TypeToken<ArrayList<User>>() {
-                }.getType();
-                ArrayList<User> importedList = gson.fromJson(reader, type);
-                System.out.println("Opened file successfully.");
-                Main.users.clear();
-                nextUserId = -1;
-                Main.users.addAll(importedList);
-                recalculateNextId(true);
-                System.out.println("Imported list successfully.");
-                return true;
-            } else {
-                type = new TypeToken<ArrayList<Clinician>>() {
-                }.getType();
-                ArrayList<Clinician> importedList = gson.fromJson(reader, type);
-                System.out.println("Opened file successfully.");
-                Main.clinicians.clear();
-                nextClinicianId = -1;
-                Main.clinicians.addAll(importedList);
-                recalculateNextId(false);
-                System.out.println("Imported list successfully.");
-                return true;
+            switch (loginType) {
+                case USER:
+                    type = new TypeToken<ArrayList<User>>() {
+                    }.getType();
+                    ArrayList<User> importedUsers = gson.fromJson(reader, type);
+                    System.out.println("Opened file successfully.");
+                    Main.users.clear();
+                    nextUserId = -1;
+                    Main.users.addAll(importedUsers);
+                    recalculateNextId(LoginType.USER);
+                    System.out.println("Imported list successfully.");
+                    return true;
+                case CLINICIAN:
+                    type = new TypeToken<ArrayList<Clinician>>() {
+                    }.getType();
+                    ArrayList<Clinician> importedClinicians = gson.fromJson(reader, type);
+                    System.out.println("Opened file successfully.");
+                    Main.clinicians.clear();
+                    nextClinicianId = -1;
+                    Main.clinicians.addAll(importedClinicians);
+                    recalculateNextId(LoginType.CLINICIAN);
+                    System.out.println("Imported list successfully.");
+                    return true;
+                case ADMIN:
+                    type = new TypeToken<ArrayList<Admin>>() {
+                    }.getType();
+                    ArrayList<Admin> importedAdmins = gson.fromJson(reader, type);
+                    System.out.println("Opened file successfully.");
+                    Main.admins.clear();
+                    nextClinicianId = -1;
+                    Main.admins.addAll(importedAdmins);
+                    recalculateNextId(LoginType.CLINICIAN);
+                    System.out.println("Imported list successfully.");
+                    return true;
+
             }
         } catch (IOException e) {
             System.out.println("IOException on " + path + ": Check your inputs and permissions!");
@@ -215,5 +262,6 @@ public class IO {
         jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
         userPath = jarPath + File.separatorChar + "users.json";
         clinicianPath = jarPath + File.separatorChar + "clinicians.json";
+        adminPath = jarPath + File.separatorChar + "admins.json";
     }
 }

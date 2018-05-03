@@ -1,5 +1,6 @@
 package seng302.User;
 
+import seng302.User.Attribute.LoginType;
 import seng302.Generic.IO;
 
 /**
@@ -8,14 +9,43 @@ import seng302.Generic.IO;
 public class Clinician {
     private String name, workAddress, region, username, password;
     private long staffID;
+    private LoginType accountType;
 
     public Clinician(String username, String password, String name){
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = IO.getNextId(true, false);
+        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
+        this.accountType = LoginType.CLINICIAN;
+    }
+
+    /**
+     * Used by Admin to pick its own ID
+     * @param username
+     * @param password
+     * @param name
+     * @param staffID
+     */
+    public Clinician(String username, String password, String name, LoginType accountType, long staffID){
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.staffID = staffID;
+        this.region = null;
+        this.workAddress = null;
+        this.accountType = accountType;
+    }
+
+    public Clinician(String username, String password, String name, LoginType accountType){
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
+        this.region = null;
+        this.workAddress = null;
+        this.accountType = accountType;
     }
 
     /**

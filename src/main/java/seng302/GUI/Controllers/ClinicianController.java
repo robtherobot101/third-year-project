@@ -26,6 +26,7 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
@@ -104,7 +105,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private ComboBox clinicianOrganComboBox;
 
-    //@FXML
+    @FXML
     private StatusBar statusBar;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -114,7 +115,7 @@ public class ClinicianController implements Initializable {
     private Clinician clinician;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-    private TitleBar titleBar = new TitleBar();
+    private TitleBar titleBar;
 
     private int resultsPerPage;
     private int numberXofResults;
@@ -396,8 +397,8 @@ public class ClinicianController implements Initializable {
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getClinicianPath(), false);
-            IO.saveUsers(IO.getUserPath(), true);
+            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
         }
         alert.close();
     }
@@ -528,6 +529,9 @@ public class ClinicianController implements Initializable {
         //Add in check for user type
 
         if(searchUserTypeTerm != null) {
+            if (searchUserTypeTerm.equals("Neither")){
+                searchUserTypeTerm = "";
+            }
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
                 if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
@@ -700,10 +704,10 @@ public class ClinicianController implements Initializable {
                             setTooltip(null);
                         } else {
                             if (user.getOrgans().isEmpty()) {
-                                tooltip.setText(user.getName() + ".");
+                                tooltip.setText("Preferred name :"+user.getPreferredName() + ".");
                             } else {
                                 String organs = user.getOrgans().toString();
-                                tooltip.setText(user.getName() + ". User: " + organs.substring(1, organs.length() - 1));
+                                tooltip.setText("Preferred name :"+user.getPreferredName() + ". Donor: " + organs.substring(1, organs.length() - 1));
                             }
                             setTooltip(tooltip);
                         }
@@ -726,7 +730,7 @@ public class ClinicianController implements Initializable {
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setTitleBar(stage);
                             Main.setCurrentUser(row.getItem());
-
+                            System.out.println(row.getItem().getType());
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
                             History.printToFile(streamOut, text);
 
@@ -749,7 +753,7 @@ public class ClinicianController implements Initializable {
                 return row;
             }
         });
-
+        statusIndicator.setStatusBar(statusBar);
         profileTable.refresh();
     }
 
