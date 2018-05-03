@@ -1,5 +1,6 @@
-package seng302.Core;
+package seng302.Generic;
 
+import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 
 import java.util.Date;
@@ -7,13 +8,10 @@ import java.util.Date;
 /**
  * An object to store the necessary data for the transplant waiting list
  */
-public class TransplantWaitingListItem {
+public class TransplantWaitingListItem extends WaitingListItem {
 
     private String Name;
     private String region;
-    private Date date;
-    private Organ organ;
-    private long id;
 
     /**
      * Constructor of the object.
@@ -24,12 +22,10 @@ public class TransplantWaitingListItem {
      * @param organ The organ that the receiver needs.
      * @param id The id of the receiver.
      */
-    public TransplantWaitingListItem(String Name, String region, Date date, Organ organ, long id) {
+    public TransplantWaitingListItem(String Name, String region, String date, Organ organ, long id, Integer waitingListId) {
+        super(organ, date, id, waitingListId);
         this.Name = Name;
         this.region = region;
-        this.date = date;
-        this.organ = organ;
-        this.id = id;
     }
 
     public String getRegion() {
@@ -40,15 +36,4 @@ public class TransplantWaitingListItem {
         return Name;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public Organ getOrgan() {
-        return organ;
-    }
-
-    public long getId() {
-        return id;
-    }
 }

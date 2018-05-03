@@ -7,6 +7,8 @@ public class TitleBar {
 
     private Stage stage;
 
+    private String page;
+
     public void setStage(Stage stage){
         this.stage = stage;
     }
@@ -26,6 +28,20 @@ public class TitleBar {
      * @param page The currently visible page
      */
     public void setTitle(String user, String type, String page){
+        this.page = page;
+        String title = type + ": " + user;
+        if(page != null){
+            title = title.concat(" - " + page);
+        }
+        stage.setTitle(title);
+    }
+
+    /**
+     * Set the title for a user and a page, when page is unknown.
+     * @param user The name of the currently logged in user
+     * @param type The type of user (User, Clinician etc)
+     */
+    public void setTitle(String user, String type){
         String title = type + ": " + user;
         if(page != null){
             title = title.concat(" - " + page);

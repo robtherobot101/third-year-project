@@ -1,4 +1,4 @@
-package seng302.Core;
+package seng302.Generic;
 
 import java.time.LocalDate;
 

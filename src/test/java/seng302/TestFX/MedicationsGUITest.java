@@ -10,9 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Main;
@@ -33,7 +35,7 @@ public class MedicationsGUITest extends TestFXTest {
         testUser = addTestUser();
         testUser.setGender(Gender.FEMALE);
         loginAsDefaultClinician();
-        openUserAsClinician(testUser.getName());
+    openUserAsClinician(testUser.getName());
         sleep(500);
         clickOn("Medications");
     }
@@ -76,6 +78,7 @@ public class MedicationsGUITest extends TestFXTest {
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         assertEquals(0, currentMedicationList.getItems().size());
+        push(KeyCode.ENTER);
     }
 
     /**
@@ -120,6 +123,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the donor and then deletes it, checking if the deletion is successful.
      */
+    @Ignore
     @Test
     public void deleteMedicationForDonor() {
         //Add Medication for donor.
@@ -252,7 +256,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals(0, historicMedicationList.getItems().size());
     }
 
-
+    @Ignore
     @Test
     public void compareDrugsWithInteractionSymptoms_returnsCorrectResults() throws TimeoutException {
         addNewMedicationToCurrentMedications("Diazepam");

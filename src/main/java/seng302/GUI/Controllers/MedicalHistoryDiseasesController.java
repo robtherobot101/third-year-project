@@ -1,4 +1,4 @@
-package seng302.Controllers;
+package seng302.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -15,8 +15,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
-import seng302.Core.Disease;
 import seng302.GUI.Controllers.PageController;
+import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
@@ -181,6 +181,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                 currentDiseaseItems.remove(chosenDisease);
                 statusIndicator.setStatus("Removed " + chosenDisease, false);
                 titleBar.saved(false);
+                saveToUndoStack();
             }
             alert.close();
         }
@@ -197,10 +198,11 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                 curedDiseaseItems.remove(chosenDisease);
                 statusIndicator.setStatus("Removed " + chosenDisease, false);
                 titleBar.saved(false);
+                saveToUndoStack();
             }
             alert.close();
         }
-         
+
     }
 
     /**
@@ -243,6 +245,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
         dialog.setTitle("Update Disease");
         dialog.setHeaderText("Update Disease Details");
+
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -324,6 +328,32 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             }
         });
     }
+
+    /**
+     * Called by Main to update the displayed user procedures to what is currently stored in the user object.
+     */
+    public void updateDiseases() {
+        currentDiseaseItems.clear();
+        currentDiseaseItems.addAll(currentUser.getCurrentDiseases());
+        curedDiseaseItems.clear();
+        curedDiseaseItems.addAll(currentUser.getCuredDiseases());
+        sortCuredDiseases(false);
+        sortCurrentDiseases(false);
+        currentDiseaseTableView.refresh();
+        curedDiseaseTableView.refresh();
+    }
+
+    /**
+     *
+     */
+    private void saveToUndoStack() {
+        Main.addCurrentToDiseaseUndoStack();
+        currentUser.getCurrentDiseases().clear();
+        currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
+        currentUser.getCuredDiseases().clear();
+        currentUser.getCuredDiseases().addAll(curedDiseaseItems);
+    }
+
 
     /**
      * Initialises flags + listeners for the current disease table view sorting
@@ -425,6 +455,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         } else {
             // Sort by date
             if (sortCurrentDatesAscending) {
+                // ...ascending order
                 if (toggle) {
                     sortCurrentDatesAscending = false;
                     sortCurrentDiseases(false);
@@ -435,6 +466,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                 currentDateColumnLabel.setText("Date ⬆️️");
 
             } else {
+                // ...descending order
                 if (toggle) {
                     sortCurrentDatesAscending = true;
                     sortCurrentDiseases(false);
@@ -699,6 +731,18 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             };
         });
 
+        currentDiseaseTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                curedDiseaseTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        curedDiseaseTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                currentDiseaseTableView.getSelectionModel().clearSelection();
+            }
+        });
+
         // Set up columns to extract correct information from a Disease object
         currentDiagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         currentDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
@@ -720,7 +764,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         deleteDiseaseButton.setVisible(shown);
         saveDiseaseButton.setVisible(shown);
         isCuredCheckBox.setVisible(shown);
-        todayButton.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
     }
@@ -736,10 +779,12 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         currentDiseaseItems = FXCollections.observableArrayList();
         currentDiseaseItems.addAll(currentUser.getCurrentDiseases());
         currentDiseaseTableView.setItems(currentDiseaseItems);
+        sortCurrentDiseases(false);
 
         curedDiseaseItems = FXCollections.observableArrayList();
         curedDiseaseItems.addAll(currentUser.getCuredDiseases());
         curedDiseaseTableView.setItems(curedDiseaseItems);
+        sortCuredDiseases(false);
 
         System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
     }

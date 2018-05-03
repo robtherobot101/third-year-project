@@ -11,10 +11,6 @@ import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
-import seng302.Generic.History;
-import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
@@ -37,7 +33,8 @@ public class MedicationsController extends PageController implements Initializab
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel;
+    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel,
+            interactionsTitleLabel, interactionsContentLabel, historyTitleLabel, historyContentLabel;
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
@@ -137,7 +134,9 @@ public class MedicationsController extends PageController implements Initializab
                     List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
                     Platform.runLater(() -> {
                         if (!activeIngredients.get(0).equals("")) {
-                            currentItems.add(new Medication(medicationChoice, activeIngredients.toArray(new String[0])));
+                            Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
+                            newMedication.startedTaking();
+                            currentItems.add(newMedication);
                             // NOTE: I have created another constructor in the Medications class for a medication with a name and
                             // active ingredients also.
 
@@ -187,6 +186,7 @@ public class MedicationsController extends PageController implements Initializab
      */
     public void moveMedicationToHistory() {
         Medication m = moveMedication(historicItems, currentListView);
+        m.stoppedTaking();
         statusIndicator.setStatus("Moved " + m + " to history", false);
         titleBar.saved(false);
     }
@@ -196,6 +196,7 @@ public class MedicationsController extends PageController implements Initializab
      */
     public void moveMedicationToCurrent() {
         Medication m = moveMedication(currentItems, historyListView);
+        m.startedTaking();
         statusIndicator.setStatus("Moved " + m + " to current", false);
         titleBar.saved(false);
     }
@@ -366,14 +367,22 @@ public class MedicationsController extends PageController implements Initializab
             // Display the ingredients
             activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
             activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+            // Display the usage history
+            historyTitleLabel.setText("History of usage for " + selected.getName());
+            historyContentLabel.setText(String.join("\n", selected.getHistory()));
         } else if (!currentSelectionIsNull) {
             selected = currentListView.getSelectionModel().getSelectedItem();
             // Display the ingredients
             activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
             activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+            // Display the usage history
+            historyTitleLabel.setText("History of usage for " + selected.getName());
+            historyContentLabel.setText(String.join("\n", selected.getHistory()));
         } else {
             activeIngredientsTitleLabel.setText("");
             activeIngredientsContentLabel.setText("");
+            historyTitleLabel.setText("");
+            historyContentLabel.setText("");
         }
     }
 
@@ -392,15 +401,13 @@ public class MedicationsController extends PageController implements Initializab
             Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
             ArrayList<String> medicines = Mapi.autocomplete(medicine);
             // Reset status bar
-            Platform.runLater(() -> {
-                Platform.runLater(() -> statusIndicator.ready());
-            });
+            Platform.runLater(() -> Platform.runLater(() -> statusIndicator.ready()));
             if (medicines.size() > 5) {
                 return medicines.subList(0, 5);
             } else {
                 return medicines;
             }
-        })/*.setOnAutoCompleted(event -> addNewMedicationButton.setDisable(false))*/;
+        });
         newMedicationField.textProperty().addListener(((observable, oldValue, newValue) -> addNewMedicationButton.setDisable(newValue.isEmpty())));
 
         interactionsTitleLabel.setText("");

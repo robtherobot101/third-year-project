@@ -1,4 +1,4 @@
-package seng302.Controllers;
+package seng302.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,8 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import seng302.Core.Procedure;
-import seng302.GUI.Controllers.PageController;
+import seng302.Generic.Procedure;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
@@ -63,13 +62,32 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
-    private StatusIndicator statusIndicator;
-    private TitleBar titleBar;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.setMedicalHistoryProceduresController(this);
         setupListeners();
+    }
+
+    /**
+     * Update the displayed user procedures to what is currently stored in the user object.
+     */
+    public void updateProcedures() {
+        pendingProcedureItems.clear();
+        pendingProcedureItems.addAll(currentUser.getPendingProcedures());
+        previousProcedureItems.clear();
+        previousProcedureItems.addAll(currentUser.getPreviousProcedures());
+    }
+
+    /**
+     * Function to saving the most current versions of the previous and pending procedures to an undo stack
+     */
+    private void saveToUndoStack() {
+        Main.addCurrentToProcedureUndoStack();
+        currentUser.getPendingProcedures().clear();
+        currentUser.getPendingProcedures().addAll(pendingProcedureItems);
+        currentUser.getPreviousProcedures().clear();
+        currentUser.getPreviousProcedures().addAll(previousProcedureItems);
     }
 
     /**
@@ -104,6 +122,7 @@ public class MedicalHistoryProceduresController extends PageController implement
             } else {
                 pendingProcedureItems.add(procedureToAdd);
             }
+            saveToUndoStack();
             summaryInput.clear();
             descriptionInput.clear();
             dateOfProcedureInput.getEditor().clear();
@@ -149,6 +168,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                 previousProcedureItems.remove(chosenProcedure);
                 statusIndicator.setStatus("Deleted " + chosenProcedure, false);
                 titleBar.saved(false);
+                saveToUndoStack();
             }
             alert.close();
         }
@@ -165,7 +185,10 @@ public class MedicalHistoryProceduresController extends PageController implement
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to update the current user? ");
         alert.setContentText("By doing so, the donor will be updated with the following procedure details.");
+
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
         Optional<ButtonType> result = alert.showAndWait();
+
         if (result.get() == ButtonType.OK) {
             currentUser.getPendingProcedures().clear();
             currentUser.getPendingProcedures().addAll(pendingProcedureItems);
@@ -196,6 +219,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Procedure");
         dialog.setHeaderText("Update Procedure Details");
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -314,8 +338,8 @@ public class MedicalHistoryProceduresController extends PageController implement
                     previousProcedureItems.remove(selectedProcedure);
                     previousProcedureItems.add(selectedProcedure);
                 }
-
             }
+            saveToUndoStack();
 
         });
     }
@@ -326,6 +350,19 @@ public class MedicalHistoryProceduresController extends PageController implement
      * Also creates the menu items for right clicking on a procedure.
      */
     private void setupListeners() {
+
+        pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                previousProcedureTableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                pendingProcedureTableView.getSelectionModel().clearSelection();
+            }
+        });
+
         final ContextMenu pendingProcedureListContextMenu = new ContextMenu();
 
         // Update selected procedure on the pending procedures table
@@ -359,6 +396,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                 // To refresh the observableList to make chronic toggle visible
                 pendingProcedureItems.remove(selectedProcedure);
                 pendingProcedureItems.add(selectedProcedure);
+
             }
         });
         pendingProcedureListContextMenu.getItems().add(togglePendingProcedureOrganAffectingMenuItem);
@@ -396,6 +434,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                 // To refresh the observableList to make chronic toggle visible
                 previousProcedureItems.remove(selectedProcedure);
                 previousProcedureItems.add(selectedProcedure);
+
             }
         });
         previousProcedureListContextMenu.getItems().add(togglePreviousProcedureOrganAffectingMenuItem);

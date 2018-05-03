@@ -30,7 +30,7 @@ public class AccountSettingsController implements Initializable {
     @FXML
     private Label userNameLabel, errorLabel;
     @FXML
-    private AnchorPane background;
+    private AnchorPane accountBackground;
 
     private User currentUser;
 
@@ -90,7 +90,7 @@ public class AccountSettingsController implements Initializable {
      * Removes focus from all fields.
      */
     public void requestFocus() {
-        background.requestFocus();
+        accountBackground.requestFocus();
     }
 
     /**

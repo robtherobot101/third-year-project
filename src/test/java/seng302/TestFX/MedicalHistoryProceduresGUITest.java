@@ -13,10 +13,13 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Core.Procedure;
+import seng302.Generic.Procedure;
 import seng302.Generic.Main;
 import seng302.User.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -25,42 +28,15 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
-public class MedicalHistoryProceduresGUITest extends ApplicationTest {
+public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
-    private Main mainGUI;
-    private static final boolean runHeadless = true;
 
     private TableView<Procedure> pendingProcedureTableView, previousProcedureTableView;
     private Procedure pendingTableSelectedProcedure, previousTableSelectedProcedure;
 
     @BeforeClass
-    public static void setupSpec() throws Exception {
-        if (runHeadless) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1920x1080-32");
-        }
-        registerPrimaryStage();
-    }
-
-    @Before
-    public void setUp () throws Exception {
-
-    }
-
-    @After
-    public void tearDown () throws Exception {
-        FxToolkit.hideStage();
-        release(new KeyCode[]{});
-        release(new MouseButton[]{});
-    }
-
-    @Override
-    public void start (Stage stage) throws Exception {
-        mainGUI = new Main();
-        mainGUI.start(stage);
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     /**
@@ -79,39 +55,12 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
      */
     private void enterMedicalHistoryProceduresView() {
         // Assumed that calling method is currently on login screen
-
-        // Checks if our test user already exists
-        String[] names = new String[]{"Andrew", "French"};
-        ObservableList<User> results = mainGUI.getUserByName(names);
-
-        // If it doesn't exist -> add the user
-        if (results.isEmpty()) {
-            System.out.println("MedicalHistoryProceduresGUITest: Test user not found -> adding test user");
-            clickOn("#createAccountButton");
-            clickOn("#usernameInput").write("andy");
-            clickOn("#emailInput").write("afr66@uclive.ac.nz");
-            clickOn("#passwordInput").write("password123");
-            clickOn("#passwordConfirmInput").write("password123");
-            clickOn("#firstNameInput").write("Andrew");
-            clickOn("#middleNamesInput").write("Robert");
-            clickOn("#lastNameInput").write("French");
-            clickOn("#dateOfBirthInput").write("04/08/1997");
-            doubleClickOn("#createAccountButton");
-
-            // Logout to be able to login as a clinician
-            clickOn("#logoutButton");
-            clickOn("OK");
-        }
-        System.out.println("MedicalHistoryProceduresGUITest: Logging in as default clinician");
-        // Login as default clinician
-        //clickOn("#identificationInput");
-        clickOn("#identificationInput").write("default");
-        clickOn("#passwordInput").write("default");
-        doubleClickOn("#loginButton");
+        addTestUser();
+        loginAsDefaultClinician();
 
         System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
         // Click on the Created User in clinician table and enter the medications panel.
-        doubleClickOn("Andrew Robert French");
+        doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
@@ -208,7 +157,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         enterMedicalHistoryProceduresView();
         clickOn("#summaryInput").write("Arm Transplant");
         clickOn("#descriptionInput").write("Transfer of arm");
-        clickOn("#dateOfProcedureInput").write("4/04/2002");
+        clickOn("#dateOfProcedureInput").write("4/04/1923");
         clickOn("#addNewProcedureButton");
 
         // Checks an alert dialog was presented -> this checks disease was not added
@@ -316,10 +265,10 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
 
         clickOn("#saveProcedureButton");
         sleep(200);
-        clickOn("OK");
-        clickOn("Exit");
+        clickOn("#saveProcedureOK");
+        clickOn("#exitUserButton");
         sleep(200);
-        clickOn("OK");
+        clickOn("#exitOK");
 
         //Check if procedure added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();
@@ -328,7 +277,7 @@ public class MedicalHistoryProceduresGUITest extends ApplicationTest {
         assertTrue(topDonor.getPendingProcedures().get(0).getDescription().equalsIgnoreCase("Transfer of arm"));
         assertEquals(LocalDate.of(2020, 4, 4), topDonor.getPendingProcedures().get(0).getDate());
 
-        doubleClickOn("Andrew Robert French");
+        doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="transplantPane" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.TransplantWaitingListController">
+<AnchorPane fx:id="transplantPane" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.TransplantWaitingListController">
    <children>
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="800.0">
         <menus>
@@ -39,5 +39,6 @@
       </Label>
       <ComboBox fx:id="organSearchComboBox" layoutX="613.0" layoutY="84.0" onAction="#updateFoundUsersOnOrganChange" prefHeight="25.0" prefWidth="121.0" promptText="Organ" />
       <TextField fx:id="regionSearchTextField" layoutX="614.0" layoutY="118.0" prefHeight="25.0" prefWidth="121.0" promptText="Region" />
+      <Button fx:id="deregisterReceiverButton" layoutX="56.0" layoutY="115.0" onAction="#showDeregisterDialog" mnemonicParsing="false" text="De-Register" />
    </children>
 </AnchorPane>
