@@ -22,7 +22,6 @@ import seng302.User.User;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import sun.rmi.runtime.Log;
 
 /**
  * A controller class for the log in screen.

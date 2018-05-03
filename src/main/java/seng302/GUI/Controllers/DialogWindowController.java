@@ -3,6 +3,7 @@ package seng302.GUI.Controllers;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import seng302.Generic.Main;
 
 import java.io.File;
 
@@ -25,6 +26,7 @@ public final class DialogWindowController
      */
     public static void showWarning(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
@@ -40,6 +42,7 @@ public final class DialogWindowController
      */
     public static void showInformation(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);

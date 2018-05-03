@@ -2,7 +2,6 @@ package seng302.GUI.Controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,24 +13,23 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import seng302.GUI.TitleBar;
-import seng302.Generic.*;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
-import seng302.User.Attribute.Organ;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -46,65 +44,27 @@ import static seng302.Generic.IO.streamOut;
  */
 public class ClinicianController implements Initializable {
     @FXML
-    private TableColumn profileName;
-
-    @FXML
-    private TableColumn profileUserType;
-
-    @FXML
-    private TableColumn profileAge;
-
-    @FXML
-    private TableColumn profileGender;
-
-    @FXML
-    private TableColumn profileRegion;
-
+    private TableColumn profileName, profileUserType, profileAge, profileGender, profileRegion;
     @FXML
     private TableView profileTable;
     @FXML
-    private TextField profileSearchTextField;
+    private TextField profileSearchTextField, clinicianRegionField;
     @FXML
     private Pane background;
     @FXML
-    private Label staffIDLabel;
+    private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
     @FXML
-    private Label nameLabel;
-    @FXML
-    private Label addressLabel;
-    @FXML
-    private Label regionLabel;
-    @FXML
-    private Label clinicianDisplayText;
-    @FXML
-    private Label userDisplayText;
-
-    @FXML
-    private Button undoWelcomeButton;
-
-    @FXML
-    private Button redoWelcomeButton;
-
+    private Button undoWelcomeButton, redoWelcomeButton;
     @FXML
     private GridPane mainPane;
-
-    @FXML
-    private ComboBox numberOfResutsToDisplay;
-
-    @FXML
-    private TextField clinicianRegionField;
-
     @FXML
     private MenuItem accountSettingsMenuItem;
     @FXML
-    private ComboBox clinicianGenderComboBox;
+    private ComboBox clinicianGenderComboBox, clinicianUserTypeComboBox, clinicianOrganComboBox, numberOfResutsToDisplay;
     @FXML
     private TextField clinicianAgeField;
     @FXML
-    private ComboBox clinicianUserTypeComboBox;
-    @FXML
-    private ComboBox clinicianOrganComboBox;
-
+    private AnchorPane transplantListPane;
     @FXML
     private StatusBar statusBar;
 
@@ -211,6 +171,7 @@ public class ClinicianController implements Initializable {
     public void logout() {
         Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -267,7 +228,8 @@ public class ClinicianController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateClinicianPopUp() {
-        //addClinicianToUndoStack(clinician);
+        clinicianUndoStack.add(new Clinician(clinician));
+        undoWelcomeButton.setDisable(false);
         System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
 
@@ -371,24 +333,6 @@ public class ClinicianController implements Initializable {
         });
     }
 
-    public boolean updateClinician() {
-//        if (clinician.getName().equals(nameInput.getText()) &&
-//                clinician.getRegion().equals(regionInput.getText()) &&
-//                clinician.getWorkAddress().equals(addressInput.getText())) {
-//            return false;
-//        } else {
-//            clinician.setName(nameInput.getText());
-//            clinician.setWorkAddress(addressInput.getText());
-//            clinician.setRegion(regionInput.getText());
-//            //updatedSuccessfully.setOpacity(1.0);
-//            fadeIn.playFromStart();
-//            titleBar.setTitle(clinician.getName(), "Clinician", null);
-//            statusIndicator.setStatus("Updated clinician details", false);
-//            return true;
-//        }
-        return true;
-    }
-
     /**
      * Saves the clinician ArrayList to a JSON file
      */
@@ -414,20 +358,6 @@ public class ClinicianController implements Initializable {
      * Changes the focus to the pane when pressed
      */
     public void requestFocus() { background.requestFocus(); }
-
-
-//    /**
-//     * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
-//     */
-//    private void attributeFieldUnfocused() {
-//        Clinician oldFields = new Clinician(clinician);
-//        if (updateClinician()) {
-//            clinicianUndoStack.add(new Clinician(oldFields));
-//            clinicianRedoStack.clear();
-//            undoWelcomeButton.setDisable(false);
-//            redoWelcomeButton.setDisable(true);
-//        }
-//    }
 
     /**
      * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
@@ -461,6 +391,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Updates the ObservableList for the profile table
+     * @param pageSize sets the page size for the page
      */
     public void displayPage(int pageSize) {
         currentPage.clear();
@@ -507,7 +438,7 @@ public class ClinicianController implements Initializable {
         if(searchGenderTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchGenderTerm.equals(user.getGender().toString()) && (user.getGender() != null)) {
+                if((user.getGender() != null) && searchGenderTerm.equals(user.getGender().toString())) {
                     newUsersFound.add(user);
                 }
             }
@@ -519,7 +450,7 @@ public class ClinicianController implements Initializable {
         if(searchOrganTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if((user.getOrgans().contains(Organ.parse(searchOrganTerm))) && (user.getOrgans().size() != 0)) {
+                if((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
                     newUsersFound.add(user);
                 }
             }
@@ -534,7 +465,10 @@ public class ClinicianController implements Initializable {
             }
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
+                if(user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
+                    newUsersFound.add(user);
+                }
+                else if((searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }
@@ -569,6 +503,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Splits the sorted list of found users and returns a page worth
+     * @param pageSize The size of each page
      * @return The sorted page of results
      */
     public ObservableList<User> getPage(int pageSize){
@@ -586,6 +521,9 @@ public class ClinicianController implements Initializable {
      */
     public void showMainPane() {
         mainPane.setVisible(true);
+        transplantListPane.setVisible(false);
+        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
+        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
     }
 
     @Override
@@ -764,7 +702,10 @@ public class ClinicianController implements Initializable {
     public void transplantWaitingList() {
         Main.getTransplantWaitingListController().updateTransplantList();
         //background.setVisible(false);
-        Main.setScene(TFScene.transplantList);
+        mainPane.setVisible(false);
+        transplantListPane.setVisible(true);
+        undoWelcomeButton.setDisable(true);
+        redoWelcomeButton.setDisable(true);
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
 }

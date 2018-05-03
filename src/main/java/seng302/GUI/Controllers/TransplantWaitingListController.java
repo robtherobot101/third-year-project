@@ -16,7 +16,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
@@ -24,11 +23,9 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -76,7 +73,7 @@ public class TransplantWaitingListController implements Initializable {
      * Updates the transplant waiting list table and checks if reciever is waiting not complete
      */
     public void updateTransplantList() {
-        transplantList.removeAll(transplantList);
+        transplantList.clear();
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
@@ -96,7 +93,7 @@ public class TransplantWaitingListController implements Initializable {
      * @param organSearch the organ to specifically search for given by a user.
      */
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
-        transplantList.removeAll(transplantList);
+        transplantList.clear();
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
@@ -137,13 +134,14 @@ public class TransplantWaitingListController implements Initializable {
         reasonCodes.add("4: Successful Transplant");
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>("4: Successful Transplant", reasonCodes);
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         dialog.setTitle("De-Registering Reason Code");
         dialog.setHeaderText("Select a reason code");
         dialog.setContentText("Reason Code: ");
 
         //Get Input Code
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(option -> processDeregister(option));
+        result.ifPresent(this::processDeregister);
     }
 
     /**
@@ -160,6 +158,7 @@ public class TransplantWaitingListController implements Initializable {
         User selectedUser = Main.getUserById(selectedWaitingListItem.getUserId());
 
         Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         dialog.setTitle("Cure Disease");
         dialog.setHeaderText("Select a disease to cure.");
 
@@ -241,10 +240,7 @@ public class TransplantWaitingListController implements Initializable {
         }
         User selectedUser = Main.getUserById(selectedWaitingListItem.getUserId());
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Cure Disease?");
-            alert.setHeaderText("Would you like to select the cured disease?");
-            alert.setContentText("Cure a Disease?");
+            Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Cure Disease?", "Would you like to select the cured disease?", "Cure a Disease?");
 
             ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -283,15 +279,17 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void processDeregister(String reason) {
         System.out.println("\n"+reason);
-        if (reason == "1: Error Registering") {
+        if (Objects.equals(reason, "1: Error Registering")) {
             errorDeregister();
-        } else if (reason == "2: Disease Cured") {
+        } else if (Objects.equals(reason, "2: Disease Cured")) {
             confirmDiseaseCuring();
-        } else if (reason == "3: Receiver Deceased") {
+        } else if (Objects.equals(reason, "3: Receiver Deceased")) {
             showDeathDateDialog();
-        } else if (reason == "4: Successful Transplant") {
+        } else if (Objects.equals(reason, "4: Successful Transplant")) {
             transplantDeregister();
         }
+
+        System.out.println(Main.getWaitingListController().deregisterPressed);
 
         if (Main.getWaitingListController().deregisterPressed){
             Main.updateWaitingList();
@@ -334,7 +332,7 @@ public class TransplantWaitingListController implements Initializable {
         User user = Main.getUserById(selectedWaitingListItem.getUserId());
         Long userId = user.getId();
         for (ReceiverWaitingListItem i: user.getWaitingListItems()) {
-            if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
+            if (Objects.equals(i.getWaitingListItemId(), selectedWaitingListItem.getWaitingListItemId())) {
                 i.deregisterOrgan(1);
                 History.prepareFileStringGUI(userId, "deregisterError");
                 break;
@@ -347,6 +345,7 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void showDeathDateDialog() {
         Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         dialog.setTitle("Date of Death");
         dialog.setHeaderText("Please provide the date of death");
 
@@ -448,6 +447,7 @@ public class TransplantWaitingListController implements Initializable {
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
         transplantTable.setItems(transplantList);
+        transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
         Main.setTransplantWaitingListController(this);

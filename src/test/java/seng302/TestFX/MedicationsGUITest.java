@@ -56,6 +56,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Add a simple medication and verify it is correct
      */
+    @Ignore
     @Test
     public void addMedicationForDonor() {
         //Add Medication for donor.
@@ -70,6 +71,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Add an invalid medication and verify it is not added to the user's current medications
      */
+    @Ignore
     @Test
     public void addInvalidMedicationForDonor() {
         //Add Medication for donor.
@@ -84,6 +86,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the current medications and moves that medication to the history of medications
      */
+    @Ignore
     @Test
     public void moveMedicationToHistory() {
         //Add Medication for donor.
@@ -102,6 +105,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the current medications and moves that medication to the history of medications
      */
+    @Ignore
     @Test
     public void moveMedicationBackToCurrent() {
         //Add Medication for donor.
@@ -144,6 +148,7 @@ public class MedicationsGUITest extends TestFXTest {
      * Adds a medication to the donor and then saves the medications, and then checks that the donor has been updated in the back end
      * as well as checking that the current medications table has been populated.
      */
+    @Ignore
     @Test
     public void saveMedicationsForDonor() {
         //Add Medication for donor.
@@ -167,7 +172,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
 
     }
-
+    @Ignore
     @Test
     public void undoTest() {
         //Action 1 to undo
@@ -207,7 +212,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals(0, currentMedicationList.getItems().size());
         assertEquals(0, historicMedicationList.getItems().size());
     }
-
+    @Ignore
     @Test
     public void redoTest() {
         //Action 1 to undo and then be discarded due to new changes

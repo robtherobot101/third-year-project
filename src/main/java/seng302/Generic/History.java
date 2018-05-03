@@ -250,7 +250,7 @@ public class History {
      */
     public static String readFile(){
 
-        String line = null;
+        String line;
         String actionHistoryString = "";
 
         try {
@@ -282,7 +282,6 @@ public class History {
      * @return A two dimensional string list for each users actions with the second list being the action history broken up
      */
     public static String[][] getUserHistory(long userid) {
-
         String history = readFile();
         String[] historyList = history.split("\n");
         String[][] userHistory = new String[historyList.length][6];
@@ -299,7 +298,5 @@ public class History {
             }
         }
         return userHistory;
-
     }
-
 }

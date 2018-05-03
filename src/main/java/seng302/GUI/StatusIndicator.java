@@ -12,7 +12,7 @@ public class StatusIndicator {
     /**
      * Default constructor
      */
-    public StatusIndicator(){};
+    public StatusIndicator(){}
 
     /**
      * Set the status and progress bar on the status bar

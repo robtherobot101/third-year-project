@@ -181,10 +181,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      */
     public void save() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current user? ");
-        alert.setContentText("By doing so, the donor will be updated with the following procedure details.");
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION,"Are you sure?","Are you sure would like to update the current user? ","By doing so, the donor will be updated with the following procedure details.");
 
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
         Optional<ButtonType> result = alert.showAndWait();

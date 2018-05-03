@@ -112,6 +112,9 @@ public class IO {
      * was true or false
      */
     public static long getNextId(boolean increment, LoginType type) {
+        recalculateNextId(LoginType.ADMIN);
+        recalculateNextId(LoginType.USER);
+        recalculateNextId(LoginType.CLINICIAN);
         if (increment) {
             switch (type) {
                 case USER:
@@ -257,7 +260,7 @@ public class IO {
                     Main.admins.clear();
                     nextClinicianId = -1;
                     Main.admins.addAll(importedAdmins);
-                    recalculateNextId(LoginType.CLINICIAN);
+                    recalculateNextId(LoginType.ADMIN);
                     System.out.println("Imported list successfully.");
                     return true;
 
