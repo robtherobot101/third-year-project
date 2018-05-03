@@ -65,22 +65,40 @@ public class IO {
         }
     }
 
-    public static String getUserPath() {
-        return userPath;
-    }
+    /**
+     * get path to the user json file
+     * @return path to the user json file
+     */
+    public static String getUserPath() { return userPath; }
 
+    /**
+     * get the path to the jar file
+     * @return path to the jar file
+     */
     public static String getJarPath() {
         return jarPath;
     }
 
+    /**
+     * get path to the clinician json file
+     * @return path to the clinician json file
+     */
     public static String getClinicianPath() {
         return clinicianPath;
     }
 
+    /**
+     * get path to the admin json file
+     * @return path to the admin json file
+     */
     public static String getAdminPath() {
         return adminPath;
     }
 
+    /**
+     * set the path to the jar file
+     * @param jarPath path to the jar file
+     */
     public static void setJarPath(String jarPath) {
         IO.jarPath = jarPath;
     }
@@ -255,6 +273,10 @@ public class IO {
         return false;
     }
 
+    /**
+     * method to set the paths for the user, clinician and admin files
+     * @throws URISyntaxException Not used
+     */
     public static void setPaths() throws URISyntaxException {
         jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
         userPath = jarPath + File.separatorChar + "users.json";

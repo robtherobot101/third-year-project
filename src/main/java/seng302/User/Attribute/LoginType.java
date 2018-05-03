@@ -8,6 +8,10 @@ public enum LoginType {
 
     private String type;
 
+    /**
+     * method to create a new enum for the currently logged user
+     * @param type the type of user logged
+     */
     LoginType(String type) {
         this.type = type;
     }

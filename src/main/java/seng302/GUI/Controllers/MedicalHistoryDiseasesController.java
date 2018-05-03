@@ -237,7 +237,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     /**
      * Creates a popup dialog to modify the name and date of the selectedDisease
      * @param selectedDisease disease to update information of
-     * @param current
+     * @param current if the selected disease is current or cured
      */
     private void updateDiseasePopUp(Disease selectedDisease, boolean current) {
 
@@ -753,6 +753,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Sets whether the control buttons are shown or not on the medications pane
+     * @param shown boolean defines what controls to show
      */
     public void setControlsShown(boolean shown) {
         dateOfDiagnosisInput.setVisible(shown);

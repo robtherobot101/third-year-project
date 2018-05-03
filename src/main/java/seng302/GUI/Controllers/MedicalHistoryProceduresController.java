@@ -537,6 +537,7 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     /**
      * Sets whether the control buttons are shown or not on the medications pane
+     * @param shown boolean defines which controls should be shown
      */
     public void setControlsShown(boolean shown) {
         dateOfProcedureInput.setVisible(shown);
@@ -555,6 +556,10 @@ public class MedicalHistoryProceduresController extends PageController implement
     }
 
 
+    /**
+     * updates the users procedures when a procedure date is passed
+     * UNUSED
+     */
     private void updatePendingProcedures() {
         //Check if pending procedure due date is now past the current date
         for(Procedure procedure: currentUser.getPendingProcedures()) {

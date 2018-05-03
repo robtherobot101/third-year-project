@@ -75,6 +75,10 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * returns the current stage
+     * @return the current stage
+     */
     public static Stage getStage() {
         return stage;
     }
@@ -106,19 +110,35 @@ public class Main extends Application {
     }
 
 
+    /**
+     * adds the clinican user window to the stage
+     * @param stage the current stage
+     */
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 
+    /**
+     * sets the current clinician
+     * @param clinician the logged clinician
+     */
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
     }
 
+    /**
+     * sets the current admin
+     * @param admin the logged admin
+     */
     public static void setAdmin(Admin admin) {
         System.out.println("Main: Called set admin");
         adminController.setAdmin(admin);
     }
 
+    /**
+     * sets the current user
+     * @param currentUser the current user
+     */
     public static void setCurrentUser(User currentUser) {
         userWindowController.setCurrentUser(currentUser);
         userWindowController.populateUserFields();
@@ -133,27 +153,44 @@ public class Main extends Application {
         controlViewForUser();
     }
 
+    /**
+     * appends to the undo stack for medications
+     */
     public static void addCurrentToMedicationUndoStack() {
         userWindowController.addCurrentToMedicationUndoStack();
     }
 
+    /**
+     * add to the undo stack for diseases
+     */
     public static void addCurrentToDiseaseUndoStack() {
         userWindowController.addCurrentToDiseaseUndoStack();
     }
 
+    /**
+     * updates the disease controller
+     */
     public static void updateDiseases() {
         medicalHistoryDiseasesController.updateDiseases();
     }
 
-
+    /**
+     * updates the medications controller
+     */
     public static void updateMedications() {
         medicationsController.updateMedications();
     }
 
+    /**
+     * add to the undo stack for current procedures
+     */
     public static void addCurrentToProcedureUndoStack() {
         userWindowController.addCurrentToProceduresUndoStack();
     }
 
+    /**
+     * updates the procedures controller
+     */
     public static void updateProcedures() {
         medicalHistoryProceduresController.updateProcedures();
     }
@@ -230,19 +267,32 @@ public class Main extends Application {
         medicalHistoryProceduresController.setControlsShown(true);
     }
 
+    /**
+     * sets the current user for the account settings controller
+     * @param currentUser the current user
+     */
     public static void setCurrentUserForAccountSettings(User currentUser) {
         accountSettingsController.setCurrentUser(currentUser);
         accountSettingsController.populateAccountDetails();
     }
 
+    /**
+     * sets the current clinican for account settings
+     * @param currentClinician the current clinician
+     */
     public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
         clinicianAccountSettingsController.setCurrentClinician(currentClinician);
         clinicianAccountSettingsController.populateAccountDetails();
     }
 
+    /**
+     * sets the login controller
+     * @param loginController the current login controller
+     */
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
+
 
     public static void setCreateAccountController(CreateAccountController createAccountController) {
         Main.createAccountController = createAccountController;

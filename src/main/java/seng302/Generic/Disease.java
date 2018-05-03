@@ -18,6 +18,13 @@ public class Disease {
         return this.name;
     }
 
+    /**
+     * method to create a new disease instance
+     * @param name name of disease
+     * @param diagnosisDate diagnosis date of disease
+     * @param isChronic if the disease is chronic
+     * @param isCured if the disease is cured
+     */
     public Disease(String name, LocalDate diagnosisDate, boolean isChronic, boolean isCured) {
         this.name = name;
         this.diagnosisDate = diagnosisDate;
@@ -25,30 +32,62 @@ public class Disease {
         this.isCured = isCured;
     }
 
+    /**
+     * returns the name of the disease
+     * @return String name of the disease
+     */
     public String getName() { return name; }
 
+    /**
+     * sets the name of the disease
+     * @param name String the name of the disease
+     */
     public void setName(String name) { this.name = name; }
 
+    /**
+     * returns the diagnosis date of the disease
+     * @return LocalDate the date of the diagnosis
+     */
     public LocalDate getDiagnosisDate() {
         return diagnosisDate;
     }
 
+    /**
+     * sets the diagnosis date of the disease
+     * @param diagnosisDate LocalDate the date of diagnosis
+     */
     public void setDiagnosisDate(LocalDate diagnosisDate) {
         this.diagnosisDate = diagnosisDate;
     }
 
+    /**
+     * returns if the disease is chronic
+     * @return Boolean is the disease chronic
+     */
     public boolean isChronic() {
         return isChronic;
     }
 
+    /**
+     * sets if the disease is chronic
+     * @param chronic Boolean if the disease is chronic
+     */
     public void setChronic(boolean chronic) {
         isChronic = chronic;
     }
 
+    /**
+     * returns if the disease is cured
+     * @return Boolean if the disease is cured
+     */
     public boolean isCured() {
         return isCured;
     }
 
+    /**
+     * sets if the disease is cured
+     * @param cured Boolean if the disease is cured
+     */
     public void setCured(boolean cured) {
         isCured = cured;
     }

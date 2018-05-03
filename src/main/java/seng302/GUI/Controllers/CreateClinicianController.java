@@ -35,6 +35,11 @@ public class CreateClinicianController implements Initializable {
 
     private Stage stage;
 
+    /**
+     * shows the create controller and waits for a clinician to be created
+     * @param stage the current stage
+     * @return the created clinician
+     */
     public Clinician showAndWait(Stage stage){
         this.stage = stage;
         stage.showAndWait();

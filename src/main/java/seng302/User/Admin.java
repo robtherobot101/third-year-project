@@ -11,8 +11,13 @@ import java.util.Random;
 public class Admin extends Clinician {
     private String accessLevel;
 
+    /**
+     * Method to create a new admin instance
+     * @param username the usernam of the admin
+     * @param password the password of the admin
+     * @param name the name of the admin
+     */
     public Admin(String username, String password, String name){
-
         super(username, password, name, LoginType.ADMIN, IO.getNextId(true, LoginType.ADMIN));
         String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
         Random r = new Random();
