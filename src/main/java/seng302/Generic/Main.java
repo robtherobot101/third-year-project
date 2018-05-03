@@ -57,6 +57,10 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
+    public static Stage getStage() {
+        return stage;
+    }
+
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 
     public static void setClinician(Clinician clinician) {
@@ -760,8 +764,6 @@ public class Main extends Application {
         }
         stage.setWidth(scene.getWidth());
         stage.setHeight(scene.getHeight());
-        stage.setScene(null);
-        stage.setScene(scenes.get(scene));
 
         if (!(scene.getWidth() == mainWindowPrefWidth)) {
             stage.setResizable(false);

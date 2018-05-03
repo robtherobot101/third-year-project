@@ -2,6 +2,8 @@ package seng302.Generic;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
