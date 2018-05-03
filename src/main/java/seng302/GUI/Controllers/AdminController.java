@@ -329,11 +329,16 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save(){
-        IO.saveUsers(IO.getAdminPath(), LoginType.USER);
-        IO.saveUsers(IO.getAdminPath(), LoginType.CLINICIAN);
-        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-        IO.saveUsers(IO.getUserPath(), LoginType.USER);
-        IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to save all profiles? ",
+                "All profiles will be saved (user, clinician, admin).");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        }
+        alert.close();
     }
 
     /**
@@ -597,13 +602,13 @@ public class AdminController implements Initializable {
                         // A clinician has been selected for deletion
                         System.out.println("Deleting Clinician: " + selectedClinician);
                         Main.clinicians.remove(selectedClinician);
-                        IO.saveUsers(IO.getUserPath(), LoginType.CLINICIAN);
+                        IO.saveUsers(IO.getUserPath(), LoginType.USER);
                         statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                     } else if (selectedAdmin != null) {
                         // An admin has been selected for deletion
                         System.out.println("Deleting Admin: " + selectedAdmin);
                         Main.admins.remove(selectedAdmin);
-                        IO.saveUsers(IO.getUserPath(), LoginType.ADMIN);
+                        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                         statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                     }
                     System.out.println(Main.users);
@@ -655,7 +660,7 @@ public class AdminController implements Initializable {
                     Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
                     if (selectedAdmin != null) {
                         // Check if this is the default clinician
-                        if (selectedAdmin.getStaffID() == 1) {
+                        if (selectedAdmin.getStaffID() == 0) {
                             deleteProfile.setDisable(true);
                             deleteProfile.setText("Cannot delete default admin");
                         } else {
