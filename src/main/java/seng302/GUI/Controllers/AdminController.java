@@ -328,11 +328,16 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save(){
-        IO.saveUsers(IO.getAdminPath(), LoginType.USER);
-        IO.saveUsers(IO.getAdminPath(), LoginType.CLINICIAN);
-        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-        IO.saveUsers(IO.getUserPath(), LoginType.USER);
-        IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to save all profiles? ",
+                "All profiles will be saved (user, clinician, admin).");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        }
+        alert.close();
     }
 
     /**
