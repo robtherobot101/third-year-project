@@ -528,6 +528,9 @@ public class ClinicianController implements Initializable {
         //Add in check for user type
 
         if(searchUserTypeTerm != null) {
+            if (searchUserTypeTerm.equals("Neither")){
+                searchUserTypeTerm = "";
+            }
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
                 if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
@@ -726,7 +729,7 @@ public class ClinicianController implements Initializable {
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setTitleBar(stage);
                             Main.setCurrentUser(row.getItem());
-
+                            System.out.println(row.getItem().getType());
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
                             History.printToFile(streamOut, text);
 

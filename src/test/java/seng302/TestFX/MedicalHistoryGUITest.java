@@ -211,6 +211,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
         clickOn("#dateOfDiagnosisInput").write("4/04/2018");
         clickOn("#addNewDiseaseButton");
         // Check disease was added correctly
+        sleep(300);
         clickOn("Asthma");
         refreshTableSelections();
 
