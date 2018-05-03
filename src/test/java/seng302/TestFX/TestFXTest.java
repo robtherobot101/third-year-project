@@ -20,7 +20,7 @@ import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 abstract class TestFXTest extends ApplicationTest {
-    protected static final boolean runHeadless = true;
+    protected static final boolean runHeadless = false;
 
     @Override
     public void start(Stage stage) {

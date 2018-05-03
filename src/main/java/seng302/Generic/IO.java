@@ -94,6 +94,9 @@ public class IO {
      * was true or false
      */
     public static long getNextId(boolean increment, LoginType type) {
+        recalculateNextId(LoginType.ADMIN);
+        recalculateNextId(LoginType.USER);
+        recalculateNextId(LoginType.CLINICIAN);
         if (increment) {
             switch (type) {
                 case USER:
