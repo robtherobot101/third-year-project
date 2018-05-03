@@ -911,6 +911,11 @@ public class Main extends Application {
         return alert;
     }
 
+    /**
+     * Set the css stylesheet and icon for a dialog given a reference to its DialogPane.
+     *
+     * @param dialogPane The DialogPane to style and set icon for.
+     */
     public static void setIconAndStyle(DialogPane dialogPane) {
         dialogPane.getStylesheets().add(dialogStyle);
         dialogPane.getStyleClass().add("dialog");
