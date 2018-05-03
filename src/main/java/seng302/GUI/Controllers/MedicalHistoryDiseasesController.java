@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers;
+package seng302.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -145,7 +145,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             curedDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
         }
-        saveToUndoStack();
     }
 
     /**
@@ -161,7 +160,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             currentDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
         }
-        saveToUndoStack();
     }
 
     /**
@@ -426,13 +424,12 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Sorts the current disease list according to flags sortCurrentDatesAscending and sortCurrentDiagnosisAscending
-     * @param toggle whether to just keep with the current sort settings or to flip the order then perform the sort
+     * @param toggle whether to just keep with the current sort settings or to flip the order
      */
     private void sortCurrentDiseases(boolean toggle) {
         if (!sortCurrentByDate) {
             // Sort by diagnosis
             if (sortCurrentDiagnosisAscending) {
-                // ...descending order
                 if (toggle) {
                     sortCurrentDiagnosisAscending = false;
                     sortCurrentDiseases(false);
@@ -443,7 +440,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                 currentDateColumnLabel.setText("Date");
 
             } else {
-                // ...ascending order
                 if (toggle) {
                     sortCurrentDiagnosisAscending = true;
                     sortCurrentDiseases(false);
@@ -767,7 +763,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         deleteDiseaseButton.setVisible(shown);
         saveDiseaseButton.setVisible(shown);
         isCuredCheckBox.setVisible(shown);
-        todayButton.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
     }

@@ -20,6 +20,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import seng302.GUI.TitleBar;
+import seng302.Generic.*;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
@@ -395,6 +397,7 @@ public class ClinicianController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             IO.saveUsers(IO.getClinicianPath(), false);
+            IO.saveUsers(IO.getUserPath(), true);
         }
         alert.close();
     }

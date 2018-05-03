@@ -1,8 +1,6 @@
 package seng302.Generic;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +32,10 @@ import static java.lang.Integer.max;
  */
 public class Main extends Application {
     public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
-
+    
+    private static long nextUserId = -1, nextClinicianId = -1;
+    private static Integer nextWaitingListId = -1;
+    
     public static ArrayList<User> users = new ArrayList<>();
     public static ArrayList<Clinician> clinicians = new ArrayList<>();
 
@@ -57,9 +58,22 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
+
+
+
+    /**
+     * Class to serialize LocalDates without requiring reflective access
+     */
+    private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(User.dateFormat.format(date));
+        }
+    }
+    
     public static Stage getStage() {
         return stage;
     }
+    
 
     /**
      * Class to deserialize LocalDates without requiring reflective access
@@ -151,6 +165,13 @@ public class Main extends Application {
     public static void updateWaitingList() {
         waitingListController.populateWaitingList();
 
+    }
+
+    /**
+     * Calls the function which updates the transplant waiting list pane.
+     */
+    public static void updateTransplantWaitingList() {
+        transplantWaitingListController.updateTransplantList();
     }
 
     /**
@@ -253,6 +274,10 @@ public class Main extends Application {
         return Main.clinicianController;
     }
 
+    public static UserWindowController getUserWindowController() {
+        return userWindowController;
+    }
+
     public static TransplantWaitingListController getTransplantWaitingListController() { return Main.transplantWaitingListController; }
 
     public static ArrayList<Stage> getCliniciansUserWindows(){
@@ -273,6 +298,35 @@ public class Main extends Application {
 
     public static void setClinicianAccountSettingsEnterEvent() {
         clinicianAccountSettingsController.setEnterEvent();
+    }
+
+    public static Integer getNextWaitingListId() {
+        if (!userWindowController.getCurrentUser().getWaitingListItems().isEmpty()){
+            nextWaitingListId = userWindowController.getCurrentUser().getWaitingListItems().size();
+        } else {
+            nextWaitingListId++;
+        }
+        return nextWaitingListId;
+    }
+
+    /**
+     * Find a specific user from the user list based on their id.
+     *
+     * @param id The id of the user to search for
+     * @return The user object or null if the user was not found
+     */
+    public static User getUserById(long id) {
+        if (id < 0) {
+            return null;
+        }
+        User found = null;
+        for (User user : users) {
+            if (user.getId() == id) {
+                found = user;
+                break;
+            }
+        }
+        return found;
     }
 
     public static WaitingListController getWaitingListController(){
@@ -303,26 +357,6 @@ public class Main extends Application {
             }
             if (matched == names.length) {
                 found.add(user);
-            }
-        }
-        return found;
-    }
-
-    /**
-     * Find a specific user from the user list based on their id.
-     *
-     * @param id The id of the user to search for
-     * @return The user object or null if the user was not found
-     */
-    public static User getUserById(long id) {
-        if (id < 0) {
-            return null;
-        }
-        User found = null;
-        for (User user : Main.users) {
-            if (user.getId() == id) {
-                found = user;
-                break;
             }
         }
         return found;

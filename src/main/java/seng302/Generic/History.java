@@ -232,6 +232,12 @@ public class History {
                 case "search":
                     description = "[-Clinician- Searched user database.]";
                     break;
+                case "deregisterDeath":
+                    description = "[-Clinician- Deregistered all organs from " + userInfo.getName() + "'s waiting list due to receiver deceased.";
+                    break;
+                case "deregisterError":
+                    description = "[-Clinician- Deregistered an organ from user " + userInfo.getName() + "'s due to a register error.]";
+                    break;
             }
 
         text = String.join(" ", text, Long.toString(userId), command, description);

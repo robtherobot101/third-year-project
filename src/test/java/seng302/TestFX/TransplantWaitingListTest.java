@@ -144,7 +144,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
 
-        assertEquals(Organ.HEART, transplantRow.getOrgan());
+        assertEquals(Organ.HEART, transplantRow.getOrganType());
         assertEquals("Bob Ross", transplantRow.getName());
     }
 
@@ -176,6 +176,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         clickOn("#waitingListButton");
         clickOn("heart");
         clickOn("#deregisterOrganButton");
+        clickOn("OK");
 
         //close user window
         clickOn("#saveUserButton");
@@ -189,6 +190,170 @@ public class TransplantWaitingListTest extends TestFXTest{
         verifyThat("#transplantPane", Node::isVisible);
         //verifyThat("#transplantPane", hasText("No content in table"));
         //sleep(1000);
+        verifyThat("No content in table", isVisible());
+    }
+
+    /**
+     * Test to verify that when deregistering
+     */
+    @Test
+    public void checkDeregisterDeath() {
+        createAccounts();
+
+        //login as clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#registerOrganButton");
+        clickOn("#organTypeComboBox");
+        clickOn("liver");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //deregister an organ
+        clickOn("#transplantList");
+        clickOn("heart");
+        clickOn("#deregisterReceiverButton");
+        clickOn("4: Successful Transplant");
+        clickOn("3: Receiver Deceased");
+        clickOn("OK");
+        moveBy(-100, -50);
+        clickOn();
+        clickOn().write("10/10/2017");
+        clickOn("OK");
+
+        verifyThat("#transplantPane", Node::isVisible);
+        //verifyThat("#transplantPane", hasText("No content in table"));
+        verifyThat("No content in table", isVisible());
+    }
+
+    @Test
+    public void checkDeregisterError() {
+        createAccounts();
+
+        //login as clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //deregister an organ
+        clickOn("#transplantList");
+        clickOn("heart");
+        clickOn("#deregisterReceiverButton");
+        clickOn("4: Successful Transplant");
+        clickOn("1: Error Registering");
+        clickOn("OK");
+
+        verifyThat("#transplantPane", Node::isVisible);
+        //verifyThat("#transplantPane", hasText("No content in table"));
+        verifyThat("No content in table", isVisible());
+    }
+
+    /**
+     * Checks to see that a future date cannot be entered.
+     */
+    @Test
+    public void checkFutureDate(){
+        createAccounts();
+
+        //login as clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#registerOrganButton");
+        clickOn("#organTypeComboBox");
+        clickOn("liver");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //deregister an organ
+        clickOn("#transplantList");
+        clickOn("heart");
+        clickOn("#deregisterReceiverButton");
+        clickOn("4: Successful Transplant");
+        clickOn("3: Receiver Deceased");
+        clickOn("OK");
+        moveBy(-100, -50);
+        clickOn();
+        clickOn().write("10/10/2097");
+        clickOn("OK");
+        clickOn();
+        verifyThat("Please enter a date that is either today or earlier", Node::isVisible);
+        //verifyThat("#transplantPane", hasText("No content in table"));
+        //verifyThat("No content in table", isVisible());
+    }
+
+    @Test
+    public void checkDeregisterCure(){
+        createAccounts();
+
+        //login as clinician
+        clickOn("#identificationInput").write("default");
+        clickOn("#passwordInput").write("default");
+        clickOn("#loginButton");
+
+        doubleClickOn("Bob Ross");
+        //add organ to waiting list
+        clickOn("#waitingListButton");
+        clickOn("#organTypeComboBox");
+        clickOn("heart");
+        clickOn("#registerOrganButton");
+        clickOn("#saveUserButton");
+        clickOn("OK");
+        clickOn("#diseasesButton");
+        clickOn("#newDiseaseTextField").write("Whooping Cough");
+        clickOn("#currentDateButton");
+        clickOn("#addNewDiseaseButton");
+        clickOn("#saveDiseaseButton");
+        clickOn("OK");
+        clickOn("#exitUserButton");
+        clickOn("OK");
+
+        //deregister an organ
+        clickOn("#transplantList");
+        clickOn("heart");
+        clickOn("#deregisterReceiverButton");
+        clickOn("4: Successful Transplant");
+        clickOn("2: Disease Cured");
+        clickOn("OK");
+        clickOn("Yes");
+        moveBy(-100, -50);
+        clickOn();
+        clickOn("Whooping Cough");
+        clickOn("Cure");
+        clickOn("OK");
+
+        verifyThat("#transplantPane", Node::isVisible);
+        //verifyThat("#transplantPane", hasText("No content in table"));
         verifyThat("No content in table", isVisible());
     }
 
@@ -233,7 +398,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         //check the transplant table
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
-        assertEquals(Organ.LIVER, transplantRow.getOrgan());
+        assertEquals(Organ.LIVER, transplantRow.getOrganType());
         assertEquals("Bobby Dong Flame", transplantRow.getName());
         assertEquals(transplantTable.getItems().size(), 1);
     }
@@ -283,7 +448,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         //check the transplant table
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
-        assertEquals(Organ.HEART, transplantRow.getOrgan());
+        assertEquals(Organ.HEART, transplantRow.getOrganType());
         assertEquals("Bob Ross", transplantRow.getName());
         assertEquals(transplantTable.getItems().size(), 1);
     }

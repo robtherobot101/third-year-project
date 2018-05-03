@@ -12,6 +12,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import seng302.Generic.Main;
+import seng302.Generic.ReceiverWaitingListItem;
+import seng302.User.Medication.Medication;
+import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.AlcoholConsumption;
+import seng302.User.Attribute.BloodType;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.SmokerStatus;
+
 
 import seng302.Generic.Disease;
 import seng302.Generic.Procedure;
@@ -50,7 +59,7 @@ public class User {
     private ArrayList<Procedure> pendingProcedures;
     private ArrayList<Procedure> previousProcedures;
 
-    private ArrayList<WaitingListItem> waitingListItems;
+    private ArrayList<ReceiverWaitingListItem> waitingListItems;
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -371,7 +380,7 @@ public class User {
 
     public LocalDate getDateOfDeath() { return dateOfDeath; }
 
-    public ArrayList<WaitingListItem> getWaitingListItems(){
+    public ArrayList<ReceiverWaitingListItem> getWaitingListItems(){
         return waitingListItems;
     }
 
@@ -562,7 +571,7 @@ public class User {
 
     public boolean isReceiver() {
         boolean receiver = false;
-        for (WaitingListItem item : waitingListItems){
+        for (ReceiverWaitingListItem item : waitingListItems){
             if (item.getOrganDeregisteredDate() == null){
                 receiver = true;
             }
