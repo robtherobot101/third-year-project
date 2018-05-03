@@ -535,7 +535,10 @@ public class ClinicianController implements Initializable {
             }
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if((user.getType() != null) && (searchUserTypeTerm.equals(user.getType()))) {
+                if(user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
+                    newUsersFound.add(user);
+                }
+                else if((searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }
