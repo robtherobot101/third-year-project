@@ -8,6 +8,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
+import seng302.User.Clinician;
+import seng302.User.User;
+import seng302.Generic.Main;
 import seng302.GUI.TFScene;
 import seng302.Generic.History;
 import seng302.Generic.IO;
@@ -17,6 +22,7 @@ import seng302.User.User;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import sun.rmi.runtime.Log;
 
 /**
  * A controller class for the log in screen.
@@ -38,8 +44,9 @@ public class LoginController implements Initializable {
      */
     public void login() {
         boolean identificationMatched = false;
+        LoginType typeMatched = null;
 
-        //Check for a user match
+        // Check for a user match
         User currentUser = null;
         for (User user: Main.users) {
             if (user.getUsername() != null && user.getUsername().equals(identificationInput.getText()) ||
@@ -47,37 +54,64 @@ public class LoginController implements Initializable {
                 identificationMatched = true;
                 if (user.getPassword().equals(passwordInput.getText())) {
                     currentUser = user;
+                    typeMatched = LoginType.USER;
                     String text = History.prepareFileStringGUI(user.getId(), "login");
                     History.printToFile(IO.streamOut, text);
                 }
             }
         }
 
-        //Check for a clinician match
+        // Check for a clinician match
         Clinician currentClinician = null;
-        for(Clinician clinician: Main.clinicians){
-            if(clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())){
+        for (Clinician clinician: Main.clinicians) {
+            System.out.println(clinician);
+            if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
-                if(clinician.getPassword().equals(passwordInput.getText())){
+                if (clinician.getPassword().equals(passwordInput.getText())){
+                    System.out.println("LoginController: Logging in as clinician...");
                     currentClinician = clinician;
+                    typeMatched = LoginType.CLINICIAN;
+                    // TODO write login of clinician to history
                 }
             }
+
+        }
+
+        // Check for an admin match
+        Admin currentAdmin = null;
+        for (Admin admin: Main.admins) {
+            if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
+                identificationMatched = true;
+                if (admin.getPassword().equals(passwordInput.getText())){
+                    System.out.println("LoginController: Logging in as admin...");
+                    currentAdmin = admin;
+                    typeMatched = LoginType.ADMIN;
+                    // TODO write login of admin to history
+                }
+            }
+
         }
 
         if (identificationMatched) {
-            if (currentUser != null || currentClinician != null) {
+            if (typeMatched != null) {
                 //Reset scene to original state
                 identificationInput.setText("");
                 passwordInput.setText("");
                 loginButton.setDisable(true);
                 errorMessage.setVisible(false);
-                if (currentUser != null) {
-                    Main.setCurrentUser(currentUser);
-                    Main.setScene(TFScene.userWindow);
 
-                } else {
-                    Main.setClinician(currentClinician);
-                    Main.setScene(TFScene.clinician);
+                switch (typeMatched) {
+                    case USER:
+                        Main.setCurrentUser(currentUser);
+                        Main.setScene(TFScene.userWindow);
+                        break;
+                    case CLINICIAN:
+                        Main.setClinician(currentClinician);
+                        Main.setScene(TFScene.clinician);
+                        break;
+                    case ADMIN:
+                        Main.setAdmin(currentAdmin);
+                        Main.setScene(TFScene.admin);
                 }
             } else {
                 errorMessage.setText("Incorrect password.");

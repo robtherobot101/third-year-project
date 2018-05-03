@@ -20,6 +20,7 @@ import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
+import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -109,7 +110,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                     "Diagnosis date occurs in the future.");
             dateOfDiagnosisInput.setValue(null);
         } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()){
-            //TODO could make the checkboxs toeggle each other as only 1 can be selected
             DialogWindowController.showWarning("Invalid Disease", "",
                     "Disease cannot be chronic and cured.");
             isCuredCheckBox.setSelected(false);
@@ -222,7 +222,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             currentUser.getCuredDiseases().clear();
             currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
-            IO.saveUsers(IO.getUserPath(), true);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
             String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
             History.printToFile(streamOut, text);
             //populateHistoryTable();

@@ -1,29 +1,17 @@
 package seng302.TestFX;
 
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Procedure;
-import seng302.Generic.Main;
 import seng302.User.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 public class MedicalHistoryProceduresGUITest extends TestFXTest {

@@ -9,6 +9,7 @@ public enum TFScene {
     login(400, 280),
     createAccount(400, 450),
     clinician(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight),
+    admin(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight),
     userWindow(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight),
     transplantList(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight);
 

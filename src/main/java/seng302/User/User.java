@@ -1,7 +1,10 @@
 package seng302.User;
 
+import seng302.Generic.Disease;
 import seng302.Generic.IO;
-import seng302.Generic.WaitingListItem;
+import seng302.Generic.Procedure;
+import seng302.Generic.ReceiverWaitingListItem;
+import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
 import java.time.DateTimeException;
@@ -12,23 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import seng302.Generic.Main;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.User.Medication.Medication;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.SmokerStatus;
-
-
-import seng302.Generic.Disease;
-import seng302.Generic.Procedure;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.SmokerStatus;
 
 /**
  * This class contains information about organ users.
@@ -74,7 +60,7 @@ public class User {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = IO.getNextId(true, true);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -98,7 +84,7 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = IO.getNextId(true, true);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -131,7 +117,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = IO.getNextId(true, true);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -164,7 +150,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = IO.getNextId(true, true);
+        this.id = IO.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();

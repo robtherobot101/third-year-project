@@ -277,3 +277,16 @@
 .highlighted-row:selected {
     -fx-background-color: #FF1111;
 }
+
+.tab-header-background {
+	-fx-background-color: #2b506e;
+}
+
+.tab {
+	-fx-background-color: #4785b8;
+}
+
+.tab-label {
+	-fx-text-fill: white ;
+}
+
