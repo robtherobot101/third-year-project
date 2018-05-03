@@ -8,7 +8,7 @@ tag_checker:
 junit:
   stage: test
   script:
-    - mvn -B -Xmx2000M clean test
+    - mvn -B clean test
 
 recent-artifacts:
   stage: deploy
