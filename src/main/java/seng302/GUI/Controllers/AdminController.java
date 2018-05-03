@@ -21,6 +21,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.controlsfx.control.StatusBar;
+import seng302.GUI.StatusIndicator;
 import seng302.Generic.*;
 
 import java.io.IOException;
@@ -109,6 +111,10 @@ public class AdminController implements Initializable {
     private Label adminNameLabel;
     @FXML
     private Label adminAddressLabel;
+    @FXML
+    private StatusBar statusBar;
+
+    private StatusIndicator statusIndicator = new StatusIndicator();
 
 
     private int resultsPerPage;
@@ -582,16 +588,19 @@ public class AdminController implements Initializable {
                         System.out.println("Deleting User: " + selectedUser);
                         Main.users.remove(selectedUser);
                         IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                        statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                     } else if (selectedClinician != null) {
                         // A clinician has been selected for deletion
                         System.out.println("Deleting Clinician: " + selectedClinician);
                         Main.clinicians.remove(selectedClinician);
                         IO.saveUsers(IO.getUserPath(), LoginType.CLINICIAN);
+                        statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                     } else if (selectedAdmin != null) {
                         // An admin has been selected for deletion
                         System.out.println("Deleting Admin: " + selectedAdmin);
                         Main.admins.remove(selectedAdmin);
                         IO.saveUsers(IO.getUserPath(), LoginType.ADMIN);
+                        statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                     }
                     System.out.println(Main.users);
                     refreshLatestProfiles();
@@ -607,8 +616,10 @@ public class AdminController implements Initializable {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     User selectedUser = userTableView.getSelectionModel().getSelectedItem();
                     // No need to check for default user
-                    deleteProfile.setText("Delete " + selectedUser.getName());
-                    profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
+                    if(selectedUser != null) {
+                        deleteProfile.setText("Delete " + selectedUser.getName());
+                        profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
+                    }
                 }
             }
         });
@@ -618,15 +629,17 @@ public class AdminController implements Initializable {
             public void handle(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
-                    // Check if this is the default clinician
-                    if (selectedClinician.getStaffID() == 0) {
-                        deleteProfile.setDisable(true);
-                        deleteProfile.setText("Cannot delete default clinician");
-                    } else {
-                        deleteProfile.setDisable(false);
-                        deleteProfile.setText("Delete " + selectedClinician.getName());
+                    if(selectedClinician != null) {
+                        // Check if this is the default clinician
+                        if (selectedClinician.getStaffID() == 0) {
+                            deleteProfile.setDisable(true);
+                            deleteProfile.setText("Cannot delete default clinician");
+                        } else {
+                            deleteProfile.setDisable(false);
+                            deleteProfile.setText("Delete " + selectedClinician.getName());
+                        }
+                        profileMenu.show(clinicianTableView, event.getScreenX(), event.getScreenY());
                     }
-                    profileMenu.show(clinicianTableView, event.getScreenX(), event.getScreenY());
                 }
             }
         });
@@ -636,15 +649,17 @@ public class AdminController implements Initializable {
             public void handle(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
-                    // Check if this is the default clinician
-                    if (selectedAdmin.getStaffID() == 1) {
-                        deleteProfile.setDisable(true);
-                        deleteProfile.setText("Cannot delete default admin");
-                    } else {
-                        deleteProfile.setDisable(false);
-                        deleteProfile.setText("Delete " + selectedAdmin.getName());
+                    if (selectedAdmin != null) {
+                        // Check if this is the default clinician
+                        if (selectedAdmin.getStaffID() == 1) {
+                            deleteProfile.setDisable(true);
+                            deleteProfile.setText("Cannot delete default admin");
+                        } else {
+                            deleteProfile.setDisable(false);
+                            deleteProfile.setText("Delete " + selectedAdmin.getName());
+                        }
+                        profileMenu.show(adminTableView, event.getScreenX(), event.getScreenY());
                     }
-                    profileMenu.show(adminTableView, event.getScreenX(), event.getScreenY());
                 }
             }
         });
@@ -773,7 +788,7 @@ public class AdminController implements Initializable {
                 return row;
             }
         });
-
+        statusIndicator.setStatusBar(statusBar);
         userTableView.refresh();
     }
 
@@ -807,6 +822,7 @@ public class AdminController implements Initializable {
             if(newAdmin != null){
                 Main.admins.add(newAdmin);
                 IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
@@ -836,6 +852,7 @@ public class AdminController implements Initializable {
             if(newClinician != null){
                 Main.clinicians.add(newClinician);
                 IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
@@ -865,6 +882,7 @@ public class AdminController implements Initializable {
             if(user != null){
                 Main.users.add(user);
                 IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 System.out.println("AdminController: Failed to create user");
             }
@@ -876,32 +894,4 @@ public class AdminController implements Initializable {
 
     }
 
-    @FXML
-    private void delete(){
-        switch(tableTabPane.getSelectionModel().getSelectedItem().getId()){
-            case "usersTab":
-                User user = userTableView.getSelectionModel().getSelectedItem();
-                if(user != null &&
-                        Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + user.getName() + "?", "Are you sure you want to delete this user?").showAndWait().get() == ButtonType.OK){
-                    currentUsers.remove(user);
-                }
-                break;
-            case "administratorsTab":
-                Admin admin = adminTableView.getSelectionModel().getSelectedItem();
-                if(admin != null &&
-                        admin.getName().equals("default_admin")){
-                    Main.createAlert(Alert.AlertType.ERROR, "Forbidden", "Cannot delete default admin", "This account is protected and cannot be removed").showAndWait();
-                }
-                else if(admin != null && Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + admin.getName() + "?", "Are you sure you want to delete this admin?").showAndWait().get() == ButtonType.OK){
-                    currentAdmins.remove(admin);
-                }
-                break;
-            case "cliniciansTab":
-                Clinician clinician = clinicianTableView.getSelectionModel().getSelectedItem();
-                if(clinician != null && Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + clinician.getName() + "?", "Are you sure you want to delete this clinician?").showAndWait().get() == ButtonType.OK){
-                    currentClinicians.remove(clinician);
-                }
-                break;
-        }
-    }
 }
