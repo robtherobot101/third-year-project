@@ -83,7 +83,7 @@ public class IO {
      * Get the unique id number for the next user or the last id number issued.
      *
      * @param increment Whether to increment the unique id counter before returning the unique id value.
-     * @param user Whether to increment and return clinician or user. True for user, false for clinician.
+     * @param user      Whether to increment and return clinician or user. True for user, false for clinician.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
@@ -104,6 +104,7 @@ public class IO {
 
     /**
      * Changes the next id to be issued to a new user to be correct for the current users list.
+     *
      * @param user Whether to recalculate user or clinician id
      */
     public static void recalculateNextId(boolean user) {
@@ -127,7 +128,7 @@ public class IO {
     /**
      * Save the user or clinician list to a json file.
      *
-     * @param path The path of the file to save to
+     * @param path  The path of the file to save to
      * @param users whether to save the users or clinicians
      * @return Whether the save completed successfully
      */
@@ -157,7 +158,7 @@ public class IO {
     /**
      * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
      *
-     * @param path path of the file.
+     * @param path  path of the file.
      * @param users whether the imported file contains users or clinicians
      * @return Whether the command executed successfully
      */
@@ -172,7 +173,8 @@ public class IO {
         Type type;
         try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             if (users) {
-                type = new TypeToken<ArrayList<User>>() {}.getType();
+                type = new TypeToken<ArrayList<User>>() {
+                }.getType();
                 ArrayList<User> importedList = gson.fromJson(reader, type);
                 System.out.println("Opened file successfully.");
                 Main.users.clear();
@@ -182,7 +184,8 @@ public class IO {
                 System.out.println("Imported list successfully.");
                 return true;
             } else {
-                type = new TypeToken<ArrayList<Clinician>>() {}.getType();
+                type = new TypeToken<ArrayList<Clinician>>() {
+                }.getType();
                 ArrayList<Clinician> importedList = gson.fromJson(reader, type);
                 System.out.println("Opened file successfully.");
                 Main.clinicians.clear();
@@ -203,6 +206,11 @@ public class IO {
         return false;
     }
 
+    /**
+     * Set the class variables for the currently running jar location, and locations for the user and clinician json files.
+     *
+     * @throws URISyntaxException If the jar path is unreadable
+     */
     public static void setPaths() throws URISyntaxException {
         jarPath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
         userPath = jarPath + File.separatorChar + "users.json";
