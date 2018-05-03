@@ -1,4 +1,4 @@
-package seng302.Controllers;
+package seng302.GUI.Controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -15,6 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import seng302.GUI.Controllers.PageController;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;

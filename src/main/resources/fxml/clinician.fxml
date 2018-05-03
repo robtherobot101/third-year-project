@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
+<?import org.controlsfx.control.StatusBar?>
 <GridPane stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -265,21 +266,11 @@
                 </Button>
             </children>
         </AnchorPane>
-        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
+        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
             <children>
-                <Label text="Organ Donation Management System">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </Label>
-                <Pane HBox.hgrow="ALWAYS" />
-                <Label text="SENG302 - Team 300">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </Label>
+                <StatusBar fx:id="statusBar" prefHeight="200.0" prefWidth="200.0" text="Ready" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </children>
-        </HBox>
+        </AnchorPane>
         <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2b506e;" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
             <GridPane.margin>
                 <Insets bottom="2.0" top="2.0" />

@@ -104,7 +104,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private ComboBox clinicianOrganComboBox;
 
-    //@FXML
+    @FXML
     private StatusBar statusBar;
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -114,7 +114,7 @@ public class ClinicianController implements Initializable {
     private Clinician clinician;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-    private TitleBar titleBar = new TitleBar();
+    private TitleBar titleBar;
 
     private int resultsPerPage;
     private int numberXofResults;
@@ -749,7 +749,7 @@ public class ClinicianController implements Initializable {
                 return row;
             }
         });
-
+        statusIndicator.setStatusBar(statusBar);
         profileTable.refresh();
     }
 
