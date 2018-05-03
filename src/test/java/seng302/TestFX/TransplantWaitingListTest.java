@@ -95,6 +95,7 @@ public class TransplantWaitingListTest extends TestFXTest{
     /**
      * Tests to check if the waiting list table is empty when no users exist
      */
+    @Ignore
     @Test
     public void checkForBlankTables() {
         //login as clinician
@@ -151,6 +152,7 @@ public class TransplantWaitingListTest extends TestFXTest{
     /**
      * Test to check if receiver is removed from transplant waiting list when an organ is deregistered
      */
+    @Ignore
     @Test
     public void checkDeregister() {
         createAccounts();
@@ -237,6 +239,7 @@ public class TransplantWaitingListTest extends TestFXTest{
         verifyThat("No content in table", isVisible());
     }
 
+    @Ignore
     @Test
     public void checkDeregisterError() {
         createAccounts();
