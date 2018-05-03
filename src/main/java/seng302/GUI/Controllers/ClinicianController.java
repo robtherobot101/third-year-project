@@ -391,6 +391,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Updates the ObservableList for the profile table
+     * @param pageSize sets the page size for the page
      */
     public void displayPage(int pageSize) {
         currentPage.clear();
@@ -499,6 +500,7 @@ public class ClinicianController implements Initializable {
 
     /**
      * Splits the sorted list of found users and returns a page worth
+     * @param pageSize The size of each page
      * @return The sorted page of results
      */
     public ObservableList<User> getPage(int pageSize){
