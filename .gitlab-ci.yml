@@ -13,7 +13,7 @@ junit:
 recent-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package
+    - mvn -B -DskipTests clean site package
   artifacts:
     paths:
       - target/*.jar

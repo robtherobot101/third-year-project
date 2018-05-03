@@ -67,6 +67,7 @@ public class CreateAccountController implements Initializable {
 
     /**
      * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
+     * @return The created user
      */
     public User createAccount() {
         for (User user: Main.users) {

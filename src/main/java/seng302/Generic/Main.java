@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import com.google.gson.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -8,19 +9,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import seng302.GUI.Controllers.MedicalHistoryDiseasesController;
+import seng302.GUI.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
-import seng302.TUI.CommandLineInterface;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
+import seng302.TUI.CommandLineInterface;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.lang.Integer.max;
@@ -58,23 +63,82 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
+
+
+
+    /**
+     * Class to serialize LocalDates without requiring reflective access
+     */
+    private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(User.dateFormat.format(date));
+        }
+    }
+
+    /**
+     * returns the current stage
+     * @return the current stage
+     */
     public static Stage getStage() {
         return stage;
     }
 
+
+    /**
+     * Class to deserialize LocalDates without requiring reflective access
+     */
+    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+        public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
+            return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
+        }
+    }
+
+    /**
+     * Class to deserialize LocalDateTimes without requiring reflective access
+     */
+    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+        public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
+            return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
+        }
+    }
+
+    /**
+     * Sets the medications view to be able to edit for a clinican.
+     */
+    public static void medicationsViewForClinician() {
+        medicationsController.setControlsShown(true);
+    }
+
+
+    /**
+     * adds the clinican user window to the stage
+     * @param stage the current stage
+     */
     public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
 
+    /**
+     * sets the current clinician
+     * @param clinician the logged clinician
+     */
     public static void setClinician(Clinician clinician) {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
     }
 
+    /**
+     * sets the current admin
+     * @param admin the logged admin
+     */
     public static void setAdmin(Admin admin) {
         System.out.println("Main: Called set admin");
         adminController.setAdmin(admin);
     }
 
+    /**
+     * sets the current user
+     * @param currentUser the current user
+     */
     public static void setCurrentUser(User currentUser) {
         userWindowController.setCurrentUser(currentUser);
         userWindowController.populateUserFields();
@@ -89,27 +153,44 @@ public class Main extends Application {
         controlViewForUser();
     }
 
+    /**
+     * appends to the undo stack for medications
+     */
     public static void addCurrentToMedicationUndoStack() {
         userWindowController.addCurrentToMedicationUndoStack();
     }
 
+    /**
+     * add to the undo stack for diseases
+     */
     public static void addCurrentToDiseaseUndoStack() {
         userWindowController.addCurrentToDiseaseUndoStack();
     }
 
+    /**
+     * updates the disease controller
+     */
     public static void updateDiseases() {
         medicalHistoryDiseasesController.updateDiseases();
     }
 
-
+    /**
+     * updates the medications controller
+     */
     public static void updateMedications() {
         medicationsController.updateMedications();
     }
 
+    /**
+     * add to the undo stack for current procedures
+     */
     public static void addCurrentToProcedureUndoStack() {
         userWindowController.addCurrentToProceduresUndoStack();
     }
 
+    /**
+     * updates the procedures controller
+     */
     public static void updateProcedures() {
         medicalHistoryProceduresController.updateProcedures();
     }
@@ -158,19 +239,60 @@ public class Main extends Application {
         medicalHistoryDiseasesController.setControlsShown(true);
     }
 
+    /**
+     * Sets the medical history diseases view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryDiseasesViewForDonor() {
+        medicalHistoryDiseasesController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history view diseases to be able to edit for a clinican.
+     */
+    public static void medicalHistoryDiseasesViewForClinician() {
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * Sets the medical history procedures view to be unable to edit for a donor.
+     */
+    public static void medicalHistoryProceduresViewForDonor() {
+        medicalHistoryProceduresController.setControlsShown(false);
+    }
+
+    /**
+     * Sets the medical history procedures view to be able to edit for a clinican.
+     */
+    public static void medicalHistoryProceduresViewForClinician() {
+        medicalHistoryProceduresController.setControlsShown(true);
+    }
+
+    /**
+     * sets the current user for the account settings controller
+     * @param currentUser the current user
+     */
     public static void setCurrentUserForAccountSettings(User currentUser) {
         accountSettingsController.setCurrentUser(currentUser);
         accountSettingsController.populateAccountDetails();
     }
 
+    /**
+     * sets the current clinican for account settings
+     * @param currentClinician the current clinician
+     */
     public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
         clinicianAccountSettingsController.setCurrentClinician(currentClinician);
         clinicianAccountSettingsController.populateAccountDetails();
     }
 
+    /**
+     * sets the login controller
+     * @param loginController the current login controller
+     */
     public static void setLoginController(LoginController loginController) {
         Main.loginController = loginController;
     }
+
 
     public static void setCreateAccountController(CreateAccountController createAccountController) {
         Main.createAccountController = createAccountController;
@@ -244,9 +366,6 @@ public class Main extends Application {
     }
 
     public static Integer getNextWaitingListId() {
-        System.out.println(userWindowController);
-        System.out.println(userWindowController.getCurrentUser());
-        System.out.println(userWindowController.getCurrentUser().getWaitingListItems());
         if (!userWindowController.getCurrentUser().getWaitingListItems().isEmpty()){
             nextWaitingListId = userWindowController.getCurrentUser().getWaitingListItems().size();
         } else {
@@ -342,7 +461,8 @@ public class Main extends Application {
         System.out.println("search: "+"'"+term+"'");
         if(term.equals("")){
             System.out.println("Empty");
-            ArrayList<User> sorted = new ArrayList<>(Main.users);
+            ArrayList<User> sorted = new ArrayList<User>();
+            sorted.addAll(Main.users);
             Collections.sort(sorted, new Comparator<User>() {
                 @Override
                 public int compare(User o1, User o2) {
@@ -412,14 +532,17 @@ public class Main extends Application {
         if(!Arrays.equals(names, prefNames)) {
             // Preferred last name
             score += scoreNames(prefNames, tokens, max(prefNames.length - 1, 1), prefNames.length, 5);
+
             // Preferred first name
             score += scoreNames(prefNames, tokens, 0, 1, 4);
+
             // Preferred middle names
             score += scoreNames(prefNames, tokens, 1, prefNames.length - 1, 3);
         }
 
         //first name
         score += scoreNames(names, tokens, 0, 1, 2);
+
         //middle names
         score += scoreNames(names, tokens, 1, names.length-1, 1);
 
@@ -656,6 +779,7 @@ public class Main extends Application {
         Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
         Main.stage = stage;
+        stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {
             for(Stage userWindow:cliniciansUserWindows){
@@ -663,7 +787,7 @@ public class Main extends Application {
             }
         });
         dialogStyle = Main.class.getResource("/css/dialog.css").toExternalForm();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+        //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
         try {
             IO.setPaths();
             File users = new File(IO.getUserPath());
@@ -768,6 +892,8 @@ public class Main extends Application {
         }
         stage.setWidth(scene.getWidth());
         stage.setHeight(scene.getHeight());
+        stage.setScene(null);
+        stage.setScene(scenes.get(scene));
 
         if (!(scene.getWidth() == mainWindowPrefWidth)) {
             stage.setResizable(false);
