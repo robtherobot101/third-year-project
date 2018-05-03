@@ -163,8 +163,8 @@ public class TransplantWaitingListController implements Initializable {
         dialog.setTitle("Cure Disease");
         dialog.setHeaderText("Select a disease to cure.");
 
-        ButtonType loginButtonType = new ButtonType("Cure", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        ButtonType cureButtonType = new ButtonType("Cure", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(cureButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -198,28 +198,32 @@ public class TransplantWaitingListController implements Initializable {
 
         Optional<ButtonType> result = dialog.showAndWait();
         result.ifPresent(option -> {
-            if (diseaseComboBox.getValue() != null) {
-                Disease selected = (Disease) diseaseComboBox.getValue();
-                selected.setCured(true);
-                ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems= selectedUser.getWaitingListItems();
-                ArrayList<Disease> currentDiseases = selectedUser.getCurrentDiseases();
-                ArrayList<Disease> curedDiseases = selectedUser.getCuredDiseases();
-                curedDiseases.add(selected);
-                selectedUser.setCuredDiseases(curedDiseases);
-                currentDiseases.remove(selected);
-                selectedUser.setCurrentDiseases(currentDiseases);
-                selectedWaitingListItem.getUserId();
-                for (ReceiverWaitingListItem i: selectedUserWaitingListItems) {
-                    if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
-                        i.deregisterOrgan(2);
-                        DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
-                        Main.updateDiseases();
-                        break;
+            if (result.get() == cureButtonType) {
+                if (diseaseComboBox.getValue() != null) {
+                    Disease selected = (Disease) diseaseComboBox.getValue();
+                    selected.setCured(true);
+                    ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems = selectedUser.getWaitingListItems();
+                    ArrayList<Disease> currentDiseases = selectedUser.getCurrentDiseases();
+                    ArrayList<Disease> curedDiseases = selectedUser.getCuredDiseases();
+                    curedDiseases.add(selected);
+                    selectedUser.setCuredDiseases(curedDiseases);
+                    currentDiseases.remove(selected);
+                    selectedUser.setCurrentDiseases(currentDiseases);
+                    selectedWaitingListItem.getUserId();
+                    for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
+                        if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
+                            i.deregisterOrgan(2);
+                            DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
+                            Main.updateDiseases();
+                            break;
+                        }
                     }
+                } else {
+                    DialogWindowController.showInformation("Invaild Disease", "Please Select a disease", "Select a disease to cure");
+                    showDiseaseDeregisterDialog();
                 }
             } else {
-                DialogWindowController.showInformation("Invaild Disease", "Please Select a disease", "Select a disease to cure");
-                showDiseaseDeregisterDialog();
+                confirmDiseaseCuring();
             }
         });
     }
@@ -384,14 +388,16 @@ public class TransplantWaitingListController implements Initializable {
 
         Optional<ButtonType> result = dialog.showAndWait();
         result.ifPresent(option -> {
-            if (deathDatePicker.getValue() == null) {
-                DialogWindowController.showWarning("Invaild Date", "Date needs to be in format dd/mm/yyyy", "Please enter a date that is either today or earlier");
-                showDeathDateDialog();
-            } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
-                DialogWindowController.showWarning("Invaild Date", "Date is in the future", "Please enter a date that is either today or earlier");
-                showDeathDateDialog();
-            } else {
-                deathDeregister(deathDatePicker.getValue());
+            if (result.get() == ButtonType.OK) {
+                if (deathDatePicker.getValue() == null) {
+                    DialogWindowController.showWarning("Invaild Date", "Date needs to be in format dd/mm/yyyy", "Please enter a date that is either today or earlier");
+                    showDeathDateDialog();
+                } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
+                    DialogWindowController.showWarning("Invaild Date", "Date is in the future", "Please enter a date that is either today or earlier");
+                    showDeathDateDialog();
+                } else {
+                    deathDeregister(deathDatePicker.getValue());
+                }
             }
         });
     }

@@ -1,5 +1,6 @@
 package seng302.TUI;
 
+import javafx.collections.ObservableList;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -11,6 +12,7 @@ import seng302.Generic.IO;
 import seng302.Generic.Main;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -431,7 +432,7 @@ public class CommandLineInterface {
                 System.out.println(toDescribe);
             }
         } catch (NumberFormatException e) {
-            ArrayList<User> toDescribe = Main.getUserByName(idString.split(","));
+            ObservableList<User> toDescribe = Main.getUserByName(idString.split(","));
             if (toDescribe.size() == 0) {
                 System.out.println(String.format("No users with names matching %s were found.", idString));
             } else {
@@ -542,7 +543,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = IO.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (IO.importUsers(path, true)) {
+                if (IO.importUsers(path, LoginType.USER)) {
                     System.out.println("User imported from " + path + ".");
                     return true;
                 } else {
@@ -579,7 +580,7 @@ public class CommandLineInterface {
                 if (relative) {
                     path = IO.getJarPath() + File.separatorChar + path.replace('/', File.separatorChar);
                 }
-                if (IO.saveUsers(path, true)) {
+                if (IO.saveUsers(path, LoginType.USER)) {
                     System.out.println("User saved to " + path + ".");
                     return true;
                 } else {

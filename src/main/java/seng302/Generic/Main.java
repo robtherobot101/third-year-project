@@ -3,6 +3,8 @@ package seng302.Generic;
 import com.google.gson.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -12,6 +14,8 @@ import seng302.GUI.Controllers.MedicalHistoryDiseasesController;
 import seng302.GUI.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
 import seng302.TUI.CommandLineInterface;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -32,12 +36,12 @@ import static java.lang.Integer.max;
  */
 public class Main extends Application {
     public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
-    
-    private static long nextUserId = -1, nextClinicianId = -1;
+    private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
     private static Integer nextWaitingListId = -1;
-    
-    public static ArrayList<User> users = new ArrayList<>();
-    public static ArrayList<Clinician> clinicians = new ArrayList<>();
+
+    public static ObservableList<User> users = FXCollections.observableArrayList();
+    public static ObservableList<Clinician> clinicians = FXCollections.observableArrayList();
+    public static ObservableList<Admin> admins = FXCollections.observableArrayList();
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
@@ -46,6 +50,7 @@ public class Main extends Application {
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
+    private static AdminController adminController;
 
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
@@ -69,11 +74,11 @@ public class Main extends Application {
             return new JsonPrimitive(User.dateFormat.format(date));
         }
     }
-    
+
     public static Stage getStage() {
         return stage;
     }
-    
+
 
     /**
      * Class to deserialize LocalDates without requiring reflective access
@@ -109,8 +114,9 @@ public class Main extends Application {
         clinicianController.updateFoundUsers();
     }
 
-    public static void setClinicianController(ClinicianController clinicianController) {
-        Main.clinicianController = clinicianController;
+    public static void setAdmin(Admin admin) {
+        System.out.println("Main: Called set admin");
+        adminController.setAdmin(admin);
     }
 
     public static void setCurrentUser(User currentUser) {
@@ -270,6 +276,15 @@ public class Main extends Application {
         Main.transplantWaitingListController = transplantWaitingListController;
     }
 
+    public static void setClinicianController(ClinicianController clinicianController) {
+        Main.clinicianController = clinicianController;
+    }
+
+    public static void setAdminController(AdminController adminController) {
+        Main.adminController = adminController;
+    }
+
+
     public static ClinicianController getClinicianController() {
         return Main.clinicianController;
     }
@@ -339,8 +354,8 @@ public class Main extends Application {
      * @param names The names of the user to search for
      * @return The user objects that matched the input names
      */
-    public static ArrayList<User> getUserByName(String[] names) {
-        ArrayList<User> found = new ArrayList<>();
+    public static ObservableList<User> getUserByName(String[] names) {
+        ObservableList<User> found = FXCollections.observableArrayList();
         if (names.length == 0) {
             return Main.users;
         }
@@ -662,6 +677,7 @@ public class Main extends Application {
         return string.matches(token + ".*");
     }
 
+
     /**
      * Run the GUI.
      *
@@ -694,13 +710,13 @@ public class Main extends Application {
      * @param e Exception?
      */
     private static void showError(Thread t, Throwable e) {
-        System.err.println("Non-critical error caught, probably platform dependent.");
-        e.printStackTrace();
-        if (Platform.isFxApplicationThread()) {
-            System.out.println(e);
-        } else {
-            System.err.println("An unexpected error occurred in "+t);
-        }
+//        System.err.println("Non-critical error caught, probably platform dependent.");
+//        e.printStackTrace();
+//        if (Platform.isFxApplicationThread()) {
+//            System.out.println(e);
+//        } else {
+//            System.err.println("An unexpected error occurred in "+t);
+//        }
     }
 
     /**
@@ -726,7 +742,7 @@ public class Main extends Application {
             IO.setPaths();
             File users = new File(IO.getUserPath());
             if (users.exists()) {
-                if (!IO.importUsers(users.getAbsolutePath(), true)) {
+                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
                     throw new IOException("User save file could not be loaded.");
                 }
             } else {
@@ -736,7 +752,7 @@ public class Main extends Application {
             }
             File clinicians = new File(IO.getClinicianPath());
             if (clinicians.exists()) {
-                if (!IO.importUsers(clinicians.getAbsolutePath(), false)) {
+                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
                     throw new IOException("Clinician save file could not be loaded.");
                 }
             } else {
@@ -745,7 +761,22 @@ public class Main extends Application {
                 }
                 Clinician defaultClinician = new Clinician("default", "default", "default");
                 Main.clinicians.add(defaultClinician);
-                IO.saveUsers(IO.getClinicianPath(), false);
+                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+
+            }
+            File admins = new File(IO.getAdminPath());
+            if (admins.exists()) {
+                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
+                    throw new IOException("Admin save file could not be loaded.");
+                }
+            } else {
+                if (!admins.createNewFile()) {
+                    throw new IOException("Admin save file could not be created.");
+                }
+                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
+                Main.admins.add(defaultAdmin);
+                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+
             }
             IO.streamOut = History.init();
             scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")),
@@ -761,6 +792,11 @@ public class Main extends Application {
 
             loginController.setEnterEvent();
             createAccountController.setEnterEvent();
+            scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.admin, new Scene(FXMLLoader.load(getClass().getResource("/fxml/admin.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
+
             setScene(TFScene.login);
             stage.show();
 
@@ -796,7 +832,8 @@ public class Main extends Application {
      */
     public static void setScene(TFScene scene) {
         stage.setResizable(true);
-        if (scene.getWidth() == mainWindowPrefWidth) {
+        stage.setScene(scenes.get(scene));
+        if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.transplantList || scene == TFScene.admin) {
             stage.setMinWidth(mainWindowMinWidth);
             stage.setMinHeight(mainWindowMinHeight);
         } else {

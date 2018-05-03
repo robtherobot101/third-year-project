@@ -118,11 +118,11 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
         clickOn("#profileSearchTextField").write("Z");
         clickOn("#clinicianGenderComboBox").clickOn("Male");
-        doubleClickOn("#profileSearchTextField").write(" ");
+        doubleClickOn("#profileSearchTextField").push(KeyCode.BACK_SPACE);
 
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserTest, userTableView.getItems().get(0));
-        assertEquals(testUserBobby, userTableView.getItems().get(1));
+        assertEquals(testUserBobby, userTableView.getItems().get(0));
+        assertEquals(testUserTest, userTableView.getItems().get(1));
 
 
         clickOn("#clinicianGenderComboBox").clickOn("Female");
@@ -165,8 +165,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
         clickOn("#profileSearchTextField").write("Z");
         clickOn("#clinicianUserTypeComboBox").clickOn("Donor");
-        doubleClickOn("#profileSearchTextField").write(" ");
-
+        clickOn("#profileSearchTextField").push(KeyCode.BACK_SPACE);
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserBobby, userTableView.getItems().get(1));
@@ -190,8 +189,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         sleep(300);
         push(KeyCode.DOWN).push(KeyCode.DOWN).push(KeyCode.DOWN);
         push(KeyCode.ENTER);
-        ComboBox temp = lookup("#clinicianOrganComboBox").query();
-        System.out.println(temp.getValue());
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserBobby, userTableView.getItems().get(1));
@@ -214,11 +211,11 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         clickOn("#clinicianRegionField").write("A");
         clickOn("#profileSearchTextField").write("Z");
         clickOn("#clinicianGenderComboBox").clickOn("Male");
-        doubleClickOn("#profileSearchTextField").write(" ");
+        doubleClickOn("#profileSearchTextField").push(KeyCode.BACK_SPACE);
         clickOn("#clinicianAgeField").write("48");
         clickOn("#profileSearchTextField").write("Z");
         clickOn("#clinicianUserTypeComboBox").clickOn("Donor");
-        doubleClickOn("#profileSearchTextField").write(" ");
+        doubleClickOn("#profileSearchTextField").push(KeyCode.BACK_SPACE);
         clickOn("#clinicianOrganComboBox");
         push(KeyCode.DOWN).push(KeyCode.DOWN).push(KeyCode.DOWN);
         push(KeyCode.ENTER);

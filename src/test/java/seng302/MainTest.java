@@ -1,5 +1,6 @@
 package seng302;
 
+import javafx.collections.FXCollections;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,11 +10,12 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import seng302.User.Attribute.LoginType;
+import seng302.User.User;
+import seng302.User.Attribute.Gender;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
-import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
-import seng302.User.User;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -27,8 +29,8 @@ import static org.junit.Assert.*;
 public class MainTest {
     @Before
     public void setup() {
-        Main.users = new ArrayList<>();
-        IO.recalculateNextId(true);
+        Main.users = FXCollections.observableArrayList();
+        IO.recalculateNextId(LoginType.USER);
         Main.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
         Main.users.add(new User("Test User,Testperson", "01/04/1530", "31/01/1565", "Non-Binary", 1.234, 1.11111, "a-", "Auckland", "street sample " +
                 "text"));
@@ -57,10 +59,10 @@ public class MainTest {
     @Test
     public void testImportSave() {
         Main.users.add(new User("extra", LocalDate.parse("01/01/1000", User.dateFormat)));
-        IO.saveUsers("testsave", true);
+        IO.saveUsers("testsave", LoginType.USER);
         Main.users.remove(5);
         assertEquals(5, Main.users.size());
-        IO.importUsers("testsave", true);
+        IO.importUsers("testsave", LoginType.USER);
         assertEquals("extra", Main.users.get(5).getName());
         new File("testsave").delete();
     }
@@ -72,9 +74,9 @@ public class MainTest {
         oldUser.setWeight(100);
         oldUser.setGender(Gender.MALE);
         Main.users.add(oldUser);
-        IO.saveUsers("testsave", true);
+        IO.saveUsers("testsave", LoginType.USER);
         Main.users.remove(5);
-        IO.importUsers("testsave", true);
+        IO.importUsers("testsave", LoginType.USER);
         assertEquals(Main.users.get(5).toString(), oldUser.toString());
         new File("testsave").delete();
     }
@@ -84,7 +86,7 @@ public class MainTest {
         String invalidFile = "OrganDonation.jpg";
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
-        IO.importUsers(invalidFile, true);
+        IO.importUsers(invalidFile, LoginType.USER);
         String text = out.toString();
         String expected = "IOException on "+ invalidFile +": Check your inputs and permissions!";
         assertEquals(expected, text.trim());
@@ -95,7 +97,7 @@ public class MainTest {
      */
     @Test
     public void testSaveIOException(){
-        assertFalse(IO.saveUsers("", true));
+        assertFalse(IO.saveUsers("", LoginType.USER));
     }
 
     @Test
@@ -369,6 +371,6 @@ public class MainTest {
 
     @After
     public void tearDown() {
-        Main.users = new ArrayList<>();
+        Main.users = FXCollections.observableArrayList();
     }
 }

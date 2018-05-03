@@ -1,5 +1,6 @@
 package seng302;
 
+import javafx.collections.FXCollections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class UserTest {
 
     @Before
     public void setup() {
-        Main.users = new ArrayList<>();
+        Main.users = FXCollections.observableArrayList();
         Main.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
     }
 
@@ -81,6 +82,6 @@ public class UserTest {
 
     @After
     public void tearDown() {
-        Main.users = new ArrayList<>();
+        Main.users = FXCollections.observableArrayList();
     }
 }
