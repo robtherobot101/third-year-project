@@ -162,9 +162,11 @@ public class AdminController implements Initializable {
         staffIDLabel.setText(Long.toString(currentAdmin.getStaffID()));
     }
 
+    /**
+     * Refreshes the profiles from Main and loads them into local lists
+     */
     private void refreshLatestProfiles() {
-        System.out.println("AdminController: User List from main: " + Main.users);
-        // Initialise observable lists that correlate to the three TableViews
+        // Initialise lists that correlate to the three TableViews
         currentUsers = Main.users;
         currentClinicians = Main.clinicians;
         currentAdmins = Main.admins;
@@ -717,9 +719,7 @@ public class AdminController implements Initializable {
 
         });
 
-
-        System.out.println("AdminController: Setting main controller of myself");
-        Main.setAdminController(this);
+    Main.setAdminController(this);
 
 
         /**
@@ -793,7 +793,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * calls the transplantWaitingList controller and displays it.
+     * Calls the transplantWaitingList controller and displays it.
      * also refreshes the waitinglist table data
      */
     public void transplantWaitingList() {
@@ -802,6 +802,9 @@ public class AdminController implements Initializable {
         Main.setScene(TFScene.transplantList);
     }
 
+    /**
+     * Opens separate window to input + create a new admin
+     */
     @FXML
     private void createAdmin(){
         Stage stage = new Stage();
@@ -831,6 +834,9 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * Opens separate window to input + create a new clinician
+     */
     @FXML
     private void createClinician(){
         Stage stage = new Stage();
@@ -861,6 +867,9 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * Opens separate window to input + create a new user
+     */
     @FXML
     private void createUser(){
         Stage stage = new Stage();
