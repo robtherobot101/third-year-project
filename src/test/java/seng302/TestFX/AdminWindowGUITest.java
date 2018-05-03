@@ -1,30 +1,18 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDate;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
-import junit.framework.TestCase;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.testfx.util.WaitForAsyncUtils;
-import seng302.Core.Disease;
-import seng302.Generic.Main;
 import seng302.User.Admin;
-import seng302.User.Attribute.Gender;
 import seng302.User.Clinician;
-import seng302.User.Medication.Medication;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AdminWindowGUITest extends TestFXTest {
     private User currentSelectedUser;
