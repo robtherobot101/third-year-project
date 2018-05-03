@@ -69,7 +69,7 @@ public class AdminWindowGUITest extends TestFXTest {
      * Add a simple user and verify it appears with appropriate details in the TabPane
      */
     @Test
-    public void addGoodUser() {
+    public void addUser() {
         loginAsDefaultAdmin();
         clickOn("#fileMenu");
         moveTo("#createMenu");
@@ -99,7 +99,7 @@ public class AdminWindowGUITest extends TestFXTest {
     }
 
     /**
-     * Add a simple user and verify it appears with appropriate details in the TabPane
+     * Add a simple admin and verify it appears with appropriate details in the TabPane
      */
     @Test
     public void addAdmin() {
@@ -108,7 +108,7 @@ public class AdminWindowGUITest extends TestFXTest {
         moveTo("#createMenu");
         clickOn("#adminMenuItem");
 
-        // Create a user
+        // Create an admin
         clickOn("#usernameInput"); write("buzz");
         clickOn("#passwordInput"); write("password123");
         clickOn("#passwordConfirmInput"); write("password123");
@@ -121,11 +121,46 @@ public class AdminWindowGUITest extends TestFXTest {
         //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
         assertNull(lookup("#createAccountButton").query());
 
+        clickOn("#administratorsTab");
         clickOn("Matthew Pieter Knight");
         refreshTableSelections();
         // Check this is the user:
         assertEquals("buzz", currentSelectedAdmin.getUsername());
     }
+
+    /**
+     * Add a simple user and verify it appears with appropriate details in the TabPane
+     */
+    @Test
+    public void addClinician() {
+        loginAsDefaultAdmin();
+        clickOn("#fileMenu");
+        moveTo("#createMenu");
+        // To align the movement properly:
+        moveTo("#adminMenuItem");
+        clickOn("#clinicianMenuItem");
+
+        // Create a clinician
+        clickOn("#usernameInput"); write("buzz");
+        clickOn("#passwordInput"); write("password123");
+        clickOn("#passwordConfirmInput"); write("password123");
+        clickOn("#firstNameInput"); write("Matthew");
+        clickOn("#middleNamesInput"); write("Pieter");
+        clickOn("#lastNameInput"); write("Knight");
+
+        clickOn("#createAccountButton");
+        sleep(500);
+        //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
+        assertNull(lookup("#createAccountButton").query());
+
+        clickOn("#cliniciansTab");
+        clickOn("Matthew Pieter Knight");
+        refreshTableSelections();
+        // Check this is the user:
+        assertEquals("buzz", currentSelectedClinician.getUsername());
+    }
+
+
 
     @Test
     public void checkExistenceDefaultClinician() {
