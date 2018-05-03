@@ -77,7 +77,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     }
 
     /**
-     * Called when the 'Today' button is pressed -> fills in the current date
+     * Called when the 'Today' button is pressed -fills in the current date
      */
     public void getCurrentDateFillDate() {
         dateOfDiagnosisInput.setValue(LocalDate.now());
@@ -210,10 +210,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
      */
     public void save() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to update the current user? ");
-        alert.setContentText("By doing so, the donor will be updated with the following disease details.");
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following disease details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentUser.getCurrentDiseases().clear();
@@ -237,7 +235,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     /**
      * Creates a popup dialog to modify the name and date of the selectedDisease
      * @param selectedDisease disease to update information of
-     * @param current
+     * @param current If the disease is current or cured
      */
     private void updateDiseasePopUp(Disease selectedDisease, boolean current) {
 
@@ -753,6 +751,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Sets whether the control buttons are shown or not on the medications pane
+     *
+     * @param shown Boolean that sets the panes to visible or not
      */
     public void setControlsShown(boolean shown) {
         dateOfDiagnosisInput.setVisible(shown);

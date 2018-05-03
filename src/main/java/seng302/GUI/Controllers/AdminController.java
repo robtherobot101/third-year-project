@@ -486,9 +486,15 @@ public class AdminController implements Initializable {
         //Add in check for user type
 
         if(searchUserTypeTerm != null) {
+            if (searchUserTypeTerm.equals("Neither")){
+                searchUserTypeTerm = "";
+            }
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if((user.getType() != null) && (searchUserTypeTerm.equals(user.getType()))) {
+                if(user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
+                    newUsersFound.add(user);
+                }
+                else if((searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }
