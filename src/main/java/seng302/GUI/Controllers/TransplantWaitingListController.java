@@ -134,7 +134,7 @@ public class TransplantWaitingListController implements Initializable {
         reasonCodes.add("4: Successful Transplant");
 
         ChoiceDialog<String> dialog = new ChoiceDialog<>("4: Successful Transplant", reasonCodes);
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("De-Registering Reason Code");
         dialog.setHeaderText("Select a reason code");
         dialog.setContentText("Reason Code: ");
@@ -158,7 +158,7 @@ public class TransplantWaitingListController implements Initializable {
         User selectedUser = Main.getUserById(selectedWaitingListItem.getUserId());
 
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("Cure Disease");
         dialog.setHeaderText("Select a disease to cure.");
 
@@ -212,13 +212,15 @@ public class TransplantWaitingListController implements Initializable {
                     for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                         if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                             i.deregisterOrgan(2);
-                            DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
+                            Alert alert = Main.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
+                            alert.showAndWait();
                             Main.updateDiseases();
                             break;
                         }
                     }
                 } else {
-                    DialogWindowController.showInformation("Invaild Disease", "Please Select a disease", "Select a disease to cure");
+                    Alert alert = Main.createAlert(Alert.AlertType.INFORMATION, "Invaild Disease", "Please Select a disease", "Select a disease to cure");
+                    alert.showAndWait();
                     showDiseaseDeregisterDialog();
                 }
             } else {
@@ -231,6 +233,7 @@ public class TransplantWaitingListController implements Initializable {
      * method to show dialog to confirm the curing of a disease and then to perform the operations.
      */
     public void confirmDiseaseCuring() {
+        Alert alert;
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()){
             selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
@@ -240,7 +243,8 @@ public class TransplantWaitingListController implements Initializable {
         }
         User selectedUser = Main.getUserById(selectedWaitingListItem.getUserId());
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
-            Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Cure Disease?", "Would you like to select the cured disease?", "Cure a Disease?");
+            alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Cure Disease?", "Would you like to select the cured disease?", "Cure a Disease?");
+            alert.showAndWait();
 
             ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -256,7 +260,8 @@ public class TransplantWaitingListController implements Initializable {
                 for (ReceiverWaitingListItem i: selectedUserWaitingListItems) {
                     if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                         i.deregisterOrgan(2);
-                        DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                        alert = Main.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                        alert.showAndWait();
                         break;
                     }
                 }
@@ -266,7 +271,8 @@ public class TransplantWaitingListController implements Initializable {
             for (ReceiverWaitingListItem i: selectedUserWaitingListItems) {
                 if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                     i.deregisterOrgan(2);
-                    DialogWindowController.showInformation("De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                    alert = Main.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code 2 selected. No disease cured");
+                    alert.showAndWait();
                     break;
                 }
             }
@@ -345,7 +351,7 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void showDeathDateDialog() {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("Date of Death");
         dialog.setHeaderText("Please provide the date of death");
 
@@ -389,10 +395,13 @@ public class TransplantWaitingListController implements Initializable {
         result.ifPresent(option -> {
             if (result.get() == ButtonType.OK) {
                 if (deathDatePicker.getValue() == null) {
-                    DialogWindowController.showWarning("Invaild Date", "Date needs to be in format dd/mm/yyyy", "Please enter a date that is either today or earlier");
+                    Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date needs to be in format dd/mm/yyyy",
+                            "Please enter a date that is either today or earlier");
+                    alert.showAndWait();
                     showDeathDateDialog();
                 } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
-                    DialogWindowController.showWarning("Invaild Date", "Date is in the future", "Please enter a date that is either today or earlier");
+                    Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date is in the future", "Please enter a date that is either today or earlier");
+                    alert.showAndWait();
                     showDeathDateDialog();
                 } else {
                     deathDeregister(deathDatePicker.getValue());

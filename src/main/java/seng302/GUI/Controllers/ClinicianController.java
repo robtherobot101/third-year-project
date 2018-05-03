@@ -13,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -172,7 +171,6 @@ public class ClinicianController implements Initializable {
     public void logout() {
         Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
-        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -193,7 +191,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
@@ -204,7 +202,7 @@ public class ClinicianController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettingsClinician.fxml"));
                     Stage stage = new Stage();
-                    stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+                    stage.getIcons().add(Main.getIcon());
                     stage.setResizable(false);
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 290, 280));
@@ -239,8 +237,7 @@ public class ClinicianController implements Initializable {
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Clinician");
         dialog.setHeaderText("Update Clinician Details");
-
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -656,7 +653,7 @@ public class ClinicianController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         Stage stage = new Stage();
-                        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+                        stage.getIcons().add(Main.getIcon());
                         stage.setMinHeight(Main.mainWindowMinHeight);
                         stage.setMinWidth(Main.mainWindowMinWidth);
                         stage.setHeight(Main.mainWindowPrefHeight);

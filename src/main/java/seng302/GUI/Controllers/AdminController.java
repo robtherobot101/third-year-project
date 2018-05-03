@@ -14,7 +14,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -180,11 +179,8 @@ public class AdminController implements Initializable {
      * all open user windows spawned by the currentAdmin are closed and the main scene is returned to the logout screen.
      */
     public void logout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Are you sure?");
-        alert.setHeaderText("Are you sure would like to log out? ");
-        alert.setContentText("Logging out without saving loses your non-saved data.");
-        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
+                "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -215,7 +211,7 @@ public class AdminController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
                     Stage stage = new Stage();
-                    stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+                    stage.getIcons().add(Main.getIcon());
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 290, 350));
                     stage.initModality(Modality.APPLICATION_MODAL);
@@ -249,8 +245,7 @@ public class AdminController implements Initializable {
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Admin");
         dialog.setHeaderText("Update Admin Details");
-
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -595,11 +590,8 @@ public class AdminController implements Initializable {
                 Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
                 Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
 
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Are you sure?");
-                alert.setHeaderText("Confirm profile deletion");
-                alert.setContentText("Are you sure you want to delete this profile? This cannot be undone.");
-                alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+                Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm profile deletion",
+                        "Are you sure you want to delete this profile? This cannot be undone.");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     if (selectedUser != null) {
@@ -772,7 +764,7 @@ public class AdminController implements Initializable {
                         Stage stage = new Stage();
                         stage.setMinHeight(800);
                         stage.setMinWidth(600);
-                        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+                        stage.getIcons().add(Main.getIcon());
 
                         Main.addCliniciansUserWindow(stage);
                         stage.initModality(Modality.NONE);

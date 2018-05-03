@@ -882,7 +882,7 @@ public class UserWindowController implements Initializable {
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
         dialog.getDialogPane().getStyleClass().add("dialog");
 
         Optional<String> password = dialog.showAndWait();
@@ -891,7 +891,7 @@ public class UserWindowController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
                     Stage stage = new Stage();
-                    stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+                    stage.getIcons().add(Main.getIcon());
                     stage.setResizable(false);
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 270, 330));
@@ -921,7 +921,6 @@ public class UserWindowController implements Initializable {
      */
     public void logout() {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
-        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             String text = History.prepareFileStringGUI(currentUser.getId(), "logout");

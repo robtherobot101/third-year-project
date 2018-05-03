@@ -9,14 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.MedicalHistoryDiseasesController;
-import seng302.GUI.Controllers.MedicalHistoryProceduresController;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
+import seng302.TUI.CommandLineInterface;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
-import seng302.TUI.CommandLineInterface;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -36,8 +36,8 @@ import static java.lang.Integer.max;
  */
 public class Main extends Application {
     public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
-    private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
     private static Integer nextWaitingListId = -1;
+    private static Image icon;
 
     public static ObservableList<User> users = FXCollections.observableArrayList();
     public static ObservableList<Clinician> clinicians = FXCollections.observableArrayList();
@@ -63,16 +63,13 @@ public class Main extends Application {
 
     private static String dialogStyle;
 
-
-
-
     /**
-     * Class to serialize LocalDates without requiring reflective access
+     * Returns the program icon.
+     *
+     * @return The icon as an Image.
      */
-    private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
-        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(User.dateFormat.format(date));
-        }
+    public static Image getIcon() {
+        return icon;
     }
 
     /**
@@ -351,10 +348,6 @@ public class Main extends Application {
 
     public static void setUserWindowController(UserWindowController userWindowController) {
         Main.userWindowController = userWindowController;
-    }
-
-    public static String getDialogStyle() {
-        return dialogStyle;
     }
 
     public static void setAccountSettingsEnterEvent() {
@@ -779,7 +772,6 @@ public class Main extends Application {
         Thread.setDefaultUncaughtExceptionHandler(Main::showError);
 
         Main.stage = stage;
-        stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding( closeAllWindows -> {
             for(Stage userWindow:cliniciansUserWindows){
@@ -787,7 +779,8 @@ public class Main extends Application {
             }
         });
         dialogStyle = Main.class.getResource("/css/dialog.css").toExternalForm();
-        //stage.getIcons().add(new Image(getClass().getResourceAsStream("/test.png")));
+        icon = new Image(getClass().getResourceAsStream("/icon.png"));
+        stage.getIcons().add(icon);
         try {
             IO.setPaths();
             File users = new File(IO.getUserPath());
@@ -911,12 +904,18 @@ public class Main extends Application {
      */
     public static Alert createAlert(AlertType alertType, String title, String header, String content) {
         Alert alert = new Alert(alertType);
+        setIconAndStyle(alert.getDialogPane());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        alert.getDialogPane().getStylesheets().add(dialogStyle);
-        alert.getDialogPane().getStyleClass().add("dialog");
         return alert;
+    }
+
+    public static void setIconAndStyle(DialogPane dialogPane) {
+        dialogPane.getStylesheets().add(dialogStyle);
+        dialogPane.getStyleClass().add("dialog");
+        Stage stage = (Stage) dialogPane.getScene().getWindow();
+        stage.getIcons().add(icon);
     }
 
     /**

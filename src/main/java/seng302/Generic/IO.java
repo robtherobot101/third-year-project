@@ -2,6 +2,8 @@ package seng302.Generic;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
@@ -274,6 +276,27 @@ public class IO {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Opens a window to navigate to the CSV file user wants to import.
+     *
+     * @return The file path of the JSON to import
+     */
+    public static String getSelectedFilePath() {
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter fileExtensions =
+                new FileChooser.ExtensionFilter(
+                        "JSON Files", "*.json");
+
+        fileChooser.getExtensionFilters().add(fileExtensions);
+        try {
+            File file = fileChooser.showOpenDialog(stage);
+            return file.getAbsolutePath();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**

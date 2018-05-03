@@ -15,7 +15,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
-import seng302.GUI.Controllers.PageController;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
@@ -92,26 +91,31 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         System.out.println("MedicalHistoryDiseasesController: Adding new disease");
         // Check for empty disease name
         if (newDiseaseTextField.getText().isEmpty()) {
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "Invalid disease name provided.");
+            alert.showAndWait();
             newDiseaseTextField.clear();
         // Check for an empty date
         } else if (dateOfDiagnosisInput.getValue() == null) {
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "No date provided.");
+            alert.showAndWait();
         // Check if the date of diagnosis was before the current user's birthday
         } else if (dateOfDiagnosisInput.getValue().isBefore(currentUser.getDateOfBirth())) {
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "Date of diagnosis before date of birth.");
+            alert.showAndWait();
             dateOfDiagnosisInput.setValue(null);
         // Check for a date in the future
         } else if (dateOfDiagnosisInput.getValue().isAfter(LocalDate.now())) {
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "Diagnosis date occurs in the future.");
+            alert.showAndWait();
             dateOfDiagnosisInput.setValue(null);
         } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()){
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "Disease cannot be chronic and cured.");
+            alert.showAndWait();
             isCuredCheckBox.setSelected(false);
             chronicCheckBox.setSelected(false);
         } else {
@@ -140,8 +144,9 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private void addCuredDisease(Disease diseaseToAdd) {
         if (curedDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "Disease already exists.");
+            alert.showAndWait();
         } else {
             curedDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
@@ -155,8 +160,9 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private void addCurrentDisease(Disease diseaseToAdd) {
         if (currentDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
-            DialogWindowController.showWarning("Invalid Disease", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                     "Disease already exists.");
+            alert.showAndWait();
         } else {
             currentDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
@@ -243,8 +249,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
         dialog.setTitle("Update Disease");
         dialog.setHeaderText("Update Disease Details");
-
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -291,8 +296,9 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
                 if (dateOfDiagnosis.getValue().isAfter(LocalDate.now())) {
-                    DialogWindowController.showWarning("Invalid Disease", "",
+                    Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
                             "Diagnosis date occurs in the future.");
+                    alert.showAndWait();
                     dateOfDiagnosis.setValue(null);
                     if(current) {
                         updateDiseasePopUp(selectedDisease, true);

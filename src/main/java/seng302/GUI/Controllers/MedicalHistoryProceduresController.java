@@ -14,12 +14,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import seng302.Generic.Procedure;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
+import seng302.Generic.Procedure;
 import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
@@ -98,21 +96,25 @@ public class MedicalHistoryProceduresController extends PageController implement
         System.out.println("MedicalHistoryProceduresController: Adding new procedure");
         // Check for empty disease name TODO could be a listener to disable the add button
         if (summaryInput.getText().equals("")) {
-            DialogWindowController.showWarning("Invalid Procedure", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
                     "Invalid procedure summary provided.");
+            alert.showAndWait();
             summaryInput.clear();
             // Check for an empty date
         } else if (descriptionInput.getText().equals("")) {
-            DialogWindowController.showWarning("Invalid Procedure", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
                     "Invalid procedure description provided.");
+            alert.showAndWait();
             descriptionInput.clear();
         }
         else if (dateOfProcedureInput.getValue() == null) {
-            DialogWindowController.showWarning("Invalid Procedure", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
                     "No date provided.");
+            alert.showAndWait();
         } else if (dateOfProcedureInput.getValue().isBefore(currentUser.getDateOfBirth())){
-            DialogWindowController.showWarning("Invalid Procedure", "",
+            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
                     "Due date occurs before the user's date of birth.");
+            alert.showAndWait();
         } else {
             // Add the new procedure
             Procedure procedureToAdd = new Procedure(summaryInput.getText(), descriptionInput.getText(),
@@ -216,7 +218,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Procedure");
         dialog.setHeaderText("Update Procedure Details");
-        dialog.getDialogPane().getStylesheets().add(Main.getDialogStyle());
+        Main.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -292,8 +294,9 @@ public class MedicalHistoryProceduresController extends PageController implement
                         newDate = selectedProcedure.getDate().toString();
                     } else {
                         if (dateDue.getValue().isBefore(currentUser.getDateOfBirth())) {
-                            DialogWindowController.showWarning("Invalid Procedure", "",
+                            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
                                     "Due date occurs before the user's date of birth.");
+                            alert.showAndWait();
                             dateDue.getEditor().clear();
                             if (pending) {
                                 updateProcedurePopUp(selectedProcedure, true);
