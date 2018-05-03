@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -203,6 +204,7 @@ public class ClinicianController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettingsClinician.fxml"));
                     Stage stage = new Stage();
+                    stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
                     stage.setResizable(false);
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 290, 280));
@@ -652,6 +654,7 @@ public class ClinicianController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         Stage stage = new Stage();
+                        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
                         stage.setMinHeight(Main.mainWindowMinHeight);
                         stage.setMinWidth(Main.mainWindowMinWidth);
                         stage.setHeight(Main.mainWindowPrefHeight);
