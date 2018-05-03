@@ -21,6 +21,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.controlsfx.control.StatusBar;
+import seng302.GUI.StatusIndicator;
 import seng302.Generic.*;
 
 import java.io.IOException;
@@ -110,6 +112,10 @@ public class AdminController implements Initializable {
     private Label adminNameLabel;
     @FXML
     private Label adminAddressLabel;
+    @FXML
+    private StatusBar statusBar;
+
+    private StatusIndicator statusIndicator = new StatusIndicator();
 
 
     private int resultsPerPage;
@@ -775,7 +781,7 @@ public class AdminController implements Initializable {
                 return row;
             }
         });
-
+        statusIndicator.setStatusBar(statusBar);
         userTableView.refresh();
     }
 
@@ -809,6 +815,7 @@ public class AdminController implements Initializable {
             if(newAdmin != null){
                 Main.admins.add(newAdmin);
                 IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
@@ -838,6 +845,7 @@ public class AdminController implements Initializable {
             if(newClinician != null){
                 Main.clinicians.add(newClinician);
                 IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
@@ -867,6 +875,7 @@ public class AdminController implements Initializable {
             if(user != null){
                 Main.users.add(user);
                 IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 System.out.println("AdminController: Failed to create user");
             }
@@ -886,6 +895,7 @@ public class AdminController implements Initializable {
                 if(user != null &&
                         Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + user.getName() + "?", "Are you sure you want to delete this user?").showAndWait().get() == ButtonType.OK){
                     currentUsers.remove(user);
+                    statusIndicator.setStatus("Deleted user " + user.getName(), false);
                 }
                 break;
             case "administratorsTab":
@@ -896,12 +906,14 @@ public class AdminController implements Initializable {
                 }
                 else if(admin != null && Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + admin.getName() + "?", "Are you sure you want to delete this admin?").showAndWait().get() == ButtonType.OK){
                     currentAdmins.remove(admin);
+                    statusIndicator.setStatus("Deleted administrator " + admin.getName(), false);
                 }
                 break;
             case "cliniciansTab":
                 Clinician clinician = clinicianTableView.getSelectionModel().getSelectedItem();
                 if(clinician != null && Main.createAlert(Alert.AlertType.CONFIRMATION, "Delete", "Delete " + clinician.getName() + "?", "Are you sure you want to delete this clinician?").showAndWait().get() == ButtonType.OK){
                     currentClinicians.remove(clinician);
+                    statusIndicator.setStatus("Deleted clinician " + clinician.getName(), false);
                 }
                 break;
         }
