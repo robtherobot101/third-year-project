@@ -507,7 +507,7 @@ public class ClinicianController implements Initializable {
         if(searchGenderTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchGenderTerm.equals(user.getGender().toString()) && (user.getGender() != null)) {
+                if((user.getGender() != null) && searchGenderTerm.equals(user.getGender().toString())) {
                     newUsersFound.add(user);
                 }
             }
