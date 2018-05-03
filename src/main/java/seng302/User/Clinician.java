@@ -23,10 +23,10 @@ public class Clinician {
 
     /**
      * Used by Admin to pick its own ID
-     * @param username
-     * @param password
-     * @param name
-     * @param staffID
+     * @param username The username of the clinician
+     * @param password The clinician's password
+     * @param name The clinician's name
+     * @param staffID The clinician's ID
      */
     public Clinician(String username, String password, String name, LoginType accountType, long staffID){
         this.username = username;

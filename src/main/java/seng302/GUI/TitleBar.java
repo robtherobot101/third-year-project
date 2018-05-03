@@ -9,6 +9,10 @@ public class TitleBar {
 
     private String page;
 
+    /**
+     * sets the current stage to the given stage
+     * @param stage the current stage
+     */
     public void setStage(Stage stage){
         this.stage = stage;
     }
@@ -51,6 +55,7 @@ public class TitleBar {
 
     /**
      * Append a * to the title bar when a change is made
+     * @param saved boolean if changes in the current window have been saved or not
      */
     public void saved(boolean saved){
         if(saved && stage.getTitle().endsWith("*")){

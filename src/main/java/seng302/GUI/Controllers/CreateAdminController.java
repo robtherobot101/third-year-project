@@ -38,6 +38,11 @@ public class CreateAdminController implements Initializable {
 
     private Stage stage;
 
+    /**
+     * method to show the create admin controller
+     * @param stage the current stage to use
+     * @return the created admin user
+     */
     public Admin showAndWait(Stage stage){
         this.stage = stage;
         stage.showAndWait();

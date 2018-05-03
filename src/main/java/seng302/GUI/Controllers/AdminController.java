@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -23,18 +24,20 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
-import seng302.Generic.*;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
 import seng302.GUI.TFScene;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Class to control all the logic for the currentAdmin interactions with the application.
@@ -212,6 +215,7 @@ public class AdminController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
                     Stage stage = new Stage();
+                    stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 290, 350));
                     stage.initModality(Modality.APPLICATION_MODAL);
@@ -766,8 +770,9 @@ public class AdminController implements Initializable {
                     if (!row.isEmpty() && event.getClickCount()==2) {
                         System.out.println(row.getItem());
                         Stage stage = new Stage();
-                        stage.setMinHeight(550);
-                        stage.setMinWidth(650);
+                        stage.setMinHeight(800);
+                        stage.setMinWidth(600);
+                        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
                         Main.addCliniciansUserWindow(stage);
                         stage.initModality(Modality.NONE);

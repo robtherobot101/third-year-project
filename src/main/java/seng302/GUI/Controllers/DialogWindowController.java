@@ -12,6 +12,9 @@ import java.io.File;
  */
 public final class DialogWindowController
 {
+    /**
+     * prevents new instances of the dialog window controller being created
+     */
     private DialogWindowController() {}
 
     /**

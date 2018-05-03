@@ -94,7 +94,7 @@
             <Insets left="5.0" top="45.0" />
          </GridPane.margin>
       </CheckBox>
-      <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#deleteDisease" prefHeight="32.0" prefWidth="111.0" text="Delete Disease" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+      <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#deleteDisease" text="Delete Disease" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets />
          </GridPane.margin></Button>
