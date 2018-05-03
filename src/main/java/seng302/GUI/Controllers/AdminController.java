@@ -28,7 +28,9 @@ import java.net.URL;
 import java.util.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
+import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -70,12 +72,6 @@ public class AdminController implements Initializable {
     private TableColumn<Admin, String> adminUsernameTableColumn, adminNameTableColumn;
 
 
-
-
-
-
-    @FXML
-    private TextField profileSearchTextField;
     @FXML
     private Pane background;
     @FXML
@@ -93,19 +89,20 @@ public class AdminController implements Initializable {
     @FXML
     private GridPane mainPane;
 
-    @FXML
-    private ComboBox numberOfResutsToDisplay;
+
 
     @FXML
-    private TextField clinicianRegionField;
+    private TextField profileSearchTextField;
     @FXML
-    private ComboBox clinicianGenderComboBox;
+    private TextField adminRegionField;
     @FXML
-    private TextField clinicianAgeField;
+    private ComboBox adminGenderComboBox;
     @FXML
-    private ComboBox clinicianUserTypeComboBox;
+    private TextField adminAgeField;
     @FXML
-    private ComboBox clinicianOrganComboBox;
+    private ComboBox adminUserTypeComboBox;
+    @FXML
+    private ComboBox adminOrganComboBox;
     @FXML
     private Label adminNameLabel;
     @FXML
@@ -135,7 +132,6 @@ public class AdminController implements Initializable {
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
 
-    ObservableList<Object> users;
 
     /**
      * Sets the current currentAdmin
@@ -417,17 +413,17 @@ public class AdminController implements Initializable {
      * Clears the filter fields of the advanced filters
      */
     public void clearFilter() {
-        clinicianRegionField.clear();
-        clinicianAgeField.clear();
-        clinicianGenderComboBox.setValue(null);
-        clinicianOrganComboBox.setValue(null);
-        clinicianUserTypeComboBox.setValue(null);
+        adminRegionField.clear();
+        adminAgeField.clear();
+        adminGenderComboBox.setValue(null);
+        adminOrganComboBox.setValue(null);
+        adminUserTypeComboBox.setValue(null);
 
-    } /*
+    }
 
-    *//**
+    /**
      * Updates the list of users found from the search
-     *//*
+     */
     public void updateFoundUsers(){
         usersFound = Main.getUsersByNameAlternative(searchNameTerm);
 
@@ -452,7 +448,7 @@ public class AdminController implements Initializable {
         if(searchGenderTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchGenderTerm.equals(user.getGender().toString()) && (user.getGender() != null)) {
+                if((user.getGender() != null) && (searchGenderTerm.equals(user.getGender().toString()))) {
                     newUsersFound.add(user);
                 }
             }
@@ -483,24 +479,24 @@ public class AdminController implements Initializable {
             usersFound = newUsersFound;
         }
 
-        users = FXCollections.observableArrayList(usersFound);
-        populateNResultsComboBox(usersFound.size());
+        currentUsers = FXCollections.observableArrayList(usersFound);
+        userTableView.setItems(currentUsers);
         //displayPage(resultsPerPage);
     }
 
-    public void populateNResultsComboBox(int numberOfSearchResults){
-        numberOfResutsToDisplay.getItems().clear();
-        String firstPage = "First page";
-        numberOfResutsToDisplay.getItems().add(firstPage);
-        numberOfResutsToDisplay.getSelectionModel().select(firstPage);
-        if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
-            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
-        }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
-            numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
-            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
-        }
-    }
-*/
+//    public void populateNResultsComboBox(int numberOfSearchResults){
+//        numberOfResutsToDisplay.getItems().clear();
+//        String firstPage = "First page";
+//        numberOfResutsToDisplay.getItems().add(firstPage);
+//        numberOfResutsToDisplay.getSelectionModel().select(firstPage);
+//        if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
+//            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
+//        }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
+//            numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
+//            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
+//        }
+//    }
+
 
 
 
@@ -650,26 +646,27 @@ public class AdminController implements Initializable {
             }
         });
 
-        /*profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
+        adminGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
+        adminUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
+        adminOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+
+
+        profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchNameTerm = newValue;
             updateFoundUsers();
         });
 
-        clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
+        adminRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchRegionTerm = newValue;
             updateFoundUsers();
         });
 
-        clinicianAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
+        adminAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchAgeTerm = newValue;
             updateFoundUsers();
         });
 
-        clinicianGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
+        adminGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue == null) {
                 searchGenderTerm = null;
 
@@ -680,8 +677,7 @@ public class AdminController implements Initializable {
 
         });
 
-        clinicianUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
+        adminUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue == null) {
                 searchUserTypeTerm = null;
 
@@ -692,8 +688,7 @@ public class AdminController implements Initializable {
 
         });
 
-        clinicianOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
+        adminOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue == null) {
                 searchOrganTerm = null;
 
@@ -702,7 +697,7 @@ public class AdminController implements Initializable {
             }
             updateFoundUsers();
 
-        });*/
+        });
 
 
         System.out.println("AdminController: Setting main controller of myself");
