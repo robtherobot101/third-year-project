@@ -13,7 +13,7 @@ junit:
 recent-artifacts:
   stage: deploy
   script:
-    - mvn -B -Xmx2000M clean site package
+    - mvn -B clean site package
   artifacts:
     paths:
       - target/*.jar
@@ -24,7 +24,7 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B -Xmx2000M clean site package
+    - mvn -B clean site package
   artifacts:
     paths:
     - target/*.jar
