@@ -920,6 +920,7 @@ public class UserWindowController implements Initializable {
      */
     public void logout() {
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             String text = History.prepareFileStringGUI(currentUser.getId(), "logout");

@@ -12,7 +12,6 @@ public class Admin extends Clinician {
     private String accessLevel;
 
     public Admin(String username, String password, String name){
-
         super(username, password, name, LoginType.ADMIN, IO.getNextId(true, LoginType.ADMIN));
         String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
         Random r = new Random();

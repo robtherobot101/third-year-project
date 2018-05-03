@@ -181,6 +181,7 @@ public class AdminController implements Initializable {
         alert.setTitle("Are you sure?");
         alert.setHeaderText("Are you sure would like to log out? ");
         alert.setContentText("Logging out without saving loses your non-saved data.");
+        alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             for(Stage userWindow: Main.getCliniciansUserWindows()){
@@ -328,11 +329,16 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save(){
-        IO.saveUsers(IO.getAdminPath(), LoginType.USER);
-        IO.saveUsers(IO.getAdminPath(), LoginType.CLINICIAN);
-        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-        IO.saveUsers(IO.getUserPath(), LoginType.USER);
-        IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to save all profiles? ",
+                "All profiles will be saved (user, clinician, admin).");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        }
+        alert.close();
     }
 
     /**
@@ -470,7 +476,7 @@ public class AdminController implements Initializable {
         if(searchOrganTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if((user.getOrgans().contains(Organ.parse(searchOrganTerm))) && (user.getOrgans().size() != 0)) {
+                if((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
                     newUsersFound.add(user);
                 }
             }
@@ -482,7 +488,7 @@ public class AdminController implements Initializable {
         if(searchUserTypeTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
             for(User user: usersFound) {
-                if(searchUserTypeTerm.equals(user.getType()) && (user.getType() != null)) {
+                if((user.getType() != null) && (searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }
@@ -530,7 +536,7 @@ public class AdminController implements Initializable {
         // Set User TableColumns to point at correct attributes
         userNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         userTypeTableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        userAgeTableColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        userAgeTableColumn.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         userGenderTableColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
         userRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
@@ -583,6 +589,7 @@ public class AdminController implements Initializable {
                 alert.setTitle("Are you sure?");
                 alert.setHeaderText("Confirm profile deletion");
                 alert.setContentText("Are you sure you want to delete this profile? This cannot be undone.");
+                alert.getDialogPane().getStylesheets().add(Main.getDialogStyle());
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     if (selectedUser != null) {
@@ -595,13 +602,13 @@ public class AdminController implements Initializable {
                         // A clinician has been selected for deletion
                         System.out.println("Deleting Clinician: " + selectedClinician);
                         Main.clinicians.remove(selectedClinician);
-                        IO.saveUsers(IO.getUserPath(), LoginType.CLINICIAN);
+                        IO.saveUsers(IO.getUserPath(), LoginType.USER);
                         statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                     } else if (selectedAdmin != null) {
                         // An admin has been selected for deletion
                         System.out.println("Deleting Admin: " + selectedAdmin);
                         Main.admins.remove(selectedAdmin);
-                        IO.saveUsers(IO.getUserPath(), LoginType.ADMIN);
+                        IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                         statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                     }
                     System.out.println(Main.users);
@@ -653,7 +660,7 @@ public class AdminController implements Initializable {
                     Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
                     if (selectedAdmin != null) {
                         // Check if this is the default clinician
-                        if (selectedAdmin.getStaffID() == 1) {
+                        if (selectedAdmin.getStaffID() == 0) {
                             deleteProfile.setDisable(true);
                             deleteProfile.setText("Cannot delete default admin");
                         } else {
@@ -774,7 +781,9 @@ public class AdminController implements Initializable {
                             userWindowController.showWaitingListButton();
                             Main.controlViewForClinician();
 
-                            Scene newScene = new Scene(root, 900, 575);
+                            Scene newScene = new Scene(root, Main.mainWindowPrefWidth, Main.mainWindowPrefHeight);
+                            stage.setMinHeight(Main.mainWindowMinHeight);
+                            stage.setMinWidth(Main.mainWindowMinWidth);
                             stage.setScene(newScene);
                             stage.show();
                             userWindowController.setAsChildWindow();

@@ -3,6 +3,7 @@ package seng302.TestFX;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -127,6 +128,7 @@ public class AdminWindowGUITest extends TestFXTest {
     /**
      * Add a simple user and verify it appears with appropriate details in the TabPane
      */
+    @Ignore
     @Test
     public void addThenDeleteClinician() {
         loginAsDefaultAdmin();
