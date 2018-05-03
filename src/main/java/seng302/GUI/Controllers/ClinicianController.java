@@ -700,10 +700,10 @@ public class ClinicianController implements Initializable {
                             setTooltip(null);
                         } else {
                             if (user.getOrgans().isEmpty()) {
-                                tooltip.setText(user.getName() + ".");
+                                tooltip.setText("Preferred name :"+user.getPreferredName() + ".");
                             } else {
                                 String organs = user.getOrgans().toString();
-                                tooltip.setText(user.getName() + ". User: " + organs.substring(1, organs.length() - 1));
+                                tooltip.setText("Preferred name :"+user.getPreferredName() + ". Donor: " + organs.substring(1, organs.length() - 1));
                             }
                             setTooltip(tooltip);
                         }
