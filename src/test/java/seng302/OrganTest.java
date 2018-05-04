@@ -1,12 +1,13 @@
 package seng302;
 
-import org.junit.Test;
-import seng302.User.Attribute.Organ;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
+import org.junit.Test;
+import seng302.User.Attribute.Organ;
+
 public class OrganTest {
+
     @Test
     public void testValidParse() {
         assertEquals(Organ.parse("kIdney"), Organ.KIDNEY);

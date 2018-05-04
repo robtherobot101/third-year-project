@@ -1,9 +1,6 @@
 package seng302.Generic;
 
-import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
-
-import java.util.Date;
 
 /**
  * An object to store the necessary data for the transplant waiting list

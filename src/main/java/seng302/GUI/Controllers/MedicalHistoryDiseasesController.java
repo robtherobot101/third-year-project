@@ -1,5 +1,11 @@
 package seng302.GUI.Controllers;
 
+import static seng302.Generic.IO.streamOut;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,7 +15,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -22,14 +41,8 @@ import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
-
 public class MedicalHistoryDiseasesController extends PageController implements Initializable {
+
     @FXML
     private DatePicker dateOfDiagnosisInput;
     @FXML
@@ -47,24 +60,13 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     @FXML
     private Label newDiseaseDateLabel;
     @FXML
-    private Button addNewDiseaseButton;
-    @FXML
-    private Button deleteDiseaseButton;
-    @FXML
-    private Button saveDiseaseButton;
-    @FXML
-    private Button todayButton;
+    private Button addNewDiseaseButton, deleteDiseaseButton, saveDiseaseButton, todayButton;
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
-
     private boolean sortCuredDiagnosisAscending, sortCuredDatesAscending, sortCuredByDate;
-
     private User currentUser;
-
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
-
     private Label currentDiagnosisColumnLabel, currentDateColumnLabel;
-
     private Label curedDiagnosisColumnLabel, curedDateColumnLabel;
 
     @Override
@@ -92,36 +94,36 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         // Check for empty disease name
         if (newDiseaseTextField.getText().isEmpty()) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "Invalid disease name provided.");
+                "Invalid disease name provided.");
             alert.showAndWait();
             newDiseaseTextField.clear();
-        // Check for an empty date
+            // Check for an empty date
         } else if (dateOfDiagnosisInput.getValue() == null) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "No date provided.");
+                "No date provided.");
             alert.showAndWait();
-        // Check if the date of diagnosis was before the current user's birthday
+            // Check if the date of diagnosis was before the current user's birthday
         } else if (dateOfDiagnosisInput.getValue().isBefore(currentUser.getDateOfBirth())) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "Date of diagnosis before date of birth.");
+                "Date of diagnosis before date of birth.");
             alert.showAndWait();
             dateOfDiagnosisInput.setValue(null);
-        // Check for a date in the future
+            // Check for a date in the future
         } else if (dateOfDiagnosisInput.getValue().isAfter(LocalDate.now())) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "Diagnosis date occurs in the future.");
+                "Diagnosis date occurs in the future.");
             alert.showAndWait();
             dateOfDiagnosisInput.setValue(null);
-        } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()){
+        } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "Disease cannot be chronic and cured.");
+                "Disease cannot be chronic and cured.");
             alert.showAndWait();
             isCuredCheckBox.setSelected(false);
             chronicCheckBox.setSelected(false);
         } else {
             // Add the new disease
             Disease diseaseToAdd = new Disease(newDiseaseTextField.getText(), dateOfDiagnosisInput.getValue(),
-                    chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
+                chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
             newDiseaseTextField.clear();
             dateOfDiagnosisInput.setValue(null);
             isCuredCheckBox.setSelected(false);
@@ -139,13 +141,14 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Adds a disease marked as cured to the cured disease item list and presents in table.
+     *
      * @param diseaseToAdd new cured disease to add
      */
     private void addCuredDisease(Disease diseaseToAdd) {
         if (curedDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "Disease already exists.");
+                "Disease already exists.");
             alert.showAndWait();
         } else {
             curedDiseaseItems.add(diseaseToAdd);
@@ -155,13 +158,14 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Adds a disease marked as not cured to the current disease item list and presents in table.
+     *
      * @param diseaseToAdd new uncured disease to add
      */
     private void addCurrentDisease(Disease diseaseToAdd) {
         if (currentDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                    "Disease already exists.");
+                "Disease already exists.");
             alert.showAndWait();
         } else {
             currentDiseaseItems.add(diseaseToAdd);
@@ -190,9 +194,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                 saveToUndoStack();
             }
             alert.close();
-        }
-
-        else if (curedDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
+        } else if (curedDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Are you sure?");
@@ -217,7 +219,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     public void save() {
 
         Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
-                "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following disease details.");
+            "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following disease details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentUser.getCurrentDiseases().clear();
@@ -240,6 +242,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Creates a popup dialog to modify the name and date of the selectedDisease
+     *
      * @param selectedDisease disease to update information of
      * @param current if the selected disease is current or cured
      */
@@ -284,7 +287,9 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         });
 
         dateOfDiagnosis.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue) updateButton.setDisable(false);
+            if (!newValue) {
+                updateButton.setDisable(false);
+            }
         });
 
         dialog.getDialogPane().setContent(grid);
@@ -297,10 +302,10 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             if (dialogButton == updateButtonType) {
                 if (dateOfDiagnosis.getValue().isAfter(LocalDate.now())) {
                     Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                            "Diagnosis date occurs in the future.");
+                        "Diagnosis date occurs in the future.");
                     alert.showAndWait();
                     dateOfDiagnosis.setValue(null);
-                    if(current) {
+                    if (current) {
                         updateDiseasePopUp(selectedDisease, true);
                     } else {
                         updateDiseasePopUp(selectedDisease, false);
@@ -319,7 +324,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             System.out.println("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
             selectedDisease.setName(newDiseaseDetails.getKey());
             selectedDisease.setDiagnosisDate(newDiseaseDetails.getValue());
-            if(current) {
+            if (current) {
                 currentDiseaseItems.remove(selectedDisease);
                 currentDiseaseItems.add(selectedDisease);
                 sortCurrentDiseases(false);
@@ -429,6 +434,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Sorts the current disease list according to flags sortCurrentDatesAscending and sortCurrentDiagnosisAscending
+     *
      * @param toggle whether to just keep with the current sort settings or to flip the order
      */
     private void sortCurrentDiseases(boolean toggle) {
@@ -487,6 +493,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Sorts the cured disease list according to flags sortCuredDatesAscending and sortCuredDiagnosisAscending
+     *
      * @param toggle whether to just keep with the cured sort settings or to flip the order
      */
     private void sortCuredDiseases(boolean toggle) {
@@ -607,7 +614,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         });
         currentDiseaseListContextMenu.getItems().add(setCuredMenuItem);
 
-
         final ContextMenu curedDiseaseContextMenu = new ContextMenu();
 
         // Update selected disease from the cured disease table
@@ -671,13 +677,13 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                     Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                     if (selectedDisease.isChronic()) {
                         toggleCurrentChronicMenuItem.setText(String.format("Mark %s as not chronic",
-                                selectedDisease.getName()));
+                            selectedDisease.getName()));
                     } else {
                         toggleCurrentChronicMenuItem.setText(String.format("Mark %s as chronic",
-                                selectedDisease.getName()));
+                            selectedDisease.getName()));
                     }
                     setCuredMenuItem.setText(String.format("Mark %s as cured",
-                            selectedDisease.getName()));
+                        selectedDisease.getName()));
                     updateCurrentDiseaseMenuItem.setText("Update disease");
                     currentDiseaseListContextMenu.show(currentDiseaseTableView, event.getScreenX(), event.getScreenY());
                 }
@@ -693,19 +699,18 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                     Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
                     if (selectedDisease.isChronic()) {
                         setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as not chronic",
-                                selectedDisease.getName()));
+                            selectedDisease.getName()));
                     } else {
                         setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as chronic",
-                                selectedDisease.getName()));
+                            selectedDisease.getName()));
                     }
                     setUncuredMenuItem.setText(String.format("Mark %s as uncured",
-                            selectedDisease.getName()));
+                        selectedDisease.getName()));
                     updateCuredDiseaseMenuItem.setText("Update disease");
                     curedDiseaseContextMenu.show(curedDiseaseTableView, event.getScreenX(), event.getScreenY());
                 }
             }
         });
-
 
         // Sets the cell factory to style each Disease item depending on its details
         currentDiagnosisColumn.setCellFactory(column -> {
@@ -776,6 +781,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     /**
      * Function to set the current donor of this class to that of the instance of the application.
+     *
      * @param currentUser The donor to set the current donor.
      */
     public void setCurrentUser(User currentUser) {

@@ -1,9 +1,16 @@
 package seng302.GUI.Controllers;
 
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -12,14 +19,11 @@ import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 
-import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
 /**
  * Class to handle all the logic for the Account Settings window.
  */
 public class ClinicianAccountSettingsController implements Initializable {
+
     @FXML
     private TextField usernameField, passwordField;
     @FXML
@@ -55,7 +59,7 @@ public class ClinicianAccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        for (Clinician user: Main.clinicians) {
+        for (Clinician user : Main.clinicians) {
             if (user != clinician) {
                 if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
                     errorLabel.setText("That username is already taken.");
@@ -67,7 +71,7 @@ public class ClinicianAccountSettingsController implements Initializable {
         errorLabel.setVisible(false);
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.get() == ButtonType.OK) {
             clinician.setUsername(usernameField.getText());
             clinician.setPassword(passwordField.getText());
 

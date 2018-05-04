@@ -1,12 +1,13 @@
 package seng302;
 
-import org.junit.Test;
-import seng302.User.Attribute.Gender;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
+import org.junit.Test;
+import seng302.User.Attribute.Gender;
+
 public class GenderTest {
+
     @Test
     public void testValidParse() {
         assertEquals(Gender.parse("malE"), Gender.MALE);

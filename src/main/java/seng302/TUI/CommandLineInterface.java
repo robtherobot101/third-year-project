@@ -1,5 +1,12 @@
 package seng302.TUI;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -16,18 +23,11 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
 public class CommandLineInterface {
+
     private LineReader scanner;
 
     /**
@@ -104,7 +104,7 @@ public class CommandLineInterface {
                     break;
                 default:
                     System.out.println("Command not recognised. Enter 'help' to view available commands, or help <command> to view information " +
-                            "about a specific command.");
+                        "about a specific command.");
             }
             if (success) {
                 String text = History.prepareFileStringCLI(nextCommand);
@@ -124,8 +124,8 @@ public class CommandLineInterface {
      * Prints a message to the console advising the user on how to correctly use a command they failed to use.
      *
      * @param command The command name
-     * @param argc    The argument count
-     * @param args    The arguments
+     * @param argc The argument count
+     * @param args The arguments
      */
     private void printIncorrectUsageString(String command, int argc, String args) {
         switch (argc) {
@@ -205,7 +205,7 @@ public class CommandLineInterface {
             return true;
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
-                    "cornea, middle-ear, skin, bone-marrow, connective-tissue");
+                "cornea, middle-ear, skin, bone-marrow, connective-tissue");
             return false;
         }
     }
@@ -226,7 +226,7 @@ public class CommandLineInterface {
                     return false;
                 }
                 String nextLine = scanner.readLine(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId
-                        ()));
+                    ()));
                 while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
                     nextLine = scanner.readLine("Answer not recognised. Please enter y or n: ");
                 }
@@ -275,7 +275,7 @@ public class CommandLineInterface {
             return true;
         } catch (IllegalArgumentException e) {
             System.out.println("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
-                    "bone-marrow, connective-tissue");
+                "bone-marrow, connective-tissue");
             return false;
         }
     }
@@ -402,7 +402,7 @@ public class CommandLineInterface {
                 return true;
             default:
                 System.out.println("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
-                        "bloodType, region, or currentAddress.");
+                    "bloodType, region, or currentAddress.");
                 return false;
         }
     }
@@ -604,131 +604,131 @@ public class CommandLineInterface {
     public boolean showHelp(String[] nextCommand) {
         if (nextCommand.length == 1) {
             System.out.println("Valid commands are: "
-                    + "\n\t-add \"First Name,name part 2,name part n\" <date of birth>"
-                    + "\n\t-addOrgan <id> <organ>"
-                    + "\n\t-delete <id>"
-                    + "\n\t-deleteOrgan <id> <organ>"
-                    + "\n\t-set <id> <attribute> <value>"
-                    + "\n\t-describe <id> OR describe \"name substring 1,name substring 2,name substring n\""
-                    + "\n\t-describeOrgans <id>"
-                    + "\n\t-list"
-                    + "\n\t-listOrgans"
-                    + "\n\t-import [-r] <filename>"
-                    + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
-                    + "\n\t-help [<command>]"
-                    + "\n\t-quit");
+                + "\n\t-add \"First Name,name part 2,name part n\" <date of birth>"
+                + "\n\t-addOrgan <id> <organ>"
+                + "\n\t-delete <id>"
+                + "\n\t-deleteOrgan <id> <organ>"
+                + "\n\t-set <id> <attribute> <value>"
+                + "\n\t-describe <id> OR describe \"name substring 1,name substring 2,name substring n\""
+                + "\n\t-describeOrgans <id>"
+                + "\n\t-list"
+                + "\n\t-listOrgans"
+                + "\n\t-import [-r] <filename>"
+                + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
+                + "\n\t-help [<command>]"
+                + "\n\t-quit");
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
                 case "add":
                     System.out.println("This command adds a new user with a name and date of birth.\n"
-                            + "The syntax is: add <name> <date of birth>\n"
-                            + "Rules:\n"
-                            + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
-                            + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
-                            + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
-                            + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
+                        + "The syntax is: add <name> <date of birth>\n"
+                        + "Rules:\n"
+                        + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
+                        + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
+                        + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
+                        + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
                     break;
                 case "addorgan":
                     System.out.println("This command adds one organ to donate to a user. To find the id of a user, use the list and "
-                            + "describe commands.\n"
-                            + "The syntax is: addOrgan <id> <organ>\n"
-                            + "Rules:\n"
-                            + "-The id number must be a number that is 0 or larger\n"
-                            + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
-                            + "bone-marrow, or connective-tissue.\n"
-                            + "Example valid usage: addOrgan 0 skin");
+                        + "describe commands.\n"
+                        + "The syntax is: addOrgan <id> <organ>\n"
+                        + "Rules:\n"
+                        + "-The id number must be a number that is 0 or larger\n"
+                        + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
+                        + "bone-marrow, or connective-tissue.\n"
+                        + "Example valid usage: addOrgan 0 skin");
                     break;
                 case "delete":
                     System.out.println("This command deletes one user. To find the id of a user, use the list and describe commands.\n"
-                            + "The syntax is: delete <id>\n"
-                            + "Rules:\n"
-                            + "-The id number must be a number that is 0 or larger\n"
-                            + "-You will be asked to confirm that you want to delete this user\n"
-                            + "Example valid usage: delete 1");
+                        + "The syntax is: delete <id>\n"
+                        + "Rules:\n"
+                        + "-The id number must be a number that is 0 or larger\n"
+                        + "-You will be asked to confirm that you want to delete this user\n"
+                        + "Example valid usage: delete 1");
                     break;
                 case "deleteorgan":
                     System.out.println("This command removes one offered organ from a user. To find the id of a user, use the list and "
-                            + "describe commands.\n"
-                            + "The syntax is: deleteOrgan <id> <organ>\n"
-                            + "Rules:\n"
-                            + "-The id number must be a number that is 0 or larger\n"
-                            + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
-                            + "bone-marrow, or connective-tissue.\n"
-                            + "Example valid usage: deleteOrgan 5 kidney");
+                        + "describe commands.\n"
+                        + "The syntax is: deleteOrgan <id> <organ>\n"
+                        + "Rules:\n"
+                        + "-The id number must be a number that is 0 or larger\n"
+                        + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
+                        + "bone-marrow, or connective-tissue.\n"
+                        + "Example valid usage: deleteOrgan 5 kidney");
                     break;
                 case "set":
                     System.out.println("This command sets one attribute (apart from organs to be donated) of a user. To find the id of a user, "
-                            + "use the list and describe commands. To add or delete organs, instead use the addOrgan and deleteOrgan commands.\n"
-                            + "The syntax is: set <id> <attribute> <value>\n"
-                            + "Rules:\n"
-                            + "-The id number must be a number that is 0 or larger\n"
-                            + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
-                            + "weight, bloodType, region, currentAddress\n"
-                            + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
-                            + "-The gender must be: male, female, or other\n"
-                            + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
-                            + "-The height and weight must be numbers that are larger than 0\n"
-                            + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
-                            + "Example valid usage: set 2 bloodtype ab+");
+                        + "use the list and describe commands. To add or delete organs, instead use the addOrgan and deleteOrgan commands.\n"
+                        + "The syntax is: set <id> <attribute> <value>\n"
+                        + "Rules:\n"
+                        + "-The id number must be a number that is 0 or larger\n"
+                        + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
+                        + "weight, bloodType, region, currentAddress\n"
+                        + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
+                        + "-The gender must be: male, female, or other\n"
+                        + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
+                        + "-The height and weight must be numbers that are larger than 0\n"
+                        + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
+                        + "Example valid usage: set 2 bloodtype ab+");
                     break;
                 case "describe":
                     System.out.println("This command searches users and displays information about them. To find the id of a user, use the list "
-                            + "and describe commands.\n"
-                            + "The syntax is: describe <id> OR describe <name>\n"
-                            + "Rules:\n"
-                            + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
-                            + "-If a name or names are used, the names must be comma separated without a space around the comma (eg. drew,david)\n"
-                            + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
-                            + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
-                            + "Example valid usage: describe \"andrew,son\'");
+                        + "and describe commands.\n"
+                        + "The syntax is: describe <id> OR describe <name>\n"
+                        + "Rules:\n"
+                        + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
+                        + "-If a name or names are used, the names must be comma separated without a space around the comma (eg. drew,david)\n"
+                        + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
+                        + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
+                        + "Example valid usage: describe \"andrew,son\'");
                     break;
                 case "describeorgans":
                     System.out.println("This command displays the organs which a user will donate or has donated. To find the id of a user, "
-                            + "use the list and describe commands.\n"
-                            + "The syntax is: describeOrgans <id>\n"
-                            + "Rules:\n"
-                            + "-The id number must be a number that is 0 or larger\n"
-                            + "Example valid usage: describeOrgans 4");
+                        + "use the list and describe commands.\n"
+                        + "The syntax is: describeOrgans <id>\n"
+                        + "Rules:\n"
+                        + "-The id number must be a number that is 0 or larger\n"
+                        + "Example valid usage: describeOrgans 4");
                     break;
                 case "list":
                     System.out.println("This command lists all information about all users in a table.\n"
-                            + "Example valid usage: list");
+                        + "Example valid usage: list");
                     break;
                 case "listorgans":
                     System.out.println("This command displays all of the organs that are currently offered by each user. User that are "
-                            + "not yet offering any organs are not shown.\n"
-                            + "Example valid usage: listOrgans");
+                        + "not yet offering any organs are not shown.\n"
+                        + "Example valid usage: listOrgans");
                     break;
                 case "import":
                     System.out.println("This command replaces all user data in the system with an imported JSON object.\n"
-                            + "The syntax is: import [-r] <filename>\n"
-                            + "Rules:\n"
-                            + "-If the -r flag is present, the filepath will be interpreted as relative\n"
-                            + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
-                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "-The file must be of the same format as those saved from this application\n"
-                            + "Example valid usage: import -r ../user_list_FINAL.txt");
+                        + "The syntax is: import [-r] <filename>\n"
+                        + "Rules:\n"
+                        + "-If the -r flag is present, the filepath will be interpreted as relative\n"
+                        + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
+                        + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
+                        + "-The file must be of the same format as those saved from this application\n"
+                        + "Example valid usage: import -r ../user_list_FINAL.txt");
                     break;
                 case "save":
                     System.out.println("This command saves the current user database to a file in JSON format.\n"
-                            + "The syntax is: save [-r] <filepath>\n"
-                            + "Rules:\n"
-                            + "-If the -r flag is present, the filepath will be interpreted as relative\n"
-                            + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
-                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "Example valid usage: save -r \"new folder/users.json\"");
+                        + "The syntax is: save [-r] <filepath>\n"
+                        + "Rules:\n"
+                        + "-If the -r flag is present, the filepath will be interpreted as relative\n"
+                        + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
+                        + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
+                        + "Example valid usage: save -r \"new folder/users.json\"");
                     break;
                 case "help":
                     System.out.println("This command displays information about how to use this program.\n"
-                            + "The syntax is: help OR help <command>\n"
-                            + "Rules:\n"
-                            + "-If the command argument is passed, the command must be: add, addOrgan, delete, deleteOrgan, set, describe, "
-                            + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
-                            + "Example valid usage: help help");
+                        + "The syntax is: help OR help <command>\n"
+                        + "Rules:\n"
+                        + "-If the command argument is passed, the command must be: add, addOrgan, delete, deleteOrgan, set, describe, "
+                        + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
+                        + "Example valid usage: help help");
                     break;
                 case "quit":
                     System.out.println("This command exits the program.\n"
-                            + "Example valid usage: quit");
+                        + "Example valid usage: quit");
                     break;
                 default:
                     System.out.println("Can not offer help with this command as it is not a valid command.");

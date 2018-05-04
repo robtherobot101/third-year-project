@@ -1,19 +1,14 @@
 package seng302.Core;
 
 
+import java.time.LocalDate;
 import org.junit.Before;
-import org.junit.Test;
 import seng302.Generic.ReceiverWaitingListItem;
-import seng302.Generic.WaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 public class WaitingListItemTest {
+
     private User testUser;
     private ReceiverWaitingListItem item;
     private Organ heart;

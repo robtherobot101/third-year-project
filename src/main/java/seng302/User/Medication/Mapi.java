@@ -11,6 +11,7 @@ public class Mapi {
 
     /**
      * Returns all the medicines that match the string passed in by user.
+     *
      * @param query The string to auto complete.
      * @return Returns an ArrayList of strings of the matching medicines.
      */
@@ -38,6 +39,7 @@ public class Mapi {
 
     /**
      * Gets all the active ingredients of a given medicine.
+     *
      * @param medicine The medicine to get the active ingredients of.
      * @return Returns the active ingredients as a string arraylist
      */
@@ -56,15 +58,16 @@ public class Mapi {
 
     /**
      * Sends the api requests to MAPI.
+     *
      * @param url The api url to call.
      * @return returns a String of the result of the api request.
      */
     private static String apiRequest(String url) {
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)
-                    .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")
-                    .header("Accept", "application/json")
-                    .asJson();
+                .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")
+                .header("Accept", "application/json")
+                .asJson();
             int n = 0;
             n = response.getRawBody().available();
             byte[] bytes = new byte[n];

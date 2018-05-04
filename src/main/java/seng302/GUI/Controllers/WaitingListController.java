@@ -1,11 +1,23 @@
 package seng302.GUI.Controllers;
 
+import static seng302.Generic.IO.streamOut;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import seng302.GUI.StatusIndicator;
@@ -16,13 +28,6 @@ import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
-
 
 /**
  * The controller for the waiting list pane
@@ -30,34 +35,15 @@ import static seng302.Generic.IO.streamOut;
 public class WaitingListController extends PageController implements Initializable {
 
     @FXML
-    private Button registerOrganButton;
-
-    @FXML
-    private Button deregisterOrganButton;
-
+    private Button registerOrganButton, deregisterOrganButton;
     @FXML
     private TableView<ReceiverWaitingListItem> waitingList;
-
     @FXML
     private ComboBox<Organ> organTypeComboBox;
-
     @FXML
-    private TableColumn organType;
-
+    private TableColumn organType, stillWaitingOn, organRegisteredDate, organDeregisteredDate;
     @FXML
-    private TableColumn stillWaitingOn;
-
-    @FXML
-    private TableColumn organRegisteredDate;
-
-    @FXML
-    private TableColumn organDeregisteredDate;
-
-    @FXML
-    private Label organComboBoxLabel;
-
-    @FXML
-    private Label transplantWaitingListLabel;
+    private Label organComboBoxLabel, transplantWaitingListLabel;
 
     private User currentUser;
 
@@ -70,6 +56,7 @@ public class WaitingListController extends PageController implements Initializab
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
+     *
      * @param user The user
      */
     public void setCurrentUser(User user) {
@@ -89,12 +76,12 @@ public class WaitingListController extends PageController implements Initializab
             addToUndoStack();
             ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected);
             boolean found = false;
-            for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()){
+            for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()) {
                 System.out.println(temp.getWaitingListItemId() + "\t" + temp.getOrganType() + "\t" + item.getWaitingListItemId() + "\t" + item.getOrganType());
                 if (temp.getOrganType() == item.getOrganType() && item.getOrganDeregisteredDate() != null) {
                     currentUser.getWaitingListItems().remove(item);
                     currentUser.getWaitingListItems().add(new ReceiverWaitingListItem(item));
-                    currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() -1).registerOrgan();
+                    currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() - 1).registerOrgan();
                     found = true;
                     break;
                 }
@@ -109,7 +96,6 @@ public class WaitingListController extends PageController implements Initializab
         populateOrgansComboBox();
 
     }
-
 
 
     /**
@@ -136,12 +122,12 @@ public class WaitingListController extends PageController implements Initializab
     }
 
 
-    public void setStatusIndicator(StatusIndicator statusIndicator){
+    public void setStatusIndicator(StatusIndicator statusIndicator) {
         this.statusIndicator = statusIndicator;
     }
 
 
-    public void setTitleBar(TitleBar titleBar){
+    public void setTitleBar(TitleBar titleBar) {
         this.titleBar = titleBar;
     }
 
@@ -150,13 +136,13 @@ public class WaitingListController extends PageController implements Initializab
      * Removes any currently registered organs from the combo box, as an already registered organ cannot be registered again.
      * It is re added if the organ is deregistered.
      */
-    public void populateOrgansComboBox(){
+    public void populateOrgansComboBox() {
         ArrayList<Organ> toBeRemoved = new ArrayList<Organ>();
         ArrayList<Organ> toBeAdded = new ArrayList<Organ>(Arrays.asList(Organ.values()));
-        for(ReceiverWaitingListItem waitingListItem: waitingListItems){
-            for(Organ type: Organ.values()){
-                if(waitingListItem.getOrganType() == type){
-                    if(waitingListItem.getStillWaitingOn()){
+        for (ReceiverWaitingListItem waitingListItem : waitingListItems) {
+            for (Organ type : Organ.values()) {
+                if (waitingListItem.getOrganType() == type) {
+                    if (waitingListItem.getStillWaitingOn()) {
                         toBeRemoved.add(type);
                     }
                 }
@@ -192,7 +178,7 @@ public class WaitingListController extends PageController implements Initializab
         deregisterOrganButton.setDisable(true);
 
         registerOrganButton.disableProperty().bind(
-                Bindings.isNull(organTypeComboBox.getSelectionModel().selectedItemProperty())
+            Bindings.isNull(organTypeComboBox.getSelectionModel().selectedItemProperty())
         );
 
         waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -235,6 +221,7 @@ public class WaitingListController extends PageController implements Initializab
     /**
      * Shows or hides the options for modifying the transplant waiting list
      * depending on the value of shown
+     *
      * @param shown True if the controls are to be shown, otherwise false
      */
     public void setControlsShown(boolean shown) {
@@ -248,11 +235,11 @@ public class WaitingListController extends PageController implements Initializab
     /**
      * Calls the main class which has access to the static controller allowing it to manually add the user to the waitinglist undo stack.
      */
-    public void addToUndoStack(){
+    public void addToUndoStack() {
         Main.addCurrentToWaitingListUndoStack();
     }
 
-    public boolean getDeregisterPressed(){
+    public boolean getDeregisterPressed() {
         return deregisterPressed;
     }
 

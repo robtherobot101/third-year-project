@@ -1,8 +1,17 @@
 package seng302.GUI.Controllers;
 
+import static seng302.Generic.IO.streamOut;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -13,16 +22,11 @@ import seng302.Generic.Main;
 import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
-
 /**
  * A controller class for the create account screen.
  */
 public class CreateAccountController implements Initializable {
+
     @FXML
     private TextField usernameInput, emailInput, passwordConfirmInput, firstNameInput, middleNamesInput, lastNameInput;
     @FXML
@@ -37,10 +41,9 @@ public class CreateAccountController implements Initializable {
     private AnchorPane background;
 
     private User user;
-
     private Stage stage;
 
-    public User showAndWait(Stage stage){
+    public User showAndWait(Stage stage) {
         this.stage = stage;
         stage.showAndWait();
         return user;
@@ -51,11 +54,13 @@ public class CreateAccountController implements Initializable {
      */
     public void returnToLogin() {
         // If we are creating from login window, return us to login
-        if(background.getScene().getWindow() == Main.getStage()) {
+        if (background.getScene().getWindow() == Main.getStage()) {
             Main.setScene(TFScene.login);
         }
         // Otherwise close the stage and return us to wherever we were before
-        else stage.close();
+        else {
+            stage.close();
+        }
     }
 
     /**
@@ -67,10 +72,11 @@ public class CreateAccountController implements Initializable {
 
     /**
      * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
+     *
      * @return The created user
      */
     public User createAccount() {
-        for (User user: Main.users) {
+        for (User user : Main.users) {
             if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(user.getUsername())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
@@ -95,7 +101,7 @@ public class CreateAccountController implements Initializable {
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
-                    dateOfBirthInput.getValue(), username, email, passwordInput.getText());
+                dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             // If we are creating from the login screen
             if (background.getScene().getWindow() == Main.getStage()) {
                 Main.users.add(user);
@@ -133,6 +139,7 @@ public class CreateAccountController implements Initializable {
 
     /**
      * Add listeners to enable/disable the create account button based on information supplied
+     *
      * @param location Not used
      * @param resources Not used
      */

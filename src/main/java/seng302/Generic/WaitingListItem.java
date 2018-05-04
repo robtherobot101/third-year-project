@@ -1,10 +1,8 @@
 package seng302.Generic;
 
+import java.time.LocalDateTime;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 
 /**
@@ -51,9 +49,11 @@ public class WaitingListItem {
         return organRegisteredDate;
     }
 
-    public Long getUserId(){
+    public Long getUserId() {
         return userId;
     }
 
-    public Integer getWaitingListItemId(){return waitingListItemId;}
+    public Integer getWaitingListItemId() {
+        return waitingListItemId;
+    }
 }

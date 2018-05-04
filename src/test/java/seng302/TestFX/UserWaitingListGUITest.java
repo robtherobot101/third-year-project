@@ -1,5 +1,12 @@
 package seng302.TestFX;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
@@ -8,19 +15,11 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.ReceiverWaitingListItem;
-import seng302.TestFX.TestFXTest;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class UserWaitingListGUITest extends TestFXTest {
+
     private User user;
 
     @BeforeClass
@@ -29,7 +28,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp () throws Exception {
+    public void setUp() throws Exception {
         user = addTestUser();
     }
 
@@ -37,7 +36,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      * Logs into the test user's account and navigates to the transplant waiting list.
      * This method should only be run from the main login screen.
      */
-    public void usersTransplantWaitingListAsUser(){
+    public void usersTransplantWaitingListAsUser() {
         loginAs(user);
         clickOn("#waitingListButton");
     }
@@ -48,7 +47,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      * transplant waiting list.
      * This method should only be run from the main login screen.
      */
-    public void usersTransplantWaitingListAsClinician(){
+    public void usersTransplantWaitingListAsClinician() {
         loginAsDefaultClinician();
         openUserAsClinician(user.getName());
         clickOn("#waitingListButton");
@@ -57,9 +56,10 @@ public class UserWaitingListGUITest extends TestFXTest {
     /**
      * Registers an organ of the given type.
      * This method should only be run from the transplant waiting list view opened by a clinician.
+     *
      * @param type The organ type to register
      */
-    public void register(Organ type){
+    public void register(Organ type) {
         selectComboBoxOrgan(type);
         clickOn("#registerOrganButton");
     }
@@ -68,9 +68,10 @@ public class UserWaitingListGUITest extends TestFXTest {
      * Deregisters an organ of the given type from the open transplant waiting list
      * This method should only be run from the transplant waiting list view opened by a clinician with
      * an organ of the given type already registered
+     *
      * @param type The organ type to deregister
      */
-    public void deregister(Organ type){
+    public void deregister(Organ type) {
         clickOn(getWaitingListOrgan(type));
         clickOn("#deregisterOrganButton");
         clickOn("OK");
@@ -79,15 +80,18 @@ public class UserWaitingListGUITest extends TestFXTest {
     /**
      * Changes the selection in the organTypeComboBox to the given organ type.
      * This method should only be run from the transplant waiting list view opened by a clinician.
+     *
      * @param type The type of organ
      */
-    public void selectComboBoxOrgan(Organ type){
+    public void selectComboBoxOrgan(Organ type) {
         ComboBox<Organ> organs = lookup("#organTypeComboBox").queryComboBox();
         clickOn(organs);
-        for(int i = 0; i < organs.getItems().size(); i++) type(KeyCode.UP);
+        for (int i = 0; i < organs.getItems().size(); i++) {
+            type(KeyCode.UP);
+        }
 
-        for(int i = 0; i < organs.getItems().size(); i++){
-            if(organs.getSelectionModel().getSelectedItem() == type){
+        for (int i = 0; i < organs.getItems().size(); i++) {
+            if (organs.getSelectionModel().getSelectedItem() == type) {
                 type(KeyCode.ENTER);
                 break;
             }
@@ -97,30 +101,33 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     /**
      * Returns the row in the transplant waiting list which has the given organ type.
+     *
      * @param type The given organ type
      * @return The table row with the given organ type
      */
-    public Node getWaitingListOrgan(Organ type){
-        return (Node)from(lookup("#waitingListTableView")).lookup(type.toString().toLowerCase()).query().getParent();
+    public Node getWaitingListOrgan(Organ type) {
+        return (Node) from(lookup("#waitingListTableView")).lookup(type.toString().toLowerCase()).query().getParent();
     }
 
     /**
      * Returns all the WaitingListItems from the transplant waiting list TableView
+     *
      * @return The items in the transplant waiting list
      */
-    public List<ReceiverWaitingListItem> waitingListItems(){
+    public List<ReceiverWaitingListItem> waitingListItems() {
         ArrayList waitingListItems = new ArrayList<>();
-        for(Object o: lookup("#waitingList").queryTableView().getItems())
-            waitingListItems.add((ReceiverWaitingListItem)o);
+        for (Object o : lookup("#waitingList").queryTableView().getItems()) {
+            waitingListItems.add((ReceiverWaitingListItem) o);
+        }
         return waitingListItems;
     }
 
     @Test
     public void clinicianCanUpdateTransplantWaitingList() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
-        assert(lookup("#registerOrganButton").query().isVisible());
-        assert(lookup("#deregisterOrganButton").query().isVisible());
-        assert(lookup("#organTypeComboBox").query().isVisible());
+        assert (lookup("#registerOrganButton").query().isVisible());
+        assert (lookup("#deregisterOrganButton").query().isVisible());
+        assert (lookup("#organTypeComboBox").query().isVisible());
     }
 
     @Ignore
@@ -128,15 +135,15 @@ public class UserWaitingListGUITest extends TestFXTest {
     public void receiverCannotUpdateTransplantWaitingList() throws TimeoutException {
         user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.BONE));
         usersTransplantWaitingListAsUser();
-        assert(!lookup("#registerOrganButton").query().isVisible());
-        assert(!lookup("#deregisterOrganButton").query().isVisible());
-        assert(!lookup("#organTypeComboBox").query().isVisible());
+        assert (!lookup("#registerOrganButton").query().isVisible());
+        assert (!lookup("#deregisterOrganButton").query().isVisible());
+        assert (!lookup("#organTypeComboBox").query().isVisible());
     }
 
     @Test
     public void donorCannotSeeTransplantWaitingListOption() throws TimeoutException {
         loginAs(user);
-        assert(!lookup("#waitingListButton").query().isVisible());
+        assert (!lookup("#waitingListButton").query().isVisible());
     }
 
     @Ignore
@@ -144,8 +151,8 @@ public class UserWaitingListGUITest extends TestFXTest {
     public void itemAddedToWaitingList_appearsInWaitingList() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
         register(Organ.LIVER);
-        assert(user.getWaitingListItems().get(0).getOrganType().equals(Organ.LIVER));
-        assert(waitingListItems().get(0).getOrganType().equals(Organ.LIVER));
+        assert (user.getWaitingListItems().get(0).getOrganType().equals(Organ.LIVER));
+        assert (waitingListItems().get(0).getOrganType().equals(Organ.LIVER));
     }
 
     @Test
@@ -170,8 +177,8 @@ public class UserWaitingListGUITest extends TestFXTest {
         usersTransplantWaitingListAsClinician();
         register(Organ.LIVER);
         deregister(Organ.LIVER);
-        assert(!waitingListItems().get(0).getStillWaitingOn());
-        assert(waitingListItems().get(0).getOrganDeregisteredDate() != null);
+        assert (!waitingListItems().get(0).getStillWaitingOn());
+        assert (waitingListItems().get(0).getOrganDeregisteredDate() != null);
     }
 
     @Ignore

@@ -1,12 +1,13 @@
 package seng302;
 
-import org.junit.Test;
-import seng302.User.Attribute.BloodType;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
+import org.junit.Test;
+import seng302.User.Attribute.BloodType;
+
 public class BloodTypeTest {
+
     @Test
     public void testValidParse() {
         assertEquals(BloodType.parse("a+"), BloodType.A_POS);

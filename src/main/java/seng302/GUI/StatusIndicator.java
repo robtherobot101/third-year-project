@@ -7,34 +7,41 @@ import org.controlsfx.control.StatusBar;
  * Provides a method to update the status shown on a status bar
  */
 public class StatusIndicator {
+
     private StatusBar statusBar;
 
     /**
      * Default constructor
      */
-    public StatusIndicator(){}
+    public StatusIndicator() {
+    }
 
     /**
      * Set the status and progress bar on the status bar
+     *
      * @param status A string representing the result of the last operation
      * @param busy A boolean indicating whether a process is running in the background (e.g. an API call)
      */
-    public void setStatus(String status, boolean busy){
+    public void setStatus(String status, boolean busy) {
         statusBar.setText(status);
-        if(busy) statusBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
-        else statusBar.setProgress(0);
+        if (busy) {
+            statusBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+        } else {
+            statusBar.setProgress(0);
+        }
     }
 
     /**
      * sets the status bar text to Ready
      */
-    public void ready(){
+    public void ready() {
         statusBar.setText("Ready");
         statusBar.setProgress(0);
     }
 
     /**
      * sets the current status bar
+     *
      * @param statusBar the current status bar
      */
     public void setStatusBar(StatusBar statusBar) {

@@ -6,6 +6,7 @@ import java.time.LocalDate;
  * Class contains all the information for a given procedure used in the Medical History (Procedures) section.
  */
 public class Procedure {
+
     private String summary;
     private String description;
     private LocalDate date;
@@ -13,6 +14,7 @@ public class Procedure {
 
     /**
      * method to create a new instance of a procedure object
+     *
      * @param summary the given procedure summary
      * @param description the given procedure description
      * @param date the given procedure date
@@ -27,6 +29,7 @@ public class Procedure {
 
     /**
      * returns the procedure summary
+     *
      * @return String the procedure summary
      */
     public String getSummary() {
@@ -35,6 +38,7 @@ public class Procedure {
 
     /**
      * sets the procedure summary
+     *
      * @param summary given procedure summary
      */
     public void setSummary(String summary) {
@@ -43,6 +47,7 @@ public class Procedure {
 
     /**
      * returns the procedure summary
+     *
      * @return String the procedure description
      */
     public String getDescription() {
@@ -51,6 +56,7 @@ public class Procedure {
 
     /**
      * sets the procedure description
+     *
      * @param description String given procedure summary
      */
     public void setDescription(String description) {
@@ -59,6 +65,7 @@ public class Procedure {
 
     /**
      * returns the date of the procedure given
+     *
      * @return date of the procedure
      */
     public LocalDate getDate() {
@@ -67,6 +74,7 @@ public class Procedure {
 
     /**
      * sets the procedure date
+     *
      * @param date date to set for the procedure
      */
     public void setDate(LocalDate date) {
@@ -75,6 +83,7 @@ public class Procedure {
 
     /**
      * returns the organ the procedure is on
+     *
      * @return organ the procedure is on
      */
     public boolean isOrganAffecting() {
@@ -83,6 +92,7 @@ public class Procedure {
 
     /**
      * sets the organ the procedure is on
+     *
      * @param organAffecting the organ the procedure is on
      */
     public void setOrganAffecting(boolean organAffecting) {
@@ -90,7 +100,7 @@ public class Procedure {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return summary;
     }
 

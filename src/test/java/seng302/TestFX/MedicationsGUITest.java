@@ -3,8 +3,6 @@ package seng302.TestFX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -16,17 +14,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.Main;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 public class MedicationsGUITest extends TestFXTest {
+
     private User testUser;
 
     @BeforeClass
-    public static void setupClass() throws TimeoutException  {
+    public static void setupClass() throws TimeoutException {
         defaultTestSetup();
     }
 
@@ -35,7 +32,7 @@ public class MedicationsGUITest extends TestFXTest {
         testUser = addTestUser();
         testUser.setGender(Gender.FEMALE);
         loginAsDefaultClinician();
-    openUserAsClinician(testUser.getName());
+        openUserAsClinician(testUser.getName());
         sleep(500);
         clickOn("Medications");
     }
@@ -172,6 +169,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
 
     }
+
     @Ignore
     @Test
     public void undoTest() {
@@ -212,6 +210,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals(0, currentMedicationList.getItems().size());
         assertEquals(0, historicMedicationList.getItems().size());
     }
+
     @Ignore
     @Test
     public void redoTest() {

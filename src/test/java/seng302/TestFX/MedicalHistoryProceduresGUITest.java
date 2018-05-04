@@ -1,18 +1,20 @@
 package seng302.TestFX;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Procedure;
 import seng302.User.User;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.*;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
@@ -37,7 +39,6 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Method that can be called to path correctly to the stage to be tested.
-     *
      */
     private void enterMedicalHistoryProceduresView() {
         // Assumed that calling method is currently on login screen
@@ -52,7 +53,6 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
         clickOn("#proceduresButton");
         //doubleClickOn(636, 435);
-
 
         // This is an interesting piece here, for some reason this is required to allow JavaFX to catch up and bring
         // the medical history pane up in time for testing
@@ -155,7 +155,6 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      */
     @Test
     public void checkOrganAffectingToggle() {
-
 
         addNewProcedureToPendingProcedures();
         pendingProcedureTableView = lookup("#pendingProcedureTableView").query();

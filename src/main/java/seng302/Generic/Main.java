@@ -1,6 +1,22 @@
 package seng302.Generic;
 
-import com.google.gson.*;
+import static java.lang.Integer.max;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,7 +28,18 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.*;
+import seng302.GUI.Controllers.AccountSettingsController;
+import seng302.GUI.Controllers.AdminController;
+import seng302.GUI.Controllers.ClinicianAccountSettingsController;
+import seng302.GUI.Controllers.ClinicianController;
+import seng302.GUI.Controllers.CreateAccountController;
+import seng302.GUI.Controllers.LoginController;
+import seng302.GUI.Controllers.MedicalHistoryDiseasesController;
+import seng302.GUI.Controllers.MedicalHistoryProceduresController;
+import seng302.GUI.Controllers.MedicationsController;
+import seng302.GUI.Controllers.TransplantWaitingListController;
+import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.Controllers.WaitingListController;
 import seng302.GUI.TFScene;
 import seng302.TUI.CommandLineInterface;
 import seng302.User.Admin;
@@ -20,21 +47,12 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static java.lang.Integer.max;
-
 /**
  * Main class that contains program initialization code and data that must be accessible from multiple parts of the
  * program.
  */
 public class Main extends Application {
+
     public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
     private static Integer nextWaitingListId = -1;
     private static Image icon;
@@ -74,6 +92,7 @@ public class Main extends Application {
 
     /**
      * returns the current stage
+     *
      * @return the current stage
      */
     public static Stage getStage() {
@@ -85,6 +104,7 @@ public class Main extends Application {
      * Class to deserialize LocalDates without requiring reflective access
      */
     private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+
         public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
             return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
         }
@@ -94,6 +114,7 @@ public class Main extends Application {
      * Class to deserialize LocalDateTimes without requiring reflective access
      */
     private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+
         public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
             return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
         }
@@ -109,12 +130,16 @@ public class Main extends Application {
 
     /**
      * adds the clinican user window to the stage
+     *
      * @param stage the current stage
      */
-    public static void addCliniciansUserWindow(Stage stage) {cliniciansUserWindows.add(stage);}
+    public static void addCliniciansUserWindow(Stage stage) {
+        cliniciansUserWindows.add(stage);
+    }
 
     /**
      * sets the current clinician
+     *
      * @param clinician the logged clinician
      */
     public static void setClinician(Clinician clinician) {
@@ -125,6 +150,7 @@ public class Main extends Application {
 
     /**
      * sets the current admin
+     *
      * @param admin the logged admin
      */
     public static void setAdmin(Admin admin) {
@@ -134,6 +160,7 @@ public class Main extends Application {
 
     /**
      * sets the current user
+     *
      * @param currentUser the current user
      */
     public static void setCurrentUser(User currentUser) {
@@ -266,6 +293,7 @@ public class Main extends Application {
 
     /**
      * sets the current user for the account settings controller
+     *
      * @param currentUser the current user
      */
     public static void setCurrentUserForAccountSettings(User currentUser) {
@@ -275,6 +303,7 @@ public class Main extends Application {
 
     /**
      * sets the current clinican for account settings
+     *
      * @param currentClinician the current clinician
      */
     public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
@@ -284,6 +313,7 @@ public class Main extends Application {
 
     /**
      * sets the login controller
+     *
      * @param loginController the current login controller
      */
     public static void setLoginController(LoginController loginController) {
@@ -340,9 +370,11 @@ public class Main extends Application {
         return userWindowController;
     }
 
-    public static TransplantWaitingListController getTransplantWaitingListController() { return Main.transplantWaitingListController; }
+    public static TransplantWaitingListController getTransplantWaitingListController() {
+        return Main.transplantWaitingListController;
+    }
 
-    public static ArrayList<Stage> getCliniciansUserWindows(){
+    public static ArrayList<Stage> getCliniciansUserWindows() {
         return cliniciansUserWindows;
     }
 
@@ -359,7 +391,7 @@ public class Main extends Application {
     }
 
     public static Integer getNextWaitingListId() {
-        if (!userWindowController.getCurrentUser().getWaitingListItems().isEmpty()){
+        if (!userWindowController.getCurrentUser().getWaitingListItems().isEmpty()) {
             nextWaitingListId = userWindowController.getCurrentUser().getWaitingListItems().size();
         } else {
             nextWaitingListId++;
@@ -387,7 +419,7 @@ public class Main extends Application {
         return found;
     }
 
-    public static WaitingListController getWaitingListController(){
+    public static WaitingListController getWaitingListController() {
         return waitingListController;
     }
 
@@ -423,13 +455,14 @@ public class Main extends Application {
     /**
      * Returns true if the given token matches the beginning of at least one of the given names.
      * Otherwise returns false.
+     *
      * @param names The list of names
      * @param token The token to test
      * @return A boolean value which denotes whether or not the token matches a name
      */
-    public static boolean matchesAtleastOne(String[] names, String token){
-        for(String name:names){
-            if(matches(name, token)){
+    public static boolean matchesAtleastOne(String[] names, String token) {
+        for (String name : names) {
+            if (matches(name, token)) {
                 return true;
             }
         }
@@ -447,12 +480,13 @@ public class Main extends Application {
      * The results are returned sorted by a score according to which names were matched.
      * See scoreUserOnSearch(User, List(String))
      * If two users are ranked the same, they're sorted alphabetically
+     *
      * @param term The search term which will be broken into space separated tokens
      * @return A sorted list of results
      */
-    public static ArrayList<User> getUsersByNameAlternative(String term){
-        System.out.println("search: "+"'"+term+"'");
-        if(term.equals("")){
+    public static ArrayList<User> getUsersByNameAlternative(String term) {
+        System.out.println("search: " + "'" + term + "'");
+        if (term.equals("")) {
             System.out.println("Empty");
             ArrayList<User> sorted = new ArrayList<User>();
             sorted.addAll(Main.users);
@@ -464,27 +498,27 @@ public class Main extends Application {
             });
             return sorted;
         }
-        String[] t = term.split(" ",-1);
+        String[] t = term.split(" ", -1);
         ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
-        System.out.println("token 1: " + "'"+tokens.get(0)+"'");
+        System.out.println("token 1: " + "'" + tokens.get(0) + "'");
         //System.out.println("token 2: " + "'"+tokens.get(1)+"'");
-        if(tokens.contains("")){
+        if (tokens.contains("")) {
             tokens.remove("");
         }
         ArrayList<User> matched = new ArrayList<User>();
-        for(User user: users){
-            if(scoreUserOnSearch(user, tokens) > 0){
+        for (User user : users) {
+            if (scoreUserOnSearch(user, tokens) > 0) {
                 matched.add(user);
             }
         }
         Collections.sort(matched, new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
-                Integer o1Score= scoreUserOnSearch(o1, tokens);
+                Integer o1Score = scoreUserOnSearch(o1, tokens);
                 Integer o2Score = scoreUserOnSearch(o2, tokens);
 
                 int scoreComparison = o2Score.compareTo(o1Score);
-                if(scoreComparison == 0){
+                if (scoreComparison == 0) {
                     return o1.getName().compareTo(o2.getName());
                 }
                 return scoreComparison;
@@ -504,25 +538,25 @@ public class Main extends Application {
      *
      * Matches on different parts of a name add different amounts to the total score. Last name matches contribute the most to the total score,
      * followed by, preferred last name, preferred first name, preferred middle names, first name, and middle names in descending order.
+     *
      * @param user The user whose name will be be scored
      * @param searchTokens The search tokens which will be compared with the given user's name
      * @return An integer score
      */
-    public static int scoreUserOnSearch(User user, List<String> searchTokens){
+    public static int scoreUserOnSearch(User user, List<String> searchTokens) {
         List<String> tokens = new ArrayList<String>();
         tokens.addAll(searchTokens);
 
-
-        if(!allTokensMatched(user, tokens)){
+        if (!allTokensMatched(user, tokens)) {
             return 0;
         }
         int score = 0;
         String[] names = user.getNameArray();
         String[] prefNames = user.getPreferredNameArray();
         // Last name
-        score += scoreNames(names, tokens, max(names.length-1,1), names.length, 6);
+        score += scoreNames(names, tokens, max(names.length - 1, 1), names.length, 6);
 
-        if(!Arrays.equals(names, prefNames)) {
+        if (!Arrays.equals(names, prefNames)) {
             // Preferred last name
             score += scoreNames(prefNames, tokens, max(prefNames.length - 1, 1), prefNames.length, 5);
 
@@ -537,7 +571,7 @@ public class Main extends Application {
         score += scoreNames(names, tokens, 0, 1, 2);
 
         //middle names
-        score += scoreNames(names, tokens, 1, names.length-1, 1);
+        score += scoreNames(names, tokens, 1, names.length - 1, 1);
 
         return score;
     }
@@ -546,24 +580,25 @@ public class Main extends Application {
     /**
      * Returns true if all given tokens match at least one name from the given user's name array
      * or preferred name array. For a token to match a name, the beginning of each must be the same.
+     *
      * @param user The use whose names will be checked against the tokens
      * @param searchTokens The tokens
      * @return True if all tokens match at least one name, otherwise false
      */
-    public static boolean allTokensMatched(User user, List<String> searchTokens){
+    public static boolean allTokensMatched(User user, List<String> searchTokens) {
         List<String> tokens = new ArrayList<String>();
         tokens.addAll(searchTokens);
-        for(String name:user.getNameArray()){
-            for(String token: new ArrayList<String>(tokens)){
-                if(lengthMatchedScore(name, token)>0){
+        for (String name : user.getNameArray()) {
+            for (String token : new ArrayList<String>(tokens)) {
+                if (lengthMatchedScore(name, token) > 0) {
                     tokens.remove(token);
                 }
             }
         }
 
-        for(String name:user.getPreferredNameArray()){
-            for(String token: new ArrayList<String>(tokens)){
-                if(lengthMatchedScore(name, token)>0){
+        for (String name : user.getPreferredNameArray()) {
+            for (String token : new ArrayList<String>(tokens)) {
+                if (lengthMatchedScore(name, token) > 0) {
                     tokens.remove(token);
                 }
             }
@@ -578,6 +613,7 @@ public class Main extends Application {
      *
      * For a token to match a name, both must begin the same and there must be no unmatched characters in the
      * token. For example, the token "dani" would not match the name "dan", but would match "daniel".
+     *
      * @param names The names which the tokens will attempt to match
      * @param tokens The list of tokens which will compared against the names
      * @param from The index of the first name to try
@@ -585,12 +621,12 @@ public class Main extends Application {
      * @param weight The weight which will be awarded for each matched name
      * @return An integer score
      */
-    public static int scoreNames(String[] names, List<String> tokens, int from, int to, int weight){
-        if(names.length >= to && to > from){
+    public static int scoreNames(String[] names, List<String> tokens, int from, int to, int weight) {
+        if (names.length >= to && to > from) {
             String[] middleNames = Arrays.copyOfRange(names, from, to);
             int score = 0;
-            for(String middleName:middleNames){
-                if(nameMatchesOneOf(middleName, tokens)){
+            for (String middleName : middleNames) {
+                if (nameMatchesOneOf(middleName, tokens)) {
                     score += weight;
                 }
             }
@@ -605,13 +641,14 @@ public class Main extends Application {
      * token.
      *
      * For example, the token "dani" would not match the name "dan", but would match "daniel"
+     *
      * @param name The name which is compared with each token until a match is found
      * @param tokens The list of tokens to try against the name
      * @return True if a match was found, otherwise false
      */
-    public static boolean nameMatchesOneOf(String name, List<String> tokens){
-        for(String token:tokens){
-            if(lengthMatchedScore(name, token) > 0){
+    public static boolean nameMatchesOneOf(String name, List<String> tokens) {
+        for (String token : tokens) {
+            if (lengthMatchedScore(name, token) > 0) {
                 return true;
             }
         }
@@ -619,30 +656,30 @@ public class Main extends Application {
     }
 
 
-
     /**
      * Returns a list of users matching the given search term for region.
      * If every token matches at least part of the
      * beginning of a one of part of a users name, that user will be returned.
+     *
      * @param term The search term containing space separated tokens
      * @return An ArrayList of users sorted by score first, and alphabetically by name second
      */
-    public static ArrayList<User> getUsersByRegionAlternative(String term){
-        String[] t = term.split(" ",-1);
+    public static ArrayList<User> getUsersByRegionAlternative(String term) {
+        String[] t = term.split(" ", -1);
         ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
-        if(tokens.contains("")){
+        if (tokens.contains("")) {
             tokens.remove("");
         }
         ArrayList<User> matched = new ArrayList<User>();
-        for(User d: users){
-            if(d.getRegion() != null) {
+        for (User d : users) {
+            if (d.getRegion() != null) {
                 boolean allTokensMatchAName = true;
-                for(String token:tokens){
-                    if(!matchesAtleastOne(d.getRegion().split(" "), token)){
+                for (String token : tokens) {
+                    if (!matchesAtleastOne(d.getRegion().split(" "), token)) {
                         allTokensMatchAName = false;
                     }
                 }
-                if(allTokensMatchAName){
+                if (allTokensMatchAName) {
                     matched.add(d);
                 }
             }
@@ -655,25 +692,26 @@ public class Main extends Application {
      * Returns a list of users matching the given search term for age.
      * If every token matches at least part of the
      * beginning of a one of part of a users name, that user will be returned.
+     *
      * @param term The search term containing space separated tokens
      * @return An ArrayList of users sorted by score first, and alphabetically by name second
      */
-    public static ArrayList<User> getUsersByAgeAlternative(String term){
-        String[] t = term.split(" ",-1);
+    public static ArrayList<User> getUsersByAgeAlternative(String term) {
+        String[] t = term.split(" ", -1);
         ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(t));
-        if(tokens.contains("")){
+        if (tokens.contains("")) {
             tokens.remove("");
         }
         ArrayList<User> matched = new ArrayList<User>();
-        for(User d: users){
-            if(d.getRegion() != null) {
+        for (User d : users) {
+            if (d.getRegion() != null) {
                 boolean allTokensMatchAName = true;
-                for(String token:tokens){
-                    if(!matches(d.getAgeString(), token)){
+                for (String token : tokens) {
+                    if (!matches(d.getAgeString(), token)) {
                         allTokensMatchAName = false;
                     }
                 }
-                if(allTokensMatchAName){
+                if (allTokensMatchAName) {
                     matched.add(d);
                 }
             }
@@ -687,18 +725,19 @@ public class Main extends Application {
      * Returns the length of the longest matched common substring starting from the
      * beginning of string and searchTerm as long as the entire searchTerm is matched. If there
      * are unmatched characters in the searchTerm, zero is returned
+     *
      * @param string The string which is being searched
      * @param searchTerm The term which is being looked for
      * @return The length of the longest substring if the searchTerm is matched entirely
      */
-    public static int lengthMatchedScore(String string, String searchTerm)
-    {
+    public static int lengthMatchedScore(String string, String searchTerm) {
         string = string.toLowerCase();
         searchTerm = searchTerm.toLowerCase();
         int i;
-        if(searchTerm.length() > string.length()) return 0;
-        for (i = 0; i < searchTerm.length(); i++)
-        {
+        if (searchTerm.length() > string.length()) {
+            return 0;
+        }
+        for (i = 0; i < searchTerm.length(); i++) {
             if (searchTerm.charAt(i) != string.charAt(i)) {
                 return 0;
             }
@@ -710,11 +749,12 @@ public class Main extends Application {
      * Returns true if the given token matches the beginning of the given string.
      * Otherwise returns false.
      * Case is ignored.
+     *
      * @param string The string to test
      * @param token The given search token
      * @return True if token and string at least start the same, otherwise false.
      */
-    public static boolean matches(String string, String token){
+    public static boolean matches(String string, String token) {
         string = string.toLowerCase();
         token = token.toLowerCase();
         return string.matches(token + ".*");
@@ -739,8 +779,8 @@ public class Main extends Application {
             }
         } else {
             System.out.println("Please either run using:" +
-                    "\nGUI mode: java -jar app-0.0.jar" +
-                    "\nCommand line mode: java -jar app-0.0.jar -c.");
+                "\nGUI mode: java -jar app-0.0.jar" +
+                "\nCommand line mode: java -jar app-0.0.jar -c.");
         }
     }
 
@@ -764,6 +804,7 @@ public class Main extends Application {
 
     /**
      * Load in saved users and clinicians, and initialise the GUI.
+     *
      * @param stage The stage to set the GUI up on
      */
     @Override
@@ -773,8 +814,8 @@ public class Main extends Application {
 
         Main.stage = stage;
         stage.setTitle("Transplant Finder");
-        stage.setOnHiding( closeAllWindows -> {
-            for(Stage userWindow:cliniciansUserWindows){
+        stage.setOnHiding(closeAllWindows -> {
+            for (Stage userWindow : cliniciansUserWindows) {
                 userWindow.close();
             }
         });
@@ -823,21 +864,21 @@ public class Main extends Application {
             }
             IO.streamOut = History.init();
             scenes.put(TFScene.login, new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")),
-                    TFScene.login.getWidth(), TFScene.login.getHeight()));
+                TFScene.login.getWidth(), TFScene.login.getHeight()));
             scenes.put(TFScene.createAccount, new Scene(FXMLLoader.load(getClass().getResource("/fxml/createAccount.fxml")),
-                    TFScene.createAccount.getWidth(), TFScene.createAccount.getHeight()));
+                TFScene.createAccount.getWidth(), TFScene.createAccount.getHeight()));
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")),
-                    mainWindowPrefWidth, mainWindowPrefHeight));
+                mainWindowPrefWidth, mainWindowPrefHeight));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")),
-                    mainWindowPrefWidth, mainWindowPrefHeight));
+                mainWindowPrefWidth, mainWindowPrefHeight));
             scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),
-                    mainWindowPrefWidth, mainWindowPrefHeight));
+                mainWindowPrefWidth, mainWindowPrefHeight));
 
             loginController.setEnterEvent();
             createAccountController.setEnterEvent();
             scenes.put(TFScene.userWindow, new Scene(FXMLLoader.load(getClass().getResource("/fxml/userWindow.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
             scenes.put(TFScene.clinician, new Scene(FXMLLoader.load(getClass().getResource("/fxml/clinician.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
-            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")),mainWindowPrefWidth, mainWindowPrefHeight));
+            scenes.put(TFScene.transplantList, new Scene(FXMLLoader.load(getClass().getResource("/fxml/transplantList.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
             scenes.put(TFScene.admin, new Scene(FXMLLoader.load(getClass().getResource("/fxml/admin.fxml")), mainWindowPrefWidth, mainWindowPrefHeight));
 
             setScene(TFScene.login);

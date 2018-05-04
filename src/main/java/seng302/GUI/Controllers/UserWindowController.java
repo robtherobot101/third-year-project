@@ -1,5 +1,15 @@
 package seng302.GUI.Controllers;
 
+import static seng302.Generic.IO.streamOut;
+
+import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -8,10 +18,29 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
@@ -21,15 +50,13 @@ import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
-import seng302.User.Attribute.*;
+import seng302.User.Attribute.AlcoholConsumption;
+import seng302.User.Attribute.BloodType;
+import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.SmokerStatus;
 import seng302.User.User;
-
-import java.net.URL;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.*;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -37,6 +64,7 @@ import static seng302.Generic.IO.streamOut;
  * Saving, Undo, Redo, All input fields and more.
  */
 public class UserWindowController implements Initializable {
+
     private TitleBar titleBar;
     @FXML
     private Label userDisplayText, settingAttributesLabel, ageLabel, bmiLabel, bloodPressureLabel, userHistoryLabel;
@@ -93,16 +121,17 @@ public class UserWindowController implements Initializable {
     public StatusIndicator statusIndicator = new StatusIndicator();
 
 
-    public UserWindowController(){
+    public UserWindowController() {
         this.titleBar = new TitleBar();
         titleBar.setStage(Main.getStage());
     }
 
     /**
      * Set the stage the controller is associated with
+     *
      * @param stage The stage on which the window is shown
      */
-    public void setTitleBar(Stage stage){
+    public void setTitleBar(Stage stage) {
         titleBar.setStage(stage);
     }
 
@@ -125,6 +154,7 @@ public class UserWindowController implements Initializable {
 
     /**
      * Set up the User window.
+     *
      * @param location Not used
      * @param resources Not used
      */
@@ -157,40 +187,60 @@ public class UserWindowController implements Initializable {
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
-                BackgroundSize.DEFAULT);
+            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
         welcomePane.setBackground(new Background(imageBackground));
 
         //Add listeners for attribute undo and redo
         firstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         middleNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         lastNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         addressField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         regionField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         dateOfBirthPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         heightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         weightField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
         bloodPressureTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) attributeFieldUnfocused();
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
         });
 
         //Add listeners to correctly update BMI and blood pressure based on user input
@@ -287,7 +337,7 @@ public class UserWindowController implements Initializable {
         redoBannerButton.setDisable(redoDisabled);
     }
 
-    public void showWaitingListButton(){
+    public void showWaitingListButton() {
         waitingListButton.setVisible(true);
     }
 
@@ -307,8 +357,7 @@ public class UserWindowController implements Initializable {
     }
 
 
-
-    public void showWaitingListPane(){
+    public void showWaitingListPane() {
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
@@ -404,7 +453,7 @@ public class UserWindowController implements Initializable {
         userHistoryLabel.setText("History of actions for " + currentUser.getPreferredName());
         String[][] userHistory = History.getUserHistory(currentUser.getId());
         ArrayList<TreeItem<String>> treeItems = new ArrayList<>();
-        if(userHistory[0][0] != null) {
+        if (userHistory[0][0] != null) {
             TreeItem<String> sessionNode = new TreeItem<>("Session 1 on " + userHistory[0][0].substring(0, userHistory[0][0].length() - 1));
             TreeItem<String> outerItem1 = new TreeItem<>("Create at " + userHistory[0][1]);
             TreeItem<String> outerItem2 = new TreeItem<>("Login at " + userHistory[0][1]);
@@ -428,27 +477,27 @@ public class UserWindowController implements Initializable {
                             break;
                         case "updateAccountSettings":
                             sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
-                                    " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
+                                " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
                             break;
 
                         case "waitinglist":
-                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1,7) +" "+ userHistory[i][4].substring(7) + " modified " + " at " + userHistory[i][1]));
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 7) + " " + userHistory[i][4].substring(7) + " modified " + " at " + userHistory[i][1]));
                             break;
 
                         case "modifyUser":
                             sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
-                                    " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
+                                " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
                             break;
                         case "login":
                             sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
-                                    1));
+                                1));
                             treeItems.add(sessionNode);
                             sessionNode.getChildren().add(new TreeItem<>("Login at " + userHistory[i][1]));
                             sessionNumber++;
                             break;
                         case "view":
                             sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
-                                    1));
+                                1));
                             treeItems.add(sessionNode);
                             sessionNode.getChildren().add(new TreeItem<>("View at " + userHistory[i][1]));
                             sessionNumber++;
@@ -463,7 +512,7 @@ public class UserWindowController implements Initializable {
 
         //Defining cell content
         dateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
-                new ReadOnlyStringWrapper(p.getValue().getValue()));
+            new ReadOnlyStringWrapper(p.getValue().getValue()));
 
         actionColumn.setCellValueFactory(param -> {
             String userName = currentUser.getPreferredName(), toCheck = param.getValue().getValue().substring(0, 12);
@@ -491,19 +540,19 @@ public class UserWindowController implements Initializable {
                 case "View":
                     return new ReadOnlyStringWrapper("-Clinician- Viewed user " + userName + " .");
             }
-            if(toCheck.equals("Modify User")) {
+            if (toCheck.equals("Modify User")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s attributes.");
             }
-            if(toCheck.substring(0,11).equals("Medications")) {
+            if (toCheck.substring(0, 11).equals("Medications")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s medications.");
             }
-            if(toCheck.substring(0,12).equals("Waiting list")) {
+            if (toCheck.substring(0, 12).equals("Waiting list")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s waiting list.");
             }
-            if(toCheck.substring(0,8).equals("Diseases")) {
+            if (toCheck.substring(0, 8).equals("Diseases")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s diseases.");
             }
-            if(toCheck.substring(0,10).equals("Procedures")) {
+            if (toCheck.substring(0, 10).equals("Procedures")) {
                 return new ReadOnlyStringWrapper("-Clinician- Modified user " + userName + "'s procedures.");
             }
             return null;
@@ -548,7 +597,7 @@ public class UserWindowController implements Initializable {
         smokerStatusComboBox.setValue(currentUser.getSmokerStatus());
         alcoholConsumptionComboBox.setValue(currentUser.getAlcoholConsumption());
 
-        for (Organ key: organTickBoxes.keySet()) {
+        for (Organ key : organTickBoxes.keySet()) {
             organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));
         }
 
@@ -607,7 +656,7 @@ public class UserWindowController implements Initializable {
                 Main.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure input.").show();
                 return false;
             } else {
-                for (String pressureComponent: bloodPressureList) {
+                for (String pressureComponent : bloodPressureList) {
                     try {
                         Integer.parseInt(pressureComponent);
                     } catch (NumberFormatException e) {
@@ -623,10 +672,10 @@ public class UserWindowController implements Initializable {
         if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
             return false;
-        } else if(dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
+        } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
             return false;
-        } else if(dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+        } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
             Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death.").show();
             return false;
         }
@@ -649,7 +698,7 @@ public class UserWindowController implements Initializable {
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
         currentUser.setRegion(regionField.getText());
         currentUser.setCurrentAddress(addressField.getText());
-        for (Organ key: organTickBoxes.keySet()) {
+        for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
                 if (!organTickBoxes.get(key).isSelected()) {
                     currentUser.getOrgans().remove(key);
@@ -682,7 +731,7 @@ public class UserWindowController implements Initializable {
             History.printToFile(streamOut, text);
             populateHistoryTable();
             titleBar.saved(true);
-            titleBar.setTitle(currentUser.getPreferredName(),"User");
+            titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
             Main.getClinicianController().updateFoundUsers();
         }
@@ -719,10 +768,10 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
             Main.updateMedications();
-        } else if (waitingListPane.isVisible()){
+        } else if (waitingListPane.isVisible()) {
             waitingListRedoStack.add(new User(currentUser));
-            currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size()-1));
-            waitingListUndoStack.remove(waitingListUndoStack.size()-1);
+            currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size() - 1));
+            waitingListUndoStack.remove(waitingListUndoStack.size() - 1);
             setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
             Main.updateWaitingList();
         } else if (medicalHistoryProceduresPane.isVisible()) {
@@ -779,7 +828,7 @@ public class UserWindowController implements Initializable {
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
             Main.updateMedications();
-        } else if (waitingListPane.isVisible()){
+        } else if (waitingListPane.isVisible()) {
             waitingListUndoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListRedoStack.get(waitingListRedoStack.size() - 1));
             waitingListRedoStack.remove(waitingListRedoStack.size() - 1);
@@ -819,14 +868,14 @@ public class UserWindowController implements Initializable {
 
         if (dodeathPick == null) {
             LocalDate today = LocalDate.now();
-            double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays()/365.00;
-            if(years < 0) {
+            double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays() / 365.00;
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years");
             }
         } else {
-            double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays()/365.00;
+            double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays() / 365.00;
             if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
@@ -845,7 +894,7 @@ public class UserWindowController implements Initializable {
                 double weight = Double.parseDouble(weightField.getText());
                 double BMI = (weight / Math.pow(height, 2)) * 10000;
                 bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 bmiLabel.setText("");
             }
         } else {
@@ -886,8 +935,8 @@ public class UserWindowController implements Initializable {
         dialog.getDialogPane().getStyleClass().add("dialog");
 
         Optional<String> password = dialog.showAndWait();
-        if(password.isPresent()){ //Ok was pressed, Else cancel
-            if(password.get().equals(currentUser.getPassword())){
+        if (password.isPresent()) { //Ok was pressed, Else cancel
+            if (password.get().equals(currentUser.getPassword())) {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
                     Stage stage = new Stage();
@@ -902,7 +951,7 @@ public class UserWindowController implements Initializable {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else{ // Password incorrect
+            } else { // Password incorrect
                 Main.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view account settings").show();
             }
         }
@@ -960,8 +1009,9 @@ public class UserWindowController implements Initializable {
      */
     public void setControlsShown(Boolean shown) {
         if (currentUser != null) {
-            if (currentUser.isReceiver())
+            if (currentUser.isReceiver()) {
                 waitingListButton.setVisible(true);
+            }
         } else {
             waitingListButton.setVisible(shown);
         }

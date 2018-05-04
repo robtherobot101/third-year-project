@@ -10,6 +10,7 @@ public abstract class PageController {
 
     /**
      * Set the status indicator object from the user window the page is being displayed in
+     *
      * @param statusIndicator the statusIndicator object
      */
     public void setStatusIndicator(StatusIndicator statusIndicator) {
@@ -18,6 +19,7 @@ public abstract class PageController {
 
     /**
      * Assign the title bar of the window
+     *
      * @param titleBar The title bar of the pane in which this pane is located
      */
     public void setTitleBar(TitleBar titleBar) {

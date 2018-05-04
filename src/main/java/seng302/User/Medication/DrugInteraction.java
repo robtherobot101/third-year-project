@@ -2,16 +2,21 @@ package seng302.User.Medication;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.*;
 import seng302.User.Attribute.Gender;
 
 /**
  * Contains information about a response from the medication interaction API.
  */
 public class DrugInteraction {
+
     private Map<String, HashSet<String>> ageMap;
     private Map<String, HashSet<String>> genderMap;
     private Map<String, HashSet<String>> durationMap;
@@ -23,18 +28,19 @@ public class DrugInteraction {
     /**
      * The constructor for the class. The json string will either be a valid json report, or an error string.
      * The constructor parses it and sets values accordingly.
+     *
      * @param json The result of the api call, either a json report or an error message.
      */
     public DrugInteraction(String json) {
         durations = new ArrayList<String>(Arrays.asList(
-                "not specified",
-                "< 1 month",
-                "1 - 6 months",
-                "6 - 12 months",
-                "1 - 2 years",
-                "2 - 5 years",
-                "5 - 10 years",
-                "10+ years"));
+            "not specified",
+            "< 1 month",
+            "1 - 6 months",
+            "6 - 12 months",
+            "1 - 2 years",
+            "2 - 5 years",
+            "5 - 10 years",
+            "10+ years"));
         try {
             JSONObject jsonObj = new JSONObject(json);
             ageMap = getOrCreateMap(jsonObj, "age_interaction");
@@ -51,32 +57,35 @@ public class DrugInteraction {
     /**
      * Returns the HashMap from the jsonObj denoted by the given key if it exists,
      * otherwise returns a new HashMap
+     *
      * @param jsonObj The drug interaction json object.
      * @param key The identifier of the HashMap to look for
      * @return The HashMap of strings to symptom sets
      */
-    public HashMap<String, HashSet<String>> getOrCreateMap(JSONObject jsonObj, String key){
-        if(jsonObj.keySet().contains(key)){
+    public HashMap<String, HashSet<String>> getOrCreateMap(JSONObject jsonObj, String key) {
+        if (jsonObj.keySet().contains(key)) {
             return new Gson().fromJson(jsonObj.get(key).toString(),
-                    new TypeToken<HashMap<String, HashSet<String>>>() {}.getType());
-        }else{
+                new TypeToken<HashMap<String, HashSet<String>>>() {
+                }.getType());
+        } else {
             return new HashMap<String, HashSet<String>>();
         }
     }
 
     /**
      * Inverts a duration map so that symptoms map to durations.
+     *
      * @param durationMap The original duration map
      * @return The inverted duration map
      */
-    public HashMap<String, String> invertDurationMap(Map<String, HashSet<String>> durationMap){
+    public HashMap<String, String> invertDurationMap(Map<String, HashSet<String>> durationMap) {
         HashMap<String, String> inverted = new HashMap<>();
-        for(String durationKey : durationMap.keySet()){
-            for(String symptom : durationMap.get(durationKey)){
-                if(inverted.containsKey(symptom)){
+        for (String durationKey : durationMap.keySet()) {
+            for (String symptom : durationMap.get(durationKey)) {
+                if (inverted.containsKey(symptom)) {
                     String greaterDuration = greaterDuration(inverted.get(symptom), durationKey);
                     inverted.put(symptom, greaterDuration);
-                }else{
+                } else {
                     inverted.put(symptom, durationKey);
                 }
             }
@@ -89,18 +98,19 @@ public class DrugInteraction {
      * "not specified" is treated as the shortest duration.
      * If either of the duration keys is invalid, an IllegalArgumentException
      * is thrown.
+     *
      * @param durationA A duration key
      * @param durationB A second duration key
      * @return THe longer duration key
      */
-    public String greaterDuration(String durationA, String durationB){
-        if(durations.containsAll(Arrays.asList(durationA,durationB))){
-            if(durations.indexOf(durationB) > durations.indexOf(durationA)){
+    public String greaterDuration(String durationA, String durationB) {
+        if (durations.containsAll(Arrays.asList(durationA, durationB))) {
+            if (durations.indexOf(durationB) > durations.indexOf(durationA)) {
                 return durationB;
-            }else{
+            } else {
                 return durationA;
             }
-        }else{
+        } else {
             throw new IllegalArgumentException("Invalid durations passed.");
         }
     }
@@ -110,13 +120,14 @@ public class DrugInteraction {
      * "not specified" is returned. "not specified" will also be
      * returned for symptoms which have durations explicitly defined
      * as "not specified".
+     *
      * @param symptom The given symptom
      * @return The duration of the symptom
      */
-    public String getDuration(String symptom){
-        if(invertedDurationMap.containsKey(symptom)){
+    public String getDuration(String symptom) {
+        if (invertedDurationMap.containsKey(symptom)) {
             return invertedDurationMap.get(symptom);
-        }else{
+        } else {
             return "not specified";
         }
     }
@@ -126,6 +137,7 @@ public class DrugInteraction {
      * range and all symptoms in the "nan" category are returned. If the symptoms
      * for the range are not defined, only symptoms in the "nan" category are returned.
      * If the given age does not fall within a valid range, an empty set of symptoms is returned.
+     *
      * @param age The age in years
      * @return The set of symptoms
      */
@@ -155,16 +167,17 @@ public class DrugInteraction {
      * Takes a key representing an age range as a String and
      * returns all the drug symptoms for that age range and all
      * symptoms which do not have an associated age range.
+     *
      * @param key The key which denotes the age range
      * @return A set of symptoms
      */
-    public HashSet<String> ageRangeInteraction(String key){
-        if(ageMap.containsKey(key)){
+    public HashSet<String> ageRangeInteraction(String key) {
+        if (ageMap.containsKey(key)) {
             HashSet<String> results = ageMap.get(key);
             results.addAll(nanAgeInteraction());
-            System.out.println("Age Interaction: "+key);
+            System.out.println("Age Interaction: " + key);
             return results;
-        }else{
+        } else {
             return nanAgeInteraction();
         }
     }
@@ -172,23 +185,25 @@ public class DrugInteraction {
     /**
      * Returns the symptoms which do not have an associated age. These symptoms are
      * taken from the "nan"category in the age_interaction map.
+     *
      * @return The set of symptoms
      */
-    public HashSet<String> nanAgeInteraction(){
-        if(ageMap.containsKey("nan")){
+    public HashSet<String> nanAgeInteraction() {
+        if (ageMap.containsKey("nan")) {
             return ageMap.get("nan");
-        }else{
+        } else {
             return new HashSet<java.lang.String>();
         }
     }
 
     /**
      * Returns the set of all symptoms for to male and females
+     *
      * @return The set of symptoms
      */
-    public HashSet<String> allGenderInteractions(){
-        HashSet<String> maleInteractions =  genderInteraction(Gender.MALE);
-        HashSet<String> femaleInteractions =  genderInteraction(Gender.FEMALE);
+    public HashSet<String> allGenderInteractions() {
+        HashSet<String> maleInteractions = genderInteraction(Gender.MALE);
+        HashSet<String> femaleInteractions = genderInteraction(Gender.FEMALE);
         Set<String> interactions = new HashSet<String>();
         interactions.addAll(maleInteractions);
         interactions.addAll(femaleInteractions);
@@ -197,24 +212,26 @@ public class DrugInteraction {
 
     /**
      * Returns the interaction symptoms for males
+     *
      * @return The set of symptoms
      */
-    public HashSet<String> maleInteractions(){
-        if(genderMap.containsKey("male")){
+    public HashSet<String> maleInteractions() {
+        if (genderMap.containsKey("male")) {
             return genderMap.get("male");
-        }else{
+        } else {
             return new HashSet<String>();
         }
     }
 
     /**
      * Returns the set of interaction symptoms for females
+     *
      * @return The set of symptoms
      */
-    public HashSet<String> femaleInteractions(){
-        if(genderMap.containsKey("female")){
+    public HashSet<String> femaleInteractions() {
+        if (genderMap.containsKey("female")) {
             return genderMap.get("female");
-        }else{
+        } else {
             return new HashSet<String>();
         }
     }
@@ -222,19 +239,20 @@ public class DrugInteraction {
     /**
      * Returns the set of symptoms for the given gender. If the gender is null or OTHER,
      * all symptoms for males and females are returned.
+     *
      * @param gender The given gender
      * @return The set of symptoms
      */
-    public HashSet<String> genderInteraction(Gender gender){
-        if(gender == null){
+    public HashSet<String> genderInteraction(Gender gender) {
+        if (gender == null) {
             //TODO
             // decide whether this is the correct way to handle a null gender
             return allGenderInteractions();
-        }else if (gender.equals(Gender.MALE)) {
+        } else if (gender.equals(Gender.MALE)) {
             return maleInteractions();
         } else if (gender.equals(Gender.FEMALE)) {
             return femaleInteractions();
-        } else if(gender.equals(Gender.NONBINARY)){
+        } else if (gender.equals(Gender.NONBINARY)) {
             return allGenderInteractions();
         } else {
             return new HashSet<String>();
@@ -243,15 +261,17 @@ public class DrugInteraction {
 
     /**
      * Returns the HashMap of symptoms grouped by duration.
+     *
      * @return The HashMap of symptoms
      */
-    public HashMap<String, HashSet<String>> getDurationInteraction(){
+    public HashMap<String, HashSet<String>> getDurationInteraction() {
         return new HashMap<>(durationMap);
     }
 
 
     /**
      * Returns true if there was an error passing or fetching the json
+     *
      * @return True if there was an error, otherwise false
      */
     public Boolean getError() {
@@ -260,6 +280,7 @@ public class DrugInteraction {
 
     /**
      * Returns the error message if one was generated while passing or fetching the json.
+     *
      * @return The error message
      */
     public String getErrorMessage() {
