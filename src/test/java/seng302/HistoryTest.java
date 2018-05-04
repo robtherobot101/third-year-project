@@ -1,19 +1,19 @@
 package seng302;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import seng302.Generic.IO;
-import seng302.Generic.Main;
-import seng302.Generic.History;
-
-import java.io.File;
-import java.net.URISyntaxException;
-
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+
 public class HistoryTest {
+
     private static String jarpath;
 
     @Before

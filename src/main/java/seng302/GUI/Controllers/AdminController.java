@@ -1,5 +1,12 @@
 package seng302.GUI.Controllers;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +19,22 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -34,10 +56,6 @@ import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-
 /**
  * Class to control all the logic for the currentAdmin interactions with the application.
  */
@@ -54,7 +72,7 @@ public class AdminController implements Initializable {
 
     @FXML
     private TableColumn<User, String> userNameTableColumn, userTypeTableColumn, userGenderTableColumn,
-            userRegionTableColumn;
+        userRegionTableColumn;
     @FXML
     private TableColumn<User, Double> userAgeTableColumn;
 
@@ -64,7 +82,7 @@ public class AdminController implements Initializable {
 
     @FXML
     private TableColumn<Clinician, String> clinicianUsernameTableColumn, clinicianNameTableColumn,
-            clinicianAddressTableColumn, clinicianRegionTableColumn;
+        clinicianAddressTableColumn, clinicianRegionTableColumn;
     @FXML
     private TableColumn<Clinician, Long> clinicianIDTableColumn;
 
@@ -94,7 +112,6 @@ public class AdminController implements Initializable {
 
     @FXML
     private GridPane mainPane;
-
 
 
     @FXML
@@ -145,6 +162,7 @@ public class AdminController implements Initializable {
 
     /**
      * Sets the current currentAdmin
+     *
      * @param currentAdmin The currentAdmin to se as the current
      */
     public void setAdmin(Admin currentAdmin) {
@@ -180,10 +198,10 @@ public class AdminController implements Initializable {
      */
     public void logout() {
         Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
-                "Logging out without saving loses your non-saved data.");
+            "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            for(Stage userWindow: Main.getCliniciansUserWindows()){
+            for (Stage userWindow : Main.getCliniciansUserWindows()) {
                 userWindow.close();
             }
             Main.setScene(TFScene.login);
@@ -192,7 +210,6 @@ public class AdminController implements Initializable {
             alert.close();
         }
     }
-
 
 
     /**
@@ -206,8 +223,8 @@ public class AdminController implements Initializable {
         dialog.setContentText("Please enter your password:");
 
         Optional<String> password = dialog.showAndWait();
-        if(password.isPresent()){ //Ok was pressed, Else cancel
-            if(password.get().equals(currentAdmin.getPassword())){
+        if (password.isPresent()) { //Ok was pressed, Else cancel
+            if (password.get().equals(currentAdmin.getPassword())) {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
                     Stage stage = new Stage();
@@ -223,13 +240,12 @@ public class AdminController implements Initializable {
                     System.out.println("here");
                     e.printStackTrace();
                 }
-            }else{ // Password incorrect
+            } else { // Password incorrect
                 Main.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                    "Incorrect password. ", "Please enter the correct password to view account settings").show();
             }
         }
     }
-
 
 
     /**
@@ -239,7 +255,6 @@ public class AdminController implements Initializable {
     public void updateAdminPopUp() {
         addAdminToUndoStack(currentAdmin);
         System.out.println("Name=" + currentAdmin.getName() + ", Address=" + currentAdmin.getWorkAddress());
-
 
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
@@ -283,7 +298,6 @@ public class AdminController implements Initializable {
             updateButton.setDisable(newValue.trim().isEmpty());
         });
 
-
         dialog.getDialogPane().setContent(grid);
 
         // Request focus on the username field by default.
@@ -295,13 +309,13 @@ public class AdminController implements Initializable {
                 String newName;
                 String newAddress;
 
-                if(adminName.getText().equals("")) {
+                if (adminName.getText().equals("")) {
                     newName = currentAdmin.getName();
                 } else {
                     newName = adminName.getText();
                 }
 
-                if(adminAddress.getText().equals("")) {
+                if (adminAddress.getText().equals("")) {
                     newAddress = currentAdmin.getWorkAddress();
                 } else {
                     newAddress = adminAddress.getText();
@@ -327,10 +341,10 @@ public class AdminController implements Initializable {
     /**
      * Saves the currentAdmin ArrayList to a JSON file
      */
-    public void save(){
+    public void save() {
         Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
-                "Are you sure would like to save all profiles? ",
-                "All profiles will be saved (user, clinician, admin).");
+            "Are you sure would like to save all profiles? ",
+            "All profiles will be saved (user, clinician, admin).");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
@@ -343,19 +357,21 @@ public class AdminController implements Initializable {
     /**
      * Closes the application
      */
-    public void close(){
+    public void close() {
         Platform.exit();
     }
 
     /**
      * Changes the focus to the pane when pressed
      */
-    public void requestFocus() { background.requestFocus(); }
+    public void requestFocus() {
+        background.requestFocus();
+    }
 
     /**
      * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
      */
-    public void undo(){
+    public void undo() {
         // TODO implement undo
         /*currentAdmin = clinicianUndo(currentAdmin);
         updateDisplay();
@@ -369,7 +385,7 @@ public class AdminController implements Initializable {
     /**
      * The main clincian redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
      */
-    public void redo(){
+    public void redo() {
         // TODO implement redo
         /*currentAdmin = clinicianRedo(currentAdmin);
         updateDisplay();
@@ -382,6 +398,7 @@ public class AdminController implements Initializable {
     /**
      * Reads the top element of the undo stack and removes it, while placing the current currentAdmin in the redo stack.
      * Then returns the currentAdmin from the undo stack.
+     *
      * @param oldAdmin the admin being placed in the redo stack.
      * @return the previous iteration of the currentAdmin object.
      */
@@ -397,6 +414,7 @@ public class AdminController implements Initializable {
 
     /**
      * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the GUI button to be usable.
+     *
      * @param admin the currentAdmin object being copied.
      */
     public void addAdminToUndoStack(Admin admin) {
@@ -409,16 +427,17 @@ public class AdminController implements Initializable {
 
     /**
      * Pops the topmost currentAdmin object from the redo stack and returns it, while adding the provided currentAdmin object to the undo stack.
+     *
      * @param newAdmin the admin being placed on the undo stack.
      * @return the topmost currentAdmin object on the redo stack.
      */
-    public Admin adminRedo(Admin newAdmin){
+    public Admin adminRedo(Admin newAdmin) {
         if (adminRedoStack != null) {
             Admin oldAdmin = adminRedoStack.get(adminRedoStack.size() - 1);
             addAdminToUndoStack(newAdmin);
             adminRedoStack.remove(adminRedoStack.size() - 1);
             return oldAdmin;
-        } else{
+        } else {
             return null;
         }
     }
@@ -439,12 +458,12 @@ public class AdminController implements Initializable {
     /**
      * Updates the list of users found from the search
      */
-    public void updateFoundUsers(){
+    public void updateFoundUsers() {
         usersFound = Main.getUsersByNameAlternative(searchNameTerm);
 
         //Add in check for region
 
-        if(!searchRegionTerm.equals("")) {
+        if (!searchRegionTerm.equals("")) {
             ArrayList<User> newUsersFound = Main.getUsersByRegionAlternative(searchRegionTerm);
             usersFound.retainAll(newUsersFound);
 
@@ -452,18 +471,17 @@ public class AdminController implements Initializable {
 
         //Add in check for age
 
-        if(!searchAgeTerm.equals("")) {
+        if (!searchAgeTerm.equals("")) {
             ArrayList<User> newUsersFound = Main.getUsersByAgeAlternative(searchAgeTerm);
             usersFound.retainAll(newUsersFound);
         }
 
-
         //Add in check for gender
 
-        if(searchGenderTerm != null) {
+        if (searchGenderTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
-            for(User user: usersFound) {
-                if((user.getGender() != null) && (searchGenderTerm.equals(user.getGender().toString()))) {
+            for (User user : usersFound) {
+                if ((user.getGender() != null) && (searchGenderTerm.equals(user.getGender().toString()))) {
                     newUsersFound.add(user);
                 }
             }
@@ -472,10 +490,10 @@ public class AdminController implements Initializable {
 
         //Add in check for organ
 
-        if(searchOrganTerm != null) {
+        if (searchOrganTerm != null) {
             ArrayList<User> newUsersFound = new ArrayList<>();
-            for(User user: usersFound) {
-                if((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
+            for (User user : usersFound) {
+                if ((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
                     newUsersFound.add(user);
                 }
             }
@@ -484,16 +502,15 @@ public class AdminController implements Initializable {
 
         //Add in check for user type
 
-        if(searchUserTypeTerm != null) {
-            if (searchUserTypeTerm.equals("Neither")){
+        if (searchUserTypeTerm != null) {
+            if (searchUserTypeTerm.equals("Neither")) {
                 searchUserTypeTerm = "";
             }
             ArrayList<User> newUsersFound = new ArrayList<>();
-            for(User user: usersFound) {
-                if(user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
+            for (User user : usersFound) {
+                if (user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
                     newUsersFound.add(user);
-                }
-                else if((searchUserTypeTerm.equals(user.getType()))) {
+                } else if ((searchUserTypeTerm.equals(user.getType()))) {
                     newUsersFound.add(user);
                 }
             }
@@ -517,8 +534,6 @@ public class AdminController implements Initializable {
 //            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
 //        }
 //    }
-
-
 
 
     /**
@@ -591,7 +606,7 @@ public class AdminController implements Initializable {
                 Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
 
                 Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm profile deletion",
-                        "Are you sure you want to delete this profile? This cannot be undone.");
+                    "Are you sure you want to delete this profile? This cannot be undone.");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     if (selectedUser != null) {
@@ -620,14 +635,13 @@ public class AdminController implements Initializable {
         });
         profileMenu.getItems().add(deleteProfile);
 
-
         userTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     User selectedUser = userTableView.getSelectionModel().getSelectedItem();
                     // No need to check for default user
-                    if(selectedUser != null) {
+                    if (selectedUser != null) {
                         deleteProfile.setText("Delete " + selectedUser.getName());
                         profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
                     }
@@ -640,7 +654,7 @@ public class AdminController implements Initializable {
             public void handle(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
-                    if(selectedClinician != null) {
+                    if (selectedClinician != null) {
                         // Check if this is the default clinician
                         if (selectedClinician.getStaffID() == 0) {
                             deleteProfile.setDisable(true);
@@ -679,7 +693,6 @@ public class AdminController implements Initializable {
         adminUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
         adminOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
 
-
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchNameTerm = newValue;
             updateFoundUsers();
@@ -696,7 +709,7 @@ public class AdminController implements Initializable {
         });
 
         adminGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue == null) {
+            if (newValue == null) {
                 searchGenderTerm = null;
 
             } else {
@@ -707,7 +720,7 @@ public class AdminController implements Initializable {
         });
 
         adminUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue == null) {
+            if (newValue == null) {
                 searchUserTypeTerm = null;
 
             } else {
@@ -718,7 +731,7 @@ public class AdminController implements Initializable {
         });
 
         adminOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue == null) {
+            if (newValue == null) {
                 searchOrganTerm = null;
 
             } else {
@@ -728,8 +741,7 @@ public class AdminController implements Initializable {
 
         });
 
-    Main.setAdminController(this);
-
+        Main.setAdminController(this);
 
         /**
          * RowFactory for the userTableView.
@@ -742,6 +754,7 @@ public class AdminController implements Initializable {
             public TableRow<User> call(TableView<User> tableView) {
                 final TableRow<User> row = new TableRow<User>() {
                     private Tooltip tooltip = new Tooltip();
+
                     @Override
                     public void updateItem(User user, boolean empty) {
                         super.updateItem(user, empty);
@@ -759,7 +772,7 @@ public class AdminController implements Initializable {
                     }
                 };
                 row.setOnMouseClicked(event -> {
-                    if (!row.isEmpty() && event.getClickCount()==2) {
+                    if (!row.isEmpty() && event.getClickCount() == 2) {
                         System.out.println(row.getItem());
                         Stage stage = new Stage();
                         stage.setMinHeight(800);
@@ -769,7 +782,7 @@ public class AdminController implements Initializable {
                         Main.addCliniciansUserWindow(stage);
                         stage.initModality(Modality.NONE);
 
-                        try{
+                        try {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
@@ -818,7 +831,7 @@ public class AdminController implements Initializable {
      * Opens separate window to input + create a new admin
      */
     @FXML
-    private void createAdmin(){
+    private void createAdmin() {
         Stage stage = new Stage();
         stage.setMinHeight(Main.mainWindowMinHeight);
         stage.setMinWidth(Main.mainWindowMinWidth);
@@ -826,7 +839,7 @@ public class AdminController implements Initializable {
         stage.setWidth(Main.mainWindowPrefWidth);
         stage.initModality(Modality.NONE);
 
-        try{
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createAdmin.fxml"));
             Parent root = (Parent) loader.load();
             CreateAdminController createAdminController = loader.getController();
@@ -834,7 +847,7 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
             System.out.println(newAdmin);
-            if(newAdmin != null){
+            if (newAdmin != null) {
                 Main.admins.add(newAdmin);
                 IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
@@ -850,7 +863,7 @@ public class AdminController implements Initializable {
      * Opens separate window to input + create a new clinician
      */
     @FXML
-    private void createClinician(){
+    private void createClinician() {
         Stage stage = new Stage();
         stage.setMinHeight(Main.mainWindowMinHeight);
         stage.setMinWidth(Main.mainWindowMinWidth);
@@ -858,7 +871,7 @@ public class AdminController implements Initializable {
         stage.setWidth(Main.mainWindowPrefWidth);
         stage.initModality(Modality.NONE);
 
-        try{
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createClinician.fxml"));
             Parent root = (Parent) loader.load();
             CreateClinicianController createClinicianController = loader.getController();
@@ -867,7 +880,7 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Clinician newClinician = createClinicianController.showAndWait(stage);
             System.out.println(newClinician);
-            if(newClinician != null){
+            if (newClinician != null) {
                 Main.clinicians.add(newClinician);
                 IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
@@ -883,7 +896,7 @@ public class AdminController implements Initializable {
      * Opens separate window to input + create a new user
      */
     @FXML
-    private void createUser(){
+    private void createUser() {
         Stage stage = new Stage();
         stage.setMinHeight(Main.mainWindowMinHeight);
         stage.setMinWidth(Main.mainWindowMinWidth);
@@ -891,7 +904,7 @@ public class AdminController implements Initializable {
         stage.setWidth(Main.mainWindowPrefWidth);
         stage.initModality(Modality.NONE);
 
-        try{
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createAccount.fxml"));
             Parent root = (Parent) loader.load();
             CreateAccountController createAccountController = loader.getController();
@@ -900,7 +913,7 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             User user = createAccountController.showAndWait(stage);
             System.out.println(user);
-            if(user != null){
+            if (user != null) {
                 Main.users.add(user);
                 IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);

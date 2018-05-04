@@ -1,5 +1,10 @@
 package seng302.TestFX;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import org.junit.BeforeClass;
@@ -9,19 +14,14 @@ import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 public class AdminWindowGUITest extends TestFXTest {
+
     private User currentSelectedUser;
     private Clinician currentSelectedClinician;
     private Admin currentSelectedAdmin;
 
     @BeforeClass
-    public static void setupClass() throws TimeoutException  {
+    public static void setupClass() throws TimeoutException {
         defaultTestSetup();
     }
 
@@ -31,7 +31,7 @@ public class AdminWindowGUITest extends TestFXTest {
     private void refreshTableSelections() {
         TabPane tableTabPane = lookup("#tableTabPane").query();
 
-        switch(tableTabPane.getSelectionModel().getSelectedItem().getId()){
+        switch (tableTabPane.getSelectionModel().getSelectedItem().getId()) {
             case "usersTab":
                 TableView<User> userTableView = lookup("#userTableView").query();
                 currentSelectedUser = userTableView.getSelectionModel().getSelectedItem();
@@ -67,14 +67,22 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("#userMenuItem");
 
         // Create a user
-        clickOn("#usernameInput"); write("buzz");
-        clickOn("#emailInput"); write("mkn29@uclive.ac.nz");
-        clickOn("#passwordInput"); write("password123");
-        clickOn("#passwordConfirmInput"); write("password123");
-        clickOn("#dateOfBirthInput"); write("12/06/1997");
-        clickOn("#firstNameInput"); write("Matthew");
-        clickOn("#middleNamesInput"); write("Pieter");
-        clickOn("#lastNameInput"); write("Knight");
+        clickOn("#usernameInput");
+        write("buzz");
+        clickOn("#emailInput");
+        write("mkn29@uclive.ac.nz");
+        clickOn("#passwordInput");
+        write("password123");
+        clickOn("#passwordConfirmInput");
+        write("password123");
+        clickOn("#dateOfBirthInput");
+        write("12/06/1997");
+        clickOn("#firstNameInput");
+        write("Matthew");
+        clickOn("#middleNamesInput");
+        write("Pieter");
+        clickOn("#lastNameInput");
+        write("Knight");
 
         clickOn("#createAccountButton");
         sleep(500);
@@ -102,12 +110,18 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("#adminMenuItem");
 
         // Create an admin
-        clickOn("#usernameInput"); write("buzz");
-        clickOn("#passwordInput"); write("password123");
-        clickOn("#passwordConfirmInput"); write("password123");
-        clickOn("#firstNameInput"); write("Matthew");
-        clickOn("#middleNamesInput"); write("Pieter");
-        clickOn("#lastNameInput"); write("Knight");
+        clickOn("#usernameInput");
+        write("buzz");
+        clickOn("#passwordInput");
+        write("password123");
+        clickOn("#passwordConfirmInput");
+        write("password123");
+        clickOn("#firstNameInput");
+        write("Matthew");
+        clickOn("#middleNamesInput");
+        write("Pieter");
+        clickOn("#lastNameInput");
+        write("Knight");
 
         clickOn("#createAccountButton");
         sleep(500);
@@ -139,12 +153,18 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("#clinicianMenuItem");
 
         // Create a clinician
-        clickOn("#usernameInput"); write("buzz");
-        clickOn("#passwordInput"); write("password123");
-        clickOn("#passwordConfirmInput"); write("password123");
-        clickOn("#firstNameInput"); write("Matthew");
-        clickOn("#middleNamesInput"); write("Pieter");
-        clickOn("#lastNameInput"); write("Knight");
+        clickOn("#usernameInput");
+        write("buzz");
+        clickOn("#passwordInput");
+        write("password123");
+        clickOn("#passwordConfirmInput");
+        write("password123");
+        clickOn("#firstNameInput");
+        write("Matthew");
+        clickOn("#middleNamesInput");
+        write("Pieter");
+        clickOn("#lastNameInput");
+        write("Knight");
 
         clickOn("#createAccountButton");
         sleep(500);

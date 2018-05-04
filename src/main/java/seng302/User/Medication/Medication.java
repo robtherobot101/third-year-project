@@ -1,10 +1,9 @@
 package seng302.User.Medication;
 
-import seng302.User.User;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
+import seng302.User.User;
 
 /**
  * Class contains all the information for a given Medication.
@@ -25,11 +24,17 @@ public class Medication {
         history = new ArrayList<>();
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String[] getActiveIngredients() { return activeIngredients; }
+    public String[] getActiveIngredients() {
+        return activeIngredients;
+    }
 
     public ArrayList<String> getHistory() {
         return history;
@@ -51,8 +56,12 @@ public class Medication {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Medication that = (Medication) o;
         return Objects.equals(name, that.name);
     }
@@ -62,13 +71,14 @@ public class Medication {
         return Objects.hash(name);
     }
 
-    public void setActiveIngredients(String[] activeIngredients) { this.activeIngredients = activeIngredients; }
-
-    @Override
-    public String toString(){
-        return name;
+    public void setActiveIngredients(String[] activeIngredients) {
+        this.activeIngredients = activeIngredients;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 
 
 }

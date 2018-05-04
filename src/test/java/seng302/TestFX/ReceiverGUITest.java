@@ -7,6 +7,7 @@ import org.junit.Test;
 import seng302.User.User;
 
 public class ReceiverGUITest extends TestFXTest {
+
     private User testUser;
 
     @BeforeClass

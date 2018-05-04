@@ -1,26 +1,21 @@
 package seng302.TestFX;
 
-import javafx.collections.ObservableList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
-import org.junit.*;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Disease;
 import seng302.Generic.Main;
-import seng302.User.User;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.*;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 public class MedicalHistoryGUITest extends TestFXTest {
 
@@ -44,7 +39,6 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Method that can be called to path correctly to the stage to be tested.
-     *
      */
     private void enterMedicalHistoryView() {
         // Assumed that calling method is currently on login screen
@@ -81,7 +75,6 @@ public class MedicalHistoryGUITest extends TestFXTest {
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
         clickOn("#diseasesButton");
         //doubleClickOn(636, 435);
-
 
         // This is an interesting piece here, for some reason this is required to allow JavaFX to catch up and bring
         // the medical history pane up in time for testing

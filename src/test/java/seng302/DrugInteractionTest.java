@@ -14,6 +14,7 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Medication.DrugInteraction;
 
 public class DrugInteractionTest {
+
     private static DrugInteraction drugInteraction;
 
     @Before
@@ -108,7 +109,7 @@ public class DrugInteractionTest {
     public void invertDurationMap_givenNonEmptyDurationMap_returnsInverse() {
         HashMap<String, HashSet<String>> originalDurationMap = drugInteraction.getDurationInteraction();
         HashMap<String, String> invertedDurationMap =
-                drugInteraction.invertDurationMap(originalDurationMap);
+            drugInteraction.invertDurationMap(originalDurationMap);
         assertEquals("1 - 2 years", invertedDurationMap.get("a"));
         assertEquals("1 - 6 months", invertedDurationMap.get("b"));
         assertEquals("10+ years", invertedDurationMap.get("c"));
@@ -123,7 +124,7 @@ public class DrugInteractionTest {
     public void invertDurationMap_givenEmptyDurationMap_returnsEmptyInvertedDurationMap() {
         HashMap<String, HashSet<String>> originalDurationMap = new HashMap<>();
         HashMap<String, String> invertedDurationMap =
-                drugInteraction.invertDurationMap(originalDurationMap);
+            drugInteraction.invertDurationMap(originalDurationMap);
         assertEquals(0, invertedDurationMap.keySet().size());
     }
 
@@ -132,6 +133,7 @@ public class DrugInteractionTest {
     public void getDuration_definedKey_returnsIntendedDuration() {
         assertEquals("1 - 2 years", drugInteraction.getDuration("a"));
     }
+
     @Test
     public void getDuration_undefinedKey_returnsNotSpecified() {
         assertEquals("not specified", drugInteraction.getDuration("SomeUndefinedKey"));
@@ -141,10 +143,12 @@ public class DrugInteractionTest {
     public void greaterDuration_shorterDurationPassedFirst_returnsGreaterDuration() {
         assertEquals("< 1 month", drugInteraction.greaterDuration("not specified", "< 1 month"));
     }
+
     @Test
     public void greaterDuration_greaterDurationPassedFirst_returnsGreaterDuration() {
         assertEquals("< 1 month", drugInteraction.greaterDuration("< 1 month", "not specified"));
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void greaterDuration_invalidDurationKeysPassed_throwsException() {
         drugInteraction.greaterDuration("bad key", "another bad key");

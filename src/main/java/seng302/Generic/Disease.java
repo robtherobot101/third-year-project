@@ -7,6 +7,7 @@ import java.util.Comparator;
  * Class contains all the information for a given disease used in the Medical History section.
  */
 public class Disease {
+
     private String name;
     private LocalDate diagnosisDate;
     private boolean isChronic;
@@ -19,6 +20,7 @@ public class Disease {
 
     /**
      * method to create a new disease instance
+     *
      * @param name name of disease
      * @param diagnosisDate diagnosis date of disease
      * @param isChronic if the disease is chronic
@@ -33,18 +35,25 @@ public class Disease {
 
     /**
      * returns the name of the disease
+     *
      * @return String name of the disease
      */
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     /**
      * sets the name of the disease
+     *
      * @param name String the name of the disease
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * returns the diagnosis date of the disease
+     *
      * @return LocalDate the date of the diagnosis
      */
     public LocalDate getDiagnosisDate() {
@@ -53,6 +62,7 @@ public class Disease {
 
     /**
      * sets the diagnosis date of the disease
+     *
      * @param diagnosisDate LocalDate the date of diagnosis
      */
     public void setDiagnosisDate(LocalDate diagnosisDate) {
@@ -61,6 +71,7 @@ public class Disease {
 
     /**
      * returns if the disease is chronic
+     *
      * @return Boolean is the disease chronic
      */
     public boolean isChronic() {
@@ -69,6 +80,7 @@ public class Disease {
 
     /**
      * sets if the disease is chronic
+     *
      * @param chronic Boolean if the disease is chronic
      */
     public void setChronic(boolean chronic) {
@@ -77,6 +89,7 @@ public class Disease {
 
     /**
      * returns if the disease is cured
+     *
      * @return Boolean if the disease is cured
      */
     public boolean isCured() {
@@ -85,6 +98,7 @@ public class Disease {
 
     /**
      * sets if the disease is cured
+     *
      * @param cured Boolean if the disease is cured
      */
     public void setCured(boolean cured) {

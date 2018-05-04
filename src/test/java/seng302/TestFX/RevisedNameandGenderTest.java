@@ -1,36 +1,18 @@
 package seng302.TestFX;
 
-import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputControl;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
-import org.junit.*;
-import org.junit.runners.JUnit4;
-import org.testfx.api.FxRobot;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.util.WaitForAsyncUtils;
-import seng302.User.Attribute.Organ;
-import seng302.User.User;
-import seng302.Generic.Main;
-import seng302.User.Medication.Medication;
+import static org.testfx.api.FxAssert.verifyThat;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.concurrent.TimeoutException;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.testfx.api.FxAssert.assertContext;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
-
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
+import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.testfx.matcher.control.LabeledMatchers;
+import seng302.Generic.Main;
+import seng302.User.Attribute.Organ;
 
 public class RevisedNameandGenderTest extends TestFXTest {
 
@@ -42,20 +24,6 @@ public class RevisedNameandGenderTest extends TestFXTest {
     private void enterAttributesPanel() {
 
         Main.users.clear();
-        // Assumed that calling method is currently on login screen
-//        clickOn("#createAccountButton");
-//
-//        // Create a valid user
-//        clickOn("#usernameInput").write("test");
-//        clickOn("#emailInput").write("testie@testmail.com");
-//        clickOn("#passwordInput").write("password123");
-//        clickOn("#passwordConfirmInput").write("password123");
-//        clickOn("#firstNameInput").write("Testie");
-//        clickOn("#middleNamesInput").write("Test");
-//        clickOn("#lastNameInput").write("McTest");
-//        clickOn("#dateOfBirthInput").write("20/4/1969");
-//
-//        doubleClickOn("#createAccountButton");
         addTestUser();
         loginAs(Main.users.get(0));
 
@@ -64,7 +32,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
 
     @Test
-    public void changeNameTest(){
+    public void changeNameTest() {
 
         enterAttributesPanel();
 
@@ -79,14 +47,14 @@ public class RevisedNameandGenderTest extends TestFXTest {
         sleep(100);
         push(KeyCode.ENTER);
         Assert.assertEquals(Main.users.get(0).getName(), "Bobby Dong Flame");
-        Assert.assertEquals(Main.users.get(0).getPreferredName(),"New Name Test");
+        Assert.assertEquals(Main.users.get(0).getPreferredName(), "New Name Test");
         verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: New Name Test"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for New Name Test"));
 
     }
 
     @Test
-    public void changeGenderTest(){
+    public void changeGenderTest() {
 
         enterAttributesPanel();
 
@@ -112,11 +80,11 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeAddressTest(){
+    public void changeAddressTest() {
 
         enterAttributesPanel();
 
-        Assert.assertEquals(Main.users.get(0).getCurrentAddress(),null);
+        Assert.assertEquals(Main.users.get(0).getCurrentAddress(), null);
 
         doubleClickOn("#addressField").write("3 Test Street");
         clickOn("#saveButton");
@@ -125,9 +93,8 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         Assert.assertEquals(Main.users.get(0).getCurrentAddress(), "3 Test Street");
 
-
         clickOn("#addressField");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         clickOn("#addressField").write("8 Trial Road");
         clickOn("#saveButton");
         sleep(100);
@@ -137,7 +104,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeRegionTest(){
+    public void changeRegionTest() {
 
         enterAttributesPanel();
 
@@ -159,14 +126,14 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeDateOfBirthTest(){
+    public void changeDateOfBirthTest() {
 
         enterAttributesPanel();
 
         Assert.assertEquals(Main.users.get(0).getDateOfBirth().toString(), "1969-08-04");
 
         clickOn("#dateOfBirthPicker");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#dateOfBirthPicker").write("01/05/1970");
         clickOn("#saveButton");
         sleep(100);
@@ -175,7 +142,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(Main.users.get(0).getDateOfBirth().toString(), "1970-05-01");
 
         clickOn("#dateOfBirthPicker");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#dateOfBirthPicker").write("10/07/1997");
         clickOn("#saveButton");
         sleep(100);
@@ -185,7 +152,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeDateOfDeathTest(){
+    public void changeDateOfDeathTest() {
 
         enterAttributesPanel();
 
@@ -200,7 +167,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(Main.users.get(0).getDateOfDeath().toString(), "1970-05-01");
 
         clickOn("#dateOfDeathPicker");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#dateOfDeathPicker").write("10/07/1997");
         clickOn("#saveButton");
         sleep(100);
@@ -211,7 +178,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
 
     @Test
-    public void changeBloodTypeTest(){
+    public void changeBloodTypeTest() {
 
         enterAttributesPanel();
 
@@ -234,7 +201,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeOrgansToDonate(){
+    public void changeOrgansToDonate() {
 
         enterAttributesPanel();
 
@@ -272,7 +239,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeSmokerStatusTest(){
+    public void changeSmokerStatusTest() {
 
         enterAttributesPanel();
 
@@ -295,7 +262,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeBloodPressureTest(){
+    public void changeBloodPressureTest() {
 
         enterAttributesPanel();
 
@@ -309,7 +276,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(Main.users.get(0).getBloodPressure(), "21/30");
 
         clickOn("#bloodPressureTextField");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         doubleClickOn("#bloodPressureTextField").write("30/10");
         clickOn("#saveButton");
         sleep(100);
@@ -319,7 +286,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeAlcoholConsumptionTest(){
+    public void changeAlcoholConsumptionTest() {
 
         enterAttributesPanel();
 
@@ -342,7 +309,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void changeBmiTest(){
+    public void changeBmiTest() {
 
         enterAttributesPanel();
 
@@ -369,7 +336,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         verifyThat("#bmiLabel", LabeledMatchers.hasText("BMI: 26.20"));
 
         clickOn("#weightField");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         clickOn("#weightField").write("72");
 
         clickOn("#saveButton");
@@ -382,7 +349,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     @Test
-    public void testHistoryPaneButtonTest(){
+    public void testHistoryPaneButtonTest() {
 
         enterAttributesPanel();
 
@@ -392,7 +359,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     @Ignore
     @Test
-    public void changeAccountSettingsTest(){
+    public void changeAccountSettingsTest() {
 
         enterAttributesPanel();
 
@@ -412,15 +379,15 @@ public class RevisedNameandGenderTest extends TestFXTest {
         verifyThat("#accountBackground", Node::isVisible);
 
         clickOn("#usernameField");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         clickOn("#usernameField").write("NewUsername");
 
         clickOn("#emailField");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         clickOn("#emailField").write("new.email@test.com");
 
         clickOn("#passwordField");
-        push(KeyCode.CONTROL,KeyCode.A).push(KeyCode.BACK_SPACE);
+        push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
         clickOn("#passwordField").write("newPassword");
 
         clickOn("#updateButton");

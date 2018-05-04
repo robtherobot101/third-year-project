@@ -1,28 +1,22 @@
 package seng302.GUI.Controllers;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.GUI.TFScene;
-import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.Main;
 import seng302.User.Admin;
-import seng302.User.User;
-
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * A controller class for the create admin screen.
  */
 public class CreateAdminController implements Initializable {
+
     @FXML
     private TextField usernameInput, passwordConfirmInput, firstNameInput, middleNamesInput, lastNameInput;
     @FXML
@@ -35,15 +29,15 @@ public class CreateAdminController implements Initializable {
     private AnchorPane background;
 
     private Admin admin;
-
     private Stage stage;
 
     /**
      * method to show the create admin controller
+     *
      * @param stage the current stage to use
      * @return the created admin user
      */
-    public Admin showAndWait(Stage stage){
+    public Admin showAndWait(Stage stage) {
         this.stage = stage;
         stage.showAndWait();
         return admin;
@@ -71,8 +65,7 @@ public class CreateAdminController implements Initializable {
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
             errorText.setVisible(true);
-        }
-        else {
+        } else {
             errorText.setVisible(false);
             String username = usernameInput.getText();
             String name = firstNameInput.getText() + " " + middleNamesInput.getText() + " " + lastNameInput.getText();
@@ -92,6 +85,7 @@ public class CreateAdminController implements Initializable {
 
     /**
      * Add listeners to enable/disable the create account button based on information supplied
+     *
      * @param location Not used
      * @param resources Not used
      */

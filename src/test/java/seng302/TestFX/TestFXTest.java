@@ -1,5 +1,12 @@
 package seng302.TestFX;
 
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+
+import java.time.LocalDate;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -11,15 +18,8 @@ import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Main;
 import seng302.User.User;
 
-import java.time.LocalDate;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
-
 abstract class TestFXTest extends ApplicationTest {
+
     protected static final boolean runHeadless = true;
 
     @Override
@@ -63,8 +63,10 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
     protected void loginAsDefaultClinician() {
-        clickOn("#identificationInput"); write("default");
-        clickOn("#passwordInput"); write("default");
+        clickOn("#identificationInput");
+        write("default");
+        clickOn("#passwordInput");
+        write("default");
         clickOn("#loginButton");
     }
 
@@ -75,8 +77,10 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
     protected void loginAs(User user) {
-        clickOn("#identificationInput"); write(user.getEmail());
-        clickOn("#passwordInput"); write(user.getPassword());
+        clickOn("#identificationInput");
+        write(user.getEmail());
+        clickOn("#passwordInput");
+        write(user.getPassword());
         clickOn("#loginButton");
     }
 
@@ -101,21 +105,22 @@ abstract class TestFXTest extends ApplicationTest {
      * Waits until the node denoted by the given id can be found and is visible.
      * If the waiting time exceeds the given timeout in seconds, a TimeOutException
      * is thrown.
+     *
      * @param timeout The timeout in seconds
      * @param id The fx identifier of the node
      * @throws TimeoutException If the waiting time exceeds the given timeout.
      */
-    protected void waitForNodeVisible(int timeout, String id) throws TimeoutException{
+    protected void waitForNodeVisible(int timeout, String id) throws TimeoutException {
         Callable<Boolean> callable = () -> {
             Node nodeFound = lookup(id).query();
-            if(nodeFound==null){
+            if (nodeFound == null) {
                 return false;
-            }else{
-                if(nodeFound.isVisible()){
+            } else {
+                if (nodeFound.isVisible()) {
                     //Let the GUI skin catchup to the controller state
                     waitForFxEvents();
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
@@ -127,21 +132,22 @@ abstract class TestFXTest extends ApplicationTest {
      * Waits until the node denoted by the given id can be found and is enabled.
      * If the waiting time exceeds the given timeout in seconds, a TimeOutException
      * is thrown.
+     *
      * @param timeout The timeout in seconds
      * @param id The fx identifier of the node
      * @throws TimeoutException If the waiting time exceeds the given timeout.
      */
-    protected void waitForNodeEnabled(int timeout, String id) throws TimeoutException{
+    protected void waitForNodeEnabled(int timeout, String id) throws TimeoutException {
         Callable<Boolean> callable = () -> {
             Node nodeFound = lookup(id).query();
-            if(nodeFound==null){
+            if (nodeFound == null) {
                 return false;
-            }else{
-                if(!nodeFound.isDisable()){
+            } else {
+                if (!nodeFound.isDisable()) {
                     //Let the GUI skin catchup to the controller state
                     waitForFxEvents();
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }

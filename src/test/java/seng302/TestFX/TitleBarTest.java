@@ -1,20 +1,18 @@
 package seng302.TestFX;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.stage.Stage;
 import org.junit.Before;
-
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TitleBar;
 import seng302.User.User;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 public class TitleBarTest extends TestFXTest {
 
@@ -29,11 +27,11 @@ public class TitleBarTest extends TestFXTest {
 
     protected void defaultTest1Setup() throws TimeoutException {
 
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("headless.geometry", "1600x1200-32");
+        System.setProperty("testfx.robot", "glass");
+        System.setProperty("testfx.headless", "true");
+        System.setProperty("prism.order", "sw");
+        System.setProperty("prism.text", "t2k");
+        System.setProperty("headless.geometry", "1600x1200-32");
         //return registerPrimaryStage();
     }
 
@@ -67,7 +65,7 @@ public class TitleBarTest extends TestFXTest {
     @Test
     public void saved() {
         titleBar.saved(false);
-        assert(stage.getTitle().endsWith("*"));
+        assert (stage.getTitle().endsWith("*"));
         titleBar.saved(false);
         assertFalse(stage.getTitle().endsWith("**"));
         titleBar.saved(true);

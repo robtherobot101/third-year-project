@@ -1,9 +1,14 @@
 package seng302.Generic;
 
-import seng302.User.User;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.time.LocalDateTime;
+import seng302.User.User;
 
 public class History {
 
@@ -38,7 +43,7 @@ public class History {
     /**
      * Prints the given string to the file via the given printstream.
      *
-     * @param out  the printstream.
+     * @param out the printstream.
      * @param text the string being written to the file.
      */
     public static void printToFile(PrintStream out, String text) {
@@ -153,7 +158,6 @@ public class History {
                 break;
         }
 
-
         //join the elements
         text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
 
@@ -175,70 +179,70 @@ public class History {
      * @param command the action being performed in the app.
      * @return a string to be printed to file containing the action and a brief description.
      */
-    public static String prepareFileStringGUI(long userId, String command){
+    public static String prepareFileStringGUI(long userId, String command) {
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         User userInfo = Main.getUserById(userId);
-        System.out.println("Command: "+command);
+        System.out.println("Command: " + command);
 
-        switch(command) {
-                case "login":
-                    description = "[User " + userId + " logged in successfully.]";
-                    break;
-                case "logout":
-                    description = "[User " + userId + " logged out successfully.]";
-                    break;
-                case "create":
-                    if (userInfo != null) {
-                        description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
-                    }
-                    break;
-                case "update":
-                    description = "[Updated user attributes.]";
-                    break;
-                case "updateAccountSettings":
-                    description = "[Updated user account settings.]";
-                    break;
-                case "undo":
-                    description = "[Reversed last action.]";
-                    break;
-                case "redo":
-                    description = "[Reverted last undo.]";
-                    break;
-                case "quit":
-                    description = "[Quit the application.]";
-                    break;
+        switch (command) {
+            case "login":
+                description = "[User " + userId + " logged in successfully.]";
+                break;
+            case "logout":
+                description = "[User " + userId + " logged out successfully.]";
+                break;
+            case "create":
+                if (userInfo != null) {
+                    description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
+                }
+                break;
+            case "update":
+                description = "[Updated user attributes.]";
+                break;
+            case "updateAccountSettings":
+                description = "[Updated user account settings.]";
+                break;
+            case "undo":
+                description = "[Reversed last action.]";
+                break;
+            case "redo":
+                description = "[Reverted last undo.]";
+                break;
+            case "quit":
+                description = "[Quit the application.]";
+                break;
 
             //clinician exclusive
 
-                case "view":
-                    //TODO get user viewed id (method in main or clinician or something)
-                    description = "[-Clinician- Viewed user " + userInfo.getName() + " .]";
-                    break;
-                case "modifyUser":
-                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
-                    break;
-                case "waitinglist":
-                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
-                    break;
-                case "medications":
-                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
-                    break;
-                case "diseases":
-                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s diseases.]";
-                    break;
-                case "procedures":
-                    description = "[-Clinician- Modified user " + userInfo.getName() + "'s procedures.]";
-                    break;
-                case "search":
-                    description = "[-Clinician- Searched user database.]";
-                    break;
-                case "deregisterDeath":
-                    description = "[-Clinician- Deregistered all organs from " + userInfo.getName() + "'s waiting list due to receiver deceased.";
-                    break;
-                case "deregisterError":
-                    description = "[-Clinician- Deregistered an organ from user " + userInfo.getName() + "'s due to a register error.]";
-                    break;
-            }
+            case "view":
+                //TODO get user viewed id (method in main or clinician or something)
+                description = "[-Clinician- Viewed user " + userInfo.getName() + " .]";
+                break;
+            case "modifyUser":
+                description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
+                break;
+            case "waitinglist":
+                description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
+                break;
+            case "medications":
+                description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
+                break;
+            case "diseases":
+                description = "[-Clinician- Modified user " + userInfo.getName() + "'s diseases.]";
+                break;
+            case "procedures":
+                description = "[-Clinician- Modified user " + userInfo.getName() + "'s procedures.]";
+                break;
+            case "search":
+                description = "[-Clinician- Searched user database.]";
+                break;
+            case "deregisterDeath":
+                description = "[-Clinician- Deregistered all organs from " + userInfo.getName() + "'s waiting list due to receiver deceased.";
+                break;
+            case "deregisterError":
+                description = "[-Clinician- Deregistered an organ from user " + userInfo.getName() + "'s due to a register error.]";
+                break;
+        }
 
         text = String.join(" ", text, Long.toString(userId), command, description);
         return text;
@@ -246,22 +250,23 @@ public class History {
 
     /**
      * Function which takes the action history text file and parses it to create a string of all the user history.
+     *
      * @return A string of all the action history for the application.
      */
-    public static String readFile(){
+    public static String readFile() {
 
         String line;
         String actionHistoryString = "";
 
         try {
             FileReader fileReader =
-                    new FileReader(actionHistory);
+                new FileReader(actionHistory);
 
             // Always wrap FileReader in BufferedReader.
             BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
+                new BufferedReader(fileReader);
 
-            while((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 actionHistoryString += line;
                 actionHistoryString += " \n";
             }
@@ -278,6 +283,7 @@ public class History {
 
     /**
      * Function which parses the history text file for all the actions for the given user.
+     *
      * @param userid the given user which we are looking for the history
      * @return A two dimensional string list for each users actions with the second list being the action history broken up
      */

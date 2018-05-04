@@ -1,7 +1,10 @@
 package seng302.TestFX;
 
-import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
@@ -12,17 +15,6 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.control.LabeledMatchers.hasText;
-
 public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     private User testUserBobby;
@@ -31,7 +23,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     private TableView<User> userTableView;
     private User selectedUser;
-
 
 
     @BeforeClass
@@ -47,22 +38,22 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     public void setUp() {
         Main.users.clear();
         testUserBobby = new User(
-                "Bobby", new String[]{"Dong"}, "Flame",
-                LocalDate.of(1969, 8, 4),
-                "bflame",
-                "flameman@hotmail.com",
-                "password123");
+            "Bobby", new String[]{"Dong"}, "Flame",
+            LocalDate.of(1969, 8, 4),
+            "bflame",
+            "flameman@hotmail.com",
+            "password123");
         testUserBobby.setGender(Gender.MALE);
         testUserBobby.setRegion("Auckland");
         testUserBobby.setOrgan(Organ.PANCREAS);
         Main.users.add(testUserBobby);
 
         testUserAndy = new User(
-                "Andy", new String[]{"Pandy"}, "Fandy",
-                LocalDate.of(1997, 1, 4),
-                "andy",
-                "andy@hotmail.com",
-                "andyANDY");
+            "Andy", new String[]{"Pandy"}, "Fandy",
+            LocalDate.of(1997, 1, 4),
+            "andy",
+            "andy@hotmail.com",
+            "andyANDY");
         testUserAndy.setGender(Gender.FEMALE);
         testUserAndy.setRegion("Arrowtown");
         testUserAndy.setOrgan(Organ.HEART);
@@ -70,18 +61,17 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         Main.users.add(testUserAndy);
 
         testUserTest = new User(
-                "Test", new String[]{"TEST"}, "test",
-                LocalDate.of(1996, 8, 4),
-                "test",
-                "test@hotmail.com",
-                "tester123");
+            "Test", new String[]{"TEST"}, "test",
+            LocalDate.of(1996, 8, 4),
+            "test",
+            "test@hotmail.com",
+            "tester123");
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");
 
         Main.users.add(testUserTest);
 
     }
-
 
     //Each test checks for a correct response showing when results should be shown and with invalid input to have
     // nothing shown
@@ -96,7 +86,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserBobby, userTableView.getItems().get(1));
-
 
         doubleClickOn("#clinicianRegionField").write("C");
         userTableView = lookup("#profileTable").query();
@@ -124,7 +113,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         assertEquals(testUserBobby, userTableView.getItems().get(0));
         assertEquals(testUserTest, userTableView.getItems().get(1));
 
-
         clickOn("#clinicianGenderComboBox").clickOn("Female");
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
@@ -145,7 +133,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserTest, userTableView.getItems().get(1));
-
 
         doubleClickOn("#clinicianAgeField").write("48");
         userTableView = lookup("#profileTable").query();
@@ -170,7 +157,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserBobby, userTableView.getItems().get(1));
 
-
         clickOn("#clinicianUserTypeComboBox").clickOn("Neither");
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserTest, userTableView.getItems().get(0));
@@ -192,7 +178,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserAndy, userTableView.getItems().get(0));
         assertEquals(testUserBobby, userTableView.getItems().get(1));
-
 
         clickOn("#clinicianOrganComboBox");
         push(KeyCode.DOWN);
@@ -222,13 +207,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
         userTableView = lookup("#profileTable").query();
         assertEquals(testUserBobby, userTableView.getItems().get(0));
-        
+
     }
-
-
-
-
-
 
 
 }

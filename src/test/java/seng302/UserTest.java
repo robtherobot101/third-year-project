@@ -1,19 +1,17 @@
 package seng302;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 import javafx.collections.FXCollections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.User.User;
 import seng302.Generic.Main;
+import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
-
-import java.util.ArrayList;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
+import seng302.User.User;
 
 public class UserTest {
 
@@ -79,7 +77,6 @@ public class UserTest {
         user.getWaitingListItems().add(newItem);
         assertFalse(user.isReceiver());
     }
-
 
 
     @After

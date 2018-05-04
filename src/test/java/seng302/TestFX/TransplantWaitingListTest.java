@@ -1,19 +1,23 @@
 package seng302.TestFX;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.util.NodeQueryUtils.isVisible;
+
+import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
-import org.junit.*;
-import seng302.Generic.TransplantWaitingListItem;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import seng302.Generic.Main;
+import seng302.Generic.TransplantWaitingListItem;
 import seng302.User.Attribute.Organ;
-import java.util.concurrent.TimeoutException;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.junit.Assert.assertEquals;
-import static org.testfx.util.NodeQueryUtils.isVisible;
 
-public class TransplantWaitingListTest extends TestFXTest{
+public class TransplantWaitingListTest extends TestFXTest {
 
     private TableView<TransplantWaitingListItem> transplantTable;
     private TransplantWaitingListItem transplantRow;
@@ -26,7 +30,7 @@ public class TransplantWaitingListTest extends TestFXTest{
     @Before
     public void setup() {
         Main.users.clear();
-        }
+    }
 
     /**
      * Refreshes the currently selected receiver in both tables of Medical History.
@@ -279,7 +283,7 @@ public class TransplantWaitingListTest extends TestFXTest{
      */
     @Ignore
     @Test
-    public void checkFutureDate(){
+    public void checkFutureDate() {
         createAccounts();
 
         //login as clinician
@@ -320,7 +324,7 @@ public class TransplantWaitingListTest extends TestFXTest{
 
     @Ignore
     @Test
-    public void checkDeregisterCure(){
+    public void checkDeregisterCure() {
         createAccounts();
 
         //login as clinician

@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
  * Requests interactions from the medication interaction API
  */
 public class InteractionApi {
+
     private String serverErr = "Could not retrieve interaction symptoms (an error occurred on the server).";
     private String emptyReportErr = "Could not retrieve interaction symptoms (no information available).";
 
@@ -18,15 +19,16 @@ public class InteractionApi {
     /**
      * Takes two drug names as Strings and returns a Json String from the
      * eHealthMe API which contains information about the drug interactions
+     *
      * @param drugA The name of the first drug
      * @param drugB THe name of the other drug
      * @return The Json String
      */
     public String interactions(String drugA, String drugB) {
-        String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugA, drugB));
+        String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/", drugA, drugB));
         System.out.println("RESULT: " + result);
-        if (result.equals(serverErr) || result.equals(emptyReportErr)){
-            result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/",drugB, drugA));
+        if (result.equals(serverErr) || result.equals(emptyReportErr)) {
+            result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/", drugB, drugA));
         }
 
         return result;
@@ -35,6 +37,7 @@ public class InteractionApi {
     /**
      * Takes an API request URI as a parameter and returns a Json String.
      * Also includes error handling for if the drugs are invalid or if there is an internal server error.
+     *
      * @param url The api request
      * @return The Json String
      */
@@ -66,11 +69,11 @@ public class InteractionApi {
             }
             return result;
         } catch (UnirestException e) {
-            if(e.getCause() instanceof UnknownHostException || e.getCause() instanceof TimeoutException){
+            if (e.getCause() instanceof UnknownHostException || e.getCause() instanceof TimeoutException) {
                 return "Host could not be reached.";
             }
             return "";
-        } catch(Exception e){
+        } catch (Exception e) {
 
             return "";
         }

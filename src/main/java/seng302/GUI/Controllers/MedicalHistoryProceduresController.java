@@ -1,5 +1,13 @@
 package seng302.GUI.Controllers;
 
+import static seng302.Generic.IO.streamOut;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,7 +17,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -20,15 +41,6 @@ import seng302.Generic.Main;
 import seng302.Generic.Procedure;
 import seng302.User.Attribute.LoginType;
 import seng302.User.User;
-
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the Medical History (Procedures) Window.
@@ -97,29 +109,28 @@ public class MedicalHistoryProceduresController extends PageController implement
         // Check for empty disease name TODO could be a listener to disable the add button
         if (summaryInput.getText().equals("")) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                    "Invalid procedure summary provided.");
+                "Invalid procedure summary provided.");
             alert.showAndWait();
             summaryInput.clear();
             // Check for an empty date
         } else if (descriptionInput.getText().equals("")) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                    "Invalid procedure description provided.");
+                "Invalid procedure description provided.");
             alert.showAndWait();
             descriptionInput.clear();
-        }
-        else if (dateOfProcedureInput.getValue() == null) {
+        } else if (dateOfProcedureInput.getValue() == null) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                    "No date provided.");
+                "No date provided.");
             alert.showAndWait();
-        } else if (dateOfProcedureInput.getValue().isBefore(currentUser.getDateOfBirth())){
+        } else if (dateOfProcedureInput.getValue().isBefore(currentUser.getDateOfBirth())) {
             Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                    "Due date occurs before the user's date of birth.");
+                "Due date occurs before the user's date of birth.");
             alert.showAndWait();
         } else {
             // Add the new procedure
             Procedure procedureToAdd = new Procedure(summaryInput.getText(), descriptionInput.getText(),
-                    dateOfProcedureInput.getValue(), isOrganAffectingCheckBox.isSelected());
-            if(dateOfProcedureInput.getValue().isBefore(LocalDate.now())){
+                dateOfProcedureInput.getValue(), isOrganAffectingCheckBox.isSelected());
+            if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
             } else {
                 pendingProcedureItems.add(procedureToAdd);
@@ -156,9 +167,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                 titleBar.saved(false);
             }
             alert.close();
-        }
-
-        else if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+        } else if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Are you sure?");
@@ -183,7 +192,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      */
     public void save() {
 
-        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION,"Are you sure?","Are you sure would like to update the current user? ","By doing so, the donor will be updated with the following procedure details.");
+        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following procedure details.");
 
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
         Optional<ButtonType> result = alert.showAndWait();
@@ -209,6 +218,7 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     /**
      * Function which produces a pop up window to update all the given fields for a procedure.
+     *
      * @param selectedProcedure The selected procedure that the user wishes to update.
      * @param pending If the procedure is a pending procedure or not.
      */
@@ -274,42 +284,42 @@ public class MedicalHistoryProceduresController extends PageController implement
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
                 System.out.println(dateDue.getValue());
-                    String newSummary;
-                    String newDescription;
-                    String newDate = "";
+                String newSummary;
+                String newDescription;
+                String newDate = "";
 
-                    if(procedureSummary.getText().equals("")) {
-                        newSummary = selectedProcedure.getSummary();
-                    } else {
-                        newSummary = procedureSummary.getText();
-                    }
-
-                    if(procedureDescription.getText().equals("")) {
-                        newDescription = selectedProcedure.getDescription();
-                    } else {
-                        newDescription = procedureDescription.getText();
-                    }
-
-                    if(dateDue.getValue() == null) {
-                        newDate = selectedProcedure.getDate().toString();
-                    } else {
-                        if (dateDue.getValue().isBefore(currentUser.getDateOfBirth())) {
-                            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                                    "Due date occurs before the user's date of birth.");
-                            alert.showAndWait();
-                            dateDue.getEditor().clear();
-                            if (pending) {
-                                updateProcedurePopUp(selectedProcedure, true);
-                            } else {
-                                updateProcedurePopUp(selectedProcedure, false);
-                            }
-                        } else {
-                            newDate = dateDue.getValue().toString();
-                        }
-                    }
-
-                    return new ArrayList<String>(Arrays.asList(newSummary, newDescription, newDate));
+                if (procedureSummary.getText().equals("")) {
+                    newSummary = selectedProcedure.getSummary();
+                } else {
+                    newSummary = procedureSummary.getText();
                 }
+
+                if (procedureDescription.getText().equals("")) {
+                    newDescription = selectedProcedure.getDescription();
+                } else {
+                    newDescription = procedureDescription.getText();
+                }
+
+                if (dateDue.getValue() == null) {
+                    newDate = selectedProcedure.getDate().toString();
+                } else {
+                    if (dateDue.getValue().isBefore(currentUser.getDateOfBirth())) {
+                        Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
+                            "Due date occurs before the user's date of birth.");
+                        alert.showAndWait();
+                        dateDue.getEditor().clear();
+                        if (pending) {
+                            updateProcedurePopUp(selectedProcedure, true);
+                        } else {
+                            updateProcedurePopUp(selectedProcedure, false);
+                        }
+                    } else {
+                        newDate = dateDue.getValue().toString();
+                    }
+                }
+
+                return new ArrayList<String>(Arrays.asList(newSummary, newDescription, newDate));
+            }
             return null;
         });
 
@@ -321,8 +331,8 @@ public class MedicalHistoryProceduresController extends PageController implement
             selectedProcedure.setDescription(newProcedureDetails.get(1));
             LocalDate newDateFormat = LocalDate.parse(newProcedureDetails.get(2));
             selectedProcedure.setDate(newDateFormat);
-            if(pending) {
-                if(newDateFormat.isAfter(LocalDate.now())) {
+            if (pending) {
+                if (newDateFormat.isAfter(LocalDate.now())) {
                     pendingProcedureItems.remove(selectedProcedure);
                     pendingProcedureItems.add(selectedProcedure);
                 } else {
@@ -331,7 +341,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                 }
 
             } else {
-                if(newDateFormat.isAfter(LocalDate.now())) {
+                if (newDateFormat.isAfter(LocalDate.now())) {
                     previousProcedureItems.remove(selectedProcedure);
                     pendingProcedureItems.add(selectedProcedure);
                 } else {
@@ -563,8 +573,8 @@ public class MedicalHistoryProceduresController extends PageController implement
      */
     private void updatePendingProcedures() {
         //Check if pending procedure due date is now past the current date
-        for(Procedure procedure: currentUser.getPendingProcedures()) {
-            if(procedure.getDate().isBefore(LocalDate.now())) {
+        for (Procedure procedure : currentUser.getPendingProcedures()) {
+            if (procedure.getDate().isBefore(LocalDate.now())) {
                 currentUser.getPendingProcedures().remove(procedure);
                 currentUser.getPreviousProcedures().add(procedure);
             }
@@ -573,6 +583,7 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     /**
      * Function to set the current user of this class to that of the instance of the application.
+     *
      * @param currentUser The donor to set the current donor.
      */
     public void setCurrentUser(User currentUser) {
@@ -580,8 +591,8 @@ public class MedicalHistoryProceduresController extends PageController implement
         donorNameLabel.setText("User: " + currentUser.getName());
 
         //Check if pending procedure due date is now past the current date
-        for(Procedure procedure: currentUser.getPendingProcedures()) {
-            if(procedure.getDate().isBefore(LocalDate.now())) {
+        for (Procedure procedure : currentUser.getPendingProcedures()) {
+            if (procedure.getDate().isBefore(LocalDate.now())) {
                 currentUser.getPendingProcedures().remove(procedure);
                 currentUser.getPreviousProcedures().add(procedure);
             }
@@ -594,7 +605,6 @@ public class MedicalHistoryProceduresController extends PageController implement
         previousProcedureItems = FXCollections.observableArrayList();
         previousProcedureItems.addAll(currentUser.getPreviousProcedures());
         previousProcedureTableView.setItems(previousProcedureItems);
-
 
         //unsavedDonorDiseases = currentDonor.getDiseases();
         //pastDiseasesCopy = currentDonor.getCuredDiseases();

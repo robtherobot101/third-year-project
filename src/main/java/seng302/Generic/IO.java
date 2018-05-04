@@ -1,15 +1,22 @@
 package seng302.Generic;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
-import seng302.User.Clinician;
-import seng302.User.User;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -19,22 +26,30 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
+import seng302.User.Clinician;
+import seng302.User.User;
 
 public class IO {
+
     private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
     private static String jarPath, userPath, clinicianPath, adminPath;
     public static PrintStream streamOut;
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting()
-            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-            .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+        .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+        .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
 
     /**
      * Class to serialize LocalDates without requiring reflective access
      */
     private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+
         public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(User.dateFormat.format(date));
         }
@@ -44,6 +59,7 @@ public class IO {
      * Class to serialize LocalDateTimes without requiring reflective access
      */
     private static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
+
         public JsonElement serialize(LocalDateTime date, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(User.dateTimeFormat.format(date));
         }
@@ -53,6 +69,7 @@ public class IO {
      * Class to deserialize LocalDates without requiring reflective access
      */
     private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+
         public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
             return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
         }
@@ -62,6 +79,7 @@ public class IO {
      * Class to deserialize LocalDateTimes without requiring reflective access
      */
     private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+
         public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
             return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
         }
@@ -69,12 +87,16 @@ public class IO {
 
     /**
      * get path to the user json file
+     *
      * @return path to the user json file
      */
-    public static String getUserPath() { return userPath; }
+    public static String getUserPath() {
+        return userPath;
+    }
 
     /**
      * get the path to the jar file
+     *
      * @return path to the jar file
      */
     public static String getJarPath() {
@@ -83,6 +105,7 @@ public class IO {
 
     /**
      * get path to the clinician json file
+     *
      * @return path to the clinician json file
      */
     public static String getClinicianPath() {
@@ -91,6 +114,7 @@ public class IO {
 
     /**
      * get path to the admin json file
+     *
      * @return path to the admin json file
      */
     public static String getAdminPath() {
@@ -99,6 +123,7 @@ public class IO {
 
     /**
      * set the path to the jar file
+     *
      * @param jarPath path to the jar file
      */
     public static void setJarPath(String jarPath) {
@@ -109,7 +134,7 @@ public class IO {
      * Get the unique id number for the next user or the last id number issued.
      *
      * @param increment Whether to increment the unique id counter before returning the unique id value.
-     * @param type      Whether to increment and return clinician, user or admin.
+     * @param type Whether to increment and return clinician, user or admin.
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
@@ -181,7 +206,7 @@ public class IO {
     /**
      * Save the user or clinician list to a json file.
      *
-     * @param path  The path of the file to save to
+     * @param path The path of the file to save to
      * @param loginType the type of user being saved
      * @return Whether the save completed successfully
      */
@@ -192,7 +217,7 @@ public class IO {
         try {
             outputFile = new File(path);
             outputStream = new PrintStream(new FileOutputStream(outputFile));
-            switch(loginType){
+            switch (loginType) {
                 case USER:
                     gson.toJson(Main.users, outputStream);
                     break;
@@ -217,7 +242,7 @@ public class IO {
     /**
      * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
      *
-     * @param path  path of the file.
+     * @param path path of the file.
      * @param loginType the account type of the users
      * @return Whether the command executed successfully
      */
@@ -287,8 +312,8 @@ public class IO {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter fileExtensions =
-                new FileChooser.ExtensionFilter(
-                        "JSON Files", "*.json");
+            new FileChooser.ExtensionFilter(
+                "JSON Files", "*.json");
 
         fileChooser.getExtensionFilters().add(fileExtensions);
         try {
@@ -301,6 +326,7 @@ public class IO {
 
     /**
      * method to set the paths for the user, clinician and admin files
+     *
      * @throws URISyntaxException Not used
      */
     public static void setPaths() throws URISyntaxException {

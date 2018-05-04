@@ -1,28 +1,32 @@
 package seng302.GUI.Controllers;
 
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import seng302.Generic.IO;
-import seng302.User.Attribute.LoginType;
-import seng302.User.User;
-import seng302.Generic.Main;
-import seng302.Generic.History;
+import static seng302.Generic.IO.streamOut;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Main;
+import seng302.User.Attribute.LoginType;
+import seng302.User.User;
 
 /**
  * Class to handle all the logic for the Account Settings window.
  */
 public class AccountSettingsController implements Initializable {
+
     @FXML
     private TextField usernameField, emailField, passwordField;
     @FXML
@@ -54,7 +58,7 @@ public class AccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        for (User user: Main.users) {
+        for (User user : Main.users) {
             if (user != currentUser) {
                 if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
                     errorLabel.setText("That username is already taken.");
@@ -70,7 +74,7 @@ public class AccountSettingsController implements Initializable {
         errorLabel.setVisible(false);
         Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.get() == ButtonType.OK) {
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
@@ -102,7 +106,7 @@ public class AccountSettingsController implements Initializable {
     }
 
     private void updateUpdateButtonState() {
-        updateButton.setDisable((usernameField.getText().isEmpty() && emailField.getText().isEmpty())|| passwordField.getText().isEmpty());
+        updateButton.setDisable((usernameField.getText().isEmpty() && emailField.getText().isEmpty()) || passwordField.getText().isEmpty());
     }
 
     public void setEnterEvent() {

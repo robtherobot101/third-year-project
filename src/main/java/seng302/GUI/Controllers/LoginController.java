@@ -1,5 +1,7 @@
 package seng302.GUI.Controllers;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -8,25 +10,20 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
-import seng302.User.Clinician;
-import seng302.User.User;
-import seng302.Generic.Main;
 import seng302.GUI.TFScene;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Main;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * A controller class for the log in screen.
  */
 public class LoginController implements Initializable {
+
     @FXML
     private TextField identificationInput;
     @FXML
@@ -47,7 +44,7 @@ public class LoginController implements Initializable {
 
         // Check for a user match
         User currentUser = null;
-        for (User user: Main.users) {
+        for (User user : Main.users) {
             if (user.getUsername() != null && user.getUsername().equals(identificationInput.getText()) ||
                 user.getEmail() != null && user.getEmail().equals(identificationInput.getText())) {
                 identificationMatched = true;
@@ -62,11 +59,11 @@ public class LoginController implements Initializable {
 
         // Check for a clinician match
         Clinician currentClinician = null;
-        for (Clinician clinician: Main.clinicians) {
+        for (Clinician clinician : Main.clinicians) {
             System.out.println(clinician);
             if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
-                if (clinician.getPassword().equals(passwordInput.getText())){
+                if (clinician.getPassword().equals(passwordInput.getText())) {
                     System.out.println("LoginController: Logging in as clinician...");
                     currentClinician = clinician;
                     typeMatched = LoginType.CLINICIAN;
@@ -78,10 +75,10 @@ public class LoginController implements Initializable {
 
         // Check for an admin match
         Admin currentAdmin = null;
-        for (Admin admin: Main.admins) {
+        for (Admin admin : Main.admins) {
             if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
-                if (admin.getPassword().equals(passwordInput.getText())){
+                if (admin.getPassword().equals(passwordInput.getText())) {
                     System.out.println("LoginController: Logging in as admin...");
                     currentAdmin = admin;
                     typeMatched = LoginType.ADMIN;
@@ -149,6 +146,7 @@ public class LoginController implements Initializable {
 
     /**
      * Add listeners to enable/disable the login button based on information supplied
+     *
      * @param location Not used
      * @param resources Not used
      */
@@ -157,8 +155,8 @@ public class LoginController implements Initializable {
         Main.setLoginController(this);
         requestFocus();
         identificationInput.textProperty().addListener((observable, oldValue, newValue) ->
-                loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
+            loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
         passwordInput.textProperty().addListener((observable, oldValue, newValue) ->
-                loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
+            loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
     }
 }
