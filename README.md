@@ -1,4 +1,5 @@
 Default clinician login: username: default, password:default
+
 Default administrator login: admin, password:admin
 
 How to run the program:
