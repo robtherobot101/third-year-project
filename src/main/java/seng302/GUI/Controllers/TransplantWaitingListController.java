@@ -1,16 +1,5 @@
 package seng302.GUI.Controllers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,20 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -41,14 +17,16 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import seng302.GUI.TFScene;
-import seng302.Generic.Disease;
-import seng302.Generic.History;
-import seng302.Generic.Main;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.Generic.TransplantWaitingListItem;
-import seng302.Generic.WaitingListItem;
+import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
@@ -115,7 +93,7 @@ public class TransplantWaitingListController implements Initializable {
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch the organ to specifically search for given by a user.
      */
-    public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+    private void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         transplantList.clear();
         for (User user : Main.users) {
             if (!user.getWaitingListItems().isEmpty()) {
@@ -170,7 +148,7 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * method to show dialog for a clinician to choose from a receivers listed diseases, if any, to cure.
      */
-    public void showDiseaseDeregisterDialog() {
+    private void showDiseaseDeregisterDialog() {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()) {
             selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
@@ -231,7 +209,6 @@ public class TransplantWaitingListController implements Initializable {
                     selectedUser.setCuredDiseases(curedDiseases);
                     currentDiseases.remove(selected);
                     selectedUser.setCurrentDiseases(currentDiseases);
-                    selectedWaitingListItem.getUserId();
                     for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                         if (i.getWaitingListItemId() == selectedWaitingListItem.getWaitingListItemId()) {
                             i.deregisterOrgan(2);
@@ -255,7 +232,7 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * method to show dialog to confirm the curing of a disease and then to perform the operations.
      */
-    public void confirmDiseaseCuring() {
+    private void confirmDiseaseCuring() {
         Alert alert;
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()) {
@@ -307,7 +284,7 @@ public class TransplantWaitingListController implements Initializable {
      *
      * @param reason the reason code given by the clinician
      */
-    public void processDeregister(String reason) {
+    private void processDeregister(String reason) {
         System.out.println("\n" + reason);
         if (Objects.equals(reason, "1: Error Registering")) {
             errorDeregister();
@@ -332,7 +309,7 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * Method to deregister an organ when a successful transplant is complete
      */
-    public void transplantDeregister() {
+    private void transplantDeregister() {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()) {
             selectedWaitingListItem = (ReceiverWaitingListItem) Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
@@ -351,7 +328,7 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * Removes an organ from the transplant waiting list and writes it as an error to the history log.
      */
-    public void errorDeregister() {
+    private void errorDeregister() {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()) {
             selectedWaitingListItem = (ReceiverWaitingListItem) Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
@@ -373,7 +350,7 @@ public class TransplantWaitingListController implements Initializable {
     /**
      * method to show dialog the prompts the user asking for a select receivers date of death
      */
-    public void showDeathDateDialog() {
+    private void showDeathDateDialog() {
         Dialog<ButtonType> dialog = new Dialog<>();
         Main.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("Date of Death");
@@ -439,7 +416,7 @@ public class TransplantWaitingListController implements Initializable {
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
-    public void deathDeregister(LocalDate deathDateInput) {
+    private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (Main.getWaitingListController().getDeregisterPressed()) {
             selectedWaitingListItem = Main.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();

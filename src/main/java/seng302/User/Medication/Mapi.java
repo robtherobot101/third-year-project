@@ -30,10 +30,10 @@ public class Mapi {
             temp = result.split("\",\"");
             System.out.println(Arrays.toString(temp));
 
-            return new ArrayList<String>(Arrays.asList(temp));
+            return new ArrayList<>(Arrays.asList(temp));
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("aioobe");
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
@@ -53,7 +53,7 @@ public class Mapi {
             result = "";
         }
         String[] temp = result.split("\",\"");
-        return new ArrayList<String>(Arrays.asList(temp));
+        return new ArrayList<>(Arrays.asList(temp));
     }
 
     /**
@@ -68,7 +68,7 @@ public class Mapi {
                 .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")
                 .header("Accept", "application/json")
                 .asJson();
-            int n = 0;
+            int n;
             n = response.getRawBody().available();
             byte[] bytes = new byte[n];
             response.getRawBody().read(bytes, 0, n);
@@ -77,14 +77,4 @@ public class Mapi {
             return "";
         }
     }
-
-    /**
-     * Test function to test if the api works
-     */
-    public void main() {
-        //System.out.println(autocomplete("res").toString());
-        //System.out.println(activeIngredients("reserpine"));
-    }
-
-
 }

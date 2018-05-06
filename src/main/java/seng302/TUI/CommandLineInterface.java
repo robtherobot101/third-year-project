@@ -1,12 +1,5 @@
 package seng302.TUI;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -22,6 +15,14 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -216,7 +217,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    public boolean deleteUser(String[] nextCommand) {
+    private boolean deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
                 long id = Long.parseLong(nextCommand[1]);

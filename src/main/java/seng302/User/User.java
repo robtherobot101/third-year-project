@@ -1,5 +1,12 @@
 package seng302.User;
 
+import seng302.Generic.Disease;
+import seng302.Generic.IO;
+import seng302.Generic.Procedure;
+import seng302.Generic.ReceiverWaitingListItem;
+import seng302.User.Attribute.*;
+import seng302.User.Medication.Medication;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -8,17 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import seng302.Generic.Disease;
-import seng302.Generic.IO;
-import seng302.Generic.Procedure;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.SmokerStatus;
-import seng302.User.Medication.Medication;
 
 /**
  * This class contains information about organ users.
@@ -407,8 +403,7 @@ public class User {
 
     public double getAgeDouble() {
         long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
-        double years = days / 365.00;
-        return years;
+        return days / 365.00;
 
     }
 

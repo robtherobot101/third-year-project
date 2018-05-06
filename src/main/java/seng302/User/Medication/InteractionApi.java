@@ -44,7 +44,7 @@ public class InteractionApi {
     private String apiRequest(String url) {
         try {
             HttpResponse<String> response = Unirest.get(url).asString();
-            int n = 0;
+            int n;
             int statusCode = response.getStatus();
             String result = "";
             if (statusCode == 200 || statusCode == 301) {

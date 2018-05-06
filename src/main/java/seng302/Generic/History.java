@@ -1,14 +1,9 @@
 package seng302.Generic;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.time.LocalDateTime;
 import seng302.User.User;
+
+import java.io.*;
+import java.time.LocalDateTime;
 
 public class History {
 
@@ -253,7 +248,7 @@ public class History {
      *
      * @return A string of all the action history for the application.
      */
-    public static String readFile() {
+    private static String readFile() {
 
         String line;
         String actionHistoryString = "";
