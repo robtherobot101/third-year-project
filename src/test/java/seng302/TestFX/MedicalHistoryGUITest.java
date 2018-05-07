@@ -1,21 +1,19 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.base.NodeMatchers.isVisible;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
+import seng302.Generic.DataManager;
 import seng302.Generic.Disease;
-import seng302.Generic.Main;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.*;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 public class MedicalHistoryGUITest extends TestFXTest {
 
@@ -43,7 +41,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
     private void enterMedicalHistoryView() {
         // Assumed that calling method is currently on login screen
 
-        Main.users.clear();
+        DataManager.users.clear();
 //        System.out.println("MedicalHistoryGUITest: Test user not found -> adding test user");
 //        clickOn("#createAccountButton");
 //        clickOn("#usernameInput").write("buzz");

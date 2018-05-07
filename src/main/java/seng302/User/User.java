@@ -1,7 +1,7 @@
 package seng302.User;
 
+import seng302.Generic.DataManager;
 import seng302.Generic.Disease;
-import seng302.Generic.IO;
 import seng302.Generic.Procedure;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.*;
@@ -24,7 +24,7 @@ public class User {
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     public static final String tableHeader = "User ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
-        "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
+            "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
     private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath;
     private LocalDateTime creationTime;
@@ -61,7 +61,7 @@ public class User {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = IO.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -72,7 +72,7 @@ public class User {
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
-        String currentAddress) throws DateTimeException, IllegalArgumentException {
+                String currentAddress) throws DateTimeException, IllegalArgumentException {
         this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
@@ -85,7 +85,7 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = IO.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -118,7 +118,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = IO.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -129,7 +129,7 @@ public class User {
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
-        double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
         this.name[0] = firstName;
@@ -151,7 +151,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = IO.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, LoginType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -258,22 +258,22 @@ public class User {
 
     public boolean fieldsEqual(User user) {
         return (Arrays.equals(name, user.getNameArray()) &&
-            Arrays.equals(preferredName, user.getPreferredNameArray()) &&
-            dateOfBirth == user.getDateOfBirth() &&
-            dateOfDeath == user.getDateOfDeath() &&
-            gender == user.getGender() &&
-            genderIdentity == user.genderIdentity &&
-            bloodType == user.getBloodType() &&
-            height == user.getHeight() &&
-            weight == user.getWeight() &&
-            stringEqual(region, user.getRegion()) &&
-            stringEqual(currentAddress, user.getCurrentAddress()) &&
-            smokerStatus == user.getSmokerStatus() &&
-            stringEqual(bloodPressure, user.getBloodPressure()) &&
-            alcoholConsumption == user.getAlcoholConsumption() &&
-            organs.equals(user.getOrgans()) &&
-            currentMedications.equals(user.getCurrentMedications()) &&
-            historicMedications.equals(user.getHistoricMedications())
+                Arrays.equals(preferredName, user.getPreferredNameArray()) &&
+                dateOfBirth == user.getDateOfBirth() &&
+                dateOfDeath == user.getDateOfDeath() &&
+                gender == user.getGender() &&
+                genderIdentity == user.genderIdentity &&
+                bloodType == user.getBloodType() &&
+                height == user.getHeight() &&
+                weight == user.getWeight() &&
+                stringEqual(region, user.getRegion()) &&
+                stringEqual(currentAddress, user.getCurrentAddress()) &&
+                smokerStatus == user.getSmokerStatus() &&
+                stringEqual(bloodPressure, user.getBloodPressure()) &&
+                alcoholConsumption == user.getAlcoholConsumption() &&
+                organs.equals(user.getOrgans()) &&
+                currentMedications.equals(user.getCurrentMedications()) &&
+                historicMedications.equals(user.getHistoricMedications())
         );
     }
 
@@ -565,13 +565,14 @@ public class User {
 
         if (table) {
             return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-15s | %-30s | %-20s | %s", id,
-                dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString,
-                weightString, bloodType, region, currentAddress, dateModifiedString, organs);
+                    dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString,
+                    weightString, bloodType, region, currentAddress, dateModifiedString, organs);
         } else {
             return String.format("User (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
-                    "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
-                    (creationTime), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString, weightString, bloodType,
-                region, currentAddress, dateModifiedString, organs);
+                            "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
+                            (creationTime), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString,
+                    weightString, bloodType,
+                    region, currentAddress, dateModifiedString, organs);
         }
     }
 

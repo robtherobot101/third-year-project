@@ -1,12 +1,5 @@
 package seng302.TestFX;
 
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
-
-import java.time.LocalDate;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -15,8 +8,17 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.Main;
+import seng302.Generic.DataManager;
+import seng302.Generic.WindowManager;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 abstract class TestFXTest extends ApplicationTest {
 
@@ -24,14 +26,14 @@ abstract class TestFXTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) {
-        Main mainGUI = new Main();
+        WindowManager mainGUI = new WindowManager();
         mainGUI.start(stage);
-        Main.users.clear();
+        DataManager.users.clear();
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        Main.users.clear();
+        DataManager.users.clear();
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -58,7 +60,7 @@ abstract class TestFXTest extends ApplicationTest {
             "bflame",
             "flameman@hotmail.com",
             "password123");
-        Main.users.add(testUser);
+        DataManager.users.add(testUser);
         return testUser;
     }
 

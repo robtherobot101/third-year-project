@@ -1,7 +1,5 @@
 package seng302.GUI.Controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,6 +9,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.User.Clinician;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * A controller class for the create admin screen.
@@ -80,13 +81,13 @@ public class CreateClinicianController implements Initializable {
      */
     private void checkRequiredFields() {
         createAccountButton.setDisable(usernameInput.getText().isEmpty() || firstNameInput.getText().isEmpty() ||
-            passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty());
+                passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty());
     }
 
     /**
      * Add listeners to enable/disable the create account button based on information supplied
      *
-     * @param location Not used
+     * @param location  Not used
      * @param resources Not used
      */
     @Override

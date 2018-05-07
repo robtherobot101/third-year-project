@@ -1,36 +1,27 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
-
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import seng302.Generic.History;
 import seng302.Generic.IO;
-import seng302.Generic.Main;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
+
+import java.net.URL;
+import java.util.*;
+
+import static seng302.Generic.IO.streamOut;
 
 
 /**
@@ -43,7 +34,8 @@ public class MedicationsController extends PageController implements Initializab
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel, historyTitleLabel, historyContentLabel;
+    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel,
+            interactionsContentLabel, historyTitleLabel, historyContentLabel;
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
@@ -94,7 +86,7 @@ public class MedicationsController extends PageController implements Initializab
      *
      */
     private void saveToUndoStack() {
-        Main.addCurrentToMedicationUndoStack();
+        WindowManager.addCurrentToMedicationUndoStack();
         currentUser.getCurrentMedications().clear();
         currentUser.getCurrentMedications().addAll(currentItems);
         currentUser.getHistoricMedications().clear();
@@ -129,12 +121,13 @@ public class MedicationsController extends PageController implements Initializab
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
         if (medicationChoice.equals("")) {
-            Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
         } else {
             // Check for duplicates
             if (historicItems.contains(new Medication(medicationChoice)) ||
-                currentItems.contains(new Medication(medicationChoice))) {
-                Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to this person.").show();
+                    currentItems.contains(new Medication(medicationChoice))) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to " +
+                        "this person.").show();
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
@@ -155,7 +148,8 @@ public class MedicationsController extends PageController implements Initializab
                             statusIndicator.setStatus("Added " + medicationChoice, false);
                             titleBar.saved(false);
                         } else {
-                            Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
+                            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s" +
+                                    " does not exist.", medicationChoice)).show();
                         }
                     });
                 }).start();
@@ -171,8 +165,8 @@ public class MedicationsController extends PageController implements Initializab
      * Removes the medication from the user's personal list and then updates the respective listview.
      */
     public void deleteSelectedMedication() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
-            "Are you sure would like to delete the selected medication? ", "By doing so, the medication will be erased from the database.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to delete the selected medication? ", "By doing so, the medication will be erased from the database.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
@@ -214,7 +208,7 @@ public class MedicationsController extends PageController implements Initializab
     /**
      * Move a selected Medication from its corresponding Medication list to another Medication list.
      *
-     * @param to The Medication list to move the medication from
+     * @param to   The Medication list to move the medication from
      * @param view The ListView to get the selected medication from
      * @return The medication which was moved
      */
@@ -233,8 +227,8 @@ public class MedicationsController extends PageController implements Initializab
      * Saves the current state of the user's medications lists for both their historic and current medications.
      */
     public void save() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ",
-            "By doing so, the user will be updated with the following medication details.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ",
+                "By doing so, the user will be updated with the following medication details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentUser.getHistoricMedications().clear();
@@ -350,7 +344,8 @@ public class MedicationsController extends PageController implements Initializab
     /**
      * Ensure that there is only one selection.
      *
-     * @param currentUpdated Whether the current medications list view was just updated. If this field is false then the historic medications field has just been edited instead.
+     * @param currentUpdated Whether the current medications list view was just updated. If this field is false then the historic medications field
+     *                       has just been edited instead.
      */
     private void checkSelectionNumber(boolean currentUpdated) {
         if (!(historyListView.getSelectionModel().getSelectedItem() == null) && !(currentListView.getSelectionModel().getSelectedItem() == null)) {
@@ -363,10 +358,12 @@ public class MedicationsController extends PageController implements Initializab
     }
 
     /**
-     * Sets controls enabled or disabled based on the current selections made. Sets active ingredients to show based on the currently selected medication.
+     * Sets controls enabled or disabled based on the current selections made. Sets active ingredients to show based on the currently selected
+     * medication.
      */
     private void checkSelections() {
-        boolean historySelectionIsNull = historyListView.getSelectionModel().getSelectedItem() == null, currentSelectionIsNull = currentListView.getSelectionModel().getSelectedItem() == null;
+        boolean historySelectionIsNull = historyListView.getSelectionModel().getSelectedItem() == null, currentSelectionIsNull = currentListView
+                .getSelectionModel().getSelectedItem() == null;
         moveToCurrentButton.setDisable(historySelectionIsNull);
         moveToHistoryButton.setDisable(currentSelectionIsNull);
         deleteMedicationButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
@@ -400,7 +397,7 @@ public class MedicationsController extends PageController implements Initializab
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setMedicationsController(this);
+        WindowManager.setMedicationsController(this);
 
         // Attach the autocompletion box and set its endpoint to the MAPI API
         // ALso only enable the add button if a medication has been autocompleted

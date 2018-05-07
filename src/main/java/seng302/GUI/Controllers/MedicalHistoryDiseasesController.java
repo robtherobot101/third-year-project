@@ -1,34 +1,13 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
-
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -37,9 +16,16 @@ import javafx.util.Pair;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
-import seng302.Generic.Main;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.LoginType;
 import seng302.User.User;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 public class MedicalHistoryDiseasesController extends PageController implements Initializable {
 
@@ -71,7 +57,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setMedicalHistoryDiseasesController(this);
+        WindowManager.setMedicalHistoryDiseasesController(this);
         setupListeners();
         initialiseCurrentTableViewSorting();
         initialiseCuredTableViewSorting();
@@ -93,37 +79,37 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         System.out.println("MedicalHistoryDiseasesController: Adding new disease");
         // Check for empty disease name
         if (newDiseaseTextField.getText().isEmpty()) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "Invalid disease name provided.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "Invalid disease name provided.");
             alert.showAndWait();
             newDiseaseTextField.clear();
             // Check for an empty date
         } else if (dateOfDiagnosisInput.getValue() == null) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "No date provided.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "No date provided.");
             alert.showAndWait();
             // Check if the date of diagnosis was before the current user's birthday
         } else if (dateOfDiagnosisInput.getValue().isBefore(currentUser.getDateOfBirth())) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "Date of diagnosis before date of birth.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "Date of diagnosis before date of birth.");
             alert.showAndWait();
             dateOfDiagnosisInput.setValue(null);
             // Check for a date in the future
         } else if (dateOfDiagnosisInput.getValue().isAfter(LocalDate.now())) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "Diagnosis date occurs in the future.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "Diagnosis date occurs in the future.");
             alert.showAndWait();
             dateOfDiagnosisInput.setValue(null);
         } else if (isCuredCheckBox.isSelected() && chronicCheckBox.isSelected()) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "Disease cannot be chronic and cured.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "Disease cannot be chronic and cured.");
             alert.showAndWait();
             isCuredCheckBox.setSelected(false);
             chronicCheckBox.setSelected(false);
         } else {
             // Add the new disease
             Disease diseaseToAdd = new Disease(newDiseaseTextField.getText(), dateOfDiagnosisInput.getValue(),
-                chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
+                    chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
             newDiseaseTextField.clear();
             dateOfDiagnosisInput.setValue(null);
             isCuredCheckBox.setSelected(false);
@@ -147,8 +133,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private void addCuredDisease(Disease diseaseToAdd) {
         if (curedDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "Disease already exists.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "Disease already exists.");
             alert.showAndWait();
         } else {
             curedDiseaseItems.add(diseaseToAdd);
@@ -164,8 +150,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private void addCurrentDisease(Disease diseaseToAdd) {
         if (currentDiseaseItems.contains(diseaseToAdd)) {
             // Disease already exists in cured items
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                "Disease already exists.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                    "Disease already exists.");
             alert.showAndWait();
         } else {
             currentDiseaseItems.add(diseaseToAdd);
@@ -218,8 +204,8 @@ public class MedicalHistoryDiseasesController extends PageController implements 
      */
     public void save() {
 
-        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
-            "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following disease details.");
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following disease details.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             currentUser.getCurrentDiseases().clear();
@@ -244,7 +230,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
      * Creates a popup dialog to modify the name and date of the selectedDisease
      *
      * @param selectedDisease disease to update information of
-     * @param current if the selected disease is current or cured
+     * @param current         if the selected disease is current or cured
      */
     private void updateDiseasePopUp(Disease selectedDisease, boolean current) {
 
@@ -252,7 +238,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
         dialog.setTitle("Update Disease");
         dialog.setHeaderText("Update Disease Details");
-        Main.setIconAndStyle(dialog.getDialogPane());
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -282,9 +268,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         updateButton.setDisable(true);
 
         // Do some validation (using the Java 8 lambda syntax).
-        diseaseName.textProperty().addListener((observable, oldValue, newValue) -> {
-            updateButton.setDisable(newValue.trim().isEmpty());
-        });
+        diseaseName.textProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.trim().isEmpty()));
 
         dateOfDiagnosis.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
@@ -295,14 +279,14 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         dialog.getDialogPane().setContent(grid);
 
         // Request focus on the username field by default.
-        Platform.runLater(() -> diseaseName.requestFocus());
+        Platform.runLater(diseaseName::requestFocus);
 
         // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
                 if (dateOfDiagnosis.getValue().isAfter(LocalDate.now())) {
-                    Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
-                        "Diagnosis date occurs in the future.");
+                    Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
+                            "Diagnosis date occurs in the future.");
                     alert.showAndWait();
                     dateOfDiagnosis.setValue(null);
                     if (current) {
@@ -339,7 +323,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     }
 
     /**
-     * Called by Main to update the displayed user procedures to what is currently stored in the user object.
+     * Called by WindowManager to update the displayed user procedures to what is currently stored in the user object.
      */
     public void updateDiseases() {
         currentDiseaseItems.clear();
@@ -356,7 +340,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
      *
      */
     private void saveToUndoStack() {
-        Main.addCurrentToDiseaseUndoStack();
+        WindowManager.addCurrentToDiseaseUndoStack();
         currentUser.getCurrentDiseases().clear();
         currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
         currentUser.getCuredDiseases().clear();
@@ -557,60 +541,51 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         // Update selected disease on the current disease table
         MenuItem updateCurrentDiseaseMenuItem = new MenuItem();
-        updateCurrentDiseaseMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-                updateDiseasePopUp(selectedDisease, true);
-                statusIndicator.setStatus("Edited " + selectedDisease, false);
-                titleBar.saved(false);
-            }
+        updateCurrentDiseaseMenuItem.setOnAction(event -> {
+            Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
+            updateDiseasePopUp(selectedDisease, true);
+            statusIndicator.setStatus("Edited " + selectedDisease, false);
+            titleBar.saved(false);
         });
         currentDiseaseListContextMenu.getItems().add(updateCurrentDiseaseMenuItem);
 
         // Toggle selected disease from current diseases as chronic
         MenuItem toggleCurrentChronicMenuItem = new MenuItem();
-        toggleCurrentChronicMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-                if (selectedDisease.isChronic()) {
-                    selectedDisease.setChronic(false);
-                    statusIndicator.setStatus("Marked " + selectedDisease + " as not chronic", false);
-                } else {
-                    selectedDisease.setChronic(true);
-                    statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
-                }
-                titleBar.saved(false);
-                selectedDisease.setDiagnosisDate(LocalDate.now());
-
-                // To refresh the observableList to make chronic toggle visible
-                currentDiseaseItems.remove(selectedDisease);
-                currentDiseaseItems.add(selectedDisease);
-                currentDiseaseTableView.refresh();
-                sortCurrentDiseases(false);
+        toggleCurrentChronicMenuItem.setOnAction(event -> {
+            Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
+            if (selectedDisease.isChronic()) {
+                selectedDisease.setChronic(false);
+                statusIndicator.setStatus("Marked " + selectedDisease + " as not chronic", false);
+            } else {
+                selectedDisease.setChronic(true);
+                statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
             }
+            titleBar.saved(false);
+            selectedDisease.setDiagnosisDate(LocalDate.now());
+
+            // To refresh the observableList to make chronic toggle visible
+            currentDiseaseItems.remove(selectedDisease);
+            currentDiseaseItems.add(selectedDisease);
+            currentDiseaseTableView.refresh();
+            sortCurrentDiseases(false);
         });
         currentDiseaseListContextMenu.getItems().add(toggleCurrentChronicMenuItem);
 
         // Marks disease as cured from the current disease table and moves it to the cured disease table
         MenuItem setCuredMenuItem = new MenuItem();
-        setCuredMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-                selectedDisease.setCured(true);
-                selectedDisease.setChronic(false);
-                selectedDisease.setDiagnosisDate(LocalDate.now());
+        setCuredMenuItem.setOnAction(event -> {
+            Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
+            selectedDisease.setCured(true);
+            selectedDisease.setChronic(false);
+            selectedDisease.setDiagnosisDate(LocalDate.now());
 
-                currentDiseaseItems.remove(selectedDisease);
-                curedDiseaseItems.add(selectedDisease);
-                sortCuredDiseases(false);
+            currentDiseaseItems.remove(selectedDisease);
+            curedDiseaseItems.add(selectedDisease);
+            sortCuredDiseases(false);
 
-                statusIndicator.setStatus("Marked " + selectedDisease + " as cured", false);
-                titleBar.saved(false);
+            statusIndicator.setStatus("Marked " + selectedDisease + " as cured", false);
+            titleBar.saved(false);
 
-            }
         });
         currentDiseaseListContextMenu.getItems().add(setCuredMenuItem);
 
@@ -618,126 +593,109 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         // Update selected disease from the cured disease table
         MenuItem updateCuredDiseaseMenuItem = new MenuItem();
-        updateCuredDiseaseMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-                updateDiseasePopUp(selectedDisease, false);
-                statusIndicator.setStatus("Edited " + selectedDisease, false);
-                titleBar.saved(false);
-            }
+        updateCuredDiseaseMenuItem.setOnAction(event -> {
+            Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
+            updateDiseasePopUp(selectedDisease, false);
+            statusIndicator.setStatus("Edited " + selectedDisease, false);
+            titleBar.saved(false);
         });
         curedDiseaseContextMenu.getItems().add(updateCuredDiseaseMenuItem);
 
         // Set the selected disease from the cured disease table as chronic (move to current disease table also)
         MenuItem setCuredChronicDiseaseMenuItem = new MenuItem();
-        setCuredChronicDiseaseMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-                selectedDisease.setChronic(true);
-                selectedDisease.setCured(false);
-                selectedDisease.setDiagnosisDate(LocalDate.now());
+        setCuredChronicDiseaseMenuItem.setOnAction(event -> {
+            Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
+            selectedDisease.setChronic(true);
+            selectedDisease.setCured(false);
+            selectedDisease.setDiagnosisDate(LocalDate.now());
 
-                curedDiseaseItems.remove(selectedDisease);
-                currentDiseaseItems.add(selectedDisease);
-                sortCurrentDiseases(false);
+            curedDiseaseItems.remove(selectedDisease);
+            currentDiseaseItems.add(selectedDisease);
+            sortCurrentDiseases(false);
 
-                statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
-                titleBar.saved(false);
-            }
+            statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
+            titleBar.saved(false);
         });
         curedDiseaseContextMenu.getItems().add(setCuredChronicDiseaseMenuItem);
 
         // Set the selected disease from the cured disease table as uncured (move to current disease table also)
         MenuItem setUncuredMenuItem = new MenuItem();
-        setUncuredMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-                selectedDisease.setCured(false);
-                selectedDisease.setDiagnosisDate(LocalDate.now());
+        setUncuredMenuItem.setOnAction(event -> {
+            Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
+            selectedDisease.setCured(false);
+            selectedDisease.setDiagnosisDate(LocalDate.now());
 
-                curedDiseaseItems.remove(selectedDisease);
-                currentDiseaseItems.add(selectedDisease);
-                sortCurrentDiseases(false);
+            curedDiseaseItems.remove(selectedDisease);
+            currentDiseaseItems.add(selectedDisease);
+            sortCurrentDiseases(false);
 
-                statusIndicator.setStatus("Marked " + selectedDisease + " as uncured", false);
-                titleBar.saved(false);
-            }
+            statusIndicator.setStatus("Marked " + selectedDisease + " as uncured", false);
+            titleBar.saved(false);
         });
         curedDiseaseContextMenu.getItems().add(setUncuredMenuItem);
 
         /*Handles the right click action of showing a ContextMenu on the currentDiseaseListView and sets the MenuItem
         text depending on the disease chosen*/
-        currentDiseaseTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
-                    if (selectedDisease.isChronic()) {
-                        toggleCurrentChronicMenuItem.setText(String.format("Mark %s as not chronic",
+        currentDiseaseTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                Disease selectedDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
+                if (selectedDisease.isChronic()) {
+                    toggleCurrentChronicMenuItem.setText(String.format("Mark %s as not chronic",
                             selectedDisease.getName()));
-                    } else {
-                        toggleCurrentChronicMenuItem.setText(String.format("Mark %s as chronic",
+                } else {
+                    toggleCurrentChronicMenuItem.setText(String.format("Mark %s as chronic",
                             selectedDisease.getName()));
-                    }
-                    setCuredMenuItem.setText(String.format("Mark %s as cured",
-                        selectedDisease.getName()));
-                    updateCurrentDiseaseMenuItem.setText("Update disease");
-                    currentDiseaseListContextMenu.show(currentDiseaseTableView, event.getScreenX(), event.getScreenY());
                 }
+                setCuredMenuItem.setText(String.format("Mark %s as cured",
+                        selectedDisease.getName()));
+                updateCurrentDiseaseMenuItem.setText("Update disease");
+                currentDiseaseListContextMenu.show(currentDiseaseTableView, event.getScreenX(), event.getScreenY());
             }
         });
 
         /*Handles the right click action of showing a ContextMenu on the curedDiseaseTableView and sets the MenuItem
         text depending on the disease chosen*/
-        curedDiseaseTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
-                    if (selectedDisease.isChronic()) {
-                        setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as not chronic",
+        curedDiseaseTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
+                if (selectedDisease.isChronic()) {
+                    setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as not chronic",
                             selectedDisease.getName()));
-                    } else {
-                        setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as chronic",
+                } else {
+                    setCuredChronicDiseaseMenuItem.setText(String.format("Mark %s as chronic",
                             selectedDisease.getName()));
-                    }
-                    setUncuredMenuItem.setText(String.format("Mark %s as uncured",
-                        selectedDisease.getName()));
-                    updateCuredDiseaseMenuItem.setText("Update disease");
-                    curedDiseaseContextMenu.show(curedDiseaseTableView, event.getScreenX(), event.getScreenY());
                 }
+                setUncuredMenuItem.setText(String.format("Mark %s as uncured",
+                        selectedDisease.getName()));
+                updateCuredDiseaseMenuItem.setText("Update disease");
+                curedDiseaseContextMenu.show(curedDiseaseTableView, event.getScreenX(), event.getScreenY());
             }
         });
 
         // Sets the cell factory to style each Disease item depending on its details
-        currentDiagnosisColumn.setCellFactory(column -> {
-            return new TableCell<Disease, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
+        currentDiagnosisColumn.setCellFactory(column -> new TableCell<Disease, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+
+                    setText(item);
+                    Disease currentDisease = getTableView().getItems().get(getIndex());
+                    // If the disease is chronic, update label + colour
+                    if (currentDisease.isChronic()) {
+                        setText("(CHRONIC) " + item);
+                        this.setStyle("-fx-background-color: RED;");
                     } else {
-
                         setText(item);
-                        Disease currentDisease = getTableView().getItems().get(getIndex());
-                        // If the disease is chronic, update label + colour
-                        if (currentDisease.isChronic()) {
-                            setText("(CHRONIC) " + item);
-                            this.setStyle("-fx-background-color: RED;");
-                        } else {
-                            setText(item);
-                            // TODO missing the highlight style here
-                            this.setStyle("-fx-background-color: #396a93;");
-                        }
+                        // TODO missing the highlight style here
+                        this.setStyle("-fx-background-color: #396a93;");
                     }
                 }
-            };
+            }
         });
 
         currentDiseaseTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {

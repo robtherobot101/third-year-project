@@ -1,8 +1,9 @@
 package seng302.Generic;
 
-import java.time.LocalDateTime;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -19,8 +20,8 @@ public class WaitingListItem {
     public WaitingListItem(Organ organType) {
         this.organType = organType;
         this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-        this.waitingListItemId = Main.getNextWaitingListId();
-        this.userId = Main.getUserWindowController().getCurrentUser().getId();
+        this.waitingListItemId = WindowManager.getNextWaitingListId();
+        this.userId = WindowManager.getUserWindowController().getCurrentUser().getId();
     }
 
     public WaitingListItem(ReceiverWaitingListItem copy) {

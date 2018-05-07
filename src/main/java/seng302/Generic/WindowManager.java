@@ -1,0 +1,527 @@
+package seng302.Generic;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import seng302.GUI.Controllers.*;
+import seng302.GUI.TFScene;
+import seng302.TUI.CommandLineInterface;
+import seng302.User.Admin;
+import seng302.User.Attribute.LoginType;
+import seng302.User.Clinician;
+import seng302.User.User;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
+ * program.
+ */
+public class WindowManager extends Application {
+
+    public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
+
+    private static Stage stage;
+    private static HashMap<TFScene, Scene> scenes = new HashMap<>();
+    private static ArrayList<Stage> cliniciansUserWindows = new ArrayList<>();
+    private static Image icon;
+    private static String dialogStyle;
+
+    private static LoginController loginController;
+    private static CreateAccountController createAccountController;
+    private static ClinicianController clinicianController;
+    private static AdminController adminController;
+    private static AccountSettingsController accountSettingsController;
+    private static ClinicianAccountSettingsController clinicianAccountSettingsController;
+    private static UserWindowController userWindowController;
+    private static MedicationsController medicationsController;
+    private static TransplantWaitingListController transplantWaitingListController;
+    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
+    private static WaitingListController waitingListController;
+
+
+    /**
+     * Returns the program icon.
+     *
+     * @return The icon as an Image.
+     */
+    public static Image getIcon() {
+        return icon;
+    }
+
+    /**
+     * returns the current stage
+     *
+     * @return the current stage
+     */
+    public static Stage getStage() {
+        return stage;
+    }
+
+    /**
+     * adds the clinican user window to the stage
+     *
+     * @param stage the current stage
+     */
+    public static void addCliniciansUserWindow(Stage stage) {
+        cliniciansUserWindows.add(stage);
+    }
+
+    /**
+     * sets the current clinician
+     *
+     * @param clinician the logged clinician
+     */
+    public static void setClinician(Clinician clinician) {
+        clinicianController.setClinician(clinician);
+        clinicianController.updateDisplay();
+        clinicianController.updateFoundUsers();
+    }
+
+    /**
+     * sets the current admin
+     *
+     * @param admin the logged admin
+     */
+    public static void setAdmin(Admin admin) {
+        adminController.setAdmin(admin);
+    }
+
+    /**
+     * sets the current user
+     *
+     * @param currentUser the current user
+     */
+    public static void setCurrentUser(User currentUser) {
+        userWindowController.setCurrentUser(currentUser);
+        userWindowController.populateUserFields();
+        userWindowController.populateHistoryTable();
+
+        medicalHistoryDiseasesController.setCurrentUser(currentUser);
+        medicalHistoryProceduresController.setCurrentUser(currentUser);
+        waitingListController.setCurrentUser(currentUser);
+        waitingListController.populateWaitingList();
+
+        medicationsController.initializeUser(currentUser);
+        controlViewForUser();
+    }
+
+    /**
+     * Gets the current length of the user's transplant waiting list
+     *
+     * @return The length of the user's transplant waiting list
+     */
+    public static int getNextWaitingListId() {
+        return userWindowController.getCurrentUser().getWaitingListItems().size();
+    }
+
+    /**
+     * appends to the undo stack for medications
+     */
+    public static void addCurrentToMedicationUndoStack() {
+        userWindowController.addCurrentToMedicationUndoStack();
+    }
+
+    /**
+     * add to the undo stack for diseases
+     */
+    public static void addCurrentToDiseaseUndoStack() {
+        userWindowController.addCurrentToDiseaseUndoStack();
+    }
+
+    /**
+     * updates the disease controller
+     */
+    public static void updateDiseases() {
+        medicalHistoryDiseasesController.updateDiseases();
+    }
+
+    /**
+     * updates the medications controller
+     */
+    public static void updateMedications() {
+        medicationsController.updateMedications();
+    }
+
+    /**
+     * add to the undo stack for current procedures
+     */
+    public static void addCurrentToProcedureUndoStack() {
+        userWindowController.addCurrentToProceduresUndoStack();
+    }
+
+    /**
+     * updates the procedures controller
+     */
+    public static void updateProcedures() {
+        medicalHistoryProceduresController.updateProcedures();
+    }
+
+    /**
+     * Adds the current user to the waiting list undo stack.
+     */
+    public static void addCurrentToWaitingListUndoStack() {
+        userWindowController.addCurrentToWaitingListUndoStack();
+    }
+
+    /**
+     * Calls the function which updates the waiting list pane.
+     */
+    public static void updateWaitingList() {
+        waitingListController.populateWaitingList();
+    }
+
+    /**
+     * Calls the function which updates the transplant waiting list pane.
+     */
+    public static void updateTransplantWaitingList() {
+        transplantWaitingListController.updateTransplantList();
+    }
+
+    /**
+     * Sets which controls for each panel are visible to the user.
+     */
+    public static void controlViewForUser() {
+        medicationsController.setControlsShown(false);
+        userWindowController.setControlsShown(false);
+        waitingListController.setControlsShown(false);
+        medicalHistoryProceduresController.setControlsShown(false);
+        medicalHistoryDiseasesController.setControlsShown(false);
+    }
+
+    /**
+     * Sets which controls for each panel are visible to the clinician.
+     */
+    public static void controlViewForClinician() {
+        medicationsController.setControlsShown(true);
+        userWindowController.setControlsShown(true);
+        waitingListController.setControlsShown(true);
+        medicalHistoryProceduresController.setControlsShown(true);
+        medicalHistoryDiseasesController.setControlsShown(true);
+    }
+
+    /**
+     * sets the current user for the account settings controller
+     *
+     * @param currentUser the current user
+     */
+    public static void setCurrentUserForAccountSettings(User currentUser) {
+        accountSettingsController.setCurrentUser(currentUser);
+        accountSettingsController.populateAccountDetails();
+    }
+
+    /**
+     * sets the current clinican for account settings
+     *
+     * @param currentClinician the current clinician
+     */
+    public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
+        clinicianAccountSettingsController.setCurrentClinician(currentClinician);
+        clinicianAccountSettingsController.populateAccountDetails();
+    }
+
+    /**
+     * sets the login controller
+     *
+     * @param loginController the current login controller
+     */
+    public static void setLoginController(LoginController loginController) {
+        WindowManager.loginController = loginController;
+    }
+
+
+    public static void setCreateAccountController(CreateAccountController createAccountController) {
+        WindowManager.createAccountController = createAccountController;
+    }
+
+    public static void setMedicationsController(MedicationsController medicationsController) {
+        WindowManager.medicationsController = medicationsController;
+    }
+
+    public static void setMedicalHistoryDiseasesController(MedicalHistoryDiseasesController medicalHistoryDiseasesController) {
+        WindowManager.medicalHistoryDiseasesController = medicalHistoryDiseasesController;
+    }
+
+    public static void setMedicalHistoryProceduresController(MedicalHistoryProceduresController medicalHistoryProceduresController) {
+        WindowManager.medicalHistoryProceduresController = medicalHistoryProceduresController;
+    }
+
+    public static void setWaitingListController(WaitingListController waitingListController) {
+        WindowManager.waitingListController = waitingListController;
+    }
+
+    public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
+        WindowManager.accountSettingsController = accountSettingsController;
+    }
+
+    public static void setClincianAccountSettingsController(ClinicianAccountSettingsController clinicianAccountSettingsController) {
+        WindowManager.clinicianAccountSettingsController = clinicianAccountSettingsController;
+    }
+
+    public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
+        WindowManager.transplantWaitingListController = transplantWaitingListController;
+    }
+
+    public static void setClinicianController(ClinicianController clinicianController) {
+        WindowManager.clinicianController = clinicianController;
+    }
+
+    public static void setAdminController(AdminController adminController) {
+        WindowManager.adminController = adminController;
+    }
+
+
+    public static ClinicianController getClinicianController() {
+        return WindowManager.clinicianController;
+    }
+
+    public static UserWindowController getUserWindowController() {
+        return userWindowController;
+    }
+
+    public static TransplantWaitingListController getTransplantWaitingListController() {
+        return WindowManager.transplantWaitingListController;
+    }
+
+    public static ArrayList<Stage> getCliniciansUserWindows() {
+        return cliniciansUserWindows;
+    }
+
+    public static void setUserWindowController(UserWindowController userWindowController) {
+        WindowManager.userWindowController = userWindowController;
+    }
+
+    public static void setAccountSettingsEnterEvent() {
+        accountSettingsController.setEnterEvent();
+    }
+
+    public static void setClinicianAccountSettingsEnterEvent() {
+        clinicianAccountSettingsController.setEnterEvent();
+    }
+
+    public static WaitingListController getWaitingListController() {
+        return waitingListController;
+    }
+
+
+    /**
+     * Run the GUI.
+     *
+     * @param args The command line arguments
+     */
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            launch(args);
+        } else if (args.length == 1 && args[0].equals("-c")) {
+            try {
+                IO.setPaths();
+                CommandLineInterface commandLineInterface = new CommandLineInterface();
+                commandLineInterface.run(System.in);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Please either run using:" +
+                    "\nGUI mode: java -jar app-0.0.jar" +
+                    "\nCommand line mode: java -jar app-0.0.jar -c.");
+        }
+    }
+
+    /**
+     * To be honest with you guys, I'm not 100% sure on how this works but it does
+     * <p>
+     * Solves an error on Linux systems with menu bar skin issues cropping up on the FX thread
+     *
+     * @param t Thread?
+     * @param e Exception?
+     */
+    private static void showError(Thread t, Throwable e) {
+        System.err.println("Non-critical error caught, probably platform dependent.");
+        e.printStackTrace();
+        if (Platform.isFxApplicationThread()) {
+            e.printStackTrace();
+        } else {
+            System.err.println("An unexpected error occurred in " + t);
+        }
+    }
+
+    /**
+     * Load in saved users and clinicians, and initialise the GUI.
+     *
+     * @param stage The stage to set the GUI up on
+     */
+    @Override
+    public void start(Stage stage) {
+        // This fixes errors which occur in different threads in TestFX
+        Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
+
+        WindowManager.stage = stage;
+        stage.setTitle("Transplant Finder");
+        stage.setOnHiding(closeAllWindows -> {
+            for (Stage userWindow : cliniciansUserWindows) {
+                userWindow.close();
+            }
+        });
+        dialogStyle = WindowManager.class.getResource("/css/dialog.css").toExternalForm();
+        icon = new Image(getClass().getResourceAsStream("/icon.png"));
+        stage.getIcons().add(icon);
+        try {
+            IO.setPaths();
+            File users = new File(IO.getUserPath());
+            if (users.exists()) {
+                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
+                    throw new IOException("User save file could not be loaded.");
+                }
+            } else {
+                if (!users.createNewFile()) {
+                    throw new IOException("User save file could not be created.");
+                }
+            }
+            File clinicians = new File(IO.getClinicianPath());
+            if (clinicians.exists()) {
+                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
+                    throw new IOException("Clinician save file could not be loaded.");
+                }
+            } else {
+                if (!clinicians.createNewFile()) {
+                    throw new IOException("Clinician save file could not be created.");
+                }
+                Clinician defaultClinician = new Clinician("default", "default", "default");
+                DataManager.clinicians.add(defaultClinician);
+                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+
+            }
+            File admins = new File(IO.getAdminPath());
+            if (admins.exists()) {
+                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
+                    throw new IOException("Admin save file could not be loaded.");
+                }
+            } else {
+                if (!admins.createNewFile()) {
+                    throw new IOException("Admin save file could not be created.");
+                }
+                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
+                DataManager.admins.add(defaultAdmin);
+                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+
+            }
+            IO.streamOut = History.init();
+            for (TFScene scene : TFScene.values()) {
+                scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
+            }
+            loginController.setEnterEvent();
+            createAccountController.setEnterEvent();
+
+            setScene(TFScene.login);
+            stage.show();
+
+        } catch (URISyntaxException e) {
+            System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
+            e.printStackTrace();
+            stop();
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            stop();
+        }
+    }
+
+    public static void resetScene(TFScene scene) {
+        try {
+            scenes.remove(scene);
+            scenes.put(scene, new Scene(FXMLLoader.load(WindowManager.class.getResource(scene.getPath())), mainWindowPrefWidth,
+                    mainWindowPrefHeight));
+        } catch (IOException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+        }
+    }
+
+    public static Scene getScene(TFScene scene) {
+        return scenes.get(scene);
+    }
+
+    /**
+     * Set the currently displayed scene on the main window. Sets the width, height, and resizability appropriately.
+     *
+     * @param scene The scene to switch to
+     */
+    public static void setScene(TFScene scene) {
+        stage.setResizable(true);
+        stage.setScene(scenes.get(scene));
+        if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.transplantList || scene == TFScene.admin) {
+            stage.setMinWidth(mainWindowMinWidth);
+            stage.setMinHeight(mainWindowMinHeight);
+        } else {
+            stage.setMinWidth(0);
+            stage.setMinHeight(0);
+        }
+        stage.setWidth(scene.getWidth());
+        stage.setHeight(scene.getHeight());
+        stage.setScene(null);
+        stage.setScene(scenes.get(scene));
+
+        if (!(scene.getWidth() == mainWindowPrefWidth)) {
+            stage.setResizable(false);
+        }
+    }
+
+    /**
+     * Create a styled alert dialog.
+     *
+     * @param alertType The type of alert to create
+     * @param title     The title for the alert dialog
+     * @param header    The header text for the alert dialog
+     * @param content   The content text for the alert dialog
+     * @return The created alert object
+     */
+    public static Alert createAlert(AlertType alertType, String title, String header, String content) {
+        Alert alert = new Alert(alertType);
+        setIconAndStyle(alert.getDialogPane());
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
+    }
+
+    /**
+     * Set the css stylesheet and icon for a dialog given a reference to its DialogPane.
+     *
+     * @param dialogPane The DialogPane to style and set icon for.
+     */
+    public static void setIconAndStyle(DialogPane dialogPane) {
+        dialogPane.getStylesheets().add(dialogStyle);
+        dialogPane.getStyleClass().add("dialog");
+        Stage stage = (Stage) dialogPane.getScene().getWindow();
+        stage.getIcons().add(icon);
+    }
+
+    /**
+     * Writes quit history before exiting the GUI.
+     */
+    @Override
+    public void stop() {
+        try {
+            if (userWindowController.getCurrentUser() != null) {
+                String text = History.prepareFileStringGUI(userWindowController.getCurrentUser().getId(), "quit");
+                History.printToFile(IO.streamOut, text);
+            }
+        } catch (Exception e) {
+            System.out.println("Error writing history.");
+        }
+
+        System.out.println("Exiting GUI");
+        Platform.exit();
+    }
+}

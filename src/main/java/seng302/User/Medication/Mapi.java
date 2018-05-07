@@ -3,6 +3,7 @@ package seng302.User.Medication;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,9 +66,9 @@ public class Mapi {
     private static String apiRequest(String url) {
         try {
             HttpResponse<JsonNode> response = Unirest.get(url)
-                .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")
-                .header("Accept", "application/json")
-                .asJson();
+                    .header("X-Mashape-Key", "yqCc8Xzox7mshwvnVGeVGRhqb5q7p1QFwldjsnkT3j48eJ4Zfj")
+                    .header("Accept", "application/json")
+                    .asJson();
             int n;
             n = response.getRawBody().available();
             byte[] bytes = new byte[n];

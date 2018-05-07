@@ -1,9 +1,10 @@
 package seng302.User.Medication;
 
+import seng302.User.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
-import seng302.User.User;
 
 /**
  * Class contains all the information for a given Medication.

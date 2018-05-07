@@ -1,6 +1,23 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.Procedure;
+import seng302.Generic.WindowManager;
+import seng302.User.Attribute.LoginType;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -8,39 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.Main;
-import seng302.Generic.Procedure;
-import seng302.User.Attribute.LoginType;
-import seng302.User.User;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the Medical History (Procedures) Window.
@@ -56,7 +42,8 @@ public class MedicalHistoryProceduresController extends PageController implement
     @FXML
     private TableView<Procedure> previousProcedureTableView, pendingProcedureTableView;
     @FXML
-    private TableColumn<Procedure, String> previousSummaryColumn, previousDescriptionColumn, previousDateColumn, pendingSummaryColumn, pendingDescriptionColumn, pendingDateColumn;
+    private TableColumn<Procedure, String> previousSummaryColumn, previousDescriptionColumn, previousDateColumn, pendingSummaryColumn,
+            pendingDescriptionColumn, pendingDateColumn;
     @FXML
     private Label donorNameLabel;
 
@@ -75,7 +62,7 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setMedicalHistoryProceduresController(this);
+        WindowManager.setMedicalHistoryProceduresController(this);
         setupListeners();
     }
 
@@ -93,7 +80,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      * Function to saving the most current versions of the previous and pending procedures to an undo stack
      */
     private void saveToUndoStack() {
-        Main.addCurrentToProcedureUndoStack();
+        WindowManager.addCurrentToProcedureUndoStack();
         currentUser.getPendingProcedures().clear();
         currentUser.getPendingProcedures().addAll(pendingProcedureItems);
         currentUser.getPreviousProcedures().clear();
@@ -108,28 +95,28 @@ public class MedicalHistoryProceduresController extends PageController implement
         System.out.println("MedicalHistoryProceduresController: Adding new procedure");
         // Check for empty disease name TODO could be a listener to disable the add button
         if (summaryInput.getText().equals("")) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                "Invalid procedure summary provided.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
+                    "Invalid procedure summary provided.");
             alert.showAndWait();
             summaryInput.clear();
             // Check for an empty date
         } else if (descriptionInput.getText().equals("")) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                "Invalid procedure description provided.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
+                    "Invalid procedure description provided.");
             alert.showAndWait();
             descriptionInput.clear();
         } else if (dateOfProcedureInput.getValue() == null) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                "No date provided.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
+                    "No date provided.");
             alert.showAndWait();
         } else if (dateOfProcedureInput.getValue().isBefore(currentUser.getDateOfBirth())) {
-            Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                "Due date occurs before the user's date of birth.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
+                    "Due date occurs before the user's date of birth.");
             alert.showAndWait();
         } else {
             // Add the new procedure
             Procedure procedureToAdd = new Procedure(summaryInput.getText(), descriptionInput.getText(),
-                dateOfProcedureInput.getValue(), isOrganAffectingCheckBox.isSelected());
+                    dateOfProcedureInput.getValue(), isOrganAffectingCheckBox.isSelected());
             if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
             } else {
@@ -192,7 +179,8 @@ public class MedicalHistoryProceduresController extends PageController implement
      */
     public void save() {
 
-        Alert alert = Main.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following procedure details.");
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user?" +
+                " ", "By doing so, the donor will be updated with the following procedure details.");
 
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
         Optional<ButtonType> result = alert.showAndWait();
@@ -220,7 +208,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      * Function which produces a pop up window to update all the given fields for a procedure.
      *
      * @param selectedProcedure The selected procedure that the user wishes to update.
-     * @param pending If the procedure is a pending procedure or not.
+     * @param pending           If the procedure is a pending procedure or not.
      */
     private void updateProcedurePopUp(Procedure selectedProcedure, boolean pending) {
 
@@ -228,7 +216,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Procedure");
         dialog.setHeaderText("Update Procedure Details");
-        Main.setIconAndStyle(dialog.getDialogPane());
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
@@ -262,23 +250,17 @@ public class MedicalHistoryProceduresController extends PageController implement
         updateButton.setDisable(true);
 
         // Do some validation (using the Java 8 lambda syntax).
-        procedureSummary.textProperty().addListener((observable, oldValue, newValue) -> {
-            updateButton.setDisable(newValue.trim().isEmpty());
-        });
+        procedureSummary.textProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.trim().isEmpty()));
 
         // Do some validation (using the Java 8 lambda syntax).
-        procedureDescription.textProperty().addListener((observable, oldValue, newValue) -> {
-            updateButton.setDisable(newValue.trim().isEmpty());
-        });
+        procedureDescription.textProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.trim().isEmpty()));
 
-        dateDue.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateButton.setDisable(newValue.toString().trim().isEmpty());
-        });
+        dateDue.valueProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.toString().trim().isEmpty()));
 
         dialog.getDialogPane().setContent(grid);
 
         // Request focus on the username field by default.
-        Platform.runLater(() -> procedureSummary.requestFocus());
+        Platform.runLater(procedureSummary::requestFocus);
 
         // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
@@ -304,8 +286,8 @@ public class MedicalHistoryProceduresController extends PageController implement
                     newDate = selectedProcedure.getDate().toString();
                 } else {
                     if (dateDue.getValue().isBefore(currentUser.getDateOfBirth())) {
-                        Alert alert = Main.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
-                            "Due date occurs before the user's date of birth.");
+                        Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
+                                "Due date occurs before the user's date of birth.");
                         alert.showAndWait();
                         dateDue.getEditor().clear();
                         if (pending) {
@@ -318,7 +300,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                     }
                 }
 
-                return new ArrayList<String>(Arrays.asList(newSummary, newDescription, newDate));
+                return new ArrayList<>(Arrays.asList(newSummary, newDescription, newDate));
             }
             return null;
         });
@@ -326,7 +308,8 @@ public class MedicalHistoryProceduresController extends PageController implement
         Optional<ArrayList<String>> result = dialog.showAndWait();
 
         result.ifPresent(newProcedureDetails -> {
-            System.out.println("Summary=" + newProcedureDetails.get(0) + ", Description=" + newProcedureDetails.get(1) + ", DateDue=" + newProcedureDetails.get(2));
+            System.out.println("Summary=" + newProcedureDetails.get(0) + ", Description=" + newProcedureDetails.get(1) + ", DateDue=" +
+                    newProcedureDetails.get(2));
             selectedProcedure.setSummary(newProcedureDetails.get(0));
             selectedProcedure.setDescription(newProcedureDetails.get(1));
             LocalDate newDateFormat = LocalDate.parse(newProcedureDetails.get(2));
@@ -377,37 +360,31 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         // Update selected procedure on the pending procedures table
         MenuItem updatePendingProcedureMenuItem = new MenuItem();
-        updatePendingProcedureMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-                updateProcedurePopUp(selectedProcedure, true);
-                statusIndicator.setStatus("Edited " + selectedProcedure, false);
-                titleBar.saved(false);
-            }
+        updatePendingProcedureMenuItem.setOnAction(event -> {
+            Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+            updateProcedurePopUp(selectedProcedure, true);
+            statusIndicator.setStatus("Edited " + selectedProcedure, false);
+            titleBar.saved(false);
         });
         pendingProcedureListContextMenu.getItems().add(updatePendingProcedureMenuItem);
 
         // Toggle selected procedure from pending procedures as organ affecting
         MenuItem togglePendingProcedureOrganAffectingMenuItem = new MenuItem();
-        togglePendingProcedureOrganAffectingMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-                if (selectedProcedure.isOrganAffecting()) {
-                    selectedProcedure.setOrganAffecting(false);
-                    statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
-                } else {
-                    selectedProcedure.setOrganAffecting(true);
-                    statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
-                }
-                titleBar.saved(false);
-
-                // To refresh the observableList to make chronic toggle visible
-                pendingProcedureItems.remove(selectedProcedure);
-                pendingProcedureItems.add(selectedProcedure);
-
+        togglePendingProcedureOrganAffectingMenuItem.setOnAction(event -> {
+            Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+            if (selectedProcedure.isOrganAffecting()) {
+                selectedProcedure.setOrganAffecting(false);
+                statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
+            } else {
+                selectedProcedure.setOrganAffecting(true);
+                statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
             }
+            titleBar.saved(false);
+
+            // To refresh the observableList to make chronic toggle visible
+            pendingProcedureItems.remove(selectedProcedure);
+            pendingProcedureItems.add(selectedProcedure);
+
         });
         pendingProcedureListContextMenu.getItems().add(togglePendingProcedureOrganAffectingMenuItem);
 
@@ -415,124 +392,108 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         // Update selected procedure on the previous procedures table
         MenuItem updatePreviousProcedureMenuItem = new MenuItem();
-        updatePreviousProcedureMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
-                updateProcedurePopUp(selectedProcedure, false);
-                statusIndicator.setStatus("Edited " + selectedProcedure, false);
-                titleBar.saved(false);
+        updatePreviousProcedureMenuItem.setOnAction(event -> {
+            Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+            updateProcedurePopUp(selectedProcedure, false);
+            statusIndicator.setStatus("Edited " + selectedProcedure, false);
+            titleBar.saved(false);
 
-            }
         });
         previousProcedureListContextMenu.getItems().add(updatePreviousProcedureMenuItem);
 
         // Toggle selected procedure from previous procedures as organ affecting
         MenuItem togglePreviousProcedureOrganAffectingMenuItem = new MenuItem();
-        togglePreviousProcedureOrganAffectingMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
-                if (selectedProcedure.isOrganAffecting()) {
-                    selectedProcedure.setOrganAffecting(false);
-                    statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
-                } else {
-                    selectedProcedure.setOrganAffecting(true);
-                    statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
-                }
-                titleBar.saved(false);
-                // To refresh the observableList to make chronic toggle visible
-                previousProcedureItems.remove(selectedProcedure);
-                previousProcedureItems.add(selectedProcedure);
-
+        togglePreviousProcedureOrganAffectingMenuItem.setOnAction(event -> {
+            Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+            if (selectedProcedure.isOrganAffecting()) {
+                selectedProcedure.setOrganAffecting(false);
+                statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
+            } else {
+                selectedProcedure.setOrganAffecting(true);
+                statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
             }
+            titleBar.saved(false);
+            // To refresh the observableList to make chronic toggle visible
+            previousProcedureItems.remove(selectedProcedure);
+            previousProcedureItems.add(selectedProcedure);
+
         });
         previousProcedureListContextMenu.getItems().add(togglePreviousProcedureOrganAffectingMenuItem);
 
         /*Handles the right click action of showing a ContextMenu on the pendingProcedureTableView and sets the MenuItem
         text depending on the procedure chosen*/
-        pendingProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-                    if (selectedProcedure.isOrganAffecting()) {
-                        togglePendingProcedureOrganAffectingMenuItem.setText(String.format("Mark procedure as non organ affecting"));
-                    } else {
-                        togglePendingProcedureOrganAffectingMenuItem.setText(String.format("Mark procedure as organ affecting"));
-                    }
-                    updatePendingProcedureMenuItem.setText("Update pending procedure");
-                    pendingProcedureListContextMenu.show(pendingProcedureTableView, event.getScreenX(), event.getScreenY());
+        pendingProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+                if (selectedProcedure.isOrganAffecting()) {
+                    togglePendingProcedureOrganAffectingMenuItem.setText("Mark procedure as non organ affecting");
+                } else {
+                    togglePendingProcedureOrganAffectingMenuItem.setText("Mark procedure as organ affecting");
                 }
+                updatePendingProcedureMenuItem.setText("Update pending procedure");
+                pendingProcedureListContextMenu.show(pendingProcedureTableView, event.getScreenX(), event.getScreenY());
             }
         });
 
         /*Handles the right click action of showing a ContextMenu on the previousProcedureTableView and sets the MenuItem
         text depending on the procedure chosen*/
-        previousProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
-                    if (selectedProcedure.isOrganAffecting()) {
-                        togglePreviousProcedureOrganAffectingMenuItem.setText(String.format("Mark procedure as non organ affecting"));
-                    } else {
-                        togglePreviousProcedureOrganAffectingMenuItem.setText(String.format("Mark procedure as organ affecting"));
-                    }
-                    updatePreviousProcedureMenuItem.setText("Update previous procedure");
-                    previousProcedureListContextMenu.show(previousProcedureTableView, event.getScreenX(), event.getScreenY());
+        previousProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+                if (selectedProcedure.isOrganAffecting()) {
+                    togglePreviousProcedureOrganAffectingMenuItem.setText("Mark procedure as non organ affecting");
+                } else {
+                    togglePreviousProcedureOrganAffectingMenuItem.setText("Mark procedure as organ affecting");
                 }
+                updatePreviousProcedureMenuItem.setText("Update previous procedure");
+                previousProcedureListContextMenu.show(previousProcedureTableView, event.getScreenX(), event.getScreenY());
             }
         });
 
         // Sets the cell factory to style each pending procedure item depending on its details
-        pendingSummaryColumn.setCellFactory(column -> {
-            return new TableCell<Procedure, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
+        pendingSummaryColumn.setCellFactory(column -> new TableCell<Procedure, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
 
-                        setText(item);
-                        Procedure currentProcedure = getTableView().getItems().get(getIndex());
+                    setText(item);
+                    Procedure currentProcedure = getTableView().getItems().get(getIndex());
 
-                        // If the disease is chronic, update label + colour
-                        if (currentProcedure.isOrganAffecting()) {
-                            setText("* " + item);
-                            this.setStyle("-fx-background-color: GREY;");
-                        }
+                    // If the disease is chronic, update label + colour
+                    if (currentProcedure.isOrganAffecting()) {
+                        setText("* " + item);
+                        this.setStyle("-fx-background-color: GREY;");
                     }
                 }
-            };
+            }
         });
 
         // Sets the cell factory to style each previous Procedure item depending on its details
-        previousSummaryColumn.setCellFactory(column -> {
-            return new TableCell<Procedure, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
+        previousSummaryColumn.setCellFactory(column -> new TableCell<Procedure, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
 
-                        setText(item);
-                        Procedure currentProcedure = getTableView().getItems().get(getIndex());
+                    setText(item);
+                    Procedure currentProcedure = getTableView().getItems().get(getIndex());
 
-                        // If the disease is chronic, update label + colour
-                        if (currentProcedure.isOrganAffecting()) {
-                            setText("* " + item);
-                            this.setStyle("-fx-background-color: GREY;");
-                        }
+                    // If the disease is chronic, update label + colour
+                    if (currentProcedure.isOrganAffecting()) {
+                        setText("* " + item);
+                        this.setStyle("-fx-background-color: GREY;");
                     }
                 }
-            };
+            }
         });
 
         // Set up columns to extract correct information from a Procedure object

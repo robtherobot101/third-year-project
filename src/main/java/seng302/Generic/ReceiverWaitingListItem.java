@@ -1,8 +1,9 @@
 package seng302.Generic;
 
-import java.time.LocalDateTime;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.time.LocalDateTime;
 
 /**
  * Contains information for a transplant waiting list record.
@@ -42,7 +43,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      * Used in testing
      *
      * @param heart objects organType
-     * @param id objects user id
+     * @param id    objects user id
      */
     public ReceiverWaitingListItem(Organ heart, Long id) {
         this.organType = heart;
@@ -72,7 +73,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
         if (this.organDeregisteredDate == null) {
             ReceiverWaitingListItem temp;
             if (reasonCode != 3) {
-                User selectedUser = Main.getUserById(this.getUserId());
+                User selectedUser = SearchUtils.getUserById(this.getUserId());
                 selectedUser.getWaitingListItems().remove(this);
                 temp = new ReceiverWaitingListItem(this);
                 selectedUser.getWaitingListItems().add(temp);

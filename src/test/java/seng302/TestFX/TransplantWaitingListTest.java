@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.Main;
+import seng302.Generic.DataManager;
 import seng302.Generic.TransplantWaitingListItem;
 import seng302.User.Attribute.Organ;
 
@@ -29,7 +29,7 @@ public class TransplantWaitingListTest extends TestFXTest {
 
     @Before
     public void setup() {
-        Main.users.clear();
+        DataManager.users.clear();
     }
 
     /**
@@ -45,7 +45,7 @@ public class TransplantWaitingListTest extends TestFXTest {
      * helper function to create two new users. One a receiver and one a dummy.
      */
     private void createAccounts() {
-        Main.users.clear();
+        DataManager.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 

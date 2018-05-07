@@ -21,10 +21,10 @@ public class Disease {
     /**
      * method to create a new disease instance
      *
-     * @param name name of disease
+     * @param name          name of disease
      * @param diagnosisDate diagnosis date of disease
-     * @param isChronic if the disease is chronic
-     * @param isCured if the disease is cured
+     * @param isChronic     if the disease is chronic
+     * @param isCured       if the disease is cured
      */
     public Disease(String name, LocalDate diagnosisDate, boolean isChronic, boolean isCured) {
         this.name = name;

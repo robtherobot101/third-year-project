@@ -1,15 +1,5 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
-
-import java.net.URL;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -18,29 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
@@ -49,14 +20,16 @@ import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
 import seng302.Generic.History;
 import seng302.Generic.IO;
-import seng302.Generic.Main;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.SmokerStatus;
+import seng302.Generic.WindowManager;
+import seng302.User.Attribute.*;
 import seng302.User.User;
+
+import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.*;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -89,7 +62,8 @@ public class UserWindowController implements Initializable {
     @FXML
     private ComboBox<AlcoholConsumption> alcoholConsumptionComboBox;
     @FXML
-    private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox, middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
+    private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox,
+            middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
     @FXML
     private MenuItem undoButton, redoButton, logoutMenuItem;
     @FXML
@@ -102,7 +76,8 @@ public class UserWindowController implements Initializable {
     private HashMap<Organ, CheckBox> organTickBoxes;
 
     private ArrayList<User> waitingListUndoStack = new ArrayList<>(), waitingListRedoStack = new ArrayList<>();
-    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
+    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new
+            LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private LinkedList<User> procedureUndoStack = new LinkedList<>(), procedureRedoStack = new LinkedList<>();
     private LinkedList<User> diseaseUndoStack = new LinkedList<>(), diseaseRedoStack = new LinkedList<>();
     private User currentUser;
@@ -123,7 +98,7 @@ public class UserWindowController implements Initializable {
 
     public UserWindowController() {
         this.titleBar = new TitleBar();
-        titleBar.setStage(Main.getStage());
+        titleBar.setStage(WindowManager.getStage());
     }
 
     /**
@@ -155,12 +130,12 @@ public class UserWindowController implements Initializable {
     /**
      * Set up the User window.
      *
-     * @param location Not used
+     * @param location  Not used
      * @param resources Not used
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setUserWindowController(this);
+        WindowManager.setUserWindowController(this);
         welcomePane.setVisible(true);
         attributesGridPane.setVisible(false);
         historyGridPane.setVisible(false);
@@ -183,12 +158,12 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        Main.controlViewForUser();
+        WindowManager.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
-            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
         welcomePane.setBackground(new Background(imageBackground));
 
         //Add listeners for attribute undo and redo
@@ -250,8 +225,8 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            Main.getWaitingListController().populateWaitingList();
-            Main.getWaitingListController().populateOrgansComboBox();
+            WindowManager.getWaitingListController().populateWaitingList();
+            WindowManager.getWaitingListController().populateOrgansComboBox();
         });
 
         statusIndicator.setStatusBar(statusBar);
@@ -473,31 +448,37 @@ public class UserWindowController implements Initializable {
                         case "diseases":
                         case "logout":
                         case "quit":
-                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1) + " at " + userHistory[i][1]));
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4]
+                                    .substring(1) + " at " + userHistory[i][1]));
                             break;
                         case "updateAccountSettings":
-                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
-                                " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4]
+                                    .substring(1, 6) +
+                                    " " + userHistory[i][4].substring(6, 13) + " at " + userHistory[i][1]));
                             break;
 
                         case "waitinglist":
-                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 7) + " " + userHistory[i][4].substring(7) + " modified " + " at " + userHistory[i][1]));
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4]
+                                    .substring(1, 7) + " " + userHistory[i][4].substring(7) + " modified " + " at " + userHistory[i][1]));
                             break;
 
                         case "modifyUser":
-                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4].substring(1, 6) +
-                                " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
+                            sessionNode.getChildren().add(new TreeItem<>(userHistory[i][4].substring(0, 1).toUpperCase() + userHistory[i][4]
+                                    .substring(1, 6) +
+                                    " " + userHistory[i][4].substring(6, 10) + " at " + userHistory[i][1]));
                             break;
                         case "login":
-                            sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
-                                1));
+                            sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0]
+                                    .length() -
+                                    1));
                             treeItems.add(sessionNode);
                             sessionNode.getChildren().add(new TreeItem<>("Login at " + userHistory[i][1]));
                             sessionNumber++;
                             break;
                         case "view":
-                            sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0].length() -
-                                1));
+                            sessionNode = new TreeItem<>("Session " + sessionNumber + " on " + userHistory[i][0].substring(0, userHistory[i][0]
+                                    .length() -
+                                    1));
                             treeItems.add(sessionNode);
                             sessionNode.getChildren().add(new TreeItem<>("View at " + userHistory[i][1]));
                             sessionNumber++;
@@ -512,7 +493,7 @@ public class UserWindowController implements Initializable {
 
         //Defining cell content
         dateTimeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<String, String> p) ->
-            new ReadOnlyStringWrapper(p.getValue().getValue()));
+                new ReadOnlyStringWrapper(p.getValue().getValue()));
 
         actionColumn.setCellValueFactory(param -> {
             String userName = currentUser.getPreferredName(), toCheck = param.getValue().getValue().substring(0, 12);
@@ -632,7 +613,7 @@ public class UserWindowController implements Initializable {
                 userHeight = Double.parseDouble(heightField.getText());
                 currentUser.setHeight(userHeight);
             } catch (NumberFormatException e) {
-                Main.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
                 return false;
             }
         }
@@ -643,7 +624,7 @@ public class UserWindowController implements Initializable {
                 userWeight = Double.parseDouble(weightField.getText());
                 currentUser.setWeight(userWeight);
             } catch (NumberFormatException e) {
-                Main.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
                 return false;
             }
         }
@@ -653,14 +634,16 @@ public class UserWindowController implements Initializable {
         if (bloodPressure != null && !bloodPressure.equals("")) {
             String[] bloodPressureList = bloodPressureTextField.getText().split("/");
             if (bloodPressureList.length != 2) {
-                Main.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure input.").show();
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure " +
+                        "input.").show();
                 return false;
             } else {
                 for (String pressureComponent : bloodPressureList) {
                     try {
                         Integer.parseInt(pressureComponent);
                     } catch (NumberFormatException e) {
-                        Main.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure input.").show();
+                        WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood " +
+                                "pressure input.").show();
                         return false;
                     }
                 }
@@ -670,13 +653,14 @@ public class UserWindowController implements Initializable {
 
         LocalDate currentDate = LocalDate.now();
         if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
-            Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
             return false;
         } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
-            Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
             return false;
         } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
-            Main.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death.").show();
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death" +
+                    ".").show();
             return false;
         }
 
@@ -721,8 +705,8 @@ public class UserWindowController implements Initializable {
      * Then calls the populate user function to repopulate the user fields.
      */
     public void save() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
-            "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
@@ -733,7 +717,7 @@ public class UserWindowController implements Initializable {
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
-            Main.getClinicianController().updateFoundUsers();
+            WindowManager.getClinicianController().updateFoundUsers();
         }
         alert.close();
     }
@@ -767,13 +751,13 @@ public class UserWindowController implements Initializable {
             medicationUndoStack.removeLast();
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
-            Main.updateMedications();
+            WindowManager.updateMedications();
         } else if (waitingListPane.isVisible()) {
             waitingListRedoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size() - 1));
             waitingListUndoStack.remove(waitingListUndoStack.size() - 1);
             setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
-            Main.updateWaitingList();
+            WindowManager.updateWaitingList();
         } else if (medicalHistoryProceduresPane.isVisible()) {
             //Add the current procedures lists to the redo stack
             procedureRedoStack.add(new User(currentUser));
@@ -783,7 +767,7 @@ public class UserWindowController implements Initializable {
             procedureUndoStack.remove(procedureUndoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(procedureUndoStack.isEmpty(), false);
-            Main.updateProcedures();
+            WindowManager.updateProcedures();
         } else if (medicalHistoryDiseasesPane.isVisible()) {
             //Add the current disease lists to the redo stack
             diseaseRedoStack.add(new User(currentUser));
@@ -793,7 +777,7 @@ public class UserWindowController implements Initializable {
             diseaseUndoStack.remove(diseaseUndoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), false);
-            Main.updateDiseases();
+            WindowManager.updateDiseases();
         }
         statusIndicator.setStatus("Undid last action", false);
         titleBar.saved(false);
@@ -827,13 +811,13 @@ public class UserWindowController implements Initializable {
             medicationRedoStack.removeLast();
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
-            Main.updateMedications();
+            WindowManager.updateMedications();
         } else if (waitingListPane.isVisible()) {
             waitingListUndoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListRedoStack.get(waitingListRedoStack.size() - 1));
             waitingListRedoStack.remove(waitingListRedoStack.size() - 1);
             setUndoRedoButtonsDisabled(false, waitingListRedoStack.isEmpty());
-            Main.updateWaitingList();
+            WindowManager.updateWaitingList();
         } else if (medicalHistoryProceduresPane.isVisible()) {
             //Add the current procedures lists to the redo stack
             procedureUndoStack.add(new User(currentUser));
@@ -843,7 +827,7 @@ public class UserWindowController implements Initializable {
             procedureRedoStack.remove(procedureRedoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(false, procedureRedoStack.isEmpty());
-            Main.updateProcedures();
+            WindowManager.updateProcedures();
         } else if (medicalHistoryDiseasesPane.isVisible()) {
             //Add the current disease lists to the redo stack
             diseaseUndoStack.add(new User(currentUser));
@@ -853,7 +837,7 @@ public class UserWindowController implements Initializable {
             diseaseRedoStack.remove(diseaseRedoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
-            Main.updateDiseases();
+            WindowManager.updateDiseases();
         }
         statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
@@ -931,7 +915,7 @@ public class UserWindowController implements Initializable {
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
-        Main.setIconAndStyle(dialog.getDialogPane());
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.getDialogPane().getStyleClass().add("dialog");
 
         Optional<String> password = dialog.showAndWait();
@@ -940,19 +924,20 @@ public class UserWindowController implements Initializable {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettings.fxml"));
                     Stage stage = new Stage();
-                    stage.getIcons().add(Main.getIcon());
+                    stage.getIcons().add(WindowManager.getIcon());
                     stage.setResizable(false);
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 270, 330));
                     stage.initModality(Modality.APPLICATION_MODAL);
-                    Main.setCurrentUserForAccountSettings(currentUser);
-                    Main.setAccountSettingsEnterEvent();
+                    WindowManager.setCurrentUserForAccountSettings(currentUser);
+                    WindowManager.setAccountSettingsEnterEvent();
                     stage.showAndWait();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else { // Password incorrect
-                Main.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                WindowManager.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view " +
+                        "account settings").show();
             }
         }
     }
@@ -969,13 +954,14 @@ public class UserWindowController implements Initializable {
      * Function which is called when the user wants to logout of the application and log into a new user
      */
     public void logout() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out without saving loses your non-saved data.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out " +
+                "without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             String text = History.prepareFileStringGUI(currentUser.getId(), "logout");
             History.printToFile(streamOut, text);
-            Main.setScene(TFScene.login);
-            Main.clearUserScreen();
+            WindowManager.setScene(TFScene.login);
+            WindowManager.resetScene(TFScene.userWindow);
         } else {
             alert.close();
         }
@@ -985,8 +971,8 @@ public class UserWindowController implements Initializable {
      * Function which is called when the user wants to exit the application.
      */
     public void stop() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
-            "Are you sure would like to exit the window? ", "Exiting without saving loses your non-saved data.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to exit the window? ", "Exiting without saving loses your non-saved data.");
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("exitOK");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {

@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.IO;
+import seng302.Generic.DataManager;
 import seng302.User.Attribute.LoginType;
 
 /**
@@ -16,7 +16,7 @@ public class Clinician {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = DataManager.getNextId(true, LoginType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
         this.accountType = LoginType.CLINICIAN;
@@ -25,11 +25,11 @@ public class Clinician {
     /**
      * Used by Admin to pick its own ID
      *
-     * @param username The username of the clinician
-     * @param password The clinician's password
-     * @param name The clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
-     * @param staffID The clinician's ID
+     * @param staffID     The clinician's ID
      */
     public Clinician(String username, String password, String name, LoginType accountType, long staffID) {
         this.username = username;
@@ -44,16 +44,16 @@ public class Clinician {
     /**
      * Used by Admin to pick its own ID
      *
-     * @param username The username of the clinician
-     * @param password The clinician's password
-     * @param name The clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
      */
     public Clinician(String username, String password, String name, LoginType accountType) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = DataManager.getNextId(true, LoginType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
         this.accountType = accountType;
@@ -126,12 +126,12 @@ public class Clinician {
     @Override
     public String toString() {
         return "Clinician{" +
-            "name='" + name + '\'' +
-            ", staffID='" + staffID + '\'' +
-            ", workAddress='" + workAddress + '\'' +
-            ", region='" + region + '\'' +
-            ", username='" + username + '\'' +
-            ", password='" + password + '\'' +
-            '}';
+                "name='" + name + '\'' +
+                ", staffID='" + staffID + '\'' +
+                ", workAddress='" + workAddress + '\'' +
+                ", region='" + region + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

@@ -1,19 +1,20 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import seng302.Generic.Main;
+import seng302.Generic.DataManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ClinicianFilterSearchGUITest extends TestFXTest {
 
@@ -36,7 +37,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
      */
     @Before
     public void setUp() {
-        Main.users.clear();
+        DataManager.users.clear();
         testUserBobby = new User(
             "Bobby", new String[]{"Dong"}, "Flame",
             LocalDate.of(1969, 8, 4),
@@ -46,7 +47,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserBobby.setGender(Gender.MALE);
         testUserBobby.setRegion("Auckland");
         testUserBobby.setOrgan(Organ.PANCREAS);
-        Main.users.add(testUserBobby);
+        DataManager.users.add(testUserBobby);
 
         testUserAndy = new User(
             "Andy", new String[]{"Pandy"}, "Fandy",
@@ -58,7 +59,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserAndy.setRegion("Arrowtown");
         testUserAndy.setOrgan(Organ.HEART);
         testUserAndy.setOrgan(Organ.PANCREAS);
-        Main.users.add(testUserAndy);
+        DataManager.users.add(testUserAndy);
 
         testUserTest = new User(
             "Test", new String[]{"TEST"}, "test",
@@ -69,7 +70,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");
 
-        Main.users.add(testUserTest);
+        DataManager.users.add(testUserTest);
 
     }
 

@@ -1,7 +1,5 @@
 package seng302.GUI.Controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,13 +9,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import seng302.GUI.TFScene;
+import seng302.Generic.DataManager;
 import seng302.Generic.History;
 import seng302.Generic.IO;
-import seng302.Generic.Main;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * A controller class for the log in screen.
@@ -44,9 +46,9 @@ public class LoginController implements Initializable {
 
         // Check for a user match
         User currentUser = null;
-        for (User user : Main.users) {
+        for (User user : DataManager.users) {
             if (user.getUsername() != null && user.getUsername().equals(identificationInput.getText()) ||
-                user.getEmail() != null && user.getEmail().equals(identificationInput.getText())) {
+                    user.getEmail() != null && user.getEmail().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (user.getPassword().equals(passwordInput.getText())) {
                     currentUser = user;
@@ -59,7 +61,7 @@ public class LoginController implements Initializable {
 
         // Check for a clinician match
         Clinician currentClinician = null;
-        for (Clinician clinician : Main.clinicians) {
+        for (Clinician clinician : DataManager.clinicians) {
             System.out.println(clinician);
             if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
@@ -75,7 +77,7 @@ public class LoginController implements Initializable {
 
         // Check for an admin match
         Admin currentAdmin = null;
-        for (Admin admin : Main.admins) {
+        for (Admin admin : DataManager.admins) {
             if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
                 identificationMatched = true;
                 if (admin.getPassword().equals(passwordInput.getText())) {
@@ -98,16 +100,16 @@ public class LoginController implements Initializable {
 
                 switch (typeMatched) {
                     case USER:
-                        Main.setCurrentUser(currentUser);
-                        Main.setScene(TFScene.userWindow);
+                        WindowManager.setCurrentUser(currentUser);
+                        WindowManager.setScene(TFScene.userWindow);
                         break;
                     case CLINICIAN:
-                        Main.setClinician(currentClinician);
-                        Main.setScene(TFScene.clinician);
+                        WindowManager.setClinician(currentClinician);
+                        WindowManager.setScene(TFScene.clinician);
                         break;
                     case ADMIN:
-                        Main.setAdmin(currentAdmin);
-                        Main.setScene(TFScene.admin);
+                        WindowManager.setAdmin(currentAdmin);
+                        WindowManager.setScene(TFScene.admin);
                 }
             } else {
                 errorMessage.setText("Incorrect password.");
@@ -130,14 +132,14 @@ public class LoginController implements Initializable {
      * Switches the displayed scene to the create account scene.
      */
     public void createAccount() {
-        Main.setScene(TFScene.createAccount);
+        WindowManager.setScene(TFScene.createAccount);
     }
 
     /**
      * Sets the enter key press to attempt log in if sufficient information is present.
      */
     public void setEnterEvent() {
-        Main.getScene(TFScene.login).setOnKeyPressed(event -> {
+        WindowManager.getScene(TFScene.login).setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !loginButton.isDisable()) {
                 login();
             }
@@ -147,16 +149,16 @@ public class LoginController implements Initializable {
     /**
      * Add listeners to enable/disable the login button based on information supplied
      *
-     * @param location Not used
+     * @param location  Not used
      * @param resources Not used
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setLoginController(this);
+        WindowManager.setLoginController(this);
         requestFocus();
         identificationInput.textProperty().addListener((observable, oldValue, newValue) ->
-            loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
+                loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
         passwordInput.textProperty().addListener((observable, oldValue, newValue) ->
-            loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
+                loginButton.setDisable(identificationInput.getText().isEmpty() || passwordInput.getText().isEmpty()));
     }
 }

@@ -13,11 +13,11 @@ public class TransplantWaitingListItem extends WaitingListItem {
     /**
      * Constructor of the object.
      *
-     * @param Name The name of the receiver.
-     * @param region The region of the receiver.
-     * @param date The date that the organ was registered.
-     * @param organ The organ that the receiver needs.
-     * @param id The id of the receiver.
+     * @param Name          The name of the receiver.
+     * @param region        The region of the receiver.
+     * @param date          The date that the organ was registered.
+     * @param organ         The organ that the receiver needs.
+     * @param id            The id of the receiver.
      * @param waitingListId The id of the waiting list
      */
     public TransplantWaitingListItem(String Name, String region, String date, Organ organ, long id, Integer waitingListId) {

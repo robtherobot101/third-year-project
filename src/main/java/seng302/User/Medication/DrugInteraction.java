@@ -55,14 +55,14 @@ public class DrugInteraction {
      * otherwise returns a new HashMap
      *
      * @param jsonObj The drug interaction json object.
-     * @param key The identifier of the HashMap to look for
+     * @param key     The identifier of the HashMap to look for
      * @return The HashMap of strings to symptom sets
      */
     public HashMap<String, HashSet<String>> getOrCreateMap(JSONObject jsonObj, String key) {
         if (jsonObj.keySet().contains(key)) {
             return new Gson().fromJson(jsonObj.get(key).toString(),
-                new TypeToken<HashMap<String, HashSet<String>>>() {
-                }.getType());
+                    new TypeToken<HashMap<String, HashSet<String>>>() {
+                    }.getType());
         } else {
             return new HashMap<>();
         }

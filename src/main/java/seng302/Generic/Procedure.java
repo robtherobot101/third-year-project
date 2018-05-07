@@ -15,9 +15,9 @@ public class Procedure {
     /**
      * method to create a new instance of a procedure object
      *
-     * @param summary the given procedure summary
-     * @param description the given procedure description
-     * @param date the given procedure date
+     * @param summary          the given procedure summary
+     * @param description      the given procedure description
+     * @param date             the given procedure date
      * @param isOrganAffecting the given organ to be operated on in the procedure
      */
     public Procedure(String summary, String description, LocalDate date, boolean isOrganAffecting) {

@@ -38,7 +38,7 @@ public class History {
     /**
      * Prints the given string to the file via the given printstream.
      *
-     * @param out the printstream.
+     * @param out  the printstream.
      * @param text the string being written to the file.
      */
     public static void printToFile(PrintStream out, String text) {
@@ -170,13 +170,13 @@ public class History {
      * Records all actions performed in the GUI in the same action history file.
      * Uses a slightly different format, identified by the GUI tag after the timestamp.
      *
-     * @param userId the ID of the user performing the action.
+     * @param userId  the ID of the user performing the action.
      * @param command the action being performed in the app.
      * @return a string to be printed to file containing the action and a brief description.
      */
     public static String prepareFileStringGUI(long userId, String command) {
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
-        User userInfo = Main.getUserById(userId);
+        User userInfo = SearchUtils.getUserById(userId);
         System.out.println("Command: " + command);
 
         switch (command) {
@@ -255,11 +255,11 @@ public class History {
 
         try {
             FileReader fileReader =
-                new FileReader(actionHistory);
+                    new FileReader(actionHistory);
 
             // Always wrap FileReader in BufferedReader.
             BufferedReader bufferedReader =
-                new BufferedReader(fileReader);
+                    new BufferedReader(fileReader);
 
             while ((line = bufferedReader.readLine()) != null) {
                 actionHistoryString += line;
