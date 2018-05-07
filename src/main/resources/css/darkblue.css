@@ -290,3 +290,9 @@
 	-fx-text-fill: white ;
 }
 
+.menu-button {
+	-fx-background-color: #2b506e;
+	-fx-text-fill: #edf3f8;
+	-fx-prompt-text-fill: #7ea9cd;
+}
+

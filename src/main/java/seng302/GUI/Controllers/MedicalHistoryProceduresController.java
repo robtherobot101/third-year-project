@@ -12,11 +12,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import org.controlsfx.control.CheckComboBox;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Procedure;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.net.URL;
@@ -52,7 +54,7 @@ public class MedicalHistoryProceduresController extends PageController implement
     @FXML
     private Label newProcedureDateLabel, newProcedureLabel, pendingProceduresLabel, previousProceduresLabel;
     @FXML
-    private CheckBox isOrganAffectingCheckBox;
+    private MenuButton organAffectChoiceBox;
 
 
     private User currentUser;
@@ -63,6 +65,8 @@ public class MedicalHistoryProceduresController extends PageController implement
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         WindowManager.setMedicalHistoryProceduresController(this);
+
+
         setupListeners();
     }
 
@@ -116,7 +120,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         } else {
             // Add the new procedure
             Procedure procedureToAdd = new Procedure(summaryInput.getText(), descriptionInput.getText(),
-                    dateOfProcedureInput.getValue(), isOrganAffectingCheckBox.isSelected());
+                    dateOfProcedureInput.getValue(), false);
             if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
             } else {
@@ -126,7 +130,7 @@ public class MedicalHistoryProceduresController extends PageController implement
             summaryInput.clear();
             descriptionInput.clear();
             dateOfProcedureInput.getEditor().clear();
-            isOrganAffectingCheckBox.setSelected(false);
+           //isOrganAffectingCheckBox.setSelected(false);
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
             statusIndicator.setStatus("Added " + procedureToAdd, false);
             titleBar.saved(false);
@@ -517,14 +521,14 @@ public class MedicalHistoryProceduresController extends PageController implement
         descriptionInput.setVisible(shown);
         newProcedureDateLabel.setVisible(shown);
         newProcedureLabel.setVisible(shown);
-        pendingProceduresLabel.setVisible(!shown);
-        previousProceduresLabel.setVisible(!shown);
+        pendingProceduresLabel.setVisible(true);
+        previousProceduresLabel.setVisible(true);
         addNewProcedureButton.setVisible(shown);
         pendingProcedureTableView.setDisable(!shown);
         previousProcedureTableView.setDisable(!shown);
         deleteProcedureButton.setVisible(shown);
         saveProcedureButton.setVisible(shown);
-        isOrganAffectingCheckBox.setVisible(shown);
+        //isOrganAffectingCheckBox.setVisible(shown);
     }
 
 
