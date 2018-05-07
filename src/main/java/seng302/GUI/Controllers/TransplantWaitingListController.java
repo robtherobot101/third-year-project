@@ -497,6 +497,24 @@ public class TransplantWaitingListController implements Initializable {
             @Override
             public TableRow<TransplantWaitingListItem> call(TableView<TransplantWaitingListItem> tableView) {
                 final TableRow<TransplantWaitingListItem> row = new TableRow<TransplantWaitingListItem>() {
+                    @Override
+                    public void updateItem(TransplantWaitingListItem item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (getStyleClass().contains("highlighted-row")) {
+                            getStyleClass().remove("highlighted-row");
+                        }
+                        setTooltip(null);
+                        if (item != null && !empty) {
+                            if (SearchUtils.getUserById(item.getUserId().intValue()).getOrgans().contains(item.getOrganType())) {
+                                setTooltip(new Tooltip("User is currently donating this organ"));
+                                System.out.println("User is donating " + item.getOrganType());
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
+                                }
+
+                            }
+                        }
+                    }
                 };
                 //event to open receiver profile when clicked
                 row.setOnMouseClicked(event -> {
