@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -124,7 +124,7 @@ public class IO {
      * @param loginType the type of user being saved
      * @return Whether the save completed successfully
      */
-    public static boolean saveUsers(String path, LoginType loginType) {
+    public static boolean saveUsers(String path, ProfileType loginType) {
         PrintStream outputStream = null;
         File outputFile;
         boolean success;
@@ -160,7 +160,7 @@ public class IO {
      * @param loginType the account type of the users
      * @return Whether the command executed successfully
      */
-    public static boolean importUsers(String path, LoginType loginType) {
+    public static boolean importUsers(String path, ProfileType loginType) {
         File inputFile = new File(path);
         Path filePath;
         try {
@@ -178,7 +178,7 @@ public class IO {
                     System.out.println("Opened user file successfully.");
                     DataManager.users.clear();
                     DataManager.users.addAll(importedUsers);
-                    DataManager.recalculateNextId(LoginType.USER);
+                    DataManager.recalculateNextId(ProfileType.USER);
                     break;
                 case CLINICIAN:
                     type = new TypeToken<ArrayList<Clinician>>() {
@@ -187,7 +187,7 @@ public class IO {
                     System.out.println("Opened clinician file successfully.");
                     DataManager.clinicians.clear();
                     DataManager.clinicians.addAll(importedClinicians);
-                    DataManager.recalculateNextId(LoginType.CLINICIAN);
+                    DataManager.recalculateNextId(ProfileType.CLINICIAN);
                     break;
                 case ADMIN:
                     type = new TypeToken<ArrayList<Admin>>() {
@@ -196,7 +196,7 @@ public class IO {
                     System.out.println("Opened admin file successfully.");
                     DataManager.admins.clear();
                     DataManager.admins.addAll(importedAdmins);
-                    DataManager.recalculateNextId(LoginType.ADMIN);
+                    DataManager.recalculateNextId(ProfileType.ADMIN);
             }
             System.out.println("Imported list successfully.");
             return true;

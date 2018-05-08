@@ -11,7 +11,7 @@ import seng302.Generic.DataManager;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -106,7 +106,7 @@ public class CreateAccountController implements Initializable {
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
                 WindowManager.setCurrentUser(user);
-                IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                 WindowManager.setScene(TFScene.userWindow);
                 WindowManager.resetScene(TFScene.createAccount);
                 return null;

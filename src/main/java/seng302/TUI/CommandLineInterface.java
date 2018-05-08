@@ -7,7 +7,7 @@ import seng302.Generic.IO;
 import seng302.Generic.SearchUtils;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -585,7 +585,7 @@ public class CommandLineInterface {
                 } else {
                     path = nextCommand[1];
                 }
-                if (IO.importUsers(path, LoginType.USER)) {
+                if (IO.importUsers(path, ProfileType.USER)) {
                     printLine("User imported from " + path + ".");
                     return true;
                 } else {
@@ -614,7 +614,7 @@ public class CommandLineInterface {
                 } else {
                     path = nextCommand[1];
                 }
-                if (IO.saveUsers(path, LoginType.USER)) {
+                if (IO.saveUsers(path, ProfileType.USER)) {
                     printLine("User saved to " + path + ".");
                     return true;
                 } else {

@@ -26,7 +26,7 @@ import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -335,8 +335,8 @@ public class ClinicianController implements Initializable {
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
         }
         alert.close();
     }
