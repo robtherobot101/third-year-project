@@ -12,7 +12,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import org.controlsfx.control.CheckComboBox;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.Procedure;
@@ -257,12 +256,144 @@ public class MedicalHistoryProceduresController extends PageController implement
         dateDue.setId("dateDue");
         dateDue.setPromptText(selectedProcedure.getDate().toString());
 
+        CheckBox pancreasUpdateCheckBox = new CheckBox();
+        pancreasUpdateCheckBox.setText("pancreas");
+        pancreasUpdateCheckBox.setId("pancreasCheckBox");
+
+        CheckBox lungUpdateCheckBox = new CheckBox();
+        lungUpdateCheckBox.setText("lung");
+        lungUpdateCheckBox.setId("lungCheckBox");
+
+        CheckBox heartUpdateCheckBox = new CheckBox();
+        heartUpdateCheckBox.setText("heart");
+        heartUpdateCheckBox.setId("heartCheckBox");
+
+        CheckBox kidneyUpdateCheckBox = new CheckBox();
+        kidneyUpdateCheckBox.setText("kidney");
+        kidneyUpdateCheckBox.setId("kidneyCheckBox");
+
+        CheckBox intestineUpdateCheckBox = new CheckBox();
+        intestineUpdateCheckBox.setText("intestine");
+        intestineUpdateCheckBox.setId("intestineCheckBox");
+
+        CheckBox corneaUpdateCheckBox = new CheckBox();
+        corneaUpdateCheckBox.setText("cornea");
+        corneaUpdateCheckBox.setId("corneaCheckBox");
+
+        CheckBox middleEarUpdateCheckBox = new CheckBox();
+        middleEarUpdateCheckBox.setText("middle-ear");
+        middleEarUpdateCheckBox.setId("middleEarCheckBox");
+
+        CheckBox skinUpdateCheckBox = new CheckBox();
+        skinUpdateCheckBox.setText("skin");
+        skinUpdateCheckBox.setId("skinCheckBox");
+
+        CheckBox boneMarrowUpdateCheckBox = new CheckBox();
+        boneMarrowUpdateCheckBox.setText("bone-marrow");
+        boneMarrowUpdateCheckBox.setId("boneMarrowCheckBox");
+
+        CheckBox connectiveTissueUpdateCheckBox = new CheckBox();
+        connectiveTissueUpdateCheckBox.setText("connective-tissue");
+        connectiveTissueUpdateCheckBox.setId("connectiveTissueCheckBox");
+
+        CheckBox liverUpdateCheckBox = new CheckBox();
+        liverUpdateCheckBox.setText("liver");
+        liverUpdateCheckBox.setId("liverCheckBox");
+
+
+        ArrayList<CustomMenuItem> menuItems = new ArrayList<>();
+
+        CustomMenuItem pancreasMenuItem = new CustomMenuItem();
+        pancreasMenuItem.setContent(pancreasUpdateCheckBox);
+        pancreasMenuItem.setHideOnClick(false);
+        menuItems.add(pancreasMenuItem);
+
+        CustomMenuItem liverMenuItem = new CustomMenuItem();
+        liverMenuItem.setContent(liverUpdateCheckBox);
+        liverMenuItem.setHideOnClick(false);
+        menuItems.add(liverMenuItem);
+
+        CustomMenuItem lungMenuItem = new CustomMenuItem();
+        lungMenuItem.setContent(lungUpdateCheckBox);
+        lungMenuItem.setHideOnClick(false);
+        menuItems.add(lungMenuItem);
+
+        CustomMenuItem heartMenuItem = new CustomMenuItem();
+        heartMenuItem.setContent(heartUpdateCheckBox);
+        heartMenuItem.setHideOnClick(false);
+        menuItems.add(heartMenuItem);
+
+        CustomMenuItem kidneyMenuItem = new CustomMenuItem();
+        kidneyMenuItem.setContent(kidneyUpdateCheckBox);
+        kidneyMenuItem.setHideOnClick(false);
+        menuItems.add(kidneyMenuItem);
+
+        CustomMenuItem intestineMenuItem = new CustomMenuItem();
+        intestineMenuItem.setContent(intestineUpdateCheckBox);
+        intestineMenuItem.setHideOnClick(false);
+        menuItems.add(intestineMenuItem);
+
+        CustomMenuItem corneaMenuItem = new CustomMenuItem();
+        corneaMenuItem.setContent(corneaUpdateCheckBox);
+        corneaMenuItem.setHideOnClick(false);
+        menuItems.add(corneaMenuItem);
+
+        CustomMenuItem middleEarMenuItem = new CustomMenuItem();
+        middleEarMenuItem.setContent(middleEarUpdateCheckBox);
+        middleEarMenuItem.setHideOnClick(false);
+        menuItems.add(middleEarMenuItem);
+
+        CustomMenuItem skinMenuItem = new CustomMenuItem();
+        skinMenuItem.setContent(skinUpdateCheckBox);
+        skinMenuItem.setHideOnClick(false);
+        menuItems.add(skinMenuItem);
+
+        CustomMenuItem boneMarrowMenuItem = new CustomMenuItem();
+        boneMarrowMenuItem.setContent(boneMarrowUpdateCheckBox);
+        boneMarrowMenuItem.setHideOnClick(false);
+        menuItems.add(boneMarrowMenuItem);
+
+        CustomMenuItem connectiveTissueMenuItem = new CustomMenuItem();
+        connectiveTissueMenuItem.setContent(connectiveTissueUpdateCheckBox);
+        connectiveTissueMenuItem.setHideOnClick(false);
+        menuItems.add(connectiveTissueMenuItem);
+
+        MenuButton organsMenu = new MenuButton();
+        organsMenu.getItems().addAll(menuItems);
+
+        HashMap<Organ, CheckBox> organTickBoxes;
+        organTickBoxes = new HashMap<>();
+
+        organTickBoxes.put(Organ.KIDNEY, kidneyUpdateCheckBox);
+        organTickBoxes.put(Organ.CORNEA, corneaUpdateCheckBox);
+        organTickBoxes.put(Organ.BONE, boneMarrowUpdateCheckBox);
+        organTickBoxes.put(Organ.LIVER, liverUpdateCheckBox);
+        organTickBoxes.put(Organ.EAR, middleEarUpdateCheckBox);
+        organTickBoxes.put(Organ.HEART, heartUpdateCheckBox);
+        organTickBoxes.put(Organ.INTESTINE, intestineUpdateCheckBox);
+        organTickBoxes.put(Organ.PANCREAS, pancreasUpdateCheckBox);
+        organTickBoxes.put(Organ.SKIN, skinUpdateCheckBox);
+        organTickBoxes.put(Organ.TISSUE, connectiveTissueUpdateCheckBox);
+        organTickBoxes.put(Organ.LUNG, lungUpdateCheckBox);
+
+
+        for (Organ key : organTickBoxes.keySet()) {
+            organTickBoxes.get(key).setSelected(selectedProcedure.getOrgansAffected().contains(key));
+        }
+
+        ArrayList<Organ> organsUpdatedAffected = new ArrayList<>();
+
+        organsMenu.setText("Affecting which organs?");
+
         grid.add(new Label("Summary:"), 0, 0);
         grid.add(procedureSummary, 1, 0);
         grid.add(new Label("Description:"), 0, 1);
         grid.add(procedureDescription, 1, 1);
         grid.add(new Label("Date Due:"), 0, 2);
         grid.add(dateDue, 1, 2);
+        grid.add(new Label("Organs:"), 0, 3);
+        grid.add(organsMenu, 1, 3);
+
 
         // Enable/Disable login button depending on whether a username was entered.
         Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
@@ -276,6 +407,10 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         dateDue.valueProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.toString().trim().isEmpty()));
 
+        for (CheckBox checkBox: organTickBoxes.values()) {
+            checkBox.selectedProperty().addListener(((observable, oldValue, newValue) -> updateButton.setDisable(newValue == oldValue)));
+        }
+
         dialog.getDialogPane().setContent(grid);
 
         // Request focus on the username field by default.
@@ -288,6 +423,15 @@ public class MedicalHistoryProceduresController extends PageController implement
                 String newSummary;
                 String newDescription;
                 String newDate = "";
+
+
+
+                for (CheckBox organCheckBox: organTickBoxes.values()) {
+                    if(organCheckBox.isSelected()) {
+                        organsUpdatedAffected.add(Organ.parse(organCheckBox.getText()));
+                        organCheckBox.setSelected(false);
+                    }
+                }
 
                 if (procedureSummary.getText().equals("")) {
                     newSummary = selectedProcedure.getSummary();
@@ -319,6 +463,10 @@ public class MedicalHistoryProceduresController extends PageController implement
                     }
                 }
 
+                if (organsUpdatedAffected.size() == 0) {
+                    organsUpdatedAffected.addAll(selectedProcedure.getOrgansAffected());
+                }
+
                 return new ArrayList<>(Arrays.asList(newSummary, newDescription, newDate));
             }
             return null;
@@ -333,6 +481,7 @@ public class MedicalHistoryProceduresController extends PageController implement
             selectedProcedure.setDescription(newProcedureDetails.get(1));
             LocalDate newDateFormat = LocalDate.parse(newProcedureDetails.get(2));
             selectedProcedure.setDate(newDateFormat);
+            selectedProcedure.setOrgansAffected(organsUpdatedAffected);
             if (pending) {
                 if (newDateFormat.isAfter(LocalDate.now())) {
                     pendingProcedureItems.remove(selectedProcedure);
