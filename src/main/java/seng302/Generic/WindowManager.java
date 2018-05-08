@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
  * program.
@@ -336,6 +337,7 @@ public class WindowManager extends Application {
                     "\nGUI mode: java -jar app-0.0.jar" +
                     "\nCommand line mode: java -jar app-0.0.jar -c.");
         }
+
     }
 
     /**

@@ -23,10 +23,7 @@ import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
 
@@ -55,6 +52,14 @@ public class MedicalHistoryProceduresController extends PageController implement
     private Label newProcedureDateLabel, newProcedureLabel, pendingProceduresLabel, previousProceduresLabel;
     @FXML
     private MenuButton organAffectChoiceBox;
+    @FXML
+    private CheckBox pancreasCheckBox, lungCheckBox, heartCheckBox, kidneyCheckBox, intestineCheckBox, corneaCheckBox,
+            middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
+
+    @FXML
+    private Label donatingLabel;
+
+    private ArrayList<CheckBox> affectedOrganCheckBoxes = new ArrayList<>();
 
 
     private User currentUser;
@@ -65,8 +70,8 @@ public class MedicalHistoryProceduresController extends PageController implement
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         WindowManager.setMedicalHistoryProceduresController(this);
-
-
+        affectedOrganCheckBoxes.addAll(Arrays.asList(pancreasCheckBox, lungCheckBox, heartCheckBox, kidneyCheckBox,
+                intestineCheckBox, corneaCheckBox, middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox));
         setupListeners();
     }
 
@@ -78,6 +83,8 @@ public class MedicalHistoryProceduresController extends PageController implement
         pendingProcedureItems.addAll(currentUser.getPendingProcedures());
         previousProcedureItems.clear();
         previousProcedureItems.addAll(currentUser.getPreviousProcedures());
+
+
     }
 
     /**
@@ -118,9 +125,18 @@ public class MedicalHistoryProceduresController extends PageController implement
                     "Due date occurs before the user's date of birth.");
             alert.showAndWait();
         } else {
-            // Add the new procedure
+            //Go through the organs affected and see which is affected.
+            ArrayList<Organ> organsAffected = new ArrayList<>();
+
+            for (CheckBox organCheckBox: affectedOrganCheckBoxes) {
+                if(organCheckBox.isSelected()) {
+                    organsAffected.add(Organ.parse(organCheckBox.getText()));
+                    organCheckBox.setSelected(false);
+                }
+            }
+
             Procedure procedureToAdd = new Procedure(summaryInput.getText(), descriptionInput.getText(),
-                    dateOfProcedureInput.getValue(), false);
+                    dateOfProcedureInput.getValue(), organsAffected);
             if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
             } else {
@@ -130,7 +146,6 @@ public class MedicalHistoryProceduresController extends PageController implement
             summaryInput.clear();
             descriptionInput.clear();
             dateOfProcedureInput.getEditor().clear();
-           //isOrganAffectingCheckBox.setSelected(false);
             System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
             statusIndicator.setStatus("Added " + procedureToAdd, false);
             titleBar.saved(false);
@@ -349,15 +364,43 @@ public class MedicalHistoryProceduresController extends PageController implement
     private void setupListeners() {
 
         pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+
             if (newItem != null) {
                 previousProcedureTableView.getSelectionModel().clearSelection();
+                Procedure currentProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+                String organsString = "";
+                if (currentProcedure.getOrgansAffected().size() == 0) {
+                    organsString = "This procedure currently affects no organs.";
+                    donatingLabel.setText(organsString);
+                } else {
+                    for (Organ organ : currentProcedure.getOrgansAffected()) {
+                        organsString += organ.toString() + ", ";
+                    }
+                    donatingLabel.setText("* Organs affected: " + organsString.substring(0, organsString.length() - 2));
+                }
+
             }
+
+
         });
 
         previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+
             if (newItem != null) {
                 pendingProcedureTableView.getSelectionModel().clearSelection();
+                Procedure currentProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+                String organsString = "";
+                if (currentProcedure.getOrgansAffected().size() == 0) {
+                    organsString = "This procedure currently affects no organs.";
+                    donatingLabel.setText(organsString);
+                } else {
+                    for (Organ organ : currentProcedure.getOrgansAffected()) {
+                        organsString += organ.toString() + ", ";
+                    }
+                    donatingLabel.setText("* Organs affected: " + organsString.substring(0, organsString.length() - 2));
+                }
             }
+
         });
 
         final ContextMenu pendingProcedureListContextMenu = new ContextMenu();
@@ -372,26 +415,6 @@ public class MedicalHistoryProceduresController extends PageController implement
         });
         pendingProcedureListContextMenu.getItems().add(updatePendingProcedureMenuItem);
 
-        // Toggle selected procedure from pending procedures as organ affecting
-        MenuItem togglePendingProcedureOrganAffectingMenuItem = new MenuItem();
-        togglePendingProcedureOrganAffectingMenuItem.setOnAction(event -> {
-            Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-            if (selectedProcedure.isOrganAffecting()) {
-                selectedProcedure.setOrganAffecting(false);
-                statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
-            } else {
-                selectedProcedure.setOrganAffecting(true);
-                statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
-            }
-            titleBar.saved(false);
-
-            // To refresh the observableList to make chronic toggle visible
-            pendingProcedureItems.remove(selectedProcedure);
-            pendingProcedureItems.add(selectedProcedure);
-
-        });
-        pendingProcedureListContextMenu.getItems().add(togglePendingProcedureOrganAffectingMenuItem);
-
         final ContextMenu previousProcedureListContextMenu = new ContextMenu();
 
         // Update selected procedure on the previous procedures table
@@ -405,35 +428,11 @@ public class MedicalHistoryProceduresController extends PageController implement
         });
         previousProcedureListContextMenu.getItems().add(updatePreviousProcedureMenuItem);
 
-        // Toggle selected procedure from previous procedures as organ affecting
-        MenuItem togglePreviousProcedureOrganAffectingMenuItem = new MenuItem();
-        togglePreviousProcedureOrganAffectingMenuItem.setOnAction(event -> {
-            Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
-            if (selectedProcedure.isOrganAffecting()) {
-                selectedProcedure.setOrganAffecting(false);
-                statusIndicator.setStatus("Set " + selectedProcedure + " as not affecting a donatable organ", false);
-            } else {
-                selectedProcedure.setOrganAffecting(true);
-                statusIndicator.setStatus("Set " + selectedProcedure + " as affecting a donatable organ", false);
-            }
-            titleBar.saved(false);
-            // To refresh the observableList to make chronic toggle visible
-            previousProcedureItems.remove(selectedProcedure);
-            previousProcedureItems.add(selectedProcedure);
-
-        });
-        previousProcedureListContextMenu.getItems().add(togglePreviousProcedureOrganAffectingMenuItem);
-
         /*Handles the right click action of showing a ContextMenu on the pendingProcedureTableView and sets the MenuItem
         text depending on the procedure chosen*/
         pendingProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 Procedure selectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-                if (selectedProcedure.isOrganAffecting()) {
-                    togglePendingProcedureOrganAffectingMenuItem.setText("Mark procedure as non organ affecting");
-                } else {
-                    togglePendingProcedureOrganAffectingMenuItem.setText("Mark procedure as organ affecting");
-                }
                 updatePendingProcedureMenuItem.setText("Update pending procedure");
                 pendingProcedureListContextMenu.show(pendingProcedureTableView, event.getScreenX(), event.getScreenY());
             }
@@ -444,11 +443,6 @@ public class MedicalHistoryProceduresController extends PageController implement
         previousProcedureTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 Procedure selectedProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
-                if (selectedProcedure.isOrganAffecting()) {
-                    togglePreviousProcedureOrganAffectingMenuItem.setText("Mark procedure as non organ affecting");
-                } else {
-                    togglePreviousProcedureOrganAffectingMenuItem.setText("Mark procedure as organ affecting");
-                }
                 updatePreviousProcedureMenuItem.setText("Update previous procedure");
                 previousProcedureListContextMenu.show(previousProcedureTableView, event.getScreenX(), event.getScreenY());
             }
@@ -469,7 +463,7 @@ public class MedicalHistoryProceduresController extends PageController implement
                     Procedure currentProcedure = getTableView().getItems().get(getIndex());
 
                     // If the disease is chronic, update label + colour
-                    if (currentProcedure.isOrganAffecting()) {
+                    if (currentProcedure.getOrgansAffected().size() > 0) {
                         setText("* " + item);
                         this.setStyle("-fx-background-color: GREY;");
                     }
@@ -492,9 +486,10 @@ public class MedicalHistoryProceduresController extends PageController implement
                     Procedure currentProcedure = getTableView().getItems().get(getIndex());
 
                     // If the disease is chronic, update label + colour
-                    if (currentProcedure.isOrganAffecting()) {
+                    if (currentProcedure.getOrgansAffected().size() > 0) {
                         setText("* " + item);
                         this.setStyle("-fx-background-color: GREY;");
+
                     }
                 }
             }

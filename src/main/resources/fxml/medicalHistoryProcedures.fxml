@@ -136,61 +136,61 @@
             <Insets bottom="55.0" />
          </GridPane.margin>
       </Label>
-      <Label text="* = Procedure affects a donatble organ" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+      <Label fx:id="donatingLabel" text="* = Procedure affects a donatable organ" GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.halignment="LEFT" GridPane.rowIndex="3">
          <GridPane.margin>
-            <Insets left="10.0" />
+            <Insets />
          </GridPane.margin>
       </Label>
       <MenuButton fx:id="organAffectChoiceBox" mnemonicParsing="false" prefHeight="27.0" prefWidth="174.0" text="Affecting any organs?" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
          <items>
             <CustomMenuItem fx:id="pancreasMenu" hideOnClick="false" mnemonicParsing="false" text="pancreasMenu">
               <content>
-                <CheckBox text="pancreas" />
+                <CheckBox fx:id="pancreasCheckBox" text="pancreas" />
               </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="lungMenu" hideOnClick="false" mnemonicParsing="false" text="lungMenu">
               <content>
-                <CheckBox text="lung" />
+                <CheckBox fx:id="lungCheckBox" text="lung" />
               </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="heartMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="heart" />
+                  <CheckBox fx:id="heartCheckBox" text="heart" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="kidneyMenu" hideOnClick="false" mnemonicParsing="false" text="kidneyMenu">
                <content>
-                  <CheckBox text="kidney" />
+                  <CheckBox fx:id="kidneyCheckBox" text="kidney" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="intestineMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="intestine" />
+                  <CheckBox fx:id="intestineCheckBox" text="intestine" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="corneaMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="cornea" />
+                  <CheckBox fx:id="corneaCheckBox" text="cornea" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="middleEarMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="middle-ear" />
+                  <CheckBox fx:id="middleEarCheckBox" text="middle-ear" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="skinMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="skin" />
+                  <CheckBox fx:id="skinCheckBox" text="skin" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="boneMarrowMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="bone-marrow" />
+                  <CheckBox fx:id="boneMarrowCheckBox" text="bone-marrow" />
                </content>
             </CustomMenuItem>
             <CustomMenuItem fx:id="connectiveTissueMenu" hideOnClick="false" mnemonicParsing="false">
                <content>
-                  <CheckBox text="connectiveTissue" />
+                  <CheckBox fx:id="connectiveTissueCheckBox" text="connective-tissue" />
                </content>
             </CustomMenuItem>
          </items>
