@@ -384,6 +384,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         ArrayList<Organ> organsUpdatedAffected = new ArrayList<>();
 
         organsMenu.setText("Affecting which organs?");
+        organsMenu.setId("updateOrganChoiceBox");
 
         grid.add(new Label("Summary:"), 0, 0);
         grid.add(procedureSummary, 1, 0);
