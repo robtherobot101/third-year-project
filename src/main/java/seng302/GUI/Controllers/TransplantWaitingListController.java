@@ -314,6 +314,8 @@ public class TransplantWaitingListController implements Initializable {
         } else {
             updateFoundUsersWithFiltering("", "None");
         }
+        WindowManager.rePopulateReceiverWaitingList();
+        WindowManager.reHighlightOrganDonationCheckboxes();
         deregisterReceiverButton.setDisable(true);
     }
 

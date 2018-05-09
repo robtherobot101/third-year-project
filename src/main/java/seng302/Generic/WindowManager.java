@@ -183,6 +183,22 @@ public class WindowManager extends Application {
         waitingListController.populateWaitingList();
     }
 
+
+    /**
+     * Re-populates the waiting list table view.
+     */
+    public static void rePopulateReceiverWaitingList(){
+        waitingListController.populateWaitingList();
+    }
+
+    /**
+     * Re-highlights the organ donation checkboxes which the current user is also receiving.
+     */
+    public static void reHighlightOrganDonationCheckboxes(){
+        userWindowController.highlightOrganCheckBoxes();
+    }
+
+
     /**
      * Calls the function which updates the transplant waiting list pane.
      */

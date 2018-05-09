@@ -18,9 +18,7 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.WindowManager;
+import seng302.Generic.*;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 
@@ -225,7 +223,7 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            WindowManager.getWaitingListController().populateWaitingList();
+            WindowManager.rePopulateReceiverWaitingList();
             WindowManager.getWaitingListController().populateOrgansComboBox();
         });
 
@@ -419,6 +417,21 @@ public class UserWindowController implements Initializable {
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
     }
 
+
+    public void highlightOrganCheckBoxes(){
+        Set<Organ> conflicting = new HashSet<>();
+        for(ReceiverWaitingListItem item: currentUser.getWaitingListItems()) {
+            if(item.getStillWaitingOn()){
+                if(currentUser.getOrgans().contains(item.getOrganType())){
+                    conflicting.add(item.getOrganType());
+                }
+            }
+        }
+        for(Organ organ:conflicting){
+            organTickBoxes.get(organ).getStyleClass().add("highlighted-row");
+        }
+    }
+
     /**
      * Populates the history table based on the action history of the current user.
      * Gets the user history from the History.getUserHistory() function.
@@ -587,6 +600,7 @@ public class UserWindowController implements Initializable {
 
         updateBMI();
         updateBloodPressure();
+        highlightOrganCheckBoxes();
     }
 
     /**

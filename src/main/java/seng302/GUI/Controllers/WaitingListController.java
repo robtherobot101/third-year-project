@@ -90,7 +90,8 @@ public class WaitingListController extends PageController implements Initializab
 
         }
         populateOrgansComboBox();
-
+        WindowManager.getUserWindowController().populateUserFields();
+        WindowManager.reHighlightOrganDonationCheckboxes();
     }
 
 
@@ -115,6 +116,7 @@ public class WaitingListController extends PageController implements Initializab
         }
         populateOrgansComboBox();
         WindowManager.getUserWindowController().populateUserFields();
+        WindowManager.reHighlightOrganDonationCheckboxes();
     }
 
 
@@ -150,7 +152,6 @@ public class WaitingListController extends PageController implements Initializab
         organsInDropDown.addAll(toBeAdded);
         organTypeComboBox.setItems(null);
         organTypeComboBox.setItems(organsInDropDown);
-        System.out.println(toBeAdded.size());
     }
 
     /**
