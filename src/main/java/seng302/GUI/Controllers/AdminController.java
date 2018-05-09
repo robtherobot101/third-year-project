@@ -19,7 +19,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
@@ -27,8 +26,8 @@ import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -100,13 +99,13 @@ public class AdminController implements Initializable {
     @FXML
     private TextField adminRegionField;
     @FXML
-    private ComboBox adminGenderComboBox;
+    private ComboBox<Gender> adminGenderComboBox;
     @FXML
     private TextField adminAgeField;
     @FXML
-    private ComboBox adminUserTypeComboBox;
+    private ComboBox<String> adminUserTypeComboBox;
     @FXML
-    private ComboBox adminOrganComboBox;
+    private ComboBox<Organ> adminOrganComboBox;
     @FXML
     private Label adminNameLabel;
     @FXML
@@ -176,7 +175,7 @@ public class AdminController implements Initializable {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.orElse(null) == ButtonType.OK) {
             for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
                 userWindow.close();
             }
@@ -184,41 +183,6 @@ public class AdminController implements Initializable {
             WindowManager.resetScene(TFScene.admin);
         } else {
             alert.close();
-        }
-    }
-
-
-    /**
-     * Function which is called when the user wants to update their account settings in the user Window,
-     * and creates a new account settings window to do so. Then does a prompt for the password as well.
-     */
-    public void updateAccountSettings() {
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("View Account Settings");
-        dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
-        dialog.setContentText("Please enter your password:");
-
-        Optional<String> password = dialog.showAndWait();
-        if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(currentAdmin.getPassword())) {
-                try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
-                    Stage stage = new Stage();
-                    stage.getIcons().add(WindowManager.getIcon());
-                    stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 290, 350));
-                    stage.initModality(Modality.APPLICATION_MODAL);
-
-                    WindowManager.setCurrentClinicianForAccountSettings(currentAdmin);
-
-                    stage.showAndWait();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else { // Password incorrect
-                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
-            }
         }
     }
 
@@ -478,13 +442,12 @@ public class AdminController implements Initializable {
         adminGenderComboBox.setValue(null);
         adminOrganComboBox.setValue(null);
         adminUserTypeComboBox.setValue(null);
-
     }
 
     /**
      * Updates the list of users found from the search
      */
-    public void updateFoundUsers() {
+    private void updateFoundUsers() {
         usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
 
         //Add in check for region
@@ -618,7 +581,7 @@ public class AdminController implements Initializable {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm profile deletion",
                     "Are you sure you want to delete this profile? This cannot be undone.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.orElse(null) == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
                     System.out.println("AdminController: Deleting User: " + selectedUser);
@@ -715,29 +678,24 @@ public class AdminController implements Initializable {
                 searchGenderTerm = newValue.toString();
             }
             updateFoundUsers();
-
         });
 
         adminUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 searchUserTypeTerm = null;
-
             } else {
-                searchUserTypeTerm = newValue.toString();
+                searchUserTypeTerm = newValue;
             }
             updateFoundUsers();
-
         });
 
         adminOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 searchOrganTerm = null;
-
             } else {
                 searchOrganTerm = newValue.toString();
             }
             updateFoundUsers();
-
         });
 
         WindowManager.setAdminController(this);
