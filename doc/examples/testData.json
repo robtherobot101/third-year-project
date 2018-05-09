@@ -1,91 +1,2401 @@
 [
   {
     "name": [
-      "tester",
-      "number1"
+      "Alfreda",
+      "Gena",
+      "Moran"
     ],
-    "dateOfBirth": "01/02/1998",
-    "dateOfDeath": "01/11/4000",
-    "creationTime": "08/03/2018, 14:00:37",
-    "lastModified": "08/03/2018, 14:22:51",
+    "preferredName": [
+      "Figueroa",
+      "Essie",
+      "Meadows"
+    ],
+    "dateOfBirth": "02/04/1943",
+    "creationTime": "13/08/1926, 04:15:49",
+    "lastModified": "03/05/2018, 16:07:30",
     "gender": "MALE",
-    "height": 12.1,
-    "weight": 50.45,
-    "bloodType": "O_POS",
+    "genderIdentity": "FEMALE",
+    "height": 181.4,
+    "weight": 229.1,
     "id": 0,
-    "currentAddress": "1235 abc Street",
-    "region": "Canterbury",
-    "organs": []
+    "currentAddress": "554 Marconi Place, Snelling",
+    "region": "Arkansas",
+    "organs": [
+      "PANCREAS",
+      "HEART",
+      "INTESTINE",
+      "SKIN",
+      "BONE"
+    ],
+    "username": "",
+    "email": "essiemeadows@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
-      "Test Donor",
-      "Testperson"
+      "Wilson",
+      "Marguerite",
+      "Baker"
     ],
-    "dateOfBirth": "01/04/1530",
-    "dateOfDeath": "31/01/1565",
-    "creationTime": "08/03/2018, 14:00:37",
-    "gender": "OTHER",
-    "height": 1.234,
-    "weight": 1.11111,
-    "bloodType": "A_NEG",
+    "preferredName": [
+      "Rhonda",
+      "Poole",
+      "Hickman"
+    ],
+    "dateOfBirth": "17/08/1939",
+    "creationTime": "03/12/1936, 01:31:22",
+    "gender": "MALE",
+    "genderIdentity": "NONBINARY",
+    "height": 152.7,
+    "weight": 186.6,
     "id": 1,
-    "currentAddress": "street sample text",
-    "region": "Auckland",
-    "organs": []
+    "currentAddress": "930 Driggs Avenue, Fostoria",
+    "region": "Connecticut",
+    "organs": [
+      "KIDNEY"
+    ],
+    "username": "",
+    "email": "poolehickman@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   },
   {
     "name": [
-      "Singlename"
+      "Peters",
+      "Twila",
+      "Patel"
     ],
-    "dateOfBirth": "12/06/1945",
-    "creationTime": "08/03/2018, 14:00:37",
-    "lastModified": "08/03/2018, 14:21:49",
-    "height": -1.0,
-    "weight": -1.0,
+    "preferredName": [
+      "Cobb",
+      "Maureen",
+      "Horn"
+    ],
+    "dateOfBirth": "25/05/1995",
+    "creationTime": "02/03/1934, 01:01:00",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 151.1,
+    "weight": 158.0,
     "id": 2,
+    "currentAddress": "302 Junius Street, Tilden",
+    "region": "Utah",
+    "organs": [
+      "HEART"
+    ],
+    "username": "",
+    "email": "maureenhorn@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Castro",
+      "Lula",
+      "Camacho"
+    ],
+    "preferredName": [
+      "Claire",
+      "Reva",
+      "Terrell"
+    ],
+    "dateOfBirth": "05/04/2018",
+    "creationTime": "03/08/2009, 11:39:01",
+    "lastModified": "03/05/2018, 16:09:35",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 177.7,
+    "weight": 167.3,
+    "id": 3,
+    "currentAddress": "779 High Street, Adelino",
+    "region": "Nebraska",
+    "organs": [],
+    "username": "",
+    "email": "revaterrell@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "HEART",
+        "organRegisteredDate": "03/05/2018, 16:09:32",
+        "waitingListItemId": 6,
+        "userId": 3
+      }
+    ]
+  },
+  {
+    "name": [
+      "Mercado",
+      "Ratliff",
+      "Bennett"
+    ],
+    "preferredName": [
+      "Daniel",
+      "Fran",
+      "Webster"
+    ],
+    "dateOfBirth": "21/02/2000",
+    "creationTime": "15/11/1927, 05:01:01",
+    "lastModified": "03/05/2018, 16:13:55",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 207.6,
+    "weight": 167.4,
+    "id": 4,
+    "currentAddress": "600 Guider Avenue, Carbonville",
+    "region": "Indiana",
+    "organs": [
+      "PANCREAS"
+    ],
+    "username": "",
+    "email": "franwebster@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Lynda",
+      "Hannah",
+      "Michael"
+    ],
+    "preferredName": [
+      "Brandy",
+      "Sally",
+      "Beard"
+    ],
+    "dateOfBirth": "07/03/1941",
+    "creationTime": "27/08/1951, 02:48:07",
+    "lastModified": "03/05/2018, 16:13:34",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 179.2,
+    "weight": 198.9,
+    "id": 5,
+    "currentAddress": "940 McDonald Avenue, Stouchsburg",
+    "region": "New Jersey",
+    "organs": [
+      "LIVER"
+    ],
+    "username": "",
+    "email": "sallybeard@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "LIVER",
+        "organRegisteredDate": "03/05/2018, 16:13:29",
+        "waitingListItemId": 7,
+        "userId": 5
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "CORNEA",
+        "organRegisteredDate": "03/05/2018, 16:13:30",
+        "waitingListItemId": 1,
+        "userId": 5
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "EAR",
+        "organRegisteredDate": "03/05/2018, 16:13:32",
+        "waitingListItemId": 2,
+        "userId": 5
+      }
+    ]
+  },
+  {
+    "name": [
+      "Nora",
+      "Barr",
+      "Randolph"
+    ],
+    "preferredName": [
+      "Valeria",
+      "Marilyn",
+      "Hewitt"
+    ],
+    "dateOfBirth": "28/01/1935",
+    "creationTime": "05/09/1960, 04:55:09",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 165.7,
+    "weight": 118.9,
+    "id": 6,
+    "currentAddress": "908 Dorchester Road, Aurora",
+    "region": "Illinois",
+    "organs": [
+      "BONE"
+    ],
+    "username": "",
+    "email": "marilynhewitt@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Holden",
+      "Love",
+      "Gilbert"
+    ],
+    "preferredName": [
+      "Lynch",
+      "Robinson",
+      "Roth"
+    ],
+    "dateOfBirth": "15/08/2006",
+    "creationTime": "30/12/1972, 11:08:12",
+    "lastModified": "03/05/2018, 16:12:23",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 195.7,
+    "weight": 239.5,
+    "id": 7,
+    "currentAddress": "933 Hopkins Street, Sandston",
+    "region": "Missouri",
+    "organs": [],
+    "username": "",
+    "email": "robinsonroth@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "HEART",
+        "organRegisteredDate": "03/05/2018, 16:12:22",
+        "waitingListItemId": 6,
+        "userId": 7
+      }
+    ]
+  },
+  {
+    "name": [
+      "Blake",
+      "Bell",
+      "Thornton"
+    ],
+    "preferredName": [
+      "Wright",
+      "Franks",
+      "Cotton"
+    ],
+    "dateOfBirth": "22/04/1989",
+    "creationTime": "10/07/1968, 01:51:19",
+    "gender": "FEMALE",
+    "genderIdentity": "MALE",
+    "height": 202.4,
+    "weight": 180.1,
+    "id": 8,
+    "currentAddress": "290 Batchelder Street, Lupton",
+    "region": "Colorado",
+    "organs": [
+      "INTESTINE"
+    ],
+    "username": "",
+    "email": "frankscotton@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [
+      {
+        "name": "Diethylstilbestrol",
+        "activeIngredients": [
+          "Diethylstilbestrol"
+        ],
+        "history": [
+          "Started taking on 03/05/2018, 16:08:34"
+        ]
+      }
+    ],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Wooten",
+      "Angelique",
+      "Carrillo"
+    ],
+    "preferredName": [
+      "Fern",
+      "Blanchard",
+      "Graves"
+    ],
+    "dateOfBirth": "25/09/1984",
+    "creationTime": "15/07/1987, 06:35:49",
+    "gender": "MALE",
+    "genderIdentity": "NONBINARY",
+    "height": 160.3,
+    "weight": 241.8,
+    "id": 9,
+    "currentAddress": "341 Royce Street, Needmore",
+    "region": "Alabama",
+    "organs": [
+      "PANCREAS"
+    ],
+    "username": "",
+    "email": "blanchardgraves@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Elvira",
+      "Mona",
+      "Prince"
+    ],
+    "preferredName": [
+      "Minnie",
+      "Ida",
+      "Sykes"
+    ],
+    "dateOfBirth": "28/11/1949",
+    "creationTime": "16/12/1951, 07:45:00",
+    "lastModified": "03/05/2018, 16:11:39",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 179.5,
+    "weight": 162.8,
+    "id": 10,
+    "currentAddress": "168 Overbaugh Place, Robinette",
+    "region": "Marshall Islands",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "idasykes@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "PANCREAS",
+        "organRegisteredDate": "03/05/2018, 16:11:36",
+        "waitingListItemId": 3,
+        "userId": 10
+      }
+    ]
+  },
+  {
+    "name": [
+      "Hodge",
+      "Branch",
+      "Reyes"
+    ],
+    "preferredName": [
+      "Luann",
+      "Bradford",
+      "Newton"
+    ],
+    "dateOfBirth": "10/04/1925",
+    "creationTime": "23/07/2006, 10:01:19",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 187.5,
+    "weight": 79.2,
+    "id": 11,
+    "currentAddress": "840 Madoc Avenue, Garnet",
+    "region": "Iowa",
+    "organs": [
+      "LIVER"
+    ],
+    "username": "",
+    "email": "bradfordnewton@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Beryl",
+      "Dale",
+      "Leonard"
+    ],
+    "preferredName": [
+      "Sonya",
+      "Ballard",
+      "James"
+    ],
+    "dateOfBirth": "03/04/1959",
+    "creationTime": "01/01/2004, 09:00:23",
+    "lastModified": "03/05/2018, 16:08:01",
+    "gender": "FEMALE",
+    "genderIdentity": "NONBINARY",
+    "height": 185.0,
+    "weight": 113.9,
+    "id": 12,
+    "currentAddress": "360 Veronica Place, Delwood",
+    "region": "South Dakota",
+    "organs": [
+      "CORNEA"
+    ],
+    "username": "",
+    "email": "ballardjames@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "INTESTINE",
+        "organRegisteredDate": "03/05/2018, 16:07:56",
+        "waitingListItemId": 3,
+        "userId": 12
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "KIDNEY",
+        "organRegisteredDate": "03/05/2018, 16:07:57",
+        "waitingListItemId": 1,
+        "userId": 12
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "EAR",
+        "organRegisteredDate": "03/05/2018, 16:07:58",
+        "waitingListItemId": 2,
+        "userId": 12
+      }
+    ]
+  },
+  {
+    "name": [
+      "Neal",
+      "Bernard",
+      "Glover"
+    ],
+    "preferredName": [
+      "Margret",
+      "Cook",
+      "Cannon"
+    ],
+    "dateOfBirth": "07/11/2006",
+    "creationTime": "16/12/1993, 07:44:55",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 204.2,
+    "weight": 179.1,
+    "id": 13,
+    "currentAddress": "986 Glenwood Road, Robbins",
+    "region": "Puerto Rico",
+    "organs": [
+      "CORNEA"
+    ],
+    "username": "",
+    "email": "cookcannon@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Mcleod",
+      "Juliette",
+      "Sweet"
+    ],
+    "preferredName": [
+      "Michele",
+      "Yvonne",
+      "Edwards"
+    ],
+    "dateOfBirth": "15/09/2009",
+    "creationTime": "30/03/1989, 01:37:40",
+    "gender": "FEMALE",
+    "genderIdentity": "NONBINARY",
+    "height": 167.4,
+    "weight": 171.5,
+    "id": 14,
+    "currentAddress": "779 Nostrand Avenue, Chicopee",
+    "region": "Northern Mariana Islands",
+    "organs": [
+      "PANCREAS"
+    ],
+    "username": "",
+    "email": "yvonneedwards@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Adrienne",
+      "Adkins",
+      "Petersen"
+    ],
+    "preferredName": [
+      "Yates",
+      "Allison",
+      "Francis"
+    ],
+    "dateOfBirth": "20/06/1989",
+    "creationTime": "29/05/1947, 01:17:46",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 194.4,
+    "weight": 224.8,
+    "id": 15,
+    "currentAddress": "409 Gerry Street, Cataract",
+    "region": "South Carolina",
+    "organs": [
+      "CORNEA"
+    ],
+    "username": "",
+    "email": "allisonfrancis@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Laura",
+      "Madelyn",
+      "Wagner"
+    ],
+    "preferredName": [
+      "Benita",
+      "Lizzie",
+      "Smith"
+    ],
+    "dateOfBirth": "23/06/1953",
+    "creationTime": "20/12/2007, 09:41:44",
+    "gender": "NONBINARY",
+    "genderIdentity": "FEMALE",
+    "height": 171.9,
+    "weight": 220.3,
+    "id": 16,
+    "currentAddress": "956 Withers Street, Marion",
+    "region": "Idaho",
+    "organs": [
+      "LUNG"
+    ],
+    "username": "",
+    "email": "lizziesmith@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [
+      {
+        "summary": "Lung scraping",
+        "description": "Lung scraping",
+        "date": "07/05/2018",
+        "isOrganAffecting": false
+      }
+    ],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Maria",
+      "Barbara",
+      "Zimmerman"
+    ],
+    "preferredName": [
+      "Sofia",
+      "Lindsey",
+      "Morrison"
+    ],
+    "dateOfBirth": "22/08/1925",
+    "creationTime": "23/06/1988, 11:49:05",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 191.3,
+    "weight": 62.5,
+    "id": 17,
+    "currentAddress": "177 Grove Place, Juarez",
+    "region": "Mississippi",
+    "organs": [
+      "INTESTINE"
+    ],
+    "username": "",
+    "email": "lindseymorrison@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Dodson",
+      "Williams",
+      "Browning"
+    ],
+    "preferredName": [
+      "Fitzpatrick",
+      "Barker",
+      "Munoz"
+    ],
+    "dateOfBirth": "03/10/1987",
+    "creationTime": "12/06/2007, 10:51:33",
+    "gender": "FEMALE",
+    "genderIdentity": "NONBINARY",
+    "height": 176.8,
+    "weight": 246.7,
+    "id": 18,
+    "currentAddress": "317 Stockholm Street, Clay",
+    "region": "New York",
+    "organs": [
+      "LIVER"
+    ],
+    "username": "",
+    "email": "barkermunoz@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Nadine",
+      "Brigitte",
+      "Buchanan"
+    ],
+    "preferredName": [
+      "Stark",
+      "Pollard",
+      "Cooley"
+    ],
+    "dateOfBirth": "13/05/1988",
+    "creationTime": "27/06/1985, 08:54:30",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 192.0,
+    "weight": 121.9,
+    "id": 19,
+    "currentAddress": "224 Kings Hwy, Soudan",
+    "region": "West Virginia",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "pollardcooley@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Jerry",
+      "Molina",
+      "Hale"
+    ],
+    "preferredName": [
+      "Lorrie",
+      "Lorraine",
+      "Osborne"
+    ],
+    "dateOfBirth": "20/01/2000",
+    "creationTime": "25/07/2009, 03:56:01",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 178.2,
+    "weight": 206.7,
+    "id": 20,
+    "currentAddress": "220 Alice Court, Croom",
+    "region": "Massachusetts",
+    "organs": [
+      "LUNG"
+    ],
+    "username": "",
+    "email": "lorraineosborne@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Alvarado",
+      "Romero",
+      "Blake"
+    ],
+    "preferredName": [
+      "Moses",
+      "Kara",
+      "Hunter"
+    ],
+    "dateOfBirth": "01/02/2004",
+    "creationTime": "04/11/2017, 08:12:08",
+    "lastModified": "03/05/2018, 16:07:41",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 191.6,
+    "weight": 65.6,
+    "id": 21,
+    "currentAddress": "628 Clifford Place, Riner",
+    "region": "North Dakota",
+    "organs": [
+      "LIVER",
+      "CORNEA",
+      "EAR"
+    ],
+    "username": "",
+    "email": "karahunter@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Evelyn",
+      "Phelps",
+      "Bean"
+    ],
+    "preferredName": [
+      "Rosella",
+      "Lakeisha",
+      "Pope"
+    ],
+    "dateOfBirth": "08/04/1988",
+    "creationTime": "19/07/1978, 04:23:36",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 183.1,
+    "weight": 237.5,
+    "id": 22,
+    "currentAddress": "269 Virginia Place, Worton",
+    "region": "New Mexico",
+    "organs": [
+      "PANCREAS"
+    ],
+    "username": "",
+    "email": "lakeishapope@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Gale",
+      "Petra",
+      "Merritt"
+    ],
+    "preferredName": [
+      "Kane",
+      "Douglas",
+      "Massey"
+    ],
+    "dateOfBirth": "20/07/1977",
+    "creationTime": "03/03/1995, 06:53:15",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 161.1,
+    "weight": 91.3,
+    "id": 23,
+    "currentAddress": "104 Colonial Court, Rockingham",
+    "region": "Washington",
+    "organs": [
+      "CORNEA"
+    ],
+    "username": "",
+    "email": "douglasmassey@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Victoria",
+      "Corrine",
+      "Cleveland"
+    ],
+    "preferredName": [
+      "Keller",
+      "Trina",
+      "Palmer"
+    ],
+    "dateOfBirth": "22/09/1968",
+    "creationTime": "06/11/1955, 07:12:55",
+    "gender": "MALE",
+    "genderIdentity": "NONBINARY",
+    "height": 157.2,
+    "weight": 217.9,
+    "id": 24,
+    "currentAddress": "770 Louisa Street, Lloyd",
+    "region": "Maryland",
     "organs": [
       "TISSUE"
+    ],
+    "username": "",
+    "email": "trinapalmer@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Chan",
+      "Hall",
+      "Hayden"
+    ],
+    "preferredName": [
+      "Penelope",
+      "Rush",
+      "Valentine"
+    ],
+    "dateOfBirth": "21/05/1990",
+    "creationTime": "22/10/1957, 04:55:22",
+    "lastModified": "03/05/2018, 16:09:59",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 164.3,
+    "weight": 98.3,
+    "id": 25,
+    "currentAddress": "343 Adams Street, Jessie",
+    "region": "Wisconsin",
+    "organs": [
+      "PANCREAS",
+      "HEART",
+      "CORNEA",
+      "SKIN",
+      "BONE"
+    ],
+    "username": "",
+    "email": "rushvalentine@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "CORNEA",
+        "organRegisteredDate": "03/05/2018, 16:09:51",
+        "waitingListItemId": 3,
+        "userId": 25
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "INTESTINE",
+        "organRegisteredDate": "03/05/2018, 16:09:52",
+        "waitingListItemId": 1,
+        "userId": 25
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "SKIN",
+        "organRegisteredDate": "03/05/2018, 16:09:53",
+        "waitingListItemId": 2,
+        "userId": 25
+      }
     ]
   },
   {
     "name": [
-      "Donor 2",
-      "Person"
+      "Duncan",
+      "Ochoa",
+      "Vang"
     ],
-    "dateOfBirth": "01/12/1990",
-    "dateOfDeath": "09/03/2090",
-    "creationTime": "08/03/2018, 14:00:37",
-    "lastModified": "08/03/2018, 14:22:22",
+    "preferredName": [
+      "Susan",
+      "Ruth",
+      "Clark"
+    ],
+    "dateOfBirth": "10/10/1993",
+    "creationTime": "29/07/1982, 07:10:53",
+    "gender": "MALE",
+    "genderIdentity": "NONBINARY",
+    "height": 181.2,
+    "weight": 203.3,
+    "id": 26,
+    "currentAddress": "349 Wyckoff Avenue, Iola",
+    "region": "Arizona",
+    "organs": [
+      "LIVER"
+    ],
+    "username": "",
+    "email": "ruthclark@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Meyers",
+      "Jan",
+      "Meyers"
+    ],
+    "preferredName": [
+      "Lila",
+      "Shari",
+      "Walters"
+    ],
+    "dateOfBirth": "23/06/1958",
+    "creationTime": "30/11/1960, 10:12:13",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 201.1,
+    "weight": 78.6,
+    "id": 27,
+    "currentAddress": "202 Dover Street, Grenelefe",
+    "region": "North Carolina",
+    "organs": [
+      "KIDNEY"
+    ],
+    "username": "",
+    "email": "shariwalters@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Sondra",
+      "Minerva",
+      "Dale"
+    ],
+    "preferredName": [
+      "Karyn",
+      "Lynette",
+      "Clarke"
+    ],
+    "dateOfBirth": "28/08/2011",
+    "creationTime": "11/08/2010, 08:06:10",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 156.8,
+    "weight": 124.4,
+    "id": 28,
+    "currentAddress": "261 Stockton Street, Welch",
+    "region": "Wyoming",
+    "organs": [
+      "LUNG"
+    ],
+    "username": "",
+    "email": "lynetteclarke@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Dominique",
+      "Carney",
+      "Carney"
+    ],
+    "preferredName": [
+      "Mcdaniel",
+      "Cherry",
+      "Tillman"
+    ],
+    "dateOfBirth": "10/06/1955",
+    "creationTime": "05/01/1974, 06:18:01",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 179.8,
+    "weight": 122.2,
+    "id": 29,
+    "currentAddress": "591 Calyer Street, Bison",
+    "region": "Nevada",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "cherrytillman@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [
+      {
+        "summary": "Transfer of arm",
+        "description": "Transfer of arm",
+        "date": "03/05/2016",
+        "isOrganAffecting": false
+      }
+    ],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Nielsen",
+      "Lela",
+      "Bauer"
+    ],
+    "preferredName": [
+      "Shirley",
+      "Cornelia",
+      "Mosley"
+    ],
+    "dateOfBirth": "15/03/1968",
+    "creationTime": "16/01/2000, 02:28:21",
     "gender": "FEMALE",
-    "height": 2.0,
-    "weight": 60.0,
-    "bloodType": "B_NEG",
-    "id": 3,
-    "currentAddress": "Sample Address",
-    "region": "Sample Region",
+    "genderIdentity": "FEMALE",
+    "height": 184.9,
+    "weight": 138.9,
+    "id": 30,
+    "currentAddress": "186 Opal Court, Ola",
+    "region": "Guam",
+    "organs": [
+      "LUNG"
+    ],
+    "username": "",
+    "email": "corneliamosley@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Ethel",
+      "Jacqueline",
+      "Duke"
+    ],
+    "preferredName": [
+      "Hale",
+      "Glenda",
+      "Levine"
+    ],
+    "dateOfBirth": "17/12/1957",
+    "creationTime": "23/04/1987, 08:33:20",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 203.5,
+    "weight": 233.2,
+    "id": 31,
+    "currentAddress": "882 Rutledge Street, Rowe",
+    "region": "Maine",
+    "organs": [
+      "TISSUE"
+    ],
+    "username": "",
+    "email": "glendalevine@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Mollie",
+      "Jodie",
+      "Pena"
+    ],
+    "preferredName": [
+      "Wood",
+      "Paula",
+      "Delgado"
+    ],
+    "dateOfBirth": "08/09/1998",
+    "creationTime": "15/03/1961, 09:23:48",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 179.2,
+    "weight": 221.6,
+    "id": 32,
+    "currentAddress": "670 Argyle Road, Nile",
+    "region": "Minnesota",
+    "organs": [
+      "CORNEA"
+    ],
+    "username": "",
+    "email": "pauladelgado@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Lorena",
+      "Serena",
+      "Walsh"
+    ],
+    "preferredName": [
+      "Evangelina",
+      "Kathryn",
+      "Whitfield"
+    ],
+    "dateOfBirth": "01/02/1983",
+    "creationTime": "09/07/1961, 09:15:33",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 176.7,
+    "weight": 196.7,
+    "id": 33,
+    "currentAddress": "546 Micieli Place, Kenmar",
+    "region": "Louisiana",
+    "organs": [
+      "INTESTINE"
+    ],
+    "username": "",
+    "email": "kathrynwhitfield@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Gomez",
+      "Wells",
+      "Santiago"
+    ],
+    "preferredName": [
+      "Monroe",
+      "Maryann",
+      "Mayo"
+    ],
+    "dateOfBirth": "27/09/1980",
+    "creationTime": "22/06/2006, 01:56:56",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 185.4,
+    "weight": 131.6,
+    "id": 34,
+    "currentAddress": "136 Stillwell Avenue, Munjor",
+    "region": "Oklahoma",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "maryannmayo@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Cathleen",
+      "Paulette",
+      "Marquez"
+    ],
+    "preferredName": [
+      "Cathleen",
+      "Paulette",
+      "Marquez"
+    ],
+    "dateOfBirth": "20/07/1987",
+    "creationTime": "30/08/1962, 11:13:31",
+    "lastModified": "03/05/2018, 16:09:46",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 170.0,
+    "weight": 120.3,
+    "id": 35,
+    "currentAddress": "195 Henderson Walk, Virgie",
+    "region": "Tennessee",
+    "organs": [],
+    "username": "",
+    "email": "cecelialambert@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "HEART",
+        "organRegisteredDate": "03/05/2018, 16:09:39",
+        "waitingListItemId": 7,
+        "userId": 35
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "PANCREAS",
+        "organRegisteredDate": "03/05/2018, 16:09:41",
+        "waitingListItemId": 1,
+        "userId": 35
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "CORNEA",
+        "organRegisteredDate": "03/05/2018, 16:09:42",
+        "waitingListItemId": 2,
+        "userId": 35
+      }
+    ]
+  },
+  {
+    "name": [
+      "Tammi",
+      "Carla",
+      "Lucas"
+    ],
+    "preferredName": [
+      "Tammi",
+      "Carla",
+      "Lucas"
+    ],
+    "dateOfBirth": "01/07/1949",
+    "creationTime": "14/05/1972, 03:25:07",
+    "gender": "NONBINARY",
+    "genderIdentity": "FEMALE",
+    "height": 175.4,
+    "weight": 165.2,
+    "id": 36,
+    "currentAddress": "142 Bergen Place, Winston",
+    "region": "Delaware",
+    "organs": [
+      "LIVER"
+    ],
+    "username": "",
+    "email": "rodriguezwalker@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Cassandra",
+      "Blanche",
+      "Anthony"
+    ],
+    "preferredName": [
+      "Cassandra",
+      "Blanche",
+      "Anthony"
+    ],
+    "dateOfBirth": "17/04/1967",
+    "creationTime": "29/06/2000, 11:10:06",
+    "lastModified": "03/05/2018, 16:09:27",
+    "gender": "NONBINARY",
+    "genderIdentity": "FEMALE",
+    "height": 209.7,
+    "weight": 216.0,
+    "id": 37,
+    "currentAddress": "197 Linwood Street, Winchester",
+    "region": "Federated States Of Micronesia",
+    "organs": [],
+    "username": "",
+    "email": "franklinhancock@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "PANCREAS",
+        "organRegisteredDate": "03/05/2018, 16:09:23",
+        "waitingListItemId": 5,
+        "userId": 37
+      }
+    ]
+  },
+  {
+    "name": [
+      "Mia",
+      "Herminia",
+      "Rogers"
+    ],
+    "preferredName": [
+      "Mia",
+      "Herminia",
+      "Rogers"
+    ],
+    "dateOfBirth": "24/02/1983",
+    "creationTime": "15/03/1934, 09:50:44",
+    "gender": "MALE",
+    "genderIdentity": "NONBINARY",
+    "height": 199.2,
+    "weight": 130.6,
+    "id": 38,
+    "currentAddress": "398 Cheever Place, Riceville",
+    "region": "Kentucky",
+    "organs": [
+      "BONE"
+    ],
+    "username": "",
+    "email": "aimeeayers@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Pam",
+      "Kline",
+      "Cohen"
+    ],
+    "preferredName": [
+      "Pam",
+      "Kline",
+      "Cohen"
+    ],
+    "dateOfBirth": "23/04/2011",
+    "creationTime": "26/03/2011, 05:03:15",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 195.7,
+    "weight": 76.9,
+    "id": 39,
+    "currentAddress": "770 Ira Court, Bourg",
+    "region": "American Samoa",
+    "organs": [
+      "HEART"
+    ],
+    "username": "",
+    "email": "feleciabarker@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Mcclure",
+      "Jacklyn",
+      "Howard"
+    ],
+    "preferredName": [
+      "Mcclure",
+      "Jacklyn",
+      "Howard"
+    ],
+    "dateOfBirth": "17/01/1947",
+    "creationTime": "31/05/1940, 08:31:41",
+    "gender": "FEMALE",
+    "genderIdentity": "NONBINARY",
+    "height": 167.7,
+    "weight": 69.5,
+    "id": 40,
+    "currentAddress": "609 Ide Court, Barclay",
+    "region": "Kansas",
+    "organs": [
+      "TISSUE"
+    ],
+    "username": "",
+    "email": "doramoore@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Conrad",
+      "Farrell",
+      "Navarro"
+    ],
+    "preferredName": [
+      "Conrad",
+      "Farrell",
+      "Navarro"
+    ],
+    "dateOfBirth": "11/01/1986",
+    "creationTime": "19/08/2013, 07:47:13",
+    "lastModified": "03/05/2018, 16:10:52",
+    "gender": "NONBINARY",
+    "genderIdentity": "FEMALE",
+    "height": 150.2,
+    "weight": 92.4,
+    "id": 41,
+    "currentAddress": "276 Lloyd Court, Sunriver",
+    "region": "Hawaii",
     "organs": [
       "KIDNEY",
-      "SKIN"
+      "PANCREAS",
+      "HEART",
+      "SKIN",
+      "BONE"
+    ],
+    "username": "",
+    "email": "sandersjimenez@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Cara",
+      "Patty",
+      "Sharp"
+    ],
+    "preferredName": [
+      "Cara",
+      "Patty",
+      "Sharp"
+    ],
+    "dateOfBirth": "25/06/1982",
+    "creationTime": "22/07/1953, 02:30:11",
+    "lastModified": "03/05/2018, 16:09:05",
+    "gender": "NONBINARY",
+    "genderIdentity": "FEMALE",
+    "height": 179.6,
+    "weight": 175.4,
+    "id": 42,
+    "currentAddress": "538 Lafayette Avenue, Finzel",
+    "region": "Vermont",
+    "organs": [],
+    "username": "",
+    "email": "farleybishop@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [
+      {
+        "name": "Crones",
+        "diagnosisDate": "02/05/2017",
+        "isChronic": false,
+        "isCured": false
+      }
+    ],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "INTESTINE",
+        "organRegisteredDate": "03/05/2018, 16:08:55",
+        "waitingListItemId": 3,
+        "userId": 42
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "LUNG",
+        "organRegisteredDate": "03/05/2018, 16:08:56",
+        "waitingListItemId": 1,
+        "userId": 42
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "TISSUE",
+        "organRegisteredDate": "03/05/2018, 16:08:57",
+        "waitingListItemId": 2,
+        "userId": 42
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "PANCREAS",
+        "organRegisteredDate": "03/05/2018, 16:08:59",
+        "waitingListItemId": 3,
+        "userId": 42
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "KIDNEY",
+        "organRegisteredDate": "03/05/2018, 16:09:00",
+        "waitingListItemId": 4,
+        "userId": 42
+      }
     ]
   },
   {
     "name": [
-      "a",
-      "long",
-      "long",
-      "name"
+      "Harrington",
+      "Miller",
+      "Lopez"
     ],
-    "dateOfBirth": "01/11/3000",
-    "dateOfDeath": "01/11/4000",
-    "creationTime": "08/03/2018, 14:00:37",
-    "gender": "OTHER",
-    "height": 0.1,
-    "weight": 12.4,
-    "bloodType": "B_NEG",
-    "id": 4,
-    "currentAddress": "Example Address 12345",
-    "region": "Example region",
-    "organs": []
+    "preferredName": [
+      "Harrington",
+      "Miller",
+      "Lopez"
+    ],
+    "dateOfBirth": "04/12/2015",
+    "creationTime": "29/08/1938, 02:54:41",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 174.1,
+    "weight": 159.1,
+    "id": 43,
+    "currentAddress": "519 Kings Place, Valmy",
+    "region": "Montana",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "armstrongstanley@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Bender",
+      "Debora",
+      "Bright"
+    ],
+    "preferredName": [
+      "Bender",
+      "Debora",
+      "Bright"
+    ],
+    "dateOfBirth": "17/04/1919",
+    "creationTime": "01/03/1965, 03:55:55",
+    "lastModified": "03/05/2018, 16:07:50",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 169.5,
+    "weight": 105.7,
+    "id": 44,
+    "currentAddress": "601 Clarkson Avenue, Westphalia",
+    "region": "California",
+    "organs": [
+      "LIVER"
+    ],
+    "username": "",
+    "email": "carlyfloyd@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "LUNG",
+        "organRegisteredDate": "03/05/2018, 16:07:46",
+        "waitingListItemId": 0,
+        "userId": 44
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "INTESTINE",
+        "organRegisteredDate": "03/05/2018, 16:07:47",
+        "waitingListItemId": 1,
+        "userId": 44
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "CORNEA",
+        "organRegisteredDate": "03/05/2018, 16:07:48",
+        "waitingListItemId": 2,
+        "userId": 44
+      }
+    ]
+  },
+  {
+    "name": [
+      "Janette",
+      "Kerri",
+      "Stone"
+    ],
+    "preferredName": [
+      "Janette",
+      "Kerri",
+      "Stone"
+    ],
+    "dateOfBirth": "13/10/2016",
+    "creationTime": "31/03/1972, 09:51:04",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 170.0,
+    "weight": 149.2,
+    "id": 45,
+    "currentAddress": "977 Orange Street, Gratton",
+    "region": "New Hampshire",
+    "organs": [
+      "PANCREAS"
+    ],
+    "username": "",
+    "email": "fannykim@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Mcdonald",
+      "Gwen",
+      "Huber"
+    ],
+    "preferredName": [
+      "Mcdonald",
+      "Gwen",
+      "Huber"
+    ],
+    "dateOfBirth": "01/09/1945",
+    "creationTime": "14/12/1972, 09:14:52",
+    "gender": "NONBINARY",
+    "genderIdentity": "MALE",
+    "height": 180.0,
+    "weight": 179.0,
+    "id": 46,
+    "currentAddress": "697 Lorraine Street, Edneyville",
+    "region": "Alaska",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "goldencombs@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Dawn",
+      "May",
+      "Morris"
+    ],
+    "preferredName": [
+      "Dawn",
+      "May",
+      "Morris"
+    ],
+    "dateOfBirth": "17/06/1947",
+    "creationTime": "10/01/2005, 03:57:24",
+    "gender": "FEMALE",
+    "genderIdentity": "MALE",
+    "height": 165.4,
+    "weight": 104.3,
+    "id": 47,
+    "currentAddress": "286 Vermont Street, Centerville",
+    "region": "Oregon",
+    "organs": [
+      "CORNEA"
+    ],
+    "username": "",
+    "email": "toddgutierrez@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Carolyn",
+      "Cochran",
+      "Glenn"
+    ],
+    "preferredName": [
+      "Carolyn",
+      "Cochran",
+      "Glenn"
+    ],
+    "dateOfBirth": "14/01/1948",
+    "creationTime": "10/02/1998, 02:38:05",
+    "lastModified": "03/05/2018, 16:09:18",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 177.5,
+    "weight": 186.3,
+    "id": 48,
+    "currentAddress": "564 Jackson Court, Fivepointville",
+    "region": "Rhode Island",
+    "organs": [],
+    "username": "",
+    "email": "austinhorne@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "INTESTINE",
+        "organRegisteredDate": "03/05/2018, 16:09:10",
+        "waitingListItemId": 5,
+        "userId": 48
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "PANCREAS",
+        "organRegisteredDate": "03/05/2018, 16:09:12",
+        "waitingListItemId": 1,
+        "userId": 48
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "LUNG",
+        "organRegisteredDate": "03/05/2018, 16:09:13",
+        "waitingListItemId": 2,
+        "userId": 48
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "EAR",
+        "organRegisteredDate": "03/05/2018, 16:09:14",
+        "waitingListItemId": 3,
+        "userId": 48
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "HEART",
+        "organRegisteredDate": "03/05/2018, 16:09:15",
+        "waitingListItemId": 4,
+        "userId": 48
+      }
+    ]
+  },
+  {
+    "name": [
+      "Chandler",
+      "Holman",
+      "Mullen"
+    ],
+    "preferredName": [
+      "Chandler",
+      "Holman",
+      "Mullen"
+    ],
+    "dateOfBirth": "15/02/2007",
+    "creationTime": "06/07/2010, 08:07:25",
+    "lastModified": "03/05/2018, 16:11:43",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 156.1,
+    "weight": 122.2,
+    "id": 49,
+    "currentAddress": "464 Rock Street, Hailesboro",
+    "region": "Palau",
+    "organs": [],
+    "username": "",
+    "email": "hazelnicholson@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "HEART",
+        "organRegisteredDate": "03/05/2018, 16:11:45",
+        "waitingListItemId": 4,
+        "userId": 49
+      }
+    ]
+  },
+  {
+    "name": [
+      "Campbell",
+      "Mullen",
+      "Mathis"
+    ],
+    "preferredName": [
+      "Campbell",
+      "Mullen",
+      "Mathis"
+    ],
+    "dateOfBirth": "13/07/2016",
+    "creationTime": "18/11/1942, 11:15:13",
+    "lastModified": "03/05/2018, 16:08:50",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 178.8,
+    "weight": 181.3,
+    "id": 50,
+    "currentAddress": "826 Cyrus Avenue, Monument",
+    "region": "Ohio",
+    "organs": [],
+    "username": "",
+    "email": "leestark@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "LUNG",
+        "organRegisteredDate": "03/05/2018, 16:08:43",
+        "waitingListItemId": 3,
+        "userId": 50
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "CORNEA",
+        "organRegisteredDate": "03/05/2018, 16:08:45",
+        "waitingListItemId": 1,
+        "userId": 50
+      },
+      {
+        "stillWaitingOn": true,
+        "organType": "EAR",
+        "organRegisteredDate": "03/05/2018, 16:08:46",
+        "waitingListItemId": 2,
+        "userId": 50
+      }
+    ]
+  },
+  {
+    "name": [
+      "Georgette",
+      "Edwards",
+      "Mack"
+    ],
+    "preferredName": [
+      "Georgette",
+      "Edwards",
+      "Mack"
+    ],
+    "dateOfBirth": "17/11/1989",
+    "creationTime": "01/01/1992, 05:29:08",
+    "gender": "FEMALE",
+    "genderIdentity": "NONBINARY",
+    "height": 193.1,
+    "weight": 107.2,
+    "id": 51,
+    "currentAddress": "388 Battery Avenue, Dorneyville",
+    "region": "Georgia",
+    "organs": [
+      "PANCREAS"
+    ],
+    "username": "",
+    "email": "blackwarren@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Vazquez",
+      "Amparo",
+      "Harrington"
+    ],
+    "preferredName": [
+      "Vazquez",
+      "Amparo",
+      "Harrington"
+    ],
+    "dateOfBirth": "26/06/1977",
+    "creationTime": "21/11/1936, 01:57:35",
+    "gender": "FEMALE",
+    "genderIdentity": "FEMALE",
+    "height": 172.4,
+    "weight": 155.5,
+    "id": 52,
+    "currentAddress": "978 Lefferts Place, Drytown",
+    "region": "Texas",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "melaniecrawford@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Pansy",
+      "Latoya",
+      "Oneil"
+    ],
+    "preferredName": [
+      "Pansy",
+      "Latoya",
+      "Oneil"
+    ],
+    "dateOfBirth": "03/10/1989",
+    "creationTime": "06/04/1972, 07:11:24",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 178.4,
+    "weight": 149.0,
+    "id": 53,
+    "currentAddress": "184 Post Court, Gambrills",
+    "region": "Virginia",
+    "organs": [
+      "TISSUE"
+    ],
+    "username": "",
+    "email": "beulahbrewer@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Robertson",
+      "Sheree",
+      "David"
+    ],
+    "preferredName": [
+      "Robertson",
+      "Sheree",
+      "David"
+    ],
+    "dateOfBirth": "04/05/1988",
+    "creationTime": "05/03/1929, 06:15:14",
+    "gender": "MALE",
+    "genderIdentity": "NONBINARY",
+    "height": 179.9,
+    "weight": 160.9,
+    "id": 54,
+    "currentAddress": "744 Beadel Street, Emison",
+    "region": "Pennsylvania",
+    "organs": [
+      "TISSUE"
+    ],
+    "username": "",
+    "email": "mccormicktyson@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Susanne",
+      "Mcdowell",
+      "Ramos"
+    ],
+    "preferredName": [
+      "Susanne",
+      "Mcdowell",
+      "Ramos"
+    ],
+    "dateOfBirth": "21/01/1993",
+    "creationTime": "18/12/2011, 05:31:08",
+    "gender": "MALE",
+    "genderIdentity": "FEMALE",
+    "height": 167.5,
+    "weight": 98.3,
+    "id": 55,
+    "currentAddress": "804 Beach Place, Volta",
+    "region": "Virgin Islands",
+    "organs": [
+      "BONE"
+    ],
+    "username": "",
+    "email": "russoochoa@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Griffith",
+      "Mathis",
+      "Gates"
+    ],
+    "preferredName": [
+      "Griffith",
+      "Mathis",
+      "Gates"
+    ],
+    "dateOfBirth": "03/03/2016",
+    "creationTime": "04/12/1972, 05:37:13",
+    "lastModified": "03/05/2018, 16:12:00",
+    "gender": "FEMALE",
+    "genderIdentity": "NONBINARY",
+    "height": 174.0,
+    "weight": 127.8,
+    "id": 56,
+    "currentAddress": "496 Kay Court, Soham",
+    "region": "Michigan",
+    "organs": [
+      "EAR"
+    ],
+    "username": "",
+    "email": "michaelpeck@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": [
+      {
+        "stillWaitingOn": true,
+        "organType": "PANCREAS",
+        "organRegisteredDate": "03/05/2018, 16:11:57",
+        "waitingListItemId": 5,
+        "userId": 56
+      }
+    ]
+  },
+  {
+    "name": [
+      "Hooper",
+      "Ola",
+      "Mcintosh"
+    ],
+    "preferredName": [
+      "Hooper",
+      "Ola",
+      "Mcintosh"
+    ],
+    "dateOfBirth": "05/10/1954",
+    "creationTime": "29/10/1993, 09:04:48",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 204.4,
+    "weight": 65.8,
+    "id": 57,
+    "currentAddress": "854 Cranberry Street, Mappsville",
+    "region": "District Of Columbia",
+    "organs": [
+      "TISSUE"
+    ],
+    "username": "",
+    "email": "kelleyalford@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Finley",
+      "Nguyen",
+      "Day"
+    ],
+    "preferredName": [
+      "Finley",
+      "Nguyen",
+      "Day"
+    ],
+    "dateOfBirth": "24/07/1998",
+    "creationTime": "16/12/1947, 02:28:35",
+    "gender": "NONBINARY",
+    "genderIdentity": "NONBINARY",
+    "height": 156.7,
+    "weight": 73.5,
+    "id": 58,
+    "currentAddress": "210 Duryea Place, Inkerman",
+    "region": "Arkansas",
+    "organs": [
+      "TISSUE"
+    ],
+    "username": "",
+    "email": "walterwilson@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
+  },
+  {
+    "name": [
+      "Moody",
+      "Waters",
+      "Burton"
+    ],
+    "preferredName": [
+      "Moody",
+      "Waters",
+      "Burton"
+    ],
+    "dateOfBirth": "24/06/2014",
+    "creationTime": "26/07/1976, 05:43:22",
+    "gender": "MALE",
+    "genderIdentity": "MALE",
+    "height": 158.8,
+    "weight": 146.5,
+    "id": 59,
+    "currentAddress": "648 Montauk Court, Haena",
+    "region": "Connecticut",
+    "organs": [
+      "KIDNEY"
+    ],
+    "username": "",
+    "email": "lupeleach@dogspa.com",
+    "password": "",
+    "bloodPressure": "",
+    "currentMedications": [],
+    "historicMedications": [],
+    "currentDiseases": [],
+    "curedDiseases": [],
+    "pendingProcedures": [],
+    "previousProcedures": [],
+    "waitingListItems": []
   }
 ]
