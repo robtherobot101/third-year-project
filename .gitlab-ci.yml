@@ -1,7 +1,7 @@
 tag_checker:
   stage: build
   script:
-    - python tag_checker.py $CI_COMMIT_TAG
+    - python3 tag_checker.py $CI_COMMIT_TAG
   only:
     - tags
 
@@ -24,7 +24,7 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B -DskipTests clean site package
+    - mvn -B clean site package
   artifacts:
     paths:
     - target/*.jar

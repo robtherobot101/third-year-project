@@ -1,3 +1,7 @@
+Default clinician login: username: default, password:default
+
+Default administrator login: admin, password:admin
+
 How to run the program:
 Navigate a shell (cmd or bash) to the same directory of the jar file, and then execute the command "java -jar app0.0.jar"
 
