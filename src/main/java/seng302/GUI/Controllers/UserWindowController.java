@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
@@ -155,6 +156,12 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.SKIN, skinCheckBox);
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
+
+        for(CheckBox checkbox:organTickBoxes.values()){
+            checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                highlightOrganCheckBoxes();
+            });
+        }
 
         WindowManager.controlViewForUser();
 
@@ -417,20 +424,27 @@ public class UserWindowController implements Initializable {
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
     }
 
-
+    /**
+     * Highlights the checkboxes in red if the user is also waiting to receive an organ of that type.
+     * A tooltip is also added to highlighted checkboxes which tells the user what the problem is
+     */
     public void highlightOrganCheckBoxes(){
-        Set<Organ> conflicting = new HashSet<>();
-        for(ReceiverWaitingListItem item: currentUser.getWaitingListItems()) {
-            if(item.getStillWaitingOn()){
-                if(currentUser.getOrgans().contains(item.getOrganType())){
-                    conflicting.add(item.getOrganType());
+        System.out.println("re-drawing");
+        for(Organ organ: Organ.values()){
+            if(organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox")){
+                organTickBoxes.get(organ).getStyleClass().remove("highlighted-checkbox");
+                organTickBoxes.get(organ).setTooltip(null);
+            }
+            for(WaitingListItem item: currentUser.getWaitingListItems()){
+                if(!organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox") && item.getOrganType()==organ && organTickBoxes.get(organ).isSelected()){
+                    organTickBoxes.get(organ).getStyleClass().add("highlighted-checkbox");
+                    organTickBoxes.get(organ).setTooltip(new Tooltip("User is waiting to receive this organ"));
                 }
             }
         }
-        for(Organ organ:conflicting){
-            organTickBoxes.get(organ).getStyleClass().add("highlighted-row");
-        }
     }
+
+
 
     /**
      * Populates the history table based on the action history of the current user.

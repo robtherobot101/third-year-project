@@ -200,13 +200,12 @@ public class WaitingListController extends PageController implements Initializab
                         }
                         setTooltip(null);
                         if (item != null && !empty) {
-                            if (item.isDonatingOrgan(currentUser) && item.getStillWaitingOn()) {
+                            if(currentUser.conflictingOrgans().contains(item.getOrganType())) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
                                 System.out.println("User is donating " + item.getOrganType());
                                 if (!getStyleClass().contains("highlighted-row")) {
                                     getStyleClass().add("highlighted-row");
                                 }
-
                             }
                         }
                     }
