@@ -18,6 +18,8 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import static seng302.Generic.IO.streamOut;
+
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
@@ -32,7 +34,7 @@ public class CommandLineInterface {
      * @param line The line to split
      * @return The array of components
      */
-    private String[] splitByQuotationThenSpace(String line) {
+    protected String[] splitByQuotationThenSpace(String line) {
         int outSize = 1;
         boolean withinQuotes = false;
         for (int i = 0; i < line.length(); i++) {
@@ -114,7 +116,6 @@ public class CommandLineInterface {
             printLine("Failed to create action history file, please run again in a directory that the program has access to.");
             return;
         }
-        boolean success = false;
         String[] nextCommand;
         do {
             do {
@@ -124,13 +125,29 @@ public class CommandLineInterface {
                 } catch (NullPointerException e) {
                     nextCommand = new String[]{};
                 }
-            } while (nextCommand.length == 0);
+            }
+            while (nextCommand.length == 0);
+            parseCommand(nextCommand);
+        } while (!nextCommand[0].equals("quit"));
+
+        scanner.close();
+    }
+
+    public void parseCommand(String[] nextCommand) {
+        boolean success = false;
+
             switch (nextCommand[0].toLowerCase()) {
-                case "add":
+                case "adduser":
                     success = addUser(nextCommand);
                     break;
                 case "addorgan":
                     success = addOrgan(nextCommand);
+                    break;
+                case "addwaitinglistorgan":
+                    success = addWaitingListOrgan(nextCommand);
+                    break;
+                case "removewaitinglistorgan":
+                    success = removeWaitingListOrgan(nextCommand);
                     break;
                 case "delete":
                     success = deleteUser(nextCommand);
@@ -171,12 +188,16 @@ public class CommandLineInterface {
             }
             if (success) {
                 String text = History.prepareFileStringCLI(nextCommand);
-                History.printToFile(streamOut, text);
+//                History.printToFile(streamOut, text);
                 success = false;
             }
-        } while (!nextCommand[0].equals("quit"));
-        scanner.close();
+
     }
+
+    private boolean removeWaitingListOrgan(String[] nextCommand) {
+        return true;
+    }
+
 
     /**
      * Prints a message to the console advising the user on how to correctly use a command they failed to use.
@@ -252,6 +273,10 @@ public class CommandLineInterface {
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
             return false;
         }
+    }
+
+    private boolean addWaitingListOrgan(String[] nextCommand) {
+        return true;
     }
 
     /**
