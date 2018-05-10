@@ -631,6 +631,7 @@ public class User {
         for (ReceiverWaitingListItem item : waitingListItems){
             if (item.getOrganType() == toRemove) {
                 waitingListItems.remove(item);
+                break;
             }
         }
     }
