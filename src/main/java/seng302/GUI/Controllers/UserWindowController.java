@@ -649,7 +649,7 @@ public class UserWindowController implements Initializable {
         int isPreferredLastName = preferredLastNameField.getText() == null || preferredLastNameField.getText().isEmpty() ? 0 : 1;
         String[] preferredName = new String[1 + preferredMiddleNames.length + isPreferredLastName];
         preferredName[0] = preferredFirstName;
-        System.arraycopy(preferredMiddleNames, 0, name, 1, preferredMiddleNames.length);
+        System.arraycopy(preferredMiddleNames, 0, preferredName, 1, preferredMiddleNames.length);
         if (isLastName == 1) {
             preferredName[preferredName.length - 1] = preferredLastName;
         }
