@@ -49,4 +49,16 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
         assertEquals(1, DataManager.users.size());
     }
+
+    @Ignore
+    @Test
+    public void cliOutputIsShown() {
+        clickOn("#commandInputField");
+        DataManager.users.clear();
+        write("adduser \"Test,User\" 01/10/1998");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        sleep(200);
+        assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
+    }
 }
