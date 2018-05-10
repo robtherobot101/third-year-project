@@ -133,9 +133,14 @@ public class CommandLineInterface {
         scanner.close();
     }
 
+    /**
+     * Interprets the given command and calls the relevant method. If the command
+     * is executed successfully, the action history file is updated. If the command
+     * is not recognised, a message is printed to the console
+     * @param nextCommand The given command
+     */
     public void parseCommand(String[] nextCommand) {
         boolean success = false;
-
             switch (nextCommand[0].toLowerCase()) {
                 case "adduser":
                     success = addUser(nextCommand);
@@ -194,6 +199,12 @@ public class CommandLineInterface {
 
     }
 
+    /**
+     * Removes the given item for the users's transplant waiting list.
+     * Returns true if the removal was successful, otherwise returns false.
+     * @param nextCommand The command entered by the user
+     * @return True if removal was successful, otherwise false
+     */
     private boolean removeWaitingListOrgan(String[] nextCommand) {
         return true;
     }
@@ -275,6 +286,12 @@ public class CommandLineInterface {
         }
     }
 
+    /**
+     * Adds the given item to the users's transplant waiting list.
+     * Returns true if the organ was added, otherwise returns false.
+     * @param nextCommand The command entered by the user
+     * @return True if the organ was added, otherwise returns false.
+     */
     private boolean addWaitingListOrgan(String[] nextCommand) {
         return true;
     }
