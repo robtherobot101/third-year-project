@@ -5,7 +5,7 @@ import seng302.User.Attribute.Organ;
 /**
  * An object to store the necessary data for the transplant waiting list
  */
-public class TransplantWaitingListItem extends WaitingListItem {
+public class  TransplantWaitingListItem extends WaitingListItem {
 
     private String Name;
     private String region;
