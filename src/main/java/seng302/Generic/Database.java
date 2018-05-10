@@ -13,14 +13,19 @@ public class Database {
 
     public static void main(String args[]) {
         try{
+            System.out.println("Trying to get Driver");
             Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Got Driver");
             Connection con= DriverManager.getConnection(
                     "jdbc:mysql://mysql2.csse.canterbury.ac.nz/" + testDatabase,"seng302-team300","WeldonAside5766");
-            //here sonoo is database name, root is username and password
+            System.out.println("Connected to database");
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select * from USERS");
+            System.out.println("Got to Users");
+            System.out.println("Users:");
+
             while(rs.next())
-                System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
+                System.out.println(rs.getString(0));
             con.close();
         }catch(Exception e){
             System.out.println(e);}
