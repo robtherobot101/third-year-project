@@ -285,7 +285,7 @@ public class CommandLineInterface {
             return false;
         }
         try {
-            ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]));
+            ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
             toSet.getWaitingListItems().add(item);
             return true;
         } catch (IllegalArgumentException e) {
@@ -728,10 +728,12 @@ public class CommandLineInterface {
     private boolean showHelp(String[] nextCommand) {
         if (nextCommand.length == 1) {
             printLine("Valid commands are: "
-                    + "\n\t-add \"First Name,name part 2,name part n\" <date of birth>"
+                    + "\n\t-addUser \"First Name,name part 2,name part n\" <date of birth>"
                     + "\n\t-addDonationOrgan <id> <organ>"
+                    + "\n\t-addWaitingListOrgan <id> <organ>"
                     + "\n\t-delete <id>"
                     + "\n\t-removeDonationOrgan <id> <organ>"
+                    + "\n\t-removeWaitingListOrgan <id> <organ>"
                     + "\n\t-set <id> <attribute> <value>"
                     + "\n\t-describe <id> OR describe \"name substring 1,name substring 2,name substring n\""
                     + "\n\t-describeOrgans <id>"
@@ -743,16 +745,16 @@ public class CommandLineInterface {
                     + "\n\t-quit");
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
-                case "add":
+                case "adduser":
                     printLine("This command adds a new user with a name and date of birth.\n"
-                            + "The syntax is: add <name> <date of birth>\n"
+                            + "The syntax is: addUser <name> <date of birth>\n"
                             + "Rules:\n"
                             + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
                             + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
                             + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
                             + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
                     break;
-                case "addorgan":
+                case "adddonationorgan":
                     printLine("This command adds one organ to donate to a user. To find the id of a user, use the list and "
                             + "describe commands.\n"
                             + "The syntax is: addDonationOrgan <id> <organ>\n"
@@ -762,6 +764,15 @@ public class CommandLineInterface {
                             + "bone-marrow, or connective-tissue.\n"
                             + "Example valid usage: addDonationOrgan 0 skin");
                     break;
+                case "addwaitinglistorgan":
+                    printLine("This command adds one organ which the user is waiting to receive. To find the id of a user, use the list and describe commands. \n"
+                            + "The syntax is: addWaitingListOrgan <id> <organ>\n"
+                            + "Rules:\n"
+                            + "-The id number must be a number that is 0 or larger\n"
+                            + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
+                            + "bone-marrow, or connective-tissue.\n"
+                            + "Example valid usage: addWaitingListOrgan 0 skin");
+                    break;
                 case "delete":
                     printLine("This command deletes one user. To find the id of a user, use the list and describe commands.\n"
                             + "The syntax is: delete <id>\n"
@@ -770,7 +781,7 @@ public class CommandLineInterface {
                             + "-You will be asked to confirm that you want to delete this user\n"
                             + "Example valid usage: delete 1");
                     break;
-                case "deleteorgan":
+                case "removedonationorgan":
                     printLine("This command removes one offered organ from a user. To find the id of a user, use the list and "
                             + "describe commands.\n"
                             + "The syntax is: removeDonationOrgan <id> <organ>\n"
@@ -779,6 +790,16 @@ public class CommandLineInterface {
                             + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
                             + "bone-marrow, or connective-tissue.\n"
                             + "Example valid usage: removeDonationOrgan 5 kidney");
+                    break;
+                case "removewaitinglistorgan":
+                    printLine("This command removes one organ which the user is waiting to receive. To find the id of a user, use the list and "
+                            + "describe commands.\n"
+                            + "The syntax is: removeWaitingListOrgan <id> <organ>\n"
+                            + "Rules:\n"
+                            + "-The id number must be a number that is 0 or larger\n"
+                            + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
+                            + "bone-marrow, or connective-tissue.\n"
+                            + "Example valid usage: removeWaitingListOrgan 5 kidney");
                     break;
                 case "set":
                     printLine("This command sets one attribute (apart from organs to be donated) of a user. To find the id of a user, "
