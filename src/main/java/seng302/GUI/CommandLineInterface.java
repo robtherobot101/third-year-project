@@ -11,6 +11,8 @@ import seng302.User.User;
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static seng302.Generic.IO.streamOut;
 
@@ -21,6 +23,11 @@ public class CommandLineInterface {
     private boolean isDeleting = false;
     private User toDelete;
     private String[] deleteCommand;
+    private List<String> outputString;
+
+    public void setOutput(List<String> outputString) {
+        this.outputString = outputString;
+    }
 
     /**
      * Split the line of commands and arguments into an array of components. Characters within quotation marks will turn into one String, words
@@ -89,7 +96,7 @@ public class CommandLineInterface {
      * @param line The string to print
      */
     private void print(String line) {
-        System.out.print(line);
+        outputString.add(line);
     }
 
     /**

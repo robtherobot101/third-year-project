@@ -39,7 +39,6 @@ public class AdminCLITest extends TestFXTest {
         assertNotNull(textField); //Ensure that the CLI is now showing
     }
 
-    @Ignore
     @Test
     public void cliInputIsRead() {
         clickOn("#commandInputField");
@@ -50,7 +49,6 @@ public class AdminCLITest extends TestFXTest {
         assertEquals(1, DataManager.users.size());
     }
 
-    @Ignore
     @Test
     public void cliOutputIsShown() {
         clickOn("#commandInputField");
@@ -59,6 +57,6 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         sleep(200);
-        assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
+        assertEquals(1, lookup("#commandOutputView").queryListView().getItems().size());
     }
 }
