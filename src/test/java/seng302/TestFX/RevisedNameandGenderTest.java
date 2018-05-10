@@ -46,6 +46,28 @@ public class RevisedNameandGenderTest extends TestFXTest {
         clickOn("#saveButton");
         sleep(100);
         push(KeyCode.ENTER);
+        Assert.assertEquals(DataManager.users.get(0).getName(), "New Name Test");
+        Assert.assertEquals(DataManager.users.get(0).getPreferredName(), "Bobby Dong Flame");
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Bobby Dong Flame"));
+        verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
+
+    }
+
+    @Test
+    public void changePreferredNameTest() {
+
+        enterAttributesPanel();
+
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Bobby Dong Flame"));
+        verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
+
+        //Add a new medication for the user.
+        doubleClickOn("#preferredFirstNameField").write("New");
+        doubleClickOn("#preferredMiddleNamesField").write("Name");
+        doubleClickOn("#preferredLastNameField").write("Test");
+        clickOn("#saveButton");
+        sleep(100);
+        push(KeyCode.ENTER);
         Assert.assertEquals(DataManager.users.get(0).getName(), "Bobby Dong Flame");
         Assert.assertEquals(DataManager.users.get(0).getPreferredName(), "New Name Test");
         verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: New Name Test"));
@@ -59,7 +81,6 @@ public class RevisedNameandGenderTest extends TestFXTest {
         enterAttributesPanel();
 
         Assert.assertEquals(DataManager.users.get(0).getGender(), null);
-        Assert.assertEquals(DataManager.users.get(0).getGenderIdentity(), null);
 
         clickOn("#genderComboBox").clickOn("Male");
         clickOn("#saveButton");
@@ -67,14 +88,35 @@ public class RevisedNameandGenderTest extends TestFXTest {
         push(KeyCode.getKeyCode("Enter"));
 
         Assert.assertEquals(DataManager.users.get(0).getGender().toString(), "Male");
-        Assert.assertEquals(DataManager.users.get(0).getGenderIdentity().toString(), "Male");
 
         clickOn("#genderComboBox").clickOn("Female");
         clickOn("#saveButton");
         sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
-        Assert.assertEquals(DataManager.users.get(0).getGender().toString(), "Male");
+        Assert.assertEquals(DataManager.users.get(0).getGender().toString(), "Female");
+
+    }
+
+    @Test
+    public void changeGenderIdentityTest() {
+
+        enterAttributesPanel();
+
+        Assert.assertEquals(DataManager.users.get(0).getGenderIdentity(), null);
+
+        clickOn("#genderIdentityComboBox").clickOn("Male");
+        clickOn("#saveButton");
+        sleep(100);
+        push(KeyCode.getKeyCode("Enter"));
+
+        Assert.assertEquals(DataManager.users.get(0).getGenderIdentity().toString(), "Male");
+
+        clickOn("#genderIdentityComboBox").clickOn("Female");
+        clickOn("#saveButton");
+        sleep(100);
+        push(KeyCode.getKeyCode("Enter"));
+
         Assert.assertEquals(DataManager.users.get(0).getGenderIdentity().toString(), "Female");
 
     }

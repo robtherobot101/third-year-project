@@ -50,11 +50,11 @@ public class UserWindowController implements Initializable {
     @FXML
     private Pane welcomePane;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField;
     @FXML
     private DatePicker dateOfBirthPicker, dateOfDeathPicker;
     @FXML
-    private ComboBox<Gender> genderComboBox;
+    private ComboBox<Gender> genderComboBox, genderIdentityComboBox;
     @FXML
     private ComboBox<BloodType> bloodTypeComboBox;
     @FXML
@@ -141,6 +141,7 @@ public class UserWindowController implements Initializable {
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
+        genderIdentityComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         bloodTypeComboBox.setItems(FXCollections.observableArrayList(BloodType.values()));
         alcoholConsumptionComboBox.setItems(FXCollections.observableArrayList(AlcoholConsumption.values()));
         smokerStatusComboBox.setItems(FXCollections.observableArrayList(SmokerStatus.values()));
@@ -167,6 +168,21 @@ public class UserWindowController implements Initializable {
         welcomePane.setBackground(new Background(imageBackground));
 
         //Add listeners for attribute undo and redo
+        preferredFirstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
+        });
+        preferredMiddleNamesField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
+        });
+        preferredLastNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
+        });
         firstNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 attributeFieldUnfocused();
@@ -256,14 +272,14 @@ public class UserWindowController implements Initializable {
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
     public void attributeFieldUnfocused() {
-        User oldFields = new User(currentUser);
-        if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
-            attributeUndoStack.add(new User(oldFields));
-            attributeRedoStack.clear();
-            setUndoRedoButtonsDisabled(false, true);
-            titleBar.saved(false);
-            statusIndicator.setStatus("Edited user details", false);
-        }
+//        User oldFields = new User(currentUser);
+//        if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
+//            attributeUndoStack.add(new User(oldFields));
+//            attributeRedoStack.clear();
+//            setUndoRedoButtonsDisabled(false, true);
+//            titleBar.saved(false);
+//            statusIndicator.setStatus("Edited user details", false);
+//        }
     }
 
     /**
@@ -496,7 +512,7 @@ public class UserWindowController implements Initializable {
                 new ReadOnlyStringWrapper(p.getValue().getValue()));
 
         actionColumn.setCellValueFactory(param -> {
-            String userName = currentUser.getPreferredName(), toCheck = param.getValue().getValue().substring(0, 12);
+            String userName = currentUser.getName(), toCheck = param.getValue().getValue().substring(0, 12);
             if (toCheck.equals("Update Account")) {
                 return new ReadOnlyStringWrapper("Updated account settings for user " + userName + ".");
             }
@@ -550,7 +566,7 @@ public class UserWindowController implements Initializable {
      */
     public void populateUserFields() {
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        String[] splitNames = currentUser.getPreferredNameArray();
+        String[] splitNames = currentUser.getNameArray();
         firstNameField.setText(splitNames[0]);
         if (splitNames.length > 2) {
             String[] middleName = new String[splitNames.length - 2];
@@ -564,6 +580,23 @@ public class UserWindowController implements Initializable {
             middleNameField.setText("");
             lastNameField.setText("");
         }
+        String[] splitPreferredNames = currentUser.getPreferredNameArray();
+        preferredFirstNameField.setText(splitPreferredNames[0]);
+        if (splitPreferredNames.length > 2) {
+            String[] preferredMiddleName = new String[splitPreferredNames.length - 2];
+            System.arraycopy(splitPreferredNames, 1, preferredMiddleName, 0, splitPreferredNames.length - 2);
+            preferredMiddleNamesField.setText(String.join(",", preferredMiddleName));
+            preferredLastNameField.setText(splitPreferredNames[splitPreferredNames.length - 1]);
+            System.out.println("test");
+        } else if (splitPreferredNames.length == 2) {
+            preferredMiddleNamesField.setText("");
+            preferredLastNameField.setText(splitPreferredNames[1]);
+            System.out.println("shit");
+        } else {
+            preferredMiddleNamesField.setText("");
+            preferredLastNameField.setText("");
+            System.out.println("fuck");
+        }
         addressField.setText(currentUser.getCurrentAddress());
         regionField.setText(currentUser.getRegion());
 
@@ -573,7 +606,8 @@ public class UserWindowController implements Initializable {
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
 
-        genderComboBox.setValue(currentUser.getGenderIdentity());
+        genderComboBox.setValue(currentUser.getGender());
+        genderIdentityComboBox.setValue(currentUser.getGenderIdentity());
         bloodTypeComboBox.setValue(currentUser.getBloodType());
         smokerStatusComboBox.setValue(currentUser.getSmokerStatus());
         alcoholConsumptionComboBox.setValue(currentUser.getAlcoholConsumption());
@@ -596,7 +630,7 @@ public class UserWindowController implements Initializable {
     private boolean updateUser() {
         //Extract names from user
         String firstName = firstNameField.getText();
-        String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{} : middleNameField.getText().split(",");
+        String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
         String lastName = lastNameField.getText();
 
         int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
@@ -606,6 +640,20 @@ public class UserWindowController implements Initializable {
         if (isLastName == 1) {
             name[name.length - 1] = lastName;
         }
+
+        String preferredFirstName = preferredFirstNameField.getText();
+        String[] preferredMiddleNames = preferredMiddleNamesField.getText().isEmpty() ? new String[]{""} : preferredMiddleNamesField.getText().split(",");
+        System.out.println(preferredMiddleNames[0]);
+        String preferredLastName = preferredLastNameField.getText();
+
+        int isPreferredLastName = preferredLastNameField.getText() == null || preferredLastNameField.getText().isEmpty() ? 0 : 1;
+        String[] preferredName = new String[1 + preferredMiddleNames.length + isPreferredLastName];
+        preferredName[0] = preferredFirstName;
+        System.arraycopy(preferredMiddleNames, 0, preferredName, 1, preferredMiddleNames.length);
+        if (isLastName == 1) {
+            preferredName[preferredName.length - 1] = preferredLastName;
+        }
+
 
         double userHeight = -1;
         if (!heightField.getText().equals("")) {
@@ -665,18 +713,15 @@ public class UserWindowController implements Initializable {
         }
 
         //Commit changes
-        currentUser.setPreferredNameArray(name);
+        currentUser.setNameArray(name);
+        currentUser.setPreferredNameArray(preferredName);
         currentUser.setHeight(userHeight);
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
         currentUser.setDateOfDeath(dateOfDeathPicker.getValue());
-        if (currentUser.getGender() == null) {
-            currentUser.setGender(genderComboBox.getValue());
-            currentUser.setGenderIdentity(genderComboBox.getValue());
-        } else {
-            currentUser.setGenderIdentity(genderComboBox.getValue());
-        }
+        currentUser.setGender(genderComboBox.getValue());
+        currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
         currentUser.setBloodType(bloodTypeComboBox.getValue());
         currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());

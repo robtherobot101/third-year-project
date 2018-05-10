@@ -224,8 +224,8 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
-        // TODO - ask what this is
-        waitingListItems.addAll(waitingListItems);
+        this.waitingListItems.clear();
+        this.waitingListItems.addAll(user.getWaitingListItems());
 
 
     }
@@ -568,9 +568,9 @@ public class User {
                     dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString,
                     weightString, bloodType, region, currentAddress, dateModifiedString, organs);
         } else {
-            return String.format("User (ID %d) created at %s Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
+            return String.format("User (ID %d) created at %s Name: %s, Preferred Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
                             "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
-                            (creationTime), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString,
+                            (creationTime), getName(), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString,
                     weightString, bloodType,
                     region, currentAddress, dateModifiedString, organs);
         }
