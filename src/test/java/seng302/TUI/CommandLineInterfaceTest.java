@@ -31,11 +31,6 @@ public class CommandLineInterfaceTest {
 //        System.err.println("run loop done");
     }
 
-    private void writeToCommandLine(String input) {
-        InputStream testInput = new ByteArrayInputStream(input.getBytes());
-        System.setIn(testInput);
-    }
-
     private String readFromCommandLine() {
         return outputStream.toString();
     }
@@ -53,37 +48,35 @@ public class CommandLineInterfaceTest {
 
     @Test
     public void creationUserInvalidParameters() {
-        writeToCommandLine("addUser bobbo 111111111111");
+        commandLine.parseCommand("addUser bobbo 111111111");
         assertTrue(DataManager.users.isEmpty());
     }
 
     @Test
     public void addWaitingListOrgan() {
-        writeToCommandLine("addUser \"Bob Ross\" 10/10/2010");
-        writeToCommandLine("addWaitingListOrgan 0 heart");
+        commandLine.parseCommand("addUser \"Bob Ross\" 10/10/2010");
+        commandLine.parseCommand("addWaitingListOrgan 0 heart");
         assertTrue(DataManager.users.get(0).isReceiver());
     }
 
     @Test
     public void removeWaitingListOrgan() {
-        writeToCommandLine("addUser \"Bob Ross\" 10/10/2010");
-        writeToCommandLine("addWaitingListOrgan 0 heart");
-        writeToCommandLine("removeWaitingListOrgan 0 heart");
+        commandLine.parseCommand("addUser \"Bob Ross\" 10/10/2010");
+        commandLine.parseCommand("addWaitingListOrgan 0 heart");
+        commandLine.parseCommand("removeWaitingListOrgan 0 heart");
         assertFalse(DataManager.users.get(0).isReceiver());
-
-
     }
 
     @Test
     public void deleteUser() {
-        writeToCommandLine("addUser \"Bob Ross\" 10/10/2010");
-        writeToCommandLine("removeUser 0");
+        commandLine.parseCommand("addUser \"Bob Ross\" 10/10/2010");
+        commandLine.parseCommand("removeUser 0");
         assertTrue(DataManager.users.isEmpty());
     }
 
     @Test
     public void helpText() {
-        writeToCommandLine("help addWaitingListOrgan");
+        commandLine.parseCommand("help addWaitingListOrgan");
         String result = readFromCommandLine();
         assertEquals(result, "lol");
     }

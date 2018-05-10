@@ -1,10 +1,7 @@
 package seng302.TUI;
 
 import javafx.collections.ObservableList;
-import seng302.Generic.DataManager;
-import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.SearchUtils;
+import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
@@ -17,8 +14,6 @@ import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Scanner;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -145,8 +140,8 @@ public class CommandLineInterface {
                 case "adduser":
                     success = addUser(nextCommand);
                     break;
-                case "addorgan":
-                    success = addOrgan(nextCommand);
+                case "adddonationorgan":
+                    success = addDonationOrgan(nextCommand);
                     break;
                 case "addwaitinglistorgan":
                     success = addWaitingListOrgan(nextCommand);
@@ -154,11 +149,11 @@ public class CommandLineInterface {
                 case "removewaitinglistorgan":
                     success = removeWaitingListOrgan(nextCommand);
                     break;
-                case "delete":
+                case "deleteuser":
                     success = deleteUser(nextCommand);
                     break;
-                case "deleteorgan":
-                    success = deleteOrgan(nextCommand);
+                case "removeedonationorgan":
+                    success = removeDonationOrgan(nextCommand);
                     break;
                 case "set":
                     success = setUserAttribute(nextCommand);
@@ -197,16 +192,6 @@ public class CommandLineInterface {
                 success = false;
             }
 
-    }
-
-    /**
-     * Removes the given item for the users's transplant waiting list.
-     * Returns true if the removal was successful, otherwise returns false.
-     * @param nextCommand The command entered by the user
-     * @return True if removal was successful, otherwise false
-     */
-    private boolean removeWaitingListOrgan(String[] nextCommand) {
-        return true;
     }
 
 
@@ -258,7 +243,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean addOrgan(String[] nextCommand) {
+    private boolean addDonationOrgan(String[] nextCommand) {
         User toSet;
         if (nextCommand.length == 3) {
             try {
@@ -268,7 +253,7 @@ public class CommandLineInterface {
                 return false;
             }
         } else {
-            printIncorrectUsageString("addOrgan", 2, "<id> <organ>");
+            printIncorrectUsageString("addDonationOrgan", 2, "<id> <organ>");
             return false;
         }
 
@@ -293,7 +278,32 @@ public class CommandLineInterface {
      * @return True if the organ was added, otherwise returns false.
      */
     private boolean addWaitingListOrgan(String[] nextCommand) {
-        return true;
+        User toSet;
+        if (nextCommand.length == 3) {
+            try {
+                toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
+            } catch (NumberFormatException e) {
+                printLine("Please enter a valid ID number.");
+                return false;
+            }
+        } else {
+            printIncorrectUsageString("addWaitingListOrgan", 2, "<id> <organ>");
+            return false;
+        }
+
+        if (toSet == null) {
+            printLine(String.format("User with ID %s not found.", nextCommand[1]));
+            return false;
+        }
+        try {
+            ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]));
+            toSet.getWaitingListItems().add(item);
+            return true;
+        } catch (IllegalArgumentException e) {
+            printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
+                    "cornea, middle-ear, skin, bone-marrow, connective-tissue");
+            return false;
+        }
     }
 
     /**
@@ -339,7 +349,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean deleteOrgan(String[] nextCommand) {
+    private boolean removeDonationOrgan(String[] nextCommand) {
         User toSet;
         if (nextCommand.length == 3) {
             try {
@@ -349,7 +359,7 @@ public class CommandLineInterface {
                 return false;
             }
         } else {
-            printIncorrectUsageString("deleteOrgan", 2, "<id> <organ>");
+            printIncorrectUsageString("removeDonationOrgan", 2, "<id> <organ>");
             return false;
         }
 
@@ -359,6 +369,40 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
+            return true;
+        } catch (IllegalArgumentException e) {
+            printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
+                    "bone-marrow, connective-tissue");
+            return false;
+        }
+    }
+
+    /**
+     * Removes the given item for the users's transplant waiting list.
+     * Returns true if the removal was successful, otherwise returns false.
+     * @param nextCommand The command entered by the user
+     * @return True if removal was successful, otherwise false
+     */
+    private boolean removeWaitingListOrgan(String[] nextCommand) {
+        User toSet;
+        if (nextCommand.length == 3) {
+            try {
+                toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
+            } catch (NumberFormatException e) {
+                printLine("Please enter a valid ID number.");
+                return false;
+            }
+        } else {
+            printIncorrectUsageString("removeWaitingListOrgan", 2, "<id> <organ>");
+            return false;
+        }
+
+        if (toSet == null) {
+            printLine(String.format("User with ID %s not found.", nextCommand[1]));
+            return false;
+        }
+        try {
+            toSet.removeWaitingListItem(Organ.parse(nextCommand[2]));
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
@@ -679,9 +723,9 @@ public class CommandLineInterface {
         if (nextCommand.length == 1) {
             printLine("Valid commands are: "
                     + "\n\t-add \"First Name,name part 2,name part n\" <date of birth>"
-                    + "\n\t-addOrgan <id> <organ>"
+                    + "\n\t-addDonationOrgan <id> <organ>"
                     + "\n\t-delete <id>"
-                    + "\n\t-deleteOrgan <id> <organ>"
+                    + "\n\t-removeDonationOrgan <id> <organ>"
                     + "\n\t-set <id> <attribute> <value>"
                     + "\n\t-describe <id> OR describe \"name substring 1,name substring 2,name substring n\""
                     + "\n\t-describeOrgans <id>"
@@ -705,12 +749,12 @@ public class CommandLineInterface {
                 case "addorgan":
                     printLine("This command adds one organ to donate to a user. To find the id of a user, use the list and "
                             + "describe commands.\n"
-                            + "The syntax is: addOrgan <id> <organ>\n"
+                            + "The syntax is: addDonationOrgan <id> <organ>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
                             + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
                             + "bone-marrow, or connective-tissue.\n"
-                            + "Example valid usage: addOrgan 0 skin");
+                            + "Example valid usage: addDonationOrgan 0 skin");
                     break;
                 case "delete":
                     printLine("This command deletes one user. To find the id of a user, use the list and describe commands.\n"
@@ -723,16 +767,16 @@ public class CommandLineInterface {
                 case "deleteorgan":
                     printLine("This command removes one offered organ from a user. To find the id of a user, use the list and "
                             + "describe commands.\n"
-                            + "The syntax is: deleteOrgan <id> <organ>\n"
+                            + "The syntax is: removeDonationOrgan <id> <organ>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
                             + "-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, "
                             + "bone-marrow, or connective-tissue.\n"
-                            + "Example valid usage: deleteOrgan 5 kidney");
+                            + "Example valid usage: removeDonationOrgan 5 kidney");
                     break;
                 case "set":
                     printLine("This command sets one attribute (apart from organs to be donated) of a user. To find the id of a user, "
-                            + "use the list and describe commands. To add or delete organs, instead use the addOrgan and deleteOrgan commands.\n"
+                            + "use the list and describe commands. To add or delete organs, instead use the addDonationOrgan and removeDonationOrgan commands.\n"
                             + "The syntax is: set <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
@@ -796,7 +840,7 @@ public class CommandLineInterface {
                     printLine("This command displays information about how to use this program.\n"
                             + "The syntax is: help OR help <command>\n"
                             + "Rules:\n"
-                            + "-If the command argument is passed, the command must be: add, addOrgan, delete, deleteOrgan, set, describe, "
+                            + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, set, describe, "
                             + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
                             + "Example valid usage: help help");
                     break;
