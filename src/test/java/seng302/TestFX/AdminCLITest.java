@@ -1,15 +1,14 @@
 package seng302.TestFX;
 
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.concurrent.TimeoutException;
 
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AdminCLITest extends TestFXTest {
 
@@ -18,17 +17,15 @@ public class AdminCLITest extends TestFXTest {
         defaultTestSetup();
     }
 
-    @Ignore
     @Test
     public void tabExists() {
         loginAsDefaultAdmin();
         clickOn("#cliTabButton");
         sleep(200);
-        TabPane tableTabPane = lookup("#tableTabPane").query();
-        assertNull(tableTabPane); //Ensure that the search tab is no longer open
+        GridPane mainPane = lookup("#mainPane").query();
+        assertTrue(!mainPane.isVisible()); //Ensure that the search tab is no longer open
     }
 
-    @Ignore
     @Test
     public void embeddedCliExists() {
         loginAsDefaultAdmin();

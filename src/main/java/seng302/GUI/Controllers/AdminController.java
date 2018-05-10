@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -39,31 +40,22 @@ import java.util.*;
  */
 public class AdminController implements Initializable {
 
-    private Admin currentAdmin;
-
     @FXML
     private TabPane tableTabPane;
-
     // User Tab Pane FXML elements
     @FXML
     private TableView<User> userTableView;
-
     @FXML
-    private TableColumn<User, String> userNameTableColumn, userTypeTableColumn, userGenderTableColumn,
-            userRegionTableColumn;
+    private TableColumn<User, String> userNameTableColumn, userTypeTableColumn, userGenderTableColumn, userRegionTableColumn;
     @FXML
     private TableColumn<User, Double> userAgeTableColumn;
-
     // Clinician Tab Pane FXML elements
     @FXML
     private TableView<Clinician> clinicianTableView;
-
     @FXML
-    private TableColumn<Clinician, String> clinicianUsernameTableColumn, clinicianNameTableColumn,
-            clinicianAddressTableColumn, clinicianRegionTableColumn;
+    private TableColumn<Clinician, String> clinicianUsernameTableColumn, clinicianNameTableColumn, clinicianAddressTableColumn, clinicianRegionTableColumn;
     @FXML
     private TableColumn<Clinician, Long> clinicianIDTableColumn;
-
 
     // Admin Tab Pane FXML elements
     @FXML
@@ -72,44 +64,26 @@ public class AdminController implements Initializable {
     private TableColumn<Admin, String> adminUsernameTableColumn, adminNameTableColumn;
     @FXML
     private TableColumn<Admin, Long> adminIDTableColumn;
-
-
     @FXML
     private Pane background;
     @FXML
-    private Label staffIDLabel;
-
+    private Label staffIDLabel, userDisplayText, adminNameLabel, adminAddressLabel;
     @FXML
-    private Label userDisplayText;
-
-    @FXML
-    private Button undoWelcomeButton;
-
-    @FXML
-    private Button redoWelcomeButton;
-
+    private Button undoWelcomeButton,redoWelcomeButton;
     @FXML
     private GridPane mainPane;
-
-
     @FXML
-    private TextField profileSearchTextField;
+    private TextField profileSearchTextField, adminRegionField, adminAgeField;
     @FXML
-    private TextField adminRegionField;
+    private ComboBox<Gender> adminGenderComboBox;
     @FXML
-    private ComboBox adminGenderComboBox;
+    private ComboBox<String> adminUserTypeComboBox;
     @FXML
-    private TextField adminAgeField;
-    @FXML
-    private ComboBox adminUserTypeComboBox;
-    @FXML
-    private ComboBox adminOrganComboBox;
-    @FXML
-    private Label adminNameLabel;
-    @FXML
-    private Label adminAddressLabel;
+    private ComboBox<Organ> adminOrganComboBox;
     @FXML
     private StatusBar statusBar;
+    @FXML
+    private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
 
@@ -117,9 +91,10 @@ public class AdminController implements Initializable {
 
     private ArrayList<UserWindowController> userWindows = new ArrayList<>();
 
-    private LinkedList<Admin> adminUndoStack = new LinkedList<>();
-    private LinkedList<Admin> adminRedoStack = new LinkedList<>();
+    private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
 
+
+    private Admin currentAdmin;
 
     private ObservableList<User> currentUsers;
     private ObservableList<Clinician> currentClinicians;
@@ -460,6 +435,10 @@ public class AdminController implements Initializable {
      */
     public void showMainPane() {
         mainPane.setVisible(true);
+        transplantListPane.setVisible(false);
+        cliPane.setVisible(false);
+        undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
+        redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
     }
 
 
@@ -630,7 +609,7 @@ public class AdminController implements Initializable {
                 searchUserTypeTerm = null;
 
             } else {
-                searchUserTypeTerm = newValue.toString();
+                searchUserTypeTerm = newValue;
             }
             updateFoundUsers();
 
@@ -730,8 +709,22 @@ public class AdminController implements Initializable {
      */
     public void transplantWaitingList() {
         WindowManager.getTransplantWaitingListController().updateTransplantList();
-        //background.setVisible(false);
-        WindowManager.setScene(TFScene.transplantList);
+        mainPane.setVisible(false);
+        transplantListPane.setVisible(true);
+        cliPane.setVisible(false);
+        undoWelcomeButton.setDisable(true);
+        redoWelcomeButton.setDisable(true);
+    }
+
+    /**
+     * Switches the active pane to the CLI pane.
+     */
+    public void viewCli() {
+        mainPane.setVisible(false);
+        transplantListPane.setVisible(false);
+        cliPane.setVisible(true);
+        undoWelcomeButton.setDisable(true);
+        redoWelcomeButton.setDisable(true);
     }
 
     /**

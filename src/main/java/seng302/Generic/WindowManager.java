@@ -11,7 +11,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
-import seng302.TUI.CommandLineInterface;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
@@ -321,21 +320,7 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
-        if (args.length == 0) {
-            launch(args);
-        } else if (args.length == 1 && args[0].equals("-c")) {
-            try {
-                IO.setPaths();
-                CommandLineInterface commandLineInterface = new CommandLineInterface();
-                commandLineInterface.run(System.in);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Please either run using:" +
-                    "\nGUI mode: java -jar app-0.0.jar" +
-                    "\nCommand line mode: java -jar app-0.0.jar -c.");
-        }
+        launch(args);
     }
 
     /**
