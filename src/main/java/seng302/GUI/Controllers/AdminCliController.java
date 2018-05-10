@@ -25,17 +25,22 @@ public class AdminCliController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialise output components
         capturedOutput = FXCollections.observableArrayList();
         commandOutputView.setItems(capturedOutput);
 
+        // Instantiate a new CLI and pipe its output to our ObservableList
         commandLineInterface = new CommandLineInterface();
         commandLineInterface.setOutput(capturedOutput);
     }
 
+    /**
+     * Called when the enter key is pressed on the command input TextField
+     */
     public void onEnter() {
+        capturedOutput.add("TF > " + commandInputField.getText());
         commandLineInterface.readCommand(commandInputField.getText());
         commandInputField.clear();
-        commandOutputView.refresh();
-        System.out.println();
+        commandOutputView.scrollTo(capturedOutput.size()-1);
     }
 }
