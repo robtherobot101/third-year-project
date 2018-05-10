@@ -1,4 +1,4 @@
-package seng302.TUI;
+package seng302.GUI;
 
 import javafx.collections.ObservableList;
 import seng302.Generic.*;
@@ -9,18 +9,18 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Scanner;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
 public class CommandLineInterface {
-
-    private Scanner scanner;
+    private boolean isDeleting = false;
+    private User toDelete;
+    private String[] deleteCommand;
 
     /**
      * Split the line of commands and arguments into an array of components. Characters within quotation marks will turn into one String, words
@@ -102,35 +102,29 @@ public class CommandLineInterface {
     }
 
     /**
-     * The main loop for the command line interface, which calls specific methods to process each command.
+     * Prints the prompt.
      */
-    public void run(InputStream inputStream) {
-        scanner = new Scanner(inputStream);
-        PrintStream streamOut = History.init();
-        if (streamOut == null) {
-            printLine("Failed to create action history file, please run again in a directory that the program has access to.");
-            return;
-        }
-        String[] nextCommand;
-        do {
-            do {
-                try {
-                    print("TF > ");
-                    nextCommand = splitByQuotationThenSpace(scanner.nextLine());
-                } catch (NullPointerException e) {
-                    nextCommand = new String[]{};
-                }
-            }
-            while (nextCommand.length == 0);
-            parseCommand(nextCommand);
-        } while (!nextCommand[0].equals("quit"));
-
-        scanner.close();
+    public void printPrompt() {
+        print("TF > ");
     }
 
-    public void parseCommand(String[] nextCommand) {
+    /**
+     * The main loop for the command line interface, which calls specific methods to process each command.
+     */
+    public void readCommand(String command) {
+        if (command == null || command.isEmpty()) {
+            return;
+        }
         boolean success = false;
-
+        String[] nextCommand;
+        if (isDeleting) {
+            success = checkBeforeDelete(command);
+            if (isDeleting) {
+                return;
+            }
+            nextCommand = deleteCommand;
+        } else {
+            nextCommand = splitByQuotationThenSpace(command);
             switch (nextCommand[0].toLowerCase()) {
                 case "adduser":
                     success = addUser(nextCommand);
@@ -141,11 +135,11 @@ public class CommandLineInterface {
                 case "addwaitinglistorgan":
                     success = addWaitingListOrgan(nextCommand);
                     break;
+                case "deleteuser":
+                    deleteUser(nextCommand);
+                    return; //Returns as the command will not be complete until later confirmation
                 case "removewaitinglistorgan":
                     success = removeWaitingListOrgan(nextCommand);
-                    break;
-                case "deleteuser":
-                    success = deleteUser(nextCommand);
                     break;
                 case "removeedonationorgan":
                     success = removeDonationOrgan(nextCommand);
@@ -174,22 +168,16 @@ public class CommandLineInterface {
                 case "help":
                     success = showHelp(nextCommand);
                     break;
-                case "quit":
-                    success = true;
-                    break;
                 default:
                     printLine("Command not recognised. Enter 'help' to view available commands, or help <command> to view information " +
                             "about a specific command.");
             }
-            if (success) {
-                String text = History.prepareFileStringCLI(nextCommand);
-//                History.printToFile(streamOut, text);
-                success = false;
-            }
-
+        }
+        if (success) {
+            String text = History.prepareFileStringCLI(nextCommand);
+            //History.printToFile(streamOut, text);
+        }
     }
-
-
 
     /**
      * Prints a message to the console advising the user on how to correctly use a command they failed to use.
@@ -297,39 +285,56 @@ public class CommandLineInterface {
     }
 
     /**
-     * Ask for confirmation to delete the specified user, and then delete it if the user confirms the action.
+     * Finds out which user the user wants to delete, and ask for confirmation.
      *
      * @param nextCommand The command entered by the user
-     * @return Whether the command was executed
      */
-    private boolean deleteUser(String[] nextCommand) {
+    private void deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
                 long id = Long.parseLong(nextCommand[1]);
                 User user = SearchUtils.getUserById(id);
                 if (user == null) {
                     printLine(String.format("User with ID %d not found.", id));
-                    return false;
                 }
                 print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
-                String nextLine = scanner.nextLine();
-                while (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
-                    print("Answer not recognised. Please enter y or n: ");
-                    nextLine = scanner.nextLine();
-                }
-                if (nextLine.equals("y")) {
-                    DataManager.users.remove(user);
-                    printLine("User removed. This change will permanent once the user list is saved.");
-                } else {
-                    printLine("User was not removed.");
-                }
-                return true;
+                deleteCommand = nextCommand;
+                isDeleting = true;
+                toDelete = user;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
         } else {
             printIncorrectUsageString("delete", 1, "<id>");
         }
+    }
+
+    /**
+     * Delete the user if the user confirms the action.
+     *
+     * @param nextLine The command entered by the user
+     * @return Whether the command was executed
+     */
+    private boolean checkBeforeDelete(String nextLine) {
+        if (!nextLine.toLowerCase().equals("y") && !nextLine.toLowerCase().equals("n")) {
+            print("Answer not recognised. Please enter y or n: ");
+            return false;
+        }
+        if (nextLine.equals("y")) {
+            boolean deleted = DataManager.users.remove(toDelete);
+            if (deleted) {
+                printLine("User removed. This change will permanent once the user list is saved.");
+                isDeleting = false;
+                toDelete = null;
+                return true;
+            } else {
+                printLine("The user has already been removed in the GUI.");
+            }
+        } else {
+            printLine("User was not removed.");
+        }
+        isDeleting = false;
+        toDelete = null;
         return false;
     }
 
@@ -827,10 +832,6 @@ public class CommandLineInterface {
                             + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, set, describe, "
                             + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
                             + "Example valid usage: help help");
-                    break;
-                case "quit":
-                    printLine("This command exits the program.\n"
-                            + "Example valid usage: quit");
                     break;
                 default:
                     printLine("Can not offer help with this command as it is not a valid command.");
