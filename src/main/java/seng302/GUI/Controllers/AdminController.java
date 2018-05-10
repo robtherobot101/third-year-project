@@ -176,9 +176,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
-                userWindow.close();
-            }
+            WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.admin);
         } else {
@@ -294,12 +292,11 @@ public class AdminController implements Initializable {
     public void load() {
         System.out.println("AdminController: Load called");
 
-        // TODO check for unsaved changes, but there arent any as we always apply changes on admin screen
         // Formats the initial load dialog window
         Alert loadDialog = new Alert(Alert.AlertType.CONFIRMATION);
         loadDialog.setTitle("Confirm Data Type");
         loadDialog.setHeaderText("Please Select the JSON Profile Type to Import");
-        loadDialog.setContentText("Choose your option:");
+        loadDialog.setContentText("This will close other open ODMS windows.");
 
         // Add in custom ButtonTypes
         ButtonType userButton = new ButtonType("Users");
@@ -310,35 +307,43 @@ public class AdminController implements Initializable {
 
         String fileToLoadPath;
         boolean loadSuccessful = false;
+        boolean loadAborted = false;
 
         // Perform actions based on the load
         Optional<ButtonType> result = loadDialog.showAndWait();
 
         // Switch based on the text string the button contains
         if (result.orElse(null) != null) {
+            WindowManager.closeAllChildren();
             String selectedButtonText = result.orElse(null).getText();
             switch (selectedButtonText) {
                 case "Users":
                     fileToLoadPath = getSelectedFilePath(ProfileType.USER);
                     if (fileToLoadPath != null) {
                         loadSuccessful = IO.importUsers(fileToLoadPath, ProfileType.USER);
+                    } else {
+                        loadAborted = true;
                     }
                     break;
                 case "Clinicians":
                     fileToLoadPath = getSelectedFilePath(ProfileType.CLINICIAN);
                     if (fileToLoadPath != null) {
                         loadSuccessful = IO.importUsers(fileToLoadPath, ProfileType.CLINICIAN);
+                    } else {
+                        loadAborted = true;
                     }
                     break;
                 case "Admins":
                     String fileToLoad = getSelectedFilePath(ProfileType.ADMIN);
                     if (fileToLoad != null) {
                         loadSuccessful = IO.importUsers(fileToLoad, ProfileType.ADMIN);
+                    } else {
+                        loadAborted = true;
                     }
                     break;
                 default:
                     // If the cancel button is pressed, don't want to harass the user with the extra dialog
-                    loadSuccessful = true;
+                    loadAborted = true;
             }
         }
 
@@ -348,6 +353,11 @@ public class AdminController implements Initializable {
                     "",
                     "All profiles successfully loaded.");
             successAlert.showAndWait();
+        } else if (loadAborted) {
+            Alert abortAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load cancelled",
+                    "",
+                    "No profile data loaded.");
+            abortAlert.showAndWait();
         } else {
             Alert failureAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load failed",
                     "",
@@ -791,10 +801,11 @@ public class AdminController implements Initializable {
     @FXML
     private void createAdmin() {
         Stage stage = new Stage();
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setMinHeight(0);
+        stage.setMinWidth(0);
+        stage.setHeight(TFScene.createAccount.getHeight());
+        stage.setWidth(TFScene.createAccount.getHeight());
+        stage.setResizable(false);
         stage.initModality(Modality.NONE);
 
         try {
@@ -822,10 +833,11 @@ public class AdminController implements Initializable {
     @FXML
     private void createClinician() {
         Stage stage = new Stage();
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setResizable(false);
+        stage.setMinHeight(0);
+        stage.setMinWidth(0);
+        stage.setHeight(TFScene.createAccount.getHeight());
+        stage.setWidth(TFScene.createAccount.getHeight());
         stage.initModality(Modality.NONE);
 
         try {
@@ -854,10 +866,11 @@ public class AdminController implements Initializable {
     @FXML
     private void createUser() {
         Stage stage = new Stage();
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setResizable(false);
+        stage.setMinHeight(0);
+        stage.setMinWidth(0);
+        stage.setHeight(TFScene.createAccount.getHeight());
+        stage.setWidth(TFScene.createAccount.getHeight());
         stage.initModality(Modality.NONE);
 
         try {

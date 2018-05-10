@@ -294,8 +294,10 @@ public class WindowManager extends Application {
         return WindowManager.transplantWaitingListController;
     }
 
-    public static ArrayList<Stage> getCliniciansUserWindows() {
-        return cliniciansUserWindows;
+    public static void closeAllChildren() {
+        for (Stage stage: cliniciansUserWindows) {
+            stage.close();
+        }
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {
