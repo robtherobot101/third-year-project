@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -162,6 +163,8 @@ public class CommandLineInterface {
                 case "help":
                     success = showHelp(nextCommand);
                     break;
+                case "sql":
+                    success = queryDatabase(nextCommand);
                 case "quit":
                     success = true;
                     break;
@@ -198,6 +201,29 @@ public class CommandLineInterface {
         }
 
     }
+
+    private boolean queryDatabase(String[] nextCommand){
+        String[] sqlArray = Arrays.copyOfRange(nextCommand, 1, nextCommand.length);
+        String query = String.join(" ", sqlArray);
+        if (SqlSanitation.sanitizeSqlStringDelete(query)) {
+            printLine("You do not have permission to delete from the database.");
+            return false;
+        } else if (SqlSanitation.sanitizeSqlStringCreate(query)) {
+            printLine("You do not have permission to create in the database.");
+            return false;
+        } else if (SqlSanitation.sanitizeSqlStringUpdate(query)) {
+            printLine("You do not have permission to update the database.");
+            return false;
+        } else if (SqlSanitation.sanitizeSqlStringPassword(query)) {
+            printLine("You do not have permission to view the passwords of users in the database.");
+            return false;
+        } else if (SqlSanitation.sanitizeSqlStringDrop(query)) {
+            printLine("You do not have permission to drop in the database.");
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Creates a new user with a name and date of birth.
@@ -757,6 +783,13 @@ public class CommandLineInterface {
                             + "-If the command argument is passed, the command must be: add, addOrgan, delete, deleteOrgan, set, describe, "
                             + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
                             + "Example valid usage: help help");
+                    break;
+                case "sql":
+                    printLine("This command can be used to query sql select commands to the database.\n"
+                            + "The syntax is: sql <SQL query>\n"
+                            + "Rules:\n"
+                            + "-Only SELECT queries can be sent"
+                            + "Example valid usage: sql SELECT id from user where first_name = 'Steve' and last_name = 'Johnson'");
                     break;
                 case "quit":
                     printLine("This command exits the program.\n"
