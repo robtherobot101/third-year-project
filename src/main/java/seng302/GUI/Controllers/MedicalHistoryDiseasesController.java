@@ -200,30 +200,17 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     }
 
     /**
-     * Saves the current state of the donor's diseases for both their current and cured diseases.
+     * Updates the current state of the user's diseases for both their current and cured diseases.
      */
-    public void save() {
+    public void updateUser() {
+        currentUser.getCurrentDiseases().clear();
+        currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
 
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
-                "Are you sure would like to update the current user? ", "By doing so, the donor will be updated with the following disease details.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            currentUser.getCurrentDiseases().clear();
-            currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
+        currentUser.getCuredDiseases().clear();
+        currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
-            currentUser.getCuredDiseases().clear();
-            currentUser.getCuredDiseases().addAll(curedDiseaseItems);
-
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
-            History.printToFile(streamOut, text);
-            //populateHistoryTable();
-            alert.close();
-            statusIndicator.setStatus("Saved", false);
-            titleBar.saved(true);
-        } else {
-            alert.close();
-        }
+        String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
+        History.printToFile(streamOut, text);
     }
 
     /**
@@ -731,7 +718,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         chronicCheckBox.setVisible(shown);
         newDiseaseTextField.setVisible(shown);
         deleteDiseaseButton.setVisible(shown);
-        saveDiseaseButton.setVisible(shown);
         isCuredCheckBox.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);

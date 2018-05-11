@@ -432,6 +432,8 @@ public class WindowManager extends Application {
             loginController.setEnterEvent();
             createAccountController.setEnterEvent();
 
+            stage.setX(100);
+            stage.setY(80);
             setScene(TFScene.login);
             stage.show();
 

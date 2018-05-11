@@ -1,0 +1,35 @@
+.text-field,
+.list-view,
+.list-view > .virtual-flow > .scroll-bar,
+.list-view > .virtual-flow > .corner {
+  -fx-background-color: #111111;
+}
+
+.text-field:focused {
+  -fx-background-color: #171717;
+}
+
+.list-view:focused {
+  -fx-background-color: #171717;
+  -fx-background-insets: 0, 1;
+  -fx-padding: 1;
+}
+
+.list-view .virtual-flow .scroll-bar .thumb {
+  -fx-background-color: #666666;
+}
+
+.text-field,
+.list-cell {
+  -fx-text-fill: #00cc00;
+  -fx-prompt-text-fill: #008800;
+  -fx-font-family: Monospaced;
+}
+
+.list-view .list-cell {
+  -fx-background-color: #111111;
+}
+
+.list-view .list-cell:selected {
+  -fx-background-color: #222222;
+}

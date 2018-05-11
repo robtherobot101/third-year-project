@@ -1,5 +1,7 @@
 package seng302.TUI;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.GUI.CommandLineInterface;
@@ -12,10 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandLineInterfaceTest {
     private CommandLineInterface commandLine;
+    private List<String> output;
 
     @Before
-    public void setUp() throws URISyntaxException {
-         commandLine = new CommandLineInterface();
+    public void setUp() {
+        commandLine = new CommandLineInterface();
+        output = new ArrayList<>();
+        commandLine.setOutput(output);
+        DataManager.users.clear();
     }
 
     @Test
@@ -45,10 +51,11 @@ public class CommandLineInterfaceTest {
         assertFalse(DataManager.users.get(0).isReceiver());
     }
 
-//    @Test
-//    public void deleteUser() {
-//        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");
-//        commandLine.readCommand("removeUser 0");
-//        assertTrue(DataManager.users.isEmpty());
-//    }
+    @Test
+    public void deleteUser() {
+        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");
+        commandLine.readCommand("deleteUser 0");
+        commandLine.readCommand("y");
+        assertTrue(DataManager.users.isEmpty());
+    }
 }

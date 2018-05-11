@@ -57,7 +57,7 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         sleep(200);
-        assertEquals(1, lookup("#commandOutputView").queryListView().getItems().size());
+        assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
     }
 
     @Test

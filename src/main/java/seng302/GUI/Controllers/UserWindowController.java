@@ -68,7 +68,7 @@ public class UserWindowController implements Initializable {
     @FXML
     private MenuItem undoButton, redoButton, logoutMenuItem;
     @FXML
-    private Button logoutButton, undoBannerButton, redoBannerButton, medicationsButton, medicalHistoryButton, waitingListButton,
+    private Button logoutButton, undoBannerButton, redoBannerButton, medicationsButton, waitingListButton,
             userAttributesButton, diseasesButton, proceduresButton, historyButton;
     @FXML
     private TreeTableView<String> historyTreeTableView;
@@ -78,8 +78,7 @@ public class UserWindowController implements Initializable {
     private HashMap<Organ, CheckBox> organTickBoxes;
 
     private ArrayList<User> waitingListUndoStack = new ArrayList<>(), waitingListRedoStack = new ArrayList<>();
-    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new
-            LinkedList<>(), medicationRedoStack = new LinkedList<>();
+    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private LinkedList<User> procedureUndoStack = new LinkedList<>(), procedureRedoStack = new LinkedList<>();
     private LinkedList<User> diseaseUndoStack = new LinkedList<>(), diseaseRedoStack = new LinkedList<>();
     private User currentUser;
@@ -89,9 +88,9 @@ public class UserWindowController implements Initializable {
     @FXML
     private MedicationsController medicationsController;
     @FXML
-    private MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    private MedicalHistoryDiseasesController diseasesController;
     @FXML
-    private MedicalHistoryProceduresController medicalHistoryProceduresController;
+    private MedicalHistoryProceduresController proceduresController;
     @FXML
     private WaitingListController waitingListController;
 
@@ -237,11 +236,11 @@ public class UserWindowController implements Initializable {
         medicationsController.setStatusIndicator(statusIndicator);
         medicationsController.setTitleBar(titleBar);
 
-        medicalHistoryDiseasesController.setStatusIndicator(statusIndicator);
-        medicalHistoryDiseasesController.setTitleBar(titleBar);
+        diseasesController.setStatusIndicator(statusIndicator);
+        diseasesController.setTitleBar(titleBar);
 
-        medicalHistoryProceduresController.setStatusIndicator(statusIndicator);
-        medicalHistoryProceduresController.setTitleBar(titleBar);
+        proceduresController.setStatusIndicator(statusIndicator);
+        proceduresController.setTitleBar(titleBar);
 
         waitingListController.setStatusIndicator(statusIndicator);
         waitingListController.setTitleBar(titleBar);
@@ -695,9 +694,12 @@ public class UserWindowController implements Initializable {
      */
     public void save() {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
-                "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
+            "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
+            medicationsController.updateUser();
+            diseasesController.updateUser();
+            proceduresController.updateUser();
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");

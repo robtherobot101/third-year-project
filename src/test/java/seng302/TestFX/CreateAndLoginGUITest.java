@@ -170,6 +170,6 @@ public class CreateAndLoginGUITest extends TestFXTest {
     public void testLoginAsDefaultClinician() {
         loginAsDefaultClinician();
         //Make sure that the clinician GUI is now showing
-        assertNotNull(lookup("#transplantList").query());
+        assertNotNull(lookup("#homeButton").query());
     }
 }

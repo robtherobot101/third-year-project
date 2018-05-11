@@ -23,7 +23,7 @@
 
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>

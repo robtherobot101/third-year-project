@@ -386,7 +386,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#organTypeComboBox");
         clickOn("heart");
         clickOn("#registerOrganButton");
-        clickOn("#saveUserButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("#exitUserButton");
         clickOn("OK");
@@ -397,13 +397,13 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#organTypeComboBox");
         clickOn("liver");
         clickOn("#registerOrganButton");
-        clickOn("#saveUserButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("#exitUserButton");
         clickOn("OK");
 
         //check the transplant list
-        clickOn("#transplantList");
+        clickOn("#transplantListButton");
 
         clickOn("#regionSearchTextField").write("Canterb");
         //check the transplant table

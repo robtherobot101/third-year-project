@@ -248,9 +248,9 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         //Add Medication for donor.
         addNewProcedureToPendingProcedures();
 
-        clickOn("#saveProcedureButton");
+        clickOn("#saveButton");
         sleep(200);
-        clickOn("#saveProcedureOK");
+        clickOn("OK");
         clickOn("#exitUserButton");
         sleep(200);
         clickOn("#exitOK");
@@ -280,7 +280,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         clickOn("#deleteProcedureButton");
         sleep(200);
         clickOn("OK");
-        clickOn("#saveProcedureButton");
+        clickOn("#saveButton");
         sleep(200);
         clickOn("OK");
     }
