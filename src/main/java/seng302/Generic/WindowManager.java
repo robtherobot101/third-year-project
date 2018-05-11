@@ -17,6 +17,7 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -50,6 +51,16 @@ public class WindowManager extends Application {
     private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
+    private static Database database;
+
+
+    public static Database getDatabase() {
+        return database;
+    }
+
+    public static void setDatabase(Database database) {
+        WindowManager.database = database;
+    }
 
     /**
      * Returns the program icon.
@@ -322,6 +333,8 @@ public class WindowManager extends Application {
      */
     public static void main(String[] args) {
         if (args.length == 0) {
+            database = new Database();
+            database.connectToDatabase();
             launch(args);
         } else if (args.length == 1 && args[0].equals("-c")) {
             try {
