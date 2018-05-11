@@ -626,4 +626,13 @@ public class User {
             return "";
         }
     }
+
+    public void removeWaitingListItem(Organ toRemove) {
+        for (ReceiverWaitingListItem item : waitingListItems){
+            if (item.getOrganType() == toRemove) {
+                waitingListItems.remove(item);
+                break;
+            }
+        }
+    }
 }
