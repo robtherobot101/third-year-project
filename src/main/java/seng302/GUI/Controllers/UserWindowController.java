@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
+import static seng302.Generic.WindowManager.setButtonSelected;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -67,7 +68,8 @@ public class UserWindowController implements Initializable {
     @FXML
     private MenuItem undoButton, redoButton, logoutMenuItem;
     @FXML
-    private Button logoutButton, undoBannerButton, redoBannerButton, medicationsButton, medicalHistoryButton, waitingListButton;
+    private Button logoutButton, undoBannerButton, redoBannerButton, medicationsButton, medicalHistoryButton, waitingListButton,
+            userAttributesButton, diseasesButton, proceduresButton, historyButton;
     @FXML
     private TreeTableView<String> historyTreeTableView;
     @FXML
@@ -316,107 +318,94 @@ public class UserWindowController implements Initializable {
         waitingListButton.setVisible(true);
     }
 
+
     /**
-     * Sets the history pane as the visible pane
+     * Hides all of the main panes.
      */
-    public void showHistoryPane() {
+    private void hideAllTabs() {
+        setButtonSelected(userAttributesButton, false);
+        setButtonSelected(medicationsButton, false);
+        setButtonSelected(diseasesButton, false);
+        setButtonSelected(proceduresButton, false);
+        setButtonSelected(historyButton, false);
+
         welcomePane.setVisible(false);
         attributesGridPane.setVisible(false);
-        historyGridPane.setVisible(true);
+        historyGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
         medicationsPane.setVisible(false);
         waitingListPane.setVisible(false);
         setUndoRedoButtonsDisabled(true, true);
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Action History");
-    }
-
-
-    public void showWaitingListPane() {
-        welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
-        medicalHistoryDiseasesPane.setVisible(false);
-        medicalHistoryProceduresPane.setVisible(false);
-        historyGridPane.setVisible(false);
-        medicationsPane.setVisible(false);
-        waitingListPane.setVisible(true);
-        setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Waiting List");
-    }
-
-    /**
-     * Sets the medications pane as the visible pane
-     */
-    public void showMedicationsPane() {
-        welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
-        historyGridPane.setVisible(false);
-        medicalHistoryDiseasesPane.setVisible(false);
-        medicalHistoryProceduresPane.setVisible(false);
-        medicationsPane.setVisible(true);
-        waitingListPane.setVisible(false);
-        setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Medications");
-    }
-
-    /**
-     * Sets the User Attribute pane as the visible pane
-     */
-    public void showAttributesPane() {
-        welcomePane.setVisible(false);
-        attributesGridPane.setVisible(true);
-        historyGridPane.setVisible(false);
-        medicalHistoryDiseasesPane.setVisible(false);
-        medicalHistoryProceduresPane.setVisible(false);
-        medicationsPane.setVisible(false);
-        waitingListPane.setVisible(false);
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Attributes");
-    }
-
-    /**
-     * Sets the diseases pane as the visible pane
-     */
-    public void showMedicalHistoryDiseasesPane() {
-        welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
-        historyGridPane.setVisible(false);
-        medicalHistoryDiseasesPane.setVisible(true);
-        medicalHistoryProceduresPane.setVisible(false);
-        medicationsPane.setVisible(false);
-        waitingListPane.setVisible(false);
-        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Disease History");
-        setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), diseaseRedoStack.isEmpty());
-    }
-
-    /**
-     * Sets the medical history pane as the visible pane
-     */
-    public void showMedicalHistoryProceduresPane() {
-        welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
-        historyGridPane.setVisible(false);
-        medicalHistoryDiseasesPane.setVisible(false);
-        medicalHistoryProceduresPane.setVisible(true);
-        medicationsPane.setVisible(false);
-        waitingListPane.setVisible(false);
-        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Procedure History");
     }
 
     /**
      * Sets the welcome pane as the visible pane
      */
     public void showWelcomePane() {
+        hideAllTabs();
         welcomePane.setVisible(true);
-        attributesGridPane.setVisible(false);
-        historyGridPane.setVisible(false);
-        medicalHistoryDiseasesPane.setVisible(false);
-        medicalHistoryProceduresPane.setVisible(false);
-        medicationsPane.setVisible(false);
-        waitingListPane.setVisible(false);
-        setUndoRedoButtonsDisabled(true, true);
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
+    }
+
+    /**
+     * Sets the User Attribute pane as the visible pane
+     */
+    public void showAttributesPane() {
+        hideAllTabs();
+        attributesGridPane.setVisible(true);
+        setButtonSelected(userAttributesButton, true);
+        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Attributes");
+    }
+
+    /**
+     * Sets the medications pane as the visible pane
+     */
+    public void showMedicationsPane() {
+        hideAllTabs();
+        medicationsPane.setVisible(true);
+        setButtonSelected(medicationsButton, true);
+        setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Medications");
+    }
+
+    /**
+     * Sets the diseases pane as the visible pane
+     */
+    public void showMedicalHistoryDiseasesPane() {
+        hideAllTabs();
+        medicalHistoryDiseasesPane.setVisible(true);
+        setButtonSelected(diseasesButton, true);
+        setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), diseaseRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Disease History");
+    }
+
+    /**
+     * Sets the medical history pane as the visible pane
+     */
+    public void showMedicalHistoryProceduresPane() {
+        hideAllTabs();
+        medicalHistoryProceduresPane.setVisible(true);
+        setButtonSelected(proceduresButton, true);
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Procedure History");
+    }
+
+    /**
+     * Sets the history pane as the visible pane
+     */
+    public void showHistoryPane() {
+        hideAllTabs();
+        historyGridPane.setVisible(true);
+        setButtonSelected(historyButton, true);
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Action History");
+    }
+
+    public void showWaitingListPane() {
+        hideAllTabs();
+        waitingListPane.setVisible(true);
+        setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Waiting List");
     }
 
     /**

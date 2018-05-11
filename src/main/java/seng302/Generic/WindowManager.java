@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -34,7 +35,7 @@ public class WindowManager extends Application {
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
     private static ArrayList<Stage> cliniciansUserWindows = new ArrayList<>();
     private static Image icon;
-    private static String dialogStyle;
+    private static String dialogStyle, menuButtonStyle, selectedMenuButtonStyle;
 
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
@@ -87,6 +88,22 @@ public class WindowManager extends Application {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
+    }
+
+    /**
+     * Set whether a menu button is selected and highlighted or not.
+     *
+     * @param button The button to set
+     * @param selected Whether it should be highlighted
+     */
+    public static void setButtonSelected(Button button, boolean selected) {
+        if (selected) {
+            button.getStylesheets().remove(menuButtonStyle);
+            button.getStylesheets().add(selectedMenuButtonStyle);
+        } else {
+            button.getStylesheets().remove(selectedMenuButtonStyle);
+            button.getStylesheets().add(menuButtonStyle);
+        }
     }
 
     /**
@@ -364,6 +381,8 @@ public class WindowManager extends Application {
             }
         });
         dialogStyle = WindowManager.class.getResource("/css/dialog.css").toExternalForm();
+        menuButtonStyle = WindowManager.class.getResource("/css/menubutton.css").toExternalForm();
+        selectedMenuButtonStyle = WindowManager.class.getResource("/css/selectedmenubutton.css").toExternalForm();
         icon = new Image(getClass().getResourceAsStream("/icon.png"));
         stage.getIcons().add(icon);
         try {

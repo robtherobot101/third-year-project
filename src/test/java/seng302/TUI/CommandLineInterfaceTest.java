@@ -2,19 +2,13 @@ package seng302.TUI;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import seng302.GUI.CommandLineInterface;
-import seng302.GUI.Controllers.UserWindowController;
 import seng302.Generic.DataManager;
-import seng302.Generic.IO;
-import seng302.Generic.WindowManager;
 
-import javax.print.URIException;
-import javax.xml.crypto.Data;
-import java.io.*;
 import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandLineInterfaceTest {
     private CommandLineInterface commandLine;
