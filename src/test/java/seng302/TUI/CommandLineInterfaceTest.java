@@ -51,6 +51,37 @@ public class CommandLineInterfaceTest {
         assertFalse(DataManager.users.get(0).isReceiver());
     }
 
+    @Test
+    public void addClinician(){
+        int numberOfClinicians = DataManager.clinicians.size();
+        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\"");
+        assertEquals(numberOfClinicians+1,DataManager.clinicians.size());
+    }
+
+    @Test
+    public void addClinicianBadArguments(){
+        int numberOfClinicians = DataManager.clinicians.size();
+        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\" \"fourth arg\"");
+        assertEquals(numberOfClinicians,DataManager.clinicians.size());
+    }
+
+    @Test
+    public void updateClinician(){
+        int numberOfClinicians = DataManager.clinicians.size();
+        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\"");
+        commandLine.readCommand("updateClinician "+numberOfClinicians+" \"region\" \"Chch\"");
+        assertEquals("Chch",DataManager.clinicians.get(numberOfClinicians).getRegion());
+    }
+
+    @Test
+    public void deleteClinician(){
+        int numberOfClinicians = DataManager.clinicians.size();
+        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\"");
+        commandLine.readCommand("deleteClinician "+numberOfClinicians);
+        commandLine.readCommand("y");
+        assertEquals(numberOfClinicians,DataManager.clinicians.size());
+    }
+
 //    @Test
 //    public void deleteUser() {
 //        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");

@@ -6,20 +6,20 @@ import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
+import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-import static seng302.Generic.IO.streamOut;
-
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
 public class CommandLineInterface {
     private boolean isDeleting = false;
-    private User toDelete;
+    private User userToDelete;
+    private Clinician clinicianToDelete;
     private String[] deleteCommand;
 
     /**
@@ -132,6 +132,9 @@ public class CommandLineInterface {
                 case "adduser":
                     success = addUser(nextCommand);
                     break;
+                case "addclinician":
+                    success = addClinician(nextCommand);
+                    break;
                 case "adddonationorgan":
                     success = addDonationOrgan(nextCommand);
                     break;
@@ -141,14 +144,20 @@ public class CommandLineInterface {
                 case "deleteuser":
                     deleteUser(nextCommand);
                     return; //Returns as the command will not be complete until later confirmation
+                case "deleteclinician":
+                    deleteClinician(nextCommand);
+                    return; //Returns as the command will not be complete until later confirmation
                 case "removewaitinglistorgan":
                     success = removeWaitingListOrgan(nextCommand);
                     break;
                 case "removeedonationorgan":
                     success = removeDonationOrgan(nextCommand);
                     break;
-                case "set":
-                    success = setUserAttribute(nextCommand);
+                case "updateuser":
+                    success = updateUser(nextCommand);
+                    break;
+                case "updateclinician":
+                    success = updateClinician(nextCommand);
                     break;
                 case "describe":
                     success = describeUser(nextCommand);
@@ -221,7 +230,20 @@ public class CommandLineInterface {
                 printLine("Please enter a valid date of birth in the format dd/mm/yyyy.");
             }
         } else {
-            printIncorrectUsageString("add", 2, "\"name part 1,name part 2\" <date of birth>");
+            printIncorrectUsageString("addUser", 2, "\"name part 1,name part 2\" <date of birth>");
+        }
+        return false;
+    }
+
+
+    private boolean addClinician(String[] nextCommand) {
+        if (nextCommand.length == 4) {
+            DataManager.clinicians.add(new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", "")));
+            printLine("New clinician created.");
+            return true;
+
+        } else {
+            printIncorrectUsageString("addClinician", 3, "<username> <password> <name>");
         }
         return false;
     }
@@ -311,7 +333,7 @@ public class CommandLineInterface {
                 print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
                 deleteCommand = nextCommand;
                 isDeleting = true;
-                toDelete = user;
+                userToDelete = user;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
@@ -321,7 +343,32 @@ public class CommandLineInterface {
     }
 
     /**
-     * Delete the user if the user confirms the action.
+     * Finds out which user the user wants to delete, and ask for confirmation.
+     *
+     * @param nextCommand The command entered by the user
+     */
+    private void deleteClinician(String[] nextCommand) {
+        if (nextCommand.length == 2) {
+            try {
+                long id = Long.parseLong(nextCommand[1]);
+                Clinician clinician = SearchUtils.getClinicianById(id);
+                if (clinician == null) {
+                    printLine(String.format("Clinician with staff ID %d not found.", id));
+                }
+                print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
+                deleteCommand = nextCommand;
+                isDeleting = true;
+                clinicianToDelete = clinician;
+            } catch (NumberFormatException e) {
+                printLine("Please enter a valid ID number.");
+            }
+        } else {
+            printIncorrectUsageString("delete", 1, "<id>");
+        }
+    }
+
+    /**
+     * Delete the clinician if the user confirms the action.
      *
      * @param nextLine The command entered by the user
      * @return Whether the command was executed
@@ -332,20 +379,36 @@ public class CommandLineInterface {
             return false;
         }
         if (nextLine.equals("y")) {
-            boolean deleted = DataManager.users.remove(toDelete);
-            if (deleted) {
-                printLine("User removed. This change will permanent once the user list is saved.");
-                isDeleting = false;
-                toDelete = null;
-                return true;
-            } else {
-                printLine("The user has already been removed in the GUI.");
+            boolean deleted;
+            if(userToDelete==null){
+                deleted = DataManager.clinicians.remove(clinicianToDelete);
+                if (deleted) {
+                    printLine("Clinician removed. This change will permanent once the user list is saved.");
+                    isDeleting = false;
+                    clinicianToDelete = null;
+                    return true;
+                } else {
+                    printLine("The clinician has already been removed in the GUI.");
+                }
+            }else{
+                deleted = DataManager.users.remove(userToDelete);
+                if (deleted) {
+                    printLine("User removed. This change will permanent once the user list is saved.");
+                    isDeleting = false;
+                    userToDelete = null;
+                    return true;
+                } else {
+                    printLine("The user has already been removed in the GUI.");
+                }
             }
+
+
         } else {
-            printLine("User was not removed.");
+            printLine("Deletion cancelled.");
         }
         isDeleting = false;
-        toDelete = null;
+        userToDelete = null;
+        clinicianToDelete = null;
         return false;
     }
 
@@ -423,7 +486,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean setUserAttribute(String[] nextCommand) {
+    private boolean updateUser(String[] nextCommand) {
         long id;
         String attribute, value;
         /*if (nextCommand.length >= 4 && nextCommand[2].toLowerCase().equals("name") && nextCommand[3].contains("\"")) {
@@ -453,7 +516,7 @@ public class CommandLineInterface {
                 return false;
             }
         } else {
-            printIncorrectUsageString("set", 3, "<id> <attribute> <value>");
+            printIncorrectUsageString("updateUser", 3, "<id> <attribute> <value>");
             return false;
         }
 
@@ -545,6 +608,58 @@ public class CommandLineInterface {
                 return false;
         }
     }
+
+
+
+    private boolean updateClinician(String[] nextCommand) {
+        long id;
+        String attribute, value;
+        if (nextCommand.length == 4) {
+            try {
+                id = Long.parseLong(nextCommand[1]);
+                attribute = nextCommand[2];
+                value = nextCommand[3];
+            } catch (NumberFormatException e) {
+                printLine("Please enter a valid staff ID number.");
+                return false;
+            }
+        } else {
+            printIncorrectUsageString("updateClinician", 3, "<id> <attribute> <value>");
+            return false;
+        }
+
+        Clinician toSet = SearchUtils.getClinicianById(id);
+        if (toSet == null) {
+            printLine(String.format("Clinician with staff ID %d not found.", id));
+            return false;
+        }
+        switch (attribute.toLowerCase()) {
+            case "name":
+                toSet.setName(value);
+                printLine("New name set.");
+                return true;
+            case "region":
+                toSet.setRegion(value);
+                printLine("New region set.");
+                return true;
+            case "workaddress":
+                toSet.setWorkAddress(value);
+                printLine("New work address set.");
+                return true;
+            case "username":
+                toSet.setUsername(value);
+                printLine("New username set.");
+                return true;
+            case "password":
+                toSet.setPassword(value);
+                printLine("New password set.");
+                return true;
+            default:
+                printLine("Attribute '" + attribute + "' not recognised. Try name, region, workaddress, username, password.");
+                return false;
+        }
+    }
+
 
     /**
      * Searches for users and displays information about them.
