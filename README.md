@@ -12,22 +12,22 @@ Java Runtime Environment at least version 8
 
 Available commands:
 
-add  
+addUser
 This command adds a new donor with a name and date of birth.  
-The syntax is: add `<name>` `<date of birth>`  
+The syntax is: addUser `<name>` `<date of birth>`  
 Rules:  
 -The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)  
 -If there are any spaces in the name, the name must be enclosed in quotation marks (")  
 -The date of birth must be entered in the format: dd/mm/yyyy  
-Example valid usage: add "Test,User with,SpacesIn Name" 01/05/1994  
+Example valid usage: addUser "Test,User with,SpacesIn Name" 01/05/1994  
 
-addOrgan  
-This command adds one organ to donate to a donor. To find the id of a donor, use the list and describe commands.  
-The syntax is: addOrgan `<id>` `<organ>`  
+addDonationOrgan  
+This command adds one organ to donate to a user. To find the id of a user, use the list and describe commands.  
+The syntax is: addDonationOrgan `<id>` `<organ>`  
 Rules:  
 -The id number must be a number that is 0 or larger  
 -The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, bone-marrow, or connective-tissue.  
-Example valid usage: addOrgan 0 skin  
+Example valid usage: addDonationOrgan 0 skin  
 
 delete  
 This command deletes one donor. To find the id of a donor, use the list and describe commands.  
@@ -37,13 +37,32 @@ Rules:
 -You will be asked to confirm that you want to delete this donor  
 Example valid usage: delete 1
 
-deleteOrgan  
-This command removes one offered organ from a donor. To find the id of a donor, use the list and describe commands.  
-The syntax is: deleteOrgan `<id>` `<organ>`  
+removeDonationOrgan  
+This command removes one offered organ from a user. To find the id of a user, use the list and describe commands.  
+The syntax is: removeDonationOrgan `<id>` `<organ>`  
 Rules:  
 -The id number must be a number that is 0 or larger  
 -The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, bone-marrow, or connective-tissue.  
 Example valid usage: deleteOrgan 5 kidney
+
+addWaitingListOrgan
+This command adds one organ which the user is waiting to receive. To find the id of a user, use the list and describe commands.
+The syntax is: addWaitingListOrgan <id> <organ>
+Rules:
+-The id number must be a number that is 0 or larger
+-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, 
+bone-marrow, or connective-tissue.
+Example valid usage: addWaitingListOrgan 0 skin
+
+removeWaitingListOrgan
+This command removes one offered organ from a user. To find the id of a user, use the list and
+describe commands.
+The syntax is: removeDonationOrgan <id> <organ>
+Rules:
+-The id number must be a number that is 0 or larger
+-The organ must be a donatable organ: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin,
+bone-marrow, or connective-tissue.
+Example valid usage: removeDonationOrgan 5 kidney
 
 set  
 This command sets one attribute (apart from organs to be donated) of a donor. To find the id of a donor, use the list and describe commands. To add or delete organs, instead use the addOrgan and deleteOrgan commands.  
