@@ -941,7 +941,7 @@ public class CommandLineInterface {
                             + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
                             + "Example valid usage: updateUser 2 bloodtype ab+");
                     break;
-                case "descibeuser":
+                case "describeuser":
                     printLine("This command searches users and displays information about them. To find the id of a user, use the listUsers "
                             + "and describeUser commands.\n"
                             + "The syntax is: describeUser <id> OR describeUser <name>\n"
@@ -951,6 +951,14 @@ public class CommandLineInterface {
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
                             + "Example valid usage: describeUser \"andrew,son\'");
+                    break;
+                case "describeclinician":
+                    printLine("This command searches clinicians and displays information about them. To find the id of a clinician, use the listClinicians "
+                            + "and describeClinician commands.\n"
+                            + "The syntax is: describeClinician <id>\n"
+                            + "Rules:\n"
+                            + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
+                            + "Example valid usage: describeClinician 1");
                     break;
                 case "describeorgans":
                     printLine("This command displays the organs which a user will donate or has donated. To find the id of a user, "
@@ -963,6 +971,10 @@ public class CommandLineInterface {
                 case "listusers":
                     printLine("This command lists all information about all users in a table.\n"
                             + "Example valid usage: listUsers");
+                    break;
+                case "listclinicians":
+                    printLine("This command lists all information about all clinicians in a table.\n"
+                            + "Example valid usage: listClinicians");
                     break;
                 case "listorgans":
                     printLine("This command displays all of the organs that are currently offered by each user. User that are "
