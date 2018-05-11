@@ -35,8 +35,9 @@ public class AdminCliController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Initialise output components
-        currentHistoryIndex = 0;
+        currentHistoryIndex = 1;
         commandInputHistory = new ArrayList<>();
+        commandInputHistory.add("");
         capturedOutput = FXCollections.observableArrayList();
         commandOutputView.setItems(capturedOutput);
 

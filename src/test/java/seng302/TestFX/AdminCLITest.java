@@ -61,7 +61,7 @@ public class AdminCLITest extends TestFXTest {
     }
 
     @Test
-    public void cliHistory() {
+    public void cliHistoryPrevious() {
         TextField commandInputField = lookup("#commandInputField").query();
         clickOn("#commandInputField").write("a");
         press(KeyCode.ENTER).release(KeyCode.ENTER);
@@ -83,6 +83,40 @@ public class AdminCLITest extends TestFXTest {
 
         // Check for a second time that the history doesn't break when overrun
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("a", commandInputField.getText());
+        assertEquals("", commandInputField.getText());
+    }
+
+    @Test
+    public void cliHistoryLater() {
+        TextField commandInputField = lookup("#commandInputField").query();
+        clickOn("#commandInputField").write("a");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        write("b");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        write("c");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        write("d");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("d", commandInputField.getText());
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("c", commandInputField.getText());
+        press(KeyCode.DOWN).release(KeyCode.DOWN);
+        assertEquals("d", commandInputField.getText());
+        press(KeyCode.DOWN).release(KeyCode.DOWN);
+
+        // Check for a second time that the history doesn't break when overrun
+        assertEquals("d", commandInputField.getText());
+    }
+
+    @Test
+    public void cliHistoryNoHistory() {
+        TextField commandInputField = lookup("#commandInputField").query();
+        clickOn("#commandInputField");
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("", commandInputField.getText());
+        press(KeyCode.DOWN).release(KeyCode.DOWN);
+        assertEquals("", commandInputField.getText());
     }
 }
