@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -376,5 +377,12 @@ public class SearchUtils {
         return matched;
     }
 
-
+    /**
+     * Returns the most recently added user to the program, by taking the last element in the users list.
+     * Called in the history function.
+     * @return the most recently added user.
+     */
+    public static User getLatestUser() {
+        return DataManager.users.get(DataManager.users.size()-1);
+    }
 }
