@@ -6,6 +6,7 @@ import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
+import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.File;
@@ -14,14 +15,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static seng302.Generic.IO.streamOut;
-
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
 public class CommandLineInterface {
     private boolean isDeleting = false;
-    private User toDelete;
+    private User userToDelete;
+    private Clinician clinicianToDelete;
     private String[] deleteCommand;
     private List<String> outputString;
 
@@ -139,6 +139,9 @@ public class CommandLineInterface {
                 case "adduser":
                     success = addUser(nextCommand);
                     break;
+                case "addclinician":
+                    success = addClinician(nextCommand);
+                    break;
                 case "adddonationorgan":
                     success = addDonationOrgan(nextCommand);
                     break;
@@ -148,24 +151,39 @@ public class CommandLineInterface {
                 case "deleteuser":
                     deleteUser(nextCommand);
                     return; //Returns as the command will not be complete until later confirmation
+                case "deleteclinician":
+                    deleteClinician(nextCommand);
+                    return; //Returns as the command will not be complete until later confirmation
                 case "removewaitinglistorgan":
                     success = removeWaitingListOrgan(nextCommand);
                     break;
                 case "removeedonationorgan":
                     success = removeDonationOrgan(nextCommand);
                     break;
-                case "set":
-                    success = setUserAttribute(nextCommand);
+                case "updateuser":
+                    success = updateUser(nextCommand);
                     break;
-                case "describe":
+                case "updateclinician":
+                    success = updateClinician(nextCommand);
+                    break;
+                case "describeuser":
                     success = describeUser(nextCommand);
+                    break;
+
+                case "describeClinician":
+                    success = describeClinician(nextCommand);
                     break;
                 case "describeorgans":
                     success = listUserOrgans(nextCommand);
                     break;
-                case "list":
+                case "listusers":
                     success = listUsers(nextCommand);
                     break;
+
+                case "listClinicians":
+                    success = listClinicians(nextCommand);
+                    break;
+
                 case "listorgans":
                     success = listOrgans(nextCommand);
                     break;
@@ -188,6 +206,32 @@ public class CommandLineInterface {
             //History.printToFile(streamOut, text);
         }
     }
+
+    private boolean describeClinician(String[] nextCommand) {
+        String idString;
+
+        if (nextCommand.length == 2) {
+            idString = nextCommand[1];
+        } else {
+            printIncorrectUsageString("describe", 1, "<id>");
+            return false;
+        }
+
+        try {
+            Clinician toDescribe = SearchUtils.getClinicianById(Long.parseLong(idString));
+            if (toDescribe == null) {
+                printLine(String.format("Clinician with ID %s not found.", idString));
+            } else {
+
+                printLine(toDescribe.toString());
+
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("ID entered was not valid.");
+        }
+        return true;
+    }
+
 
 
 
@@ -228,7 +272,20 @@ public class CommandLineInterface {
                 printLine("Please enter a valid date of birth in the format dd/mm/yyyy.");
             }
         } else {
-            printIncorrectUsageString("add", 2, "\"name part 1,name part 2\" <date of birth>");
+            printIncorrectUsageString("addUser", 2, "\"name part 1,name part 2\" <date of birth>");
+        }
+        return false;
+    }
+
+
+    private boolean addClinician(String[] nextCommand) {
+        if (nextCommand.length == 4) {
+            DataManager.clinicians.add(new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", "")));
+            printLine("New clinician created.");
+            return true;
+
+        } else {
+            printIncorrectUsageString("addClinician", 3, "<username> <password> <name>");
         }
         return false;
     }
@@ -318,7 +375,7 @@ public class CommandLineInterface {
                 print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
                 deleteCommand = nextCommand;
                 isDeleting = true;
-                toDelete = user;
+                userToDelete = user;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
@@ -328,7 +385,32 @@ public class CommandLineInterface {
     }
 
     /**
-     * Delete the user if the user confirms the action.
+     * Finds out which user the user wants to delete, and ask for confirmation.
+     *
+     * @param nextCommand The command entered by the user
+     */
+    private void deleteClinician(String[] nextCommand) {
+        if (nextCommand.length == 2) {
+            try {
+                long id = Long.parseLong(nextCommand[1]);
+                Clinician clinician = SearchUtils.getClinicianById(id);
+                if (clinician == null) {
+                    printLine(String.format("Clinician with staff ID %d not found.", id));
+                }
+                print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
+                deleteCommand = nextCommand;
+                isDeleting = true;
+                clinicianToDelete = clinician;
+            } catch (NumberFormatException e) {
+                printLine("Please enter a valid ID number.");
+            }
+        } else {
+            printIncorrectUsageString("delete", 1, "<id>");
+        }
+    }
+
+    /**
+     * Delete the clinician if the user confirms the action.
      *
      * @param nextLine The command entered by the user
      * @return Whether the command was executed
@@ -339,20 +421,36 @@ public class CommandLineInterface {
             return false;
         }
         if (nextLine.equals("y")) {
-            boolean deleted = DataManager.users.remove(toDelete);
-            if (deleted) {
-                printLine("User removed. This change will permanent once the user list is saved.");
-                isDeleting = false;
-                toDelete = null;
-                return true;
-            } else {
-                printLine("The user has already been removed in the GUI.");
+            boolean deleted;
+            if(userToDelete==null){
+                deleted = DataManager.clinicians.remove(clinicianToDelete);
+                if (deleted) {
+                    printLine("Clinician removed. This change will permanent once the user list is saved.");
+                    isDeleting = false;
+                    clinicianToDelete = null;
+                    return true;
+                } else {
+                    printLine("The clinician has already been removed in the GUI.");
+                }
+            }else{
+                deleted = DataManager.users.remove(userToDelete);
+                if (deleted) {
+                    printLine("User removed. This change will permanent once the user list is saved.");
+                    isDeleting = false;
+                    userToDelete = null;
+                    return true;
+                } else {
+                    printLine("The user has already been removed in the GUI.");
+                }
             }
+
+
         } else {
-            printLine("User was not removed.");
+            printLine("Deletion cancelled.");
         }
         isDeleting = false;
-        toDelete = null;
+        userToDelete = null;
+        clinicianToDelete = null;
         return false;
     }
 
@@ -430,7 +528,7 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean setUserAttribute(String[] nextCommand) {
+    private boolean updateUser(String[] nextCommand) {
         long id;
         String attribute, value;
         /*if (nextCommand.length >= 4 && nextCommand[2].toLowerCase().equals("name") && nextCommand[3].contains("\"")) {
@@ -460,7 +558,7 @@ public class CommandLineInterface {
                 return false;
             }
         } else {
-            printIncorrectUsageString("set", 3, "<id> <attribute> <value>");
+            printIncorrectUsageString("updateUser", 3, "<id> <attribute> <value>");
             return false;
         }
 
@@ -553,6 +651,58 @@ public class CommandLineInterface {
         }
     }
 
+
+
+    private boolean updateClinician(String[] nextCommand) {
+        long id;
+        String attribute, value;
+        if (nextCommand.length == 4) {
+            try {
+                id = Long.parseLong(nextCommand[1]);
+                attribute = nextCommand[2];
+                value = nextCommand[3];
+            } catch (NumberFormatException e) {
+                printLine("Please enter a valid staff ID number.");
+                return false;
+            }
+        } else {
+            printIncorrectUsageString("updateClinician", 3, "<id> <attribute> <value>");
+            return false;
+        }
+
+        Clinician toSet = SearchUtils.getClinicianById(id);
+        if (toSet == null) {
+            printLine(String.format("Clinician with staff ID %d not found.", id));
+            return false;
+        }
+        switch (attribute.toLowerCase()) {
+            case "name":
+                toSet.setName(value);
+                printLine("New name set.");
+                return true;
+            case "region":
+                toSet.setRegion(value);
+                printLine("New region set.");
+                return true;
+            case "workaddress":
+                toSet.setWorkAddress(value);
+                printLine("New work address set.");
+                return true;
+            case "username":
+                toSet.setUsername(value);
+                printLine("New username set.");
+                return true;
+            case "password":
+                toSet.setPassword(value);
+                printLine("New password set.");
+                return true;
+            default:
+                printLine("Attribute '" + attribute + "' not recognised. Try name, region, workaddress, username, password.");
+                return false;
+        }
+    }
+
+
     /**
      * Searches for users and displays information about them.
      *
@@ -567,7 +717,7 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             idString = nextCommand[1];
         } else {
-            printIncorrectUsageString("describe", 1, "<id>");
+            printIncorrectUsageString("describeUser", 1, "<id>");
             return false;
         }
 
@@ -633,14 +783,38 @@ public class CommandLineInterface {
                     printLine(user.getString(true));
                 }
             } else {
-                printLine("There are no users to list. Please add or import some before using list.");
+                printLine("There are no users to list. Please add or import some before using listUsers.");
             }
             return true;
         } else {
-            printIncorrectUsageString("list", 0, null);
+            printIncorrectUsageString("listUsers", 0, null);
             return false;
         }
     }
+
+    /**
+     * Displays a table containing information about all clinicians.
+     *
+     * @param nextCommand The command entered by the user
+     * @return Whether the command was executed
+     */
+    private boolean listClinicians(String[] nextCommand) {
+        if (nextCommand.length == 1) {
+            if (DataManager.clinicians.size() > 0) {
+                printLine(Clinician.tableHeader);
+                for (Clinician clinician : DataManager.clinicians) {
+                    printLine(clinician.toString());
+                }
+            } else {
+                printLine("There are no clinicians to list. Please add or import some before using list.");
+            }
+            return true;
+        } else {
+            printIncorrectUsageString("listClinicians", 0, null);
+            return false;
+        }
+    }
+
 
     /**
      * Lists all users who have at least 1 organ to donate and their available organs.
@@ -741,10 +915,10 @@ public class CommandLineInterface {
                     + "\n\t-delete <id>"
                     + "\n\t-removeDonationOrgan <id> <organ>"
                     + "\n\t-removeWaitingListOrgan <id> <organ>"
-                    + "\n\t-set <id> <attribute> <value>"
-                    + "\n\t-describe <id> OR describe \"name substring 1,name substring 2,name substring n\""
+                    + "\n\t-updateUser <id> <attribute> <value>"
+                    + "\n\t-describeUser <id> OR describeUser \"name substring 1,name substring 2,name substring n\""
                     + "\n\t-describeOrgans <id>"
-                    + "\n\t-list"
+                    + "\n\t-listUsers"
                     + "\n\t-listOrgans"
                     + "\n\t-import [-r] <filename>"
                     + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
@@ -761,9 +935,17 @@ public class CommandLineInterface {
                             + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
                             + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
                     break;
+
+                case "addclinician":
+                    printLine("This command adds a new clinician with a username, password, and name.\n"
+                            + "The syntax is: addClinician <username> <password> <name> \n"
+                            + "Rules:\n"
+                            + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
+                            + "Example valid usage: addClinician <username> <password> \"clinician name\"");
+                    break;
                 case "adddonationorgan":
-                    printLine("This command adds one organ to donate to a user. To find the id of a user, use the list and "
-                            + "describe commands.\n"
+                    printLine("This command adds one organ to donate to a user. To find the id of a user, use the listUsers and "
+                            + "describeUser commands.\n"
                             + "The syntax is: addDonationOrgan <id> <organ>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
@@ -772,7 +954,7 @@ public class CommandLineInterface {
                             + "Example valid usage: addDonationOrgan 0 skin");
                     break;
                 case "addwaitinglistorgan":
-                    printLine("This command adds one organ which the user is waiting to receive. To find the id of a user, use the list and describe commands. \n"
+                    printLine("This command adds one organ which the user is waiting to receive. To find the id of a user, use the listUsers and describeUser commands. \n"
                             + "The syntax is: addWaitingListOrgan <id> <organ>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
@@ -780,7 +962,7 @@ public class CommandLineInterface {
                             + "bone-marrow, or connective-tissue.\n"
                             + "Example valid usage: addWaitingListOrgan 0 skin");
                     break;
-                case "delete":
+                case "deleteuser":
                     printLine("This command deletes one user. To find the id of a user, use the list and describe commands.\n"
                             + "The syntax is: delete <id>\n"
                             + "Rules:\n"
@@ -788,9 +970,18 @@ public class CommandLineInterface {
                             + "-You will be asked to confirm that you want to delete this user\n"
                             + "Example valid usage: delete 1");
                     break;
+
+                case "deleteclinician":
+                    printLine("This command deletes one clinician. To find the id of a clinician, use the listClinician and describeClinician commands.\n"
+                            + "The syntax is: deleteClinician <id>\n"
+                            + "Rules:\n"
+                            + "-The id number must be a number that is 0 or larger\n"
+                            + "-You will be asked to confirm that you want to delete this clinician\n"
+                            + "Example valid usage: deleteClinician 1");
+                    break;
                 case "removedonationorgan":
-                    printLine("This command removes one offered organ from a user. To find the id of a user, use the list and "
-                            + "describe commands.\n"
+                    printLine("This command removes one offered organ from a user. To find the id of a user, use the listUsers and "
+                            + "describeUser commands.\n"
                             + "The syntax is: removeDonationOrgan <id> <organ>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
@@ -799,8 +990,8 @@ public class CommandLineInterface {
                             + "Example valid usage: removeDonationOrgan 5 kidney");
                     break;
                 case "removewaitinglistorgan":
-                    printLine("This command removes one organ which the user is waiting to receive. To find the id of a user, use the list and "
-                            + "describe commands.\n"
+                    printLine("This command removes one organ which the user is waiting to receive. To find the id of a user, use the listUsers and "
+                            + "describeUser commands.\n"
                             + "The syntax is: removeWaitingListOrgan <id> <organ>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
@@ -808,10 +999,20 @@ public class CommandLineInterface {
                             + "bone-marrow, or connective-tissue.\n"
                             + "Example valid usage: removeWaitingListOrgan 5 kidney");
                     break;
-                case "set":
+                case "updateclinician":
+                    printLine("This command sets one attributeof a clincian. To find the id of a clincian, "
+                            + "use the listClincian and describeClincian commands.\n"
+                            + "The syntax is: updateClinician <id> <attribute> <value>\n"
+                            + "Rules:\n"
+                            + "-The id number must be a number that is 0 or larger\n"
+                            + "-The attribute must be one of the following (case insensitive): name, workAddress, region, username, password\n"
+                            + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
+                            + "Example valid usage: updateClincian 2 region Christchurch");
+                    break;
+                case "updateuser":
                     printLine("This command sets one attribute (apart from organs to be donated) of a user. To find the id of a user, "
-                            + "use the list and describe commands. To add or delete organs, instead use the addDonationOrgan and removeDonationOrgan commands.\n"
-                            + "The syntax is: set <id> <attribute> <value>\n"
+                            + "use the listUsers and describeUser commands. To add or delete organs, instead use the addDonationOrgan and removeDonationOrgan commands.\n"
+                            + "The syntax is: updateUser <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
                             + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
@@ -821,30 +1022,42 @@ public class CommandLineInterface {
                             + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
                             + "-The height and weight must be numbers that are larger than 0\n"
                             + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
-                            + "Example valid usage: set 2 bloodtype ab+");
+                            + "Example valid usage: updateUser 2 bloodtype ab+");
                     break;
-                case "describe":
-                    printLine("This command searches users and displays information about them. To find the id of a user, use the list "
-                            + "and describe commands.\n"
-                            + "The syntax is: describe <id> OR describe <name>\n"
+                case "describeuser":
+                    printLine("This command searches users and displays information about them. To find the id of a user, use the listUsers "
+                            + "and describeUser commands.\n"
+                            + "The syntax is: describeUser <id> OR describeUser <name>\n"
                             + "Rules:\n"
                             + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
                             + "-If a name or names are used, the names must be comma separated without a space around the comma (eg. drew,david)\n"
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
-                            + "Example valid usage: describe \"andrew,son\'");
+                            + "Example valid usage: describeUser \"andrew,son\'");
+                    break;
+                case "describeclinician":
+                    printLine("This command searches clinicians and displays information about them. To find the id of a clinician, use the listClinicians "
+                            + "and describeClinician commands.\n"
+                            + "The syntax is: describeClinician <id>\n"
+                            + "Rules:\n"
+                            + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
+                            + "Example valid usage: describeClinician 1");
                     break;
                 case "describeorgans":
                     printLine("This command displays the organs which a user will donate or has donated. To find the id of a user, "
-                            + "use the list and describe commands.\n"
+                            + "use the listUsers and describeUser commands.\n"
                             + "The syntax is: describeOrgans <id>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
                             + "Example valid usage: describeOrgans 4");
                     break;
-                case "list":
+                case "listusers":
                     printLine("This command lists all information about all users in a table.\n"
-                            + "Example valid usage: list");
+                            + "Example valid usage: listUsers");
+                    break;
+                case "listclinicians":
+                    printLine("This command lists all information about all clinicians in a table.\n"
+                            + "Example valid usage: listClinicians");
                     break;
                 case "listorgans":
                     printLine("This command displays all of the organs that are currently offered by each user. User that are "
@@ -874,8 +1087,8 @@ public class CommandLineInterface {
                     printLine("This command displays information about how to use this program.\n"
                             + "The syntax is: help OR help <command>\n"
                             + "Rules:\n"
-                            + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, set, describe, "
-                            + "describeOrgans, list, listOrgans, import, save, help, or quit.\n"
+                            + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, updateUser, describeUser, "
+                            + "describeOrgans, listUsers, listOrgans, import, save, help, or quit.\n"
                             + "Example valid usage: help help");
                     break;
                 default:
