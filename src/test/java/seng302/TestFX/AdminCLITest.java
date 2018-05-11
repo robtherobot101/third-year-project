@@ -59,4 +59,30 @@ public class AdminCLITest extends TestFXTest {
         sleep(200);
         assertEquals(1, lookup("#commandOutputView").queryListView().getItems().size());
     }
+
+    @Test
+    public void cliHistory() {
+        TextField commandInputField = lookup("#commandInputField").query();
+        clickOn("#commandInputField").write("a");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        write("b");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        write("c");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        write("d");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("d", commandInputField.getText());
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("c", commandInputField.getText());
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("b", commandInputField.getText());
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("a", commandInputField.getText());
+
+        // Check for a second time that the history doesn't break when overrun
+        press(KeyCode.UP).release(KeyCode.UP);
+        assertEquals("a", commandInputField.getText());
+    }
 }

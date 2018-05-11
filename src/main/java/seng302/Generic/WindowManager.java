@@ -40,6 +40,7 @@ public class WindowManager extends Application {
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
     private static AdminController adminController;
+    private static AdminCliController adminCliController;
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
@@ -278,6 +279,10 @@ public class WindowManager extends Application {
 
     public static void setAdminController(AdminController adminController) {
         WindowManager.adminController = adminController;
+    }
+
+    public static void setAdminCliController(AdminCliController adminCliController) {
+        WindowManager.adminCliController = adminCliController;
     }
 
 
