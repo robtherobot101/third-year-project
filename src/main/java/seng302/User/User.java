@@ -448,6 +448,10 @@ public class User {
         setLastModified();
     }
 
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
     public void setCurrentAddress(String currentAddress) {
         this.currentAddress = currentAddress;
         setLastModified();
@@ -473,8 +477,12 @@ public class User {
         setLastModified();
     }
 
-    private void setLastModified() {
+    public void setLastModified() {
         lastModified = LocalDateTime.now();
+    }
+
+    public void setLastModifiedForDatabase(LocalDateTime time) {
+        lastModified = time;
     }
 
     public String getBloodPressure() {
