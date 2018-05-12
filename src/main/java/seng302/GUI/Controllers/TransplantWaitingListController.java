@@ -220,7 +220,9 @@ public class TransplantWaitingListController implements Initializable {
                             Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered",
                                     "Reason Code 2 selected and disease cured");
                             alert.showAndWait();
-                            WindowManager.updateDiseases();
+                            if (WindowManager.getWaitingListController().getDeregisterPressed()) {
+                                WindowManager.updateDiseases();
+                            }
                             break;
                         }
                     }
@@ -310,8 +312,10 @@ public class TransplantWaitingListController implements Initializable {
         if (WindowManager.getWaitingListController().deregisterPressed) {
             WindowManager.updateWaitingList();
         } else {
-            WindowManager.updateTransplantWaitingList();
+            updateFoundUsersWithFiltering("", "None");
         }
+        WindowManager.rePopulateReceiverWaitingList();
+        WindowManager.reHighlightOrganDonationCheckboxes();
         deregisterReceiverButton.setDisable(true);
     }
 
@@ -399,9 +403,11 @@ public class TransplantWaitingListController implements Initializable {
         grid.add(deathDatePicker, 1, 1);
         dialog.getDialogPane().setContent(grid);
 
+
         Optional<ButtonType> result = dialog.showAndWait();
         result.ifPresent(option -> {
-            if (result.get() == ButtonType.OK) {
+            System.out.println(result.get());
+            if (result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 if (deathDatePicker.getValue() == null) {
                     Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date needs to be in format dd/mm/yyyy",
                             "Please enter a date that is either today or earlier");
@@ -429,12 +435,13 @@ public class TransplantWaitingListController implements Initializable {
     private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = (ReceiverWaitingListItem) WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
         User selectedUser = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
         Long userId = selectedUser.getId();
+
         if (selectedUser.getWaitingListItems() != null) {
             History.prepareFileStringGUI(userId, "deregisterDeath");
             ArrayList<ReceiverWaitingListItem> tempItems = new ArrayList<>();

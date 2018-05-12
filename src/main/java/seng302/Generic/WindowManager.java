@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
  * program.
@@ -182,6 +183,22 @@ public class WindowManager extends Application {
         waitingListController.populateWaitingList();
     }
 
+
+    /**
+     * Re-populates the waiting list table view.
+     */
+    public static void rePopulateReceiverWaitingList(){
+        waitingListController.populateWaitingList();
+    }
+
+    /**
+     * Re-highlights the organ donation checkboxes which the current user is also receiving.
+     */
+    public static void reHighlightOrganDonationCheckboxes(){
+        userWindowController.highlightOrganCheckBoxes();
+    }
+
+
     /**
      * Calls the function which updates the transplant waiting list pane.
      */
@@ -336,6 +353,7 @@ public class WindowManager extends Application {
                     "\nGUI mode: java -jar app-0.0.jar" +
                     "\nCommand line mode: java -jar app-0.0.jar -c.");
         }
+
     }
 
     /**
