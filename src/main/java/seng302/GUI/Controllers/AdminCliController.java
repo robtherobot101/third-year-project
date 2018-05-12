@@ -41,8 +41,6 @@ public class AdminCliController implements Initializable {
         capturedOutput = FXCollections.observableArrayList();
         commandOutputView.setItems(capturedOutput);
 
-        WindowManager.setAdminCliController(this);
-
         commandInputField.setOnKeyPressed(event ->  {
             if (event.getCode() == KeyCode.UP) {
                 commandInputField.setText(getCommandFromHistory(true));

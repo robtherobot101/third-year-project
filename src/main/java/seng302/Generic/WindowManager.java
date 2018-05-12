@@ -1,5 +1,12 @@
 package seng302.Generic;
 
+import static seng302.Generic.IO.streamOut;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -12,23 +19,21 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.GUI.CommandLineInterface;
-import seng302.GUI.Controllers.*;
+import seng302.GUI.Controllers.AccountSettingsController;
+import seng302.GUI.Controllers.AdminCliController;
+import seng302.GUI.Controllers.AdminController;
+import seng302.GUI.Controllers.ClinicianAccountSettingsController;
+import seng302.GUI.Controllers.ClinicianController;
+import seng302.GUI.Controllers.CreateAccountController;
+import seng302.GUI.Controllers.LoginController;
+import seng302.GUI.Controllers.TransplantWaitingListController;
+import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.Controllers.WaitingListController;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 import seng302.User.User;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
-import static seng302.Generic.IO.streamOut;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -44,18 +49,16 @@ public class WindowManager extends Application {
     private static Image icon;
     private static String dialogStyle, menuButtonStyle, selectedMenuButtonStyle;
 
+    //Main windows
     private static LoginController loginController;
     private static CreateAccountController createAccountController;
     private static ClinicianController clinicianController;
     private static AdminController adminController;
-    private static AdminCliController adminCliController;
+    private static UserWindowController userWindowController;
+
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
-    private static UserWindowController userWindowController;
-    //private static MedicationsController medicationsController;
     private static TransplantWaitingListController transplantWaitingListController;
-    //private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
-    //private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
 
@@ -99,7 +102,7 @@ public class WindowManager extends Application {
 
         try {
             FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
-            Parent root = (Parent) loader.load();
+            Parent root = loader.load();
             UserWindowController userWindowController = loader.getController();
             userWindowController.setTitleBar(stage);
             WindowManager.setCurrentUser(user);
@@ -300,11 +303,6 @@ public class WindowManager extends Application {
     public static void setAdminController(AdminController adminController) {
         WindowManager.adminController = adminController;
     }
-
-    public static void setAdminCliController(AdminCliController adminCliController) {
-        WindowManager.adminCliController = adminCliController;
-    }
-
 
     public static ClinicianController getClinicianController() {
         return WindowManager.clinicianController;

@@ -88,13 +88,8 @@ public class AdminController implements Initializable {
     private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-
     private ArrayList<User> usersFound;
-
-    private ArrayList<UserWindowController> userWindows = new ArrayList<>();
-
     private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
-
 
     private Admin currentAdmin;
 

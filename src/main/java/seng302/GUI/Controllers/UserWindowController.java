@@ -258,7 +258,7 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            WindowManager.updateWaitingList();
+            waitingListController.populateWaitingList();
             waitingListController.populateOrgansComboBox();
         });
 
