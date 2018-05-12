@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.Procedure;
+import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 public class MedicalHistoryProceduresGUITest extends TestFXTest {
@@ -83,14 +84,19 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         clickOn("#summaryInput").write("Knee Replacement");
         clickOn("#descriptionInput").write("Elective Surgery; Making new knee");
         clickOn("#dateOfProcedureInput").write("9/1/2020");
-        clickOn("#isOrganAffectingCheckBox");
+        clickOn("#organAffectChoiceBox");
+        clickOn("#pancreasCheckBox");
+        clickOn("#lungCheckBox");
+        clickOn("#heartCheckBox");
         clickOn("#addNewProcedureButton");
         clickOn("Elective Surgery; Making new knee");
         refreshTableSelections();
         assertEquals(LocalDate.of(2020, 1, 9), pendingTableSelectedProcedure.getDate());
         assertEquals("Knee Replacement", pendingTableSelectedProcedure.getSummary());
         assertEquals("Elective Surgery; Making new knee", pendingTableSelectedProcedure.getDescription());
-        assertTrue(pendingTableSelectedProcedure.isOrganAffecting());
+        assertTrue(pendingTableSelectedProcedure.getOrgansAffected().contains(Organ.PANCREAS));
+        assertTrue(pendingTableSelectedProcedure.getOrgansAffected().contains(Organ.LUNG));
+        assertTrue(pendingTableSelectedProcedure.getOrgansAffected().contains(Organ.HEART));
         verifyThat("* Knee Replacement", isVisible());
 
         //Previous Procedure
@@ -103,7 +109,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         assertEquals(LocalDate.of(2000, 1, 9), previousTableSelectedProcedure.getDate());
         assertEquals("Heart Transplant", previousTableSelectedProcedure.getSummary());
         assertEquals("Replacement of heart with new heart", previousTableSelectedProcedure.getDescription());
-        assertFalse(previousTableSelectedProcedure.isOrganAffecting());
+        assertTrue(previousTableSelectedProcedure.getOrgansAffected().isEmpty());
         verifyThat("Heart Transplant", isVisible());
     }
 
@@ -149,34 +155,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         // Checks an alert dialog was presented -> this checks disease was not added
         clickOn("OK");
     }
-
-    /**
-     * Add a valid procedure, then check if the organ affecting toggle updates the procedure and gives visual feedback
-     */
-    @Test
-    public void checkOrganAffectingToggle() {
-
-        addNewProcedureToPendingProcedures();
-        pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
-        // Check disease was added correctly
-        clickOn("Arm Transplant");
-        pendingTableSelectedProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-        assertFalse(pendingTableSelectedProcedure.isOrganAffecting());
-
-        // Set it to chronic
-        rightClickOn("Arm Transplant");
-        clickOn("Mark procedure as organ affecting");
-        assertTrue(pendingTableSelectedProcedure.isOrganAffecting());
-        // Check the disease was visually updated
-        verifyThat("* Arm Transplant", isVisible());
-
-        // Toggle it back
-        rightClickOn("* Arm Transplant");
-        clickOn("Mark procedure as non organ affecting");
-        assertFalse(pendingTableSelectedProcedure.isOrganAffecting());
-        verifyThat("Arm Transplant", isVisible());
-    }
-
+    
 
     /**
      * Checks when a procedure is updated, changes are reflected appropriately
@@ -203,6 +182,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         assertEquals("Leg Removal", pendingTableSelectedProcedure.getSummary());
         assertEquals("Removal of leg", pendingTableSelectedProcedure.getDescription());
         assertEquals(LocalDate.of(2021, 4, 3), pendingTableSelectedProcedure.getDate());
+        assertTrue(pendingTableSelectedProcedure.getOrgansAffected().isEmpty());
         assertNull(previousTableSelectedProcedure);
 
         //Update with due date in the past
@@ -210,12 +190,19 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         clickOn("Update pending procedure");
         clickOn("#dateDue").write("3/04/2017");
         clickOn("#procedureDescription");
+        clickOn("#updateOrganChoiceBox");
+        clickOn("#pancreasCheckBox");
+        clickOn("#lungCheckBox");
+        clickOn("#heartCheckBox");
         clickOn("Update");
-        clickOn("Leg Removal");
+        clickOn("Removal of leg");
         refreshTableSelections();
         assertEquals("Leg Removal", previousTableSelectedProcedure.getSummary());
         assertEquals("Removal of leg", previousTableSelectedProcedure.getDescription());
         assertEquals(LocalDate.of(2017, 4, 3), previousTableSelectedProcedure.getDate());
+        assertTrue(previousTableSelectedProcedure.getOrgansAffected().contains(Organ.PANCREAS));
+        assertTrue(previousTableSelectedProcedure.getOrgansAffected().contains(Organ.LUNG));
+        assertTrue(previousTableSelectedProcedure.getOrgansAffected().contains(Organ.HEART));
         assertNull(pendingTableSelectedProcedure);
 
     }

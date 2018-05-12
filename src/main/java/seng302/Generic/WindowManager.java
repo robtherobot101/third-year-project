@@ -3,12 +3,14 @@ package seng302.Generic;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.GUI.CommandLineInterface;
 import seng302.GUI.Controllers.*;
@@ -24,6 +26,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -79,6 +84,41 @@ public class WindowManager extends Application {
      */
     public static void addCliniciansUserWindow(Stage stage) {
         cliniciansUserWindows.add(stage);
+    }
+
+    public static void newCliniciansUserWindow(User user){
+        Stage stage = new Stage();
+        stage.getIcons().add(WindowManager.getIcon());
+        stage.setMinHeight(WindowManager.mainWindowMinHeight);
+        stage.setMinWidth(WindowManager.mainWindowMinWidth);
+        stage.setHeight(WindowManager.mainWindowPrefHeight);
+        stage.setWidth(WindowManager.mainWindowPrefWidth);
+
+        WindowManager.addCliniciansUserWindow(stage);
+        stage.initModality(Modality.NONE);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
+            Parent root = (Parent) loader.load();
+            UserWindowController userWindowController = loader.getController();
+            userWindowController.setTitleBar(stage);
+            WindowManager.setCurrentUser(user);
+            String text = History.prepareFileStringGUI(user.getId(), "view");
+            History.printToFile(streamOut, text);
+
+            userWindowController.populateUserFields();
+            userWindowController.populateHistoryTable();
+            userWindowController.showWaitingListButton();
+            WindowManager.controlViewForClinician();
+
+            Scene newScene = new Scene(root, 900, 575);
+            stage.setScene(newScene);
+            stage.show();
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
     }
 
     /**
@@ -182,10 +222,25 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Re-highlights the organ donation checkboxes which the current user is also receiving.
+     */
+    public static void reHighlightOrganDonationCheckboxes(){
+        userWindowController.highlightOrganCheckBoxes();
+    }
+
+    /**
+     * Calls the function which updates the transplant waiting list pane.
+     */
+    public static void updateTransplantWaitingList() {
+        transplantWaitingListController.updateTransplantList();
+    }
+
+    /**
      * Sets which controls for each panel are visible to the clinician.
      */
     public static void controlViewForClinician() {
         userWindowController.setControlsShown(true);
+        userWindowController.disableLogoutControls();
     }
 
     /**
@@ -284,7 +339,7 @@ public class WindowManager extends Application {
     }
 
     public static WaitingListItem getSelectedWaitingListItem() {
-        return waitingListController.getWaitingList().getSelectionModel().getSelectedItem();
+        return waitingListController.getWaitingListTableView().getSelectionModel().getSelectedItem();
     }
 
     /**

@@ -12,9 +12,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
+import java.util.*;
 
 /**
  * This class contains information about organ users.
@@ -590,6 +588,22 @@ public class User {
         return getPreferredName() + "(" + getName() + ")";
     }
 
+    /**
+     * Returns the intersection of the organs which are being donated and organs that the
+     * user is currently waiting to receive
+     * @return The organs which are being donated and the user is currently waiting on
+     */
+    public Set<Organ> conflictingOrgans(){
+        Set<Organ> conflicting = new HashSet<>();
+        for(ReceiverWaitingListItem item: waitingListItems) {
+            if(item.getStillWaitingOn()){
+                if(organs.contains(item.getOrganType())){
+                    conflicting.add(item.getOrganType());
+                }
+            }
+        }
+        return conflicting;
+    }
 
     public String getType() {
         if (isDonor() && isReceiver()) {

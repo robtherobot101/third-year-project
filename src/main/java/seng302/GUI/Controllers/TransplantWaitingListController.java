@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers;
 
+import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -86,7 +87,7 @@ public class TransplantWaitingListController implements Initializable {
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch  the organ to specifically search for given by a user.
      */
-    private void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+    public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {
@@ -299,11 +300,11 @@ public class TransplantWaitingListController implements Initializable {
             transplantDeregister();
         }
 
-        if (WindowManager.wasDeregisterPressed()) {
-            WindowManager.updateWaitingList();
-        } else {
+        if (!WindowManager.wasDeregisterPressed()) {
             updateFoundUsersWithFiltering("", "None");
         }
+        WindowManager.updateWaitingList();
+        WindowManager.reHighlightOrganDonationCheckboxes();
         deregisterReceiverButton.setDisable(true);
     }
 
@@ -423,7 +424,7 @@ public class TransplantWaitingListController implements Initializable {
     private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.wasDeregisterPressed()) {
-            selectedWaitingListItem = (ReceiverWaitingListItem) WindowManager.getSelectedWaitingListItem();
+            selectedWaitingListItem = WindowManager.getSelectedWaitingListItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -492,33 +493,29 @@ public class TransplantWaitingListController implements Initializable {
             @Override
             public TableRow<TransplantWaitingListItem> call(TableView<TransplantWaitingListItem> tableView) {
                 final TableRow<TransplantWaitingListItem> row = new TableRow<TransplantWaitingListItem>() {
+                    @Override
+                    public void updateItem(TransplantWaitingListItem item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (getStyleClass().contains("highlighted-row")) {
+                            getStyleClass().remove("highlighted-row");
+                        }
+                        setTooltip(null);
+                        if (item != null && !empty) {
+                            if (SearchUtils.getUserById(item.getUserId().intValue()).getOrgans().contains(item.getOrganType())) {
+                                setTooltip(new Tooltip("User is currently donating this organ"));
+                                System.out.println("User is donating " + item.getOrganType());
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
+                                }
+
+                            }
+                        }
+                    }
                 };
                 //event to open receiver profile when clicked
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        Stage stage = new Stage();
-
-                        WindowManager.addCliniciansUserWindow(stage);
-                        stage.initModality(Modality.NONE);
-
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
-                            Parent root = loader.load();
-                            UserWindowController userWindowController = loader.getController();
-                            WindowManager.setCurrentUser(SearchUtils.getUserById(row.getItem().getUserId()));
-                            userWindowController.populateUserFields();
-                            userWindowController.populateHistoryTable();
-                            WindowManager.controlViewForClinician();
-
-                            Scene newScene = new Scene(root, 900, 575);
-                            stage.setScene(newScene);
-                            stage.show();
-                            userWindowController.setAsChildWindow();
-                        } catch (IOException | NullPointerException e) {
-                            System.err.println("Unable to load fxml or save file.");
-                            e.printStackTrace();
-                            Platform.exit();
-                        }
+                        WindowManager.newCliniciansUserWindow(SearchUtils.getUserById(row.getItem().getUserId()));
                     }
                 });
                 transplantTable.refresh();

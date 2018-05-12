@@ -69,6 +69,9 @@ public class ClinicianAccountSettingsController implements Initializable {
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
                 "The changes made will take place instantly.");
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("accountSettingsConfirmationOKButton");
+
+
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             clinician.setUsername(usernameField.getText());

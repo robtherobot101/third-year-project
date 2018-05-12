@@ -12,15 +12,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.WindowManager;
+import seng302.Generic.*;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 
@@ -173,6 +172,11 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
         setControlsShown(false);
+        for(CheckBox checkbox:organTickBoxes.values()){
+            checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                highlightOrganCheckBoxes();
+            });
+        }
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -254,7 +258,7 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            waitingListController.populateWaitingList();
+            WindowManager.updateWaitingList();
             waitingListController.populateOrgansComboBox();
         });
 
@@ -434,6 +438,28 @@ public class UserWindowController implements Initializable {
         setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Waiting List");
     }
+
+    /**
+     * Highlights the checkboxes in red if the user is also waiting to receive an organ of that type.
+     * A tooltip is also added to highlighted checkboxes which tells the user what the problem is
+     */
+    public void highlightOrganCheckBoxes(){
+        System.out.println("re-drawing");
+        for(Organ organ: Organ.values()){
+            if(organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox")){
+                organTickBoxes.get(organ).getStyleClass().remove("highlighted-checkbox");
+                organTickBoxes.get(organ).setTooltip(null);
+            }
+            for(WaitingListItem item: currentUser.getWaitingListItems()){
+                if(!organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox") && item.getOrganType()==organ && organTickBoxes.get(organ).isSelected()){
+                    organTickBoxes.get(organ).getStyleClass().add("highlighted-checkbox");
+                    organTickBoxes.get(organ).setTooltip(new Tooltip("User is waiting to receive this organ"));
+                }
+            }
+        }
+    }
+
+
 
     /**
      * Populates the history table based on the action history of the current user.
@@ -618,6 +644,7 @@ public class UserWindowController implements Initializable {
 
         updateBMI();
         updateBloodPressure();
+        highlightOrganCheckBoxes();
     }
 
     /**
@@ -763,6 +790,7 @@ public class UserWindowController implements Initializable {
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
             WindowManager.getClinicianController().updateFoundUsers();
+            WindowManager.updateTransplantWaitingList();
         }
         alert.close();
     }
@@ -987,10 +1015,11 @@ public class UserWindowController implements Initializable {
         }
     }
 
+
     /**
      * Disable the logout button if this user window is the child of a clinician window.
      */
-    public void setAsChildWindow() {
+    public void disableLogoutControls() {
         logoutMenuItem.setDisable(true);
         logoutButton.setDisable(true);
     }
