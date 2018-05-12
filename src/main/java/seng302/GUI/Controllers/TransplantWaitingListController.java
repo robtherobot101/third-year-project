@@ -310,7 +310,9 @@ public class TransplantWaitingListController implements Initializable {
 
         System.out.println(WindowManager.getWaitingListController().deregisterPressed);
 
-        if (!WindowManager.getWaitingListController().deregisterPressed) {
+        if (WindowManager.getWaitingListController().deregisterPressed) {
+            WindowManager.updateWaitingList();
+        } else {
             updateFoundUsersWithFiltering("", "None");
         }
         WindowManager.updateWaitingList();
