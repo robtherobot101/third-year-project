@@ -385,7 +385,6 @@ public class MedicationsController extends PageController implements Initializab
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setMedicationsController(this);
 
         // Attach the autocompletion box and set its endpoint to the MAPI API
         // ALso only enable the add button if a medication has been autocompleted

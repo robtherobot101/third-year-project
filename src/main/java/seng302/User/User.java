@@ -21,31 +21,23 @@ import java.util.EnumSet;
  */
 public class User {
 
-    public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    public static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
+    public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     public static final String tableHeader = "User ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
             "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
     private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath;
-    private LocalDateTime creationTime;
-    private LocalDateTime lastModified = null;
+    private LocalDateTime creationTime, lastModified = null;
     private Gender gender, genderIdentity;
     private double height, weight;
     private BloodType bloodType;
     private long id;
-    private String currentAddress, region;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
-    private String username, email, password;
-    private String bloodPressure = "";
+    private String currentAddress, region, username, email, password, bloodPressure = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
-    private ArrayList<Medication> currentMedications;
-    private ArrayList<Medication> historicMedications;
-    private ArrayList<Disease> currentDiseases;
-    private ArrayList<Disease> curedDiseases;
-    private ArrayList<Procedure> pendingProcedures;
-    private ArrayList<Procedure> previousProcedures;
-
+    private ArrayList<Medication> currentMedications, historicMedications;
+    private ArrayList<Disease> currentDiseases, curedDiseases;
+    private ArrayList<Procedure> pendingProcedures, previousProcedures;
     private ArrayList<ReceiverWaitingListItem> waitingListItems;
 
     public User(String name, LocalDate dateOfBirth) {
@@ -505,32 +497,16 @@ public class User {
         return currentMedications;
     }
 
-    public void setCurrentMedications(ArrayList<Medication> currentMedications) {
-        this.currentMedications = currentMedications;
-    }
-
     public ArrayList<Medication> getHistoricMedications() {
         return historicMedications;
-    }
-
-    public void setHistoricMedications(ArrayList<Medication> historicMedications) {
-        this.historicMedications = historicMedications;
     }
 
     public ArrayList<Procedure> getPendingProcedures() {
         return pendingProcedures;
     }
 
-    public void setPendingProcedures(ArrayList<Procedure> pendingProcedures) {
-        this.pendingProcedures = pendingProcedures;
-    }
-
     public ArrayList<Procedure> getPreviousProcedures() {
         return previousProcedures;
-    }
-
-    public void setPreviousProcedures(ArrayList<Procedure> previousProcedures) {
-        this.previousProcedures = previousProcedures;
     }
 
 

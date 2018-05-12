@@ -48,7 +48,7 @@ public class MedicalHistoryProceduresController extends PageController implement
     private Label donorNameLabel;
 
     @FXML
-    private Button addNewProcedureButton, deleteProcedureButton, saveProcedureButton;
+    private Button addNewProcedureButton, deleteProcedureButton;
     @FXML
     private Label newProcedureDateLabel, newProcedureLabel, pendingProceduresLabel, previousProceduresLabel;
     @FXML
@@ -62,7 +62,6 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setMedicalHistoryProceduresController(this);
         setupListeners();
     }
 

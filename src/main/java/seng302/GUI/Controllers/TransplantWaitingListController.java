@@ -35,15 +35,8 @@ public class TransplantWaitingListController implements Initializable {
 
     @FXML
     private TableView transplantTable;
-
     @FXML
-    private TableColumn organColumn;
-    @FXML
-    private TableColumn nameColumn;
-    @FXML
-    private TableColumn dateColumn;
-    @FXML
-    private TableColumn regionColumn;
+    private TableColumn organColumn, nameColumn, dateColumn, regionColumn;
     @FXML
     private ComboBox organSearchComboBox;
     @FXML
@@ -51,7 +44,6 @@ public class TransplantWaitingListController implements Initializable {
     @FXML
     private Button deregisterReceiverButton;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
     private ObservableList<TransplantWaitingListItem> transplantList = FXCollections.observableArrayList();
 
     /**
@@ -155,8 +147,8 @@ public class TransplantWaitingListController implements Initializable {
      */
     private void showDiseaseDeregisterDialog() {
         WaitingListItem selectedWaitingListItem;
-        if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+        if (WindowManager.wasDeregisterPressed()) {
+            selectedWaitingListItem = WindowManager.getSelectedWaitingListItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -177,7 +169,7 @@ public class TransplantWaitingListController implements Initializable {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         ObservableList<Disease> diseaseComboList = FXCollections.observableArrayList(selectedUser.getCurrentDiseases());
-        final ComboBox diseaseComboBox = new ComboBox(diseaseComboList);
+        final ComboBox<Disease> diseaseComboBox = new ComboBox<>(diseaseComboList);
         diseaseComboBox.setCellFactory(new Callback<ListView<Disease>, ListCell<Disease>>() {
             @Override
             public ListCell<Disease> call(ListView<Disease> param) {
@@ -220,7 +212,7 @@ public class TransplantWaitingListController implements Initializable {
                             Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered",
                                     "Reason Code 2 selected and disease cured");
                             alert.showAndWait();
-                            if (WindowManager.getWaitingListController().getDeregisterPressed()) {
+                            if (WindowManager.wasDeregisterPressed()) {
                                 WindowManager.updateDiseases();
                             }
                             break;
@@ -244,8 +236,8 @@ public class TransplantWaitingListController implements Initializable {
     private void confirmDiseaseCuring() {
         Alert alert;
         WaitingListItem selectedWaitingListItem;
-        if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+        if (WindowManager.wasDeregisterPressed()) {
+            selectedWaitingListItem = WindowManager.getSelectedWaitingListItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -307,9 +299,7 @@ public class TransplantWaitingListController implements Initializable {
             transplantDeregister();
         }
 
-        System.out.println(WindowManager.getWaitingListController().deregisterPressed);
-
-        if (WindowManager.getWaitingListController().deregisterPressed) {
+        if (WindowManager.wasDeregisterPressed()) {
             WindowManager.updateWaitingList();
         } else {
             updateFoundUsersWithFiltering("", "None");
@@ -322,8 +312,8 @@ public class TransplantWaitingListController implements Initializable {
      */
     private void transplantDeregister() {
         WaitingListItem selectedWaitingListItem;
-        if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+        if (WindowManager.wasDeregisterPressed()) {
+            selectedWaitingListItem = WindowManager.getSelectedWaitingListItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -341,8 +331,8 @@ public class TransplantWaitingListController implements Initializable {
      */
     private void errorDeregister() {
         WaitingListItem selectedWaitingListItem;
-        if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+        if (WindowManager.wasDeregisterPressed()) {
+            selectedWaitingListItem = WindowManager.getSelectedWaitingListItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -432,8 +422,8 @@ public class TransplantWaitingListController implements Initializable {
      */
     private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
-        if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = (ReceiverWaitingListItem) WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+        if (WindowManager.wasDeregisterPressed()) {
+            selectedWaitingListItem = (ReceiverWaitingListItem) WindowManager.getSelectedWaitingListItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -452,7 +442,7 @@ public class TransplantWaitingListController implements Initializable {
             selectedUser.getWaitingListItems().addAll(tempItems);
         }
         selectedUser.setDateOfDeath(deathDateInput);
-        if (WindowManager.getWaitingListController().getDeregisterPressed()) {
+        if (WindowManager.wasDeregisterPressed()) {
             WindowManager.getUserWindowController().populateUserFields();
         }
     }

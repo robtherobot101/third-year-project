@@ -47,7 +47,7 @@ public class WaitingListController extends PageController implements Initializab
 
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
-    public boolean deregisterPressed = false;
+    private boolean deregisterPressed = false;
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.

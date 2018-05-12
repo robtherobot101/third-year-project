@@ -77,8 +77,9 @@ public class UserWindowController implements Initializable {
 
     private HashMap<Organ, CheckBox> organTickBoxes;
 
-    private ArrayList<User> waitingListUndoStack = new ArrayList<>(), waitingListRedoStack = new ArrayList<>();
-    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>(), medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
+    private LinkedList<User> waitingListUndoStack = new LinkedList<>(), waitingListRedoStack = new LinkedList<>();
+    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>();
+    private LinkedList<User> medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private LinkedList<User> procedureUndoStack = new LinkedList<>(), procedureRedoStack = new LinkedList<>();
     private LinkedList<User> diseaseUndoStack = new LinkedList<>(), diseaseRedoStack = new LinkedList<>();
     private User currentUser;
@@ -117,6 +118,13 @@ public class UserWindowController implements Initializable {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+
+        diseasesController.setCurrentUser(currentUser);
+        proceduresController.setCurrentUser(currentUser);
+        waitingListController.setCurrentUser(currentUser);
+        waitingListController.populateWaitingList();
+        medicationsController.initializeUser(currentUser);
+
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         attributeUndoStack.clear();
         attributeRedoStack.clear();
@@ -126,6 +134,10 @@ public class UserWindowController implements Initializable {
         redoBannerButton.setDisable(true);
         bloodPressureLabel.setText("");
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
+    }
+
+    public void updateDiseases() {
+        diseasesController.updateDiseases();
     }
 
     /**
@@ -160,7 +172,7 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
-        WindowManager.controlViewForUser();
+        setControlsShown(false);
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
         BackgroundImage imageBackground = new BackgroundImage(welcomeImage,
@@ -242,8 +254,8 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            WindowManager.getWaitingListController().populateWaitingList();
-            WindowManager.getWaitingListController().populateOrgansComboBox();
+            waitingListController.populateWaitingList();
+            waitingListController.populateOrgansComboBox();
         });
 
         statusIndicator.setStatusBar(statusBar);
@@ -784,13 +796,13 @@ public class UserWindowController implements Initializable {
             medicationUndoStack.removeLast();
 
             setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
-            WindowManager.updateMedications();
+            medicationsController.updateMedications();
         } else if (waitingListPane.isVisible()) {
             waitingListRedoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListUndoStack.get(waitingListUndoStack.size() - 1));
             waitingListUndoStack.remove(waitingListUndoStack.size() - 1);
             setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
-            WindowManager.updateWaitingList();
+            waitingListController.populateWaitingList();
         } else if (medicalHistoryProceduresPane.isVisible()) {
             //Add the current procedures lists to the redo stack
             procedureRedoStack.add(new User(currentUser));
@@ -800,7 +812,7 @@ public class UserWindowController implements Initializable {
             procedureUndoStack.remove(procedureUndoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(procedureUndoStack.isEmpty(), false);
-            WindowManager.updateProcedures();
+            proceduresController.updateProcedures();
         } else if (medicalHistoryDiseasesPane.isVisible()) {
             //Add the current disease lists to the redo stack
             diseaseRedoStack.add(new User(currentUser));
@@ -810,7 +822,7 @@ public class UserWindowController implements Initializable {
             diseaseUndoStack.remove(diseaseUndoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), false);
-            WindowManager.updateDiseases();
+            diseasesController.updateDiseases();
         }
         statusIndicator.setStatus("Undid last action", false);
         titleBar.saved(false);
@@ -844,13 +856,13 @@ public class UserWindowController implements Initializable {
             medicationRedoStack.removeLast();
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
-            WindowManager.updateMedications();
+            medicationsController.updateMedications();
         } else if (waitingListPane.isVisible()) {
             waitingListUndoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListRedoStack.get(waitingListRedoStack.size() - 1));
             waitingListRedoStack.remove(waitingListRedoStack.size() - 1);
             setUndoRedoButtonsDisabled(false, waitingListRedoStack.isEmpty());
-            WindowManager.updateWaitingList();
+            waitingListController.populateWaitingList();
         } else if (medicalHistoryProceduresPane.isVisible()) {
             //Add the current procedures lists to the redo stack
             procedureUndoStack.add(new User(currentUser));
@@ -860,7 +872,7 @@ public class UserWindowController implements Initializable {
             procedureRedoStack.remove(procedureRedoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(false, procedureRedoStack.isEmpty());
-            WindowManager.updateProcedures();
+            proceduresController.updateProcedures();
         } else if (medicalHistoryDiseasesPane.isVisible()) {
             //Add the current disease lists to the redo stack
             diseaseUndoStack.add(new User(currentUser));
@@ -870,7 +882,7 @@ public class UserWindowController implements Initializable {
             diseaseRedoStack.remove(diseaseRedoStack.size() - 1);
 
             setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
-            WindowManager.updateDiseases();
+            diseasesController.updateDiseases();
         }
         statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
@@ -1027,6 +1039,11 @@ public class UserWindowController implements Initializable {
      * @param shown True if the waiting list button is to be shown, otherwise False
      */
     public void setControlsShown(Boolean shown) {
+        waitingListController.setControlsShown(shown);
+        proceduresController.setControlsShown(shown);
+        diseasesController.setControlsShown(shown);
+        medicationsController.setControlsShown(shown);
+
         if (currentUser != null) {
             if (currentUser.isReceiver()) {
                 waitingListButton.setVisible(true);
@@ -1034,10 +1051,5 @@ public class UserWindowController implements Initializable {
         } else {
             waitingListButton.setVisible(shown);
         }
-    }
-
-
-    public ArrayList<User> getWaitingListUndoStack() {
-        return waitingListUndoStack;
     }
 }

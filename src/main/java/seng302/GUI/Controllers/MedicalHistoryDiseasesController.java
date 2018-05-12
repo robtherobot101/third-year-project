@@ -57,7 +57,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setMedicalHistoryDiseasesController(this);
         setupListeners();
         initialiseCurrentTableViewSorting();
         initialiseCuredTableViewSorting();

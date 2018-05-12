@@ -47,10 +47,10 @@ public class WindowManager extends Application {
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static UserWindowController userWindowController;
-    private static MedicationsController medicationsController;
+    //private static MedicationsController medicationsController;
     private static TransplantWaitingListController transplantWaitingListController;
-    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
-    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
+    //private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
+    //private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
 
@@ -126,14 +126,7 @@ public class WindowManager extends Application {
         userWindowController.setCurrentUser(currentUser);
         userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
-
-        medicalHistoryDiseasesController.setCurrentUser(currentUser);
-        medicalHistoryProceduresController.setCurrentUser(currentUser);
-        waitingListController.setCurrentUser(currentUser);
-        waitingListController.populateWaitingList();
-
-        medicationsController.initializeUser(currentUser);
-        controlViewForUser();
+        userWindowController.setControlsShown(false);
     }
 
     /**
@@ -163,14 +156,7 @@ public class WindowManager extends Application {
      * updates the disease controller
      */
     public static void updateDiseases() {
-        medicalHistoryDiseasesController.updateDiseases();
-    }
-
-    /**
-     * updates the medications controller
-     */
-    public static void updateMedications() {
-        medicationsController.updateMedications();
+        userWindowController.updateDiseases();
     }
 
     /**
@@ -180,12 +166,6 @@ public class WindowManager extends Application {
         userWindowController.addCurrentToProceduresUndoStack();
     }
 
-    /**
-     * updates the procedures controller
-     */
-    public static void updateProcedures() {
-        medicalHistoryProceduresController.updateProcedures();
-    }
 
     /**
      * Adds the current user to the waiting list undo stack.
@@ -202,32 +182,10 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Calls the function which updates the transplant waiting list pane.
-     */
-    public static void updateTransplantWaitingList() {
-        transplantWaitingListController.updateTransplantList();
-    }
-
-    /**
-     * Sets which controls for each panel are visible to the user.
-     */
-    public static void controlViewForUser() {
-        medicationsController.setControlsShown(false);
-        userWindowController.setControlsShown(false);
-        waitingListController.setControlsShown(false);
-        medicalHistoryProceduresController.setControlsShown(false);
-        medicalHistoryDiseasesController.setControlsShown(false);
-    }
-
-    /**
      * Sets which controls for each panel are visible to the clinician.
      */
     public static void controlViewForClinician() {
-        medicationsController.setControlsShown(true);
         userWindowController.setControlsShown(true);
-        waitingListController.setControlsShown(true);
-        medicalHistoryProceduresController.setControlsShown(true);
-        medicalHistoryDiseasesController.setControlsShown(true);
     }
 
     /**
@@ -264,22 +222,6 @@ public class WindowManager extends Application {
         WindowManager.createAccountController = createAccountController;
     }
 
-    public static void setMedicationsController(MedicationsController medicationsController) {
-        WindowManager.medicationsController = medicationsController;
-    }
-
-    public static void setMedicalHistoryDiseasesController(MedicalHistoryDiseasesController medicalHistoryDiseasesController) {
-        WindowManager.medicalHistoryDiseasesController = medicalHistoryDiseasesController;
-    }
-
-    public static void setMedicalHistoryProceduresController(MedicalHistoryProceduresController medicalHistoryProceduresController) {
-        WindowManager.medicalHistoryProceduresController = medicalHistoryProceduresController;
-    }
-
-    public static void setWaitingListController(WaitingListController waitingListController) {
-        WindowManager.waitingListController = waitingListController;
-    }
-
     public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
         WindowManager.accountSettingsController = accountSettingsController;
     }
@@ -290,6 +232,10 @@ public class WindowManager extends Application {
 
     public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
         WindowManager.transplantWaitingListController = transplantWaitingListController;
+    }
+
+    public static void setWaitingListController(WaitingListController waitingListController) {
+        WindowManager.waitingListController = waitingListController;
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -333,10 +279,13 @@ public class WindowManager extends Application {
         clinicianAccountSettingsController.setEnterEvent();
     }
 
-    public static WaitingListController getWaitingListController() {
-        return waitingListController;
+    public static boolean wasDeregisterPressed() {
+        return waitingListController.getDeregisterPressed();
     }
 
+    public static WaitingListItem getSelectedWaitingListItem() {
+        return waitingListController.getWaitingList().getSelectionModel().getSelectedItem();
+    }
 
     /**
      * Run the GUI.
