@@ -435,7 +435,7 @@ public class TransplantWaitingListController implements Initializable {
     private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = (ReceiverWaitingListItem) WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
