@@ -40,7 +40,18 @@ public class Database {
         //TODO Hash the password
         statement.setString(8, user.getPassword());
         statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
-        System.out.println("New rows added: " + statement.executeUpdate());
+        System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
+
+    }
+
+    public void updateUserAccountSettings(User user, int userId) throws SQLException {
+        String update = "UPDATE USER SET username = ?, email = ?, password = ? WHERE id = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, user.getUsername());
+        statement.setString(2, user.getEmail());
+        statement.setString(3, user.getPassword());
+        statement.setInt(4, userId);
+        System.out.println("Update User Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
 
     }
 
@@ -67,7 +78,7 @@ public class Database {
         statement.setString(13, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
         statement.setString(14, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
         statement.setString(15, user.getUsername());
-        System.out.println("Rows updated: " + statement.executeUpdate());
+        System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
 
         int userId = getUserId(user.getUsername());
@@ -89,7 +100,7 @@ public class Database {
             insertOrgansStatement.setInt(2, userId);
             totalAdded += insertOrgansStatement.executeUpdate();
         }
-        System.out.println("New Organs added: " + totalAdded);
+        System.out.println("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);
     }
 
     public boolean checkUniqueUser(String item) throws SQLException{

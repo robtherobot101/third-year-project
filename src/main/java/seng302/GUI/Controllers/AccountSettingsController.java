@@ -15,6 +15,7 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -56,24 +57,27 @@ public class AccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        for (User user : DataManager.users) {
-            if (user != currentUser) {
-                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
-                    errorLabel.setText("That username is already taken.");
-                    errorLabel.setVisible(true);
-                    return;
-                } else if (!emailField.getText().isEmpty() && emailField.getText().equals(user.getEmail())) {
-                    errorLabel.setText("There is already a user account with that email.");
-                    errorLabel.setVisible(true);
-                    return;
-                }
+        int userId = 0;
+        try {
+            if (!WindowManager.getDatabase().checkUniqueUser(usernameField.getText())) {
+                errorLabel.setText("That username is already taken.");
+                errorLabel.setVisible(true);
+                return;
+            } else if(!WindowManager.getDatabase().checkUniqueUser(emailField.getText())) {
+                errorLabel.setText("There is already a user account with that email.");
+                errorLabel.setVisible(true);
+                return;
             }
+            userId = WindowManager.getDatabase().getUserId(currentUser.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
                 "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
@@ -83,6 +87,11 @@ public class AccountSettingsController implements Initializable {
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             WindowManager.setCurrentUser(currentUser);
+            try{
+                WindowManager.getDatabase().updateUserAccountSettings(currentUser, userId);
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();

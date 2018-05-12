@@ -723,7 +723,6 @@ public class UserWindowController implements Initializable {
         if (result.get() == ButtonType.OK && updateUser()) {
             //TODO Get rid of
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            //TODO
             try {
                 WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
             } catch (SQLException e) {
@@ -736,6 +735,7 @@ public class UserWindowController implements Initializable {
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
+            //TODO Get rid of
             WindowManager.getClinicianController().updateFoundUsers();
         }
         alert.close();
