@@ -230,7 +230,7 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            WindowManager.rePopulateReceiverWaitingList();
+            WindowManager.updateWaitingList();
             WindowManager.getWaitingListController().populateOrgansComboBox();
         });
 
@@ -746,6 +746,7 @@ public class UserWindowController implements Initializable {
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
             WindowManager.getClinicianController().updateFoundUsers();
+            WindowManager.updateTransplantWaitingList();
         }
         alert.close();
     }
