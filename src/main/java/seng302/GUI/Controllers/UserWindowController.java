@@ -970,10 +970,11 @@ public class UserWindowController implements Initializable {
         }
     }
 
+
     /**
      * Disable the logout button if this user window is the child of a clinician window.
      */
-    public void setAsChildWindow() {
+    public void disableLogoutControls() {
         logoutMenuItem.setDisable(true);
         logoutButton.setDisable(true);
     }
