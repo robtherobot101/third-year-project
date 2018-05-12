@@ -156,7 +156,7 @@ public class TransplantWaitingListController implements Initializable {
     private void showDiseaseDeregisterDialog() {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -243,7 +243,7 @@ public class TransplantWaitingListController implements Initializable {
         Alert alert;
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -321,7 +321,7 @@ public class TransplantWaitingListController implements Initializable {
     private void transplantDeregister() {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -340,7 +340,7 @@ public class TransplantWaitingListController implements Initializable {
     private void errorDeregister() {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -429,7 +429,7 @@ public class TransplantWaitingListController implements Initializable {
     private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }

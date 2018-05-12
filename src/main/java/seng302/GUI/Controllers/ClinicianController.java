@@ -243,6 +243,8 @@ public class ClinicianController implements Initializable {
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
+        dialog.getDialogPane().lookupButton(updateButtonType).setId("clinicianSettingsPopupUpdateButton");
+
         // Create the username and password labels and fields.
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -314,7 +316,6 @@ public class ClinicianController implements Initializable {
         });
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
-
         result.ifPresent(newClinicianDetails -> {
             System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
                     .get(2));
