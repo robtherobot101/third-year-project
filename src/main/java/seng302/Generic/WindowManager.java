@@ -3,11 +3,13 @@ package seng302.Generic;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
@@ -23,6 +25,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -77,6 +81,41 @@ public class WindowManager extends Application {
      */
     public static void addCliniciansUserWindow(Stage stage) {
         cliniciansUserWindows.add(stage);
+    }
+
+    public static void newCliniciansUserWindow(User user){
+        Stage stage = new Stage();
+        stage.getIcons().add(WindowManager.getIcon());
+        stage.setMinHeight(WindowManager.mainWindowMinHeight);
+        stage.setMinWidth(WindowManager.mainWindowMinWidth);
+        stage.setHeight(WindowManager.mainWindowPrefHeight);
+        stage.setWidth(WindowManager.mainWindowPrefWidth);
+
+        WindowManager.addCliniciansUserWindow(stage);
+        stage.initModality(Modality.NONE);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
+            Parent root = (Parent) loader.load();
+            UserWindowController userWindowController = loader.getController();
+            userWindowController.setTitleBar(stage);
+            WindowManager.setCurrentUser(user);
+            String text = History.prepareFileStringGUI(user.getId(), "view");
+            History.printToFile(streamOut, text);
+
+            userWindowController.populateUserFields();
+            userWindowController.populateHistoryTable();
+            userWindowController.showWaitingListButton();
+            WindowManager.controlViewForClinician();
+
+            Scene newScene = new Scene(root, 900, 575);
+            stage.setScene(newScene);
+            stage.show();
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
     }
 
     /**
@@ -226,6 +265,7 @@ public class WindowManager extends Application {
         waitingListController.setControlsShown(true);
         medicalHistoryProceduresController.setControlsShown(true);
         medicalHistoryDiseasesController.setControlsShown(true);
+        userWindowController.disableLogoutControls();
     }
 
     /**

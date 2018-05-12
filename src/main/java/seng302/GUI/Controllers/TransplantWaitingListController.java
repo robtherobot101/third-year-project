@@ -543,7 +543,6 @@ public class TransplantWaitingListController implements Initializable {
                             Scene newScene = new Scene(root, 900, 575);
                             stage.setScene(newScene);
                             stage.show();
-                            userWindowController.setAsChildWindow();
                         } catch (IOException | NullPointerException e) {
                             System.err.println("Unable to load fxml or save file.");
                             e.printStackTrace();

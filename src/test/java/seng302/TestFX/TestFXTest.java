@@ -81,12 +81,12 @@ abstract class TestFXTest extends ApplicationTest {
         clickOn("#loginButton");
     }
 
-    protected void loginAs(User user) {
-        clickOn("#identificationInput");
-        write(user.getEmail());
-        clickOn("#passwordInput");
-        write(user.getPassword());
-        clickOn("#loginButton");
+    protected void userWindow(User user) {
+        Platform.runLater(() ->{
+            WindowManager.setCurrentUser(user);
+            WindowManager.setScene(TFScene.userWindow);
+        });
+        waitForFxEvents();
     }
 
     protected void openUserAsClinician(String name) {
@@ -110,6 +110,7 @@ abstract class TestFXTest extends ApplicationTest {
             WindowManager.setClinician(testClinician);
             WindowManager.setScene(TFScene.clinician);
         });
+        waitForFxEvents();
     }
 
     /**

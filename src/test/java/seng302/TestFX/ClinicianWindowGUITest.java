@@ -2,25 +2,28 @@ package seng302.TestFX;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
+import com.sun.javafx.robot.FXRobot;
+import com.sun.javafx.robot.FXRobotFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.testfx.api.FxRobot;
 import seng302.Generic.DataManager;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
@@ -48,10 +51,18 @@ public class ClinicianWindowGUITest extends  TestFXTest {
     public void setUp () throws Exception {
         testClinician = new Clinician("testUsername","testPassword","testName");
         openClinicianWindow(testClinician);
-        waitForFxEvents();
-        //loginAsDefaultClinician();
         numberXOfResults = WindowManager.getClinicianController().getNumberXofResults();
         resultsPerPage = WindowManager.getClinicianController().getResultsPerPage();
+    }
+
+    @After
+    public void tearDown () {
+        Platform.runLater(() ->{
+            for(Window w:this.listWindows()){
+                w.hide();
+            }
+        });
+
     }
 
 
@@ -166,14 +177,15 @@ public class ClinicianWindowGUITest extends  TestFXTest {
 
         Clinician clinician = WindowManager.getClinicianController().getClinician();
         clickOn("Update");
-        clickOn("OK");
+
+        pressDialogOKButtons();
         assertEquals("default", clinician.getName());
         assertEquals("default", clinician.getWorkAddress());
         assertEquals("default", clinician.getRegion());
     }
 
     @Test
-    public void changeClinicianSettings_updatesClinicianDisplay(){
+    public void changeClinicianSettings_updatesClinicianDisplay() throws TimeoutException{
         clickOn("#updateClinicianButton");
         clickOn("#clinicianName").write("newTestName");
         clickOn("#clinicianAddress").write("newTestAddress");
@@ -181,7 +193,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
 
         Clinician clinician = WindowManager.getClinicianController().getClinician();
         clickOn("#clinicianSettingsPopupUpdateButton");
-        type(KeyCode.ENTER);
+        pressDialogOKButtons();
         assertEquals("Name: newTestName", lookup("#nameLabel").queryLabeled().getText());
         assertEquals("Address: newTestAddress", lookup("#addressLabel").queryLabeled().getText());
         assertEquals("Region: newTestRegion", lookup("#regionLabel").queryLabeled().getText());
@@ -207,6 +219,17 @@ public class ClinicianWindowGUITest extends  TestFXTest {
 
         Button confirmUpdateButton = lookup("Update").queryButton();
         assertTrue(confirmUpdateButton.isDisable());
+    }
+
+    public void pressDialogOKButtons(){
+        sleep(500);
+        for(Window window: this.listWindows()){
+            for(Node nodeWithOKText : from(window.getScene().getRoot()).lookup("OK").queryAll()){
+                if(nodeWithOKText instanceof Button){
+                    clickOn(nodeWithOKText);
+                }
+            }
+        }
     }
 
     @Test
@@ -241,9 +264,8 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         write("newTestPassword");
 
         clickOn("Update");
-
-        type(KeyCode.ENTER);
-
+        System.out.println(Arrays.toString(this.listWindows().toArray()));
+        pressDialogOKButtons();
         assertEquals("newTestUsername", testClinician.getUsername());
         assertEquals("newTestPassword", testClinician.getPassword());
     }
