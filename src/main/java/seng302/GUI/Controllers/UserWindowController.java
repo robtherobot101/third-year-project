@@ -25,6 +25,7 @@ import seng302.User.Attribute.*;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -665,23 +666,29 @@ public class UserWindowController implements Initializable {
         }
 
         //Commit changes
-        currentUser.setPreferredNameArray(name);
+
+        //TODO Create database call to update all of these fields within the database
+
+        currentUser.setNameArray(name);
+        //currentUser.setPreferredNameArray(name);
         currentUser.setHeight(userHeight);
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
         currentUser.setDateOfDeath(dateOfDeathPicker.getValue());
-        if (currentUser.getGender() == null) {
-            currentUser.setGender(genderComboBox.getValue());
-            currentUser.setGenderIdentity(genderComboBox.getValue());
-        } else {
-            currentUser.setGenderIdentity(genderComboBox.getValue());
-        }
+        currentUser.setGender(genderComboBox.getValue());
+//        if (currentUser.getGender() == null) {
+//            currentUser.setGender(genderComboBox.getValue());
+//            currentUser.setGenderIdentity(genderComboBox.getValue());
+//        } else {
+//            currentUser.setGenderIdentity(genderComboBox.getValue());
+//        }
         currentUser.setBloodType(bloodTypeComboBox.getValue());
         currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
         currentUser.setRegion(regionField.getText());
         currentUser.setCurrentAddress(addressField.getText());
+
         for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
                 if (!organTickBoxes.get(key).isSelected()) {
@@ -693,6 +700,11 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
+
+        //Database call for update of organs for user
+
+        //TODO
+
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         System.out.println(currentUser.toString());
@@ -709,7 +721,14 @@ public class UserWindowController implements Initializable {
                 "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
+            //TODO Get rid of
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            //TODO
+            try {
+                WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);

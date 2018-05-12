@@ -87,19 +87,6 @@ public class CreateAccountController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //TODO Implement check to see if user is already in database
-//        for (User user : DataManager.users) {
-//            if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(user.getUsername())) {
-//                errorText.setText("That username is already taken.");
-//                errorText.setVisible(true);
-//                return null;
-//            } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(user.getEmail())) {
-//                errorText.setText("There is already a user account with that email.");
-//                errorText.setVisible(true);
-//                return null;
-//            }
-//        }
-        //TODO
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
             errorText.setVisible(true);
@@ -117,9 +104,9 @@ public class CreateAccountController implements Initializable {
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
-                //TODO Eventually get rid of
-                DataManager.users.add(user);
-                //TODO
+                //Got rid of the Local Data management of users
+                //DataManager.users.add(user);
+                //
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
                 WindowManager.setCurrentUser(user);
@@ -131,9 +118,9 @@ public class CreateAccountController implements Initializable {
                     e.printStackTrace();
                 }
 
-                //TODO Get rid of
+                //Got rid of the users being saved to a json file
                 //IO.saveUsers(IO.getUserPath(), LoginType.USER);
-                //TODO
+                //
 
 
                 WindowManager.setScene(TFScene.userWindow);

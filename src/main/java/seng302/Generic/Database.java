@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.sql.*;
@@ -15,6 +16,15 @@ public class Database {
     private Connection connection;
 
 
+    public int getUserId(String username) throws SQLException{
+        String query = "SELECT id FROM USER WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, username);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+        return resultSet.getInt("id");
+    }
+
     public void insertUser(User user) throws SQLException {
         String insert = "INSERT INTO USER(first_name, middle_names, last_name, creation_time, last_modified, username," +
                 " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -29,10 +39,57 @@ public class Database {
         statement.setString(7, user.getEmail());
         //TODO Hash the password
         statement.setString(8, user.getPassword());
-        //TODO
         statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
         System.out.println("New rows added: " + statement.executeUpdate());
 
+    }
+
+    public void updateUserAttributesAndOrgans(User user) throws SQLException {
+        //Attributes update
+        //TODO Need to update for changes in the attributes pane
+        String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, current_address = ?, " +
+                "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
+                "gender = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?  WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, user.getNameArray()[0]);
+        statement.setString(2, user.getNameArray().length > 2 ?
+                String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
+        statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
+        statement.setString(4, user.getCurrentAddress());
+        statement.setString(5, user.getRegion());
+        statement.setDate(6, java.sql.Date.valueOf(user.getDateOfBirth()));
+        statement.setDate(7, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
+        statement.setDouble(8, user.getHeight());
+        statement.setDouble(9, user.getWeight());
+        statement.setString(10, user.getBloodPressure());
+        statement.setString(11, user.getGender() != null ? user.getGender().toString() : null);
+        statement.setString(12, user.getBloodType() != null ? user.getBloodType().toString() : null);
+        statement.setString(13, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
+        statement.setString(14, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
+        statement.setString(15, user.getUsername());
+        System.out.println("Rows updated: " + statement.executeUpdate());
+
+
+        int userId = getUserId(user.getUsername());
+        System.out.println(userId);
+
+        //Organ Updates
+        //First get rid of all the users organs in the table
+        String deleteOrgansQuery = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement deleteOrgansStatement = connection.prepareStatement(deleteOrgansQuery);
+        deleteOrgansStatement.setInt(1, userId);
+        System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
+
+        int totalAdded = 0;
+        //Then repopulate it with the new updated organs
+        for (Organ organ: user.getOrgans()) {
+            String insertOrgansQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
+            PreparedStatement insertOrgansStatement = connection.prepareStatement(insertOrgansQuery);
+            insertOrgansStatement.setString(1, organ.toString());
+            insertOrgansStatement.setInt(2, userId);
+            totalAdded += insertOrgansStatement.executeUpdate();
+        }
+        System.out.println("New Organs added: " + totalAdded);
     }
 
     public boolean checkUniqueUser(String item) throws SQLException{
@@ -66,6 +123,11 @@ public class Database {
     }
 
     public void insertAdmin() {
+
+    }
+
+    public void login(String usernameEmail, String password) {
+
 
     }
 
