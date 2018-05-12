@@ -9,6 +9,9 @@ import seng302.User.Attribute.LoginType;
 public class Clinician {
 
     private String name, workAddress, region, username, password;
+    public static final String tableHeader = "User ID |         | Name  |   |work address| |region| |username| |password|";
+
+
     private long staffID;
     private LoginType accountType;
 

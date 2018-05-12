@@ -2,8 +2,10 @@ package seng302.Generic;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -260,6 +262,26 @@ public class SearchUtils {
     }
 
     /**
+     * Find a specific clinician from the user list based on their staff id.
+     *
+     * @param id The id of the clinician to search for
+     * @return The clinician object or null if the clinician was not found
+     */
+    public static Clinician getClinicianById(long id) {
+        if (id < 0) {
+            return null;
+        }
+        Clinician found = null;
+        for (Clinician clinician : DataManager.clinicians) {
+            if (clinician.getStaffID() == id) {
+                found = clinician;
+                break;
+            }
+        }
+        return found;
+    }
+
+    /**
      * Find a specific user from the user list based on their name.
      *
      * @param names The names of the user to search for
@@ -353,5 +375,14 @@ public class SearchUtils {
             return scoreComparison;
         });
         return matched;
+    }
+
+    /**
+     * Returns the most recently added user to the program, by taking the last element in the users list.
+     * Called in the history function.
+     * @return the most recently added user.
+     */
+    public static User getLatestUser() {
+        return DataManager.users.get(DataManager.users.size()-1);
     }
 }
