@@ -158,8 +158,15 @@ public class WaitingListController extends PageController implements Initializab
      * Refreshes the list waiting list TableView
      */
     public void populateWaitingList() {
-        waitingListItems.clear();
-        waitingListItems.addAll(currentUser.getWaitingListItems());
+        //TODO
+        //currentUser is null when an item is deregistered via the clinicians transplant waiting list
+        // and the clinician hasn't yet viewed any user windows.
+
+        //This should be fixed with Andrew's changes to dealing with multiple clinician
+        if(currentUser != null){
+            waitingListItems.clear();
+            waitingListItems.addAll(currentUser.getWaitingListItems());
+        }
     }
 
     @Override
