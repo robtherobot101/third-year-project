@@ -20,8 +20,8 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      *
      * @param organType type of organ to use
      */
-    public ReceiverWaitingListItem(Organ organType) {
-        super(organType);
+    public ReceiverWaitingListItem(Organ organType, int id, long userId) {
+        super(organType, id, userId);
         this.stillWaitingOn = true;
     }
 

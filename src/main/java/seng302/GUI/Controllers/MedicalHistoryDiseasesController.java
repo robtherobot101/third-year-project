@@ -15,9 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -46,7 +44,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     @FXML
     private Label newDiseaseDateLabel;
     @FXML
-    private Button addNewDiseaseButton, deleteDiseaseButton, saveDiseaseButton, todayButton;
+    private Button addNewDiseaseButton, deleteDiseaseButton, todayButton;
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
     private boolean sortCuredDiagnosisAscending, sortCuredDatesAscending, sortCuredByDate;
@@ -54,6 +52,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
     private Label currentDiagnosisColumnLabel, currentDateColumnLabel;
     private Label curedDiagnosisColumnLabel, curedDateColumnLabel;
+    private UserWindowController userWindowController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -136,6 +135,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                     "Disease already exists.");
             alert.showAndWait();
         } else {
+            userWindowController.addCurrentUserToUndoStack();
             curedDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
         }
@@ -153,6 +153,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                     "Disease already exists.");
             alert.showAndWait();
         } else {
+            userWindowController.addCurrentUserToUndoStack();
             currentDiseaseItems.add(diseaseToAdd);
             sortCurrentDiseases(false);
         }
@@ -166,32 +167,28 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         if (currentDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Are you sure?");
-            alert.setHeaderText("Are you sure would like to delete the selected current disease? ");
-            alert.setContentText("By doing so, the disease will be erased from the database.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
+                "Are you sure?", "Are you sure would like to delete the selected current disease? ", "By doing so, the disease will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
+                userWindowController.addCurrentUserToUndoStack();
                 Disease chosenDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 currentDiseaseItems.remove(chosenDisease);
                 statusIndicator.setStatus("Removed " + chosenDisease, false);
                 titleBar.saved(false);
-                saveToUndoStack();
             }
             alert.close();
         } else if (curedDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Are you sure?");
-            alert.setHeaderText("Are you sure would like to delete the selected cured disease? ");
-            alert.setContentText("By doing so, the disease will be erased from the database.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
+                "Are you sure?", "Are you sure would like to delete the selected cured disease? ", "By doing so, the disease will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
+                userWindowController.addCurrentUserToUndoStack();
                 Disease chosenDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
                 curedDiseaseItems.remove(chosenDisease);
                 statusIndicator.setStatus("Removed " + chosenDisease, false);
                 titleBar.saved(false);
-                saveToUndoStack();
             }
             alert.close();
         }
@@ -292,6 +289,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         result.ifPresent(newDiseaseDetails -> {
             System.out.println("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
+            userWindowController.addCurrentUserToUndoStack();
             selectedDisease.setName(newDiseaseDetails.getKey());
             selectedDisease.setDiagnosisDate(newDiseaseDetails.getValue());
             if (current) {
@@ -320,17 +318,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         sortCurrentDiseases(false);
         currentDiseaseTableView.refresh();
         curedDiseaseTableView.refresh();
-    }
-
-    /**
-     *
-     */
-    private void saveToUndoStack() {
-        WindowManager.addCurrentToDiseaseUndoStack();
-        currentUser.getCurrentDiseases().clear();
-        currentUser.getCurrentDiseases().addAll(currentDiseaseItems);
-        currentUser.getCuredDiseases().clear();
-        currentUser.getCuredDiseases().addAll(curedDiseaseItems);
     }
 
 
@@ -590,6 +577,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         // Set the selected disease from the cured disease table as chronic (move to current disease table also)
         MenuItem setCuredChronicDiseaseMenuItem = new MenuItem();
         setCuredChronicDiseaseMenuItem.setOnAction(event -> {
+            userWindowController.addCurrentUserToUndoStack();
             Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
             selectedDisease.setChronic(true);
             selectedDisease.setCured(false);
@@ -607,6 +595,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         // Set the selected disease from the cured disease table as uncured (move to current disease table also)
         MenuItem setUncuredMenuItem = new MenuItem();
         setUncuredMenuItem.setOnAction(event -> {
+            userWindowController.addCurrentUserToUndoStack();
             Disease selectedDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
             selectedDisease.setCured(false);
             selectedDisease.setDiagnosisDate(LocalDate.now());
@@ -720,6 +709,15 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         isCuredCheckBox.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
+    }
+
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
     }
 
     /**

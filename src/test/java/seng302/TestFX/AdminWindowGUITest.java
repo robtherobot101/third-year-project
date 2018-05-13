@@ -106,6 +106,7 @@ public class AdminWindowGUITest extends TestFXTest {
     public void addAdmin() {
         loginAsDefaultAdmin();
         clickOn("#fileMenu");
+        sleep(100);
         moveTo("#createMenu");
         clickOn("#adminMenuItem");
 
@@ -147,6 +148,7 @@ public class AdminWindowGUITest extends TestFXTest {
     public void addThenDeleteClinician() {
         loginAsDefaultAdmin();
         clickOn("#fileMenu");
+        sleep(100);
         moveTo("#createMenu");
         // To align the movement properly:
         moveTo("#adminMenuItem");

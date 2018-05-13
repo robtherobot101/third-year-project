@@ -9,9 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
@@ -47,6 +45,7 @@ public class MedicationsController extends PageController implements Initializab
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
+    private UserWindowController userWindowController;
 
     /**
      * Initializes the medications pane to show medications for a specified user.
@@ -86,7 +85,7 @@ public class MedicationsController extends PageController implements Initializab
      *
      */
     private void saveToUndoStack() {
-        WindowManager.addCurrentToMedicationUndoStack();
+        userWindowController.addCurrentUserToUndoStack();
         currentUser.getCurrentMedications().clear();
         currentUser.getCurrentMedications().addAll(currentItems);
         currentUser.getHistoricMedications().clear();
@@ -381,6 +380,15 @@ public class MedicationsController extends PageController implements Initializab
             historyTitleLabel.setText("");
             historyContentLabel.setText("");
         }
+    }
+
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
     }
 
     @Override

@@ -146,7 +146,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
+            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
                 userWindow.close();
             }
             WindowManager.setScene(TFScene.login);
@@ -302,7 +302,7 @@ public class AdminController implements Initializable {
                 "You will lose any unsaved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
+            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
                 userWindow.close();
             }
             Platform.exit();
@@ -655,41 +655,7 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        Stage stage = new Stage();
-                        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-                        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-                        stage.setHeight(WindowManager.mainWindowPrefHeight);
-                        stage.setWidth(WindowManager.mainWindowPrefWidth);
-                        stage.getIcons().add(WindowManager.getIcon());
-
-                        WindowManager.addCliniciansUserWindow(stage);
-                        stage.initModality(Modality.NONE);
-
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
-                            Parent root = loader.load();
-                            UserWindowController userWindowController = loader.getController();
-                            userWindowController.setTitleBar(stage);
-                            WindowManager.setCurrentUser(row.getItem());
-
-                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
-                            History.printToFile(IO.streamOut, text);
-
-                            userWindowController.populateUserFields();
-                            userWindowController.populateHistoryTable();
-                            userWindowController.showWaitingListButton();
-                            WindowManager.controlViewForClinician();
-
-                            Scene newScene = new Scene(root, WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
-                            stage.setMinHeight(WindowManager.mainWindowMinHeight);
-                            stage.setMinWidth(WindowManager.mainWindowMinWidth);
-                            stage.setScene(newScene);
-                            stage.show();
-                        } catch (IOException | NullPointerException e) {
-                            System.err.println("Unable to load fxml or save file.");
-                            e.printStackTrace();
-                            Platform.exit();
-                        }
+                        WindowManager.newCliniciansUserWindow(row.getItem());
                     }
                 });
                 return row;

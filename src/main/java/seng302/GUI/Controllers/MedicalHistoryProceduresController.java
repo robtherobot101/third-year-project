@@ -13,10 +13,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.Procedure;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -62,7 +60,7 @@ public class MedicalHistoryProceduresController extends PageController implement
 
 
     private User currentUser;
-
+    private UserWindowController userWindowController;
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
 
@@ -87,7 +85,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      * Function to saving the most current versions of the previous and pending procedures to an undo stack
      */
     private void saveToUndoStack() {
-        WindowManager.addCurrentToProcedureUndoStack();
+        userWindowController.addCurrentUserToUndoStack();
         currentUser.getPendingProcedures().clear();
         currentUser.getPendingProcedures().addAll(pendingProcedureItems);
         currentUser.getPreviousProcedures().clear();
@@ -665,6 +663,15 @@ public class MedicalHistoryProceduresController extends PageController implement
                 currentUser.getPreviousProcedures().add(procedure);
             }
         }
+    }
+
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
     }
 
     /**

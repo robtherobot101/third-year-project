@@ -18,8 +18,6 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 public class MedicalHistoryProceduresGUITest extends TestFXTest {
-
-
     private TableView<Procedure> pendingProcedureTableView, previousProcedureTableView;
     private Procedure pendingTableSelectedProcedure, previousTableSelectedProcedure;
 

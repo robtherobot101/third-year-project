@@ -47,7 +47,7 @@ public class WaitingListController extends PageController implements Initializab
 
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
-    private boolean deregisterPressed = false;
+    private UserWindowController userWindowController;
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
@@ -68,12 +68,10 @@ public class WaitingListController extends PageController implements Initializab
         History.printToFile(streamOut, text);
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
-            addToUndoStack();
-            ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected);
+            userWindowController.addCurrentUserToUndoStack();
+            ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected, currentUser.getWaitingListItems().size(), currentUser.getId());
             boolean found = false;
             for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()) {
-                System.out.println(temp.getWaitingListItemId() + "\t" + temp.getOrganType() + "\t" + item.getWaitingListItemId() + "\t" + item
-                        .getOrganType());
                 if (temp.getOrganType() == item.getOrganType() && item.getOrganDeregisteredDate() != null) {
                     currentUser.getWaitingListItems().remove(item);
                     currentUser.getWaitingListItems().add(new ReceiverWaitingListItem(item));
@@ -90,8 +88,8 @@ public class WaitingListController extends PageController implements Initializab
 
         }
         populateOrgansComboBox();
-        WindowManager.getUserWindowController().populateUserFields();
-        WindowManager.reHighlightOrganDonationCheckboxes();
+        userWindowController.populateUserAttributes();
+        WindowManager.updateTransplantWaitingList();
     }
 
 
@@ -100,23 +98,17 @@ public class WaitingListController extends PageController implements Initializab
      * the waiting TableView
      */
     public void deregisterOrgan() {
-
         String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
         ReceiverWaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
-            addToUndoStack();
-            deregisterPressed = true;
-            WindowManager.getTransplantWaitingListController().showDeregisterDialog();
+            userWindowController.addCurrentUserToUndoStack();
+            WindowManager.getTransplantWaitingListController().showDeregisterDialog(waitingListItemSelected);
             //statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
-            deregisterPressed = false;
             populateWaitingList();
-
-
         }
         populateOrgansComboBox();
-        WindowManager.getUserWindowController().populateUserFields();
-        WindowManager.reHighlightOrganDonationCheckboxes();
+        userWindowController.populateUserAttributes();
     }
 
 
@@ -171,7 +163,6 @@ public class WaitingListController extends PageController implements Initializab
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setWaitingListController(this);
         organTypeComboBox.setItems(organsInDropDown);
         waitingListTableView.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
@@ -202,14 +193,11 @@ public class WaitingListController extends PageController implements Initializab
                     @Override
                     public void updateItem(ReceiverWaitingListItem item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (getStyleClass().contains("highlighted-row")) {
-                            getStyleClass().remove("highlighted-row");
-                        }
+                        getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
                             if(currentUser.conflictingOrgans().contains(item.getOrganType())) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
-                                System.out.println("User is donating " + item.getOrganType());
                                 if (!getStyleClass().contains("highlighted-row")) {
                                     getStyleClass().add("highlighted-row");
                                 }
@@ -219,6 +207,15 @@ public class WaitingListController extends PageController implements Initializab
                 };
             }
         });
+    }
+
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
     }
 
     /**
@@ -233,20 +230,5 @@ public class WaitingListController extends PageController implements Initializab
         this.deregisterOrganButton.setVisible(shown);
         this.organTypeComboBox.setVisible(shown);
         this.organComboBoxLabel.setVisible(shown);
-    }
-
-    /**
-     * Calls the main class which has access to the static controller allowing it to manually add the user to the waitinglist undo stack.
-     */
-    public void addToUndoStack() {
-        WindowManager.addCurrentToWaitingListUndoStack();
-    }
-
-    public boolean getDeregisterPressed() {
-        return deregisterPressed;
-    }
-
-    public TableView<ReceiverWaitingListItem> getWaitingListTableView() {
-        return waitingListTableView;
     }
 }

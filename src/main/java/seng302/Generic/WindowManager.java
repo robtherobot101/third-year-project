@@ -5,8 +5,8 @@ import static seng302.Generic.IO.streamOut;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +20,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.AccountSettingsController;
-import seng302.GUI.Controllers.AdminCliController;
 import seng302.GUI.Controllers.AdminController;
 import seng302.GUI.Controllers.ClinicianAccountSettingsController;
 import seng302.GUI.Controllers.ClinicianController;
@@ -28,7 +27,6 @@ import seng302.GUI.Controllers.CreateAccountController;
 import seng302.GUI.Controllers.LoginController;
 import seng302.GUI.Controllers.TransplantWaitingListController;
 import seng302.GUI.Controllers.UserWindowController;
-import seng302.GUI.Controllers.WaitingListController;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Attribute.LoginType;
@@ -45,7 +43,7 @@ public class WindowManager extends Application {
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
-    private static ArrayList<Stage> cliniciansUserWindows = new ArrayList<>();
+    private static Map<Stage, UserWindowController> cliniciansUserWindows = new HashMap<>();
     private static Image icon;
     private static String dialogStyle, menuButtonStyle, selectedMenuButtonStyle;
 
@@ -59,8 +57,6 @@ public class WindowManager extends Application {
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static TransplantWaitingListController transplantWaitingListController;
-    private static WaitingListController waitingListController;
-
 
     /**
      * Returns the program icon.
@@ -80,15 +76,6 @@ public class WindowManager extends Application {
         return stage;
     }
 
-    /**
-     * adds the clinican user window to the stage
-     *
-     * @param stage the current stage
-     */
-    public static void addCliniciansUserWindow(Stage stage) {
-        cliniciansUserWindows.add(stage);
-    }
-
     public static void newCliniciansUserWindow(User user){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
@@ -97,7 +84,6 @@ public class WindowManager extends Application {
         stage.setHeight(WindowManager.mainWindowPrefHeight);
         stage.setWidth(WindowManager.mainWindowPrefWidth);
 
-        WindowManager.addCliniciansUserWindow(stage);
         stage.initModality(Modality.NONE);
 
         try {
@@ -105,16 +91,15 @@ public class WindowManager extends Application {
             Parent root = loader.load();
             UserWindowController userWindowController = loader.getController();
             userWindowController.setTitleBar(stage);
-            WindowManager.setCurrentUser(user);
             String text = History.prepareFileStringGUI(user.getId(), "view");
             History.printToFile(streamOut, text);
 
-            userWindowController.populateUserFields();
+            userWindowController.setCurrentUser(user);
             userWindowController.populateHistoryTable();
-            userWindowController.showWaitingListButton();
-            WindowManager.controlViewForClinician();
+            userWindowController.setControlsShown(true);
+            cliniciansUserWindows.put(stage, userWindowController);
 
-            Scene newScene = new Scene(root, 900, 575);
+            Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
             stage.setScene(newScene);
             stage.show();
         } catch (IOException | NullPointerException e) {
@@ -167,68 +152,17 @@ public class WindowManager extends Application {
      */
     public static void setCurrentUser(User currentUser) {
         userWindowController.setCurrentUser(currentUser);
-        userWindowController.populateUserFields();
         userWindowController.populateHistoryTable();
         userWindowController.setControlsShown(false);
     }
 
     /**
-     * Gets the current length of the user's transplant waiting list
-     *
-     * @return The length of the user's transplant waiting list
-     */
-    public static int getNextWaitingListId() {
-        return userWindowController.getCurrentUser().getWaitingListItems().size();
-    }
-
-    /**
-     * appends to the undo stack for medications
-     */
-    public static void addCurrentToMedicationUndoStack() {
-        userWindowController.addCurrentToMedicationUndoStack();
-    }
-
-    /**
-     * add to the undo stack for diseases
-     */
-    public static void addCurrentToDiseaseUndoStack() {
-        userWindowController.addCurrentToDiseaseUndoStack();
-    }
-
-    /**
-     * updates the disease controller
-     */
-    public static void updateDiseases() {
-        userWindowController.updateDiseases();
-    }
-
-    /**
-     * add to the undo stack for current procedures
-     */
-    public static void addCurrentToProcedureUndoStack() {
-        userWindowController.addCurrentToProceduresUndoStack();
-    }
-
-
-    /**
-     * Adds the current user to the waiting list undo stack.
-     */
-    public static void addCurrentToWaitingListUndoStack() {
-        userWindowController.addCurrentToWaitingListUndoStack();
-    }
-
-    /**
      * Calls the function which updates the waiting list pane.
      */
-    public static void updateWaitingList() {
-        waitingListController.populateWaitingList();
-    }
-
-    /**
-     * Re-highlights the organ donation checkboxes which the current user is also receiving.
-     */
-    public static void reHighlightOrganDonationCheckboxes(){
-        userWindowController.highlightOrganCheckBoxes();
+    public static void updateUserWaitingLists() {
+        for (UserWindowController userWindowController: cliniciansUserWindows.values()) {
+            userWindowController.populateWaitingList();
+        }
     }
 
     /**
@@ -236,14 +170,6 @@ public class WindowManager extends Application {
      */
     public static void updateTransplantWaitingList() {
         transplantWaitingListController.updateTransplantList();
-    }
-
-    /**
-     * Sets which controls for each panel are visible to the clinician.
-     */
-    public static void controlViewForClinician() {
-        userWindowController.setControlsShown(true);
-        userWindowController.disableLogoutControls();
     }
 
     /**
@@ -292,10 +218,6 @@ public class WindowManager extends Application {
         WindowManager.transplantWaitingListController = transplantWaitingListController;
     }
 
-    public static void setWaitingListController(WaitingListController waitingListController) {
-        WindowManager.waitingListController = waitingListController;
-    }
-
     public static void setClinicianController(ClinicianController clinicianController) {
         WindowManager.clinicianController = clinicianController;
     }
@@ -308,15 +230,11 @@ public class WindowManager extends Application {
         return WindowManager.clinicianController;
     }
 
-    public static UserWindowController getUserWindowController() {
-        return userWindowController;
-    }
-
     public static TransplantWaitingListController getTransplantWaitingListController() {
-        return WindowManager.transplantWaitingListController;
+        return transplantWaitingListController;
     }
 
-    public static ArrayList<Stage> getCliniciansUserWindows() {
+    public static Map<Stage, UserWindowController> getCliniciansUserWindows() {
         return cliniciansUserWindows;
     }
 
@@ -330,14 +248,6 @@ public class WindowManager extends Application {
 
     public static void setClinicianAccountSettingsEnterEvent() {
         clinicianAccountSettingsController.setEnterEvent();
-    }
-
-    public static boolean wasDeregisterPressed() {
-        return waitingListController.getDeregisterPressed();
-    }
-
-    public static WaitingListItem getSelectedWaitingListItem() {
-        return waitingListController.getWaitingListTableView().getSelectionModel().getSelectedItem();
     }
 
     /**
@@ -380,7 +290,7 @@ public class WindowManager extends Application {
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding(closeAllWindows -> {
-            for (Stage userWindow : cliniciansUserWindows) {
+            for (Stage userWindow : cliniciansUserWindows.keySet()) {
                 userWindow.close();
             }
         });

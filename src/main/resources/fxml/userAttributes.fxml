@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="attributesGridPane" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="674.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserAttributesController">
+<GridPane fx:id="attributesGridPane" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="674.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.UserAttributesController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.3" prefWidth="0.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.3" prefWidth="100.0" />

@@ -13,8 +13,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
 import seng302.Generic.TransplantWaitingListItem;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 
 public class TransplantWaitingListTest extends TestFXTest {
@@ -68,6 +70,7 @@ public class TransplantWaitingListTest extends TestFXTest {
 
         // Logout to be able to create another account
         clickOn("#logoutButton");
+        sleep(100);
         clickOn("OK");
 
         try {
@@ -373,6 +376,7 @@ public class TransplantWaitingListTest extends TestFXTest {
      */
     @Test
     public void checkRegionFilter() {
+        WindowManager.resetScene(TFScene.userWindow);
         createAccounts();
 
         //login as clinician

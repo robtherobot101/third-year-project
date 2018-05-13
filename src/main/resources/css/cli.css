@@ -1,12 +1,9 @@
 .text-field,
+.text-field:focused,
 .list-view,
 .list-view > .virtual-flow > .scroll-bar,
 .list-view > .virtual-flow > .corner {
   -fx-background-color: #111111;
-}
-
-.text-field:focused {
-  -fx-background-color: #171717;
 }
 
 .list-view:focused {
