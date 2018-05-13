@@ -3,10 +3,11 @@ package seng302.Generic;
 import seng302.User.Admin;
 import seng302.User.Attribute.*;
 import seng302.User.Clinician;
+import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.sql.*;
-import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Database {
@@ -122,6 +123,110 @@ public class Database {
             totalAdded += insertOrgansStatement.executeUpdate();
         }
         System.out.println("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);
+    }
+
+    public void updateUserProcedures(User user) throws SQLException {
+        int userId = getUserId(user.getUsername());
+        System.out.println(userId);
+
+        //Procedure Updates
+        //First get rid of all the users procedures in the table
+        String deleteProceduresQuery = "DELETE FROM PROCEDURE WHERE user_id = ?";
+        PreparedStatement deleteProceduresStatement = connection.prepareStatement(deleteProceduresQuery);
+        deleteProceduresStatement.setInt(1, userId);
+        System.out.println("Procedure rows deleted: " + deleteProceduresStatement.executeUpdate());
+
+
+        int totalAdded = 0;
+        //Then repopulate it with the new updated procedures
+        ArrayList<Procedure> allProcedures = new ArrayList<>();
+        allProcedures.addAll(user.getPendingProcedures());
+        allProcedures.addAll(user.getPendingProcedures());
+        for (Procedure procedure: allProcedures) {
+            String insertProceduresQuery = "INSERT INTO PROCEDURE (summary, description, date, organs_affected, user_id) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement insertProceduresStatement = connection.prepareStatement(insertProceduresQuery);
+
+            insertProceduresStatement.setString(1, procedure.getSummary());
+            insertProceduresStatement.setString(2, procedure.getDescription());
+            insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
+            insertProceduresStatement.setString(4, "ORGANS AFFECTED");
+            insertProceduresStatement.setInt(5, userId);
+
+            totalAdded += insertProceduresStatement.executeUpdate();
+        }
+
+        System.out.println("Update User Procedures -> Successful -> Rows Updated: " + totalAdded);
+
+    }
+
+    public void updateUserDiseases(User user) throws SQLException {
+        int userId = getUserId(user.getUsername());
+        System.out.println(userId);
+
+        //Disease Updates
+        //First get rid of all the users diseases in the table
+        String deleteDiseasesQuery = "DELETE FROM DISEASE WHERE user_id = ?";
+        PreparedStatement deleteDiseasesStatement = connection.prepareStatement(deleteDiseasesQuery);
+        deleteDiseasesStatement.setInt(1, userId);
+        System.out.println("Disease rows deleted: " + deleteDiseasesStatement.executeUpdate());
+
+
+        int totalAdded = 0;
+        //Then repopulate it with the new updated diseases
+        ArrayList<Disease> allDiseases = new ArrayList<>();
+        allDiseases.addAll(user.getCurrentDiseases());
+        allDiseases.addAll(user.getCuredDiseases());
+        for (Disease disease: allDiseases) {
+            String insertDiseasesQuery = "INSERT INTO DISEASE (name, diagnosis_date, is_cured, is_chronic, user_id) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement insertDiseasesStatement = connection.prepareStatement(insertDiseasesQuery);
+
+            insertDiseasesStatement.setString(1, disease.getName());
+            insertDiseasesStatement.setDate(2, java.sql.Date.valueOf(disease.getDiagnosisDate()));
+            insertDiseasesStatement.setBoolean(3, disease.isCured());
+            insertDiseasesStatement.setBoolean(4, disease.isChronic());
+            insertDiseasesStatement.setInt(5, userId);
+
+            totalAdded += insertDiseasesStatement.executeUpdate();
+        }
+
+        System.out.println("Update User Diseases -> Successful -> Rows Updated: " + totalAdded);
+
+    }
+
+    public void updateUserMedications(User user) throws SQLException {
+        int userId = getUserId(user.getUsername());
+        System.out.println(userId);
+
+        //Procedure Updates
+        //First get rid of all the users medications in the table
+        String deleteMedicationsQuery = "DELETE FROM MEDICATION WHERE user_id = ?";
+        PreparedStatement deleteMedicationsStatement = connection.prepareStatement(deleteMedicationsQuery);
+        deleteMedicationsStatement.setInt(1, userId);
+        System.out.println("Medication rows deleted: " + deleteMedicationsStatement.executeUpdate());
+
+
+        int totalAdded = 0;
+        //Then repopulate it with the new updated medications
+        ArrayList<Medication> allMedications = new ArrayList<>();
+        allMedications.addAll(user.getCurrentMedications());
+        allMedications.addAll(user.getHistoricMedications());
+        for (Medication medication: allMedications) {
+            String insertMedicationsQuery = "INSERT INTO MEDICATION (name, active_ingredients, history, user_id) " +
+                    "VALUES (?, ?, ?, ?)";
+            PreparedStatement insertMedicationsStatement = connection.prepareStatement(insertMedicationsQuery);
+
+            insertMedicationsStatement.setString(1, medication.getName());
+            //insertMedicationsStatement.setString(2, medication.getActiveIngredients());
+            //insertMedicationsStatement.setString(3, medication.getHistory());
+            insertMedicationsStatement.setInt(4, userId);
+
+            totalAdded += insertMedicationsStatement.executeUpdate();
+        }
+
+        System.out.println("Update User Medications -> Successful -> Rows Updated: " + totalAdded);
+
     }
 
     public boolean checkUniqueUser(String item) throws SQLException{
