@@ -342,10 +342,8 @@ public class ClinicianController implements Initializable {
                 e.printStackTrace();
             }
 
-            //TODO PUT in save to Database for Users
-
             //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         }
         alert.close();
     }
