@@ -217,9 +217,12 @@ public class Database {
                     "VALUES (?, ?, ?, ?)";
             PreparedStatement insertMedicationsStatement = connection.prepareStatement(insertMedicationsQuery);
 
+            String activeIngredientsString = String.join(",", medication.getActiveIngredients());
+            String historyString = String.join(",", medication.getHistory());
+
             insertMedicationsStatement.setString(1, medication.getName());
-            //insertMedicationsStatement.setString(2, medication.getActiveIngredients());
-            //insertMedicationsStatement.setString(3, medication.getHistory());
+            insertMedicationsStatement.setString(2, activeIngredientsString);
+            insertMedicationsStatement.setString(3, historyString);
             insertMedicationsStatement.setInt(4, userId);
 
             totalAdded += insertMedicationsStatement.executeUpdate();
@@ -378,6 +381,61 @@ public class Database {
                 System.out.println(organsResultSet.getString("name"));
                 user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
             }
+
+            //Get all the medications for the given user
+
+            String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
+            PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
+            medicationsStatement.setInt(1, userId);
+            ResultSet medicationsResultSet = medicationsStatement.executeQuery();
+
+            while(medicationsResultSet.next()) {
+                String[] activeIngredients = medicationsResultSet.getString("active_ingredients").split(",");
+                String[] historyStringList = medicationsResultSet.getString("history").split(",");
+
+                ArrayList<String> historyList = new ArrayList<>();
+                //Iterate through the history list to get associated values together
+                int counter = 1;
+                String historyItem = "";
+                for(int i = 0; i < historyStringList.length; i++) {
+                    if(counter % 2 == 1) {
+                        historyItem += historyStringList[i] + ",";
+                        counter++;
+                    } else {
+                        historyItem += historyStringList[i];
+                        historyList.add(historyItem);
+                        historyItem = "";
+                        counter++;
+                    }
+
+                }
+
+                for(String s : historyList){
+                    System.out.println(s);
+                    System.out.println("break");
+                }
+
+                if(historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
+                    System.out.println("Historic");
+                    user.getHistoricMedications().add(new Medication(
+                            medicationsResultSet.getString("name"),
+                            activeIngredients,
+                            historyList
+                    ));
+                } else { //Medication is Current
+                    System.out.println("Current");
+                    user.getCurrentMedications().add(new Medication(
+                            medicationsResultSet.getString("name"),
+                            activeIngredients,
+                            historyList
+                    ));
+                }
+            }
+
+
+            //Get all the procedures for the given user
+
+            //Get all the diseases for the given user
 
             return user;
         }

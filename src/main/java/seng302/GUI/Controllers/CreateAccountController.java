@@ -105,7 +105,7 @@ public class CreateAccountController implements Initializable {
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
                 //Got rid of the Local Data management of users
-                //DataManager.users.add(user);
+                DataManager.users.add(user);
                 //
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
@@ -119,7 +119,7 @@ public class CreateAccountController implements Initializable {
                 }
 
                 //Got rid of the users being saved to a json file
-                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 //
 
 
