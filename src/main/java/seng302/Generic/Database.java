@@ -7,6 +7,7 @@ import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -131,7 +132,7 @@ public class Database {
 
         //Procedure Updates
         //First get rid of all the users procedures in the table
-        String deleteProceduresQuery = "DELETE FROM PROCEDURE WHERE user_id = ?";
+        String deleteProceduresQuery = "DELETE FROM `PROCEDURE` WHERE user_id = ?";
         PreparedStatement deleteProceduresStatement = connection.prepareStatement(deleteProceduresQuery);
         deleteProceduresStatement.setInt(1, userId);
         System.out.println("Procedure rows deleted: " + deleteProceduresStatement.executeUpdate());
@@ -141,10 +142,10 @@ public class Database {
         //Then repopulate it with the new updated procedures
         ArrayList<Procedure> allProcedures = new ArrayList<>();
         allProcedures.addAll(user.getPendingProcedures());
-        allProcedures.addAll(user.getPendingProcedures());
+        allProcedures.addAll(user.getPreviousProcedures());
         for (Procedure procedure: allProcedures) {
-            String insertProceduresQuery = "INSERT INTO PROCEDURE (summary, description, date, organs_affected, user_id) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+            String insertProceduresQuery = "INSERT INTO `PROCEDURE` (summary, description, date, organs_affected, user_id) " +
+                    "VALUES(?, ?, ?, ?, ?)";
             PreparedStatement insertProceduresStatement = connection.prepareStatement(insertProceduresQuery);
 
             insertProceduresStatement.setString(1, procedure.getSummary());
@@ -434,6 +435,31 @@ public class Database {
 
 
             //Get all the procedures for the given user
+
+            String proceduresQuery = "SELECT * FROM `PROCEDURE` WHERE user_id = ?";
+            PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
+            proceduresStatement.setInt(1, userId);
+            ResultSet proceduresResultSet = proceduresStatement.executeQuery();
+
+            while(proceduresResultSet.next()) {
+
+                if(proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
+                    user.getPendingProcedures().add(new Procedure(
+                            proceduresResultSet.getString("summary"),
+                            proceduresResultSet.getString("description"),
+                            proceduresResultSet.getDate("date").toLocalDate(),
+                            true
+                    ));
+                } else {
+                    user.getPreviousProcedures().add(new Procedure(
+                            proceduresResultSet.getString("summary"),
+                            proceduresResultSet.getString("description"),
+                            proceduresResultSet.getDate("date").toLocalDate(),
+                            false
+                    ));
+                }
+
+            }
 
             //Get all the diseases for the given user
 

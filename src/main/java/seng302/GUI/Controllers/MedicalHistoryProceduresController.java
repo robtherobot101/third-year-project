@@ -20,6 +20,7 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,6 +193,11 @@ public class MedicalHistoryProceduresController extends PageController implement
             currentUser.getPreviousProcedures().clear();
             currentUser.getPreviousProcedures().addAll(previousProcedureItems);
 
+            try {
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
             String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
             History.printToFile(streamOut, text);
