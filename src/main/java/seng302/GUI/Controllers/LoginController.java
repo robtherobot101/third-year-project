@@ -57,60 +57,42 @@ public class LoginController implements Initializable {
         if(currentUser != null) {
             typeMatched = LoginType.USER;
             identificationMatched = true;
+            System.out.println("LoginController: Logging in as user...");
         }
 
 
-//        for (User user : DataManager.users) {
-//            if (user.getUsername() != null && user.getUsername().equals(identificationInput.getText()) ||
-//                    user.getEmail() != null && user.getEmail().equals(identificationInput.getText())) {
-//                identificationMatched = true;
-//                if (user.getPassword().equals(passwordInput.getText())) {
-//                    currentUser = user;
-//                    typeMatched = LoginType.USER;
-//                    String text = History.prepareFileStringGUI(user.getId(), "login");
-//                    History.printToFile(IO.streamOut, text);
-//                }
-//            }
-//        }
 
         // Check for a clinician match
+        Clinician currentClinician = null;
+        try {
+            currentClinician = WindowManager.getDatabase().loginClinician(identificationInput.getText(), passwordInput.getText());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //Do a db search here
-        //WindowManager.getDatabase().loginClinician();
-
-//        Clinician currentClinician = null;
-//        for (Clinician clinician : DataManager.clinicians) {
-//            System.out.println(clinician);
-//            if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
-//                identificationMatched = true;
-//                if (clinician.getPassword().equals(passwordInput.getText())) {
-//                    System.out.println("LoginController: Logging in as clinician...");
-//                    currentClinician = clinician;
-//                    typeMatched = LoginType.CLINICIAN;
-//                    // TODO write login of clinician to history
-//                }
-//            }
-//
-//        }
+        if(currentClinician != null) {
+            typeMatched = LoginType.CLINICIAN;
+            identificationMatched = true;
+            System.out.println("LoginController: Logging in as clinician...");
+        }
 
         // Check for an admin match
+        Admin currentAdmin = null;
+        try {
+            currentAdmin = WindowManager.getDatabase().loginAdmin(identificationInput.getText(), passwordInput.getText());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //Do a db search here
-        //WindowManager.getDatabase().loginAdmin();
+        if(currentAdmin != null) {
+            typeMatched = LoginType.ADMIN;
+            identificationMatched = true;
+            System.out.println("LoginController: Logging in as admin...");
+        }
 
-//        Admin currentAdmin = null;
-//        for (Admin admin : DataManager.admins) {
-//            if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
-//                identificationMatched = true;
-//                if (admin.getPassword().equals(passwordInput.getText())) {
-//                    System.out.println("LoginController: Logging in as admin...");
-//                    currentAdmin = admin;
-//                    typeMatched = LoginType.ADMIN;
-//                    // TODO write login of admin to history
-//                }
-//            }
-//
-//        }
+
 
         if (identificationMatched) {
             //if (typeMatched != null) {
@@ -125,13 +107,13 @@ public class LoginController implements Initializable {
                         WindowManager.setCurrentUser(currentUser);
                         WindowManager.setScene(TFScene.userWindow);
                         break;
-//                    case CLINICIAN:
-//                        WindowManager.setClinician(currentClinician);
-//                        WindowManager.setScene(TFScene.clinician);
-//                        break;
-//                    case ADMIN:
-//                        WindowManager.setAdmin(currentAdmin);
-//                        WindowManager.setScene(TFScene.admin);
+                    case CLINICIAN:
+                        WindowManager.setClinician(currentClinician);
+                        WindowManager.setScene(TFScene.clinician);
+                        break;
+                    case ADMIN:
+                        WindowManager.setAdmin(currentAdmin);
+                        WindowManager.setScene(TFScene.admin);
                 }
 //            } else {
 //                errorMessage.setText("Incorrect password.");

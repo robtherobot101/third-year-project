@@ -194,6 +194,7 @@ public class Database {
             //Get all the organs for the given user
 
             int userId = getUserId(resultSet.getString("username"));
+            //TODO - Potentially set the local value of the user's id to this ??
 
             String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
             PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
@@ -210,13 +211,55 @@ public class Database {
 
     }
 
-    public Clinician loginClinician(String usernameEmail, String password) {
-        return null;
+    public Clinician loginClinician(String usernameEmail, String password) throws SQLException{
+        //First needs to do a search to see if there is a unique clinician with the given inputs
+        String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, usernameEmail);
+        statement.setString(2, password);
+        ResultSet resultSet = statement.executeQuery();
+
+        //If response is empty then return null
+        if(!resultSet.next()) {
+            return null;
+        } else {
+            //If response is not empty then return a new Clinican Object with the fields from the database
+            Clinician clinician = new Clinician(
+                    resultSet.getString("username"),
+                    resultSet.getString("password"),
+                    resultSet.getString("name")
+            );
+            clinician.setWorkAddress(resultSet.getString("work_address"));
+            clinician.setRegion(resultSet.getString("region"));
+
+            return clinician;
+        }
 
     }
 
-    public Admin loginAdmin(String usernameEmail, String password) {
-        return null;
+    public Admin loginAdmin(String usernameEmail, String password) throws SQLException {
+        //First needs to do a search to see if there is a unique admin with the given inputs
+        String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, usernameEmail);
+        statement.setString(2, password);
+        ResultSet resultSet = statement.executeQuery();
+
+        //If response is empty then return null
+        if(!resultSet.next()) {
+            return null;
+        } else {
+            //If response is not empty then return a new Admin Object with the fields from the database
+            Admin admin = new Admin(
+                    resultSet.getString("username"),
+                    resultSet.getString("password"),
+                    resultSet.getString("name")
+            );
+            admin.setWorkAddress(resultSet.getString("work_address"));
+            admin.setRegion(resultSet.getString("region"));
+
+            return admin;
+        }
 
     }
 
