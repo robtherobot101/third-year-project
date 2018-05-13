@@ -675,10 +675,21 @@ public class ClinicianController implements Initializable {
                             Parent root = (Parent) loader.load();
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setTitleBar(stage);
-                            WindowManager.setCurrentUser(row.getItem());
+
+                            //Getting user information from the database
+                            User currentUser = null;
+                            try {
+                                currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
+                            } catch(SQLException e) {
+                                e.printStackTrace();
+                            }
+
+                            WindowManager.setCurrentUser(currentUser);
                             System.out.println(row.getItem().getType());
-                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
-                            History.printToFile(streamOut, text);
+
+                            //TODO Update history with new database calls
+//                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
+//                            History.printToFile(streamOut, text);
 
                             userWindowController.populateUserFields();
                             userWindowController.populateHistoryTable();

@@ -242,10 +242,10 @@ public class MedicationsController extends PageController implements Initializab
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
-            String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
-            History.printToFile(streamOut, text);
+            //TODO Update history with new database calls
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
+//            History.printToFile(streamOut, text);
             //populateHistoryTable();
             statusIndicator.setStatus("Saved changes", false);
             titleBar.saved(true);

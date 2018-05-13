@@ -721,16 +721,18 @@ public class UserWindowController implements Initializable {
                 "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            //TODO Get rid of
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+
             try {
                 WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
             populateUserFields();
-            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-            History.printToFile(streamOut, text);
+            //TODO Update history with new database calls
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
+//            History.printToFile(streamOut, text);
+
             populateHistoryTable();
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");

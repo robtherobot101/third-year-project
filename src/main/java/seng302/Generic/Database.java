@@ -332,140 +332,170 @@ public class Database {
             return null;
         } else {
             //If response is not empty then return a new User Object with the fields from the database
-            User user = new User(
-                    resultSet.getString("first_name"),
-                    resultSet.getString("middle_names").split(","),
-                    resultSet.getString("last_name"),
-                    resultSet.getDate("date_of_birth").toLocalDate(),
-                    resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
-                    resultSet.getString("gender") != null ? Gender.parse(resultSet.getString("gender")) : null,
-                    resultSet.getDouble("height"),
-                    resultSet.getDouble("weight"),
-                    resultSet.getString("blood_type") != null ? BloodType.parse(resultSet.getString("blood_type")) : null,
-                    resultSet.getString("region"),
-                    resultSet.getString("current_address"),
-                    resultSet.getString("username"),
-                    resultSet.getString("email"),
-                    resultSet.getString("password"));
-            user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
-            user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
-
-            if(resultSet.getString("blood_pressure") != null) {
-                user.setBloodPressure(resultSet.getString("blood_pressure"));
-            } else {
-                user.setBloodPressure("");
-            }
-
-            if(resultSet.getString("smoker_status") != null) {
-                user.setSmokerStatus(SmokerStatus.parse(resultSet.getString("smoker_status")));
-            } else {
-                user.setSmokerStatus(null);
-            }
-
-            if(resultSet.getString("alcohol_consumption") != null) {
-                user.setAlcoholConsumption(AlcoholConsumption.parse(resultSet.getString("alcohol_consumption")));
-            } else {
-                user.setAlcoholConsumption(null);
-            }
-
-            //Get all the organs for the given user
-
-            int userId = getUserId(resultSet.getString("username"));
-            //TODO - Potentially set the local value of the user's id to this ??
-
-            String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
-            organsStatement.setInt(1, userId);
-            ResultSet organsResultSet = organsStatement.executeQuery();
-
-            while(organsResultSet.next()) {
-                System.out.println(organsResultSet.getString("name"));
-                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
-            }
-
-            //Get all the medications for the given user
-
-            String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
-            PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
-            medicationsStatement.setInt(1, userId);
-            ResultSet medicationsResultSet = medicationsStatement.executeQuery();
-
-            while(medicationsResultSet.next()) {
-                String[] activeIngredients = medicationsResultSet.getString("active_ingredients").split(",");
-                String[] historyStringList = medicationsResultSet.getString("history").split(",");
-
-                ArrayList<String> historyList = new ArrayList<>();
-                //Iterate through the history list to get associated values together
-                int counter = 1;
-                String historyItem = "";
-                for(int i = 0; i < historyStringList.length; i++) {
-                    if(counter % 2 == 1) {
-                        historyItem += historyStringList[i] + ",";
-                        counter++;
-                    } else {
-                        historyItem += historyStringList[i];
-                        historyList.add(historyItem);
-                        historyItem = "";
-                        counter++;
-                    }
-
-                }
-
-                for(String s : historyList){
-                    System.out.println(s);
-                    System.out.println("break");
-                }
-
-                if(historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
-                    System.out.println("Historic");
-                    user.getHistoricMedications().add(new Medication(
-                            medicationsResultSet.getString("name"),
-                            activeIngredients,
-                            historyList
-                    ));
-                } else { //Medication is Current
-                    System.out.println("Current");
-                    user.getCurrentMedications().add(new Medication(
-                            medicationsResultSet.getString("name"),
-                            activeIngredients,
-                            historyList
-                    ));
-                }
-            }
-
-
-            //Get all the procedures for the given user
-
-            String proceduresQuery = "SELECT * FROM `PROCEDURE` WHERE user_id = ?";
-            PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
-            proceduresStatement.setInt(1, userId);
-            ResultSet proceduresResultSet = proceduresStatement.executeQuery();
-
-            while(proceduresResultSet.next()) {
-
-                if(proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
-                    user.getPendingProcedures().add(new Procedure(
-                            proceduresResultSet.getString("summary"),
-                            proceduresResultSet.getString("description"),
-                            proceduresResultSet.getDate("date").toLocalDate(),
-                            true
-                    ));
-                } else {
-                    user.getPreviousProcedures().add(new Procedure(
-                            proceduresResultSet.getString("summary"),
-                            proceduresResultSet.getString("description"),
-                            proceduresResultSet.getDate("date").toLocalDate(),
-                            false
-                    ));
-                }
-
-            }
-
-            //Get all the diseases for the given user
-
-            return user;
+            return getUserFromResultSet(resultSet);
         }
 
+    }
+
+    public User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+
+        User user = new User(
+                resultSet.getString("first_name"),
+                resultSet.getString("middle_names").split(","),
+                resultSet.getString("last_name"),
+                resultSet.getDate("date_of_birth").toLocalDate(),
+                resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
+                resultSet.getString("gender") != null ? Gender.parse(resultSet.getString("gender")) : null,
+                resultSet.getDouble("height"),
+                resultSet.getDouble("weight"),
+                resultSet.getString("blood_type") != null ? BloodType.parse(resultSet.getString("blood_type")) : null,
+                resultSet.getString("region"),
+                resultSet.getString("current_address"),
+                resultSet.getString("username"),
+                resultSet.getString("email"),
+                resultSet.getString("password"));
+        user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
+        user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
+
+        if(resultSet.getString("blood_pressure") != null) {
+            user.setBloodPressure(resultSet.getString("blood_pressure"));
+        } else {
+            user.setBloodPressure("");
+        }
+
+        if(resultSet.getString("smoker_status") != null) {
+            user.setSmokerStatus(SmokerStatus.parse(resultSet.getString("smoker_status")));
+        } else {
+            user.setSmokerStatus(null);
+        }
+
+        if(resultSet.getString("alcohol_consumption") != null) {
+            user.setAlcoholConsumption(AlcoholConsumption.parse(resultSet.getString("alcohol_consumption")));
+        } else {
+            user.setAlcoholConsumption(null);
+        }
+
+        //Get all the organs for the given user
+
+        int userId = getUserId(resultSet.getString("username"));
+        //TODO - Potentially set the local value of the user's id to this ??
+
+        String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
+        organsStatement.setInt(1, userId);
+        ResultSet organsResultSet = organsStatement.executeQuery();
+
+        while(organsResultSet.next()) {
+            System.out.println(organsResultSet.getString("name"));
+            user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
+        }
+
+        //Get all the medications for the given user
+
+        String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
+        PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
+        medicationsStatement.setInt(1, userId);
+        ResultSet medicationsResultSet = medicationsStatement.executeQuery();
+
+        while(medicationsResultSet.next()) {
+            String[] activeIngredients = medicationsResultSet.getString("active_ingredients").split(",");
+            String[] historyStringList = medicationsResultSet.getString("history").split(",");
+
+            ArrayList<String> historyList = new ArrayList<>();
+            //Iterate through the history list to get associated values together
+            int counter = 1;
+            String historyItem = "";
+            for(int i = 0; i < historyStringList.length; i++) {
+                if(counter % 2 == 1) {
+                    historyItem += historyStringList[i] + ",";
+                    counter++;
+                } else {
+                    historyItem += historyStringList[i];
+                    historyList.add(historyItem);
+                    historyItem = "";
+                    counter++;
+                }
+
+            }
+
+            for(String s : historyList){
+                System.out.println(s);
+                System.out.println("break");
+            }
+
+            if(historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
+                System.out.println("Historic");
+                user.getHistoricMedications().add(new Medication(
+                        medicationsResultSet.getString("name"),
+                        activeIngredients,
+                        historyList
+                ));
+            } else { //Medication is Current
+                System.out.println("Current");
+                user.getCurrentMedications().add(new Medication(
+                        medicationsResultSet.getString("name"),
+                        activeIngredients,
+                        historyList
+                ));
+            }
+        }
+
+
+        //Get all the procedures for the given user
+
+        String proceduresQuery = "SELECT * FROM `PROCEDURE` WHERE user_id = ?";
+        PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
+        proceduresStatement.setInt(1, userId);
+        ResultSet proceduresResultSet = proceduresStatement.executeQuery();
+
+        while(proceduresResultSet.next()) {
+
+            if(proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
+                user.getPendingProcedures().add(new Procedure(
+                        proceduresResultSet.getString("summary"),
+                        proceduresResultSet.getString("description"),
+                        proceduresResultSet.getDate("date").toLocalDate(),
+                        true
+                ));
+            } else {
+                user.getPreviousProcedures().add(new Procedure(
+                        proceduresResultSet.getString("summary"),
+                        proceduresResultSet.getString("description"),
+                        proceduresResultSet.getDate("date").toLocalDate(),
+                        false
+                ));
+            }
+
+        }
+
+        //Get all the diseases for the given user
+
+        String diseasesQuery = "SELECT * FROM DISEASE WHERE user_id = ?";
+        PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
+        diseasesStatement.setInt(1, userId);
+        ResultSet diseasesResultSet = diseasesStatement.executeQuery();
+
+        while(diseasesResultSet.next()) {
+
+            if(diseasesResultSet.getBoolean("is_cured")) {
+                user.getCuredDiseases().add(new Disease(
+                        diseasesResultSet.getString("name"),
+                        diseasesResultSet.getDate("diagnosis_date").toLocalDate(),
+                        diseasesResultSet.getBoolean("is_chronic"),
+                        diseasesResultSet.getBoolean("is_cured")
+                ));
+            } else {
+                user.getCurrentDiseases().add(new Disease(
+                        diseasesResultSet.getString("name"),
+                        diseasesResultSet.getDate("diagnosis_date").toLocalDate(),
+                        diseasesResultSet.getBoolean("is_chronic"),
+                        diseasesResultSet.getBoolean("is_cured")
+                ));
+            }
+
+        }
+
+        return user;
     }
 
     public Clinician loginClinician(String usernameEmail, String password) throws SQLException{

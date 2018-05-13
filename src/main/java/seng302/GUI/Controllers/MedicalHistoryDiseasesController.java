@@ -21,6 +21,7 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -214,9 +215,14 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             currentUser.getCuredDiseases().clear();
             currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
-            History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            //TODO Update history with new database calls
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
+//            History.printToFile(streamOut, text);
             //populateHistoryTable();
             alert.close();
             statusIndicator.setStatus("Saved", false);

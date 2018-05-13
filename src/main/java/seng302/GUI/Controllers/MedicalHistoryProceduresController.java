@@ -198,9 +198,11 @@ public class MedicalHistoryProceduresController extends PageController implement
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
-            History.printToFile(streamOut, text);
+
+            //TODO Update history with new database calls
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
+//            History.printToFile(streamOut, text);
+
             //populateHistoryTable();
             alert.close();
             statusIndicator.setStatus("Saved", false);
