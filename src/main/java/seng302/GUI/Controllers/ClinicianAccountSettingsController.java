@@ -14,6 +14,7 @@ import seng302.User.Attribute.LoginType;
 import seng302.User.Clinician;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -57,14 +58,25 @@ public class ClinicianAccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        for (Clinician user : DataManager.clinicians) {
-            if (user != clinician) {
-                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
-                    errorLabel.setText("That username is already taken.");
-                    errorLabel.setVisible(true);
-                    return;
-                }
+//        for (Clinician user : DataManager.clinicians) {
+//            if (user != clinician) {
+//                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
+//                    errorLabel.setText("That username is already taken.");
+//                    errorLabel.setVisible(true);
+//                    return;
+//                }
+//            }
+//        }
+        int clinicianId = 0;
+        try {
+            if (!WindowManager.getDatabase().checkUniqueUser(usernameField.getText())) {
+                errorLabel.setText("That username is already taken.");
+                errorLabel.setVisible(true);
+                return;
             }
+            clinicianId = WindowManager.getDatabase().getClinicianId(clinician.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
@@ -77,7 +89,12 @@ public class ClinicianAccountSettingsController implements Initializable {
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             WindowManager.setClinician(clinician);
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+            try {
+                WindowManager.getDatabase().updateClinicianAccountSettings(clinician, clinicianId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         } else {
             alert.close();
         }

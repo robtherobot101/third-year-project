@@ -32,6 +32,7 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -315,7 +316,14 @@ public class AdminController implements Initializable {
                 "All profiles will be saved (user, clinician, admin).");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+            try {
+                WindowManager.getDatabase().updateAdminDetails(currentAdmin);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //TODO PUT in save to Database for Users and Clinicians
+            //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
             IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         }
@@ -754,8 +762,13 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
-                DataManager.admins.add(newAdmin);
-                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                //DataManager.admins.add(newAdmin);
+                try {
+                    WindowManager.getDatabase().insertAdmin(newAdmin);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
@@ -786,8 +799,14 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Clinician newClinician = createClinicianController.showAndWait(stage);
             if (newClinician != null) {
-                DataManager.clinicians.add(newClinician);
-                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                //TODO Get rid of
+                //DataManager.clinicians.add(newClinician);
+                try {
+                    WindowManager.getDatabase().insertClinician(newClinician);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {

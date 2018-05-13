@@ -33,6 +33,7 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
@@ -335,7 +336,15 @@ public class ClinicianController implements Initializable {
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+            try {
+                WindowManager.getDatabase().updateClinicianDetails(clinician);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //TODO PUT in save to Database for Users
+
+            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
             IO.saveUsers(IO.getUserPath(), LoginType.USER);
         }
         alert.close();

@@ -92,7 +92,7 @@ public class AccountSettingsController implements Initializable {
             } catch(SQLException e) {
                 e.printStackTrace();
             }
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();
         }

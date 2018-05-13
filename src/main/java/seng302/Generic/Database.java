@@ -28,6 +28,24 @@ public class Database {
         return resultSet.getInt("id");
     }
 
+    public int getClinicianId(String username) throws SQLException{
+        String query = "SELECT staff_id FROM CLINICIAN WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, username);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+        return resultSet.getInt("staff_id");
+    }
+
+    public int getAdminId(String username) throws SQLException{
+        String query = "SELECT staff_id FROM ADMIN WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, username);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+        return resultSet.getInt("staff_id");
+    }
+
     public void insertUser(User user) throws SQLException {
         String insert = "INSERT INTO USER(first_name, middle_names, last_name, creation_time, last_modified, username," +
                 " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -132,13 +150,63 @@ public class Database {
         return true;
     }
 
-    public void insertClinician() {
+    public void insertClinician(Clinician clinician) throws SQLException {
+        String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region) " +
+                "VALUES(?, ?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(insert);
+        statement.setString(1, clinician.getUsername());
+        statement.setString(2, clinician.getPassword());
+        statement.setString(3, clinician.getName());
+        statement.setString(4, clinician.getWorkAddress());
+        statement.setString(5, clinician.getRegion());
+        System.out.println("Inserting new Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
 
     }
 
-    public void insertAdmin() {
+    public void updateClinicianDetails(Clinician clinician) throws SQLException {
+        String update = "UPDATE CLINICIAN SET name = ?, work_address = ?, region = ? WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, clinician.getName());
+        statement.setString(2, clinician.getWorkAddress());
+        statement.setString(3, clinician.getRegion());
+        statement.setString(4, clinician.getUsername());
+        System.out.println("Update Clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
     }
+
+    public void updateClinicianAccountSettings(Clinician clinician, int clinicianId) throws SQLException {
+        String update = "UPDATE CLINICIAN SET username = ?, password = ? WHERE staff_id = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, clinician.getUsername());
+        statement.setString(2, clinician.getPassword());
+        statement.setInt(3, clinicianId);
+        System.out.println("Update Clinician Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
+    }
+
+    public void insertAdmin(Admin admin) throws SQLException {
+        String insert = "INSERT INTO ADMIN(username, password, name, work_address, region) " +
+                "VALUES(?, ?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(insert);
+        statement.setString(1, admin.getUsername());
+        statement.setString(2, admin.getPassword());
+        statement.setString(3, admin.getName());
+        statement.setString(4, admin.getWorkAddress());
+        statement.setString(5, admin.getRegion());
+        System.out.println("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+
+    }
+
+    public void updateAdminDetails(Admin admin) throws SQLException {
+        String update = "UPDATE ADMIN SET name = ?, work_address = ? WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, admin.getName());
+        statement.setString(2, admin.getWorkAddress());
+       // statement.setString(3, admin.getRegion()); -- No Region for an Admin!
+        statement.setString(3, admin.getUsername());
+        System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+
+    }
+
 
     public User loginUser(String usernameEmail, String password) throws SQLException {
         //First needs to do a search to see if there is a unique user with the given inputs
