@@ -120,6 +120,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             } else {
                 addCurrentDisease(diseaseToAdd);
             }
+            saveToUndoStack();
             System.out.println("MedicalHistoryDiseasesController: Finished adding new disease");
             statusIndicator.setStatus("Added " + diseaseToAdd, false);
             titleBar.saved(false);

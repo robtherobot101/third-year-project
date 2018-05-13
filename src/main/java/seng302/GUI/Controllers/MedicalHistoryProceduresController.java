@@ -200,8 +200,8 @@ public class MedicalHistoryProceduresController extends PageController implement
             }
 
             //TODO Update history with new database calls
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
-//            History.printToFile(streamOut, text);
+            String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
+            History.printToFile(streamOut, text);
 
             //populateHistoryTable();
             alert.close();

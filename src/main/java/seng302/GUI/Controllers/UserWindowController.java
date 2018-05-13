@@ -18,6 +18,7 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
+import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
@@ -724,6 +725,9 @@ public class UserWindowController implements Initializable {
 
             try {
                 WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+                WindowManager.getDatabase().updateUserMedications(currentUser);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
