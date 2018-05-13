@@ -20,6 +20,7 @@ import seng302.User.User;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -108,10 +109,28 @@ public class LoginController implements Initializable {
                         WindowManager.setScene(TFScene.userWindow);
                         break;
                     case CLINICIAN:
+                        //Add all users from Database
+                        DataManager.users.clear();
+                        try{
+                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                        } catch(SQLException e) {
+                            e.printStackTrace();
+                        }
+
                         WindowManager.setClinician(currentClinician);
                         WindowManager.setScene(TFScene.clinician);
                         break;
                     case ADMIN:
+                        DataManager.users.clear();
+                        DataManager.clinicians.clear();
+                        DataManager.admins.clear();
+                        try{
+                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                            DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
+                            DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
+                        } catch(SQLException e) {
+                            e.printStackTrace();
+                        }
                         WindowManager.setAdmin(currentAdmin);
                         WindowManager.setScene(TFScene.admin);
                 }

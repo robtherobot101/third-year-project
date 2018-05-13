@@ -6,6 +6,7 @@ import seng302.User.Clinician;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
 
+import javax.xml.transform.Result;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -105,7 +106,6 @@ public class Database {
 
 
         int userId = getUserId(user.getUsername());
-        System.out.println(userId);
 
         //Organ Updates
         //First get rid of all the users organs in the table
@@ -128,7 +128,6 @@ public class Database {
 
     public void updateUserProcedures(User user) throws SQLException {
         int userId = getUserId(user.getUsername());
-        System.out.println(userId);
 
         //Procedure Updates
         //First get rid of all the users procedures in the table
@@ -163,7 +162,6 @@ public class Database {
 
     public void updateUserDiseases(User user) throws SQLException {
         int userId = getUserId(user.getUsername());
-        System.out.println(userId);
 
         //Disease Updates
         //First get rid of all the users diseases in the table
@@ -198,7 +196,6 @@ public class Database {
 
     public void updateUserMedications(User user) throws SQLException {
         int userId = getUserId(user.getUsername());
-        System.out.println(userId);
 
         //Procedure Updates
         //First get rid of all the users medications in the table
@@ -386,7 +383,6 @@ public class Database {
         ResultSet organsResultSet = organsStatement.executeQuery();
 
         while(organsResultSet.next()) {
-            System.out.println(organsResultSet.getString("name"));
             user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
         }
 
@@ -418,20 +414,14 @@ public class Database {
 
             }
 
-            for(String s : historyList){
-                System.out.println(s);
-                System.out.println("break");
-            }
 
             if(historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
-                System.out.println("Historic");
                 user.getHistoricMedications().add(new Medication(
                         medicationsResultSet.getString("name"),
                         activeIngredients,
                         historyList
                 ));
             } else { //Medication is Current
-                System.out.println("Current");
                 user.getCurrentMedications().add(new Medication(
                         medicationsResultSet.getString("name"),
                         activeIngredients,
@@ -511,17 +501,21 @@ public class Database {
             return null;
         } else {
             //If response is not empty then return a new Clinican Object with the fields from the database
-            Clinician clinician = new Clinician(
-                    resultSet.getString("username"),
-                    resultSet.getString("password"),
-                    resultSet.getString("name")
-            );
-            clinician.setWorkAddress(resultSet.getString("work_address"));
-            clinician.setRegion(resultSet.getString("region"));
-
-            return clinician;
+            return getClinicianFromResultSet(resultSet);
         }
 
+    }
+
+    public Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException{
+        Clinician clinician = new Clinician(
+                resultSet.getString("username"),
+                resultSet.getString("password"),
+                resultSet.getString("name")
+        );
+        clinician.setWorkAddress(resultSet.getString("work_address"));
+        clinician.setRegion(resultSet.getString("region"));
+
+        return clinician;
     }
 
     public Admin loginAdmin(String usernameEmail, String password) throws SQLException {
@@ -537,17 +531,78 @@ public class Database {
             return null;
         } else {
             //If response is not empty then return a new Admin Object with the fields from the database
-            Admin admin = new Admin(
-                    resultSet.getString("username"),
-                    resultSet.getString("password"),
-                    resultSet.getString("name")
-            );
-            admin.setWorkAddress(resultSet.getString("work_address"));
-            admin.setRegion(resultSet.getString("region"));
-
-            return admin;
+            return getAdminFromResultSet(resultSet);
         }
 
+    }
+
+    public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{
+        Admin admin = new Admin(
+                resultSet.getString("username"),
+                resultSet.getString("password"),
+                resultSet.getString("name")
+        );
+        admin.setWorkAddress(resultSet.getString("work_address"));
+        admin.setRegion(resultSet.getString("region"));
+
+        return admin;
+    }
+
+    public ArrayList<User> getAllUsers() throws SQLException{
+        ArrayList<User> allUsers = new ArrayList<>();
+        String query = "SELECT * FROM USER";
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
+        while(resultSet.next()) {
+            allUsers.add(getUserFromResultSet(resultSet));
+        }
+
+        return allUsers;
+    }
+
+    public ArrayList<Clinician> getAllClinicians() throws SQLException{
+        ArrayList<Clinician> allClinicans = new ArrayList<>();
+        String query = "SELECT * FROM CLINICIAN";
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
+        while(resultSet.next()) {
+            allClinicans.add(getClinicianFromResultSet(resultSet));
+        }
+
+        return allClinicans;
+    }
+
+    public ArrayList<Admin> getAllAdmins() throws SQLException{
+        ArrayList<Admin> allAdmins = new ArrayList<>();
+        String query = "SELECT * FROM ADMIN";
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
+        while(resultSet.next()) {
+            allAdmins.add(getAdminFromResultSet(resultSet));
+        }
+
+        return allAdmins;
+    }
+
+    public void removeUser(User user) throws SQLException {
+        String update = "DELETE FROM USER WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, user.getUsername());
+        System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+    }
+
+    public void removeClinician(Clinician clinician) throws SQLException {
+        String update = "DELETE FROM CLINICIAN WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, clinician.getUsername());
+        System.out.println("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+    }
+
+    public void removeAdmin(Admin admin) throws SQLException {
+        String update = "DELETE FROM ADMIN WHERE username = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setString(1, admin.getUsername());
+        System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
     public void connectToDatabase() {

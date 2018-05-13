@@ -537,20 +537,41 @@ public class AdminController implements Initializable {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
                     System.out.println("Deleting User: " + selectedUser);
+
                     DataManager.users.remove(selectedUser);
-                    IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                    try {
+                        WindowManager.getDatabase().removeUser(selectedUser);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+
                     statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                 } else if (selectedClinician != null) {
                     // A clinician has been selected for deletion
                     System.out.println("Deleting Clinician: " + selectedClinician);
+
                     DataManager.clinicians.remove(selectedClinician);
-                    IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                    try {
+                        WindowManager.getDatabase().removeClinician(selectedClinician);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+
                     statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                 } else if (selectedAdmin != null) {
                     // An admin has been selected for deletion
                     System.out.println("Deleting Admin: " + selectedAdmin);
+
                     DataManager.admins.remove(selectedAdmin);
-                    IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                    try{
+                        WindowManager.getDatabase().removeAdmin(selectedAdmin);
+                    } catch(SQLException e) {
+                        e.printStackTrace();
+                    }
+                    //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+
                     statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                 }
                 refreshLatestProfiles();
@@ -702,6 +723,8 @@ public class AdminController implements Initializable {
                             Parent root = loader.load();
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setTitleBar(stage);
+
+                            //TODO Replace with DB get/login call???
                             WindowManager.setCurrentUser(row.getItem());
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
