@@ -157,43 +157,12 @@ public class ClinicianController implements Initializable {
         titleBar.saved(false);
     }
 
-//    /**
-//     * Refreshes the results in the user profile table to match the values
-//     * in the user ArrayList in WindowManager
-//     */
-//    public void updateUserTable(){
-//        updatePageButtons();
-//        displayCurrentPage();
-//        updateResultsSummary();
-//    }
-
-    /**
-     * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
-     * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
-     */
-    public void logout() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
-                "Logging out without saving loses your non-saved data.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
-                userWindow.close();
-            }
-            WindowManager.setScene(TFScene.login);
-            WindowManager.resetScene(TFScene.clinician);
-        } else {
-            alert.close();
-        }
-    }
-
-
     /**
      * Function which is called when the user wants to update their account settings in the user Window,
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
-        dialog.getDialogPane().setId("kkk");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
@@ -328,6 +297,36 @@ public class ClinicianController implements Initializable {
 
         });
     }
+
+//    /**
+//     * Refreshes the results in the user profile table to match the values
+//     * in the user ArrayList in WindowManager
+//     */
+//    public void updateUserTable(){
+//        updatePageButtons();
+//        displayCurrentPage();
+//        updateResultsSummary();
+//    }
+
+    /**
+     * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
+     * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
+     */
+    public void logout() {
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
+                "Logging out without saving loses your non-saved data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
+                userWindow.close();
+            }
+            WindowManager.setScene(TFScene.login);
+            WindowManager.resetScene(TFScene.clinician);
+        } else {
+            alert.close();
+        }
+    }
+
 
     /**
      * Saves the clinician ArrayList to a JSON file
