@@ -836,7 +836,7 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
-                DataManager.admins.add(newAdmin);
+                    DataManager.admins.add(newAdmin);
                 try {
                     WindowManager.getDatabase().insertAdmin(newAdmin);
                 } catch (SQLException e) {
