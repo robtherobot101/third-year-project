@@ -42,9 +42,9 @@ public class UserWindowController implements Initializable {
     @FXML
     private Label userDisplayText, userHistoryLabel;
     @FXML
-    private GridPane attributesGridPane, historyGridPane, background;
+    private GridPane historyGridPane, background;
     @FXML
-    private AnchorPane medicationsPane, medicalHistoryDiseasesPane, medicalHistoryProceduresPane;
+    private AnchorPane attributesPane, medicationsPane, medicalHistoryDiseasesPane, medicalHistoryProceduresPane;
     @FXML
     private AnchorPane waitingListPane;
     @FXML
@@ -101,6 +101,7 @@ public class UserWindowController implements Initializable {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+        attributesController.currentUser = currentUser;
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         attributeUndoStack.clear();
         attributeRedoStack.clear();
@@ -122,7 +123,7 @@ public class UserWindowController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         WindowManager.setUserWindowController(this);
         welcomePane.setVisible(true);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicationsPane.setVisible(false);
 
@@ -148,7 +149,6 @@ public class UserWindowController implements Initializable {
         // Pass the status bar and title bar objects to the embedded controllers
         attributesController.setStatusIndicator(statusIndicator);
         attributesController.setTitleBar(titleBar);
-        attributesController.currentUser = currentUser;
         attributesController.setParent(this);
 
         medicationsController.setStatusIndicator(statusIndicator);
@@ -236,7 +236,7 @@ public class UserWindowController implements Initializable {
      */
     public void showHistoryPane() {
         welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         historyGridPane.setVisible(true);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
@@ -249,7 +249,7 @@ public class UserWindowController implements Initializable {
 
     public void showWaitingListPane() {
         welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
         historyGridPane.setVisible(false);
@@ -264,7 +264,7 @@ public class UserWindowController implements Initializable {
      */
     public void showMedicationsPane() {
         welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
@@ -279,7 +279,7 @@ public class UserWindowController implements Initializable {
      */
     public void showAttributesPane() {
         welcomePane.setVisible(false);
-        attributesGridPane.setVisible(true);
+        attributesPane.setVisible(true);
         historyGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
@@ -293,7 +293,7 @@ public class UserWindowController implements Initializable {
      */
     public void showMedicalHistoryDiseasesPane() {
         welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(true);
         medicalHistoryProceduresPane.setVisible(false);
@@ -309,7 +309,7 @@ public class UserWindowController implements Initializable {
      */
     public void showMedicalHistoryProceduresPane() {
         welcomePane.setVisible(false);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(true);
@@ -324,7 +324,7 @@ public class UserWindowController implements Initializable {
      */
     public void showWelcomePane() {
         welcomePane.setVisible(true);
-        attributesGridPane.setVisible(false);
+        attributesPane.setVisible(false);
         historyGridPane.setVisible(false);
         medicalHistoryDiseasesPane.setVisible(false);
         medicalHistoryProceduresPane.setVisible(false);
@@ -488,7 +488,7 @@ public class UserWindowController implements Initializable {
      */
     public void undo() {
         titleBar.saved(false);
-        if (attributesGridPane.isVisible()) {
+        if (attributesPane.isVisible()) {
             attributesController.attributeFieldUnfocused();
             //Add the current fields to the redo stack
             attributeRedoStack.add(new User(currentUser));
@@ -548,7 +548,7 @@ public class UserWindowController implements Initializable {
      * Then checks to see if there are any other actions that can be redone and adjusts the buttons accordingly.
      */
     public void redo() {
-        if (attributesGridPane.isVisible()) {
+        if (attributesPane.isVisible()) {
             attributesController.attributeFieldUnfocused();
             //Add the current fields to the undo stack
             attributeUndoStack.add(new User(currentUser));

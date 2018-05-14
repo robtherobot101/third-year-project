@@ -360,7 +360,6 @@ public class WindowManager extends Application {
                 userWindow.close();
             }
         });
-        System.out.println(WindowManager.class.getResource("css/dialog.css"));
         dialogStyle = WindowManager.class.getResource("/css/dialog.css").toExternalForm();
         icon = new Image(getClass().getResourceAsStream("/icon.png"));
         stage.getIcons().add(icon);

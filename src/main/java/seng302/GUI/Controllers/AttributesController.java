@@ -210,6 +210,7 @@ public class AttributesController extends PageController implements Initializabl
      * takes all their attributes and populates the user attributes on the attributes pane accordingly.
      */
     public void populateUserFields() {
+        System.out.println(currentUser);
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         String[] splitNames = currentUser.getNameArray();
         firstNameField.setText(splitNames[0]);
