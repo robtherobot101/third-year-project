@@ -605,12 +605,74 @@ public class Database {
         System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
+    public void resetDatabase() throws SQLException{
+        String update = "DELETE FROM WAITING_LIST_ITEM";
+        PreparedStatement statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM `PROCEDURE`";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM MEDICATION";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (MEDICATION): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM DONATION_LIST_ITEM";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (DONATION_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM DISEASE";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (DISEASE): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM ADMIN";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (ADMIN): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM CLINICIAN";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (CLINICIAN): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        update = "DELETE FROM USER";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+        String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) " +
+                "VALUES(?, ?, ?, ?, ?, ?)";
+        statement = connection.prepareStatement(insert);
+        statement.setString(1, "default");
+        statement.setString(2, "default");
+        statement.setString(3, "default");
+        statement.setString(4, "default");
+        statement.setString(5, "default");
+        statement.setInt(6, 1);
+        System.out.println("Inserting Default Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
+
+        insert = "INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) " +
+                "VALUES(?, ?, ?, ?, ?, ?)";
+        statement = connection.prepareStatement(insert);
+        statement.setString(1, "admin");
+        statement.setString(2, "default");
+        statement.setString(3, "default");
+        statement.setString(4, "default");
+        statement.setString(5, "default");
+        statement.setInt(6, 1);
+        System.out.println("Inserting Default Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+
+    }
+
+    public void loadSampleData()  {
+
+    }
+
     public void connectToDatabase() {
         try{
             Class.forName(jdbcDriver);
             connection = DriverManager.getConnection(
                     url + testDatabase, username, password);
             System.out.println("Connected to test database");
+            //resetDatabase();
             //Statement stmt=con.createStatement();
             //ResultSet rs=stmt.executeQuery("SELECT * FROM USER");
             //System.out.println("Users:");

@@ -324,8 +324,8 @@ public class AdminController implements Initializable {
 
             //TODO PUT in save to Database for Users and Clinicians
             //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         }
         alert.close();
     }
@@ -349,6 +349,11 @@ public class AdminController implements Initializable {
      */
     public void undo() {
         // TODO implement undo
+        try {
+            WindowManager.getDatabase().resetDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
