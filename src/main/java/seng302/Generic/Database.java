@@ -702,9 +702,7 @@ public class Database {
                     url + testDatabase, username, password);
             System.out.println("Connected to test database");
             System.out.println(LocalDateTime.now());
-            resetDatabase();
-
-
+            
 
             //Statement stmt=con.createStatement();
             //ResultSet rs=stmt.executeQuery("SELECT * FROM USER");
