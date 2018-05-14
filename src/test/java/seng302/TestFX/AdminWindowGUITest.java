@@ -104,9 +104,8 @@ public class AdminWindowGUITest extends TestFXTest {
      */
     @Test
     public void addAdmin() {
-        loginAsDefaultAdmin();
+        loginAsDefaultAdmin();;
         clickOn("#fileMenu");
-        sleep(100);
         moveTo("#createMenu");
         clickOn("#adminMenuItem");
 

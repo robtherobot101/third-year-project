@@ -12,6 +12,7 @@ import org.testfx.util.WaitForAsyncUtils;
 import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
+import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -29,14 +30,21 @@ abstract class TestFXTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) {
+        DataManager.users.clear();
+        DataManager.clinicians.clear();
+        DataManager.clinicians.add(new Clinician("default", "default", "default"));
+        DataManager.admins.clear();
+        DataManager.admins.add(new Admin("admin", "default", "default_admin"));
+        WindowManager.resetScene(TFScene.userWindow);
         WindowManager mainGUI = new WindowManager();
         mainGUI.start(stage);
-        DataManager.users.clear();
     }
 
     @After
     public void tearDown() throws TimeoutException {
         DataManager.users.clear();
+        DataManager.clinicians.clear();
+        DataManager.admins.clear();
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});

@@ -307,7 +307,7 @@ public class UserAttributesController extends PageController implements Initiali
      */
     public void attributeFieldUnfocused() {
         User oldFields = new User(currentUser);
-        if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
+        if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
             userWindowController.addToAttributeUndoStack(oldFields);
             titleBar.saved(false);
             statusIndicator.setStatus("Edited user details", false);

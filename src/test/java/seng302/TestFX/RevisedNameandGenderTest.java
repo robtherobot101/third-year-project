@@ -15,8 +15,11 @@ import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 public class RevisedNameandGenderTest extends TestFXTest {
+
+    private User user;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
@@ -24,10 +27,9 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     private void enterAttributesPanel() {
-        WindowManager.resetScene(TFScene.userWindow);
-        DataManager.users.clear();
-        addTestUser();
-        userWindow(DataManager.users.get(0));
+        user = addTestUser();
+        userWindow(user);
+        sleep(500);
 
         clickOn("#userAttributesButton");
     }
@@ -128,7 +130,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        Assert.assertEquals(DataManager.users.get(0).getCurrentAddress(), null);
+        Assert.assertEquals("", DataManager.users.get(0).getCurrentAddress());
 
         doubleClickOn("#addressField").write("3 Test Street");
         clickOn("#saveButton");
@@ -152,7 +154,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        Assert.assertNull(DataManager.users.get(0).getRegion());
+        Assert.assertEquals("", DataManager.users.get(0).getRegion());
 
         doubleClickOn("#regionField").write("Testchurch");
         clickOn("#saveButton");

@@ -29,11 +29,6 @@ public class TransplantWaitingListTest extends TestFXTest {
         defaultTestSetup();
     }
 
-    @Before
-    public void setup() {
-        DataManager.users.clear();
-    }
-
     /**
      * Refreshes the currently selected receiver in both tables of Medical History.
      */

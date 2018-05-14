@@ -10,6 +10,7 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
@@ -192,6 +193,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         clickOn("#pancreasCheckBox");
         clickOn("#lungCheckBox");
         clickOn("#heartCheckBox");
+        clickOn("#dateDue");
         clickOn("Update");
         clickOn("Removal of leg");
         refreshTableSelections();

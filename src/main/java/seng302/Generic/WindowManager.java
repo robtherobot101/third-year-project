@@ -320,8 +320,7 @@ public class WindowManager extends Application {
                 if (!clinicians.createNewFile()) {
                     throw new IOException("Clinician save file could not be created.");
                 }
-                Clinician defaultClinician = new Clinician("default", "default", "default");
-                DataManager.clinicians.add(defaultClinician);
+                DataManager.clinicians.add(new Clinician("default", "default", "default"));
                 IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
 
             }
@@ -334,8 +333,7 @@ public class WindowManager extends Application {
                 if (!admins.createNewFile()) {
                     throw new IOException("Admin save file could not be created.");
                 }
-                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
-                DataManager.admins.add(defaultAdmin);
+                DataManager.admins.add(new Admin("admin", "default", "default_admin"));
                 IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
 
             }

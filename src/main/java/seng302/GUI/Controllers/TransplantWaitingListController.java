@@ -146,9 +146,7 @@ public class TransplantWaitingListController implements Initializable {
 
         //Get Input Code
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            processDeregister(result.toString(), selectedItem);
-        }
+        result.ifPresent(s -> processDeregister(s, selectedItem));
     }
 
     /**
@@ -257,7 +255,7 @@ public class TransplantWaitingListController implements Initializable {
         diseaseComboBox.setCellFactory(new Callback<ListView<Disease>, ListCell<Disease>>() {
             @Override
             public ListCell<Disease> call(ListView<Disease> param) {
-                final ListCell<Disease> cell = new ListCell<Disease>() {
+                return new ListCell<Disease>() {
 
                     @Override
                     protected void updateItem(Disease t, boolean bln) {
@@ -270,7 +268,6 @@ public class TransplantWaitingListController implements Initializable {
                         }
                     }
                 };
-                return cell;
             }
         });
 
@@ -470,9 +467,7 @@ public class TransplantWaitingListController implements Initializable {
                     @Override
                     public void updateItem(TransplantWaitingListItem item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (getStyleClass().contains("highlighted-row")) {
-                            getStyleClass().remove("highlighted-row");
-                        }
+                        getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
                             if (SearchUtils.getUserById(item.getUserId()).getOrgans().contains(item.getOrganType())) {
