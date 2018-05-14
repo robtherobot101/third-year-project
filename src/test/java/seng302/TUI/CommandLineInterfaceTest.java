@@ -21,7 +21,8 @@ public class CommandLineInterfaceTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-         commandLine = new CommandLineInterface();
+        DataManager.users.clear();
+        commandLine = new CommandLineInterface();
     }
 
     @Test

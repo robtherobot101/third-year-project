@@ -1,7 +1,7 @@
 package seng302;
 
 import org.junit.Test;
-import seng302.TUI.SqlSanitation;
+import seng302.GUI.SqlSanitation;
 
 import static org.junit.Assert.assertEquals;
 

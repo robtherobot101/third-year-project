@@ -1,4 +1,4 @@
-package seng302.TUI;
+package seng302.GUI;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
