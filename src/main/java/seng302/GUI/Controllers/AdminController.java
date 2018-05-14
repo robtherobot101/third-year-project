@@ -82,8 +82,7 @@ public class AdminController implements Initializable {
     private ComboBox<Organ> adminOrganComboBox;
     @FXML
     private ComboBox<String> adminUserTypeComboBox;
-    @FXML
-    private ComboBox<Organ> adminOrganComboBox;
+
     @FXML
     private StatusBar statusBar;
     @FXML
