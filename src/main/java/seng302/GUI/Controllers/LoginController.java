@@ -14,7 +14,7 @@ import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -42,7 +42,7 @@ public class LoginController implements Initializable {
      */
     public void login() {
         boolean identificationMatched = false;
-        LoginType typeMatched = null;
+        ProfileType typeMatched = null;
 
         // Check for a user match
         User currentUser = null;
@@ -52,7 +52,7 @@ public class LoginController implements Initializable {
                 identificationMatched = true;
                 if (user.getPassword().equals(passwordInput.getText())) {
                     currentUser = user;
-                    typeMatched = LoginType.USER;
+                    typeMatched = ProfileType.USER;
                     String text = History.prepareFileStringGUI(user.getId(), "login");
                     History.printToFile(IO.streamOut, text);
                 }
@@ -68,7 +68,7 @@ public class LoginController implements Initializable {
                 if (clinician.getPassword().equals(passwordInput.getText())) {
                     System.out.println("LoginController: Logging in as clinician...");
                     currentClinician = clinician;
-                    typeMatched = LoginType.CLINICIAN;
+                    typeMatched = ProfileType.CLINICIAN;
                     // TODO write login of clinician to history
                 }
             }
@@ -83,7 +83,7 @@ public class LoginController implements Initializable {
                 if (admin.getPassword().equals(passwordInput.getText())) {
                     System.out.println("LoginController: Logging in as admin...");
                     currentAdmin = admin;
-                    typeMatched = LoginType.ADMIN;
+                    typeMatched = ProfileType.ADMIN;
                     // TODO write login of admin to history
                 }
             }

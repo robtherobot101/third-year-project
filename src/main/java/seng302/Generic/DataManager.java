@@ -3,7 +3,7 @@ package seng302.Generic;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -22,10 +22,10 @@ public class DataManager {
      * @return returns either the next unique id number or the last issued id number depending on whether increment
      * was true or false
      */
-    public static long getNextId(boolean increment, LoginType type) {
-        recalculateNextId(LoginType.ADMIN);
-        recalculateNextId(LoginType.USER);
-        recalculateNextId(LoginType.CLINICIAN);
+    public static long getNextId(boolean increment, ProfileType type) {
+        recalculateNextId(ProfileType.ADMIN);
+        recalculateNextId(ProfileType.USER);
+        recalculateNextId(ProfileType.CLINICIAN);
         if (increment) {
             switch (type) {
                 case USER:
@@ -57,7 +57,7 @@ public class DataManager {
      *
      * @param type Whether to recalculate user, clinician or admin ID
      */
-    public static void recalculateNextId(LoginType type) {
+    public static void recalculateNextId(ProfileType type) {
         switch (type) {
             case USER:
                 nextUserId = -1;

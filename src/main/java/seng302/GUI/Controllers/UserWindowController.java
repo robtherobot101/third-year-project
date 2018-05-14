@@ -751,7 +751,7 @@ public class UserWindowController implements Initializable {
                 "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
