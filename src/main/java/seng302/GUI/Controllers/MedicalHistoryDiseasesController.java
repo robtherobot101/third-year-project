@@ -17,7 +17,7 @@ import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -214,7 +214,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             currentUser.getCuredDiseases().clear();
             currentUser.getCuredDiseases().addAll(curedDiseaseItems);
 
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
             String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
             History.printToFile(streamOut, text);
             //populateHistoryTable();

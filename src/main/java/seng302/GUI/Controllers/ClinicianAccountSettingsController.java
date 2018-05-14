@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import seng302.Generic.DataManager;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 
 import java.net.URL;
@@ -77,7 +77,7 @@ public class ClinicianAccountSettingsController implements Initializable {
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             WindowManager.setClinician(clinician);
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+            IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
         } else {
             alert.close();
         }
