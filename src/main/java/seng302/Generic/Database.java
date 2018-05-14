@@ -1,16 +1,22 @@
 package seng302.Generic;
 
+import com.google.api.client.util.DateTime;
 import seng302.User.Admin;
 import seng302.User.Attribute.*;
 import seng302.User.Clinician;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
 
-import javax.xml.transform.Result;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 
 public class Database {
 
@@ -338,7 +344,7 @@ public class Database {
 
         User user = new User(
                 resultSet.getString("first_name"),
-                resultSet.getString("middle_names").split(","),
+                resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
                 resultSet.getString("last_name"),
                 resultSet.getDate("date_of_birth").toLocalDate(),
                 resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
@@ -662,7 +668,30 @@ public class Database {
 
     }
 
-    public void loadSampleData()  {
+    public void loadSampleData() throws SQLException {
+
+        ArrayList<User> allUsers = new ArrayList<>();
+        User user1 = new User("Andy", new String[]{"Robert"}, "French", LocalDate.now(), "andy", "andy@andy.com", "andrew");
+        allUsers.add(user1);
+        User user2 = new User("Buzz", new String[]{"Buzzy"}, "Knight", LocalDate.now(), "buzz", "buzz@buzz.com", "drowssap");
+        allUsers.add(user2);
+        User user3 = new User("James", new String[]{"Mozza"}, "Morritt", LocalDate.now(), "mozza", "mozza@mozza.com", "mozza");
+        allUsers.add(user3);
+        User user4 = new User("Jono", new String[]{"Zilla"}, "Hills", LocalDate.now(), "jonozilla", "zilla@zilla.com", "zilla");
+        allUsers.add(user4);
+        User user5 = new User("James", new String[]{"Mackas"}, "Mackay", LocalDate.now(), "mackas", "mackas@mackas.com", "mackas");
+        allUsers.add(user5);
+        User user6 = new User("Nicky", new String[]{"The Dark Horse"}, "Zohrab-Henricks", LocalDate.now(), "nicky", "nicky@nicky.com", "nicky");
+        allUsers.add(user6);
+        User user7 = new User("Kyran", new String[]{"Playing Fortnite"}, "Stagg", LocalDate.now(), "kyran", "kyran@kyran.com", "fortnite");
+        allUsers.add(user7);
+        User user8 = new User("Andrew", new String[]{"Daveo"}, "Davidson", LocalDate.now(), "andrew", "andrew@andrew.com", "andrew");
+        allUsers.add(user8);
+
+        for (User user: allUsers) {
+            insertUser(user);
+        }
+
 
     }
 
@@ -672,6 +701,10 @@ public class Database {
             connection = DriverManager.getConnection(
                     url + testDatabase, username, password);
             System.out.println("Connected to test database");
+            System.out.println(LocalDateTime.now());
+            resetDatabase();
+
+
 
             //Statement stmt=con.createStatement();
             //ResultSet rs=stmt.executeQuery("SELECT * FROM USER");

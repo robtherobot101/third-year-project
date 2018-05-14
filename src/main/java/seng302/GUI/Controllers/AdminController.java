@@ -801,7 +801,19 @@ public class AdminController implements Initializable {
      * Resamples the database. Called by Database -> Resample
      */
     public void databaseResample() {
-        System.out.println("AdminController: DB resample called");
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",
+                "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.orElse(null) == ButtonType.OK) {
+            System.out.println("AdminController: DB resample called");
+            try {
+                WindowManager.getDatabase().loadSampleData();
+                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
