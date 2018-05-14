@@ -11,7 +11,7 @@ public class SqlSanitation {
      * @param sqlCommand The query to sanitize.
      * @return Returns a String statement that explains the problems with the query or an empty string if the query is okay.
      */
-    protected static String sanitizeSqlString(String sqlCommand) {
+    public static String sanitizeSqlString(String sqlCommand) {
         String printStream = "";
         if(sqlCommand.toLowerCase().contains("delete")){
             printStream = "You do not have permission to delete from the database.";
@@ -23,6 +23,10 @@ public class SqlSanitation {
             printStream = "You do not have permission to view the passwords of users in the database.";
         } else if (sqlCommand.toLowerCase().contains("drop")) {
             printStream = "You do not have permission to drop in the database.";
+        } else if (sqlCommand.toLowerCase().contains("insert")) {
+            printStream = "You do not have permission to insert into the database.";
+        } else if (sqlCommand.toLowerCase().contains("alter")) {
+            printStream = "You do not have permission to alter the database.";
         }
         return printStream;
     }
@@ -43,7 +47,9 @@ public class SqlSanitation {
                 for (int i = 1; i <= columnsNumber; i++) {
                     if (i > 1) table.append(",  ");
                     String columnValue = rs.getString(i);
-                    table.append(columnValue + " " + rsmd.getColumnName(i));
+                    table.append(columnValue);
+                    table.append(" ");
+                    table.append(rsmd.getColumnName(i));
                 }
                 table.append("\n");
             }
