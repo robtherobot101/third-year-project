@@ -61,7 +61,7 @@ public class User {
         this.region = null;
         this.currentAddress = null;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -85,7 +85,7 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -118,7 +118,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.currentDiseases = new ArrayList<>();
@@ -151,7 +151,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -624,6 +624,15 @@ public class User {
             return "Receiver";
         } else {
             return "";
+        }
+    }
+
+    public void removeWaitingListItem(Organ toRemove) {
+        for (ReceiverWaitingListItem item : waitingListItems){
+            if (item.getOrganType() == toRemove) {
+                waitingListItems.remove(item);
+                break;
+            }
         }
     }
 }

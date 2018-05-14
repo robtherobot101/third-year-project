@@ -11,7 +11,7 @@ import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
@@ -235,7 +235,7 @@ public class MedicationsController extends PageController implements Initializab
             currentUser.getHistoricMedications().addAll(historicItems);
             currentUser.getCurrentMedications().clear();
             currentUser.getCurrentMedications().addAll(currentItems);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
             History.printToFile(streamOut, text);

@@ -11,9 +11,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
-import seng302.TUI.CommandLineInterface;
 import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -294,8 +293,10 @@ public class WindowManager extends Application {
         return WindowManager.transplantWaitingListController;
     }
 
-    public static ArrayList<Stage> getCliniciansUserWindows() {
-        return cliniciansUserWindows;
+    public static void closeAllChildren() {
+        for (Stage stage: cliniciansUserWindows) {
+            stage.close();
+        }
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {
@@ -321,21 +322,7 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
-        if (args.length == 0) {
-            launch(args);
-        } else if (args.length == 1 && args[0].equals("-c")) {
-            try {
-                IO.setPaths();
-                CommandLineInterface commandLineInterface = new CommandLineInterface();
-                commandLineInterface.run(System.in);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Please either run using:" +
-                    "\nGUI mode: java -jar app-0.0.jar" +
-                    "\nCommand line mode: java -jar app-0.0.jar -c.");
-        }
+        launch(args);
     }
 
     /**
@@ -380,7 +367,7 @@ public class WindowManager extends Application {
             IO.setPaths();
             File users = new File(IO.getUserPath());
             if (users.exists()) {
-                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
+                if (!IO.importUsers(users.getAbsolutePath(), ProfileType.USER)) {
                     throw new IOException("User save file could not be loaded.");
                 }
             } else {
@@ -390,7 +377,7 @@ public class WindowManager extends Application {
             }
             File clinicians = new File(IO.getClinicianPath());
             if (clinicians.exists()) {
-                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
+                if (!IO.importUsers(clinicians.getAbsolutePath(), ProfileType.CLINICIAN)) {
                     throw new IOException("Clinician save file could not be loaded.");
                 }
             } else {
@@ -399,12 +386,12 @@ public class WindowManager extends Application {
                 }
                 Clinician defaultClinician = new Clinician("default", "default", "default");
                 DataManager.clinicians.add(defaultClinician);
-                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
 
             }
             File admins = new File(IO.getAdminPath());
             if (admins.exists()) {
-                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
+                if (!IO.importUsers(admins.getAbsolutePath(), ProfileType.ADMIN)) {
                     throw new IOException("Admin save file could not be loaded.");
                 }
             } else {
@@ -413,7 +400,7 @@ public class WindowManager extends Application {
                 }
                 Admin defaultAdmin = new Admin("admin", "default", "default_admin");
                 DataManager.admins.add(defaultAdmin);
-                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
 
             }
             IO.streamOut = History.init();

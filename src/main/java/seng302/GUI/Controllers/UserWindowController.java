@@ -272,14 +272,14 @@ public class UserWindowController implements Initializable {
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
     public void attributeFieldUnfocused() {
-//        User oldFields = new User(currentUser);
-//        if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
-//            attributeUndoStack.add(new User(oldFields));
-//            attributeRedoStack.clear();
-//            setUndoRedoButtonsDisabled(false, true);
-//            titleBar.saved(false);
-//            statusIndicator.setStatus("Edited user details", false);
-//        }
+        User oldFields = new User(currentUser);
+        if (updateUser() && !currentUser.fieldsEqual(oldFields)) {
+            attributeUndoStack.add(new User(oldFields));
+            attributeRedoStack.clear();
+            setUndoRedoButtonsDisabled(false, true);
+            titleBar.saved(false);
+            statusIndicator.setStatus("Edited user details", false);
+        }
     }
 
     /**
@@ -587,15 +587,12 @@ public class UserWindowController implements Initializable {
             System.arraycopy(splitPreferredNames, 1, preferredMiddleName, 0, splitPreferredNames.length - 2);
             preferredMiddleNamesField.setText(String.join(",", preferredMiddleName));
             preferredLastNameField.setText(splitPreferredNames[splitPreferredNames.length - 1]);
-            System.out.println("test");
         } else if (splitPreferredNames.length == 2) {
             preferredMiddleNamesField.setText("");
             preferredLastNameField.setText(splitPreferredNames[1]);
-            System.out.println("shit");
         } else {
             preferredMiddleNamesField.setText("");
             preferredLastNameField.setText("");
-            System.out.println("fuck");
         }
         addressField.setText(currentUser.getCurrentAddress());
         regionField.setText(currentUser.getRegion());
@@ -754,7 +751,7 @@ public class UserWindowController implements Initializable {
                 "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
             populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);

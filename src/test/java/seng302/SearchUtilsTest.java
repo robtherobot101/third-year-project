@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import seng302.Generic.DataManager;
 import seng302.Generic.SearchUtils;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.time.LocalDate;
@@ -24,7 +24,7 @@ public class SearchUtilsTest {
     @Before
     public void setup() {
         DataManager.users = FXCollections.observableArrayList();
-        DataManager.recalculateNextId(LoginType.USER);
+        DataManager.recalculateNextId(ProfileType.USER);
         DataManager.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
         DataManager.users.add(new User("Test User,Testperson", "01/04/1530", "31/01/1565", "Non-Binary", 1.234, 1.11111, "a-", "Auckland", "street sample " +
             "text"));
