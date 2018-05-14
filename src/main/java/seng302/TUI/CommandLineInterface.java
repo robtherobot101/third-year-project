@@ -205,23 +205,13 @@ public class CommandLineInterface {
     private boolean queryDatabase(String[] nextCommand){
         String[] sqlArray = Arrays.copyOfRange(nextCommand, 1, nextCommand.length);
         String query = String.join(" ", sqlArray);
-        if (SqlSanitation.sanitizeSqlStringDelete(query)) {
-            printLine("You do not have permission to delete from the database.");
+        String result = SqlSanitation.sanitizeSqlString(query);
+        if (!result.equals("")){
+            printLine(result);
             return false;
-        } else if (SqlSanitation.sanitizeSqlStringCreate(query)) {
-            printLine("You do not have permission to create in the database.");
-            return false;
-        } else if (SqlSanitation.sanitizeSqlStringUpdate(query)) {
-            printLine("You do not have permission to update the database.");
-            return false;
-        } else if (SqlSanitation.sanitizeSqlStringPassword(query)) {
-            printLine("You do not have permission to view the passwords of users in the database.");
-            return false;
-        } else if (SqlSanitation.sanitizeSqlStringDrop(query)) {
-            printLine("You do not have permission to drop in the database.");
-            return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
 
