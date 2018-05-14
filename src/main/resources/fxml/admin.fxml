@@ -50,6 +50,12 @@
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="Database" visible="true">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Reset" onAction="#databaseReset"/>
+                        <MenuItem mnemonicParsing="false" text="Resample" onAction="#databaseResample"/>
+                    </items>
+                </Menu>
                 <Menu mnemonicParsing="false" text="Edit" visible="false">
                     <items>
                         <MenuItem mnemonicParsing="false" text="Delete" />

@@ -771,6 +771,20 @@ public class AdminController implements Initializable {
     }
 
     /**
+     * Resets the database. Called by Database -> Reset
+     */
+    public void databaseReset() {
+        System.out.println("AdminController: DB reset called");
+    }
+
+    /**
+     * Resamples the database. Called by Database -> Resample
+     */
+    public void databaseResample() {
+        System.out.println("AdminController: DB resample called");
+    }
+
+    /**
      * Opens separate window to input + create a new admin
      */
     @FXML
