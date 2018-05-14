@@ -7,6 +7,7 @@ public abstract class PageController {
 
     protected StatusIndicator statusIndicator;
     protected TitleBar titleBar;
+    protected UserWindowController parent;
 
     /**
      * Set the status indicator object from the user window the page is being displayed in
@@ -25,5 +26,11 @@ public abstract class PageController {
     public void setTitleBar(TitleBar titleBar) {
         this.titleBar = titleBar;
     }
+
+    /**
+     * Set the parent window of the page
+     * @param parent the UserWindowController which spawned the page
+     */
+    public void setParent(UserWindowController parent){ this.parent = parent;}
 
 }
