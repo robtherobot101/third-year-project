@@ -774,7 +774,27 @@ public class AdminController implements Initializable {
      * Resets the database. Called by Database -> Reset
      */
     public void databaseReset() {
-        System.out.println("AdminController: DB reset called");
+
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",
+                "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.orElse(null) == ButtonType.OK) {
+
+            System.out.println("AdminController: DB reset called");
+            try {
+                WindowManager.getDatabase().resetDatabase();
+                DataManager.users.clear();
+                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
+                    userWindow.close();
+                }
+                WindowManager.setScene(TFScene.login);
+                WindowManager.resetScene(TFScene.admin);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     /**

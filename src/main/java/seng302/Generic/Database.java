@@ -672,7 +672,7 @@ public class Database {
             connection = DriverManager.getConnection(
                     url + testDatabase, username, password);
             System.out.println("Connected to test database");
-            //resetDatabase();
+
             //Statement stmt=con.createStatement();
             //ResultSet rs=stmt.executeQuery("SELECT * FROM USER");
             //System.out.println("Users:");
