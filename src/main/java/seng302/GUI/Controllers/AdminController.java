@@ -836,7 +836,7 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
-                //DataManager.admins.add(newAdmin);
+                DataManager.admins.add(newAdmin);
                 try {
                     WindowManager.getDatabase().insertAdmin(newAdmin);
                 } catch (SQLException e) {
@@ -873,8 +873,7 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Clinician newClinician = createClinicianController.showAndWait(stage);
             if (newClinician != null) {
-                //TODO Get rid of
-                //DataManager.clinicians.add(newClinician);
+                DataManager.clinicians.add(newClinician);
                 try {
                     WindowManager.getDatabase().insertClinician(newClinician);
                 } catch (SQLException e) {
@@ -912,7 +911,12 @@ public class AdminController implements Initializable {
             User user = createAccountController.showAndWait(stage);
             if (user != null) {
                 DataManager.users.add(user);
-                IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                try{
+                    WindowManager.getDatabase().insertUser(user);
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 System.out.println("AdminController: Failed to create user");

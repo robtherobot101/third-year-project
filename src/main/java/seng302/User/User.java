@@ -307,6 +307,10 @@ public class User {
         setLastModified();
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setPreferredNameArray(String[] name) {
         this.preferredName = name;
     }

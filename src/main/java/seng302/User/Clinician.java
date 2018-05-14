@@ -73,6 +73,10 @@ public class Clinician {
         this.workAddress = clinician.workAddress;
     }
 
+    public void setStaffID(long staffID) {
+        this.staffID = staffID;
+    }
+
     public String getName() {
         return name;
     }

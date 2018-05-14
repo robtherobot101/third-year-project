@@ -381,6 +381,7 @@ public class Database {
         //Get all the organs for the given user
 
         int userId = getUserId(resultSet.getString("username"));
+        user.setId(userId);
         //TODO - Potentially set the local value of the user's id to this ??
 
         String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
@@ -520,6 +521,7 @@ public class Database {
         );
         clinician.setWorkAddress(resultSet.getString("work_address"));
         clinician.setRegion(resultSet.getString("region"));
+        clinician.setStaffID(resultSet.getInt("staff_id"));
 
         return clinician;
     }
@@ -550,6 +552,7 @@ public class Database {
         );
         admin.setWorkAddress(resultSet.getString("work_address"));
         admin.setRegion(resultSet.getString("region"));
+        admin.setStaffID(resultSet.getInt("staff_id"));
 
         return admin;
     }
@@ -702,7 +705,7 @@ public class Database {
                     url + testDatabase, username, password);
             System.out.println("Connected to test database");
             System.out.println(LocalDateTime.now());
-            
+
 
             //Statement stmt=con.createStatement();
             //ResultSet rs=stmt.executeQuery("SELECT * FROM USER");
