@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static seng302.Generic.IO.streamOut;
+
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
@@ -157,7 +159,7 @@ public class CommandLineInterface {
                 case "removewaitinglistorgan":
                     success = removeWaitingListOrgan(nextCommand);
                     break;
-                case "removeedonationorgan":
+                case "removedonationorgan":
                     success = removeDonationOrgan(nextCommand);
                     break;
                 case "updateuser":
@@ -183,7 +185,6 @@ public class CommandLineInterface {
                 case "listClinicians":
                     success = listClinicians(nextCommand);
                     break;
-
                 case "listorgans":
                     success = listOrgans(nextCommand);
                     break;
@@ -202,8 +203,8 @@ public class CommandLineInterface {
             }
         }
         if (success) {
-            //String text = History.prepareFileStringCLI(nextCommand);
-            //History.printToFile(streamOut, text);
+            String text = History.prepareFileStringCLI(nextCommand);
+            History.printToFile(streamOut, text);
         }
     }
 
