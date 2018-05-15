@@ -239,9 +239,10 @@ public class WindowManager extends Application {
     }
 
     public static void closeAllChildren() {
-        for (Stage stage: cliniciansUserWindows) {
+        for (Stage stage: cliniciansUserWindows.keySet()) {
             stage.close();
         }
+        cliniciansUserWindows.clear();
     }
 
     public static void setUserWindowController(UserWindowController userWindowController) {
@@ -327,7 +328,7 @@ public class WindowManager extends Application {
                     throw new IOException("Clinician save file could not be created.");
                 }
                 DataManager.clinicians.add(new Clinician("default", "default", "default"));
-                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
 
             }
             File admins = new File(IO.getAdminPath());
@@ -340,7 +341,7 @@ public class WindowManager extends Application {
                     throw new IOException("Admin save file could not be created.");
                 }
                 DataManager.admins.add(new Admin("admin", "default", "default_admin"));
-                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
 
             }
             IO.streamOut = History.init();
