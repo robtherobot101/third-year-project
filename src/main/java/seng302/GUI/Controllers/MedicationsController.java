@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.History;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;

@@ -16,6 +16,7 @@ import javafx.util.Pair;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.net.URL;
