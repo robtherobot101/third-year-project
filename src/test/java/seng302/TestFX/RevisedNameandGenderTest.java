@@ -25,7 +25,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         DataManager.users.clear();
         addTestUser();
-        loginAs(DataManager.users.get(0));
+        userWindow(DataManager.users.get(0));
 
         clickOn("#userAttributesButton");
     }

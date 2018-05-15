@@ -750,7 +750,6 @@ public class AdminController implements Initializable {
                             stage.setMinWidth(WindowManager.mainWindowMinWidth);
                             stage.setScene(newScene);
                             stage.show();
-                            userWindowController.setAsChildWindow();
                         } catch (IOException | NullPointerException e) {
                             System.err.println("Unable to load fxml or save file.");
                             e.printStackTrace();

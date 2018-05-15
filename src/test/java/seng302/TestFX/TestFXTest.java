@@ -1,5 +1,6 @@
 package seng302.TestFX;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -8,8 +9,10 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
+import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
+import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.time.LocalDate;
@@ -78,12 +81,12 @@ abstract class TestFXTest extends ApplicationTest {
         clickOn("#loginButton");
     }
 
-    protected void loginAs(User user) {
-        clickOn("#identificationInput");
-        write(user.getEmail());
-        clickOn("#passwordInput");
-        write(user.getPassword());
-        clickOn("#loginButton");
+    protected void userWindow(User user) {
+        Platform.runLater(() ->{
+            WindowManager.setCurrentUser(user);
+            WindowManager.setScene(TFScene.userWindow);
+        });
+        waitForFxEvents();
     }
 
     protected void openUserAsClinician(String name) {
@@ -102,6 +105,13 @@ abstract class TestFXTest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
+    public void openClinicianWindow(Clinician testClinician){
+        Platform.runLater(() ->{
+            WindowManager.setClinician(testClinician);
+            WindowManager.setScene(TFScene.clinician);
+        });
+        waitForFxEvents();
+    }
 
     /**
      * Waits until the node denoted by the given id can be found and is visible.
