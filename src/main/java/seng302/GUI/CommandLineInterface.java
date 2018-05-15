@@ -180,7 +180,7 @@ public class CommandLineInterface {
                     success = listUsers(nextCommand);
                     break;
 
-                case "listClinicians":
+                case "listclinicians":
                     success = listClinicians(nextCommand);
                     break;
 
@@ -443,7 +443,6 @@ public class CommandLineInterface {
                     printLine("The user has already been removed in the GUI.");
                 }
             }
-
 
         } else {
             printLine("Deletion cancelled.");
@@ -803,7 +802,7 @@ public class CommandLineInterface {
             if (DataManager.clinicians.size() > 0) {
                 printLine(Clinician.tableHeader);
                 for (Clinician clinician : DataManager.clinicians) {
-                    printLine(clinician.toString());
+                    printLine(clinician.getString(true));
                 }
             } else {
                 printLine("There are no clinicians to list. Please add or import some before using list.");

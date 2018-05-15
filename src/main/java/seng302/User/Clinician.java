@@ -9,7 +9,7 @@ import seng302.User.Attribute.LoginType;
 public class Clinician {
 
     private String name, workAddress, region, username, password;
-    public static final String tableHeader = "User ID |         | Name  |   |work address| |region| |username| |password|";
+    public static final String tableHeader = "User ID  | Name    | Work address           | region        | Username   ";
 
 
     private long staffID;
@@ -125,6 +125,25 @@ public class Clinician {
         this.region = clinician.region;
         this.workAddress = clinician.workAddress;
     }
+
+
+    /**
+     * Get a string containing key information about the user. Can be formatted as a table row.
+     *
+     * @param table Whether to format the information as a table row
+     * @return The information string
+     */
+    public String getString(boolean table) {
+
+        if (table) {
+            return String.format("%-8d | %s | %-22s | %10s    | %-10s    ", staffID,
+                    name, workAddress,region, username);
+        } else {
+            return toString();
+        }
+    }
+
+
 
     @Override
     public String toString() {
