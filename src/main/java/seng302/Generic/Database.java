@@ -88,7 +88,8 @@ public class Database {
     public void updateUserAttributesAndOrgans(User user) throws SQLException {
         //Attributes update
         //TODO Need to update for changes in the attributes pane
-        String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, current_address = ?, " +
+        String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
+                " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                 "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                 "gender = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?  WHERE username = ?";
         PreparedStatement statement = connection.prepareStatement(update);
@@ -96,18 +97,24 @@ public class Database {
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
         statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-        statement.setString(4, user.getCurrentAddress());
-        statement.setString(5, user.getRegion());
-        statement.setDate(6, java.sql.Date.valueOf(user.getDateOfBirth()));
-        statement.setDate(7, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
-        statement.setDouble(8, user.getHeight());
-        statement.setDouble(9, user.getWeight());
-        statement.setString(10, user.getBloodPressure());
-        statement.setString(11, user.getGender() != null ? user.getGender().toString() : null);
-        statement.setString(12, user.getBloodType() != null ? user.getBloodType().toString() : null);
-        statement.setString(13, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
-        statement.setString(14, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
-        statement.setString(15, user.getUsername());
+
+        statement.setString(4, user.getPreferredNameArray()[0]);
+        statement.setString(5, user.getPreferredNameArray().length > 2 ?
+                String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
+        statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
+
+        statement.setString(7, user.getCurrentAddress());
+        statement.setString(8, user.getRegion());
+        statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
+        statement.setDate(10, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
+        statement.setDouble(11, user.getHeight());
+        statement.setDouble(12, user.getWeight());
+        statement.setString(13, user.getBloodPressure());
+        statement.setString(14, user.getGender() != null ? user.getGender().toString() : null);
+        statement.setString(15, user.getBloodType() != null ? user.getBloodType().toString() : null);
+        statement.setString(16, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
+        statement.setString(17, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
+        statement.setString(18, user.getUsername());
         System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
 
@@ -359,6 +366,21 @@ public class Database {
                 resultSet.getString("password"));
         user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
         user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
+
+
+        String preferredNameString = "";
+        preferredNameString += resultSet.getString("preferred_name") + " ";
+        if(resultSet.getString("preferred_middle_names") != null) {
+            for (String middleName: resultSet.getString("preferred_middle_names").split(",")) {
+                preferredNameString += middleName + " ";
+            }
+        }
+        preferredNameString += resultSet.getString("preferred_last_name");
+
+        user.setPreferredNameArray(preferredNameString.split(" "));
+
+
+        user.setGenderIdentity(resultSet.getString("gender_identity") != null ? Gender.parse(resultSet.getString("gender_identity")) : null);
 
         if(resultSet.getString("blood_pressure") != null) {
             user.setBloodPressure(resultSet.getString("blood_pressure"));
