@@ -91,7 +91,7 @@ public class Database {
         String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                 " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                 "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
-                "gender = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?  WHERE username = ?";
+                "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?  WHERE username = ?";
         PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
@@ -111,10 +111,11 @@ public class Database {
         statement.setDouble(12, user.getWeight());
         statement.setString(13, user.getBloodPressure());
         statement.setString(14, user.getGender() != null ? user.getGender().toString() : null);
-        statement.setString(15, user.getBloodType() != null ? user.getBloodType().toString() : null);
-        statement.setString(16, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
-        statement.setString(17, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
-        statement.setString(18, user.getUsername());
+        statement.setString(15, user.getGenderIdentity() != null ? user.getGenderIdentity().toString() : null);
+        statement.setString(16, user.getBloodType() != null ? user.getBloodType().toString() : null);
+        statement.setString(17, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
+        statement.setString(18, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
+        statement.setString(19, user.getUsername());
         System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
 
