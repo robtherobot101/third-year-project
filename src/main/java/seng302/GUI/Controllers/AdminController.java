@@ -770,8 +770,13 @@ public class AdminController implements Initializable {
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setTitleBar(stage);
 
-                            //TODO Replace with DB get/login call???
-                            WindowManager.setCurrentUser(row.getItem());
+                            User currentUser = null;
+                            try {
+                                currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
+                            } catch(SQLException e) {
+                                e.printStackTrace();
+                            }
+                            WindowManager.setCurrentUser(currentUser);
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
                             History.printToFile(IO.streamOut, text);
