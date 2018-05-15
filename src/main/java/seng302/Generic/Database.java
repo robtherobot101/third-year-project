@@ -530,6 +530,23 @@ public class Database {
 
         }
 
+        //Get all waiting list items from database
+        String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
+        waitingListStatement.setInt(1, userId);
+        ResultSet waitingListResultSet = waitingListStatement.executeQuery();
+
+        //user.setGenderIdentity(resultSet.getString("gender_identity") != null ? Gender.parse(resultSet.getString("gender_identity")) : null);
+
+        while(waitingListResultSet.next()) {
+            Organ organ = Organ.parse(waitingListResultSet.getString("organ_type"));
+            String registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate().toString();
+            String deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate().toString() : null;
+            Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
+            Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
+
+            user.getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode));
+        }
         return user;
     }
 
