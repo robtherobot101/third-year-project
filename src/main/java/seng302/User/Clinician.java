@@ -139,8 +139,9 @@ public class Clinician {
             return String.format("%-8d | %s | %-22s | %10s    | %-10s    ", staffID,
                     name, workAddress,region, username);
         } else {
-            return toString();
-        }
+                return String.format("Clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
+                        , name, workAddress, region, username);
+            }
     }
 
 

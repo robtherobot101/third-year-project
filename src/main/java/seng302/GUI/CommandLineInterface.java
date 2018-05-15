@@ -170,7 +170,7 @@ public class CommandLineInterface {
                     success = describeUser(nextCommand);
                     break;
 
-                case "describeClinician":
+                case "describeclinician":
                     success = describeClinician(nextCommand);
                     break;
                 case "describeorgans":
@@ -222,9 +222,7 @@ public class CommandLineInterface {
             if (toDescribe == null) {
                 printLine(String.format("Clinician with ID %s not found.", idString));
             } else {
-
-                printLine(toDescribe.toString());
-
+                printLine(toDescribe.getString(false));
             }
         } catch (NumberFormatException e) {
             System.out.println("ID entered was not valid.");
@@ -1041,7 +1039,7 @@ public class CommandLineInterface {
                     break;
                 case "describeclinician":
                     printLine("This command searches clinicians and displays information about them. To find the id of a clinician, use the listClinicians "
-                            + "and describeClinician commands.\n"
+                            + " command.\n"
                             + "The syntax is: describeClinician <id>\n"
                             + "Rules:\n"
                             + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
