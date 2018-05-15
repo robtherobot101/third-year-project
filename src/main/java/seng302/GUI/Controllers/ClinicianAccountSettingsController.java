@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import seng302.Generic.DataManager;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 
 import java.net.URL;
@@ -81,6 +81,9 @@ public class ClinicianAccountSettingsController implements Initializable {
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
                 "The changes made will take place instantly.");
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("accountSettingsConfirmationOKButton");
+
+
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             clinician.setUsername(usernameField.getText());

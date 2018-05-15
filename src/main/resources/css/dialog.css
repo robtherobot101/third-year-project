@@ -108,3 +108,44 @@
     -fx-background-color: #56636E;
     -fx-text-fill: #C0C0C0;
 }
+
+.menu-button {
+  -fx-min-width: 200px;
+  -fx-background-color: #2b506e;
+}
+
+/*.menu-button-popup {*/
+  /*-fx-border-width: 0px;*/
+  /*-fx-border-color: #2b506e;*/
+  /*-fx-background-color: #2b506e;*/
+  /*-fx-text-fill: #C0C0C0;*/
+/*}*/
+
+.custom-menu-item {
+  -fx-border-width: 0px;
+  -fx-border-color: #2b506e;
+  -fx-background-color: #152837;
+  -fx-text-fill: #C0C0C0;
+}
+
+.menu-bar,
+.menu,
+.menu-item,
+.context-menu {
+  -fx-border-width: 0px;
+  -fx-background-color: #152837;
+}
+
+.menu-item:hover {
+  -fx-background-color: #1d3549;
+}
+
+.check-box .text {
+  -fx-fill: #edf3f8;
+}
+.check-box .box {
+  -fx-background-color: #4077a5;
+}
+.check-box:selected .mark {
+  -fx-background-color: white;
+}

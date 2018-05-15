@@ -14,7 +14,7 @@ import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -44,7 +44,7 @@ public class LoginController implements Initializable {
      */
     public void login() {
         boolean identificationMatched = false;
-        LoginType typeMatched = null;
+        ProfileType typeMatched = null;
 
         // Check for a user match
         User currentUser = null;

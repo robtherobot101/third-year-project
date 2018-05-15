@@ -175,7 +175,6 @@
 	-fx-stroke-width: 2px;
 }
 
-
 .split-pane {
 	-fx-background-color: transparent;
 }
@@ -274,8 +273,13 @@
     -fx-background-color: #DD0000;
 }
 
+
 .highlighted-row:selected {
     -fx-background-color: #FF1111;
+}
+
+.highlighted-checkbox .box {
+	-fx-background-color: #DD0000;
 }
 
 .tab-header-background {
@@ -288,5 +292,11 @@
 
 .tab-label {
 	-fx-text-fill: white ;
+}
+
+.menu-button {
+	-fx-background-color: #2b506e;
+	-fx-text-fill: #edf3f8;
+	-fx-prompt-text-fill: #7ea9cd;
 }
 

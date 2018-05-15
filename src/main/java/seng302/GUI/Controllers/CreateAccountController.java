@@ -9,6 +9,11 @@ import javafx.stage.Stage;
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Attribute.LoginType;
+import seng302.Generic.DataManager;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import javax.xml.crypto.Data;

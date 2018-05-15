@@ -1,7 +1,7 @@
 package seng302.User;
 
 import seng302.Generic.DataManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 
 import java.util.Random;
 
@@ -20,7 +20,7 @@ public class Admin extends Clinician {
      * @param name     the name of the admin
      */
     public Admin(String username, String password, String name) {
-        super(username, password, name, LoginType.ADMIN, DataManager.getNextId(true, LoginType.ADMIN));
+        super(username, password, name, ProfileType.ADMIN, DataManager.getNextId(true, ProfileType.ADMIN));
         String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
         Random r = new Random();
         accessLevel = levels[r.nextInt(levels.length)];

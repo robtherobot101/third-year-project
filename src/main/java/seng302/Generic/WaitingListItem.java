@@ -39,8 +39,8 @@ public class WaitingListItem {
     }
 
     public WaitingListItem() {
-
     }
+
 
     public Organ getOrganType() {
         return organType;

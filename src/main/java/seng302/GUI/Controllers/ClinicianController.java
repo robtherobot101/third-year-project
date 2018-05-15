@@ -26,7 +26,7 @@ import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -176,9 +176,7 @@ public class ClinicianController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
-                userWindow.close();
-            }
+            WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.clinician);
         } else {
@@ -193,11 +191,11 @@ public class ClinicianController implements Initializable {
      */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
+
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
-
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
             if (password.get().equals(clinician.getPassword())) {
@@ -243,6 +241,8 @@ public class ClinicianController implements Initializable {
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        dialog.getDialogPane().lookupButton(updateButtonType).setId("clinicianSettingsPopupUpdateButton");
 
         // Create the username and password labels and fields.
         GridPane grid = new GridPane();
@@ -315,7 +315,6 @@ public class ClinicianController implements Initializable {
         });
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
-
         result.ifPresent(newClinicianDetails -> {
             System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
                     .get(2));
@@ -703,6 +702,7 @@ public class ClinicianController implements Initializable {
                             e.printStackTrace();
                             Platform.exit();
                         }
+                        WindowManager.newCliniciansUserWindow(row.getItem());
                     }
                 });
                 return row;
