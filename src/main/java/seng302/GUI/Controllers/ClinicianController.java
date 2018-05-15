@@ -191,7 +191,6 @@ public class ClinicianController implements Initializable {
      */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
-        dialog.getDialogPane().setId("kkk");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");

@@ -385,4 +385,8 @@ public class SearchUtils {
     public static User getLatestUser() {
         return DataManager.users.get(DataManager.users.size()-1);
     }
+
+    public static Clinician getLatestClincian() {
+        return DataManager.clinicians.get(DataManager.clinicians.size()-1);
+    }
 }
