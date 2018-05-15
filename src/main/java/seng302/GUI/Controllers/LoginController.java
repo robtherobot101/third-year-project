@@ -56,7 +56,7 @@ public class LoginController implements Initializable {
 
         //Do a db search here
         if(currentUser != null) {
-            typeMatched = LoginType.USER;
+            typeMatched = ProfileType.USER;
             identificationMatched = true;
             System.out.println("LoginController: Logging in as user...");
         }
@@ -73,7 +73,7 @@ public class LoginController implements Initializable {
 
         //Do a db search here
         if(currentClinician != null) {
-            typeMatched = LoginType.CLINICIAN;
+            typeMatched = ProfileType.CLINICIAN;
             identificationMatched = true;
             System.out.println("LoginController: Logging in as clinician...");
         }
@@ -88,7 +88,7 @@ public class LoginController implements Initializable {
 
         //Do a db search here
         if(currentAdmin != null) {
-            typeMatched = LoginType.ADMIN;
+            typeMatched = ProfileType.ADMIN;
             identificationMatched = true;
             System.out.println("LoginController: Logging in as admin...");
         }

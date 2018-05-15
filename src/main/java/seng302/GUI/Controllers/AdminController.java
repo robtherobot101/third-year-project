@@ -839,9 +839,7 @@ public class AdminController implements Initializable {
                 WindowManager.getDatabase().resetDatabase();
                 DataManager.users.clear();
                 DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                for (Stage userWindow : WindowManager.getCliniciansUserWindows()) {
-                    userWindow.close();
-                }
+                WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
             } catch (SQLException e) {

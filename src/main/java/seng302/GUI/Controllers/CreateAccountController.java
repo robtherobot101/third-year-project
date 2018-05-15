@@ -8,7 +8,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
-import seng302.User.Attribute.LoginType;
 import seng302.Generic.DataManager;
 import seng302.Generic.History;
 import seng302.Generic.IO;
@@ -124,7 +123,7 @@ public class CreateAccountController implements Initializable {
                 }
 
                 //Got rid of the users being saved to a json file
-                IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 //
 
 

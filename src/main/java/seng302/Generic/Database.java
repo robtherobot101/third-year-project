@@ -164,7 +164,14 @@ public class Database {
             insertProceduresStatement.setString(1, procedure.getSummary());
             insertProceduresStatement.setString(2, procedure.getDescription());
             insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
-            insertProceduresStatement.setString(4, "ORGANS AFFECTED");
+
+            String organsAffected = "";
+            for (Organ organ: procedure.getOrgansAffected()) {
+                organsAffected += organ.toString() + ",";
+            }
+            organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
+
+            insertProceduresStatement.setString(4, organsAffected);
             insertProceduresStatement.setInt(5, userId);
 
             totalAdded += insertProceduresStatement.executeUpdate();
@@ -471,18 +478,26 @@ public class Database {
         while(proceduresResultSet.next()) {
 
             if(proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
+                ArrayList<Organ> procedureOrgans = new ArrayList<>();
+                for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
+                    procedureOrgans.add(Organ.parse(organ));
+                }
                 user.getPendingProcedures().add(new Procedure(
                         proceduresResultSet.getString("summary"),
                         proceduresResultSet.getString("description"),
                         proceduresResultSet.getDate("date").toLocalDate(),
-                        true
+                        procedureOrgans
                 ));
             } else {
+                ArrayList<Organ> procedureOrgans = new ArrayList<>();
+                for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
+                    procedureOrgans.add(Organ.parse(organ));
+                }
                 user.getPreviousProcedures().add(new Procedure(
                         proceduresResultSet.getString("summary"),
                         proceduresResultSet.getString("description"),
                         proceduresResultSet.getDate("date").toLocalDate(),
-                        false
+                        procedureOrgans
                 ));
             }
 
