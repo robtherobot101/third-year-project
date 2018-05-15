@@ -34,7 +34,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = addTestUser();
     }
 
@@ -130,7 +130,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     public List<ReceiverWaitingListItem> waitingListItems() {
         ArrayList waitingListItems = new ArrayList<>();
         for (Object o : lookup("#waitingListTableView").queryTableView().getItems()) {
-            waitingListItems.add((ReceiverWaitingListItem) o);
+            waitingListItems.add(o);
         }
         return waitingListItems;
     }
@@ -144,7 +144,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     @Test
-    public void receiverCannotUpdateTransplantWaitingList() throws TimeoutException {
+    public void receiverCannotUpdateTransplantWaitingList() {
         user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.BONE,(long)-1));
         usersTransplantWaitingListAsUser();
         assert (!lookup("#registerOrganButton").query().isVisible());
@@ -153,7 +153,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     @Test
-    public void donorCannotSeeTransplantWaitingListOption() throws TimeoutException {
+    public void donorCannotSeeTransplantWaitingListOption() {
         userWindow(user);
         assert (!lookup("#waitingListButton").query().isVisible());
     }

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="280.0" prefWidth="270.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianAccountSettingsController">
+<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="280.0" prefWidth="270.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianAccountSettingsController">
    <children>
       <Button fx:id="updateButton" layoutX="72.0" layoutY="252.0" mnemonicParsing="false" onAction="#updateAccountDetails" text="Update" AnchorPane.topAnchor="202.0" />
       <Button fx:id="cancelButton" layoutX="141.0" layoutY="252.0" mnemonicParsing="false" onAction="#exit" text="Cancel" AnchorPane.topAnchor="202.0" />

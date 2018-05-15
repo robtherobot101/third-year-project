@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
+import static seng302.Generic.WindowManager.setButtonSelected;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -53,7 +54,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton;
+    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -190,7 +191,6 @@ public class ClinicianController implements Initializable {
      */
     public void updateAccountSettings() {
         TextInputDialog dialog = new TextInputDialog("");
-
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
@@ -344,7 +344,17 @@ public class ClinicianController implements Initializable {
      * Closes the application
      */
     public void close() {
-        Platform.exit();
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to exit? ",
+                "You will lose any unsaved data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
+                userWindow.close();
+            }
+            Platform.exit();
+        } else {
+            alert.close();
+        }
     }
 
     /**
@@ -512,16 +522,6 @@ public class ClinicianController implements Initializable {
         return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
     }
 
-    /**
-     * Sets the User Attribute pane as the visible pane
-     */
-    public void showMainPane() {
-        mainPane.setVisible(true);
-        transplantListPane.setVisible(false);
-        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
-        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
@@ -661,16 +661,39 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * calls the transplantWaitingList controller and displays it.
+     * Hides all of the main panes.
+     */
+    private void hideAllTabs() {
+        setButtonSelected(homeButton, false);
+        setButtonSelected(transplantListButton, false);
+
+        mainPane.setVisible(false);
+        transplantListPane.setVisible(false);
+        undoWelcomeButton.setDisable(true);
+        redoWelcomeButton.setDisable(true);
+    }
+
+    /**
+     * Sets the User Attribute pane as the visible pane.
+     */
+    public void showMainPane() {
+        hideAllTabs();
+        setButtonSelected(homeButton, true);
+        mainPane.setVisible(true);
+        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
+        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
+    }
+
+    /**
+     * Calls the transplantWaitingList controller and displays it.
      * also refreshes the waitinglist table data
      */
     public void transplantWaitingList() {
-        WindowManager.getTransplantWaitingListController().updateTransplantList();
-        //background.setVisible(false);
-        mainPane.setVisible(false);
+        hideAllTabs();
+        setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
-        undoWelcomeButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
+
+        WindowManager.getTransplantWaitingListController().updateTransplantList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
 }
