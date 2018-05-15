@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
@@ -796,6 +797,8 @@ public class UserWindowController implements Initializable {
                 WindowManager.getDatabase().updateUserDiseases(currentUser);
                 WindowManager.getDatabase().updateUserProcedures(currentUser);
                 WindowManager.getDatabase().updateUserMedications(currentUser);
+                DataManager.users.clear();
+                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -809,7 +812,7 @@ public class UserWindowController implements Initializable {
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
-            //TODO Get rid of
+
             WindowManager.getClinicianController().updateFoundUsers();
             WindowManager.updateTransplantWaitingList();
         }

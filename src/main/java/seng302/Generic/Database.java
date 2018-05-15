@@ -87,7 +87,6 @@ public class Database {
 
     public void updateUserAttributesAndOrgans(User user) throws SQLException {
         //Attributes update
-        //TODO Need to update for changes in the attributes pane
         String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                 " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                 "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
@@ -412,7 +411,6 @@ public class Database {
 
         int userId = getUserId(resultSet.getString("username"));
         user.setId(userId);
-        //TODO - Potentially set the local value of the user's id to this ??
 
         String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
         PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
