@@ -11,6 +11,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.GUI.CommandLineInterface;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
@@ -377,7 +378,7 @@ public class WindowManager extends Application {
             try {
                 IO.setPaths();
                 CommandLineInterface commandLineInterface = new CommandLineInterface();
-                commandLineInterface.run(System.in);
+                //commandLineInterface.run(System.in);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
