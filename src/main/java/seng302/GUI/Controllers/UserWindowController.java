@@ -12,19 +12,24 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
+import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
+import seng302.Generic.*;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -159,6 +164,12 @@ public class UserWindowController implements Initializable {
         organTickBoxes.put(Organ.TISSUE, connectiveTissueCheckBox);
         organTickBoxes.put(Organ.LUNG, lungCheckBox);
 
+        for(CheckBox checkbox:organTickBoxes.values()){
+            checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                highlightOrganCheckBoxes();
+            });
+        }
+
         WindowManager.controlViewForUser();
 
         Image welcomeImage = new Image("/OrganDonation.jpg");
@@ -241,7 +252,7 @@ public class UserWindowController implements Initializable {
 
         waitingListButton.setOnAction((ActionEvent event) -> {
             showWaitingListPane();
-            WindowManager.getWaitingListController().populateWaitingList();
+            WindowManager.updateWaitingList();
             WindowManager.getWaitingListController().populateOrgansComboBox();
         });
 
@@ -436,6 +447,28 @@ public class UserWindowController implements Initializable {
     }
 
     /**
+     * Highlights the checkboxes in red if the user is also waiting to receive an organ of that type.
+     * A tooltip is also added to highlighted checkboxes which tells the user what the problem is
+     */
+    public void highlightOrganCheckBoxes(){
+        System.out.println("re-drawing");
+        for(Organ organ: Organ.values()){
+            if(organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox")){
+                organTickBoxes.get(organ).getStyleClass().remove("highlighted-checkbox");
+                organTickBoxes.get(organ).setTooltip(null);
+            }
+            for(WaitingListItem item: currentUser.getWaitingListItems()){
+                if(!organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox") && item.getOrganType()==organ && organTickBoxes.get(organ).isSelected()){
+                    organTickBoxes.get(organ).getStyleClass().add("highlighted-checkbox");
+                    organTickBoxes.get(organ).setTooltip(new Tooltip("User is waiting to receive this organ"));
+                }
+            }
+        }
+    }
+
+
+
+    /**
      * Populates the history table based on the action history of the current user.
      * Gets the user history from the History.getUserHistory() function.
      * Sorts these into tree nodes based on new sessions.
@@ -618,6 +651,7 @@ public class UserWindowController implements Initializable {
 
         updateBMI();
         updateBloodPressure();
+        highlightOrganCheckBoxes();
     }
 
     /**
@@ -724,6 +758,7 @@ public class UserWindowController implements Initializable {
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
         currentUser.setRegion(regionField.getText());
         currentUser.setCurrentAddress(addressField.getText());
+
         for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
                 if (!organTickBoxes.get(key).isSelected()) {
@@ -735,6 +770,11 @@ public class UserWindowController implements Initializable {
                 }
             }
         }
+
+        //Database call for update of organs for user
+
+        //TODO
+
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         userDisplayText.setText("Currently logged in as: " + currentUser.getPreferredName());
         System.out.println(currentUser.toString());
@@ -751,15 +791,30 @@ public class UserWindowController implements Initializable {
                 "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && updateUser()) {
-            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+
+            try {
+                WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+                WindowManager.getDatabase().updateUserMedications(currentUser);
+                DataManager.users.clear();
+                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             populateUserFields();
-            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-            History.printToFile(streamOut, text);
+            //TODO Update history with new database calls
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
+//            History.printToFile(streamOut, text);
+
             populateHistoryTable();
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
+
             WindowManager.getClinicianController().updateFoundUsers();
+            WindowManager.updateTransplantWaitingList();
         }
         alert.close();
     }
@@ -984,10 +1039,11 @@ public class UserWindowController implements Initializable {
         }
     }
 
+
     /**
      * Disable the logout button if this user window is the child of a clinician window.
      */
-    public void setAsChildWindow() {
+    public void disableLogoutControls() {
         logoutMenuItem.setDisable(true);
         logoutButton.setDisable(true);
     }

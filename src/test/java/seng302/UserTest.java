@@ -10,7 +10,12 @@ import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class UserTest {
@@ -64,6 +69,24 @@ public class UserTest {
         newItem.registerOrgan();
         user.getWaitingListItems().add(newItem);
         assertTrue(user.isReceiver());
+    }
+
+    @Test
+    public void testConflictingOrgans_noConflictingOrgans_returnsEmptySet(){
+        User user = new User("test user", LocalDate.now());
+        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.HEART,(long)-1));
+        user.getOrgans().add(Organ.KIDNEY);
+        assertTrue(user.conflictingOrgans().isEmpty());
+    }
+
+    @Test
+    public void testConflictingOrgans_conflictingOrgans_returnsConflictingOrgans(){
+        User user = new User("test user", LocalDate.now());
+        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.KIDNEY,(long)-1));
+        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.HEART,(long)-1));
+        user.getOrgans().add(Organ.KIDNEY);
+        user.getOrgans().add(Organ.HEART);
+        assertEquals(new HashSet<Organ>(Arrays.asList(Organ.KIDNEY,Organ.HEART)),user.conflictingOrgans());
     }
 
     @Ignore

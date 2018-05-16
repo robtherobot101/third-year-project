@@ -19,6 +19,8 @@ import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -46,52 +48,55 @@ public class LoginController implements Initializable {
 
         // Check for a user match
         User currentUser = null;
-        for (User user : DataManager.users) {
-            if (user.getUsername() != null && user.getUsername().equals(identificationInput.getText()) ||
-                    user.getEmail() != null && user.getEmail().equals(identificationInput.getText())) {
-                identificationMatched = true;
-                if (user.getPassword().equals(passwordInput.getText())) {
-                    currentUser = user;
-                    typeMatched = ProfileType.USER;
-                    String text = History.prepareFileStringGUI(user.getId(), "login");
-                    History.printToFile(IO.streamOut, text);
-                }
-            }
+        try {
+            currentUser = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
+        } catch(SQLException e) {
+            e.printStackTrace();
         }
+
+        //Do a db search here
+        if(currentUser != null) {
+            typeMatched = ProfileType.USER;
+            identificationMatched = true;
+            System.out.println("LoginController: Logging in as user...");
+        }
+
+
 
         // Check for a clinician match
         Clinician currentClinician = null;
-        for (Clinician clinician : DataManager.clinicians) {
-            System.out.println(clinician);
-            if (clinician.getUsername() != null && clinician.getUsername().equals(identificationInput.getText())) {
-                identificationMatched = true;
-                if (clinician.getPassword().equals(passwordInput.getText())) {
-                    System.out.println("LoginController: Logging in as clinician...");
-                    currentClinician = clinician;
-                    typeMatched = ProfileType.CLINICIAN;
-                    // TODO write login of clinician to history
-                }
-            }
+        try {
+            currentClinician = WindowManager.getDatabase().loginClinician(identificationInput.getText(), passwordInput.getText());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        //Do a db search here
+        if(currentClinician != null) {
+            typeMatched = ProfileType.CLINICIAN;
+            identificationMatched = true;
+            System.out.println("LoginController: Logging in as clinician...");
         }
 
         // Check for an admin match
         Admin currentAdmin = null;
-        for (Admin admin : DataManager.admins) {
-            if (admin.getUsername() != null && admin.getUsername().equals(identificationInput.getText())) {
-                identificationMatched = true;
-                if (admin.getPassword().equals(passwordInput.getText())) {
-                    System.out.println("LoginController: Logging in as admin...");
-                    currentAdmin = admin;
-                    typeMatched = ProfileType.ADMIN;
-                    // TODO write login of admin to history
-                }
-            }
-
+        try {
+            currentAdmin = WindowManager.getDatabase().loginAdmin(identificationInput.getText(), passwordInput.getText());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
+        //Do a db search here
+        if(currentAdmin != null) {
+            typeMatched = ProfileType.ADMIN;
+            identificationMatched = true;
+            System.out.println("LoginController: Logging in as admin...");
+        }
+
+
+
         if (identificationMatched) {
-            if (typeMatched != null) {
+            //if (typeMatched != null) {
                 //Reset scene to original state
                 identificationInput.setText("");
                 passwordInput.setText("");
@@ -104,19 +109,38 @@ public class LoginController implements Initializable {
                         WindowManager.setScene(TFScene.userWindow);
                         break;
                     case CLINICIAN:
+                        //Add all users from Database
+                        DataManager.users.clear();
+                        try{
+                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                            //WindowManager.getDatabase().refreshUserWaitinglists();
+                        } catch(SQLException e) {
+                            e.printStackTrace();
+                        }
+
                         WindowManager.setClinician(currentClinician);
                         WindowManager.setScene(TFScene.clinician);
                         break;
                     case ADMIN:
+                        DataManager.users.clear();
+                        DataManager.clinicians.clear();
+                        DataManager.admins.clear();
+                        try{
+                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                            DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
+                            DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
+                        } catch(SQLException e) {
+                            e.printStackTrace();
+                        }
                         WindowManager.setAdmin(currentAdmin);
                         WindowManager.setScene(TFScene.admin);
                 }
-            } else {
-                errorMessage.setText("Incorrect password.");
-                errorMessage.setVisible(true);
-            }
+//            } else {
+//                errorMessage.setText("Incorrect password.");
+//                errorMessage.setVisible(true);
+//            }
         } else {
-            errorMessage.setText("Username or email not recognized.");
+            errorMessage.setText("Username/email and password combination not recognized.");
             errorMessage.setVisible(true);
         }
     }

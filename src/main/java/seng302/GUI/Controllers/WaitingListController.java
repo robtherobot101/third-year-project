@@ -17,6 +17,7 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -32,7 +33,7 @@ public class WaitingListController extends PageController implements Initializab
     @FXML
     private Button registerOrganButton, deregisterOrganButton;
     @FXML
-    private TableView<ReceiverWaitingListItem> waitingList;
+    private TableView<ReceiverWaitingListItem> waitingListTableView;
     @FXML
     private ComboBox<Organ> organTypeComboBox;
     @FXML
@@ -84,13 +85,19 @@ public class WaitingListController extends PageController implements Initializab
             }
             if (!found) {
                 currentUser.getWaitingListItems().add(temp);
+                try {
+                    WindowManager.getDatabase().insertWaitingListItem(currentUser, temp);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
             populateWaitingList();
             statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
 
         }
         populateOrgansComboBox();
-
+        WindowManager.getUserWindowController().populateUserFields();
+        WindowManager.reHighlightOrganDonationCheckboxes();
     }
 
 
@@ -102,7 +109,7 @@ public class WaitingListController extends PageController implements Initializab
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
-        ReceiverWaitingListItem waitingListItemSelected = waitingList.getSelectionModel().getSelectedItem();
+        ReceiverWaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             addToUndoStack();
             deregisterPressed = true;
@@ -115,6 +122,7 @@ public class WaitingListController extends PageController implements Initializab
         }
         populateOrgansComboBox();
         WindowManager.getUserWindowController().populateUserFields();
+        WindowManager.reHighlightOrganDonationCheckboxes();
     }
 
 
@@ -150,22 +158,28 @@ public class WaitingListController extends PageController implements Initializab
         organsInDropDown.addAll(toBeAdded);
         organTypeComboBox.setItems(null);
         organTypeComboBox.setItems(organsInDropDown);
-        System.out.println(toBeAdded.size());
     }
 
     /**
      * Refreshes the list waiting list TableView
      */
     public void populateWaitingList() {
-        waitingListItems.clear();
-        waitingListItems.addAll(currentUser.getWaitingListItems());
+        //TODO
+        //currentUser is null when an item is deregistered via the clinicians transplant waiting list
+        // and the clinician hasn't yet viewed any user windows.
+
+        //This should be fixed with Andrew's changes to dealing with multiple clinician
+        if(currentUser != null){
+            waitingListItems.clear();
+            waitingListItems.addAll(currentUser.getWaitingListItems());
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         WindowManager.setWaitingListController(this);
         organTypeComboBox.setItems(organsInDropDown);
-        waitingList.setItems(waitingListItems);
+        waitingListTableView.setItems(waitingListItems);
         organType.setCellValueFactory(new PropertyValueFactory<>("organType"));
         stillWaitingOn.setCellValueFactory(new PropertyValueFactory<>("stillWaitingOn"));
         organRegisteredDate.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
@@ -177,7 +191,7 @@ public class WaitingListController extends PageController implements Initializab
                 Bindings.isNull(organTypeComboBox.getSelectionModel().selectedItemProperty())
         );
 
-        waitingList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        waitingListTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 deregisterOrganButton.setDisable(true);
             } else if (newValue.getStillWaitingOn()) {
@@ -187,7 +201,7 @@ public class WaitingListController extends PageController implements Initializab
             }
         });
 
-        waitingList.setRowFactory(new Callback<TableView<ReceiverWaitingListItem>, TableRow<ReceiverWaitingListItem>>() {
+        waitingListTableView.setRowFactory(new Callback<TableView<ReceiverWaitingListItem>, TableRow<ReceiverWaitingListItem>>() {
             @Override
             public TableRow<ReceiverWaitingListItem> call(TableView<ReceiverWaitingListItem> tableView) {
                 return new TableRow<ReceiverWaitingListItem>() {
@@ -199,13 +213,12 @@ public class WaitingListController extends PageController implements Initializab
                         }
                         setTooltip(null);
                         if (item != null && !empty) {
-                            if (item.isDonatingOrgan(currentUser) && item.getStillWaitingOn()) {
+                            if(currentUser.conflictingOrgans().contains(item.getOrganType())) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
                                 System.out.println("User is donating " + item.getOrganType());
                                 if (!getStyleClass().contains("highlighted-row")) {
                                     getStyleClass().add("highlighted-row");
                                 }
-
                             }
                         }
                     }
@@ -239,7 +252,7 @@ public class WaitingListController extends PageController implements Initializab
         return deregisterPressed;
     }
 
-    public TableView<ReceiverWaitingListItem> getWaitingList() {
-        return waitingList;
+    public TableView<ReceiverWaitingListItem> getWaitingListTableView() {
+        return waitingListTableView;
     }
 }

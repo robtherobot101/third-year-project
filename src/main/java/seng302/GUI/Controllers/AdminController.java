@@ -35,6 +35,7 @@ import seng302.User.User;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -254,10 +255,17 @@ public class AdminController implements Initializable {
                 "Are you sure would like to save all profiles? ",
                 "All profiles will be saved (user, clinician, admin).");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.orElse(null) == ButtonType.OK) {
-            IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
-            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
-            IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
+        if (result.get() == ButtonType.OK) {
+            try {
+                WindowManager.getDatabase().updateAdminDetails(currentAdmin);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //TODO PUT in save to Database for Users and Clinicians
+            //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         }
         alert.close();
     }
@@ -398,6 +406,11 @@ public class AdminController implements Initializable {
      */
     public void undo() {
         // TODO implement undo
+        try {
+            WindowManager.getDatabase().resetDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -574,21 +587,42 @@ public class AdminController implements Initializable {
             if (result.orElse(null) == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
-                    System.out.println("AdminController: Deleting User: " + selectedUser);
+                    System.out.println("Deleting User: " + selectedUser);
+
                     DataManager.users.remove(selectedUser);
-                    IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+                    try {
+                        WindowManager.getDatabase().removeUser(selectedUser);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+
                     statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                 } else if (selectedClinician != null) {
                     // A clinician has been selected for deletion
-                    System.out.println("AdminController: Deleting Clinician: " + selectedClinician);
+                    System.out.println("Deleting Clinician: " + selectedClinician);
+
                     DataManager.clinicians.remove(selectedClinician);
-                    IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+                    try {
+                        WindowManager.getDatabase().removeClinician(selectedClinician);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+
                     statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                 } else if (selectedAdmin != null) {
                     // An admin has been selected for deletion
-                    System.out.println("AdminController: Deleting Admin: " + selectedAdmin);
+                    System.out.println("Deleting Admin: " + selectedAdmin);
+
                     DataManager.admins.remove(selectedAdmin);
-                    IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
+                    try{
+                        WindowManager.getDatabase().removeAdmin(selectedAdmin);
+                    } catch(SQLException e) {
+                        e.printStackTrace();
+                    }
+                    //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+
                     statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                 }
                 refreshLatestProfiles();
@@ -735,7 +769,14 @@ public class AdminController implements Initializable {
                             Parent root = loader.load();
                             UserWindowController userWindowController = loader.getController();
                             userWindowController.setTitleBar(stage);
-                            WindowManager.setCurrentUser(row.getItem());
+
+                            User currentUser = null;
+                            try {
+                                currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
+                            } catch(SQLException e) {
+                                e.printStackTrace();
+                            }
+                            WindowManager.setCurrentUser(currentUser);
 
                             String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
                             History.printToFile(IO.streamOut, text);
@@ -750,7 +791,6 @@ public class AdminController implements Initializable {
                             stage.setMinWidth(WindowManager.mainWindowMinWidth);
                             stage.setScene(newScene);
                             stage.show();
-                            userWindowController.setAsChildWindow();
                         } catch (IOException | NullPointerException e) {
                             System.err.println("Unable to load fxml or save file.");
                             e.printStackTrace();
@@ -790,6 +830,50 @@ public class AdminController implements Initializable {
     }
 
     /**
+     * Resets the database. Called by Database -> Reset
+     */
+    public void databaseReset() {
+
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",
+                "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.orElse(null) == ButtonType.OK) {
+
+            System.out.println("AdminController: DB reset called");
+            try {
+                WindowManager.getDatabase().resetDatabase();
+                DataManager.users.clear();
+                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                WindowManager.closeAllChildren();
+                WindowManager.setScene(TFScene.login);
+                WindowManager.resetScene(TFScene.admin);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    /**
+     * Resamples the database. Called by Database -> Resample
+     */
+    public void databaseResample() {
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",
+                "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.orElse(null) == ButtonType.OK) {
+            System.out.println("AdminController: DB resample called");
+            try {
+                WindowManager.getDatabase().loadSampleData();
+                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
      * Opens separate window to input + create a new admin
      */
     @FXML
@@ -810,8 +894,13 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
-                DataManager.admins.add(newAdmin);
-                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
+                    DataManager.admins.add(newAdmin);
+                try {
+                    WindowManager.getDatabase().insertAdmin(newAdmin);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
@@ -844,7 +933,12 @@ public class AdminController implements Initializable {
             Clinician newClinician = createClinicianController.showAndWait(stage);
             if (newClinician != null) {
                 DataManager.clinicians.add(newClinician);
-                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
+                try {
+                    WindowManager.getDatabase().insertClinician(newClinician);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
@@ -877,7 +971,12 @@ public class AdminController implements Initializable {
             User user = createAccountController.showAndWait(stage);
             if (user != null) {
                 DataManager.users.add(user);
-                IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+                try{
+                    WindowManager.getDatabase().insertUser(user);
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 System.out.println("AdminController: Failed to create user");

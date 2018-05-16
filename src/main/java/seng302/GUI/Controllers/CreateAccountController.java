@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.GUI.TFScene;
+import seng302.Generic.*;
 import seng302.Generic.DataManager;
 import seng302.Generic.History;
 import seng302.Generic.IO;
@@ -14,7 +15,9 @@ import seng302.Generic.WindowManager;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
@@ -74,16 +77,19 @@ public class CreateAccountController implements Initializable {
      * @return The created user
      */
     public User createAccount() {
-        for (User user : DataManager.users) {
-            if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(user.getUsername())) {
+
+        try {
+            if (!WindowManager.getDatabase().checkUniqueUser(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(user.getEmail())) {
+            } else if(!WindowManager.getDatabase().checkUniqueUser(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
@@ -102,11 +108,25 @@ public class CreateAccountController implements Initializable {
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
+                //Got rid of the Local Data management of users
                 DataManager.users.add(user);
+                //
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
                 WindowManager.setCurrentUser(user);
-                IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+
+
+                try {
+                    WindowManager.getDatabase().insertUser(user);
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+
+                //Got rid of the users being saved to a json file
+                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                //
+
+
                 WindowManager.setScene(TFScene.userWindow);
                 WindowManager.resetScene(TFScene.createAccount);
                 return null;

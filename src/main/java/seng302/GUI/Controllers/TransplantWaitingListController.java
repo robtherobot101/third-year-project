@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers;
 
+import com.sun.javafx.scene.control.skin.TableViewSkinBase;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -78,9 +80,12 @@ public class TransplantWaitingListController implements Initializable {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
                     List<Integer> codes = Arrays.asList(1, 2, 3, 4);
-                    if (!(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
-                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(), item
-                                .getOrganType(), user.getId(), item.getWaitingListItemId()));
+                    if ((user.getRegion() == null) && !(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
+                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(),
+                                item.getOrganType(), user.getId(), item.getWaitingListItemId()));
+                    } else if ((user.getRegion() != null) && !(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
+                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(),
+                                item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                     }
                 }
             }
@@ -94,7 +99,10 @@ public class TransplantWaitingListController implements Initializable {
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch  the organ to specifically search for given by a user.
      */
-    private void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+    public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+
+        System.out.println("GDAY MAAAAAAATE");
+
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {
@@ -116,14 +124,22 @@ public class TransplantWaitingListController implements Initializable {
                 }
             }
         }
+        if(transplantList.size() == 0) {
+            System.out.println("There is nothing here!!!");
+        } else {
+            System.out.println("There is something here!!!");
+        }
         transplantTable.setItems(transplantList);
         deregisterReceiverButton.setDisable(true);
+        transplantTable.refresh();
     }
 
     /**
      * method to handle when the organ filter combo box is changed and then updates the transplant waiting list
      */
     public void updateFoundUsersOnOrganChange() {
+        System.out.println(organSearchComboBox.getValue().toString());
+        System.out.println(regionSearchTextField.getText());
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
     }
 
@@ -156,7 +172,7 @@ public class TransplantWaitingListController implements Initializable {
     private void showDiseaseDeregisterDialog() {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -245,7 +261,7 @@ public class TransplantWaitingListController implements Initializable {
         Alert alert;
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -314,6 +330,8 @@ public class TransplantWaitingListController implements Initializable {
         } else {
             updateFoundUsersWithFiltering("", "None");
         }
+        WindowManager.updateWaitingList();
+        WindowManager.reHighlightOrganDonationCheckboxes();
         deregisterReceiverButton.setDisable(true);
     }
 
@@ -323,7 +341,7 @@ public class TransplantWaitingListController implements Initializable {
     private void transplantDeregister() {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -342,7 +360,7 @@ public class TransplantWaitingListController implements Initializable {
     private void errorDeregister() {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
 
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -433,7 +451,7 @@ public class TransplantWaitingListController implements Initializable {
     private void deathDeregister(LocalDate deathDateInput) {
         WaitingListItem selectedWaitingListItem;
         if (WindowManager.getWaitingListController().getDeregisterPressed()) {
-            selectedWaitingListItem = (ReceiverWaitingListItem) WindowManager.getWaitingListController().getWaitingList().getSelectionModel().getSelectedItem();
+            selectedWaitingListItem = WindowManager.getWaitingListController().getWaitingListTableView().getSelectionModel().getSelectedItem();
         } else {
             selectedWaitingListItem = (TransplantWaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         }
@@ -471,13 +489,14 @@ public class TransplantWaitingListController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
-        transplantTable.setItems(transplantList);
+        //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
         WindowManager.setTransplantWaitingListController(this);
 
-        updateTransplantList();
+        transplantTable.setItems(transplantList);
+        updateFoundUsersWithFiltering("", "None");
         transplantTable.setItems(transplantList);
 
         //add options to organ filter combobox
@@ -502,33 +521,29 @@ public class TransplantWaitingListController implements Initializable {
             @Override
             public TableRow<TransplantWaitingListItem> call(TableView<TransplantWaitingListItem> tableView) {
                 final TableRow<TransplantWaitingListItem> row = new TableRow<TransplantWaitingListItem>() {
+                    @Override
+                    public void updateItem(TransplantWaitingListItem item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (getStyleClass().contains("highlighted-row")) {
+                            getStyleClass().remove("highlighted-row");
+                        }
+                        setTooltip(null);
+                        if (item != null && !empty) {
+                            if (SearchUtils.getUserById(item.getUserId().intValue()).getOrgans().contains(item.getOrganType())) {
+                                setTooltip(new Tooltip("User is currently donating this organ"));
+                                System.out.println("User is donating " + item.getOrganType());
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
+                                }
+
+                            }
+                        }
+                    }
                 };
                 //event to open receiver profile when clicked
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        Stage stage = new Stage();
-
-                        WindowManager.addCliniciansUserWindow(stage);
-                        stage.initModality(Modality.NONE);
-
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
-                            Parent root = loader.load();
-                            UserWindowController userWindowController = loader.getController();
-                            WindowManager.setCurrentUser(SearchUtils.getUserById(row.getItem().getUserId()));
-                            userWindowController.populateUserFields();
-                            userWindowController.populateHistoryTable();
-                            WindowManager.controlViewForClinician();
-
-                            Scene newScene = new Scene(root, 900, 575);
-                            stage.setScene(newScene);
-                            stage.show();
-                            userWindowController.setAsChildWindow();
-                        } catch (IOException | NullPointerException e) {
-                            System.err.println("Unable to load fxml or save file.");
-                            e.printStackTrace();
-                            Platform.exit();
-                        }
+                        WindowManager.newCliniciansUserWindow(SearchUtils.getUserById(row.getItem().getUserId()));
                     }
                 });
                 transplantTable.refresh();
@@ -536,6 +551,9 @@ public class TransplantWaitingListController implements Initializable {
 
             }
         });
+
+
+
     }
 
 

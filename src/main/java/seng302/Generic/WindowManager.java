@@ -3,24 +3,33 @@ package seng302.Generic;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.GUI.CommandLineInterface;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
+import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -49,6 +58,16 @@ public class WindowManager extends Application {
     private static MedicalHistoryProceduresController medicalHistoryProceduresController;
     private static WaitingListController waitingListController;
 
+    private static Database database;
+
+
+    public static Database getDatabase() {
+        return database;
+    }
+
+    public static void setDatabase(Database database) {
+        WindowManager.database = database;
+    }
 
     /**
      * Returns the program icon.
@@ -77,6 +96,41 @@ public class WindowManager extends Application {
         cliniciansUserWindows.add(stage);
     }
 
+    public static void newCliniciansUserWindow(User user){
+        Stage stage = new Stage();
+        stage.getIcons().add(WindowManager.getIcon());
+        stage.setMinHeight(WindowManager.mainWindowMinHeight);
+        stage.setMinWidth(WindowManager.mainWindowMinWidth);
+        stage.setHeight(WindowManager.mainWindowPrefHeight);
+        stage.setWidth(WindowManager.mainWindowPrefWidth);
+
+        WindowManager.addCliniciansUserWindow(stage);
+        stage.initModality(Modality.NONE);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
+            Parent root = (Parent) loader.load();
+            UserWindowController userWindowController = loader.getController();
+            userWindowController.setTitleBar(stage);
+            WindowManager.setCurrentUser(user);
+            String text = History.prepareFileStringGUI(user.getId(), "view");
+            History.printToFile(streamOut, text);
+
+            userWindowController.populateUserFields();
+            userWindowController.populateHistoryTable();
+            userWindowController.showWaitingListButton();
+            WindowManager.controlViewForClinician();
+
+            Scene newScene = new Scene(root, 900, 575);
+            stage.setScene(newScene);
+            stage.show();
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
+    }
+
     /**
      * sets the current clinician
      *
@@ -86,6 +140,7 @@ public class WindowManager extends Application {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
+        getTransplantWaitingListController().updateFoundUsersWithFiltering("","None");
     }
 
     /**
@@ -182,6 +237,14 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Re-highlights the organ donation checkboxes which the current user is also receiving.
+     */
+    public static void reHighlightOrganDonationCheckboxes(){
+        userWindowController.highlightOrganCheckBoxes();
+    }
+
+
+    /**
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
@@ -208,6 +271,7 @@ public class WindowManager extends Application {
         waitingListController.setControlsShown(true);
         medicalHistoryProceduresController.setControlsShown(true);
         medicalHistoryDiseasesController.setControlsShown(true);
+        userWindowController.disableLogoutControls();
     }
 
     /**
@@ -290,7 +354,7 @@ public class WindowManager extends Application {
     }
 
     public static TransplantWaitingListController getTransplantWaitingListController() {
-        return WindowManager.transplantWaitingListController;
+        return transplantWaitingListController;
     }
 
     public static void closeAllChildren() {
@@ -322,7 +386,24 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        if (args.length == 0) {
+            database = new Database();
+            database.connectToDatabase();
+            launch(args);
+        } else if (args.length == 1 && args[0].equals("-c")) {
+            try {
+                IO.setPaths();
+                CommandLineInterface commandLineInterface = new CommandLineInterface();
+                //commandLineInterface.run(System.in);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Please either run using:" +
+                    "\nGUI mode: java -jar app-0.0.jar" +
+                    "\nCommand line mode: java -jar app-0.0.jar -c.");
+        }
+
     }
 
     /**
@@ -365,44 +446,52 @@ public class WindowManager extends Application {
         stage.getIcons().add(icon);
         try {
             IO.setPaths();
-            File users = new File(IO.getUserPath());
-            if (users.exists()) {
-                if (!IO.importUsers(users.getAbsolutePath(), ProfileType.USER)) {
-                    throw new IOException("User save file could not be loaded.");
-                }
-            } else {
-                if (!users.createNewFile()) {
-                    throw new IOException("User save file could not be created.");
-                }
-            }
-            File clinicians = new File(IO.getClinicianPath());
-            if (clinicians.exists()) {
-                if (!IO.importUsers(clinicians.getAbsolutePath(), ProfileType.CLINICIAN)) {
-                    throw new IOException("Clinician save file could not be loaded.");
-                }
-            } else {
-                if (!clinicians.createNewFile()) {
-                    throw new IOException("Clinician save file could not be created.");
-                }
-                Clinician defaultClinician = new Clinician("default", "default", "default");
-                DataManager.clinicians.add(defaultClinician);
-                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
 
-            }
-            File admins = new File(IO.getAdminPath());
-            if (admins.exists()) {
-                if (!IO.importUsers(admins.getAbsolutePath(), ProfileType.ADMIN)) {
-                    throw new IOException("Admin save file could not be loaded.");
-                }
-            } else {
-                if (!admins.createNewFile()) {
-                    throw new IOException("Admin save file could not be created.");
-                }
-                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
-                DataManager.admins.add(defaultAdmin);
-                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
+            //TODO Get rid of loading of users from json
+//            File users = new File(IO.getUserPath());
+//            if (users.exists()) {
+//                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
+//                    throw new IOException("User save file could not be loaded.");
+//                }
+//            } else {
+//                if (!users.createNewFile()) {
+//                    throw new IOException("User save file could not be created.");
+//                }
+//            }
 
-            }
+            //TODO Get rid of loading clinicians from json
+//            File clinicians = new File(IO.getClinicianPath());
+//            if (clinicians.exists()) {
+//                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
+//                    throw new IOException("Clinician save file could not be loaded.");
+//                }
+//            } else {
+//                if (!clinicians.createNewFile()) {
+//                    throw new IOException("Clinician save file could not be created.");
+//                }
+//                Clinician defaultClinician = new Clinician("default", "default", "default");
+//                DataManager.clinicians.add(defaultClinician);
+//                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+//
+//            }
+
+            //TODO Get rid of loading admins from json
+//            File admins = new File(IO.getAdminPath());
+//            if (admins.exists()) {
+//                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
+//                    throw new IOException("Admin save file could not be loaded.");
+//                }
+//            } else {
+//                if (!admins.createNewFile()) {
+//                    throw new IOException("Admin save file could not be created.");
+//                }
+//                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
+//                DataManager.admins.add(defaultAdmin);
+//                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+//
+//            }
+
+
             IO.streamOut = History.init();
             for (TFScene scene : TFScene.values()) {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));

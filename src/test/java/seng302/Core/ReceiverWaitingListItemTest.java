@@ -30,7 +30,7 @@ class ReceiverWaitingListItemTest {
         item.deregisterOrgan(3);
         item.registerOrgan();
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
-            date = listItem.getOrganDeregisteredDate();
+            date = listItem.getOrganDeregisteredDate().toString();
         }
         assertTrue(date == null);
     }

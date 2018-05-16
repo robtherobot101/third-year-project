@@ -2,10 +2,12 @@ package seng302.Generic;
 
 import seng302.User.Attribute.Organ;
 
+import java.time.LocalDate;
+
 /**
  * An object to store the necessary data for the transplant waiting list
  */
-public class TransplantWaitingListItem extends WaitingListItem {
+public class  TransplantWaitingListItem extends WaitingListItem {
 
     private String Name;
     private String region;
@@ -20,7 +22,7 @@ public class TransplantWaitingListItem extends WaitingListItem {
      * @param id            The id of the receiver.
      * @param waitingListId The id of the waiting list
      */
-    public TransplantWaitingListItem(String Name, String region, String date, Organ organ, long id, Integer waitingListId) {
+    public TransplantWaitingListItem(String Name, String region, LocalDate date, Organ organ, long id, Integer waitingListId) {
         super(organ, date, id, waitingListId);
         this.Name = Name;
         this.region = region;
