@@ -121,6 +121,21 @@ public class WaitingListController extends PageController implements Initializab
         this.titleBar = titleBar;
     }
 
+    @Override
+    public void undo() {
+
+    }
+
+    @Override
+    public void redo() {
+
+    }
+
+    @Override
+    public void addToUndoStack(User user) {
+
+    }
+
 
     /**
      * Removes any currently registered organs from the combo box, as an already registered organ cannot be registered again.

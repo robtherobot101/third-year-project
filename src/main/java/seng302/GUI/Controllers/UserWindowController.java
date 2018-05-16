@@ -74,7 +74,6 @@ public class UserWindowController implements Initializable {
     private TitleBar titleBar;
 
     private LinkedList<User> waitingListUndoStack = new LinkedList<>(), waitingListRedoStack = new LinkedList<>();
-    private LinkedList<User> attributeUndoStack = new LinkedList<>(), attributeRedoStack = new LinkedList<>();
     private LinkedList<User> medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private LinkedList<User> procedureUndoStack = new LinkedList<>(), procedureRedoStack = new LinkedList<>();
     private LinkedList<User> diseaseUndoStack = new LinkedList<>(), diseaseRedoStack = new LinkedList<>();
@@ -107,7 +106,7 @@ public class UserWindowController implements Initializable {
         proceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
         waitingListController.populateWaitingList();
-        medicationsController.initializeUser(currentUser);
+        medicationsController.setCurrentUser(currentUser);
         attributesController.setCurrentUser(currentUser);
         attributesController.populateUserFields();
 
@@ -207,8 +206,7 @@ public class UserWindowController implements Initializable {
      */
     public void addCurrentUserToUndoStack() {
         if (attributesPane.isVisible()) {
-            attributeUndoStack.add(new User(currentUser));
-            attributeRedoStack.clear();
+            attributesController.addToUndoStack(new User(currentUser));
         } else if (medicationsPane.isVisible()) {
             medicationUndoStack.add(new User(currentUser));
             medicationRedoStack.clear();
@@ -225,19 +223,13 @@ public class UserWindowController implements Initializable {
         setUndoRedoButtonsDisabled(false, true);
     }
 
-    public void addToAttributeUndoStack(User user) {
-        attributeUndoStack.add(new User(user));
-        attributeRedoStack.clear();
-        setUndoRedoButtonsDisabled(false, true);
-    }
-
     /**
      * Set whether the undo and redo buttons are enabled.
      *
      * @param undoDisabled Whether the undo buttons should be disabled
      * @param redoDisabled Whether the redo buttons should be disabled
      */
-    private void setUndoRedoButtonsDisabled(boolean undoDisabled, boolean redoDisabled) {
+    public void setUndoRedoButtonsDisabled(boolean undoDisabled, boolean redoDisabled) {
         undoButton.setDisable(undoDisabled);
         undoBannerButton.setDisable(undoDisabled);
         redoButton.setDisable(redoDisabled);
@@ -280,7 +272,7 @@ public class UserWindowController implements Initializable {
         hideAllTabs();
         attributesPane.setVisible(true);
         setButtonSelected(userAttributesButton, true);
-        setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), attributeRedoStack.isEmpty());
+        setUndoRedoButtonsDisabled(attributesController.undoEmpty(), attributesController.redoEmpty());
         System.out.println(currentUser);
         System.out.println(currentUser.getPreferredName());
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Attributes");
@@ -496,16 +488,9 @@ public class UserWindowController implements Initializable {
     public void undo() {
         titleBar.saved(false);
         if (attributesPane.isVisible()) {
-            attributesController.attributeFieldUnfocused();
-            //Add the current fields to the redo stack
-            attributeRedoStack.add(new User(currentUser));
-            //Copy the attribute information from the top element of the undo stack
-            currentUser.copyFieldsFrom(attributeUndoStack.getLast());
-            //Remove the top element of the undo stack
-            attributeUndoStack.removeLast();
-            attributesController.populateUserFields();
-
-            setUndoRedoButtonsDisabled(attributeUndoStack.isEmpty(), false);
+            // Perform the undo and get whether the stack is now empty
+            attributesController.undo();
+            setUndoRedoButtonsDisabled(attributesController.undoEmpty(), false);
         } else if (medicationsPane.isVisible()) {
             medicationsController.updateUser();
             //Add the current medication lists to the redo stack
@@ -559,16 +544,8 @@ public class UserWindowController implements Initializable {
      */
     public void redo() {
         if (attributesPane.isVisible()) {
-            attributesController.attributeFieldUnfocused();
-            //Add the current fields to the undo stack
-            attributeUndoStack.add(new User(currentUser));
-            //Copy the attribute information from the top element of the redo stack
-            currentUser.copyFieldsFrom(attributeRedoStack.getLast());
-            //Remove the top element of the redo stack
-            attributeRedoStack.removeLast();
-            attributesController.populateUserFields();
-
-            setUndoRedoButtonsDisabled(false, attributeRedoStack.isEmpty());
+            attributesController.redo();
+            setUndoRedoButtonsDisabled(false, attributesController.redoEmpty());
         } else if (medicationsPane.isVisible()) {
             medicationsController.updateUser();
             //Add the current medication lists to the undo stack

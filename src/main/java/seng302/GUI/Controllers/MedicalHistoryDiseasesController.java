@@ -733,4 +733,19 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
     }
+
+    @Override
+    public void undo() {
+
+    }
+
+    @Override
+    public void redo() {
+
+    }
+
+    @Override
+    public void addToUndoStack(User user) {
+
+    }
 }

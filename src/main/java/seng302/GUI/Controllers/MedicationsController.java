@@ -46,7 +46,6 @@ public class MedicationsController extends PageController implements Initializab
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
-    private UserWindowController userWindowController;
 
     /**
      * Initializes the medications pane to show medications for a specified user.
@@ -423,4 +422,18 @@ public class MedicationsController extends PageController implements Initializab
         });
     }
 
+    @Override
+    public void undo() {
+
+    }
+
+    @Override
+    public void redo() {
+
+    }
+
+    @Override
+    public void addToUndoStack(User user) {
+
+    }
 }
