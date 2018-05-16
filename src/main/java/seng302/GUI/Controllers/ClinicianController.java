@@ -623,6 +623,7 @@ public class ClinicianController implements Initializable {
         WindowManager.setClinicianController(this);
 
         updateFoundUsers();
+        //WindowManager.getTransplantWaitingListController().updateTransplantList();
 
         profileTable.setItems(currentPage);
 
@@ -665,54 +666,7 @@ public class ClinicianController implements Initializable {
                         }
 
                         WindowManager.newCliniciansUserWindow(currentUser);
-//                        Stage stage = new Stage();
-//                        stage.getIcons().add(WindowManager.getIcon());
-//                        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-//                        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-//                        stage.setHeight(WindowManager.mainWindowPrefHeight);
-//                        stage.setWidth(WindowManager.mainWindowPrefWidth);
-//
-//                        WindowManager.addCliniciansUserWindow(stage);
-//                        stage.initModality(Modality.NONE);
-//
-//                        try {
-//                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
-//                            Parent root = (Parent) loader.load();
-//                            UserWindowController userWindowController = loader.getController();
-//                            userWindowController.setTitleBar(stage);
-//
-//                            //Getting user information from the database
-//                            User currentUser = null;
-//                            try {
-//                                currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
-//                            } catch(SQLException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                            WindowManager.newCliniciansUserWindow(currentUser);
-//
-//                            WindowManager.setCurrentUser(currentUser);
-//                            System.out.println(row.getItem().getType());
-//
-//                            //TODO Update history with new database calls
-////                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
-////                            History.printToFile(streamOut, text);
-//
-//                            userWindowController.populateUserFields();
-//                            userWindowController.populateHistoryTable();
-//                            userWindowController.showWaitingListButton();
-//                            WindowManager.controlViewForClinician();
-//
-//                            Scene newScene = new Scene(root, 900, 575);
-//                            stage.setScene(newScene);
-//                            stage.show();
-//                            userWindowController.setAsChildWindow();
-//                        } catch (IOException | NullPointerException e) {
-//                            System.err.println("Unable to load fxml or save file.");
-//                            e.printStackTrace();
-//                            Platform.exit();
-//                        }
-//                        WindowManager.newCliniciansUserWindow(row.getItem());
+
                     }
                 });
                 return row;
@@ -727,7 +681,9 @@ public class ClinicianController implements Initializable {
      * also refreshes the waitinglist table data
      */
     public void transplantWaitingList() {
-        WindowManager.getTransplantWaitingListController().updateFoundUsersWithFiltering("", "None");
+        //WindowManager.getTransplantWaitingListController().updateTransplantList();
+
+
         //background.setVisible(false);
         mainPane.setVisible(false);
         transplantListPane.setVisible(true);

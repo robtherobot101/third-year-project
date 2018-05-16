@@ -15,6 +15,7 @@ import seng302.GUI.CommandLineInterface;
 import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
+import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -23,6 +24,7 @@ import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -138,6 +140,7 @@ public class WindowManager extends Application {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
+        getTransplantWaitingListController().updateFoundUsersWithFiltering("","None");
     }
 
     /**
@@ -351,7 +354,7 @@ public class WindowManager extends Application {
     }
 
     public static TransplantWaitingListController getTransplantWaitingListController() {
-        return WindowManager.transplantWaitingListController;
+        return transplantWaitingListController;
     }
 
     public static void closeAllChildren() {

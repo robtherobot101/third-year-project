@@ -810,7 +810,7 @@ public class AdminController implements Initializable {
      * also refreshes the waitinglist table data
      */
     public void transplantWaitingList() {
-        WindowManager.getTransplantWaitingListController().updateFoundUsersWithFiltering("", "None");
+        WindowManager.getTransplantWaitingListController().updateTransplantList();
         mainPane.setVisible(false);
         transplantListPane.setVisible(true);
         cliPane.setVisible(false);

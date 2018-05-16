@@ -608,6 +608,8 @@ public class Database {
         clinician.setRegion(resultSet.getString("region"));
         clinician.setStaffID(resultSet.getInt("staff_id"));
 
+
+
         return clinician;
     }
 

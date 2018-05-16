@@ -75,11 +75,6 @@ public class TransplantWaitingListController implements Initializable {
      * Updates the transplant waiting list table and checks if reciever is waiting not complete
      */
     public void updateTransplantList() {
-        try {
-            WindowManager.getDatabase().refreshUserWaitinglists();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {
@@ -105,11 +100,9 @@ public class TransplantWaitingListController implements Initializable {
      * @param organSearch  the organ to specifically search for given by a user.
      */
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
-        try {
-            WindowManager.getDatabase().refreshUserWaitinglists();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        System.out.println("GDAY MAAAAAAATE");
+
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {
@@ -131,14 +124,22 @@ public class TransplantWaitingListController implements Initializable {
                 }
             }
         }
+        if(transplantList.size() == 0) {
+            System.out.println("There is nothing here!!!");
+        } else {
+            System.out.println("There is something here!!!");
+        }
         transplantTable.setItems(transplantList);
         deregisterReceiverButton.setDisable(true);
+        transplantTable.refresh();
     }
 
     /**
      * method to handle when the organ filter combo box is changed and then updates the transplant waiting list
      */
     public void updateFoundUsersOnOrganChange() {
+        System.out.println(organSearchComboBox.getValue().toString());
+        System.out.println(regionSearchTextField.getText());
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
     }
 
@@ -488,13 +489,14 @@ public class TransplantWaitingListController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
-        transplantTable.setItems(transplantList);
+        //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
         WindowManager.setTransplantWaitingListController(this);
 
-        updateTransplantList();
+        transplantTable.setItems(transplantList);
+        updateFoundUsersWithFiltering("", "None");
         transplantTable.setItems(transplantList);
 
         //add options to organ filter combobox
@@ -549,6 +551,9 @@ public class TransplantWaitingListController implements Initializable {
 
             }
         });
+
+
+
     }
 
 
