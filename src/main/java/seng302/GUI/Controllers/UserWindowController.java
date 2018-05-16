@@ -74,7 +74,6 @@ public class UserWindowController implements Initializable {
     private TitleBar titleBar;
 
     private LinkedList<User> waitingListUndoStack = new LinkedList<>(), waitingListRedoStack = new LinkedList<>();
-    private LinkedList<User> medicationUndoStack = new LinkedList<>(), medicationRedoStack = new LinkedList<>();
     private LinkedList<User> procedureUndoStack = new LinkedList<>(), procedureRedoStack = new LinkedList<>();
     private LinkedList<User> diseaseUndoStack = new LinkedList<>(), diseaseRedoStack = new LinkedList<>();
     private User currentUser;
@@ -208,8 +207,7 @@ public class UserWindowController implements Initializable {
         if (attributesPane.isVisible()) {
             attributesController.addToUndoStack(new User(currentUser));
         } else if (medicationsPane.isVisible()) {
-            medicationUndoStack.add(new User(currentUser));
-            medicationRedoStack.clear();
+            medicationsController.addToUndoStack(new User(currentUser));
         } else if (medicalHistoryDiseasesPane.isVisible()) {
             diseaseUndoStack.add(new User(currentUser));
             diseaseRedoStack.clear();
@@ -285,7 +283,7 @@ public class UserWindowController implements Initializable {
         hideAllTabs();
         medicationsPane.setVisible(true);
         setButtonSelected(medicationsButton, true);
-        setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), medicationRedoStack.isEmpty());
+        setUndoRedoButtonsDisabled(medicationsController.undoEmpty(), medicationsController.redoEmpty());
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Medications");
     }
 
@@ -492,16 +490,8 @@ public class UserWindowController implements Initializable {
             attributesController.undo();
             setUndoRedoButtonsDisabled(attributesController.undoEmpty(), false);
         } else if (medicationsPane.isVisible()) {
-            medicationsController.updateUser();
-            //Add the current medication lists to the redo stack
-            medicationRedoStack.add(new User(currentUser));
-            //Copy the medication lists from the top element of the undo stack
-            currentUser.copyMedicationListsFrom(medicationUndoStack.getLast());
-            //Remove the top element of the undo stack
-            medicationUndoStack.removeLast();
-
-            setUndoRedoButtonsDisabled(medicationUndoStack.isEmpty(), false);
-            medicationsController.updateMedications();
+            medicationsController.undo();
+            setUndoRedoButtonsDisabled(medicationsController.undoEmpty(), false);
         } else if (waitingListPane.isVisible()) {
             waitingListRedoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListUndoStack.getLast());
@@ -547,16 +537,8 @@ public class UserWindowController implements Initializable {
             attributesController.redo();
             setUndoRedoButtonsDisabled(false, attributesController.redoEmpty());
         } else if (medicationsPane.isVisible()) {
-            medicationsController.updateUser();
-            //Add the current medication lists to the undo stack
-            medicationUndoStack.add(new User(currentUser));
-            //Copy the medications lists from the top element of the redo stack
-            currentUser.copyMedicationListsFrom(medicationRedoStack.getLast());
-            //Remove the top element of the redo stack
-            medicationRedoStack.removeLast();
-
-            setUndoRedoButtonsDisabled(false, medicationRedoStack.isEmpty());
-            medicationsController.updateMedications();
+            medicationsController.redo();
+            setUndoRedoButtonsDisabled(false, medicationsController.redoEmpty());
         } else if (waitingListPane.isVisible()) {
             waitingListUndoStack.add(new User(currentUser));
             currentUser.copyWaitingListsFrom(waitingListRedoStack.getLast());

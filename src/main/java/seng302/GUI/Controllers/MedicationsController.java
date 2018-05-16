@@ -41,7 +41,6 @@ public class MedicationsController extends PageController implements Initializab
     private Button moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
 
     private boolean movingItem = false;
-    private User currentUser;
     private ObservableList<Medication> historicItems, currentItems;
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
@@ -424,16 +423,31 @@ public class MedicationsController extends PageController implements Initializab
 
     @Override
     public void undo() {
-
+        updateUser();
+        //Add the current medication lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the medication lists from the top element of the undo stack
+        currentUser.copyMedicationListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateMedications();
     }
 
     @Override
     public void redo() {
-
+        updateUser();
+        //Add the current medication lists to the undo stack
+        undoStack.add(new User(currentUser));
+        //Copy the medications lists from the top element of the redo stack
+        currentUser.copyMedicationListsFrom(redoStack.getLast());
+        //Remove the top element of the redo stack
+        redoStack.removeLast();
+        updateMedications();
     }
 
     @Override
     public void addToUndoStack(User user) {
-
+        undoStack.add(new User(currentUser));
+        redoStack.clear();
     }
 }
