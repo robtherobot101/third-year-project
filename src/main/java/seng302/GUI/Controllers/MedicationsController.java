@@ -51,7 +51,7 @@ public class MedicationsController extends PageController implements Initializab
      *
      * @param currentUser The user to initialize the medications pane with
      */
-    public void initializeUser(User currentUser) {
+    public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         userNameLabel.setText("User: " + currentUser.getName());
         addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());

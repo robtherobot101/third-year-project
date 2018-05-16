@@ -494,7 +494,7 @@ public class UserWindowController implements Initializable {
             proceduresController.undo();
             setUndoRedoButtonsDisabled(proceduresController.undoEmpty(), false);
         } else if (medicalHistoryDiseasesPane.isVisible()) {
-            medicationsController.undo();
+            diseasesController.undo();
             setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), false);
         }
         String text = History.prepareFileStringGUI(currentUser.getId(), "undo");

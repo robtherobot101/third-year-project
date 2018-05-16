@@ -756,9 +756,4 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         redoStack.removeLast();
         updateDiseases();
     }
-
-    @Override
-    public void addToUndoStack(User user) {
-
-    }
 }
