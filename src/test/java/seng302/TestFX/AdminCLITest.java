@@ -1,8 +1,12 @@
 package seng302.TestFX;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javax.xml.crypto.Data;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -10,6 +14,11 @@ import org.junit.Test;
 import seng302.Generic.DataManager;
 
 import java.util.concurrent.TimeoutException;
+import seng302.Generic.IO;
+import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
+import seng302.User.User;
+import sun.awt.image.DataBufferNative;
 
 import static org.junit.Assert.*;
 
@@ -37,6 +46,76 @@ public class AdminCLITest extends TestFXTest {
     public void embeddedCliExists() {
         TextField textField = lookup("#commandInputField").query();
         assertNotNull(textField); //Ensure that the CLI is now showing
+    }
+
+    @Ignore
+    @Test
+    public void checkDeletionIsConsistent() {
+        DataManager.users.clear();
+        addTestUser();
+        clickOn("Home");
+        assertEquals(1, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is in the admin table
+
+        clickOn("#cliTabButton");
+        clickOn("#commandInputField").write("deleteuser 0");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        clickOn("#commandInputField").write("y");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+
+        clickOn("Home");
+        assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is no longer in the admin table
+    }
+
+    @Ignore
+    @Test
+    public void checkDeletionClosesUserIfOpen() {
+        DataManager.users.clear();
+        User testUser = addTestUser();
+        clickOn("Home");
+        doubleClickOn(testUser.getName());
+        clickOn("#cliTabButton");
+        clickOn("#commandInputField").write("deleteuser 0");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        clickOn("#commandInputField").write("y");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        assertNull(lookup("#saveButton").query());
+    }
+
+    @Ignore
+    @Test
+    public void checkImportIsConsistent() throws IOException {
+        DataManager.users.clear();
+        addTestUser();
+        clickOn("Home");
+        assertEquals(1, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is in the admin table
+
+        new File("testsave").createNewFile();//Create a new blank file to load from
+        clickOn("#cliTabButton");
+        clickOn("#commandInputField").write("import -r ../testsave");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        clickOn("Home");
+
+        assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is no longer in the admin table
+
+        new File("testsave").delete();
+    }
+
+    @Ignore
+    @Test
+    public void checkPromptIsPresent() {
+        TextField input = lookup("#commandInputField").query();
+        assertEquals("TF > ", input.getText());
+
+        clickOn("#commandInputField").write("testtesttest");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+
+        assertEquals("TF > ", input.getText());
     }
 
     @Test
