@@ -74,6 +74,15 @@ public class Database {
 
     }
 
+    public void insertWaitingListItem(User currentUser, WaitingListItem waitingListItem) throws SQLException{
+        String insert = "INSERT INTO WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id) VALUES  (?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(insert);
+        statement.setString(1, waitingListItem.organType.toString());
+        statement.setTimestamp(2, java.sql.Timestamp.valueOf(waitingListItem.organRegisteredDate));
+        statement.setInt(3, (Integer) currentUser.getId());
+        System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
+    }
+
     public void updateUserAccountSettings(User user, int userId) throws SQLException {
         String update = "UPDATE USER SET username = ?, email = ?, password = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(update);
@@ -547,6 +556,8 @@ public class Database {
         }
         return user;
     }
+
+
 
     public Clinician loginClinician(String usernameEmail, String password) throws SQLException{
         //First needs to do a search to see if there is a unique clinician with the given inputs
