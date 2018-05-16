@@ -3,10 +3,13 @@ package seng302.TestFX;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
@@ -14,7 +17,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.TFScene;
 import seng302.Generic.ReceiverWaitingListItem;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -28,7 +34,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = addTestUser();
     }
 
@@ -37,7 +43,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      * This method should only be run from the main login screen.
      */
     public void usersTransplantWaitingListAsUser() {
-        loginAs(user);
+        userWindow(user);
         clickOn("#waitingListButton");
     }
 
@@ -47,10 +53,17 @@ public class UserWaitingListGUITest extends TestFXTest {
      * transplant waiting list.
      * This method should only be run from the main login screen.
      */
-    public void usersTransplantWaitingListAsClinician() {
-        loginAsDefaultClinician();
-        openUserAsClinician(user.getName());
+    public void usersTransplantWaitingListAsClinician() throws TimeoutException {
+        userWindowAsClinician();
+        waitForNodeVisible(10,"#waitingListButton");
         clickOn("#waitingListButton");
+    }
+
+    public void userWindowAsClinician(){
+        Platform.runLater(() ->{
+            WindowManager.newCliniciansUserWindow(user);
+        });
+        waitForFxEvents();
     }
 
     /**
@@ -116,8 +129,8 @@ public class UserWaitingListGUITest extends TestFXTest {
      */
     public List<ReceiverWaitingListItem> waitingListItems() {
         ArrayList waitingListItems = new ArrayList<>();
-        for (Object o : lookup("#waitingList").queryTableView().getItems()) {
-            waitingListItems.add((ReceiverWaitingListItem) o);
+        for (Object o : lookup("#waitingListTableView").queryTableView().getItems()) {
+            waitingListItems.add(o);
         }
         return waitingListItems;
     }
@@ -130,10 +143,9 @@ public class UserWaitingListGUITest extends TestFXTest {
         assert (lookup("#organTypeComboBox").query().isVisible());
     }
 
-    @Ignore
     @Test
-    public void receiverCannotUpdateTransplantWaitingList() throws TimeoutException {
-        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.BONE));
+    public void receiverCannotUpdateTransplantWaitingList() {
+        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.BONE,(long)-1));
         usersTransplantWaitingListAsUser();
         assert (!lookup("#registerOrganButton").query().isVisible());
         assert (!lookup("#deregisterOrganButton").query().isVisible());
@@ -141,12 +153,11 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     @Test
-    public void donorCannotSeeTransplantWaitingListOption() throws TimeoutException {
-        loginAs(user);
+    public void donorCannotSeeTransplantWaitingListOption() {
+        userWindow(user);
         assert (!lookup("#waitingListButton").query().isVisible());
     }
 
-    @Ignore
     @Test
     public void itemAddedToWaitingList_appearsInWaitingList() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
@@ -162,7 +173,6 @@ public class UserWaitingListGUITest extends TestFXTest {
         assertTrue(user.isReceiver());
     }
 
-    @Ignore
     @Test
     public void noRegisteredItemsInWaitingList_userIsNotReceiver() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
@@ -171,7 +181,6 @@ public class UserWaitingListGUITest extends TestFXTest {
         assertFalse(user.isReceiver());
     }
 
-    @Ignore
     @Test
     public void itemDeregistered_hasDeregisteredDateAndIsStillWaitingOnIsFalse() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
@@ -181,7 +190,6 @@ public class UserWaitingListGUITest extends TestFXTest {
         assert (waitingListItems().get(0).getOrganDeregisteredDate() != null);
     }
 
-    @Ignore
     @Test
     public void deregisteredItemReregistered_overridesDeregisteredItem() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
@@ -191,7 +199,6 @@ public class UserWaitingListGUITest extends TestFXTest {
         assertEquals(1, waitingListItems().size());
     }
 
-    @Ignore
     @Test
     public void registerDonatingOrgan_organIsHighlightedInWaitingList() throws TimeoutException {
         user.getOrgans().add(Organ.LIVER);
@@ -200,7 +207,6 @@ public class UserWaitingListGUITest extends TestFXTest {
         assertTrue(getWaitingListOrgan(Organ.LIVER).getStyleClass().contains("highlighted-row"));
     }
 
-    @Ignore
     @Test
     public void deregisterDonatingOrgan_organIsNotHighlightedInWaitingList() throws TimeoutException {
         user.getOrgans().add(Organ.LIVER);

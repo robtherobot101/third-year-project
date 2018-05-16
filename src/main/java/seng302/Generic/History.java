@@ -1,7 +1,9 @@
 package seng302.Generic;
 
+import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +15,8 @@ public class History {
     private static String parameterTwo = null;
     private static String parameterThree = null;
     private static String description = null;
+    private static String userInfo;
+    private static String clinicianInfo;
 
     /**
      * Initialises the printstream writing to file.
@@ -53,10 +57,10 @@ public class History {
      * @return the modified string.
      */
     public static String prepareFileStringCLI(String[] nextCommand) {
-        String text = User.dateTimeFormat.format(LocalDateTime.now()) + " CLI";
+        String text = User.dateTimeFormat.format(LocalDateTime.now()) + " CLI -1";
         command = nextCommand[0];
         switch (command.toLowerCase()) {
-            case "add":
+            case "adduser":
                 if (nextCommand[1].contains("\"")) {
                     parameterOne = String.join(" ", nextCommand).split("\"")[1];
                     parameterTwo = nextCommand[nextCommand.length - 1];
@@ -64,41 +68,92 @@ public class History {
                     parameterOne = nextCommand[1];
                     parameterTwo = nextCommand[2];
                 }
-                description = "[Created a user with name: " + parameterOne + ", and date of birth:" + parameterTwo + "]";
+                formatUserInfo(Long.parseLong("-1"));
+                description = "[-Admin- Created a user with info: " + userInfo + ", and date of birth:" + parameterTwo + ".]";
                 break;
-            case "addorgan":
+            case "addclinician":
+                if (nextCommand[3].contains("\"")) {
+                    parameterOne = String.join(" ", nextCommand).split("\"")[3];
+                } else {
+                    parameterOne  = nextCommand[3];
+                }
+                formatClinicianInfo(Long.parseLong("-1"));
+                description = "[-Admin- Created a clinician with info: " + clinicianInfo + ".]";
+                break;
+            case "adddonationorgan":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
-                description = "[Added organ of type " + parameterTwo + " to user " + parameterOne + ".]";
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Added organ donation of type " + parameterTwo + " to user " + userInfo + ".]";
                 break;
-            case "delete":
-                parameterOne = nextCommand[1];
-                description = "[Deleted user " + parameterOne + " from the list.]";
-                break;
-            case "deleteorgan":
+            case "addwaitinglistorgan":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
-                description = "[Removed organ of type " + parameterTwo + " from user " + parameterOne + ".]";
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Added transplant request of type " + parameterTwo + " to user " + userInfo + ".]";
+            case "deleteuser":
+                parameterOne = nextCommand[1];
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Deleted user " + userInfo + " from the program.]";
                 break;
-            case "set":
+            case "deleteclinician":
+                parameterOne = nextCommand[1];
+                formatClinicianInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Deleted clinician " + clinicianInfo + " from the program.]";
+                break;
+            case "removedonationorgan":
+                parameterOne = nextCommand[1];
+                parameterTwo = nextCommand[2];
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Removed organ donation of type " + parameterTwo + " from user " + userInfo + ".]";
+                break;
+            case "removewaitinglistorgan":
+                parameterOne = nextCommand[1];
+                parameterTwo = nextCommand[2];
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Removed transplant of type " + parameterTwo + " from user " + userInfo + ".]";
+                break;
+            case "updateuser":
                 parameterOne = nextCommand[1];
                 parameterTwo = nextCommand[2];
                 parameterThree = nextCommand[3];
-                description = "[Attempted to change the attribute " + parameterTwo + " of user " + parameterOne + ".]";
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Attempted to change the attribute " + parameterTwo + " to " + parameterThree + " of user " + userInfo + ".]";
                 break;
-            case "describe":
+            case "updateclinician":
                 parameterOne = nextCommand[1];
-                description = "[Listed the attributes of user " + nextCommand[1] + ".]";
+                parameterTwo = nextCommand[2];
+                parameterThree = nextCommand[3];
+                formatClinicianInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Attempted to change the attribute " + parameterTwo + " to " + parameterThree + " of clinician " + clinicianInfo + ".]";
+                break;
+            case "describeuser":
+                parameterOne = nextCommand[1];
+                if (parameterOne.contains("\"")){
+                    description = "[-Admin- Listed the attributes of users with the search term \"" + parameterOne + "\"].";
+                } else {
+                    formatUserInfo(Long.parseLong(parameterOne));
+                    description = "[-Admin- Listed the attributes of user " + userInfo + ".]";
+                }
+                break;
+            case "describeclinician":
+                parameterOne = nextCommand[1];
+                formatClinicianInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Listed the attributes of clinician " + clinicianInfo + ".]";
                 break;
             case "describeorgans":
                 parameterOne = nextCommand[1];
-                description = "[Listed organs available from user " + parameterOne + ".]";
+                formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Listed organ donations available from user " + userInfo + ".]";
                 break;
-            case "list":
-                description = "[Listed all users.]";
+            case "listclinicians":
+                description = "[-Admin- Listed all clinicians.]";
+                break;
+            case "listusers":
+                description = "[-Admin- Listed all users.]";
                 break;
             case "listorgans":
-                description = "[Listed all organs available from all users.]";
+                description = "[-Admin- Listed all organs available from all users.]";
                 break;
             case "import":
                 if (nextCommand.length >= 2) {
@@ -109,14 +164,14 @@ public class History {
                         } else {
                             parameterTwo = nextCommand[2];
                         }
-                        description = "[Imported users from relative path with filename " + parameterTwo + ".]";
+                        description = "[-Admin- Imported users from relative path with filename " + parameterTwo + ".]";
                     } else {
                         if (nextCommand[1].contains("\"")) {
                             parameterOne = String.join(" ", nextCommand).split("\"")[1];
                         } else {
                             parameterOne = nextCommand[1];
                         }
-                        description = "[Imported users from path " + parameterOne + ".]";
+                        description = "[-Admin- Imported users from path " + parameterOne + ".]";
                     }
                 }
                 break;
@@ -129,32 +184,32 @@ public class History {
                         } else {
                             parameterTwo = nextCommand[2];
                         }
-                        description = "[Saved users to relative path with filename " + parameterTwo + ".]";
+                        description = "[-Admin- Saved users to relative path with filename " + parameterTwo + ".]";
                     } else {
                         if (nextCommand[1].contains("\"")) {
                             parameterOne = String.join(" ", nextCommand).split("\"")[1];
                         } else {
                             parameterOne = nextCommand[1];
                         }
-                        description = "[Saved users to path " + parameterOne + ".]";
+                        description = "[-Admin- Saved users to path " + parameterOne + ".]";
                     }
                 }
                 break;
             case "help":
                 if (nextCommand.length == 1) {
-                    description = "[Queried available commands.]";
+                    description = "[-Admin- Queried available commands.]";
                 } else {
                     parameterOne = nextCommand[1];
-                    description = "[Queried information about the " + parameterOne + " command.]";
+                    description = "[-Admin- Queried information about the " + parameterOne + " command.]";
                 }
                 break;
             case "quit":
-                description = "[Quit the program.]";
+                description = "[-Admin- Quit the program.]";
                 break;
         }
 
         //join the elements
-        text = String.join(" ", text, command, parameterOne, parameterTwo, parameterThree, description);
+        text = String.join(" ", text, command, description);
 
         //reset for next call
         command = null;
@@ -162,8 +217,43 @@ public class History {
         parameterTwo = null;
         parameterThree = null;
         description = null;
+        userInfo = null;
+        clinicianInfo = null;
 
         return text;
+    }
+
+    /**
+     * Takes a clinicians id as a parameter and returns a tuple of the clinicians id and name.
+     * @param id the staff id of the clinician
+     */
+    private static void formatClinicianInfo(long id) {
+        Clinician clinician;
+        if (id == -1){
+            clinician = SearchUtils.getLatestClincian();
+        } else {
+            clinician = SearchUtils.getClinicianById(id);
+        }
+        if (clinician != null) {
+            clinicianInfo = "(" + clinician.getStaffID() + ": " + clinician.getName() + ")";
+        }
+    }
+
+    /**
+     * Takes a users id as a parameter and returns a tuple of the users id and name.
+     * If set to -1, it will fetch the most recently created user.
+     * @return a tuple with the users id and name
+     */
+    private static void formatUserInfo(Long id) {
+        User user;
+        if (id == -1) {
+            user = SearchUtils.getLatestUser();
+        } else {
+            user = SearchUtils.getUserById(id);
+        }
+        if (user != null) {
+            userInfo = "(" + user.getId() + ": " + user.getName() + ")";
+        }
     }
 
     /**
@@ -176,20 +266,21 @@ public class History {
      */
     public static String prepareFileStringGUI(long userId, String command) {
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
-        User userInfo = SearchUtils.getUserById(userId);
+        User user = SearchUtils.getUserById(userId);
+        if (user != null) {
+            userInfo = "(" + user.getId() + ": " + user.getName() + ")";
+        }
         System.out.println("Command: " + command);
 
         switch (command) {
             case "login":
-                description = "[User " + userId + " logged in successfully.]";
+                description = "[User " + userInfo + " logged in successfully.]";
                 break;
             case "logout":
-                description = "[User " + userId + " logged out successfully.]";
+                description = "[User " + userInfo + " logged out successfully.]";
                 break;
-            case "create":
-                if (userInfo != null) {
-                    description = "[Created a new user profile with id of " + userId + " and name " + userInfo.getName() + ".]";
-                }
+            case "create": 
+                description = "[Created a new user profile with data " + userInfo +".]";
                 break;
             case "update":
                 description = "[Updated user attributes.]";
@@ -211,31 +302,31 @@ public class History {
 
             case "view":
                 //TODO get user viewed id (method in main or clinician or something)
-                description = "[-Clinician- Viewed user " + userInfo.getName() + " .]";
+                description = "[-Clinician- Viewed user " + userInfo + ".]";
                 break;
             case "modifyUser":
-                description = "[-Clinician- Modified user " + userInfo.getName() + "'s attributes.]";
+                description = "[-Clinician- Modified user " + userInfo + "'s attributes.]";
                 break;
             case "waitinglist":
-                description = "[-Clinician- Modified user " + userInfo.getName() + "'s waiting list.]";
+                description = "[-Clinician- Modified user " + userInfo + "'s waiting list.]";
                 break;
             case "medications":
-                description = "[-Clinician- Modified user " + userInfo.getName() + "'s medications.]";
+                description = "[-Clinician- Modified user " + userInfo + "'s medications.]";
                 break;
             case "diseases":
-                description = "[-Clinician- Modified user " + userInfo.getName() + "'s diseases.]";
+                description = "[-Clinician- Modified user " + userInfo + "'s diseases.]";
                 break;
             case "procedures":
-                description = "[-Clinician- Modified user " + userInfo.getName() + "'s procedures.]";
+                description = "[-Clinician- Modified user " + userInfo + "'s procedures.]";
                 break;
             case "search":
                 description = "[-Clinician- Searched user database.]";
                 break;
             case "deregisterDeath":
-                description = "[-Clinician- Deregistered all organs from " + userInfo.getName() + "'s waiting list due to receiver deceased.";
+                description = "[-Clinician- Deregistered all organs from " + userInfo + "'s waiting list due to receiver deceased.]";
                 break;
             case "deregisterError":
-                description = "[-Clinician- Deregistered an organ from user " + userInfo.getName() + "'s due to a register error.]";
+                description = "[-Clinician- Deregistered an organ from user " + userInfo + "'s due to a register error.]";
                 break;
         }
 
@@ -290,7 +381,7 @@ public class History {
         for (String action : historyList) {
             String[] actionDetails = action.split(" ");
             if (actionDetails[2].equals("====")) {
-
+                //do nothing
             } else if (actionDetails[3].length() < 4) {
                 if (Long.parseLong(actionDetails[3]) == userid) {
                     userHistory[index] = actionDetails;

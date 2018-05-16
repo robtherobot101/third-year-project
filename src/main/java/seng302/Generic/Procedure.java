@@ -1,6 +1,9 @@
 package seng302.Generic;
 
+import seng302.User.Attribute.Organ;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  * Class contains all the information for a given procedure used in the Medical History (Procedures) section.
@@ -10,7 +13,7 @@ public class Procedure {
     private String summary;
     private String description;
     private LocalDate date;
-    private boolean isOrganAffecting;
+    private ArrayList<Organ> organsAffected;
 
     /**
      * method to create a new instance of a procedure object
@@ -18,13 +21,31 @@ public class Procedure {
      * @param summary          the given procedure summary
      * @param description      the given procedure description
      * @param date             the given procedure date
-     * @param isOrganAffecting the given organ to be operated on in the procedure
+     * @param organsAffected   the given organs to be operated on in the procedure
      */
-    public Procedure(String summary, String description, LocalDate date, boolean isOrganAffecting) {
+    public Procedure(String summary, String description, LocalDate date, ArrayList<Organ> organsAffected) {
         this.summary = summary;
         this.description = description;
         this.date = date;
-        this.isOrganAffecting = isOrganAffecting;
+        this.organsAffected = organsAffected;
+    }
+
+    /**
+     * returns the procedures affected organs
+     *
+     * @return list of organs
+     */
+    public ArrayList<Organ> getOrgansAffected() {
+        return organsAffected;
+    }
+
+    /**
+     * Sets the organs affected
+     *
+     * @param organsAffected the organs to change it to
+     */
+    public void setOrgansAffected(ArrayList<Organ> organsAffected) {
+        this.organsAffected = organsAffected;
     }
 
     /**
@@ -81,23 +102,6 @@ public class Procedure {
         this.date = date;
     }
 
-    /**
-     * returns the organ the procedure is on
-     *
-     * @return organ the procedure is on
-     */
-    public boolean isOrganAffecting() {
-        return isOrganAffecting;
-    }
-
-    /**
-     * sets the organ the procedure is on
-     *
-     * @param organAffecting the organ the procedure is on
-     */
-    public void setOrganAffecting(boolean organAffecting) {
-        isOrganAffecting = organAffecting;
-    }
 
     @Override
     public String toString() {

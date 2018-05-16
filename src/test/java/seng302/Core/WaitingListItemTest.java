@@ -17,7 +17,7 @@ public class WaitingListItemTest {
     public void setUp() {
         testUser = new User("Joe", LocalDate.parse("01/01/1999", User.dateFormat));
         heart = Organ.HEART;
-        item = new ReceiverWaitingListItem(heart);
+        item = new ReceiverWaitingListItem(heart, 0, 0);
         testUser.getWaitingListItems().add(item);
     }
     /*

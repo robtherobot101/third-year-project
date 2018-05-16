@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
+import static seng302.Generic.WindowManager.setButtonSelected;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -53,7 +54,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton;
+    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -194,7 +195,6 @@ public class ClinicianController implements Initializable {
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
         dialog.setContentText("Please enter your password:");
-
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
             if (password.get().equals(clinician.getPassword())) {
@@ -240,6 +240,8 @@ public class ClinicianController implements Initializable {
         // Set the button types.
         ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        dialog.getDialogPane().lookupButton(updateButtonType).setId("clinicianSettingsPopupUpdateButton");
 
         // Create the username and password labels and fields.
         GridPane grid = new GridPane();
@@ -312,7 +314,6 @@ public class ClinicianController implements Initializable {
         });
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
-
         result.ifPresent(newClinicianDetails -> {
             System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
                     .get(2));
@@ -343,7 +344,17 @@ public class ClinicianController implements Initializable {
      * Closes the application
      */
     public void close() {
-        Platform.exit();
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to exit? ",
+                "You will lose any unsaved data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
+                userWindow.close();
+            }
+            Platform.exit();
+        } else {
+            alert.close();
+        }
     }
 
     /**
@@ -511,16 +522,6 @@ public class ClinicianController implements Initializable {
         return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
     }
 
-    /**
-     * Sets the User Attribute pane as the visible pane
-     */
-    public void showMainPane() {
-        mainPane.setVisible(true);
-        transplantListPane.setVisible(false);
-        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
-        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
@@ -649,40 +650,7 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        Stage stage = new Stage();
-                        stage.getIcons().add(WindowManager.getIcon());
-                        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-                        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-                        stage.setHeight(WindowManager.mainWindowPrefHeight);
-                        stage.setWidth(WindowManager.mainWindowPrefWidth);
-
-                        WindowManager.addCliniciansUserWindow(stage);
-                        stage.initModality(Modality.NONE);
-
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
-                            Parent root = (Parent) loader.load();
-                            UserWindowController userWindowController = loader.getController();
-                            userWindowController.setTitleBar(stage);
-                            WindowManager.setCurrentUser(row.getItem());
-                            System.out.println(row.getItem().getType());
-                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
-                            History.printToFile(streamOut, text);
-
-                            userWindowController.populateUserFields();
-                            userWindowController.populateHistoryTable();
-                            userWindowController.showWaitingListButton();
-                            WindowManager.controlViewForClinician();
-
-                            Scene newScene = new Scene(root, 900, 575);
-                            stage.setScene(newScene);
-                            stage.show();
-                            userWindowController.setAsChildWindow();
-                        } catch (IOException | NullPointerException e) {
-                            System.err.println("Unable to load fxml or save file.");
-                            e.printStackTrace();
-                            Platform.exit();
-                        }
+                        WindowManager.newCliniciansUserWindow(row.getItem());
                     }
                 });
                 return row;
@@ -693,16 +661,39 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * calls the transplantWaitingList controller and displays it.
+     * Hides all of the main panes.
+     */
+    private void hideAllTabs() {
+        setButtonSelected(homeButton, false);
+        setButtonSelected(transplantListButton, false);
+
+        mainPane.setVisible(false);
+        transplantListPane.setVisible(false);
+        undoWelcomeButton.setDisable(true);
+        redoWelcomeButton.setDisable(true);
+    }
+
+    /**
+     * Sets the User Attribute pane as the visible pane.
+     */
+    public void showMainPane() {
+        hideAllTabs();
+        setButtonSelected(homeButton, true);
+        mainPane.setVisible(true);
+        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
+        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
+    }
+
+    /**
+     * Calls the transplantWaitingList controller and displays it.
      * also refreshes the waitinglist table data
      */
     public void transplantWaitingList() {
-        WindowManager.getTransplantWaitingListController().updateTransplantList();
-        //background.setVisible(false);
-        mainPane.setVisible(false);
+        hideAllTabs();
+        setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
-        undoWelcomeButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
+
+        WindowManager.getTransplantWaitingListController().updateTransplantList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
 }

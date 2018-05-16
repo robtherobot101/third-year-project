@@ -11,10 +11,15 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.matcher.control.LabeledMatchers;
+import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 public class RevisedNameandGenderTest extends TestFXTest {
+
+    private User user;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
@@ -22,10 +27,9 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     private void enterAttributesPanel() {
-
-        DataManager.users.clear();
-        addTestUser();
-        loginAs(DataManager.users.get(0));
+        user = addTestUser();
+        userWindow(user);
+        sleep(500);
 
         clickOn("#userAttributesButton");
     }
@@ -36,7 +40,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Bobby Dong Flame"));
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Welcome, Bobby Dong Flame"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
 
         //Add a new medication for the user.
@@ -48,7 +52,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         push(KeyCode.ENTER);
         Assert.assertEquals(DataManager.users.get(0).getName(), "New Name Test");
         Assert.assertEquals(DataManager.users.get(0).getPreferredName(), "Bobby Dong Flame");
-        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Bobby Dong Flame"));
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Welcome, Bobby Dong Flame"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
 
     }
@@ -58,7 +62,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: Bobby Dong Flame"));
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Welcome, Bobby Dong Flame"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
 
         //Add a new medication for the user.
@@ -70,7 +74,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         push(KeyCode.ENTER);
         Assert.assertEquals(DataManager.users.get(0).getName(), "Bobby Dong Flame");
         Assert.assertEquals(DataManager.users.get(0).getPreferredName(), "New Name Test");
-        verifyThat("#userDisplayText", LabeledMatchers.hasText("Currently logged in as: New Name Test"));
+        verifyThat("#userDisplayText", LabeledMatchers.hasText("Welcome, New Name Test"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for New Name Test"));
 
     }
@@ -126,7 +130,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        Assert.assertEquals(DataManager.users.get(0).getCurrentAddress(), null);
+        Assert.assertEquals("", DataManager.users.get(0).getCurrentAddress());
 
         doubleClickOn("#addressField").write("3 Test Street");
         clickOn("#saveButton");
@@ -150,7 +154,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        Assert.assertEquals(DataManager.users.get(0).getRegion(), null);
+        Assert.assertEquals("", DataManager.users.get(0).getRegion());
 
         doubleClickOn("#regionField").write("Testchurch");
         clickOn("#saveButton");
