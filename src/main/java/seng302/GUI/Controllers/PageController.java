@@ -64,7 +64,10 @@ public abstract class PageController {
      * Add an action to the undo stack
      * @param user The user with the old fields
      */
-    public abstract void addToUndoStack(User user);
+    public void addToUndoStack(User user){
+        undoStack.add(new User(user));
+        redoStack.clear();
+    }
 
     /**
      * Returns whether the undo stack is empty

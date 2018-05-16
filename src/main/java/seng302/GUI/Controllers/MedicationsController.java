@@ -444,10 +444,4 @@ public class MedicationsController extends PageController implements Initializab
         redoStack.removeLast();
         updateMedications();
     }
-
-    @Override
-    public void addToUndoStack(User user) {
-        undoStack.add(new User(currentUser));
-        redoStack.clear();
-    }
 }

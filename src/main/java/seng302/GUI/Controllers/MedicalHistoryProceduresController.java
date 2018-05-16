@@ -58,10 +58,6 @@ public class MedicalHistoryProceduresController extends PageController implement
     private Label donatingLabel;
 
     private ArrayList<CheckBox> affectedOrganCheckBoxes = new ArrayList<>();
-
-
-    private User currentUser;
-    private UserWindowController userWindowController;
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
 
@@ -698,16 +694,25 @@ public class MedicalHistoryProceduresController extends PageController implement
 
     @Override
     public void undo() {
-
+        updateUser();
+        //Add the current procedures lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the procedures lists from the top element of the undo stack
+        currentUser.copyProceduresListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateProcedures();
     }
 
     @Override
     public void redo() {
-
-    }
-
-    @Override
-    public void addToUndoStack(User user) {
-
+        updateUser();
+        //Add the current procedures lists to the redo stack
+        undoStack.add(new User(currentUser));
+        //Copy the procedures lists from the top element of the undo stack
+        currentUser.copyProceduresListsFrom(redoStack.getLast());
+        //Remove the top element of the undo stack
+        redoStack.removeLast();
+        updateProcedures();
     }
 }

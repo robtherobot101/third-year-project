@@ -304,6 +304,7 @@ public class UserAttributesController extends PageController implements Initiali
         User oldFields = new User(currentUser);
         if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
             addToUndoStack(oldFields);
+            userWindowController.setUndoRedoButtonsDisabled(false, true);
             titleBar.saved(false);
             statusIndicator.setStatus("Edited user details", false);
         }
@@ -431,8 +432,6 @@ public class UserAttributesController extends PageController implements Initiali
 
     @Override
     public void addToUndoStack(User user) {
-        undoStack.add(new User(user));
-        redoStack.clear();
-        userWindowController.setUndoRedoButtonsDisabled(false, true);
+
     }
 }

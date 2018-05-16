@@ -49,11 +49,9 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
     private boolean sortCuredDiagnosisAscending, sortCuredDatesAscending, sortCuredByDate;
-    private User currentUser;
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
     private Label currentDiagnosisColumnLabel, currentDateColumnLabel;
     private Label curedDiagnosisColumnLabel, curedDateColumnLabel;
-    private UserWindowController userWindowController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -736,12 +734,27 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     @Override
     public void undo() {
+        updateUser();
+        //Add the current disease lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the disease lists from the top element of the undo stack
+        currentUser.copyDiseaseListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateDiseases();
 
     }
 
     @Override
     public void redo() {
-
+        updateUser();
+        //Add the current disease lists to the redo stack
+        undoStack.add(new User(currentUser));
+        //Copy the disease lists from the top element of the undo stack
+        currentUser.copyDiseaseListsFrom(redoStack.getLast());
+        //Remove the top element of the undo stack
+        redoStack.removeLast();
+        updateDiseases();
     }
 
     @Override

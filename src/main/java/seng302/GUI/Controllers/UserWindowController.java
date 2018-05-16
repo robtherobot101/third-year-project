@@ -73,9 +73,6 @@ public class UserWindowController implements Initializable {
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
 
-    private LinkedList<User> waitingListUndoStack = new LinkedList<>(), waitingListRedoStack = new LinkedList<>();
-    private LinkedList<User> procedureUndoStack = new LinkedList<>(), procedureRedoStack = new LinkedList<>();
-    private LinkedList<User> diseaseUndoStack = new LinkedList<>(), diseaseRedoStack = new LinkedList<>();
     private User currentUser;
 
 
@@ -209,14 +206,12 @@ public class UserWindowController implements Initializable {
         } else if (medicationsPane.isVisible()) {
             medicationsController.addToUndoStack(new User(currentUser));
         } else if (medicalHistoryDiseasesPane.isVisible()) {
-            diseaseUndoStack.add(new User(currentUser));
-            diseaseRedoStack.clear();
+            diseasesController.addToUndoStack(new User(currentUser));
         } else if (medicalHistoryProceduresPane.isVisible()) {
-            procedureUndoStack.add(new User(currentUser));
-            procedureRedoStack.clear();
+            proceduresController.addToUndoStack(new User(currentUser));
         } else if (waitingListPane.isVisible()) {
-            waitingListUndoStack.add(new User(currentUser));
-            waitingListRedoStack.clear();
+            waitingListController.addToUndoStack(new User(currentUser));
+
         }
         setUndoRedoButtonsDisabled(false, true);
     }
@@ -294,7 +289,7 @@ public class UserWindowController implements Initializable {
         hideAllTabs();
         medicalHistoryDiseasesPane.setVisible(true);
         setButtonSelected(diseasesButton, true);
-        setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), diseaseRedoStack.isEmpty());
+        setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), diseasesController.redoEmpty());
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Disease History");
     }
 
@@ -321,7 +316,7 @@ public class UserWindowController implements Initializable {
     public void showWaitingListPane() {
         hideAllTabs();
         waitingListPane.setVisible(true);
-        setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), waitingListRedoStack.isEmpty());
+        setUndoRedoButtonsDisabled(waitingListController.undoEmpty(), waitingListController.redoEmpty());
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Waiting List");
     }
 
@@ -493,33 +488,14 @@ public class UserWindowController implements Initializable {
             medicationsController.undo();
             setUndoRedoButtonsDisabled(medicationsController.undoEmpty(), false);
         } else if (waitingListPane.isVisible()) {
-            waitingListRedoStack.add(new User(currentUser));
-            currentUser.copyWaitingListsFrom(waitingListUndoStack.getLast());
-            waitingListUndoStack.removeLast();
-            setUndoRedoButtonsDisabled(waitingListUndoStack.isEmpty(), false);
-            waitingListController.populateWaitingList();
+            waitingListController.undo();
+            setUndoRedoButtonsDisabled(waitingListController.undoEmpty(), false);
         } else if (medicalHistoryProceduresPane.isVisible()) {
-            proceduresController.updateUser();
-            //Add the current procedures lists to the redo stack
-            procedureRedoStack.add(new User(currentUser));
-            //Copy the procedures lists from the top element of the undo stack
-            currentUser.copyProceduresListsFrom(procedureUndoStack.getLast());
-            //Remove the top element of the undo stack
-            procedureUndoStack.removeLast();
-
-            setUndoRedoButtonsDisabled(procedureUndoStack.isEmpty(), false);
-            proceduresController.updateProcedures();
+            proceduresController.undo();
+            setUndoRedoButtonsDisabled(proceduresController.undoEmpty(), false);
         } else if (medicalHistoryDiseasesPane.isVisible()) {
-            diseasesController.updateUser();
-            //Add the current disease lists to the redo stack
-            diseaseRedoStack.add(new User(currentUser));
-            //Copy the disease lists from the top element of the undo stack
-            currentUser.copyDiseaseListsFrom(diseaseUndoStack.getLast());
-            //Remove the top element of the undo stack
-            diseaseUndoStack.removeLast();
-
-            setUndoRedoButtonsDisabled(diseaseUndoStack.isEmpty(), false);
-            diseasesController.updateDiseases();
+            medicationsController.undo();
+            setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), false);
         }
         String text = History.prepareFileStringGUI(currentUser.getId(), "undo");
         History.printToFile(streamOut, text);
@@ -540,33 +516,15 @@ public class UserWindowController implements Initializable {
             medicationsController.redo();
             setUndoRedoButtonsDisabled(false, medicationsController.redoEmpty());
         } else if (waitingListPane.isVisible()) {
-            waitingListUndoStack.add(new User(currentUser));
-            currentUser.copyWaitingListsFrom(waitingListRedoStack.getLast());
-            waitingListRedoStack.removeLast();
-            setUndoRedoButtonsDisabled(false, waitingListRedoStack.isEmpty());
-            waitingListController.populateWaitingList();
+            waitingListController.redo();
+            setUndoRedoButtonsDisabled(false, waitingListController.redoEmpty());
+
         } else if (medicalHistoryProceduresPane.isVisible()) {
-            proceduresController.updateUser();
-            //Add the current procedures lists to the redo stack
-            procedureUndoStack.add(new User(currentUser));
-            //Copy the procedures lists from the top element of the undo stack
-            currentUser.copyProceduresListsFrom(procedureRedoStack.getLast());
-            //Remove the top element of the undo stack
-            procedureRedoStack.removeLast();
-
-            setUndoRedoButtonsDisabled(false, procedureRedoStack.isEmpty());
-            proceduresController.updateProcedures();
+            proceduresController.redo();
+            setUndoRedoButtonsDisabled(false, proceduresController.redoEmpty());
         } else if (medicalHistoryDiseasesPane.isVisible()) {
-            diseasesController.updateUser();
-            //Add the current disease lists to the redo stack
-            diseaseUndoStack.add(new User(currentUser));
-            //Copy the disease lists from the top element of the undo stack
-            currentUser.copyDiseaseListsFrom(diseaseRedoStack.getLast());
-            //Remove the top element of the undo stack
-            diseaseRedoStack.removeLast();
-
-            setUndoRedoButtonsDisabled(false, diseaseRedoStack.isEmpty());
-            diseasesController.updateDiseases();
+            diseasesController.redo();
+            setUndoRedoButtonsDisabled(false, diseasesController.redoEmpty());
         }
         String text = History.prepareFileStringGUI(currentUser.getId(), "redo");
         History.printToFile(streamOut, text);
