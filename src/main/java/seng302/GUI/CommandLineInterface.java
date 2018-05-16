@@ -171,7 +171,7 @@ public class CommandLineInterface {
                     success = showHelp(nextCommand);
                     break;
                 case "sql":
-                    success = queryDatabase(nextCommand);
+                    queryDatabase(nextCommand);
                     break;
                 default:
                     printLine("Command not recognised. Enter 'help' to view available commands, or help <command> to view information " +
@@ -207,15 +207,15 @@ public class CommandLineInterface {
 
     }
 
-    private boolean queryDatabase(String[] nextCommand){
+    private void queryDatabase(String[] nextCommand){
+        SqlSanitation sqlSanitation = new SqlSanitation();
         String[] sqlArray = Arrays.copyOfRange(nextCommand, 1, nextCommand.length);
         String query = String.join(" ", sqlArray);
-        String result = SqlSanitation.sanitizeSqlString(query);
+        String result = sqlSanitation.sanitizeSqlString(query);
         if (!result.equals("")){
             printLine(result);
-            return false;
         } else {
-            return true;
+            printLine(sqlSanitation.executeQuery(query));
         }
     }
 

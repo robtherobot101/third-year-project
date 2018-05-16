@@ -1,5 +1,7 @@
 package seng302.GUI;
 
+import seng302.Generic.Database;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -11,7 +13,7 @@ public class SqlSanitation {
      * @param sqlCommand The query to sanitize.
      * @return Returns a String statement that explains the problems with the query or an empty string if the query is okay.
      */
-    public static String sanitizeSqlString(String sqlCommand) {
+    public String sanitizeSqlString(String sqlCommand) {
         String printStream = "";
         if(sqlCommand.toLowerCase().contains("delete")){
             printStream = "You do not have permission to delete from the database.";
@@ -37,7 +39,7 @@ public class SqlSanitation {
      * @param rs The result set to be printed in a table.
      * @return Returns a PrintStream of the table to be printed.
      */
-    protected String printTable(ResultSet rs) {
+    private String createTable(ResultSet rs) {
         String tableString;
         StringBuilder table = new StringBuilder();
         try {
@@ -59,5 +61,22 @@ public class SqlSanitation {
         }
         tableString = table.toString();
         return tableString;
+    }
+
+    /**
+     * Executes a query and displays it in a table.
+     * @param query The query to execute.
+     * @return Returns a string table of the results.
+     */
+    protected String executeQuery(String query){
+        Database database = new Database();
+        database.connectToDatabase();
+        ResultSet resultSet;
+        try {
+            resultSet = database.adminQuery(query);
+        } catch (SQLException e) {
+            return "There was an error with the database";
+        }
+        return createTable(resultSet);
     }
 }

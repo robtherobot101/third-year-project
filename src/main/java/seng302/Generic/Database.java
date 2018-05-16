@@ -785,6 +785,12 @@ public class Database {
 
     }
 
+    public ResultSet adminQuery(String query) throws SQLException{
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
+        return resultSet;
+    }
+
     public void connectToDatabase() {
         try{
             Class.forName(jdbcDriver);
