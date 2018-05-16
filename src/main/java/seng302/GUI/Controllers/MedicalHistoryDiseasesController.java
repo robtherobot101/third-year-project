@@ -713,15 +713,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     }
 
     /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
-    }
-
-    /**
      * Function to set the current donor of this class to that of the instance of the application.
      *
      * @param currentUser The donor to set the current donor.

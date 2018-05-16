@@ -210,15 +210,6 @@ public class WaitingListController extends PageController implements Initializab
     }
 
     /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
-    }
-
-    /**
      * Shows or hides the options for modifying the transplant waiting list
      * depending on the value of shown
      *

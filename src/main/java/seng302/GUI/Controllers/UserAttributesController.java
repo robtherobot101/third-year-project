@@ -314,15 +314,6 @@ public class UserAttributesController extends PageController implements Initiali
         }
     }
 
-    /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
