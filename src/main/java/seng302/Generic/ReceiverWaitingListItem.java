@@ -3,6 +3,7 @@ package seng302.Generic;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
  */
 public class ReceiverWaitingListItem extends WaitingListItem {
 
-    public String organDeregisteredDate;
+    public LocalDate organDeregisteredDate;
     public boolean stillWaitingOn;
     public Integer organDeregisteredCode;
 
@@ -38,7 +39,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
         this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
-    public ReceiverWaitingListItem(Organ organType, String registeredDate, String deregisteredDate, Long userId, Integer deregisteredCode) {
+    public ReceiverWaitingListItem(Organ organType, LocalDate registeredDate, LocalDate deregisteredDate, Long userId, Integer deregisteredCode) {
         this.organType = organType;
         this.organRegisteredDate = registeredDate;
         this.organDeregisteredDate = deregisteredDate;
@@ -57,7 +58,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
     public ReceiverWaitingListItem(Organ heart, Long id) {
         this.organType = heart;
         this.userId = id;
-        this.organRegisteredDate = User.dateFormat.format(LocalDateTime.now());
+        this.organRegisteredDate = LocalDate.now();
         this.stillWaitingOn = true;
     }
 
@@ -66,7 +67,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      * Can be called when registering a previously deregistered organ.
      */
     public void registerOrgan() {
-        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.organRegisteredDate = LocalDate.now();
         this.organDeregisteredCode = null;
         this.stillWaitingOn = true;
         this.organDeregisteredDate = null;
@@ -86,11 +87,11 @@ public class ReceiverWaitingListItem extends WaitingListItem {
                 selectedUser.getWaitingListItems().remove(this);
                 temp = new ReceiverWaitingListItem(this);
                 selectedUser.getWaitingListItems().add(temp);
-                temp.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+                temp.organDeregisteredDate = LocalDate.now();
                 temp.organDeregisteredCode = reasonCode;
                 temp.stillWaitingOn = false;
             } else {
-                this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+                this.organDeregisteredDate = LocalDate.now();
                 this.organDeregisteredCode = reasonCode;
             }
 
@@ -122,7 +123,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      *
      * @return de-registered date of an object
      */
-    public String getOrganDeregisteredDate() {
+    public LocalDate getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
 

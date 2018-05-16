@@ -3,6 +3,7 @@ package seng302.Generic;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -12,14 +13,14 @@ import java.time.LocalDateTime;
 public class WaitingListItem {
 
     protected Organ organType;
-    protected String organRegisteredDate;
+    protected LocalDate organRegisteredDate;
     protected Integer waitingListItemId;
     protected Long userId;
 
 
     public WaitingListItem(Organ organType) {
         this.organType = organType;
-        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.organRegisteredDate = LocalDate.now();
         this.waitingListItemId = WindowManager.getNextWaitingListId();
         this.userId = WindowManager.getUserWindowController().getCurrentUser().getId();
     }
@@ -31,7 +32,7 @@ public class WaitingListItem {
         this.userId = copy.userId;
     }
 
-    public WaitingListItem(Organ organ, String date, long id, Integer waitingListId) {
+    public WaitingListItem(Organ organ, LocalDate date, long id, Integer waitingListId) {
         this.organType = organ;
         this.organRegisteredDate = date;
         this.userId = id;
@@ -46,7 +47,7 @@ public class WaitingListItem {
         return organType;
     }
 
-    public String getOrganRegisteredDate() {
+    public LocalDate getOrganRegisteredDate() {
         return organRegisteredDate;
     }
 

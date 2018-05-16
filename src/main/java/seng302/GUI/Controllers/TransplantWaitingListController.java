@@ -24,6 +24,7 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -74,14 +75,22 @@ public class TransplantWaitingListController implements Initializable {
      * Updates the transplant waiting list table and checks if reciever is waiting not complete
      */
     public void updateTransplantList() {
+        try {
+            WindowManager.getDatabase().refreshUserWaitinglists();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {
                 for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
                     List<Integer> codes = Arrays.asList(1, 2, 3, 4);
-                    if (!(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
-                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(), item
-                                .getOrganType(), user.getId(), item.getWaitingListItemId()));
+                    if ((user.getRegion() == null) && !(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
+                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(),
+                                item.getOrganType(), user.getId(), item.getWaitingListItemId()));
+                    } else if ((user.getRegion() != null) && !(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
+                        transplantList.add(new TransplantWaitingListItem(user.getName(), user.getRegion(), item.getOrganRegisteredDate(),
+                                item.getOrganType(), user.getId(), item.getWaitingListItemId()));
                     }
                 }
             }
@@ -96,6 +105,11 @@ public class TransplantWaitingListController implements Initializable {
      * @param organSearch  the organ to specifically search for given by a user.
      */
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+        try {
+            WindowManager.getDatabase().refreshUserWaitinglists();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {

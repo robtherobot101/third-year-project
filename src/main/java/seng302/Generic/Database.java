@@ -78,8 +78,8 @@ public class Database {
         String insert = "INSERT INTO WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id) VALUES  (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(insert);
         statement.setString(1, waitingListItem.organType.toString());
-        statement.setTimestamp(2, java.sql.Timestamp.valueOf(waitingListItem.organRegisteredDate));
-        statement.setInt(3, (Integer) currentUser.getId());
+        statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
+        statement.setLong(3, currentUser.getId());
         System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
     }
 
@@ -547,8 +547,8 @@ public class Database {
 
         while(waitingListResultSet.next()) {
             Organ organ = Organ.parse(waitingListResultSet.getString("organ_type"));
-            String registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate().toString();
-            String deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate().toString() : null;
+            LocalDate registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate();
+            LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
             Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
             Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
 
@@ -557,6 +557,27 @@ public class Database {
         return user;
     }
 
+
+    public void refreshUserWaitinglists() throws SQLException{
+        String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM";
+        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
+        ResultSet waitingListResultSet = waitingListStatement.executeQuery();
+
+        for (User user: DataManager.users) {
+            user.getWaitingListItems().clear();
+        }
+
+        while(waitingListResultSet.next()) {
+            Organ organ = Organ.parse(waitingListResultSet.getString("organ_type"));
+            LocalDate registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate();
+            LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
+            Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
+            Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
+            Long userid = waitingListResultSet.getLong("user_id");
+
+            SearchUtils.getUserById(userid).getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode));
+        }
+    }
 
 
     public Clinician loginClinician(String usernameEmail, String password) throws SQLException{

@@ -727,7 +727,7 @@ public class ClinicianController implements Initializable {
      * also refreshes the waitinglist table data
      */
     public void transplantWaitingList() {
-        WindowManager.getTransplantWaitingListController().updateTransplantList();
+        WindowManager.getTransplantWaitingListController().updateFoundUsersWithFiltering("", "None");
         //background.setVisible(false);
         mainPane.setVisible(false);
         transplantListPane.setVisible(true);
