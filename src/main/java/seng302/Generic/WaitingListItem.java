@@ -20,7 +20,7 @@ public class WaitingListItem {
 
     public WaitingListItem(Organ organType, int id, long userId) {
         this.organType = organType;
-        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.organRegisteredDate = LocalDateTime.now().toLocalDate();
         this.waitingListItemId = id;
         this.userId = userId;
     }

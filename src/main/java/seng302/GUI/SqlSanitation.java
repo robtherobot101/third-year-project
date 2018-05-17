@@ -45,18 +45,21 @@ public class SqlSanitation {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
+            for (int i = 1; i <= columnsNumber; i++){
+                table.append(rsmd.getColumnName(i));
+                table.append(", ");
+            }
+            table.append("\n");
             while (rs.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) table.append(",  ");
                     String columnValue = rs.getString(i);
                     table.append(columnValue);
-                    table.append(" ");
-                    table.append(rsmd.getColumnName(i));
+                    table.append(", ");
                 }
                 table.append("\n");
             }
         } catch (SQLException e){
-            tableString = "An error occurred.";
+            tableString = e.toString();
             return tableString;
         }
         tableString = table.toString();
@@ -68,14 +71,14 @@ public class SqlSanitation {
      * @param query The query to execute.
      * @return Returns a string table of the results.
      */
-    protected String executeQuery(String query){
+    public String executeQuery(String query){
         Database database = new Database();
         database.connectToDatabase();
         ResultSet resultSet;
         try {
             resultSet = database.adminQuery(query);
         } catch (SQLException e) {
-            return "There was an error with the database";
+            return e.toString();
         }
         return createTable(resultSet);
     }

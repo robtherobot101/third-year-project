@@ -80,6 +80,40 @@ public class User {
         this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+        int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
+        this.name = new String[1 + middleNames.length + isLastName];
+        this.name[0] = firstName;
+        System.arraycopy(middleNames, 0, this.name, 1, middleNames.length);
+        if (isLastName == 1) {
+            this.name[this.name.length - 1] = lastName;
+        }
+        this.preferredName = this.name;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+        this.gender = gender;
+        this.genderIdentity = gender;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.region = region;
+        this.currentAddress = currentAddress;
+        this.creationTime = LocalDateTime.now();
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.id = DataManager.getNextId(true, ProfileType.USER);
+        this.currentMedications = new ArrayList<>();
+        this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
+    }
+
+
     /**
      * Used to create a deep copy of the object. Does not copy username, password, or email.
      *

@@ -69,9 +69,6 @@ public class WindowManager extends Application {
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static TransplantWaitingListController transplantWaitingListController;
-    private static MedicalHistoryDiseasesController medicalHistoryDiseasesController;
-    private static MedicalHistoryProceduresController medicalHistoryProceduresController;
-    private static WaitingListController waitingListController;
 
     private static Database database;
 
@@ -122,7 +119,7 @@ public class WindowManager extends Application {
 
             User currentUser = null;
             try {
-                currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
+                currentUser = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
             } catch(SQLException e) {
                 e.printStackTrace();
             }
