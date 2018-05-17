@@ -1,26 +1,17 @@
 package seng302.GUI.Controllers;
 
-import java.util.Observable;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.util.Callback;
 import seng302.GUI.CommandLineInterface;
-import seng302.GUI.TFScene;
-import seng302.Generic.WindowManager;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdminCliController implements Initializable {
@@ -41,15 +32,18 @@ public class AdminCliController implements Initializable {
         // Initialise output components
         currentHistoryIndex = 1;
         commandInputHistory = new ArrayList<>();
-        commandInputHistory.add("");
+        commandInputHistory.add("TF > ");
         capturedOutput = FXCollections.observableArrayList();
         commandOutputView.setItems(capturedOutput);
 
         commandInputField.setOnKeyPressed(event ->  {
             if (event.getCode() == KeyCode.UP) {
-                commandInputField.setText(getCommandFromHistory(true));
+                String command = getCommandFromHistory(true);
+                commandInputField.setText(command);
+                Platform.runLater(() -> commandInputField.positionCaret(command.length()));
             } else if (event.getCode() == KeyCode.DOWN) {
-                commandInputField.setText(getCommandFromHistory(false));
+                String command = getCommandFromHistory(false);
+                commandInputField.setText(command);
             }
         });
         commandInputField.setText("TF > ");
@@ -72,7 +66,9 @@ public class AdminCliController implements Initializable {
      */
     private String getCommandFromHistory(boolean up) {
         if (commandInputHistory.isEmpty()) {
-            return "";
+            return "TF > ";
+        } else if (!up && currentHistoryIndex == commandInputHistory.size() - 1) {
+            return "TF > ";
         } else {
             return commandInputHistory.get(getCommandIndex(up));
         }
@@ -91,11 +87,7 @@ public class AdminCliController implements Initializable {
                 currentHistoryIndex--;
             }
         } else {
-            if (currentHistoryIndex == commandInputHistory.size() - 1) {
-                return currentHistoryIndex;
-            } else {
-                currentHistoryIndex++;
-            }
+            currentHistoryIndex++;
         }
         return currentHistoryIndex;
     }

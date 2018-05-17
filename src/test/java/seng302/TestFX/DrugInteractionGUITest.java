@@ -1,11 +1,5 @@
 package seng302.TestFX;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import org.junit.Before;
@@ -14,6 +8,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
 
 public class DrugInteractionGUITest extends TestFXTest {
 

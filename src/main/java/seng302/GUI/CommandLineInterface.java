@@ -6,15 +6,14 @@ import seng302.GUI.Controllers.UserWindowController;
 import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static seng302.Generic.IO.streamOut;
@@ -31,6 +30,20 @@ public class CommandLineInterface {
 
     public void setOutput(List<String> outputString) {
         this.outputString = outputString;
+    }
+
+    /**
+     * Update a user to display the most up to date information in the GUI.
+     *
+     * @param user The user to update
+     */
+    private void refreshUser(User user) {
+        for (UserWindowController userWindowController: WindowManager.getCliniciansUserWindows().values()) {
+            if (user == userWindowController.getCurrentUser()) {
+                userWindowController.populateUserAttributes();
+                userWindowController.populateHistoryTable();
+            }
+        }
     }
 
     /**
@@ -314,6 +327,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
@@ -349,6 +363,7 @@ public class CommandLineInterface {
         try {
             ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
             toSet.getWaitingListItems().add(item);
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
@@ -494,6 +509,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
@@ -528,6 +544,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeWaitingListItem(Organ.parse(nextCommand[2]));
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
@@ -545,23 +562,6 @@ public class CommandLineInterface {
     private boolean updateUser(String[] nextCommand) {
         long id;
         String attribute, value;
-        /*if (nextCommand.length >= 4 && nextCommand[2].toLowerCase().equals("name") && nextCommand[3].contains("\"")) {
-            id = Long.parseLong(nextCommand[1]);
-            attribute = "name";
-            nextCommand = String.join(" ", nextCommand).split("\"");
-            if (nextCommand.length > 1) {
-                try {
-                    value = nextCommand[1];
-                } catch (NumberFormatException e) {
-                    printLine("Please enter a valid ID number.");
-                    return false;
-                }
-            } else {
-                printLine("Please enter a name.");
-                return false;
-            }
-        } else */
-
         if (nextCommand.length == 4) {
             try {
                 id = Long.parseLong(nextCommand[1]);
@@ -584,11 +584,13 @@ public class CommandLineInterface {
         switch (attribute.toLowerCase()) {
             case "name":
                 toSet.setName(value);
+                refreshUser(toSet);
                 printLine("New name set.");
                 return true;
             case "dateofbirth":
                 try {
                     toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
+                    refreshUser(toSet);
                     printLine("New date of birth set.");
                     return true;
                 } catch (DateTimeException e) {
@@ -598,6 +600,7 @@ public class CommandLineInterface {
             case "dateofdeath":
                 try {
                     toSet.setDateOfDeath(LocalDate.parse(value, User.dateFormat));
+                    refreshUser(toSet);
                     printLine("New date of death set.");
                     return true;
                 } catch (DateTimeException e) {
@@ -607,6 +610,7 @@ public class CommandLineInterface {
             case "gender":
                 try {
                     toSet.setGender(Gender.parse(value));
+                    refreshUser(toSet);
                     printLine("New gender set.");
                     return true;
                 } catch (IllegalArgumentException e) {
@@ -620,6 +624,7 @@ public class CommandLineInterface {
                         printLine("Please enter a height which is larger than 0.");
                     } else {
                         toSet.setHeight(height);
+                        refreshUser(toSet);
                         printLine("New height set.");
                         return true;
                     }
@@ -634,6 +639,7 @@ public class CommandLineInterface {
                         printLine("Please enter a weight which is larger than 0.");
                     } else {
                         toSet.setWeight(weight);
+                        refreshUser(toSet);
                         printLine("New weight set.");
                         return true;
                     }
@@ -644,6 +650,7 @@ public class CommandLineInterface {
             case "bloodtype":
                 try {
                     toSet.setBloodType(BloodType.parse(value));
+                    refreshUser(toSet);
                     printLine("New blood type set.");
                     return true;
                 } catch (IllegalArgumentException e) {
@@ -652,10 +659,12 @@ public class CommandLineInterface {
                 return false;
             case "region":
                 toSet.setRegion(value);
+                refreshUser(toSet);
                 printLine("New region set.");
                 return true;
             case "currentaddress":
                 toSet.setCurrentAddress(value);
+                refreshUser(toSet);
                 printLine("New address set.");
                 return true;
             default:
@@ -942,6 +951,7 @@ public class CommandLineInterface {
                     + "\n\t-updateUser <id> <attribute> <value>"
                     + "\n\t-import [-r] <filename>"
                     + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
+                    + "\n\t-clear"
                     + "\n\t-help [<command>]"
                     + "\n\t-quit");
         } else if (nextCommand.length == 2) {
@@ -1102,6 +1112,11 @@ public class CommandLineInterface {
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                             + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
                             + "Example valid usage: save -r \"new folder/users.json\"");
+                    break;
+                case "clear":
+                    printLine("This command clears the command panel.\n"
+                            + "The syntax is: clear\n"
+                            + "Example valid usage: clear");
                     break;
                 case "help":
                     printLine("This command displays information about how to use this program.\n"

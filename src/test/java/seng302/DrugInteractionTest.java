@@ -1,17 +1,18 @@
 package seng302;
 
-import static junit.framework.TestCase.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
+import seng302.User.Attribute.Gender;
+import seng302.User.Medication.DrugInteraction;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.junit.Before;
-import org.junit.Test;
-import seng302.User.Attribute.Gender;
-import seng302.User.Medication.DrugInteraction;
+
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 
 public class DrugInteractionTest {
 

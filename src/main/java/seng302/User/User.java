@@ -524,10 +524,6 @@ public class User {
         return receiver;
     }
 
-    public String getNameExt() {
-        return getPreferredName() + "(" + getName() + ")";
-    }
-
     /**
      * Returns the intersection of the organs which are being donated and organs that the
      * user is currently waiting to receive

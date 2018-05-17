@@ -1,11 +1,5 @@
 package seng302.TestFX;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,6 +7,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TitleBar;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 public class TitleBarTest extends TestFXTest {
 

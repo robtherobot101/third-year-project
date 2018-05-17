@@ -1,20 +1,18 @@
 package seng302.TUI;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.GUI.CommandLineInterface;
 import seng302.Generic.DataManager;
 import seng302.Generic.IO;
-import seng302.User.Clinician;
 
-import java.net.URISyntaxException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CommandLineInterfaceTest {
     private CommandLineInterface commandLine;
@@ -109,14 +107,5 @@ public class CommandLineInterfaceTest {
         commandLine.readCommand("deleteClinician " + numberOfClinicians);
         commandLine.readCommand("y");
         assertEquals(numberOfClinicians,DataManager.clinicians.size());
-    }
-
-
-    @Test
-    public void deleteUser() {
-        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");
-        commandLine.readCommand("deleteUser 0");
-        commandLine.readCommand("y");
-        assertTrue(DataManager.users.isEmpty());
     }
 }
