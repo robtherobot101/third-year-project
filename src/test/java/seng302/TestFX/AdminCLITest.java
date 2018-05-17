@@ -1,26 +1,23 @@
 package seng302.TestFX;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javax.xml.crypto.Data;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.DataManager;
-
-import java.util.concurrent.TimeoutException;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
-import sun.awt.image.DataBufferNative;
-
-import static org.junit.Assert.*;
 
 public class AdminCLITest extends TestFXTest {
 
@@ -48,7 +45,6 @@ public class AdminCLITest extends TestFXTest {
         assertNotNull(textField); //Ensure that the CLI is now showing
     }
 
-    @Ignore
     @Test
     public void checkDeletionIsConsistent() {
         DataManager.users.clear();
@@ -68,7 +64,7 @@ public class AdminCLITest extends TestFXTest {
         assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is no longer in the admin table
     }
 
-    @Ignore
+    @Ignore //TODO: fix the code so that this test does not fail
     @Test
     public void checkDeletionClosesUserIfOpen() {
         DataManager.users.clear();
@@ -82,10 +78,10 @@ public class AdminCLITest extends TestFXTest {
         clickOn("#commandInputField").write("y");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
-        assertNull(lookup("#saveButton").query());
+        sleep(1000);
+        assertEquals(0, WindowManager.getCliniciansUserWindows().size());
     }
 
-    @Ignore
     @Test
     public void checkImportIsConsistent() throws IOException {
         DataManager.users.clear();
@@ -105,7 +101,6 @@ public class AdminCLITest extends TestFXTest {
         new File("testsave").delete();
     }
 
-    @Ignore
     @Test
     public void checkPromptIsPresent() {
         TextField input = lookup("#commandInputField").query();
@@ -116,6 +111,19 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
 
         assertEquals("TF > ", input.getText());
+    }
+
+    @Ignore //TODO: fix the code so that this test does not fail
+    @Test
+    public void checkClearCommand() {
+        clickOn("#commandInputField").write("testtesttest");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        assertNotNull(lookup("testtest").query());
+        clickOn("#commandInputField").write("clear");
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        assertNull(lookup("testtest").query());
     }
 
     @Test
@@ -152,17 +160,17 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("d", commandInputField.getText());
+        assertEquals("TF > d", commandInputField.getText());
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("c", commandInputField.getText());
+        assertEquals("TF > c", commandInputField.getText());
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("b", commandInputField.getText());
+        assertEquals("TF > b", commandInputField.getText());
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("a", commandInputField.getText());
+        assertEquals("TF > a", commandInputField.getText());
 
         // Check for a second time that the history doesn't break when overrun
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("", commandInputField.getText());
+        assertEquals("TF > a", commandInputField.getText());
     }
 
     @Test
@@ -178,15 +186,15 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("d", commandInputField.getText());
+        assertEquals("TF > d", commandInputField.getText());
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("c", commandInputField.getText());
+        assertEquals("TF > c", commandInputField.getText());
         press(KeyCode.DOWN).release(KeyCode.DOWN);
-        assertEquals("d", commandInputField.getText());
+        assertEquals("TF > d", commandInputField.getText());
         press(KeyCode.DOWN).release(KeyCode.DOWN);
 
         // Check for a second time that the history doesn't break when overrun
-        assertEquals("d", commandInputField.getText());
+        assertEquals("TF > d", commandInputField.getText());
     }
 
     @Test
@@ -194,8 +202,8 @@ public class AdminCLITest extends TestFXTest {
         TextField commandInputField = lookup("#commandInputField").query();
         clickOn("#commandInputField");
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("", commandInputField.getText());
+        assertEquals("TF > ", commandInputField.getText());
         press(KeyCode.DOWN).release(KeyCode.DOWN);
-        assertEquals("", commandInputField.getText());
+        assertEquals("TF > ", commandInputField.getText());
     }
 }

@@ -1,6 +1,8 @@
 package seng302.GUI;
 
 import javafx.collections.ObservableList;
+import javafx.stage.Stage;
+import seng302.GUI.Controllers.UserWindowController;
 import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
@@ -111,13 +113,6 @@ public class CommandLineInterface {
     }
 
     /**
-     * Prints the prompt.
-     */
-    public void printPrompt() {
-        print("TF > ");
-    }
-
-    /**
      * Interprets the given command and calls the relevant method. If the command
      * is executed successfully, the action history file is updated. If the command
      * is not recognised, a message is printed to the console
@@ -171,7 +166,6 @@ public class CommandLineInterface {
                 case "describeuser":
                     success = describeUser(nextCommand);
                     break;
-
                 case "describeClinician":
                     success = describeClinician(nextCommand);
                     break;
@@ -181,8 +175,7 @@ public class CommandLineInterface {
                 case "listusers":
                     success = listUsers(nextCommand);
                     break;
-
-                case "listClinicians":
+                case "listclinicians":
                     success = listClinicians(nextCommand);
                     break;
                 case "listorgans":
@@ -193,6 +186,10 @@ public class CommandLineInterface {
                     break;
                 case "save":
                     success = saveUsers(nextCommand);
+                    break;
+                case "clear":
+                    success = true;
+                    outputString.clear();
                     break;
                 case "help":
                     success = showHelp(nextCommand);
@@ -372,11 +369,12 @@ public class CommandLineInterface {
                 User user = SearchUtils.getUserById(id);
                 if (user == null) {
                     printLine(String.format("User with ID %d not found.", id));
+                } else {
+                    print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
+                    deleteCommand = nextCommand;
+                    isDeleting = true;
+                    userToDelete = user;
                 }
-                print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
-                deleteCommand = nextCommand;
-                isDeleting = true;
-                userToDelete = user;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
@@ -423,7 +421,7 @@ public class CommandLineInterface {
         }
         if (nextLine.equals("y")) {
             boolean deleted;
-            if(userToDelete==null){
+            if(userToDelete == null){
                 deleted = DataManager.clinicians.remove(clinicianToDelete);
                 if (deleted) {
                     printLine("Clinician removed. This change will permanent once the user list is saved.");
@@ -436,6 +434,21 @@ public class CommandLineInterface {
             }else{
                 deleted = DataManager.users.remove(userToDelete);
                 if (deleted) {
+                    //Close the window for the deleted user if it is open.
+                    Stage toClose;
+                    do {
+                        toClose = null;
+                        for (Stage stage : WindowManager.getCliniciansUserWindows().keySet()) {
+                            if (WindowManager.getCliniciansUserWindows().get(stage).getCurrentUser().getId() == userToDelete.getId()) {
+                                toClose = stage;
+                                break;
+                            }
+                        }
+                        if (toClose != null) {
+                            WindowManager.getCliniciansUserWindows().remove(toClose);
+                            toClose.close();
+                        }
+                    } while (toClose != null);
                     printLine("User removed. This change will permanent once the user list is saved.");
                     isDeleting = false;
                     userToDelete = null;
@@ -861,6 +874,7 @@ public class CommandLineInterface {
                 }
                 if (IO.importUsers(path, ProfileType.USER)) {
                     printLine("User imported from " + path + ".");
+                    WindowManager.closeAllChildren();
                     return true;
                 } else {
                     printLine("Failed to import from " + path + ". Make sure the program has access to this file.");
