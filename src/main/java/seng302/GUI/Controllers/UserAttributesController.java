@@ -4,6 +4,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -44,12 +45,6 @@ public class UserAttributesController extends PageController implements Initiali
         middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
 
     private HashMap<Organ, CheckBox> organTickBoxes;
-    private User currentUser;
-    private UserWindowController userWindowController;
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
-    }
 
     /**
      * Highlights the checkboxes in red if the user is also waiting to receive an organ of that type.
@@ -308,19 +303,11 @@ public class UserAttributesController extends PageController implements Initiali
     public void attributeFieldUnfocused() {
         User oldFields = new User(currentUser);
         if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
-            userWindowController.addToAttributeUndoStack(oldFields);
+            addToUndoStack(oldFields);
+            userWindowController.setUndoRedoButtonsDisabled(false, true);
             titleBar.saved(false);
             statusIndicator.setStatus("Edited user details", false);
         }
-    }
-
-    /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
     }
 
     @Override
@@ -418,5 +405,33 @@ public class UserAttributesController extends PageController implements Initiali
         //Add listeners to correctly update BMI and blood pressure based on user input
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
+    }
+
+    public void undo(){
+        attributeFieldUnfocused();
+        //Add the current fields to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the attribute information from the top element of the undo stack
+        currentUser.copyFieldsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        populateUserFields();
+    }
+
+    @Override
+    public void redo() {
+        attributeFieldUnfocused();
+        //Add the current fields to the undo stack
+        undoStack.add(new User(currentUser));
+        //Copy the attribute information from the top element of the redo stack
+        currentUser.copyFieldsFrom(redoStack.getLast());
+        //Remove the top element of the redo stack
+        redoStack.removeLast();
+        populateUserFields();
+    }
+
+    @Override
+    public void addToUndoStack(User user) {
+
     }
 }
