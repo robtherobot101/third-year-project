@@ -56,7 +56,6 @@ public class UserAttributesController extends PageController implements Initiali
      * A tooltip is also added to highlighted checkboxes which tells the user what the problem is
      */
     public void highlightOrganCheckBoxes(){
-        System.out.println("re-drawing");
         for(Organ organ: Organ.values()){
             if(organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox")){
                 organTickBoxes.get(organ).getStyleClass().remove("highlighted-checkbox");
