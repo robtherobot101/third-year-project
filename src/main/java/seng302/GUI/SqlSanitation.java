@@ -45,14 +45,16 @@ public class SqlSanitation {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
-            for (int i = 1; i <= columnsNumber; i++){
-                table.append(rsmd.getColumnName(i));
-                table.append(", ");
-            }
-            table.append("\n");
+//            for (int i = 1; i <= columnsNumber; i++){
+//                table.append(rsmd.getColumnName(i));
+//                table.append(", ");
+//            }
+//            table.append("\n");
             while (rs.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
                     String columnValue = rs.getString(i);
+                    table.append(rsmd.getColumnName(i));
+                    table.append(": ");
                     table.append(columnValue);
                     table.append(", ");
                 }

@@ -147,7 +147,7 @@ public class WindowManager extends Application {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
-        getTransplantWaitingListController().updateFoundUsersWithFiltering("","None");
+        clinicianTransplantWaitingListController.updateFoundUsersWithFiltering("","None");
     }
 
     /**
