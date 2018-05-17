@@ -372,7 +372,6 @@ public class TransplantWaitingListController implements Initializable {
 
         Optional<ButtonType> result = dialog.showAndWait();
         result.ifPresent(option -> {
-            System.out.println(result.get());
             if (result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 if (deathDatePicker.getValue() == null) {
                     Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date needs to be in format dd/mm/yyyy",

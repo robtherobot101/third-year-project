@@ -1,15 +1,19 @@
 package seng302.GUI.Controllers;
 
+import java.util.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Callback;
 import seng302.GUI.CommandLineInterface;
 import seng302.GUI.TFScene;
 import seng302.Generic.WindowManager;
@@ -46,6 +50,13 @@ public class AdminCliController implements Initializable {
                 commandInputField.setText(getCommandFromHistory(true));
             } else if (event.getCode() == KeyCode.DOWN) {
                 commandInputField.setText(getCommandFromHistory(false));
+            }
+        });
+        commandInputField.setText("TF > ");
+        commandInputField.positionCaret(5);
+        commandInputField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.startsWith("TF > ")) {
+                commandInputField.setText(oldValue);
             }
         });
 
@@ -94,11 +105,14 @@ public class AdminCliController implements Initializable {
      * Called when the enter key is pressed on the command input TextField
      */
     public void onEnter() {
-        capturedOutput.add("TF > " + commandInputField.getText());
-        commandLineInterface.readCommand(commandInputField.getText());
-        commandInputHistory.add(commandInputField.getText());
-        currentHistoryIndex = commandInputHistory.size();
-        commandInputField.clear();
-        commandOutputView.scrollTo(capturedOutput.size()-1);
+        if (!commandInputField.getText().equals("TF > ")) {
+            capturedOutput.add(commandInputField.getText());
+            commandLineInterface.readCommand(commandInputField.getText().substring(5));
+            commandInputHistory.add(commandInputField.getText());
+            currentHistoryIndex = commandInputHistory.size();
+            commandInputField.setText("TF > ");
+            commandInputField.positionCaret(5);
+            commandOutputView.scrollTo(capturedOutput.size() - 1);
+        }
     }
 }
