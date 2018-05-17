@@ -41,14 +41,8 @@ public class WaitingListController extends PageController implements Initializab
     @FXML
     private Label organComboBoxLabel, transplantWaitingListLabel;
 
-    private User currentUser;
-
     private ObservableList<ReceiverWaitingListItem> waitingListItems = FXCollections.observableArrayList();
     private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
-
-    public StatusIndicator statusIndicator = new StatusIndicator();
-    private TitleBar titleBar;
-    private UserWindowController userWindowController;
 
     /**
      * Sets the user that whose waiting list items will be displayed or modified.
@@ -125,6 +119,22 @@ public class WaitingListController extends PageController implements Initializab
 
     public void setTitleBar(TitleBar titleBar) {
         this.titleBar = titleBar;
+    }
+
+    @Override
+    public void undo() {
+        redoStack.add(new User(currentUser));
+        currentUser.copyWaitingListsFrom(undoStack.getLast());
+        undoStack.removeLast();
+        populateWaitingList();
+    }
+
+    @Override
+    public void redo() {
+        undoStack.add(new User(currentUser));
+        currentUser.copyWaitingListsFrom(redoStack.getLast());
+        redoStack.removeLast();
+        populateWaitingList();
     }
 
 
@@ -213,15 +223,6 @@ public class WaitingListController extends PageController implements Initializab
                 };
             }
         });
-    }
-
-    /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
     }
 
     /**
