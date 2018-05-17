@@ -13,7 +13,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.Procedure;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.ProfileType;
@@ -47,7 +46,7 @@ public class MedicalHistoryProceduresController extends PageController implement
     private Label donorNameLabel;
 
     @FXML
-    private Button addNewProcedureButton, deleteProcedureButton, saveProcedureButton;
+    private Button addNewProcedureButton, deleteProcedureButton;
     @FXML
     private Label newProcedureDateLabel, newProcedureLabel, pendingProceduresLabel, previousProceduresLabel;
     @FXML
@@ -63,13 +62,12 @@ public class MedicalHistoryProceduresController extends PageController implement
 
 
     private User currentUser;
-
+    private UserWindowController userWindowController;
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setMedicalHistoryProceduresController(this);
         affectedOrganCheckBoxes.addAll(Arrays.asList(pancreasCheckBox, lungCheckBox, heartCheckBox, kidneyCheckBox,
                 intestineCheckBox, corneaCheckBox, middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox));
         setupListeners();
@@ -83,15 +81,13 @@ public class MedicalHistoryProceduresController extends PageController implement
         pendingProcedureItems.addAll(currentUser.getPendingProcedures());
         previousProcedureItems.clear();
         previousProcedureItems.addAll(currentUser.getPreviousProcedures());
-
-
     }
 
     /**
      * Function to saving the most current versions of the previous and pending procedures to an undo stack
      */
     private void saveToUndoStack() {
-        WindowManager.addCurrentToProcedureUndoStack();
+        userWindowController.addCurrentUserToUndoStack();
         currentUser.getPendingProcedures().clear();
         currentUser.getPendingProcedures().addAll(pendingProcedureItems);
         currentUser.getPreviousProcedures().clear();
@@ -161,10 +157,8 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Are you sure?");
-            alert.setHeaderText("Are you sure would like to delete the selected pending procedure? ");
-            alert.setContentText("By doing so, the procedure will be erased from the database.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
+                "Are you sure?", "Are you sure would like to delete the selected pending procedure? ", "By doing so, the procedure will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
@@ -175,10 +169,8 @@ public class MedicalHistoryProceduresController extends PageController implement
             alert.close();
         } else if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Are you sure?");
-            alert.setHeaderText("Are you sure would like to delete the selected previous procedure? ");
-            alert.setContentText("By doing so, the procedure will be erased from the database.");
+            Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
+                "Are you sure?", "Are you sure would like to delete the selected previous procedure? ", "By doing so, the procedure will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
@@ -194,40 +186,17 @@ public class MedicalHistoryProceduresController extends PageController implement
     }
 
     /**
-     * Saves the current state of the donor's procedures for both their previous and pending procedures.
+     * Updates the current state of the user's procedures for both their previous and pending procedures.
      */
-    public void save() {
+    public void updateUser() {
+        currentUser.getPendingProcedures().clear();
+        currentUser.getPendingProcedures().addAll(pendingProcedureItems);
 
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user?" +
-                " ", "By doing so, the donor will be updated with the following procedure details.");
+        currentUser.getPreviousProcedures().clear();
+        currentUser.getPreviousProcedures().addAll(previousProcedureItems);
 
-        alert.getDialogPane().lookupButton(ButtonType.OK).setId("saveProcedureOK");
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.get() == ButtonType.OK) {
-            currentUser.getPendingProcedures().clear();
-            currentUser.getPendingProcedures().addAll(pendingProcedureItems);
-
-            currentUser.getPreviousProcedures().clear();
-            currentUser.getPreviousProcedures().addAll(previousProcedureItems);
-
-            try {
-                WindowManager.getDatabase().updateUserProcedures(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            //TODO Update history with new database calls
-            String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
-            History.printToFile(streamOut, text);
-
-            //populateHistoryTable();
-            alert.close();
-            statusIndicator.setStatus("Saved", false);
-            titleBar.saved(true);
-        } else {
-            alert.close();
-        }
+        String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
+        History.printToFile(streamOut, text);
     }
 
     /**
@@ -680,7 +649,6 @@ public class MedicalHistoryProceduresController extends PageController implement
         pendingProcedureTableView.setDisable(!shown);
         previousProcedureTableView.setDisable(!shown);
         deleteProcedureButton.setVisible(shown);
-        saveProcedureButton.setVisible(shown);
         //isOrganAffectingCheckBox.setVisible(shown);
     }
 
@@ -697,6 +665,15 @@ public class MedicalHistoryProceduresController extends PageController implement
                 currentUser.getPreviousProcedures().add(procedure);
             }
         }
+    }
+
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
     }
 
     /**

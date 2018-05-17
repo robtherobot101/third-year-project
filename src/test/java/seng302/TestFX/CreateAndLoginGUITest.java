@@ -8,8 +8,11 @@ import static org.testfx.api.FxAssert.verifyThat;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import seng302.GUI.TFScene;
+import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 public class CreateAndLoginGUITest extends TestFXTest {
@@ -17,6 +20,11 @@ public class CreateAndLoginGUITest extends TestFXTest {
     @BeforeClass
     public static void setupClass() throws TimeoutException {
         defaultTestSetup();
+    }
+
+    @Before
+    public void setup() {
+        WindowManager.resetScene(TFScene.createAccount);
     }
 
     @Test
@@ -107,7 +115,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
     }
 
     @Test
-    public void duplicateUsername() {
+    public void duplicateUsername() throws TimeoutException {
         User testUser = addTestUser();
         clickOn("#createAccountButton");
 
@@ -129,9 +137,11 @@ public class CreateAndLoginGUITest extends TestFXTest {
         //Now change the username to be unique and try again
         clickOn("#usernameInput");
         write("-new");
+        clickOn("#passwordConfirmInput");
         clickOn("#createAccountButton");
+        waitForNodeVisible(5, "#undoBannerButton");
         //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
-        assertNull(lookup("#createAccountButton").query());
+        assertNotNull(lookup("#undoBannerButton").query());
     }
 
     @Test
@@ -170,6 +180,6 @@ public class CreateAndLoginGUITest extends TestFXTest {
     public void testLoginAsDefaultClinician() {
         loginAsDefaultClinician();
         //Make sure that the clinician GUI is now showing
-        assertNotNull(lookup("#transplantList").query());
+        assertNotNull(lookup("#homeButton").query());
     }
 }

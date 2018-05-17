@@ -20,7 +20,7 @@
 
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
+<GridPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.ClinicianController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -54,7 +54,7 @@
         </MenuBar>
         <AnchorPane fx:id="background" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/darkblue.css" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
             <children>
-                <GridPane fx:id="mainPane" layoutX="229.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="571.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="229.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <GridPane fx:id="mainPane" layoutX="229.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="571.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="15.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="28.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" percentWidth="18.0" prefWidth="10.0" />
@@ -170,71 +170,73 @@
                   </Button>
                     </children>
                 </GridPane>
-                <AnchorPane prefHeight="475.0" prefWidth="228.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane minWidth="1.0" prefHeight="475.0" prefWidth="200.0" style="-fx-background-color: #152837;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <effect>
                         <DropShadow />
                     </effect>
                     <children>
-                        <Button alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="66.0" mnemonicParsing="false" onAction="#showMainPane" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Home" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="62.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-                        <Button alignment="BASELINE_LEFT" layoutX="48.0" layoutY="260.0" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="262.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="saveButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="160.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Save" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="162.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="logoutButton" alignment="BASELINE_LEFT" layoutX="48.0" layoutY="210.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="212.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="transplantList" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" layoutX="48.0" layoutY="111.0" mnemonicParsing="false" onAction="#transplantWaitingList" prefHeight="45.0" prefWidth="150.0" stylesheets="@../css/flatbutton.css" text="Transplant List" textAlignment="CENTER" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="112.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
+                  <GridPane layoutY="498.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                              <Button fx:id="logoutButton" alignment="CENTER" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="150.0" style="-fx-label-padding: 0 0 0 0;" stylesheets="@../css/flatbutton.css" text="Logout" textAlignment="CENTER">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Button>
+                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#close" prefHeight="45.0" prefWidth="150.0" style="-fx-label-padding: 0 0 0 0;" stylesheets="@../css/flatbutton.css" text="Exit" textAlignment="CENTER" GridPane.columnIndex="2">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Button>
+                     </children>
+                  </GridPane>
+                  <GridPane layoutX="-14.0" layoutY="187.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                              <Button fx:id="homeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showMainPane" stylesheets="@../css/selectedmenubutton.css" text="Home" textAlignment="CENTER">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Button>
+                              <Button fx:id="transplantListButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#transplantWaitingList" stylesheets="@../css/menubutton.css" text="Transplant List" textAlignment="CENTER" GridPane.rowIndex="1">
+                                  <font>
+                                      <Font size="14.0" />
+                                  </font>
+                              </Button>
+                        <Label mouseTransparent="true" text="🏠">
+                           <font>
+                              <Font size="27.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets left="17.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label mouseTransparent="true" text="▤" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="50.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets left="18.0" />
+                           </GridPane.margin>
+                        </Label>
+                     </children>
+                  </GridPane>
                     </children>
                 </AnchorPane>
-                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="470.0" prefWidth="53.0" style="-fx-background-color: #1d3549;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <effect>
-                        <DropShadow />
-                    </effect>
-                    <children>
-                        <Label layoutX="7.0" layoutY="239.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="203.0">
-                            <font>
-                                <Font size="36.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="6.0" layoutY="182.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="153.0">
-                            <font>
-                                <Font size="36.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="6.0" layoutY="121.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="103.0">
-                            <font>
-                                <Font size="36.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="6.0" layoutY="58.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="53.0">
-                            <font>
-                                <Font size="36.0" />
-                            </font>
-                        </Label>
-                        <Label layoutX="6.0" layoutY="257.0" text="→" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="253.0">
-                            <font>
-                                <Font size="36.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </AnchorPane>
-            <AnchorPane fx:id="transplantListPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="229.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="transplantListPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<children>
 								<fx:include source="transplantList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</children>

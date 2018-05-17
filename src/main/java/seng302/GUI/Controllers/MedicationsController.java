@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Medication.DrugInteraction;
@@ -40,7 +39,7 @@ public class MedicationsController extends PageController implements Initializab
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
-    private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
+    private Button moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
 
     private boolean movingItem = false;
     private User currentUser;
@@ -48,6 +47,7 @@ public class MedicationsController extends PageController implements Initializab
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
+    private UserWindowController userWindowController;
 
     /**
      * Initializes the medications pane to show medications for a specified user.
@@ -87,7 +87,7 @@ public class MedicationsController extends PageController implements Initializab
      *
      */
     private void saveToUndoStack() {
-        WindowManager.addCurrentToMedicationUndoStack();
+        userWindowController.addCurrentUserToUndoStack();
         currentUser.getCurrentMedications().clear();
         currentUser.getCurrentMedications().addAll(currentItems);
         currentUser.getHistoricMedications().clear();
@@ -225,32 +225,15 @@ public class MedicationsController extends PageController implements Initializab
     }
 
     /**
-     * Saves the current state of the user's medications lists for both their historic and current medications.
+     * Updates the user to the current state of the medications lists for both their historic and current medications.
      */
-    public void save() {
-        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ",
-                "By doing so, the user will be updated with the following medication details.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            currentUser.getHistoricMedications().clear();
-            currentUser.getHistoricMedications().addAll(historicItems);
-            currentUser.getCurrentMedications().clear();
-            currentUser.getCurrentMedications().addAll(currentItems);
-
-            try {
-                WindowManager.getDatabase().updateUserMedications(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            //TODO Update history with new database calls
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
-//            History.printToFile(streamOut, text);
-            //populateHistoryTable();
-            statusIndicator.setStatus("Saved changes", false);
-            titleBar.saved(true);
-        }
-        alert.close();
+    public void updateUser() {
+        currentUser.getHistoricMedications().clear();
+        currentUser.getHistoricMedications().addAll(historicItems);
+        currentUser.getCurrentMedications().clear();
+        currentUser.getCurrentMedications().addAll(currentItems);
+        String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
+        History.printToFile(streamOut, text);
     }
 
     /**
@@ -343,7 +326,6 @@ public class MedicationsController extends PageController implements Initializab
         deleteMedicationButton.setVisible(shown);
         moveToCurrentButton.setVisible(shown);
         moveToHistoryButton.setVisible(shown);
-        saveMedicationButton.setVisible(shown);
         newMedicationField.setVisible(shown);
         newMedicationLabel.setVisible(shown);
     }
@@ -402,9 +384,17 @@ public class MedicationsController extends PageController implements Initializab
         }
     }
 
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setMedicationsController(this);
 
         // Attach the autocompletion box and set its endpoint to the MAPI API
         // ALso only enable the add button if a medication has been autocompleted

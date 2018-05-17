@@ -39,7 +39,9 @@ public class TitleBar {
         if (page != null) {
             title = title.concat(" - " + page);
         }
-        stage.setTitle(title);
+        if (stage != null) {
+            stage.setTitle(title);
+        }
     }
 
     /**

@@ -18,11 +18,11 @@ public class WaitingListItem {
     protected Long userId;
 
 
-    public WaitingListItem(Organ organType) {
+    public WaitingListItem(Organ organType, int id, long userId) {
         this.organType = organType;
-        this.organRegisteredDate = LocalDate.now();
-        this.waitingListItemId = WindowManager.getNextWaitingListId();
-        this.userId = WindowManager.getUserWindowController().getCurrentUser().getId();
+        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.waitingListItemId = id;
+        this.userId = userId;
     }
 
     public WaitingListItem(ReceiverWaitingListItem copy) {

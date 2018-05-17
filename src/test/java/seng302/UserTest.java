@@ -65,7 +65,7 @@ public class UserTest {
     @Test
     public void testIsReceiver_registeredOrgansInWaitingList_returnsTrue() {
         User user = DataManager.users.get(0);
-        ReceiverWaitingListItem newItem = new ReceiverWaitingListItem(Organ.LIVER);
+        ReceiverWaitingListItem newItem = new ReceiverWaitingListItem(Organ.LIVER, 0, 0);
         newItem.registerOrgan();
         user.getWaitingListItems().add(newItem);
         assertTrue(user.isReceiver());
@@ -93,7 +93,7 @@ public class UserTest {
     @Test
     public void testIsReceiver_noRegisteredOrgansInWaitingList_returnsFalse() {
         User user = DataManager.users.get(0);
-        ReceiverWaitingListItem newItem = new ReceiverWaitingListItem(Organ.LIVER);
+        ReceiverWaitingListItem newItem = new ReceiverWaitingListItem(Organ.LIVER, 0, 0);
         newItem.registerOrgan();
         //TODO fix this test
         //newItem.deregisterOrgan();
