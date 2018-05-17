@@ -153,7 +153,7 @@ public class Database {
 
         //Procedure Updates
         //First get rid of all the users procedures in the table
-        String deleteProceduresQuery = "DELETE FROM `PROCEDURE` WHERE user_id = ?";
+        String deleteProceduresQuery = "DELETE FROM PROCEDURES WHERE user_id = ?";
         PreparedStatement deleteProceduresStatement = connection.prepareStatement(deleteProceduresQuery);
         deleteProceduresStatement.setInt(1, userId);
         System.out.println("Procedure rows deleted: " + deleteProceduresStatement.executeUpdate());
@@ -165,7 +165,7 @@ public class Database {
         allProcedures.addAll(user.getPendingProcedures());
         allProcedures.addAll(user.getPreviousProcedures());
         for (Procedure procedure: allProcedures) {
-            String insertProceduresQuery = "INSERT INTO `PROCEDURE` (summary, description, date, organs_affected, user_id) " +
+            String insertProceduresQuery = "INSERT INTO PROCEDURES (summary, description, date, organs_affected, user_id) " +
                     "VALUES(?, ?, ?, ?, ?)";
             PreparedStatement insertProceduresStatement = connection.prepareStatement(insertProceduresQuery);
 
@@ -477,7 +477,7 @@ public class Database {
 
         //Get all the procedures for the given user
 
-        String proceduresQuery = "SELECT * FROM `PROCEDURE` WHERE user_id = ?";
+        String proceduresQuery = "SELECT * FROM PROCEDURES WHERE user_id = ?";
         PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
         proceduresStatement.setInt(1, userId);
         ResultSet proceduresResultSet = proceduresStatement.executeQuery();
@@ -551,8 +551,9 @@ public class Database {
             LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
             Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
             Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
+            Integer waitingListId = waitingListResultSet.getInt("id");
 
-            user.getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode));
+            user.getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode, waitingListId));
         }
         return user;
     }
@@ -573,12 +574,29 @@ public class Database {
             LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
             Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
             Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
-            Long userid = waitingListResultSet.getLong("user_id");
+            Integer waitingListId = waitingListResultSet.getInt("id");
 
-            SearchUtils.getUserById(userid).getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode));
+
+            SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode, waitingListId));
         }
     }
 
+    public void transplantDeregister(Integer waitingListItemId, Long userId) throws SQLException{
+        User user = SearchUtils.getUserById(userId);
+        ReceiverWaitingListItem waitingListItem = null;
+        for (ReceiverWaitingListItem item: user.getWaitingListItems()) {
+            if (item.getWaitingListItemId().equals(waitingListItemId)) {
+                waitingListItem = item;
+            }
+        }
+        String update = "UPDATE WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE id = ?";
+        PreparedStatement deregisterStatement = connection.prepareStatement(update);
+        deregisterStatement.setDate(1, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+        deregisterStatement.setInt(2, waitingListItem.getOrganDeregisteredCode());
+        deregisterStatement.setInt(3, waitingListItem.getWaitingListItemId());
+        System.out.println("Update waitinglist Attributes -> Successful -> Rows Updated: " + deregisterStatement.executeUpdate());
+        refreshUserWaitinglists();
+    }
 
     public Clinician loginClinician(String usernameEmail, String password) throws SQLException{
         //First needs to do a search to see if there is a unique clinician with the given inputs
@@ -706,7 +724,7 @@ public class Database {
         PreparedStatement statement = connection.prepareStatement(update);
         System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM `PROCEDURE`";
+        update = "DELETE FROM PROCEDURES";
         statement = connection.prepareStatement(update);
         System.out.println("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
 

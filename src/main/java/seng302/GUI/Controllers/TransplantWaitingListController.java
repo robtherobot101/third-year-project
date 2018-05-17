@@ -101,8 +101,6 @@ public class TransplantWaitingListController implements Initializable {
      */
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
 
-        System.out.println("GDAY MAAAAAAATE");
-
         transplantList.clear();
         for (User user : DataManager.users) {
             if (!user.getWaitingListItems().isEmpty()) {
@@ -123,11 +121,6 @@ public class TransplantWaitingListController implements Initializable {
                     }
                 }
             }
-        }
-        if(transplantList.size() == 0) {
-            System.out.println("There is nothing here!!!");
-        } else {
-            System.out.println("There is something here!!!");
         }
         transplantTable.setItems(transplantList);
         deregisterReceiverButton.setDisable(true);
@@ -349,6 +342,11 @@ public class TransplantWaitingListController implements Initializable {
         for (ReceiverWaitingListItem i : user.getWaitingListItems()) {
             if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                 i.deregisterOrgan(1);
+                try {
+                    WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), i.getUserId());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
@@ -370,6 +368,11 @@ public class TransplantWaitingListController implements Initializable {
         for (ReceiverWaitingListItem i : user.getWaitingListItems()) {
             if (Objects.equals(i.getWaitingListItemId(), selectedWaitingListItem.getWaitingListItemId())) {
                 i.deregisterOrgan(1);
+                try {
+                    WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), i.getUserId());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 History.prepareFileStringGUI(userId, "deregisterError");
                 break;
             }
