@@ -8,7 +8,8 @@ import java.util.Map;
 public class Cache {
     private String filepath;
     Map<String, CachedItem> cacheMap;
-    Cache(String filepath) {
+
+    public Cache(String filepath) {
         this.filepath = filepath;
         this.cacheMap = new HashMap<String, CachedItem>();
     }
@@ -19,8 +20,8 @@ public class Cache {
      * @param key The key of the item to add
      * @param value The value of the item to add
      */
-    public void put(String key, String value, LocalDateTime cachedAt){
-        CachedItem item = new CachedItem(value, cachedAt);
+    public void put(String key, String value){
+        CachedItem item = new CachedItem(value, LocalDateTime.now());
         cacheMap.put(key, item);
     }
 
@@ -45,6 +46,16 @@ public class Cache {
                 cacheMap.remove(entry.getKey());
             }
         }
+    }
+
+    /**
+     * Returns whether or not a given key is in the map
+     *
+     * @param key The given key
+     * @return true if the key is in the map otherwise false
+     */
+    public boolean contains(String key){
+        return cacheMap.containsKey(key);
     }
 
     /**

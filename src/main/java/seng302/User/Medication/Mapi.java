@@ -3,6 +3,7 @@ package seng302.User.Medication;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import seng302.Generic.Cache;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -16,26 +17,10 @@ public class Mapi {
      * @param query The string to auto complete.
      * @return Returns an ArrayList of strings of the matching medicines.
      */
-    public static ArrayList<String> autocomplete(String query) {
-        try {
+    public static String autocomplete(String query) {
             query = query.replace(" ", "+");
             query = query.replace("%", "%25");
-            String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s", query));
-            String[] temp = result.split("\\[");
-            result = temp[1];
-            if (result.length() > 4) {
-                result = result.substring(1, result.length() - 3);
-            } else {
-                result = "";
-            }
-            temp = result.split("\",\"");
-            System.out.println(Arrays.toString(temp));
-
-            return new ArrayList<>(Arrays.asList(temp));
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("aioobe");
-            return new ArrayList<>();
-        }
+            return apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/autocomplete?query=%s", query));
     }
 
     /**
@@ -44,17 +29,10 @@ public class Mapi {
      * @param medicine The medicine to get the active ingredients of.
      * @return Returns the active ingredients as a string arraylist
      */
-    public static ArrayList<String> activeIngredients(String medicine) {
+    public static String activeIngredients(String medicine) {
         medicine = medicine.replace(" ", "+");
         medicine = medicine.replace("%", "%25");
-        String result = apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/%s/substances.json", medicine));
-        if (result.length() > 4) {
-            result = result.substring(2, result.length() - 2);
-        } else {
-            result = "";
-        }
-        String[] temp = result.split("\",\"");
-        return new ArrayList<>(Arrays.asList(temp));
+        return apiRequest(String.format("https://iterar-mapi-us.p.mashape.com/api/%s/substances.json", medicine));
     }
 
     /**
