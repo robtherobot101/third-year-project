@@ -8,6 +8,7 @@ import java.util.Map;
 public class Cache {
     private String filepath;
     Map<String, CachedItem> cacheMap;
+
     public Cache(String filepath) {
         this.filepath = filepath;
         this.cacheMap = new HashMap<String, CachedItem>();
@@ -44,16 +45,6 @@ public class Cache {
         return cacheMap.get(key).getValue();
     }
 
-    /**
-     * Returns true if the cache has an entry with the given key, otherwise
-     * returns false
-     *
-     * @param key The given key
-     * @return True if the cache has an entry with the given key, otherwise false
-     */
-    public boolean hasKey(String key) {
-        return cacheMap.get(key) != null;
-    }
 
     /**
      * Removes all cache entries which have durations greater than or equal to the given duration
@@ -66,6 +57,16 @@ public class Cache {
                 cacheMap.remove(entry.getKey());
             }
         }
+    }
+
+    /**
+     * Returns whether or not a given key is in the map
+     *
+     * @param key The given key
+     * @return true if the key is in the map otherwise false
+     */
+    public boolean contains(String key){
+        return cacheMap.containsKey(key);
     }
 
     /**

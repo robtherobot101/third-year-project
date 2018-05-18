@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import seng302.Generic.Cache;
 import seng302.Generic.History;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.ProfileType;
@@ -47,6 +48,76 @@ public class MedicationsController extends PageController implements Initializab
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
     private UserWindowController userWindowController;
+
+    private Cache autocompleteCache;
+    private Cache activeIngredientsCache;
+
+
+    public void importCaches(){
+        autocompleteCache = new Cache("target/autoComplete.json");
+        activeIngredientsCache = new Cache("target/activeIngredients");
+    }
+
+    public void saveCaches(){
+
+    }
+
+    /**
+     * Searches the autocomplete cache to see if this has already been queried and returns it. If it has not been queried it sends a
+     * query to the MAPI autocomplete api and saves the result.
+     * @param query The query to search for.
+     * @return The results of the autocomplete api query as an ArrayList of String.
+     */
+    public ArrayList<String> searchAutocomplete(String query){
+        if (autocompleteCache == null){
+            importCaches();
+        }
+
+        String result = "";
+        if (autocompleteCache.contains(query)) {
+           result = autocompleteCache.get(query);
+        } else {
+            result = Mapi.autocomplete(query);
+            autocompleteCache.put(query,result);
+        }
+        String[] temp = result.split("\\[");
+        result = temp[1];
+        if (result.length() > 4) {
+            result = result.substring(1, result.length() - 3);
+        } else {
+            result = "";
+        }
+        temp = result.split("\",\"");
+        System.out.println(Arrays.toString(temp));
+
+        return new ArrayList<>(Arrays.asList(temp));
+    }
+
+    /**
+     * Searches the autocomplete cache to see if this has already been queried and returns it. If it has not been queried it sends a
+     * query to the MAPI active ingredients api and saves the result.
+     * @param query The medicine to search for.
+     * @return The results of the active ingredients api query as an ArrayList of String.
+     */
+    public ArrayList<String> searchActiveIngredients(String query){
+        if (activeIngredientsCache == null){
+            importCaches();
+        }
+        String result = "";
+        if (activeIngredientsCache.contains(query)) {
+            activeIngredientsCache.get(query);
+        } else {
+             result = Mapi.activeIngredients(query);
+             activeIngredientsCache.put(query, result);
+        }
+        if (result.length() > 4) {
+            result = result.substring(2, result.length() - 2);
+        } else {
+            result = "";
+        }
+        String[] temp = result.split("\",\"");
+        return new ArrayList<>(Arrays.asList(temp));
+    }
 
     /**
      * Initializes the medications pane to show medications for a specified user.
@@ -134,7 +205,7 @@ public class MedicationsController extends PageController implements Initializab
                 System.out.println(medicationChoice);
                 statusIndicator.setStatus("Fetching from API", true);
                 new Thread(() -> {
-                    List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
+                    List<String> activeIngredients = searchActiveIngredients(medicationChoice);
                     Platform.runLater(() -> {
                         if (!activeIngredients.get(0).equals("")) {
                             Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
@@ -403,7 +474,7 @@ public class MedicationsController extends PageController implements Initializab
             String medicine = newMedicationField.getText();
             // Show API call on status bar
             Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
-            ArrayList<String> medicines = Mapi.autocomplete(medicine);
+            ArrayList<String> medicines = searchAutocomplete(medicine);
             // Reset status bar
             Platform.runLater(() -> Platform.runLater(() -> statusIndicator.ready()));
             if (medicines.size() > 5) {
