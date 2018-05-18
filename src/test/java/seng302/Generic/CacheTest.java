@@ -29,7 +29,7 @@ class CacheTest {
         cache.put("key","value");
         sleep(20);
         cache.purgeEntriesOlderThan(Duration.ofMillis(20));
-        assertFalse(cache.hasKey("key"));
+        assertFalse(cache.contains("key"));
     }
 
     @Test
@@ -37,6 +37,6 @@ class CacheTest {
         Cache cache = new Cache("");
         cache.put("key","value1");
         cache.purgeEntriesOlderThan(Duration.ofMillis(20));
-        assertTrue(cache.hasKey("key"));
+        assertTrue(cache.contains("key"));
     }
 }

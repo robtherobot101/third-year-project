@@ -55,7 +55,7 @@ public class InteractionApi{
         String reversedQuery = String.format("%s/%s/", drugB, drugA);
 
         String apiResponse;
-        if(cache.hasKey(query)){
+        if(cache.contains(query)){
             System.out.println("Response taken from cache");
             return new DrugInteraction(cache.get(query));
         } else {
