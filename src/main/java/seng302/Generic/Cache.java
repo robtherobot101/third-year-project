@@ -8,9 +8,18 @@ import java.util.Map;
 public class Cache {
     private String filepath;
     Map<String, CachedItem> cacheMap;
-    Cache(String filepath) {
+    public Cache(String filepath) {
         this.filepath = filepath;
         this.cacheMap = new HashMap<String, CachedItem>();
+    }
+
+    /**
+     * Returns the file path where the cache will be saved.
+     *
+     * @return The file path
+     */
+    public String getFilePath(){
+        return filepath;
     }
 
     /**
@@ -19,9 +28,10 @@ public class Cache {
      * @param key The key of the item to add
      * @param value The value of the item to add
      */
-    public void put(String key, String value, LocalDateTime cachedAt){
-        CachedItem item = new CachedItem(value, cachedAt);
+    public void put(String key, String value){
+        CachedItem item = new CachedItem(value, LocalDateTime.now());
         cacheMap.put(key, item);
+        IO.saveCache(this);
     }
 
     /**
@@ -32,6 +42,17 @@ public class Cache {
      */
     public String get(String key) {
         return cacheMap.get(key).getValue();
+    }
+
+    /**
+     * Returns true if the cache has an entry with the given key, otherwise
+     * returns false
+     *
+     * @param key The given key
+     * @return True if the cache has an entry with the given key, otherwise false
+     */
+    public boolean hasKey(String key) {
+        return cacheMap.get(key) != null;
     }
 
     /**

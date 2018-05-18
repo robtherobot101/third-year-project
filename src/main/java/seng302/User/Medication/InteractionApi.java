@@ -3,6 +3,7 @@ package seng302.User.Medication;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import seng302.Generic.Cache;
 
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -11,28 +12,73 @@ import java.util.concurrent.TimeoutException;
 /**
  * Requests interactions from the medication interaction API
  */
-public class InteractionApi {
+public class InteractionApi{
+    private static InteractionApi instance = null;
+    private static Cache cache;
+    private static String serverErr = "Could not retrieve interaction symptoms (an error occurred on the server).";
+    private static String emptyReportErr = "Could not retrieve interaction symptoms (no information available).";
 
-    private String serverErr = "Could not retrieve interaction symptoms (an error occurred on the server).";
-    private String emptyReportErr = "Could not retrieve interaction symptoms (no information available).";
+    private static String endpoint = "https://www.ehealthme.com/api/v1/drug-interaction/";
 
+    private InteractionApi() {
+    }
+
+    public static InteractionApi getInstance() {
+        if(instance == null) {
+            instance = new InteractionApi();
+        }
+        return instance;
+    }
+
+    /**
+     * Sets the cache for the API to the given cache
+     *
+     * @param cacheArg
+     */
+    public static void setCache(Cache cacheArg){
+        cache =  cacheArg;
+    }
 
     /**
      * Takes two drug names as Strings and returns a Json String from the
      * eHealthMe API which contains information about the drug interactions
      *
+     * The cache must be set before calling this method
+     *
      * @param drugA The name of the first drug
-     * @param drugB THe name of the other drug
+     * @param drugB The name of the other drug
      * @return The Json String
      */
-    public String interactions(String drugA, String drugB) {
-        String result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/", drugA, drugB));
-        System.out.println("RESULT: " + result);
-        if (result.equals(serverErr) || result.equals(emptyReportErr)) {
-            result = apiRequest(String.format("https://www.ehealthme.com/api/v1/drug-interaction/%s/%s/", drugB, drugA));
+    public static DrugInteraction interactions(String drugA, String drugB) {
+
+        String query = String.format("%s/%s/", drugA, drugB);
+        String reversedQuery = String.format("%s/%s/", drugB, drugA);
+
+        String apiResponse;
+        if(cache.hasKey(query)){
+            System.out.println("Response taken from cache");
+            return new DrugInteraction(cache.get(query));
+        } else {
+            System.out.println("Response not in cache. Taken from API");
+            apiResponse = apiRequest(String.format(endpoint + "%s", query));
+            if (apiResponse.equals(serverErr) || apiResponse.equals(emptyReportErr)) {
+                apiResponse = apiRequest(String.format(endpoint + "%s", reversedQuery));
+            }
         }
 
-        return result;
+        DrugInteraction interactions = new DrugInteraction(apiResponse);
+        if(!interactions.getError()){
+            if(drugA.compareTo(drugB) > 0){
+                cache.put(query,apiResponse);
+                System.out.println(String.format("API response added to cache with key: %s/%s/",drugA,drugB));
+
+            }else{
+                cache.put(reversedQuery, apiResponse);
+                System.out.println(String.format("API response added to cache with key: %s/%s/",drugB,drugA));
+
+            }
+        }
+        return interactions;
     }
 
     /**
@@ -42,7 +88,7 @@ public class InteractionApi {
      * @param url The api request
      * @return The Json String
      */
-    private String apiRequest(String url) {
+    private static String apiRequest(String url) {
         try {
             HttpResponse<String> response = Unirest.get(url).asString();
             int n;
@@ -59,12 +105,17 @@ public class InteractionApi {
                         result = emptyReportErr;
                         break;
 
-                    case 404:
-                        result = "Invalid comparison.";
-                        break;
-
                     case 502:
                         result = serverErr;
+                        break;
+
+
+                    case 401:
+                        result = "Too many requests. Check back later.";
+                        break;
+
+                    case 404:
+                        result = "Invalid comparison.";
                         break;
                 }
             }

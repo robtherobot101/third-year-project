@@ -153,6 +153,16 @@ public class IO {
         return success;
     }
 
+    public static void saveCache(Cache cache){
+        File outputFile = new File(cache.getFilePath());
+        try{
+            PrintStream outputStream = new PrintStream(new FileOutputStream(outputFile));
+            gson.toJson(cache, outputStream);
+        }catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
     /**
      * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
      *

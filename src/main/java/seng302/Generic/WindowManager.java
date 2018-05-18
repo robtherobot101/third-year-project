@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import static seng302.Generic.IO.getJarPath;
 import static seng302.Generic.IO.streamOut;
 
 import java.io.File;
@@ -31,6 +32,7 @@ import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 
 /**
@@ -301,6 +303,8 @@ public class WindowManager extends Application {
                 userWindow.close();
             }
         });
+
+
         dialogStyle = WindowManager.class.getResource("/css/dialog.css").toExternalForm();
         menuButtonStyle = WindowManager.class.getResource("/css/menubutton.css").toExternalForm();
         selectedMenuButtonStyle = WindowManager.class.getResource("/css/selectedmenubutton.css").toExternalForm();
@@ -308,6 +312,7 @@ public class WindowManager extends Application {
         stage.getIcons().add(icon);
         try {
             IO.setPaths();
+            setupDrugInteractionCache();
             File users = new File(IO.getUserPath());
             if (users.exists()) {
                 if (!IO.importUsers(users.getAbsolutePath(), ProfileType.USER)) {
@@ -365,6 +370,11 @@ public class WindowManager extends Application {
             e.printStackTrace();
             stop();
         }
+    }
+
+    public void setupDrugInteractionCache(){
+        Cache cache = new Cache(getJarPath() + "/interactions.json");
+        InteractionApi.setCache(cache);
     }
 
     public static void resetScene(TFScene scene) {

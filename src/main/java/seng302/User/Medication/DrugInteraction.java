@@ -171,7 +171,6 @@ public class DrugInteraction {
         if (ageMap.containsKey(key)) {
             HashSet<String> results = ageMap.get(key);
             results.addAll(nanAgeInteraction());
-            System.out.println("Age Interaction: " + key);
             return results;
         } else {
             return nanAgeInteraction();

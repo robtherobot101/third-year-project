@@ -43,7 +43,7 @@ public class MedicationsController extends PageController implements Initializab
     private boolean movingItem = false;
     private User currentUser;
     private ObservableList<Medication> historicItems, currentItems;
-    private InteractionApi interactionApi = new InteractionApi();
+    private InteractionApi interactionApi = InteractionApi.getInstance();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
     private UserWindowController userWindowController;
@@ -293,13 +293,12 @@ public class MedicationsController extends PageController implements Initializab
         LinkedList<String> symptoms = new LinkedList<>();
         drugA = drugA.replace(' ', '-');
         drugB = drugB.replace(' ', '-');
-        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+
+        DrugInteraction result = interactionApi.interactions(drugA, drugB);
         // Check to see if the api call was successful
         if (!result.getError()) {
             HashSet<String> ageSymptoms = result.ageInteraction(currentUser.getAgeDouble());
-            //System.out.println("age symptoms: "+ ageSymptoms);
             HashSet<String> genderSymptoms = result.genderInteraction(currentUser.getGender());
-            //System.out.println("gender symptoms: " + genderSymptoms);
             ageSymptoms.retainAll(genderSymptoms);
 
             for (String symptom : ageSymptoms) {
