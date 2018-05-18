@@ -88,7 +88,6 @@ public class MedicationsController extends PageController implements Initializab
             result = "";
         }
         temp = result.split("\",\"");
-        System.out.println(Arrays.toString(temp));
 
         return new ArrayList<>(Arrays.asList(temp));
     }
@@ -202,7 +201,6 @@ public class MedicationsController extends PageController implements Initializab
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
-                System.out.println(medicationChoice);
                 statusIndicator.setStatus("Fetching from API", true);
                 new Thread(() -> {
                     List<String> activeIngredients = searchActiveIngredients(medicationChoice);

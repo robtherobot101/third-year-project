@@ -32,6 +32,12 @@ public class Cache {
     public void put(String key, String value){
         CachedItem item = new CachedItem(value, LocalDateTime.now());
         cacheMap.put(key, item);
+    }
+
+    /**
+     * Saves the cache in the JSON format at the filepath
+     */
+    public void save(){
         IO.saveCache(this);
     }
 

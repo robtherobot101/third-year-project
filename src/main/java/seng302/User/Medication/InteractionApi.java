@@ -7,6 +7,9 @@ import seng302.Generic.Cache;
 
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -50,9 +53,11 @@ public class InteractionApi{
      * @return The Json String
      */
     public static DrugInteraction interactions(String drugA, String drugB) {
+        List<String> drugs = Arrays.asList(drugA, drugB);
+        java.util.Collections.sort(drugs);
 
-        String query = String.format("%s/%s/", drugA, drugB);
-        String reversedQuery = String.format("%s/%s/", drugB, drugA);
+        String query = String.format("%s/%s/", drugs.get(0), drugs.get(1));
+        String reversedQuery = String.format("%s/%s/", drugs.get(1), drugs.get(0));
 
         String apiResponse;
         if(cache.contains(query)){
@@ -68,15 +73,9 @@ public class InteractionApi{
 
         DrugInteraction interactions = new DrugInteraction(apiResponse);
         if(!interactions.getError()){
-            if(drugA.compareTo(drugB) > 0){
-                cache.put(query,apiResponse);
-                System.out.println(String.format("API response added to cache with key: %s/%s/",drugA,drugB));
-
-            }else{
-                cache.put(reversedQuery, apiResponse);
-                System.out.println(String.format("API response added to cache with key: %s/%s/",drugB,drugA));
-
-            }
+            cache.put(query,apiResponse);
+            System.out.println(String.format("API response added to cache with key: %s/%s/",drugA,drugB));
+            cache.save();
         }
         return interactions;
     }
