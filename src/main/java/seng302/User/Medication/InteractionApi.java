@@ -108,7 +108,6 @@ public class InteractionApi{
                         result = serverErr;
                         break;
 
-
                     case 401:
                         result = "Too many requests. Check back later.";
                         break;

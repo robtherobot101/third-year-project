@@ -91,15 +91,15 @@ public class WindowManager extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
             Parent root = loader.load();
-            UserWindowController userWindowController = loader.getController();
-            userWindowController.setTitleBar(stage);
+            UserWindowController newUserWindowController = loader.getController();
+            newUserWindowController.setTitleBar(stage);
             String text = History.prepareFileStringGUI(user.getId(), "view");
             History.printToFile(streamOut, text);
 
-            userWindowController.setCurrentUser(user);
-            userWindowController.populateHistoryTable();
-            userWindowController.setControlsShown(true);
-            cliniciansUserWindows.put(stage, userWindowController);
+            newUserWindowController.setCurrentUser(user);
+            newUserWindowController.populateHistoryTable();
+            newUserWindowController.setControlsShown(true);
+            cliniciansUserWindows.put(stage, newUserWindowController);
 
             Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
             stage.setScene(newScene);

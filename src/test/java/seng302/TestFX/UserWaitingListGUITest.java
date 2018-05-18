@@ -54,16 +54,9 @@ public class UserWaitingListGUITest extends TestFXTest {
      * This method should only be run from the main login screen.
      */
     public void usersTransplantWaitingListAsClinician() throws TimeoutException {
-        userWindowAsClinician();
+        userWindowAsClinician(user);
         waitForNodeVisible(10,"#waitingListButton");
         clickOn("#waitingListButton");
-    }
-
-    public void userWindowAsClinician(){
-        Platform.runLater(() ->{
-            WindowManager.newCliniciansUserWindow(user);
-        });
-        waitForFxEvents();
     }
 
     /**
