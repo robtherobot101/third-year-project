@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.Cache;
 import seng302.Generic.History;
+import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Medication.DrugInteraction;
@@ -52,14 +53,12 @@ public class MedicationsController extends PageController implements Initializab
     private Cache autocompleteCache;
     private Cache activeIngredientsCache;
 
-
+    /**
+     * imports new caches if the caches have not been initialized
+     */
     public void importCaches(){
-        autocompleteCache = new Cache("target/autoComplete.json");
-        activeIngredientsCache = new Cache("target/activeIngredients");
-    }
-
-    public void saveCaches(){
-
+        autocompleteCache = IO.importCache(IO.getJarPath() + "/autocomplete.json");
+        activeIngredientsCache = IO.importCache(IO.getJarPath() + "/activeIngredients.json");
     }
 
     /**
@@ -73,12 +72,13 @@ public class MedicationsController extends PageController implements Initializab
             importCaches();
         }
 
-        String result = "";
+        String result;
         if (autocompleteCache.contains(query)) {
            result = autocompleteCache.get(query);
         } else {
             result = Mapi.autocomplete(query);
             autocompleteCache.put(query,result);
+            autocompleteCache.save();
         }
         String[] temp = result.split("\\[");
         result = temp[1];
@@ -102,12 +102,13 @@ public class MedicationsController extends PageController implements Initializab
         if (activeIngredientsCache == null){
             importCaches();
         }
-        String result = "";
+        String result;
         if (activeIngredientsCache.contains(query)) {
-            activeIngredientsCache.get(query);
+            result = activeIngredientsCache.get(query);
         } else {
              result = Mapi.activeIngredients(query);
              activeIngredientsCache.put(query, result);
+             activeIngredientsCache.save();
         }
         if (result.length() > 4) {
             result = result.substring(2, result.length() - 2);
@@ -427,27 +428,23 @@ public class MedicationsController extends PageController implements Initializab
             compareButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
         }
         Medication selected;
-        if (!historySelectionIsNull) {
-            selected = historyListView.getSelectionModel().getSelectedItem();
-            // Display the ingredients
-            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
-            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
-            // Display the usage history
-            historyTitleLabel.setText("History of usage for " + selected.getName());
-            historyContentLabel.setText(String.join("\n", selected.getHistory()));
-        } else if (!currentSelectionIsNull) {
-            selected = currentListView.getSelectionModel().getSelectedItem();
-            // Display the ingredients
-            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
-            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
-            // Display the usage history
-            historyTitleLabel.setText("History of usage for " + selected.getName());
-            historyContentLabel.setText(String.join("\n", selected.getHistory()));
-        } else {
+        if(historySelectionIsNull && currentSelectionIsNull){
             activeIngredientsTitleLabel.setText("");
             activeIngredientsContentLabel.setText("");
             historyTitleLabel.setText("");
             historyContentLabel.setText("");
+        } else {
+            if (!historySelectionIsNull ) {
+                selected = historyListView.getSelectionModel().getSelectedItem();
+            } else {
+                selected = currentListView.getSelectionModel().getSelectedItem();
+            }
+            // Display the ingredients
+            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
+            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+            // Display the usage history
+            historyTitleLabel.setText("History of usage for " + selected.getName());
+            historyContentLabel.setText(String.join("\n", selected.getHistory()));
         }
     }
 

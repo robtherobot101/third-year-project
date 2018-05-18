@@ -153,6 +153,11 @@ public class IO {
         return success;
     }
 
+    /**
+     * Saves a Cache object to the file path inside the Cache Object.
+     *
+     * @param cache The Cache object to be saved.
+     */
     public static void saveCache(Cache cache){
         File outputFile = new File(cache.getFilePath());
         try{
@@ -219,6 +224,36 @@ public class IO {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Imports a JSON file and tries to convert it in to a Cache object.
+     *
+     * @param path The path to the JSON file.
+     * @return Returns a Cache object.
+     */
+    public static Cache importCache(String path){
+        File inputFile = new File(path);
+        Path filePath;
+        try {
+            filePath = inputFile.toPath();
+        } catch (InvalidPathException e) {
+            return new Cache(path);
+        }
+        try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            Type type = new TypeToken<Cache>() {
+            }.getType();
+            Cache importedCache = gson.fromJson(reader, type);
+            System.out.println("Opened user file successfully.");
+            return importedCache;
+        } catch (IOException e) {
+            System.out.println("IOException on " + path + ": Check your inputs and permissions!");
+        } catch (JsonSyntaxException | DateTimeException e1) {
+            System.out.println("Invalid syntax in input file.");
+        } catch (NullPointerException e2) {
+            System.out.println("Input file was empty.");
+        }
+        return new Cache(path);
     }
 
     /**
