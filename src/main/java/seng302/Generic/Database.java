@@ -193,7 +193,7 @@ public class Database {
         int userId = getUserId(user.getUsername());
 
         //Disease Updates
-        //First get rid of all the users diseases in the table
+        //First get rid of all the user's diseases in the table
         String deleteDiseasesQuery = "DELETE FROM DISEASE WHERE user_id = ?";
         PreparedStatement deleteDiseasesStatement = connection.prepareStatement(deleteDiseasesQuery);
         deleteDiseasesStatement.setInt(1, userId);
@@ -363,7 +363,7 @@ public class Database {
 
     }
 
-    public User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
 
         User user = new User(
                 resultSet.getString("first_name"),
@@ -559,7 +559,7 @@ public class Database {
     }
 
 
-    public void refreshUserWaitinglists() throws SQLException{
+    private void refreshUserWaitinglists() throws SQLException{
         String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM";
         PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
         ResultSet waitingListResultSet = waitingListStatement.executeQuery();
@@ -616,7 +616,7 @@ public class Database {
 
     }
 
-    public Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException{
+    private Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException{
         Clinician clinician = new Clinician(
                 resultSet.getString("username"),
                 resultSet.getString("password"),
@@ -649,7 +649,7 @@ public class Database {
 
     }
 
-    public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{
+    private Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{
         Admin admin = new Admin(
                 resultSet.getString("username"),
                 resultSet.getString("password"),
@@ -803,7 +803,7 @@ public class Database {
 
     }
 
-    public void connectToDatabase() {
+    private void connectToDatabase() {
         try{
             Class.forName(jdbcDriver);
             connection = DriverManager.getConnection(
@@ -819,7 +819,7 @@ public class Database {
 //            while(rs.next())
 //                System.out.println(rs.getString(1));
 //            con.close();
-        }catch(Exception e){
+        } catch(Exception e){
             System.out.println(e);
         }
     }

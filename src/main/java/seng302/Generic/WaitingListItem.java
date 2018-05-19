@@ -32,10 +32,10 @@ public class WaitingListItem {
         this.userId = copy.userId;
     }
 
-    public WaitingListItem(Organ organ, LocalDate date, long id, Integer waitingListId) {
+    public WaitingListItem(Organ organ, LocalDate date, long userId, Integer waitingListId) {
         this.organType = organ;
         this.organRegisteredDate = date;
-        this.userId = id;
+        this.userId = userId;
         this.waitingListItemId = waitingListId;
     }
 
