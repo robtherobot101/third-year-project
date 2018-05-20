@@ -226,7 +226,7 @@ public class Database {
     public void updateUserMedications(User user) throws SQLException {
         int userId = getUserId(user.getUsername());
 
-        //Procedure Updates
+        //Medication Updates
         //First get rid of all the users medications in the table
         String deleteMedicationsQuery = "DELETE FROM MEDICATION WHERE user_id = ?";
         PreparedStatement deleteMedicationsStatement = connection.prepareStatement(deleteMedicationsQuery);
@@ -259,7 +259,7 @@ public class Database {
 
     }
 
-    public boolean checkUniqueUser(String item) throws SQLException{
+    public boolean isUniqueUser(String item) throws SQLException{
         String query = "SELECT * FROM USER WHERE USER.username = ? OR USER.email = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, item);
@@ -598,11 +598,11 @@ public class Database {
         refreshUserWaitinglists();
     }
 
-    public Clinician loginClinician(String usernameEmail, String password) throws SQLException{
+    public Clinician loginClinician(String username, String password) throws SQLException{
         //First needs to do a search to see if there is a unique clinician with the given inputs
         String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, usernameEmail);
+        statement.setString(1, username);
         statement.setString(2, password);
         ResultSet resultSet = statement.executeQuery();
 

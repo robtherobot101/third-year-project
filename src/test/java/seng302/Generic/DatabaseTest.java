@@ -4,9 +4,13 @@ import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import seng302.User.Admin;
 import seng302.User.Attribute.AlcoholConsumption;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.ProfileType;
+import seng302.User.Clinician;
+import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.sql.Connection;
@@ -17,8 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.lang.Math.toIntExact;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DatabaseTest {
 
@@ -210,7 +213,7 @@ class DatabaseTest {
             assertEquals(new ArrayList<Disease>(), queriedUser.getCurrentDiseases());
             assertEquals(new ArrayList<Disease>(), queriedUser.getCuredDiseases());
 
-            database.updateUserProcedures(testUser);
+            database.updateUserDiseases(testUser);
 
             queriedUser = database.getAllUsers().get(0);
             assertEquals(testUser.getCurrentDiseases(), queriedUser.getCurrentDiseases());
@@ -221,77 +224,218 @@ class DatabaseTest {
         }
     }
 
+    /**
+     * Insert a user with test medications, check that is IS NOT reflected in DB, then check after
+     * running updateUserMedications()
+     */
     @Test
     void updateUserMedications() {
+        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
+                "bdong", "flameman@hotmail.com", "password");
+        ArrayList<Medication> testCurrentMedications = new ArrayList<>();
+        ArrayList<Medication> testHistoricMedications = new ArrayList<>();
+        testHistoricMedications.add(new Medication("Magic beans", new String[]{"Test"}, new ArrayList<String>()));
+        testCurrentMedications.add(new Medication("Super Male Vitality", new String[]{"Test"}, new ArrayList<String>()));
+
+
+        testUser.setHistoricMedications(testHistoricMedications);
+        testUser.setCurrentMedications(testCurrentMedications);
+
+        try {
+            database.insertUser(testUser);
+            User queriedUser = database.getAllUsers().get(0);
+            assertEquals(new ArrayList<Medication>(), queriedUser.getCurrentMedications());
+            assertEquals(new ArrayList<Medication>(), queriedUser.getHistoricMedications());
+
+            database.updateUserDiseases(testUser);
+
+            queriedUser = database.getAllUsers().get(0);
+            assertEquals(testUser.getCurrentMedications(), queriedUser.getCurrentMedications());
+            assertEquals(testUser.getHistoricMedications(), queriedUser.getHistoricMedications());
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void checkUniqueUser() {
+        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
+                "bdong", "flameman@hotmail.com", "password");
+
+        try {
+            database.insertUser(testUser);
+            assertFalse(database.isUniqueUser("bdong"));
+            assertFalse(database.isUniqueUser("flameman@hotmail.com"));
+            assertTrue(database.isUniqueUser("jsmith"));
+            assertTrue(database.isUniqueUser("johnsmith@msn.com"));
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
+    @Test
+    void checkUniqueClinician() {
+        Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
+                ProfileType.CLINICIAN);
+
+        try {
+            database.insertClinician(testClinician);
+            assertFalse(database.isUniqueUser("drflame"));
+            assertTrue(database.isUniqueUser("drjohnsmith"));
+            assertTrue(database.isUniqueUser("johnsmith@msn.ac.com"));
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
+    @Test
+    void checkUniqueAdmin() {
+        Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
+
+        try {
+            database.insertAdmin(testAdmin);
+            assertFalse(database.isUniqueUser("Xx_bobbythetechsupport007_xX"));
+            assertTrue(database.isUniqueUser("drjohnsmith"));
+            assertTrue(database.isUniqueUser("johnsmith@msn.ac.com"));
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void insertClinician() {
+        Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
+                ProfileType.CLINICIAN);
+
+        try {
+            database.insertClinician(testClinician);
+            Clinician queriedClinician = database.getAllClinicians().get(0);
+            assertEquals(testClinician, queriedClinician);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void updateClinicianDetails() {
+        Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
+                ProfileType.CLINICIAN);
+
+        try {
+            database.insertClinician(testClinician);
+            Clinician queriedClinician = database.getAllClinicians().get(0);
+            assertEquals(testClinician, queriedClinician);
+
+            testClinician.setName("Actually it's Professor Dong");
+            testClinician.setWorkAddress("321 Ekaf Avenue");
+            testClinician.setRegion("Roundtown");
+
+            database.updateClinicianDetails(testClinician);
+            queriedClinician = database.getAllClinicians().get(0);
+            assertEquals(testClinician, queriedClinician);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void updateClinicianAccountSettings() {
+        Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
+                ProfileType.CLINICIAN);
+
+        try {
+            database.insertClinician(testClinician);
+            Clinician queriedClinician = database.getAllClinicians().get(0);
+            assertEquals(testClinician, queriedClinician);
+
+            testClinician.setUsername("profflame");
+            testClinician.setPassword("Password123");
+
+            database.updateClinicianAccountSettings(testClinician, toIntExact(testClinician.getStaffID()));
+            queriedClinician = database.getAllClinicians().get(0);
+            assertEquals(testClinician, queriedClinician);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void insertAdmin() {
+        Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
+
+        try {
+            database.insertAdmin(testAdmin);
+            Clinician queriedClinician = database.getAllClinicians().get(0);
+            assertEquals(testAdmin, queriedClinician);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void updateAdminDetails() {
+        Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
+
+        try {
+            database.insertAdmin(testAdmin);
+            Admin queriedAdmin = database.getAllAdmins().get(0);
+            assertEquals(testAdmin, queriedAdmin);
+
+            testAdmin.setName("B. D. Flame");
+            testAdmin.setWorkAddress("NSA HQ");
+
+            database.updateClinicianAccountSettings(testAdmin, toIntExact(testAdmin.getStaffID()));
+            queriedAdmin = database.getAllAdmins().get(0);
+            assertEquals(testAdmin, queriedAdmin);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void loginUser() {
-    }
-
-    @Test
-    void getUserFromResultSet() {
+        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
+                "bdong", "flameman@hotmail.com", "password");
+        try {
+            assertEquals(testUser, database.loginUser("bdong", "password"));
+            assertEquals(testUser, database.loginUser("flameman@hotmail.com", "password"));
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void refreshUserWaitinglists() {
+        //TODO
     }
 
     @Test
     void transplantDeregister() {
+        //TODO
     }
 
     @Test
     void loginClinician() {
-    }
-
-    @Test
-    void getClinicianFromResultSet() {
+        Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
+                ProfileType.CLINICIAN);
+        try {
+            assertEquals(testClinician, database.loginClinician("drflame", "password"));
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void loginAdmin() {
+        Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
+        try {
+            assertEquals(testAdmin, database.loginClinician("Xx_bobbythetechsupport007_xX", "password"));
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
-
-    @Test
-    void getAdminFromResultSet() {
-    }
-
-    @Test
-    void getAllUsers() {
-    }
-
-    @Test
-    void getAllClinicians() {
-    }
-
-    @Test
-    void getAllAdmins() {
-    }
+    
 
     @Test
     void removeUser() {
