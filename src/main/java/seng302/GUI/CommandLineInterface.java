@@ -1,5 +1,6 @@
 package seng302.GUI;
 
+import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.UserWindowController;
@@ -53,7 +54,7 @@ public class CommandLineInterface {
      * @param line The line to split
      * @return The array of components
      */
-    protected String[] splitByQuotationThenSpace(String line) {
+    public String[] splitByQuotationThenSpace(String line) {
         int outSize = 1;
         boolean withinQuotes = false;
         for (int i = 0; i < line.length(); i++) {
@@ -756,9 +757,8 @@ public class CommandLineInterface {
             if (toDescribe.size() == 0) {
                 printLine(String.format("No users with names matching %s were found.", idString));
             } else {
-                printLine(User.tableHeader);
                 for (User user : toDescribe) {
-                    printLine(user.getString(true));
+                    printLine(user.getSummaryString());
                 }
             }
         }
@@ -801,9 +801,8 @@ public class CommandLineInterface {
     private boolean listUsers(String[] nextCommand) {
         if (nextCommand.length == 1) {
             if (DataManager.users.size() > 0) {
-                printLine(User.tableHeader);
                 for (User user : DataManager.users) {
-                    printLine(user.getString(true));
+                    printLine(user.getSummaryString());
                 }
             } else {
                 printLine("There are no users to list. Please add or import some before using listUsers.");

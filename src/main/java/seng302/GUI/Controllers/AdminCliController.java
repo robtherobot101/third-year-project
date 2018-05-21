@@ -68,6 +68,7 @@ public class AdminCliController implements Initializable {
         if (commandInputHistory.isEmpty()) {
             return "TF > ";
         } else if (!up && currentHistoryIndex == commandInputHistory.size() - 1) {
+            currentHistoryIndex = commandInputHistory.size();
             return "TF > ";
         } else {
             return commandInputHistory.get(getCommandIndex(up));
