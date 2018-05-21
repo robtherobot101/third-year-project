@@ -803,7 +803,7 @@ public class Database {
 
     }
 
-    private void connectToDatabase() {
+    public void connectToDatabase() {
         try{
             Class.forName(jdbcDriver);
             connection = DriverManager.getConnection(
