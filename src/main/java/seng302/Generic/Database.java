@@ -228,7 +228,7 @@ public class Database {
     public void updateUserMedications(User user) throws SQLException {
         int userId = getUserId(user.getUsername());
 
-        //Procedure Updates
+        //Medication Updates
         //First get rid of all the users medications in the table
         String deleteMedicationsQuery = "DELETE FROM " + testDatabase + ".MEDICATION WHERE user_id = ?";
         PreparedStatement deleteMedicationsStatement = connection.prepareStatement(deleteMedicationsQuery);
@@ -375,7 +375,7 @@ public class Database {
 
     }
 
-    public User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
 
         User user = new User(
                 resultSet.getString("first_name"),
@@ -615,12 +615,11 @@ public class Database {
         refreshUserWaitinglists();
     }
 
-    public Clinician loginClinician(String usernameEmail, String password) throws SQLException{
+    public Clinician loginClinician(String username, String password) throws SQLException{
         //First needs to do a search to see if there is a unique clinician with the given inputs
         String query = "SELECT * FROM " + testDatabase + ".CLINICIAN WHERE username = ? AND password = ?";
         PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setString(1, usernameEmail);
+        statement.setString(1, username);
         statement.setString(2, password);
         ResultSet resultSet = statement.executeQuery();
 
@@ -634,7 +633,7 @@ public class Database {
 
     }
 
-    public Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException{
+    private Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException{
         Clinician clinician = new Clinician(
                 resultSet.getString("username"),
                 resultSet.getString("password"),
@@ -668,7 +667,7 @@ public class Database {
 
     }
 
-    public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{
+    private Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{
         Admin admin = new Admin(
                 resultSet.getString("username"),
                 resultSet.getString("password"),
@@ -838,7 +837,7 @@ public class Database {
 //            while(rs.next())
 //                System.out.println(rs.getString(1));
 //            con.close();
-        }catch(Exception e){
+        } catch(Exception e){
             System.out.println(e);
         }
     }

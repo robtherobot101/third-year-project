@@ -7,11 +7,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.Generic.DataManager;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -59,11 +56,11 @@ public class AccountSettingsController implements Initializable {
     public void updateAccountDetails() {
         int userId = 0;
         try {
-            if (!WindowManager.getDatabase().checkUniqueUser(usernameField.getText())) {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDatabase().checkUniqueUser(emailField.getText())) {
+            } else if(!WindowManager.getDatabase().isUniqueUser(emailField.getText())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
