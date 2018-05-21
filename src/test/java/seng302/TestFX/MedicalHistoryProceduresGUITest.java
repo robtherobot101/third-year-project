@@ -10,6 +10,7 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
@@ -18,8 +19,6 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 public class MedicalHistoryProceduresGUITest extends TestFXTest {
-
-
     private TableView<Procedure> pendingProcedureTableView, previousProcedureTableView;
     private Procedure pendingTableSelectedProcedure, previousTableSelectedProcedure;
 
@@ -194,6 +193,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         clickOn("#pancreasCheckBox");
         clickOn("#lungCheckBox");
         clickOn("#heartCheckBox");
+        clickOn("#dateDue");
         clickOn("Update");
         clickOn("Removal of leg");
         refreshTableSelections();
@@ -235,9 +235,9 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         //Add Medication for donor.
         addNewProcedureToPendingProcedures();
 
-        clickOn("#saveProcedureButton");
+        clickOn("#saveButton");
         sleep(200);
-        clickOn("#saveProcedureOK");
+        clickOn("OK");
         clickOn("#exitUserButton");
         sleep(200);
         clickOn("#exitOK");
@@ -267,7 +267,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         clickOn("#deleteProcedureButton");
         sleep(200);
         clickOn("OK");
-        clickOn("#saveProcedureButton");
+        clickOn("#saveButton");
         sleep(200);
         clickOn("OK");
     }

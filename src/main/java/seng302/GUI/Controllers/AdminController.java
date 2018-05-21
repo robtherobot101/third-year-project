@@ -38,6 +38,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
+import static seng302.Generic.WindowManager.setButtonSelected;
+
 /**
  * Class to control all the logic for the currentAdmin interactions with the application.
  */
@@ -72,7 +74,7 @@ public class AdminController implements Initializable {
     @FXML
     private Label staffIDLabel, userDisplayText, adminNameLabel, adminAddressLabel;
     @FXML
-    private Button undoWelcomeButton,redoWelcomeButton;
+    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -90,13 +92,8 @@ public class AdminController implements Initializable {
     private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-
     private ArrayList<User> usersFound;
-
-    private ArrayList<UserWindowController> userWindows = new ArrayList<>();
-
     private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
-
 
     private Admin currentAdmin;
 
@@ -391,7 +388,17 @@ public class AdminController implements Initializable {
      * Closes the application
      */
     public void close() {
-        Platform.exit();
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to exit? ",
+                "You will lose any unsaved data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
+                userWindow.close();
+            }
+            Platform.exit();
+        } else {
+            alert.close();
+        }
     }
 
     /**
@@ -510,16 +517,6 @@ public class AdminController implements Initializable {
     }
 
 
-    /**
-     * Sets the User Attribute pane as the visible pane
-     */
-    public void showMainPane() {
-        mainPane.setVisible(true);
-        transplantListPane.setVisible(false);
-        cliPane.setVisible(false);
-        undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
-        redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
-    }
 
 
     @Override
@@ -754,48 +751,7 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        Stage stage = new Stage();
-                        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-                        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-                        stage.setHeight(WindowManager.mainWindowPrefHeight);
-                        stage.setWidth(WindowManager.mainWindowPrefWidth);
-                        stage.getIcons().add(WindowManager.getIcon());
-
-                        WindowManager.addCliniciansUserWindow(stage);
-                        stage.initModality(Modality.NONE);
-
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/userWindow.fxml"));
-                            Parent root = loader.load();
-                            UserWindowController userWindowController = loader.getController();
-                            userWindowController.setTitleBar(stage);
-
-                            User currentUser = null;
-                            try {
-                                currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
-                            } catch(SQLException e) {
-                                e.printStackTrace();
-                            }
-                            WindowManager.setCurrentUser(currentUser);
-
-                            String text = History.prepareFileStringGUI(row.getItem().getId(), "view");
-                            History.printToFile(IO.streamOut, text);
-
-                            userWindowController.populateUserFields();
-                            userWindowController.populateHistoryTable();
-                            userWindowController.showWaitingListButton();
-                            WindowManager.controlViewForClinician();
-
-                            Scene newScene = new Scene(root, WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
-                            stage.setMinHeight(WindowManager.mainWindowMinHeight);
-                            stage.setMinWidth(WindowManager.mainWindowMinWidth);
-                            stage.setScene(newScene);
-                            stage.show();
-                        } catch (IOException | NullPointerException e) {
-                            System.err.println("Unable to load fxml or save file.");
-                            e.printStackTrace();
-                            Platform.exit();
-                        }
+                        WindowManager.newCliniciansUserWindow(row.getItem());
                     }
                 });
                 return row;
@@ -805,28 +761,52 @@ public class AdminController implements Initializable {
         userTableView.refresh();
     }
 
+
     /**
-     * Calls the transplantWaitingList controller and displays it.
-     * also refreshes the waitinglist table data
+     * Hides all of the main panes.
      */
-    public void transplantWaitingList() {
-        WindowManager.getTransplantWaitingListController().updateTransplantList();
+    private void hideAllTabs() {
+        setButtonSelected(homeButton, false);
+        setButtonSelected(transplantListButton, false);
+        setButtonSelected(cliTabButton, false);
+
         mainPane.setVisible(false);
-        transplantListPane.setVisible(true);
+        transplantListPane.setVisible(false);
         cliPane.setVisible(false);
         undoWelcomeButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
     }
 
     /**
+     * Sets the User Attribute pane as the visible pane.
+     */
+    public void showMainPane() {
+        hideAllTabs();
+        setButtonSelected(homeButton, true);
+        mainPane.setVisible(true);
+        undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
+        redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
+    }
+
+    /**
+     * Calls the transplantWaitingList controller and displays it.
+     * also refreshes the waitinglist table data
+     */
+    public void transplantWaitingList() {
+        hideAllTabs();
+        setButtonSelected(transplantListButton, true);
+        transplantListPane.setVisible(true);
+
+        WindowManager.updateTransplantWaitingList();
+    }
+
+    /**
      * Switches the active pane to the CLI pane.
      */
     public void viewCli() {
-        mainPane.setVisible(false);
-        transplantListPane.setVisible(false);
+        hideAllTabs();
+        setButtonSelected(cliTabButton, true);
         cliPane.setVisible(true);
-        undoWelcomeButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
     }
 
     /**

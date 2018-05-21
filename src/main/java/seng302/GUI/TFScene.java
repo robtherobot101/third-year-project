@@ -10,8 +10,7 @@ public enum TFScene {
     createAccount("createAccount", 400, 450),
     clinician("clinician", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
     admin("admin", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
-    userWindow("userWindow", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
-    transplantList("transplantList", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
+    userWindow("userWindow", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
 
     private int width, height;
     private String name;

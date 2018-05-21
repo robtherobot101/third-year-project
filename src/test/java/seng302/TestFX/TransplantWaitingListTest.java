@@ -13,8 +13,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
 import seng302.Generic.TransplantWaitingListItem;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 
 public class TransplantWaitingListTest extends TestFXTest {
@@ -25,11 +27,6 @@ public class TransplantWaitingListTest extends TestFXTest {
     @BeforeClass
     public static void setupClass() throws TimeoutException {
         defaultTestSetup();
-    }
-
-    @Before
-    public void setup() {
-        DataManager.users.clear();
     }
 
     /**
@@ -68,6 +65,7 @@ public class TransplantWaitingListTest extends TestFXTest {
 
         // Logout to be able to create another account
         clickOn("#logoutButton");
+        sleep(100);
         clickOn("OK");
 
         try {
@@ -373,6 +371,7 @@ public class TransplantWaitingListTest extends TestFXTest {
      */
     @Test
     public void checkRegionFilter() {
+        WindowManager.resetScene(TFScene.userWindow);
         createAccounts();
 
         //login as clinician
@@ -386,7 +385,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#organTypeComboBox");
         clickOn("heart");
         clickOn("#registerOrganButton");
-        clickOn("#saveUserButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("#exitUserButton");
         clickOn("OK");
@@ -397,13 +396,13 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#organTypeComboBox");
         clickOn("liver");
         clickOn("#registerOrganButton");
-        clickOn("#saveUserButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("#exitUserButton");
         clickOn("OK");
 
         //check the transplant list
-        clickOn("#transplantList");
+        clickOn("#transplantListButton");
 
         clickOn("#regionSearchTextField").write("Canterb");
         //check the transplant table
