@@ -27,7 +27,8 @@ public class Procedure {
         this.summary = summary;
         this.description = description;
         this.date = date;
-        this.organsAffected = organsAffected;
+        this.organsAffected = new ArrayList<>();
+        this.organsAffected.addAll(organsAffected);
     }
 
     /**
