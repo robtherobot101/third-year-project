@@ -72,6 +72,11 @@ public class WaitingListController extends PageController implements Initializab
                     currentUser.getWaitingListItems().add(new ReceiverWaitingListItem(item));
                     currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() - 1).registerOrgan();
                     found = true;
+                    try {
+                        WindowManager.getDatabase().insertWaitingListItem(currentUser, temp);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
             }

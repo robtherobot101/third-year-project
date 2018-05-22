@@ -481,7 +481,7 @@ public class UserWindowController implements Initializable {
             medicationsController.updateUser();
             diseasesController.updateUser();
             proceduresController.updateUser();
-            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+            //IO.saveUsers(IO.getUserPath(), ProfileType.USER);
             attributesController.populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);

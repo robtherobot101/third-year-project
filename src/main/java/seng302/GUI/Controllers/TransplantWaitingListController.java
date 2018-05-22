@@ -45,6 +45,7 @@ import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -192,6 +193,11 @@ public class TransplantWaitingListController implements Initializable {
             if (Objects.equals(i.getWaitingListItemId(), selectedWaitingListItem.getWaitingListItemId())) {
                 i.deregisterOrgan(1);
                 History.prepareFileStringGUI(userId, "deregisterError");
+                try {
+                    WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), userId);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
@@ -396,10 +402,16 @@ public class TransplantWaitingListController implements Initializable {
         User user = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
         for (ReceiverWaitingListItem i : user.getWaitingListItems()) {
             if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
-                i.deregisterOrgan(1);
+                i.deregisterOrgan(4);
+                try {
+                    WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), user.getId());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
+
     }
 
 

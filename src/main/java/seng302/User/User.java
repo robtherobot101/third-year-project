@@ -561,6 +561,14 @@ public class User {
         return !organs.isEmpty();
     }
 
+    public void setPendingProcedures(ArrayList<Procedure> item) { this.pendingProcedures = item; }
+
+    public void setPreviousProcedures(ArrayList<Procedure> item) { this.previousProcedures = item; }
+
+    public void setHistoricMedications(ArrayList<Medication> item) { this.historicMedications = item; }
+
+    public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
+
     public boolean isReceiver() {
         boolean receiver = false;
         for (ReceiverWaitingListItem item : waitingListItems) {

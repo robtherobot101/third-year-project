@@ -77,6 +77,20 @@ public class Database {
     }
 
     public void insertWaitingListItem(User currentUser, WaitingListItem waitingListItem) throws SQLException{
+        String query = "SELECT COUNT(*) FROM " + testDatabase + ".WAITING_LIST_ITEM WHERE id = ?";
+        PreparedStatement queryStatement  =connection.prepareStatement(query);
+        queryStatement.setInt(1,waitingListItem.getWaitingListItemId());
+        ResultSet resultSet = queryStatement.executeQuery();
+        resultSet.next();
+        if (resultSet.getInt(1) != 0) {
+
+            String deleteQuery = "DELETE FROM " + testDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
+            PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
+            deleteStatement.setLong(1, waitingListItem.getUserId());
+            deleteStatement.setString(2, waitingListItem.organType.toString());
+            queryStatement.executeQuery();
+        }
+
         String insert = "INSERT INTO " + testDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id) VALUES  (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(insert);
         statement.setString(1, waitingListItem.organType.toString());
@@ -262,7 +276,7 @@ public class Database {
 
     }
 
-    public boolean checkUniqueUser(String item) throws SQLException{
+    public boolean isUniqueUser(String item) throws SQLException{
         String query = "SELECT * FROM " + testDatabase + ".USER WHERE USER.username = ? OR USER.email = ?";
         PreparedStatement statement = connection.prepareStatement(query);
 
