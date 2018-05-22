@@ -226,6 +226,11 @@ public class TransplantWaitingListController implements Initializable {
                 for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                     if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                         i.deregisterOrgan(2);
+                        try {
+                            WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), selectedUser.getId());
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                         alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason " +
                             "Code 2 selected. No disease cured");
                         alert.showAndWait();
@@ -238,6 +243,11 @@ public class TransplantWaitingListController implements Initializable {
             for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                 if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                     i.deregisterOrgan(2);
+                    try {
+                        WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), selectedUser.getId());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code " +
                         "2 selected. No disease cured");
                     alert.showAndWait();
@@ -308,6 +318,12 @@ public class TransplantWaitingListController implements Initializable {
                     for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                         if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                             i.deregisterOrgan(2);
+                            try {
+                                WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), selectedUser.getId());
+                                WindowManager.getDatabase().updateUserDiseases(selectedUser);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                             Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered",
                                 "Reason Code 2 selected and disease cured");
                             alert.showAndWait();
