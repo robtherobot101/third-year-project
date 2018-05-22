@@ -44,7 +44,6 @@ class DatabaseTest {
     void tearDown() {
         try {
             database.resetDatabase();
-            database.loadSampleData();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -154,7 +153,7 @@ class DatabaseTest {
         ArrayList<Organ> testOrgansAffected = new ArrayList<>();
         testOrgansAffected.add(Organ.LIVER);
         Procedure testUpcomingProcedure = new Procedure("Liver transplant","Bobby being the loose unit " +
-                "he is, has burned out his current liver.", LocalDate.now(), testOrgansAffected);
+                "he is, has burned out his current liver.", LocalDate.of(2029, 01, 23), testOrgansAffected);
         Procedure testPreviousProcedure = new Procedure("Toe swap","The ol' 1-2", LocalDate.now(),
                 testOrgansAffected);
 
@@ -165,8 +164,8 @@ class DatabaseTest {
         testPendingProcedures.add(testUpcomingProcedure);
         testPreviousProcedures.add(testPreviousProcedure);
 
-        testUser.setPendingProcedures(testPendingProcedures);
-        testUser.setPreviousProcedures(testPreviousProcedures);
+        testUser.getPendingProcedures().addAll(testPendingProcedures);
+        testUser.getPreviousProcedures().addAll(testPreviousProcedures);
 
         try {
             database.insertUser(testUser);
@@ -177,8 +176,8 @@ class DatabaseTest {
             database.updateUserProcedures(testUser);
 
             queriedUser = database.getAllUsers().get(0);
-            assertEquals(testUser.getPendingProcedures(), queriedUser.getPendingProcedures());
-            assertEquals(testUser.getPreviousProcedures(), queriedUser.getPreviousProcedures());
+            assertEquals(testUser.getPendingProcedures().get(0).getDescription(), queriedUser.getPendingProcedures().get(0).getDescription());
+            assertEquals(testUser.getPreviousProcedures().get(0).getDescription(), queriedUser.getPreviousProcedures().get(0).getDescription());
 
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -239,8 +238,15 @@ class DatabaseTest {
                 "bdong", "flameman@hotmail.com", "password");
         ArrayList<Medication> testCurrentMedications = new ArrayList<>();
         ArrayList<Medication> testHistoricMedications = new ArrayList<>();
-        testHistoricMedications.add(new Medication("Magic beans", new String[]{"Test"}, new ArrayList<String>()));
-        testCurrentMedications.add(new Medication("Super Male Vitality", new String[]{"Test"}, new ArrayList<String>()));
+
+        Medication historicMedication = new Medication("Magic beans", new String[]{"Test"}, new ArrayList<String>());
+        historicMedication.startedTaking();
+        historicMedication.stoppedTaking();
+        testHistoricMedications.add(historicMedication);
+
+        Medication currentMedication = new Medication("Super Male Vitality", new String[]{"Test"}, new ArrayList<String>());
+        currentMedication.startedTaking();
+        testCurrentMedications.add(currentMedication);
 
 
         testUser.setHistoricMedications(testHistoricMedications);
@@ -252,11 +258,11 @@ class DatabaseTest {
             assertEquals(new ArrayList<Medication>(), queriedUser.getCurrentMedications());
             assertEquals(new ArrayList<Medication>(), queriedUser.getHistoricMedications());
 
-            database.updateUserDiseases(testUser);
+            database.updateUserMedications(testUser);
 
             queriedUser = database.getAllUsers().get(0);
-            assertEquals(testUser.getCurrentMedications(), queriedUser.getCurrentMedications());
-            assertEquals(testUser.getHistoricMedications(), queriedUser.getHistoricMedications());
+            assertEquals(testUser.getCurrentMedications().get(0).getName(), queriedUser.getCurrentMedications().get(0).getName());
+            assertEquals(testUser.getHistoricMedications().get(0).getName(), queriedUser.getHistoricMedications().get(0).getName());
 
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -416,7 +422,21 @@ class DatabaseTest {
 
     @Test
     void refreshUserWaitinglists() {
-        //TODO
+        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
+                "bdong", "flameman@hotmail.com", "password");
+
+        try {
+            database.insertUser(testUser);
+            assertEquals(new ArrayList<>(), database.getAllUsers().get(0).getWaitingListItems());
+
+            database.insertWaitingListItem(testUser, new ReceiverWaitingListItem(Organ.BONE, LocalDate.now(),
+                    null, database.getAllUsers().get(0).getId(), null, 1));
+
+            User queriedUser = database.getAllUsers().get(0);
+            assertTrue(queriedUser.getWaitingListItems().get(0).getStillWaitingOn());
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
@@ -495,11 +515,39 @@ class DatabaseTest {
 
     @Test
     void resetDatabase() {
-        //TODO
+        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
+                "bdong", "flameman@hotmail.com", "password");
+        Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
+        Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
+                ProfileType.CLINICIAN);
+
+        try {
+            database.insertUser(testUser);
+            database.insertClinician(testClinician);
+            database.insertAdmin(testAdmin);
+
+            database.resetDatabase();
+
+            assertEquals(0, database.getAllUsers().size());
+            assertEquals(1, database.getAllClinicians().size());
+            assertEquals(1, database.getAllAdmins().size());
+
+            assertEquals("default", database.getAllClinicians().get(0).getUsername());
+            assertEquals("admin", database.getAllAdmins().get(0).getUsername());
+            assertEquals(1, database.getAllClinicians().get(0).getStaffID());
+            assertEquals(1, database.getAllAdmins().get(0).getStaffID());
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
     }
 
     @Test
     void loadSampleData() {
-        //TODO
+        try {
+            database.loadSampleData();
+            assertEquals(8, database.getAllUsers().size());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
