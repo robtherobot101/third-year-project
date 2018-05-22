@@ -373,7 +373,7 @@ public class WindowManager extends Application {
     }
 
     public void setupDrugInteractionCache(){
-        Cache cache = new Cache(getJarPath() + "/interactions.json");
+        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
         InteractionApi.setCache(cache);
     }
 

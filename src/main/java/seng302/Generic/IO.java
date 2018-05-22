@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -245,6 +246,7 @@ public class IO {
             }.getType();
             Cache importedCache = gson.fromJson(reader, type);
             System.out.println("Opened user file successfully.");
+            importedCache.purgeEntriesOlderThan(Duration.ofDays(7));
             return importedCache;
         } catch (IOException e) {
             System.out.println("IOException on " + path + ": Check your inputs and permissions!");
