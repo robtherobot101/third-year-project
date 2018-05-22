@@ -2,14 +2,21 @@ package seng302.TestFX;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Window;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.testfx.matcher.control.TableViewMatchers;
 import seng302.Generic.ReceiverWaitingListItem;
+import seng302.Generic.TransplantWaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.util.ArrayList;
@@ -19,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class UserWaitingListGUITest extends TestFXTest {
@@ -27,7 +35,7 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        defaultTestSetup();
+        //defaultTestSetup();
     }
 
     @Before
@@ -213,5 +221,68 @@ public class UserWaitingListGUITest extends TestFXTest {
         assertFalse(getWaitingListOrgan(Organ.LIVER).getStyleClass().contains("highlighted-row"));
     }
 
+
+    public boolean transplantListHasItem(TableView<TransplantWaitingListItem> table, Organ organ, String receiverName){
+        return getTransplantListItem(table,organ,receiverName)!=null;
+    }
+
+    public TransplantWaitingListItem getTransplantListItem(TableView<TransplantWaitingListItem> table, Organ organ, String receiverName){
+        for(TransplantWaitingListItem item:table.getItems()){
+            System.out.println("item name: "+item.getName());
+            System.out.println("item organ: "+item.getOrganType());
+            if(item.getName().equals(receiverName) && item.getOrganType()==organ){
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void pressDialogOKButtons(){
+        sleep(500);
+        for(Window window: this.listWindows()){
+            for(Node nodeWithOKText : from(window.getScene().getRoot()).lookup("OK").queryAll()){
+                if(nodeWithOKText instanceof Button){
+                    clickOn(nodeWithOKText);
+                }
+            }
+        }
+    }
+
+
+    @Test
+    public void changeUserWaitingList_clinicianWaitingListUpdated() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.HEART);
+        openClinicianWindow(new Clinician("test","test","test"));
+        waitForNodeVisible(5,"#transplantListButton");
+        clickOn("#transplantListButton");
+        TableView transplantTable = lookup("#transplantTable").queryTableView();
+        assertTrue(transplantListHasItem(transplantTable, Organ.HEART, user.getName()));
+    }
+
+    @Ignore
+    @Test
+    public void changeClinicianList_userWaitingListUpdated() throws TimeoutException {
+        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.HEART,0, user.getId()));
+        openClinicianWindow(new Clinician("test","test","test"));
+        waitForNodeVisible(5,"#transplantListButton");
+        clickOn("#transplantListButton");
+        TableView transplantTable = lookup("#transplantTable").queryTableView();
+        transplantTable.getSelectionModel().select(getTransplantListItem(transplantTable,Organ.HEART,user.getName()));
+
+        clickOn("#deregisterReceiverButton");
+        pressDialogOKButtons();
+
+        clickOn("#saveButton");
+
+        pressDialogOKButtons();
+
+
+        usersTransplantWaitingListAsClinician();
+        sleep(500);
+
+        System.out.println(waitingListItems().size());
+        assertTrue(waitingListItems().size()==0);
+    }
 }
 
