@@ -1,5 +1,14 @@
 package seng302.TestFX;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;

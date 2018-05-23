@@ -1,15 +1,15 @@
 package seng302.Core;
 
+
+import java.time.LocalDate;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-import java.time.LocalDate;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class ReceiverWaitingListItemTest {
 
@@ -33,7 +33,7 @@ public class ReceiverWaitingListItemTest {
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             date = listItem.getOrganDeregisteredDate();
         }
-        assertTrue(date == null);
+        Assert.assertNull(date);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ReceiverWaitingListItemTest {
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
         }
-        assertTrue(stillWaitingOn);
+        Assert.assertTrue(stillWaitingOn);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ReceiverWaitingListItemTest {
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
         }
-        assertFalse(stillWaitingOn);
+        Assert.assertTrue(stillWaitingOn);
     }
 
     @Test
@@ -62,6 +62,6 @@ public class ReceiverWaitingListItemTest {
         testUser.setOrgan(Organ.HEART);
         ReceiverWaitingListItem listItem = testUser.getWaitingListItems().get(0);
         System.out.println(listItem.getOrganType());
-        assertTrue(listItem.isDonatingOrgan(testUser));
+        Assert.assertTrue(listItem.isDonatingOrgan(testUser));
     }
 }

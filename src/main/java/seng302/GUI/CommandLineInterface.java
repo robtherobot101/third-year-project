@@ -180,7 +180,8 @@ public class CommandLineInterface {
                 case "describeuser":
                     success = describeUser(nextCommand);
                     break;
-                case "describeClinician":
+
+                case "describeclinician":
                     success = describeClinician(nextCommand);
                     break;
                 case "describeorgans":
@@ -189,6 +190,7 @@ public class CommandLineInterface {
                 case "listusers":
                     success = listUsers(nextCommand);
                     break;
+
                 case "listclinicians":
                     success = listClinicians(nextCommand);
                     break;
@@ -234,9 +236,7 @@ public class CommandLineInterface {
             if (toDescribe == null) {
                 printLine(String.format("Clinician with ID %s not found.", idString));
             } else {
-
-                printLine(toDescribe.toString());
-
+                printLine(toDescribe.getString(false));
             }
         } catch (NumberFormatException e) {
             System.out.println("ID entered was not valid.");
@@ -474,7 +474,6 @@ public class CommandLineInterface {
                 }
             }
 
-
         } else {
             printLine("Deletion cancelled.");
         }
@@ -588,6 +587,11 @@ public class CommandLineInterface {
                 refreshUser(toSet);
                 printLine("New name set.");
                 return true;
+            case "prefname":
+                toSet.setPreferredName(value);
+                printLine("New preferred name set.");
+                return true;
+
             case "dateofbirth":
                 try {
                     toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
@@ -825,7 +829,7 @@ public class CommandLineInterface {
             if (DataManager.clinicians.size() > 0) {
                 printLine(Clinician.tableHeader);
                 for (Clinician clinician : DataManager.clinicians) {
-                    printLine(clinician.toString());
+                    printLine(clinician.getString(true));
                 }
             } else {
                 printLine("There are no clinicians to list. Please add or import some before using list.");
@@ -1044,7 +1048,7 @@ public class CommandLineInterface {
                             + "The syntax is: updateUser <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
-                            + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
+                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateOfDeath, gender, height, "
                             + "weight, bloodType, region, currentAddress\n"
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-The gender must be: male, female, or other\n"
@@ -1066,7 +1070,7 @@ public class CommandLineInterface {
                     break;
                 case "describeclinician":
                     printLine("This command searches clinicians and displays information about them. To find the id of a clinician, use the listClinicians "
-                            + "and describeClinician commands.\n"
+                            + " command.\n"
                             + "The syntax is: describeClinician <id>\n"
                             + "Rules:\n"
                             + "-If an id number is to be used as search criteria, it must be a number that is 0 or larger\n"
