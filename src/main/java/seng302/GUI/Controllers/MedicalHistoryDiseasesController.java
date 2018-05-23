@@ -208,6 +208,11 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
         History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

@@ -113,7 +113,7 @@ public class LoginController implements Initializable {
                         DataManager.users.clear();
                         try{
                             DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                            //WindowManager.getDatabase().refreshUserWaitinglists();
+                            WindowManager.getDatabase().refreshUserWaitinglists();
                         } catch(SQLException e) {
                             e.printStackTrace();
                         }

@@ -232,6 +232,11 @@ public class MedicationsController extends PageController implements Initializab
         currentUser.getCurrentMedications().addAll(currentItems);
         String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
         History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserMedications(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

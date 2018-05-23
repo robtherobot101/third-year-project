@@ -7,10 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.Generic.DataManager;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 
 import java.net.URL;
@@ -69,7 +66,7 @@ public class ClinicianAccountSettingsController implements Initializable {
 //        }
         int clinicianId = 0;
         try {
-            if (!WindowManager.getDatabase().checkUniqueUser(usernameField.getText())) {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;

@@ -193,6 +193,11 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
         History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

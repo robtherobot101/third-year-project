@@ -7,15 +7,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
 import seng302.Generic.DataManager;
 import seng302.Generic.History;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
-import javax.xml.crypto.Data;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -79,11 +75,11 @@ public class CreateAccountController implements Initializable {
     public User createAccount() {
 
         try {
-            if (!WindowManager.getDatabase().checkUniqueUser(usernameInput.getText())) {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if(!WindowManager.getDatabase().checkUniqueUser(emailInput.getText())) {
+            } else if(!WindowManager.getDatabase().isUniqueUser(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;

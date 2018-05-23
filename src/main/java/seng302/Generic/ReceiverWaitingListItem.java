@@ -39,12 +39,13 @@ public class ReceiverWaitingListItem extends WaitingListItem {
         this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
-    public ReceiverWaitingListItem(Organ organType, LocalDate registeredDate, LocalDate deregisteredDate, Long userId, Integer deregisteredCode) {
+    public ReceiverWaitingListItem(Organ organType, LocalDate registeredDate, LocalDate deregisteredDate, Long userId, Integer deregisteredCode, Integer waitingListitemId) {
         this.organType = organType;
         this.organRegisteredDate = registeredDate;
         this.organDeregisteredDate = deregisteredDate;
         this.userId = userId;
         this.organDeregisteredCode = deregisteredCode;
+        this.waitingListItemId = waitingListitemId;
         if (deregisteredDate == null) { this.stillWaitingOn = true; } else { this.stillWaitingOn = false;}
     }
 

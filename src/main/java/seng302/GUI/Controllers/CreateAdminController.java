@@ -65,7 +65,7 @@ public class CreateAdminController implements Initializable {
      */
     public void createAccount() {
         try{
-            if (!WindowManager.getDatabase().checkUniqueUser(usernameInput.getText())) {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
             }
