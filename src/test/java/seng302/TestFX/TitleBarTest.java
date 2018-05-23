@@ -14,6 +14,13 @@ import org.junit.Test;
 import seng302.GUI.TitleBar;
 import seng302.User.User;
 
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+
 public class TitleBarTest extends TestFXTest {
 
     private Stage stage;

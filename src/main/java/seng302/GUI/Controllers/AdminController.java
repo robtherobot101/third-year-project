@@ -767,7 +767,7 @@ public class AdminController implements Initializable {
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
 
-        WindowManager.getTransplantWaitingListController().updateTransplantList();
+        WindowManager.updateTransplantWaitingList();
     }
 
     /**

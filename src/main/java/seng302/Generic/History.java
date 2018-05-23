@@ -93,13 +93,13 @@ public class History {
                 description = "[-Admin- Added transplant request of type " + parameterTwo + " to user " + userInfo + ".]";
             case "deleteuser":
                 parameterOne = nextCommand[1];
-                formatUserInfo(Long.parseLong(parameterOne));
-                description = "[-Admin- Deleted user " + userInfo + " from the program.]";
+                //formatUserInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Deleted user with id: " + parameterOne + " from the program.]";
                 break;
             case "deleteclinician":
                 parameterOne = nextCommand[1];
-                formatClinicianInfo(Long.parseLong(parameterOne));
-                description = "[-Admin- Deleted clinician " + clinicianInfo + " from the program.]";
+                //formatClinicianInfo(Long.parseLong(parameterOne));
+                description = "[-Admin- Deleted clinician with id: " + parameterOne + " from the program.]";
                 break;
             case "removedonationorgan":
                 parameterOne = nextCommand[1];

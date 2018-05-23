@@ -11,14 +11,19 @@ import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
-class ReceiverWaitingListItemTest {
+import java.time.LocalDate;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class ReceiverWaitingListItemTest {
 
     private User testUser;
     private ReceiverWaitingListItem item;
     private Organ heart;
 
     @Before
-    void setUp() {
+    public void setUp() {
         testUser = new User("Joe", LocalDate.parse("01/01/1999", User.dateFormat));
         heart = Organ.HEART;
         item = new ReceiverWaitingListItem(heart, Long.parseLong("-1"));
@@ -26,7 +31,7 @@ class ReceiverWaitingListItemTest {
     }
 
     @Test
-    void testNullDeregisteredDateOnRegister() {
+    public void testNullDeregisteredDateOnRegister() {
         String date = "notNull";
         item.deregisterOrgan(3);
         item.registerOrgan();
@@ -37,7 +42,7 @@ class ReceiverWaitingListItemTest {
     }
 
     @Test
-    void testIsStillWaitingOnRegister() {
+    public void testIsStillWaitingOnRegister() {
         boolean stillWaitingOn = false;
         item.deregisterOrgan(3);
         item.registerOrgan();
@@ -48,7 +53,7 @@ class ReceiverWaitingListItemTest {
     }
 
     @Test
-    void testIsNotStillWaitingOnDeregister() {
+    public void testIsNotStillWaitingOnDeregister() {
         boolean stillWaitingOn = true;
         item.deregisterOrgan(3);
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
@@ -58,7 +63,7 @@ class ReceiverWaitingListItemTest {
     }
 
     @Test
-    void isDonatingOrgan() {
+    public void isDonatingOrgan() {
         testUser.setOrgan(Organ.HEART);
         ReceiverWaitingListItem listItem = testUser.getWaitingListItems().get(0);
         System.out.println(listItem.getOrganType());
