@@ -23,9 +23,9 @@ public class Database {
 
     private String testDatabase = "`seng302-2018-team300-test`";
     private String connectDatabase = "seng302-2018-team300-test";
-    private String username = "root";
-    private String password = "admin";
-    private String url = "jdbc:mysql://localhost/";
+    private String username = "seng302-team300";
+    private String password = "WeldonAside5766";
+    private String url = "jdbc:mysql://mysql2.csse.canterbury.ac.nz/";
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 

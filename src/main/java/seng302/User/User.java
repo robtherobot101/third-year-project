@@ -83,9 +83,13 @@ public class User {
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
-        this.name = new String[1 + middleNames.length + isLastName];
+        System.out.println(isLastName);
+        int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
+        this.name = new String[1 + lenMiddleNames + isLastName];
         this.name[0] = firstName;
-        System.arraycopy(middleNames, 0, this.name, 1, middleNames.length);
+        if (middleNames != null) {
+            System.arraycopy(middleNames, 0, this.name, 1, lenMiddleNames);
+        }
         if (isLastName == 1) {
             this.name[this.name.length - 1] = lastName;
         }
