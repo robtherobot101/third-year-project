@@ -165,7 +165,7 @@ public class IO {
             PrintStream outputStream = new PrintStream(new FileOutputStream(outputFile));
             gson.toJson(cache, outputStream);
         }catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
