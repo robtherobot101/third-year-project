@@ -358,52 +358,6 @@ public class WindowManager extends Application {
         stage.getIcons().add(icon);
         try {
             IO.setPaths();
-
-            //TODO Get rid of loading of users from json
-//            File users = new File(IO.getUserPath());
-//            if (users.exists()) {
-//                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
-//                    throw new IOException("User save file could not be loaded.");
-//                }
-//            } else {
-//                if (!users.createNewFile()) {
-//                    throw new IOException("User save file could not be created.");
-//                }
-//            }
-
-            //TODO Get rid of loading clinicians from json
-//            File clinicians = new File(IO.getClinicianPath());
-//            if (clinicians.exists()) {
-//                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
-//                    throw new IOException("Clinician save file could not be loaded.");
-//                }
-//            } else {
-//                if (!clinicians.createNewFile()) {
-//                    throw new IOException("Clinician save file could not be created.");
-//                }
-//                Clinician defaultClinician = new Clinician("default", "default", "default");
-//                DataManager.clinicians.add(defaultClinician);
-//                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
-//
-//            }
-
-            //TODO Get rid of loading admins from json
-//            File admins = new File(IO.getAdminPath());
-//            if (admins.exists()) {
-//                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
-//                    throw new IOException("Admin save file could not be loaded.");
-//                }
-//            } else {
-//                if (!admins.createNewFile()) {
-//                    throw new IOException("Admin save file could not be created.");
-//                }
-//                Admin defaultAdmin = new Admin("admin", "default", "default_admin");
-//                DataManager.admins.add(defaultAdmin);
-//                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-//
-//            }
-
-
             IO.streamOut = History.init();
             for (TFScene scene : TFScene.values()) {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));

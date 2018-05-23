@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -594,6 +597,8 @@ public class ClinicianController implements Initializable {
 
         });
 
+
+
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
         profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
         profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
@@ -623,7 +628,24 @@ public class ClinicianController implements Initializable {
         WindowManager.setClinicianController(this);
 
         updateFoundUsers();
-        //WindowManager.getTransplantWaitingListController().updateTransplantList();
+
+        if (TFScene.clinician != null) {
+            WindowManager.getScene(TFScene.clinician).setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    DataManager.users.clear();
+                    try {
+                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                        WindowManager.getDatabase().refreshUserWaitinglists();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    WindowManager.updateTransplantWaitingList();
+                    updateFoundUsers();
+                    profileTable.setItems(currentPage);
+                    profileTable.refresh();
+                }
+            });
+        }
 
         profileTable.setItems(currentPage);
 
