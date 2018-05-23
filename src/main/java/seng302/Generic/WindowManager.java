@@ -78,6 +78,10 @@ public class WindowManager extends Application {
         return stage;
     }
 
+    /**
+     * Creates a new user window from a clinician's view.
+     * @param user The user to create the window for
+     */
     public static void newCliniciansUserWindow(User user){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
@@ -168,6 +172,17 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Calls the function which updates the the attributes panel of each user window.
+     */
+    public static void updateUserAttributes() {
+        for (UserWindowController userWindowController: cliniciansUserWindows.values()) {
+            userWindowController.populateUserAttributes();
+        }
+    }
+
+
+
+    /**
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
@@ -193,6 +208,8 @@ public class WindowManager extends Application {
         clinicianAccountSettingsController.setCurrentClinician(currentClinician);
         clinicianAccountSettingsController.populateAccountDetails();
     }
+
+
 
     /**
      * sets the login controller

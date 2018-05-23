@@ -752,6 +752,10 @@ public class AdminController implements Initializable {
         mainPane.setVisible(true);
         undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
         redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
+
+        //Could be updated in the CLI
+        clinicianTableView.refresh();
+        userTableView.refresh();
     }
 
     /**
@@ -873,7 +877,5 @@ public class AdminController implements Initializable {
             e.printStackTrace();
             Platform.exit();
         }
-
     }
-
 }
