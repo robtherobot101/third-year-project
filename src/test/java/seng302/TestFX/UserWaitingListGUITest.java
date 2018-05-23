@@ -1,28 +1,25 @@
 package seng302.TestFX;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
-
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import seng302.GUI.Controllers.UserWindowController;
-import seng302.GUI.TFScene;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class UserWaitingListGUITest extends TestFXTest {
 

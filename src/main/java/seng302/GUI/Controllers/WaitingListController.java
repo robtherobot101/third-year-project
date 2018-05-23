@@ -97,7 +97,7 @@ public class WaitingListController extends PageController implements Initializab
         ReceiverWaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             userWindowController.addCurrentUserToUndoStack();
-            WindowManager.getTransplantWaitingListController().showDeregisterDialog(waitingListItemSelected);
+            WindowManager.showDeregisterDialog(waitingListItemSelected);
             //statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }
