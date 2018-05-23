@@ -43,7 +43,7 @@ public class User {
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -60,7 +60,7 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -77,7 +77,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, LoginType.USER);
+        this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 
     /**
@@ -557,10 +557,14 @@ public class User {
         }
     }
 
+    /**
+     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
+     * @param toRemove The organ being removed from the waiting list.
+     */
     public void removeWaitingListItem(Organ toRemove) {
         for (ReceiverWaitingListItem item : waitingListItems){
             if (item.getOrganType() == toRemove) {
-                waitingListItems.remove(item);
+                item.deregisterOrgan(5);
                 break;
             }
         }

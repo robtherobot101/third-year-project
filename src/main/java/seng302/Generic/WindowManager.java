@@ -29,7 +29,7 @@ import seng302.GUI.Controllers.TransplantWaitingListController;
 import seng302.GUI.Controllers.UserWindowController;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
@@ -243,6 +243,13 @@ public class WindowManager extends Application {
         return cliniciansUserWindows;
     }
 
+    public static void closeAllChildren() {
+        for (Stage stage: cliniciansUserWindows.keySet()) {
+            stage.close();
+        }
+        cliniciansUserWindows.clear();
+    }
+
     public static void setUserWindowController(UserWindowController userWindowController) {
         WindowManager.userWindowController = userWindowController;
     }
@@ -308,7 +315,7 @@ public class WindowManager extends Application {
             IO.setPaths();
             File users = new File(IO.getUserPath());
             if (users.exists()) {
-                if (!IO.importUsers(users.getAbsolutePath(), LoginType.USER)) {
+                if (!IO.importUsers(users.getAbsolutePath(), ProfileType.USER)) {
                     throw new IOException("User save file could not be loaded.");
                 }
             } else {
@@ -318,7 +325,7 @@ public class WindowManager extends Application {
             }
             File clinicians = new File(IO.getClinicianPath());
             if (clinicians.exists()) {
-                if (!IO.importUsers(clinicians.getAbsolutePath(), LoginType.CLINICIAN)) {
+                if (!IO.importUsers(clinicians.getAbsolutePath(), ProfileType.CLINICIAN)) {
                     throw new IOException("Clinician save file could not be loaded.");
                 }
             } else {
@@ -326,12 +333,12 @@ public class WindowManager extends Application {
                     throw new IOException("Clinician save file could not be created.");
                 }
                 DataManager.clinicians.add(new Clinician("default", "default", "default"));
-                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
 
             }
             File admins = new File(IO.getAdminPath());
             if (admins.exists()) {
-                if (!IO.importUsers(admins.getAbsolutePath(), LoginType.ADMIN)) {
+                if (!IO.importUsers(admins.getAbsolutePath(), ProfileType.ADMIN)) {
                     throw new IOException("Admin save file could not be loaded.");
                 }
             } else {
@@ -339,7 +346,7 @@ public class WindowManager extends Application {
                     throw new IOException("Admin save file could not be created.");
                 }
                 DataManager.admins.add(new Admin("admin", "default", "default_admin"));
-                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
 
             }
             IO.streamOut = History.init();

@@ -6,7 +6,7 @@ import org.junit.Test;
 import seng302.Generic.DataManager;
 import seng302.Generic.IO;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -21,7 +21,7 @@ public class IOTest {
     @Before
     public void setup() {
         DataManager.users = FXCollections.observableArrayList();
-        DataManager.recalculateNextId(LoginType.USER);
+        DataManager.recalculateNextId(ProfileType.USER);
         DataManager.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
         DataManager.users.add(new User("Test User,Testperson", "01/04/1530", "31/01/1565", "Non-Binary", 1.234, 1.11111, "a-", "Auckland", "street sample " +
                 "text"));
@@ -34,10 +34,10 @@ public class IOTest {
     @Test
     public void testImportSave() {
         DataManager.users.add(new User("extra", LocalDate.parse("01/01/1000", User.dateFormat)));
-        IO.saveUsers("testsave", LoginType.USER);
+        IO.saveUsers("testsave", ProfileType.USER);
         DataManager.users.remove(5);
         assertEquals(5, DataManager.users.size());
-        IO.importUsers("testsave", LoginType.USER);
+        IO.importUsers("testsave", ProfileType.USER);
         assertEquals("extra", DataManager.users.get(5).getName());
         new File("testsave").delete();
     }
@@ -49,9 +49,9 @@ public class IOTest {
         oldUser.setWeight(100);
         oldUser.setGender(Gender.MALE);
         DataManager.users.add(oldUser);
-        IO.saveUsers("testsave", LoginType.USER);
+        IO.saveUsers("testsave", ProfileType.USER);
         DataManager.users.remove(5);
-        IO.importUsers("testsave", LoginType.USER);
+        IO.importUsers("testsave", ProfileType.USER);
         assertEquals(DataManager.users.get(5).toString(), oldUser.toString());
         new File("testsave").delete();
     }
@@ -61,7 +61,7 @@ public class IOTest {
         String invalidFile = "OrganDonation.jpg";
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
-        IO.importUsers(invalidFile, LoginType.USER);
+        IO.importUsers(invalidFile, ProfileType.USER);
         String text = out.toString();
         String expected = "IOException on " + invalidFile + ": Check your inputs and permissions!";
         assertEquals(expected, text.trim());
@@ -72,6 +72,6 @@ public class IOTest {
      */
     @Test
     public void testSaveIOException() {
-        assertFalse(IO.saveUsers("", LoginType.USER));
+        assertFalse(IO.saveUsers("", ProfileType.USER));
     }
 }

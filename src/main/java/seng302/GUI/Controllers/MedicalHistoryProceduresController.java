@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import seng302.Generic.History;
 import seng302.Generic.Procedure;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 

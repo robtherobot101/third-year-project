@@ -1,7 +1,7 @@
 package seng302.User;
 
 import seng302.Generic.DataManager;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 
 /**
  * This class contains information about clinicians.
@@ -13,16 +13,16 @@ public class Clinician {
 
 
     private long staffID;
-    private LoginType accountType;
+    private ProfileType accountType;
 
     public Clinician(String username, String password, String name) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = DataManager.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
-        this.accountType = LoginType.CLINICIAN;
+        this.accountType = ProfileType.CLINICIAN;
     }
 
     /**
@@ -34,7 +34,7 @@ public class Clinician {
      * @param accountType The type of account
      * @param staffID     The clinician's ID
      */
-    public Clinician(String username, String password, String name, LoginType accountType, long staffID) {
+    public Clinician(String username, String password, String name, ProfileType accountType, long staffID) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -52,11 +52,11 @@ public class Clinician {
      * @param name        The clinician's name
      * @param accountType The type of account
      */
-    public Clinician(String username, String password, String name, LoginType accountType) {
+    public Clinician(String username, String password, String name, ProfileType accountType) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = DataManager.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
         this.accountType = accountType;

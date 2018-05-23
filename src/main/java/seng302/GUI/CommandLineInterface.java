@@ -4,7 +4,7 @@ import javafx.collections.ObservableList;
 import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -13,6 +13,7 @@ import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
+
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -156,7 +157,7 @@ public class CommandLineInterface {
                 case "removewaitinglistorgan":
                     success = removeWaitingListOrgan(nextCommand);
                     break;
-                case "removeedonationorgan":
+                case "removedonationorgan":
                     success = removeDonationOrgan(nextCommand);
                     break;
                 case "updateuser":
@@ -182,7 +183,6 @@ public class CommandLineInterface {
                 case "listclinicians":
                     success = listClinicians(nextCommand);
                     break;
-
                 case "listorgans":
                     success = listOrgans(nextCommand);
                     break;
@@ -201,8 +201,8 @@ public class CommandLineInterface {
             }
         }
         if (success) {
-            //String text = History.prepareFileStringCLI(nextCommand);
-            //History.printToFile(streamOut, text);
+            String text = History.prepareFileStringCLI(nextCommand);
+            History.printToFile(streamOut, text);
         }
     }
 
@@ -858,7 +858,7 @@ public class CommandLineInterface {
                 } else {
                     path = nextCommand[1];
                 }
-                if (IO.importUsers(path, LoginType.USER)) {
+                if (IO.importUsers(path, ProfileType.USER)) {
                     printLine("User imported from " + path + ".");
                     return true;
                 } else {
@@ -889,7 +889,7 @@ public class CommandLineInterface {
                 }
                 String type = nextCommand[2];
                 if(type.equals("users")){
-                    if (IO.saveUsers(path, LoginType.USER)) {
+                    if (IO.saveUsers(path, ProfileType.USER)) {
                         printLine("Users saved to " + path + ".");
                         return true;
                     } else {
@@ -897,7 +897,7 @@ public class CommandLineInterface {
                         return false;
                     }
                 }else if(type.equals("clinicians")){
-                    if (IO.saveUsers(path, LoginType.CLINICIAN)) {
+                    if (IO.saveUsers(path, ProfileType.CLINICIAN)) {
                         printLine("Clinicians saved to " + path + ".");
                         return true;
                     } else {

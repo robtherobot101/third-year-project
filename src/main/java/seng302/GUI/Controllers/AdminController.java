@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -26,11 +27,12 @@ import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
 import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -79,9 +81,10 @@ public class AdminController implements Initializable {
     @FXML
     private ComboBox<Gender> adminGenderComboBox;
     @FXML
-    private ComboBox<String> adminUserTypeComboBox;
-    @FXML
     private ComboBox<Organ> adminOrganComboBox;
+    @FXML
+    private ComboBox<String> adminUserTypeComboBox;
+
     @FXML
     private StatusBar statusBar;
     @FXML
@@ -145,49 +148,12 @@ public class AdminController implements Initializable {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
-                userWindow.close();
-            }
+        if (result.orElse(null) == ButtonType.OK) {
+            WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.admin);
         } else {
             alert.close();
-        }
-    }
-
-
-    /**
-     * Function which is called when the user wants to update their account settings in the user Window,
-     * and creates a new account settings window to do so. Then does a prompt for the password as well.
-     */
-    public void updateAccountSettings() {
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("View Account Settings");
-        dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
-        dialog.setContentText("Please enter your password:");
-
-        Optional<String> password = dialog.showAndWait();
-        if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(currentAdmin.getPassword())) {
-                try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinicianAccountSettings.fxml"));
-                    Stage stage = new Stage();
-                    stage.getIcons().add(WindowManager.getIcon());
-                    stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 290, 350));
-                    stage.initModality(Modality.APPLICATION_MODAL);
-
-                    WindowManager.setCurrentClinicianForAccountSettings(currentAdmin);
-
-                    stage.showAndWait();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else { // Password incorrect
-                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
-            }
         }
     }
 
@@ -198,7 +164,6 @@ public class AdminController implements Initializable {
      */
     public void updateAdminPopUp() {
         addAdminToUndoStack(currentAdmin);
-        System.out.println("Name=" + currentAdmin.getName() + ", Address=" + currentAdmin.getWorkAddress());
 
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
@@ -269,7 +234,6 @@ public class AdminController implements Initializable {
         Optional<ArrayList<String>> result = dialog.showAndWait();
 
         result.ifPresent(newAdminDetails -> {
-            System.out.println("Name=" + newAdminDetails.get(0) + ", Address=" + newAdminDetails.get(1));
             currentAdmin.setName(newAdminDetails.get(0));
             currentAdmin.setWorkAddress(newAdminDetails.get(1));
             save();
@@ -282,17 +246,135 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save() {
+        System.out.println("AdminController: Save called");
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
                 "Are you sure would like to save all profiles? ",
                 "All profiles will be saved (user, clinician, admin).");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+        if (result.orElse(null) == ButtonType.OK) {
+            IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+            IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
         }
         alert.close();
     }
+
+    /**
+     * Shows a dialog to load a profile JSON from file, along with success/failure alerts.
+     */
+    public void load() {
+        System.out.println("AdminController: Load called");
+
+        // Formats the initial load dialog window
+        Alert loadDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        loadDialog.setTitle("Confirm Data Type");
+        loadDialog.setHeaderText("Please Select the JSON Profile Type to Import");
+        loadDialog.setContentText("This will close other open ODMS windows.");
+
+        // Add in custom ButtonTypes
+        ButtonType userButton = new ButtonType("Users");
+        ButtonType clinicianButton = new ButtonType("Clinicians");
+        ButtonType adminButton = new ButtonType("Admins");
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        loadDialog.getButtonTypes().setAll(userButton, clinicianButton, adminButton, cancelButton);
+
+        String fileToLoadPath;
+        boolean loadSuccessful = false;
+        boolean loadAborted = false;
+
+        // Perform actions based on the load
+        Optional<ButtonType> result = loadDialog.showAndWait();
+
+        // Switch based on the text string the button contains
+        if (result.orElse(null) != null) {
+            WindowManager.closeAllChildren();
+            String selectedButtonText = result.orElse(null).getText();
+            switch (selectedButtonText) {
+                case "Users":
+                    fileToLoadPath = getSelectedFilePath(ProfileType.USER);
+                    if (fileToLoadPath != null) {
+                        loadSuccessful = IO.importUsers(fileToLoadPath, ProfileType.USER);
+                    } else {
+                        loadAborted = true;
+                    }
+                    break;
+                case "Clinicians":
+                    fileToLoadPath = getSelectedFilePath(ProfileType.CLINICIAN);
+                    if (fileToLoadPath != null) {
+                        loadSuccessful = IO.importUsers(fileToLoadPath, ProfileType.CLINICIAN);
+                    } else {
+                        loadAborted = true;
+                    }
+                    break;
+                case "Admins":
+                    String fileToLoad = getSelectedFilePath(ProfileType.ADMIN);
+                    if (fileToLoad != null) {
+                        loadSuccessful = IO.importUsers(fileToLoad, ProfileType.ADMIN);
+                    } else {
+                        loadAborted = true;
+                    }
+                    break;
+                default:
+                    // If the cancel button is pressed, don't want to harass the user with the extra dialog
+                    loadAborted = true;
+            }
+        }
+
+        // Present an alert informing the user on the load outcome
+        if (loadSuccessful) {
+            Alert successAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load successful",
+                    "",
+                    "All profiles successfully loaded.");
+            successAlert.showAndWait();
+        } else if (loadAborted) {
+            Alert abortAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load cancelled",
+                    "",
+                    "No profile data loaded.");
+            abortAlert.showAndWait();
+        } else {
+            Alert failureAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load failed",
+                    "",
+                    "Failed to load profiles from file");
+            failureAlert.showAndWait();
+        }
+    }
+
+    /**
+     * Opens a FileChooser to get the file path of the selected file
+     * @param profileType Profile type the user will specified the path for
+     * @return Absolute file path to the specified JSON file of specific profileType
+     */
+    private String getSelectedFilePath(ProfileType profileType) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter fileExtensions =
+                new FileChooser.ExtensionFilter(
+                        "JSON Files", "*.json");
+        fileChooser.getExtensionFilters().add(fileExtensions);
+
+        // Customise the titlebar to help the user (and us!) on the profile type to browse for
+        switch (profileType) {
+            case USER:
+                fileChooser.setTitle("Open User File");
+                break;
+            case CLINICIAN:
+                fileChooser.setTitle("Open Clinician File");
+                break;
+            case ADMIN:
+                fileChooser.setTitle("Open Admin File");
+                break;
+            default:
+                throw new IllegalArgumentException("Not a valid JSON import type.");
+        }
+
+        // Present the FileChooser, return null on cancel
+        try {
+            File file = fileChooser.showOpenDialog(WindowManager.getStage());
+            return file.getAbsolutePath();
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
 
     /**
      * Closes the application
@@ -319,14 +401,14 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
+     * The main admin undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
      */
     public void undo() {
         // TODO implement undo
     }
 
     /**
-     * The main clincian redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
+     * The main admin redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
      */
     public void redo() {
         // TODO implement redo
@@ -353,13 +435,12 @@ public class AdminController implements Initializable {
         adminGenderComboBox.setValue(null);
         adminOrganComboBox.setValue(null);
         adminUserTypeComboBox.setValue(null);
-
     }
 
     /**
      * Updates the list of users found from the search
      */
-    public void updateFoundUsers() {
+    private void updateFoundUsers() {
         usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
 
         //Add in check for region
@@ -420,21 +501,7 @@ public class AdminController implements Initializable {
 
         currentUsers = FXCollections.observableArrayList(usersFound);
         userTableView.setItems(currentUsers);
-        //displayPage(resultsPerPage);
     }
-
-//    public void populateNResultsComboBox(int numberOfSearchResults){
-//        numberOfResutsToDisplay.getItems().clear();
-//        String firstPage = "First page";
-//        numberOfResutsToDisplay.getItems().add(firstPage);
-//        numberOfResutsToDisplay.getSelectionModel().select(firstPage);
-//        if(numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults){
-//            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
-//        }else if(numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults){
-//            numberOfResutsToDisplay.getItems().add("Top "+numberXofResults+" results");
-//            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults+" results");
-//        }
-//    }
 
 
 
@@ -501,24 +568,24 @@ public class AdminController implements Initializable {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm profile deletion",
                     "Are you sure you want to delete this profile? This cannot be undone.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.orElse(null) == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
-                    System.out.println("Deleting User: " + selectedUser);
+                    System.out.println("AdminController: Deleting User: " + selectedUser);
                     DataManager.users.remove(selectedUser);
-                    IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                    IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                     statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                 } else if (selectedClinician != null) {
                     // A clinician has been selected for deletion
-                    System.out.println("Deleting Clinician: " + selectedClinician);
+                    System.out.println("AdminController: Deleting Clinician: " + selectedClinician);
                     DataManager.clinicians.remove(selectedClinician);
-                    IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                    IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                     statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                 } else if (selectedAdmin != null) {
                     // An admin has been selected for deletion
-                    System.out.println("Deleting Admin: " + selectedAdmin);
+                    System.out.println("AdminController: Deleting Admin: " + selectedAdmin);
                     DataManager.admins.remove(selectedAdmin);
-                    IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                    IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
                     statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                 }
                 refreshLatestProfiles();
@@ -598,29 +665,24 @@ public class AdminController implements Initializable {
                 searchGenderTerm = newValue.toString();
             }
             updateFoundUsers();
-
         });
 
         adminUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 searchUserTypeTerm = null;
-
             } else {
                 searchUserTypeTerm = newValue;
             }
             updateFoundUsers();
-
         });
 
         adminOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 searchOrganTerm = null;
-
             } else {
                 searchOrganTerm = newValue.toString();
             }
             updateFoundUsers();
-
         });
 
         WindowManager.setAdminController(this);
@@ -722,10 +784,11 @@ public class AdminController implements Initializable {
     @FXML
     private void createAdmin() {
         Stage stage = new Stage();
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setMinHeight(0);
+        stage.setMinWidth(0);
+        stage.setHeight(TFScene.createAccount.getHeight());
+        stage.setWidth(TFScene.createAccount.getHeight());
+        stage.setResizable(false);
         stage.initModality(Modality.NONE);
 
         try {
@@ -737,7 +800,7 @@ public class AdminController implements Initializable {
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
                 DataManager.admins.add(newAdmin);
-                IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
+                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
@@ -753,10 +816,11 @@ public class AdminController implements Initializable {
     @FXML
     private void createClinician() {
         Stage stage = new Stage();
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setResizable(false);
+        stage.setMinHeight(0);
+        stage.setMinWidth(0);
+        stage.setHeight(TFScene.createAccount.getHeight());
+        stage.setWidth(TFScene.createAccount.getHeight());
         stage.initModality(Modality.NONE);
 
         try {
@@ -769,7 +833,7 @@ public class AdminController implements Initializable {
             Clinician newClinician = createClinicianController.showAndWait(stage);
             if (newClinician != null) {
                 DataManager.clinicians.add(newClinician);
-                IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
@@ -785,10 +849,11 @@ public class AdminController implements Initializable {
     @FXML
     private void createUser() {
         Stage stage = new Stage();
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setResizable(false);
+        stage.setMinHeight(0);
+        stage.setMinWidth(0);
+        stage.setHeight(TFScene.createAccount.getHeight());
+        stage.setWidth(TFScene.createAccount.getHeight());
         stage.initModality(Modality.NONE);
 
         try {
@@ -801,7 +866,7 @@ public class AdminController implements Initializable {
             User user = createAccountController.showAndWait(stage);
             if (user != null) {
                 DataManager.users.add(user);
-                IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 System.out.println("AdminController: Failed to create user");
