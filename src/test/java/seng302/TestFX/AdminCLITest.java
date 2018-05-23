@@ -174,7 +174,7 @@ public class AdminCLITest extends TestFXTest {
 
         // Check for a second time that the history doesn't break when overrun
         press(KeyCode.UP).release(KeyCode.UP);
-        assertEquals("TF > a", commandInputField.getText());
+        assertEquals("TF > ", commandInputField.getText());
     }
 
     @Test
@@ -198,7 +198,7 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.DOWN).release(KeyCode.DOWN);
 
         // Check for a second time that the history doesn't break when overrun
-        assertEquals("TF > d", commandInputField.getText());
+        assertEquals("TF > ", commandInputField.getText());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import static seng302.Generic.IO.getJarPath;
 import static seng302.Generic.IO.streamOut;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import seng302.User.Admin;
 import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 
 import javax.xml.crypto.Data;
@@ -118,8 +120,8 @@ public class WindowManager extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
             Parent root = loader.load();
-            UserWindowController userWindowController = loader.getController();
-            userWindowController.setTitleBar(stage);
+            UserWindowController newUserWindowController = loader.getController();
+            newUserWindowController.setTitleBar(stage);
             String text = History.prepareFileStringGUI(user.getId(), "view");
             History.printToFile(streamOut, text);
 
@@ -129,10 +131,10 @@ public class WindowManager extends Application {
             } catch(SQLException e) {
                 e.printStackTrace();
             }
-            userWindowController.setCurrentUser(currentUser);
-            userWindowController.populateHistoryTable();
-            userWindowController.setControlsShown(true);
-            cliniciansUserWindows.put(stage, userWindowController);
+            newUserWindowController.setCurrentUser(currentUser);
+            newUserWindowController.populateHistoryTable();
+            newUserWindowController.setControlsShown(true);
+            cliniciansUserWindows.put(stage, newUserWindowController);
 
 
             Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
@@ -384,6 +386,8 @@ public class WindowManager extends Application {
                 userWindow.close();
             }
         });
+
+
         dialogStyle = WindowManager.class.getResource("/css/dialog.css").toExternalForm();
         menuButtonStyle = WindowManager.class.getResource("/css/menubutton.css").toExternalForm();
         selectedMenuButtonStyle = WindowManager.class.getResource("/css/selectedmenubutton.css").toExternalForm();
@@ -391,6 +395,7 @@ public class WindowManager extends Application {
         stage.getIcons().add(icon);
         try {
             IO.setPaths();
+            setupDrugInteractionCache();
             IO.streamOut = History.init();
             for (TFScene scene : TFScene.values()) {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
@@ -456,6 +461,11 @@ public class WindowManager extends Application {
 
             }
         });
+    }
+
+    public void setupDrugInteractionCache(){
+        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        InteractionApi.setCache(cache);
     }
 
     public static void resetScene(TFScene scene) {

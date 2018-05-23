@@ -1,6 +1,9 @@
 package seng302.TestFX;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.Property;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -96,6 +99,14 @@ abstract class TestFXTest extends ApplicationTest {
         });
         waitForFxEvents();
     }
+
+    public void userWindowAsClinician(User user){
+        Platform.runLater(() ->{
+            WindowManager.newCliniciansUserWindow(user);
+        });
+        waitForFxEvents();
+    }
+
 
     protected void openUserAsClinician(String name) {
         Node row = from(lookup("#profileTable")).lookup(name).query();

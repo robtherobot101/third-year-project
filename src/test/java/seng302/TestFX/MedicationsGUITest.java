@@ -2,21 +2,27 @@ package seng302.TestFX;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
+import java.awt.*;
 import java.util.concurrent.TimeoutException;
+
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Window;
 import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import seng302.Generic.DataManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
+
+import javax.xml.crypto.Data;
 
 public class MedicationsGUITest extends TestFXTest {
 
@@ -30,24 +36,39 @@ public class MedicationsGUITest extends TestFXTest {
     @Before
     public void setUp() {
         testUser = addTestUser();
+        System.out.println("PN"+testUser.getPreferredName());
         testUser.setGender(Gender.FEMALE);
-        loginAsDefaultClinician();
-        openUserAsClinician(testUser.getName());
+        userWindowAsClinician(testUser);
+        //loginAsDefaultClinician();
+        //openUserAsClinician(testUser.getName());
         sleep(500);
         clickOn("Medications");
     }
+
+    @After
+    public void tearDown () {
+        Platform.runLater(() ->{
+            for(Window w:this.listWindows()){
+                w.hide();
+            }
+        });
+
+    }
+
 
     /**
      * Method to add a new medication to a user's current medications list.
      *
      * @param medication The medication to add.
      */
-    private void addNewMedicationToCurrentMedications(String medication) {
+    private void addNewMedicationToCurrentMedications(String medication) throws TimeoutException {
         clickOn("#newMedicationField").write(medication);
         clickOn("#addNewMedicationButton");
         clickOn("#newMedicationField");
         // Not sure if there is a better way to do this
-        sleep(3000);
+        waitForNodeVisible(5,"#waitingListButton");
+
+        //sleep(3000);
     }
 
     /**
@@ -55,10 +76,10 @@ public class MedicationsGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addMedicationForDonor() {
+    public void addMedicationForDonor() throws TimeoutException {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
-
+        sleep(2000);
         //Check if medication added is correct.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topResult = (Medication) currentMedicationList.getItems().get(0);
@@ -68,9 +89,9 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Add an invalid medication and verify it is not added to the user's current medications
      */
-    @Ignore
+    //@Ignore
     @Test
-    public void addInvalidMedicationForDonor() {
+    public void addInvalidMedicationForDonor() throws TimeoutException {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("TESTER");
 
@@ -85,7 +106,7 @@ public class MedicationsGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void moveMedicationToHistory() {
+    public void moveMedicationToHistory() throws TimeoutException {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
@@ -104,7 +125,7 @@ public class MedicationsGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void moveMedicationBackToCurrent() {
+    public void moveMedicationBackToCurrent() throws TimeoutException {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
@@ -126,7 +147,7 @@ public class MedicationsGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void deleteMedicationForDonor() {
+    public void deleteMedicationForDonor() throws TimeoutException {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
@@ -147,13 +168,15 @@ public class MedicationsGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void saveMedicationsForDonor() {
+    public void saveMedicationsForDonor() throws TimeoutException {
         //Add Medication for donor.
         addNewMedicationToCurrentMedications("Asacol");
 
-        clickOn("#saveMedicationButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("Exit");
+
+        openClinicianWindow(DataManager.clinicians.get(0));
 
         //Check if medication added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();
@@ -167,12 +190,11 @@ public class MedicationsGUITest extends TestFXTest {
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topMedication = (Medication) currentMedicationList.getItems().get(0);
         assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
-
     }
 
     @Ignore
     @Test
-    public void undoTest() {
+    public void undoTest() throws TimeoutException {
         //Action 1 to undo
         addNewMedicationToCurrentMedications("Asacol");
 
@@ -213,7 +235,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     @Ignore
     @Test
-    public void redoTest() {
+    public void redoTest() throws TimeoutException {
         //Action 1 to undo and then be discarded due to new changes
         addNewMedicationToCurrentMedications("Cidofovir");
 

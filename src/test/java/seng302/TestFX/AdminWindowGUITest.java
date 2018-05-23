@@ -57,6 +57,7 @@ public class AdminWindowGUITest extends TestFXTest {
     /**
      * Add a simple user and verify it appears with appropriate details in the TabPane
      */
+    @Ignore
     @Test
     public void addUser() {
         loginAsDefaultAdmin();
@@ -102,6 +103,7 @@ public class AdminWindowGUITest extends TestFXTest {
     /**
      * Add a simple admin and verify it appears with appropriate details in the TabPane
      */
+    @Ignore
     @Test
     public void addAdmin() {
         loginAsDefaultAdmin();;
