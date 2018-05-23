@@ -1,6 +1,5 @@
 package seng302.TestFX;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -14,6 +13,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
+
+import static org.junit.Assert.assertEquals;
 
 public class DrugInteractionGUITest extends TestFXTest {
 

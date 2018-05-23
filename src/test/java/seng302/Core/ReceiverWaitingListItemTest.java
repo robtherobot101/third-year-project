@@ -1,14 +1,16 @@
 package seng302.Core;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+import org.junit.Before;
+import org.junit.Test;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 class ReceiverWaitingListItemTest {
 
@@ -16,7 +18,7 @@ class ReceiverWaitingListItemTest {
     private ReceiverWaitingListItem item;
     private Organ heart;
 
-    @BeforeEach
+    @Before
     void setUp() {
         testUser = new User("Joe", LocalDate.parse("01/01/1999", User.dateFormat));
         heart = Organ.HEART;

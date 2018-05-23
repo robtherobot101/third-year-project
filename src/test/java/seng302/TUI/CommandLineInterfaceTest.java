@@ -9,9 +9,10 @@ import seng302.Generic.DataManager;
 
 import java.net.URISyntaxException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 
 public class CommandLineInterfaceTest {
     private CommandLineInterface commandLine;
@@ -79,6 +80,14 @@ public class CommandLineInterfaceTest {
         int numberOfClinicians = DataManager.clinicians.size();
         commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\"");
         commandLine.readCommand("deleteClinician "+numberOfClinicians);
+        commandLine.readCommand("y");
+        assertEquals(numberOfClinicians,DataManager.clinicians.size());
+    }
+
+    @Test
+    public void cannotDeleteDefaultClinician(){
+        int numberOfClinicians = DataManager.clinicians.size();
+        commandLine.readCommand("deleteClinician "+0);
         commandLine.readCommand("y");
         assertEquals(numberOfClinicians,DataManager.clinicians.size());
     }
