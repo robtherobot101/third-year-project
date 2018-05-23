@@ -54,7 +54,7 @@ public class ReceiverWaitingListItemTest {
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
             stillWaitingOn = listItem.getStillWaitingOn();
         }
-        Assert.assertTrue(stillWaitingOn);
+        Assert.assertFalse(stillWaitingOn);
     }
 
     @Test
