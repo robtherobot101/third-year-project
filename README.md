@@ -77,7 +77,7 @@ This command sets one attribute (apart from organs to be donated) of a user. To 
 The syntax is: set `<id>` `<attribute>` `<value>`  
 Rules:  
 -The id number must be a number that is 0 or larger  
--The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, weight, bloodType, region, currentAddress  
+-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateOfDeath, gender, height, weight, bloodType, region, currentAddress  
 -If a name or names are used, all donors whose names contain the input names in order will be returned as matches  
 -The gender must be: male, female, or other  
 -The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+  
@@ -144,11 +144,12 @@ Example valid usage: import -r ../donor_list_FINAL.txt
 
 save  
 This command saves the current donor database to a file in JSON format.  
-The syntax is: save [-r] `<filepath>`  
+The syntax is: save [-r] <tye>`<filepath>`  
 Rules:  
 -If the -r flag is present, the filepath will be interpreted as relative  
 -If the filepath has spaces in it, it must be enclosed with quotation marks (")  
 -Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows  
+-The <type> argument denotes the type of user to save. This should be either 'users', for regular users, or 'clinicians'.
 Example valid usage: save -r "new folder/donors.json"
 
 help  
