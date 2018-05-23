@@ -30,7 +30,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before
@@ -74,7 +74,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Add a simple medication and verify it is correct
      */
-    //@Ignore
+    @Ignore
     @Test
     public void addMedicationForDonor() throws TimeoutException {
         //Add Medication for donor.
@@ -104,7 +104,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the current medications and moves that medication to the history of medications
      */
-    //@Ignore
+    @Ignore
     @Test
     public void moveMedicationToHistory() throws TimeoutException {
         //Add Medication for donor.
@@ -123,7 +123,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the current medications and moves that medication to the history of medications
      */
-    //@Ignore
+    @Ignore
     @Test
     public void moveMedicationBackToCurrent() throws TimeoutException {
         //Add Medication for donor.
@@ -145,7 +145,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the donor and then deletes it, checking if the deletion is successful.
      */
-    //@Ignore
+    @Ignore
     @Test
     public void deleteMedicationForDonor() throws TimeoutException {
         //Add Medication for donor.
@@ -166,7 +166,7 @@ public class MedicationsGUITest extends TestFXTest {
      * Adds a medication to the donor and then saves the medications, and then checks that the donor has been updated in the back end
      * as well as checking that the current medications table has been populated.
      */
-    //@Ignore
+    @Ignore
     @Test
     public void saveMedicationsForDonor() throws TimeoutException {
         //Add Medication for donor.
@@ -192,7 +192,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void undoTest() throws TimeoutException {
         //Action 1 to undo
@@ -233,7 +233,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals(0, historicMedicationList.getItems().size());
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void redoTest() throws TimeoutException {
         //Action 1 to undo and then be discarded due to new changes

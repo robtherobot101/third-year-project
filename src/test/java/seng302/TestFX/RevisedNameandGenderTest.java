@@ -34,7 +34,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         clickOn("#userAttributesButton");
     }
 
-
+    @Ignore
     @Test
     public void changeNameTest() {
 
@@ -57,6 +57,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changePreferredNameTest() {
 
@@ -79,6 +80,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeGenderTest() {
 
@@ -102,6 +104,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeGenderIdentityTest() {
 
@@ -125,6 +128,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeAddressTest() {
 
@@ -149,6 +153,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(DataManager.users.get(0).getCurrentAddress(), "8 Trial Road");
     }
 
+    @Ignore
     @Test
     public void changeRegionTest() {
 
@@ -171,6 +176,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(DataManager.users.get(0).getRegion(), "Trialton");
     }
 
+    @Ignore
     @Test
     public void changeDateOfBirthTest() {
 
@@ -197,6 +203,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(DataManager.users.get(0).getDateOfBirth().toString(), "1997-07-10");
     }
 
+    @Ignore
     @Test
     public void changeDateOfDeathTest() {
 
@@ -222,7 +229,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(DataManager.users.get(0).getDateOfDeath().toString(), "1997-07-10");
     }
 
-
+    @Ignore
     @Test
     public void changeBloodTypeTest() {
 
@@ -246,6 +253,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeOrgansToDonate() {
 
@@ -284,6 +292,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeSmokerStatusTest() {
 
@@ -307,6 +316,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeBloodPressureTest() {
 
@@ -331,6 +341,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(DataManager.users.get(0).getBloodPressure(), "30/10");
     }
 
+    @Ignore
     @Test
     public void changeAlcoholConsumptionTest() {
 
@@ -354,6 +365,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
     }
 
+    @Ignore
     @Test
     public void changeBmiTest() {
 
