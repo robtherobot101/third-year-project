@@ -629,23 +629,23 @@ public class ClinicianController implements Initializable {
 
         updateFoundUsers();
 
-        if (TFScene.clinician != null) {
-            WindowManager.getScene(TFScene.clinician).setOnKeyReleased(event -> {
-                if (event.getCode() == KeyCode.F5) {
-                    DataManager.users.clear();
-                    try {
-                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                        WindowManager.getDatabase().refreshUserWaitinglists();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    WindowManager.updateTransplantWaitingList();
-                    updateFoundUsers();
-                    profileTable.setItems(currentPage);
-                    profileTable.refresh();
-                }
-            });
-        }
+//        if (TFScene.clinician != null) {
+//            WindowManager.getScene(TFScene.clinician).setOnKeyReleased(event -> {
+//                if (event.getCode() == KeyCode.F5) {
+//                    DataManager.users.clear();
+//                    try {
+//                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+//                        WindowManager.getDatabase().refreshUserWaitinglists();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                    WindowManager.updateTransplantWaitingList();
+//                    updateFoundUsers();
+//                    profileTable.setItems(currentPage);
+//                    profileTable.refresh();
+//                }
+//            });
+//        }
 
         profileTable.setItems(currentPage);
 

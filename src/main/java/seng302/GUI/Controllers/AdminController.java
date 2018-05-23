@@ -134,7 +134,7 @@ public class AdminController implements Initializable {
     /**
      * Refreshes the profiles from WindowManager and loads them into local lists
      */
-    private void refreshLatestProfiles() {
+    public void refreshLatestProfiles() {
         // Initialise lists that correlate to the three TableViews
         currentUsers = DataManager.users;
         currentClinicians = DataManager.clinicians;
@@ -453,7 +453,7 @@ public class AdminController implements Initializable {
     /**
      * Updates the list of users found from the search
      */
-    private void updateFoundUsers() {
+    public void updateFoundUsers() {
         usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
 
         //Add in check for region

@@ -17,6 +17,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.GUI.CommandLineInterface;
@@ -210,6 +211,10 @@ public class WindowManager extends Application {
         accountSettingsController.populateAccountDetails();
     }
 
+    public void refreshUser() {
+        userWindowController.setCurrentUser(userWindowController.getCurrentUser());
+    }
+
     /**
      * sets the current clinican for account settings
      *
@@ -261,6 +266,11 @@ public class WindowManager extends Application {
 
     public static ClinicianController getClinicianController() {
         return WindowManager.clinicianController;
+    }
+
+    public static void refreshAdmin() {
+        adminController.refreshLatestProfiles();
+        adminController.updateFoundUsers();
     }
 
     public static void showDeregisterDialog(WaitingListItem waitingListItem) {
@@ -379,6 +389,50 @@ public class WindowManager extends Application {
             e.printStackTrace();
             stop();
         }
+        getScene(TFScene.clinician).setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                System.out.println("Refreshing");
+                DataManager.users.clear();
+                try {
+                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    getDatabase().refreshUserWaitinglists();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                updateTransplantWaitingList();
+                updateUserWaitingLists();
+                refreshAdmin();
+            }
+        });
+
+        getScene(TFScene.admin).setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                DataManager.users.clear();
+                try {
+                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    getDatabase().refreshUserWaitinglists();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                updateTransplantWaitingList();
+                updateUserWaitingLists();
+
+            }
+        });
+
+        getScene(TFScene.userWindow).setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                DataManager.users.clear();
+                try {
+                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    getDatabase().refreshUserWaitinglists();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                refreshUser();
+
+            }
+        });
     }
 
     public static void resetScene(TFScene scene) {
