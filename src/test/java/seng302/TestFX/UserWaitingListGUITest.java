@@ -16,6 +16,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.ReceiverWaitingListItem;
 import seng302.Generic.WindowManager;

@@ -1,17 +1,17 @@
 package seng302.Generic;
 
-import com.google.gson.Gson;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 import static java.lang.Thread.sleep;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-class CacheTest {
+public class CacheTest {
 
     @Before
     public void setUp() {
