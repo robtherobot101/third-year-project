@@ -1,21 +1,25 @@
 package seng302.GUI;
 
+import java.util.ArrayList;
 import javafx.collections.ObservableList;
+import javafx.stage.Stage;
+import seng302.GUI.Controllers.UserWindowController;
 import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static seng302.Generic.IO.streamOut;
+
+
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
@@ -32,13 +36,27 @@ public class CommandLineInterface {
     }
 
     /**
+     * Update a user to display the most up to date information in the GUI.
+     *
+     * @param user The user to update
+     */
+    private void refreshUser(User user) {
+        for (UserWindowController userWindowController: WindowManager.getCliniciansUserWindows().values()) {
+            if (user == userWindowController.getCurrentUser()) {
+                userWindowController.populateUserAttributes();
+                userWindowController.populateHistoryTable();
+            }
+        }
+    }
+
+    /**
      * Split the line of commands and arguments into an array of components. Characters within quotation marks will turn into one String, words
      * outside quotation marks separated by spaces will be returned as separate Strings.
      *
      * @param line The line to split
      * @return The array of components
      */
-    protected String[] splitByQuotationThenSpace(String line) {
+    public String[] splitByQuotationThenSpace(String line) {
         int outSize = 1;
         boolean withinQuotes = false;
         for (int i = 0; i < line.length(); i++) {
@@ -108,13 +126,6 @@ public class CommandLineInterface {
      */
     private void printLine(String line) {
         print(line + "\n");
-    }
-
-    /**
-     * Prints the prompt.
-     */
-    public void printPrompt() {
-        print("TF > ");
     }
 
     /**
@@ -192,7 +203,11 @@ public class CommandLineInterface {
                     success = importUsers(nextCommand);
                     break;
                 case "save":
-                    success = saveUsers(nextCommand);
+                    success = save(nextCommand);
+                    break;
+                case "clear":
+                    success = true;
+                    outputString.clear();
                     break;
                 case "help":
                     success = showHelp(nextCommand);
@@ -315,6 +330,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
@@ -350,6 +366,7 @@ public class CommandLineInterface {
         try {
             ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
             toSet.getWaitingListItems().add(item);
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
@@ -370,11 +387,12 @@ public class CommandLineInterface {
                 User user = SearchUtils.getUserById(id);
                 if (user == null) {
                     printLine(String.format("User with ID %d not found.", id));
+                } else {
+                    print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
+                    deleteCommand = nextCommand;
+                    isDeleting = true;
+                    userToDelete = user;
                 }
-                print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", user.getName(), user.getId()));
-                deleteCommand = nextCommand;
-                isDeleting = true;
-                userToDelete = user;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
@@ -392,14 +410,18 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 long id = Long.parseLong(nextCommand[1]);
-                Clinician clinician = SearchUtils.getClinicianById(id);
-                if (clinician == null) {
-                    printLine(String.format("Clinician with staff ID %d not found.", id));
+                if(id!=0) {
+                    Clinician clinician = SearchUtils.getClinicianById(id);
+                    if (clinician == null) {
+                        printLine(String.format("Clinician with staff ID %d not found.", id));
+                    }
+                    print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
+                    deleteCommand = nextCommand;
+                    isDeleting = true;
+                    clinicianToDelete = clinician;
+                }else{
+                    printLine("The default clinician cannot be deleted.");
                 }
-                print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
-                deleteCommand = nextCommand;
-                isDeleting = true;
-                clinicianToDelete = clinician;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
@@ -421,7 +443,7 @@ public class CommandLineInterface {
         }
         if (nextLine.equals("y")) {
             boolean deleted;
-            if(userToDelete==null){
+            if(userToDelete == null){
                 deleted = DataManager.clinicians.remove(clinicianToDelete);
                 if (deleted) {
                     printLine("Clinician removed. This change will permanent once the user list is saved.");
@@ -434,6 +456,21 @@ public class CommandLineInterface {
             }else{
                 deleted = DataManager.users.remove(userToDelete);
                 if (deleted) {
+                    //Close the window for the deleted user if it is open.
+                    Stage toClose;
+                    do {
+                        toClose = null;
+                        for (Stage stage : WindowManager.getCliniciansUserWindows().keySet()) {
+                            if (WindowManager.getCliniciansUserWindows().get(stage).getCurrentUser().getId() == userToDelete.getId()) {
+                                toClose = stage;
+                                break;
+                            }
+                        }
+                        if (toClose != null) {
+                            WindowManager.getCliniciansUserWindows().remove(toClose);
+                            toClose.close();
+                        }
+                    } while (toClose != null);
                     printLine("User removed. This change will permanent once the user list is saved.");
                     isDeleting = false;
                     userToDelete = null;
@@ -478,6 +515,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
@@ -512,6 +550,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeWaitingListItem(Organ.parse(nextCommand[2]));
+            refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
@@ -529,23 +568,6 @@ public class CommandLineInterface {
     private boolean updateUser(String[] nextCommand) {
         long id;
         String attribute, value;
-        /*if (nextCommand.length >= 4 && nextCommand[2].toLowerCase().equals("name") && nextCommand[3].contains("\"")) {
-            id = Long.parseLong(nextCommand[1]);
-            attribute = "name";
-            nextCommand = String.join(" ", nextCommand).split("\"");
-            if (nextCommand.length > 1) {
-                try {
-                    value = nextCommand[1];
-                } catch (NumberFormatException e) {
-                    printLine("Please enter a valid ID number.");
-                    return false;
-                }
-            } else {
-                printLine("Please enter a name.");
-                return false;
-            }
-        } else */
-
         if (nextCommand.length == 4) {
             try {
                 id = Long.parseLong(nextCommand[1]);
@@ -568,6 +590,7 @@ public class CommandLineInterface {
         switch (attribute.toLowerCase()) {
             case "name":
                 toSet.setName(value);
+                refreshUser(toSet);
                 printLine("New name set.");
                 return true;
             case "prefname":
@@ -578,6 +601,7 @@ public class CommandLineInterface {
             case "dateofbirth":
                 try {
                     toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
+                    refreshUser(toSet);
                     printLine("New date of birth set.");
                     return true;
                 } catch (DateTimeException e) {
@@ -587,6 +611,7 @@ public class CommandLineInterface {
             case "dateofdeath":
                 try {
                     toSet.setDateOfDeath(LocalDate.parse(value, User.dateFormat));
+                    refreshUser(toSet);
                     printLine("New date of death set.");
                     return true;
                 } catch (DateTimeException e) {
@@ -596,6 +621,7 @@ public class CommandLineInterface {
             case "gender":
                 try {
                     toSet.setGender(Gender.parse(value));
+                    refreshUser(toSet);
                     printLine("New gender set.");
                     return true;
                 } catch (IllegalArgumentException e) {
@@ -609,6 +635,7 @@ public class CommandLineInterface {
                         printLine("Please enter a height which is larger than 0.");
                     } else {
                         toSet.setHeight(height);
+                        refreshUser(toSet);
                         printLine("New height set.");
                         return true;
                     }
@@ -623,6 +650,7 @@ public class CommandLineInterface {
                         printLine("Please enter a weight which is larger than 0.");
                     } else {
                         toSet.setWeight(weight);
+                        refreshUser(toSet);
                         printLine("New weight set.");
                         return true;
                     }
@@ -633,6 +661,7 @@ public class CommandLineInterface {
             case "bloodtype":
                 try {
                     toSet.setBloodType(BloodType.parse(value));
+                    refreshUser(toSet);
                     printLine("New blood type set.");
                     return true;
                 } catch (IllegalArgumentException e) {
@@ -641,10 +670,12 @@ public class CommandLineInterface {
                 return false;
             case "region":
                 toSet.setRegion(value);
+                refreshUser(toSet);
                 printLine("New region set.");
                 return true;
             case "currentaddress":
                 toSet.setCurrentAddress(value);
+                refreshUser(toSet);
                 printLine("New address set.");
                 return true;
             default:
@@ -736,9 +767,8 @@ public class CommandLineInterface {
             if (toDescribe.size() == 0) {
                 printLine(String.format("No users with names matching %s were found.", idString));
             } else {
-                printLine(User.tableHeader);
                 for (User user : toDescribe) {
-                    printLine(user.getString(true));
+                    printLine(user.getSummaryString());
                 }
             }
         }
@@ -781,9 +811,8 @@ public class CommandLineInterface {
     private boolean listUsers(String[] nextCommand) {
         if (nextCommand.length == 1) {
             if (DataManager.users.size() > 0) {
-                printLine(User.tableHeader);
                 for (User user : DataManager.users) {
-                    printLine(user.getString(true));
+                    printLine(user.getSummaryString());
                 }
             } else {
                 printLine("There are no users to list. Please add or import some before using listUsers.");
@@ -863,6 +892,7 @@ public class CommandLineInterface {
                 }
                 if (IO.importUsers(path, ProfileType.USER)) {
                     printLine("User imported from " + path + ".");
+                    WindowManager.closeAllChildren();
                     return true;
                 } else {
                     printLine("Failed to import from " + path + ". Make sure the program has access to this file.");
@@ -880,28 +910,44 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean saveUsers(String[] nextCommand) {
-        if (nextCommand.length >= 2) {
+    private boolean save(String[] nextCommand) {
+        if (nextCommand.length >= 3) {
             boolean relative = nextCommand[1].equals("-r");
-            if ((relative && nextCommand.length == 3) || (!relative && nextCommand.length == 2)) {
+            if ((relative && nextCommand.length == 4) || (!relative && nextCommand.length == 3)) {
                 String path;
                 if (relative) {
-                    path = IO.getJarPath() + File.separatorChar + nextCommand[2].replace('/', File.separatorChar);
+                    path = IO.getJarPath() + File.separatorChar + nextCommand[3].replace('/', File.separatorChar);
                 } else {
                     path = nextCommand[1];
                 }
-                if (IO.saveUsers(path, ProfileType.USER)) {
-                    printLine("User saved to " + path + ".");
-                    return true;
-                } else {
-                    printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
+                String type = nextCommand[2];
+                if(type.equals("users")){
+                    if (IO.saveUsers(path, ProfileType.USER)) {
+                        printLine("Users saved to " + path + ".");
+                        return true;
+                    } else {
+                        printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
+                        return false;
+                    }
+                }else if(type.equals("clinicians")){
+                    if (IO.saveUsers(path, ProfileType.CLINICIAN)) {
+                        printLine("Clinicians saved to " + path + ".");
+                        return true;
+                    } else {
+                        printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
+                        return false;
+                    }
+                }else{
+                    printLine("Unknown login type " + type + ". Should be either 'users' or 'clinicians'");
                     return false;
                 }
+
             }
         }
-        printLine("The save command must be used with 1 or 2 arguments (save -r <filepath> or save <filepath>).");
+        printLine("The save command must be used with 2 or 3 arguments (save -r <type> <filepath> or save <type> <filepath>).");
         return false;
     }
+
 
     /**
      * Shows help either about which commands are available or about a specific command's usage.
@@ -930,6 +976,7 @@ public class CommandLineInterface {
                     + "\n\t-updateUser <id> <attribute> <value>"
                     + "\n\t-import [-r] <filename>"
                     + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
+                    + "\n\t-clear"
                     + "\n\t-help [<command>]"
                     + "\n\t-quit");
         } else if (nextCommand.length == 2) {
@@ -1084,12 +1131,18 @@ public class CommandLineInterface {
                     break;
                 case "save":
                     printLine("This command saves the current user database to a file in JSON format.\n"
-                            + "The syntax is: save [-r] <filepath>\n"
+                            + "The syntax is: save [-r] <type> <filepath>\n"
                             + "Rules:\n"
                             + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                             + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "Example valid usage: save -r \"new folder/users.json\"");
+                            + "-The <type> argument denotes the type of user to save. This should be either 'users', for regular users, or 'clinicians'."
+                            + "Example valid usage: save -r users\"new folder/users.json\"");
+                    break;
+                case "clear":
+                    printLine("This command clears the command panel.\n"
+                            + "The syntax is: clear\n"
+                            + "Example valid usage: clear");
                     break;
                 case "help":
                     printLine("This command displays information about how to use this program.\n"

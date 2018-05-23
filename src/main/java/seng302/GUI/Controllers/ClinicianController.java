@@ -693,7 +693,7 @@ public class ClinicianController implements Initializable {
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
 
-        WindowManager.getTransplantWaitingListController().updateTransplantList();
+        WindowManager.updateTransplantWaitingList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
 }

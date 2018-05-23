@@ -32,7 +32,6 @@ public class HistoryTest {
 
     }
 
-
     @Test
     public void prepareFileStringTest() {
         String[] testCommand = new String[]{"listusers"};

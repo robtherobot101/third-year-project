@@ -58,7 +58,7 @@ public class WindowManager extends Application {
 
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
-    private static TransplantWaitingListController transplantWaitingListController;
+    private static TransplantWaitingListController clinicianTransplantWaitingListController, adminTransplantWaitingListController;
 
     /**
      * Returns the program icon.
@@ -186,7 +186,8 @@ public class WindowManager extends Application {
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
-        transplantWaitingListController.updateTransplantList();
+        clinicianTransplantWaitingListController.updateTransplantList();
+        adminTransplantWaitingListController.updateTransplantList();
     }
 
     /**
@@ -234,7 +235,11 @@ public class WindowManager extends Application {
     }
 
     public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
-        WindowManager.transplantWaitingListController = transplantWaitingListController;
+        if (scenes.get(TFScene.clinician) == null) {
+            WindowManager.clinicianTransplantWaitingListController = transplantWaitingListController;
+        } else {
+            WindowManager.adminTransplantWaitingListController = transplantWaitingListController;
+        }
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -249,8 +254,8 @@ public class WindowManager extends Application {
         return WindowManager.clinicianController;
     }
 
-    public static TransplantWaitingListController getTransplantWaitingListController() {
-        return transplantWaitingListController;
+    public static void showDeregisterDialog(WaitingListItem waitingListItem) {
+        clinicianTransplantWaitingListController.showDeregisterDialog(waitingListItem);
     }
 
     public static Map<Stage, UserWindowController> getCliniciansUserWindows() {
@@ -417,7 +422,7 @@ public class WindowManager extends Application {
     public static void setScene(TFScene scene) {
         stage.setResizable(true);
         stage.setScene(scenes.get(scene));
-        if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.transplantList || scene == TFScene.admin) {
+        if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.admin) {
             stage.setMinWidth(mainWindowMinWidth);
             stage.setMinHeight(mainWindowMinHeight);
         } else {
