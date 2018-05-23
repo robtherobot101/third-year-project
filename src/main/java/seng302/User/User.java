@@ -553,10 +553,14 @@ public class User {
         }
     }
 
+    /**
+     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
+     * @param toRemove The organ being removed from the waiting list.
+     */
     public void removeWaitingListItem(Organ toRemove) {
         for (ReceiverWaitingListItem item : waitingListItems){
             if (item.getOrganType() == toRemove) {
-                waitingListItems.remove(item);
+                item.deregisterOrgan(5);
                 break;
             }
         }

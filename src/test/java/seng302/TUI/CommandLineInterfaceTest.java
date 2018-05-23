@@ -108,4 +108,21 @@ public class CommandLineInterfaceTest {
         commandLine.readCommand("y");
         assertEquals(numberOfClinicians,DataManager.clinicians.size());
     }
+
+    @Test
+    public void cannotDeleteDefaultClinician(){
+        int numberOfClinicians = DataManager.clinicians.size();
+        commandLine.readCommand("deleteClinician "+0);
+        commandLine.readCommand("y");
+        assertEquals(numberOfClinicians,DataManager.clinicians.size());
+    }
+
+
+    @Test
+    public void deleteUser() {
+        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");
+        commandLine.readCommand("deleteUser 0");
+        commandLine.readCommand("y");
+        assertTrue(DataManager.users.isEmpty());
+    }
 }

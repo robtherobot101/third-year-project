@@ -19,6 +19,8 @@ import java.util.List;
 
 import static seng302.Generic.IO.streamOut;
 
+
+
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
  */
@@ -201,7 +203,7 @@ public class CommandLineInterface {
                     success = importUsers(nextCommand);
                     break;
                 case "save":
-                    success = saveUsers(nextCommand);
+                    success = save(nextCommand);
                     break;
                 case "clear":
                     success = true;
@@ -408,14 +410,18 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 long id = Long.parseLong(nextCommand[1]);
-                Clinician clinician = SearchUtils.getClinicianById(id);
-                if (clinician == null) {
-                    printLine(String.format("Clinician with staff ID %d not found.", id));
+                if(id!=0) {
+                    Clinician clinician = SearchUtils.getClinicianById(id);
+                    if (clinician == null) {
+                        printLine(String.format("Clinician with staff ID %d not found.", id));
+                    }
+                    print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
+                    deleteCommand = nextCommand;
+                    isDeleting = true;
+                    clinicianToDelete = clinician;
+                }else{
+                    printLine("The default clinician cannot be deleted.");
                 }
-                print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
-                deleteCommand = nextCommand;
-                isDeleting = true;
-                clinicianToDelete = clinician;
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
             }
@@ -904,28 +910,44 @@ public class CommandLineInterface {
      * @param nextCommand The command entered by the user
      * @return Whether the command was executed
      */
-    private boolean saveUsers(String[] nextCommand) {
-        if (nextCommand.length >= 2) {
+    private boolean save(String[] nextCommand) {
+        if (nextCommand.length >= 3) {
             boolean relative = nextCommand[1].equals("-r");
-            if ((relative && nextCommand.length == 3) || (!relative && nextCommand.length == 2)) {
+            if ((relative && nextCommand.length == 4) || (!relative && nextCommand.length == 3)) {
                 String path;
                 if (relative) {
-                    path = IO.getJarPath() + File.separatorChar + nextCommand[2].replace('/', File.separatorChar);
+                    path = IO.getJarPath() + File.separatorChar + nextCommand[3].replace('/', File.separatorChar);
                 } else {
                     path = nextCommand[1];
                 }
-                if (IO.saveUsers(path, ProfileType.USER)) {
-                    printLine("User saved to " + path + ".");
-                    return true;
-                } else {
-                    printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
+                String type = nextCommand[2];
+                if(type.equals("users")){
+                    if (IO.saveUsers(path, ProfileType.USER)) {
+                        printLine("Users saved to " + path + ".");
+                        return true;
+                    } else {
+                        printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
+                        return false;
+                    }
+                }else if(type.equals("clinicians")){
+                    if (IO.saveUsers(path, ProfileType.CLINICIAN)) {
+                        printLine("Clinicians saved to " + path + ".");
+                        return true;
+                    } else {
+                        printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
+                        return false;
+                    }
+                }else{
+                    printLine("Unknown login type " + type + ". Should be either 'users' or 'clinicians'");
                     return false;
                 }
+
             }
         }
-        printLine("The save command must be used with 1 or 2 arguments (save -r <filepath> or save <filepath>).");
+        printLine("The save command must be used with 2 or 3 arguments (save -r <type> <filepath> or save <type> <filepath>).");
         return false;
     }
+
 
     /**
      * Shows help either about which commands are available or about a specific command's usage.
@@ -1109,12 +1131,13 @@ public class CommandLineInterface {
                     break;
                 case "save":
                     printLine("This command saves the current user database to a file in JSON format.\n"
-                            + "The syntax is: save [-r] <filepath>\n"
+                            + "The syntax is: save [-r] <type> <filepath>\n"
                             + "Rules:\n"
                             + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                             + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "Example valid usage: save -r \"new folder/users.json\"");
+                            + "-The <type> argument denotes the type of user to save. This should be either 'users', for regular users, or 'clinicians'."
+                            + "Example valid usage: save -r users\"new folder/users.json\"");
                     break;
                 case "clear":
                     printLine("This command clears the command panel.\n"
