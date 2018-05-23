@@ -217,7 +217,6 @@ public class User {
         } else {
             val = String.join(" ", preferredName);
         }
-        System.out.println("returning: '" + val + "'");
         return val;
     }
 

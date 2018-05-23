@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.GUI.TFScene;
+import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
 
@@ -25,6 +26,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
     @Before
     public void setup() {
         WindowManager.resetScene(TFScene.createAccount);
+        DataManager.users.clear();
     }
 
     @Test

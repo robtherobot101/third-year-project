@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
@@ -18,6 +19,7 @@ import seng302.Generic.DataManager;
 import seng302.Generic.TransplantWaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 public class TransplantWaitingListTest extends TestFXTest {
 
@@ -369,10 +371,27 @@ public class TransplantWaitingListTest extends TestFXTest {
     /**
      * Test to check if region filtering removes recievers that don't have the region searched.
      */
+    @Ignore
     @Test
     public void checkRegionFilter() {
+        User testUser = new User(
+                "Bobby", new String[]{"Dong"}, "Flame",
+                LocalDate.of(1969, 8, 4),
+                "bflame",
+                "flameman@hotmail.com",
+                "password123");
+        testUser.setRegion("Canterbury");
+        DataManager.users.add(testUser);
+        testUser = new User(
+                "Bob", new String[]{}, "Ross",
+                LocalDate.of(1957, 12, 12),
+                "bobr",
+                "bob@live.com",
+                "password");
+        DataManager.users.add(testUser);
+
         WindowManager.resetScene(TFScene.userWindow);
-        createAccounts();
+        //createAccounts();
 
         //login as clinician
         clickOn("#identificationInput").write("default");
