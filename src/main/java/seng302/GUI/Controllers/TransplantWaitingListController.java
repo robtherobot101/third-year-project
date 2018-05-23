@@ -55,8 +55,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-=======
->>>>>>> Temporary merge branch 2
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
  */

@@ -1,9 +1,9 @@
 package seng302.Generic;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import seng302.User.Admin;
 import seng302.User.Attribute.AlcoholConsumption;
 import seng302.User.Attribute.Gender;
@@ -21,17 +21,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.lang.Math.toIntExact;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-class DatabaseTest {
+public class DatabaseTest {
 
 
     private static Connection connection;
     private static Database database = new Database();
 
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         database.connectToDatabase();
         try {
             database.resetDatabase();
@@ -40,8 +42,8 @@ class DatabaseTest {
         }
     }
 
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() {
         try {
             database.resetDatabase();
         } catch (SQLException sqle) {
@@ -54,7 +56,7 @@ class DatabaseTest {
      * Insert a user then query the users, asserting that it is the previously inserted user
      */
     @Test
-    void insertUser() {
+    public void insertUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -74,7 +76,7 @@ class DatabaseTest {
      * Insert a user then a WaitingListItem, then query the DB
      */
     @Test
-    void insertWaitingListItem() {
+    public void insertWaitingListItem() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
         WaitingListItem testWaitingListItem = new WaitingListItem(Organ.KIDNEY, LocalDate.now(), testUser.getId(), 100);
@@ -96,7 +98,7 @@ class DatabaseTest {
      * running updateUserAccountSettings()
      */
     @Test
-    void updateUserAccountSettings() {
+    public void updateUserAccountSettings() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -123,7 +125,7 @@ class DatabaseTest {
      * running updateUserAttributesAndOrgans()
      */
     @Test
-    void updateUserAttributesAndOrgans() {
+    public void updateUserAttributesAndOrgans() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -147,7 +149,7 @@ class DatabaseTest {
      * running updateUserProcedures()
      */
     @Test
-    void updateUserProcedures() {
+    public void updateUserProcedures() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
         ArrayList<Organ> testOrgansAffected = new ArrayList<>();
@@ -189,7 +191,7 @@ class DatabaseTest {
      * running updateUserDiseases()
      */
     @Test
-    void updateUserDiseases() {
+    public void updateUserDiseases() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -233,7 +235,7 @@ class DatabaseTest {
      * running updateUserMedications()
      */
     @Test
-    void updateUserMedications() {
+    public void updateUserMedications() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
         ArrayList<Medication> testCurrentMedications = new ArrayList<>();
@@ -270,7 +272,7 @@ class DatabaseTest {
     }
 
     @Test
-    void checkUniqueUser() {
+    public void checkUniqueUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -286,7 +288,7 @@ class DatabaseTest {
     }
 
     @Test
-    void checkUniqueClinician() {
+    public void checkUniqueClinician() {
         Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
                 ProfileType.CLINICIAN);
 
@@ -301,7 +303,7 @@ class DatabaseTest {
     }
 
     @Test
-    void checkUniqueAdmin() {
+    public void checkUniqueAdmin() {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
 
         try {
@@ -315,7 +317,7 @@ class DatabaseTest {
     }
 
     @Test
-    void insertClinician() {
+    public void insertClinician() {
         Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
                 ProfileType.CLINICIAN);
 
@@ -331,7 +333,7 @@ class DatabaseTest {
     }
 
     @Test
-    void updateClinicianDetails() {
+    public void updateClinicianDetails() {
         Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
                 ProfileType.CLINICIAN);
 
@@ -353,7 +355,7 @@ class DatabaseTest {
     }
 
     @Test
-    void updateClinicianAccountSettings() {
+    public void updateClinicianAccountSettings() {
         Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
                 ProfileType.CLINICIAN);
 
@@ -373,7 +375,7 @@ class DatabaseTest {
     }
 
     @Test
-    void insertAdmin() {
+    public void insertAdmin() {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
 
         try {
@@ -388,7 +390,7 @@ class DatabaseTest {
     }
 
     @Test
-    void updateAdminDetails() {
+    public void updateAdminDetails() {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
 
         try {
@@ -407,7 +409,7 @@ class DatabaseTest {
     }
 
     @Test
-    void loginUser() {
+    public void loginUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
         try {
@@ -421,7 +423,7 @@ class DatabaseTest {
     }
 
     @Test
-    void refreshUserWaitinglists() {
+    public void refreshUserWaitinglists() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -440,12 +442,12 @@ class DatabaseTest {
     }
 
     @Test
-    void transplantDeregister() {
+    public void transplantDeregister() {
         //TODO
     }
 
     @Test
-    void loginClinician() {
+    public void loginClinician() {
         Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
                 ProfileType.CLINICIAN);
         try {
@@ -458,7 +460,7 @@ class DatabaseTest {
     }
 
     @Test
-    void loginAdmin() {
+    public void loginAdmin() {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
         try {
             database.insertAdmin(testAdmin);
@@ -471,7 +473,7 @@ class DatabaseTest {
     
 
     @Test
-    void removeUser() {
+    public void removeUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
 
@@ -485,7 +487,7 @@ class DatabaseTest {
     }
 
     @Test
-    void removeClinician() {
+    public void removeClinician() {
         Clinician testClinician = new Clinician("drflame", "password", "Dr. Dong",
                 ProfileType.CLINICIAN);
 
@@ -500,7 +502,7 @@ class DatabaseTest {
     }
 
     @Test
-    void removeAdmin() {
+    public void removeAdmin() {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
 
         try {
@@ -514,7 +516,7 @@ class DatabaseTest {
     }
 
     @Test
-    void resetDatabase() {
+    public void resetDatabase() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
@@ -542,7 +544,7 @@ class DatabaseTest {
     }
 
     @Test
-    void loadSampleData() {
+    public void loadSampleData() {
         try {
             database.loadSampleData();
             assertEquals(8, database.getAllUsers().size());
