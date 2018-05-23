@@ -20,8 +20,6 @@ import java.util.*;
 public class User {
 
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
-    public static final String tableHeader = "User ID | Creation Time        | Name                   | Date of Birth | Date of Death | Gender | " +
-            "Height | Weight | Blood Type | Region          | Current Address                | Last Modified | Organs to donate";
     private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath = null;
     private LocalDateTime creationTime, lastModified = null;
@@ -495,12 +493,11 @@ public class User {
 
 
     /**
-     * Get a string containing key information about the user. Can be formatted as a table row.
+     * Get a string containing key information about the user.
      *
-     * @param table Whether to format the information as a table row
      * @return The information string
      */
-    public String getString(boolean table) {
+    public String toString() {
         String dateOfDeathString, dateModifiedString, heightString, weightString;
         if (dateOfDeath != null) {
             dateOfDeathString = dateFormat.format(dateOfDeath);
@@ -522,22 +519,25 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-
-        if (table) {
-            return String.format("%-8d | %s | %-22s | %10s    | %-10s    | %-6s | %-5s  | %-6s | %-4s       | %-15s | %-30s | %-20s | %s", id,
-                    dateTimeFormat.format(creationTime), getName(), dateFormat.format(dateOfBirth), dateOfDeathString, gender, heightString,
-                    weightString, bloodType, region, currentAddress, dateModifiedString, organs);
-        } else {
-            return String.format("User (ID %d) created at %s Name: %s, Preferred Name: %s, Date of Birth: %s, Date of death: %s, " + "Gender: %s, Height: %s, Width: " +
-                            "%s, Blood type: %s, Region: %s, Current address: %s, Last Modified: %s, Organs to donate: %s.", id, dateTimeFormat.format
-                            (creationTime), getName(), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString, genderIdentity, heightString,
-                    weightString, bloodType,
-                    region, currentAddress, dateModifiedString, organs);
-        }
+        return String.format("User (ID %d) created at %s "
+                + "\n-Name: %s"
+                + "\n-Preferred Name: %s"
+                + "\n-Date of Birth: %s"
+                + "\n-Date of death: %s"
+                + "\n-Gender: %s"
+                + "\n-Height: %s"
+                + "\n-Weight: %s"
+                + "\n-Blood type: %s"
+                + "\n-Region: %s"
+                + "\n-Current address: %s"
+                + "\n-Last Modified: %s"
+                + "\n-Organs to donate: %s.",
+            id, dateTimeFormat.format(creationTime), getName(), getPreferredName(), dateFormat.format(dateOfBirth), dateOfDeathString,
+            genderIdentity, heightString, weightString, bloodType, region, currentAddress, dateModifiedString, organs);
     }
 
-    public String toString() {
-        return getString(false);
+    public String getSummaryString() {
+        return String.format("%s (preferred name %s), ID %d", getName(), getPreferredName(), id);
     }
 
     public ArrayList<Disease> getCurrentDiseases() {
@@ -570,10 +570,6 @@ public class User {
         return receiver;
     }
 
-    public String getNameExt() {
-        return getPreferredName() + "(" + getName() + ")";
-    }
-
     /**
      * Returns the intersection of the organs which are being donated and organs that the
      * user is currently waiting to receive
@@ -603,10 +599,14 @@ public class User {
         }
     }
 
+    /**
+     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
+     * @param toRemove The organ being removed from the waiting list.
+     */
     public void removeWaitingListItem(Organ toRemove) {
         for (ReceiverWaitingListItem item : waitingListItems){
             if (item.getOrganType() == toRemove) {
-                waitingListItems.remove(item);
+                item.deregisterOrgan(5);
                 break;
             }
         }

@@ -272,7 +272,7 @@ public class UserWindowController implements Initializable {
         hideAllTabs();
         attributesPane.setVisible(true);
         setButtonSelected(userAttributesButton, true);
-        setUndoRedoButtonsDisabled(attributesController.undoEmpty(), attributesController.undoEmpty());
+        setUndoRedoButtonsDisabled(attributesController.undoEmpty(), attributesController.redoEmpty());
         titleBar.setTitle(currentUser.getPreferredName(), "User", "Attributes");
     }
 

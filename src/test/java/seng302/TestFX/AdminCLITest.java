@@ -1,13 +1,5 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
@@ -15,9 +7,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.GUI.CommandLineInterface;
 import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.*;
 
 public class AdminCLITest extends TestFXTest {
 
@@ -64,7 +63,7 @@ public class AdminCLITest extends TestFXTest {
         assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is no longer in the admin table
     }
 
-    @Ignore //TODO: fix the code so that this test does not fail
+    @Ignore //Works non-headless but not headless?
     @Test
     public void checkDeletionClosesUserIfOpen() {
         DataManager.users.clear();
@@ -113,17 +112,16 @@ public class AdminCLITest extends TestFXTest {
         assertEquals("TF > ", input.getText());
     }
 
-    @Ignore //TODO: fix the code so that this test does not fail
     @Test
     public void checkClearCommand() {
         clickOn("#commandInputField").write("testtesttest");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
-        assertNotNull(lookup("testtest").query());
+        assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
         clickOn("#commandInputField").write("clear");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
-        assertNull(lookup("testtest").query());
+        assertEquals(0, lookup("#commandOutputView").queryListView().getItems().size());
     }
 
     @Test
@@ -145,6 +143,12 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
         sleep(200);
         assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
+    }
+
+    @Test
+    public void testStringSplitter() {
+        CommandLineInterface commandLineInterface = new CommandLineInterface();
+        assertEquals(5, commandLineInterface.splitByQuotationThenSpace("add \"A new user\" -a -b \"afgafdg\"").length);
     }
 
     @Test

@@ -1,3 +1,14 @@
+@font-face {
+	src: url("/fonts/OpenSans-Regular.ttf");
+}
+.root,
+.button,
+.button:hover,
+.button:pressed,
+.label {
+	-fx-font-family: "Open Sans";
+}
+
 .root,
 .pane,
 .stack-pane {

@@ -76,6 +76,12 @@ public class ReceiverWaitingListItem extends WaitingListItem {
     /**
      * Updates an organs deregistration date and removes its registration date.
      * Can be called when deregistering a previously registered organ.
+     * There are 5 reason codes:
+     *     1. Registration error
+     *     2. A disease requiring the transplant has been cured
+     *     3. The receiver has passed away
+     *     4. The transplant has been successful
+     *     5. An administrator has removed this via the command line
      *
      * @param reasonCode reason code to assign to an organ upon deregister
      */
