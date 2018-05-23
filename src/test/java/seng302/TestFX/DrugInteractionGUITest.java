@@ -1,5 +1,6 @@
 package seng302.TestFX;
 
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -13,6 +14,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 

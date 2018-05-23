@@ -1,18 +1,13 @@
 package seng302.TestFX;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
-
-import com.sun.javafx.robot.FXRobot;
-import com.sun.javafx.robot.FXRobotFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,11 +18,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxRobot;
 import seng302.Generic.DataManager;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
-import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
