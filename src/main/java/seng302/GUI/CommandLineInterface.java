@@ -14,6 +14,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static seng302.Generic.IO.streamOut;
+
+
 
 /**
  * This class runs a command line interface (or text user interface), supplying the core functionality to a user through a terminal.
