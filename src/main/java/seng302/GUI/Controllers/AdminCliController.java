@@ -100,5 +100,8 @@ public class AdminCliController implements Initializable {
         currentHistoryIndex = commandInputHistory.size();
         commandInputField.clear();
         commandOutputView.scrollTo(capturedOutput.size()-1);
+
+        WindowManager.updateUserWaitingLists();
+        WindowManager.updateUserAttributes();
     }
 }

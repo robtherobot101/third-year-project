@@ -169,6 +169,16 @@ public class WindowManager extends Application {
         }
     }
 
+    /**
+     * Calls the function which updates the the attributes panel of each user window.
+     */
+    public static void updateUserAttributes() {
+        for (UserWindowController userWindowController: cliniciansUserWindows.values()) {
+            userWindowController.populateUserAttributes();
+        }
+    }
+
+
 
     /**
      * Calls the function which updates the transplant waiting list pane.
@@ -196,6 +206,8 @@ public class WindowManager extends Application {
         clinicianAccountSettingsController.setCurrentClinician(currentClinician);
         clinicianAccountSettingsController.populateAccountDetails();
     }
+
+
 
     /**
      * sets the login controller

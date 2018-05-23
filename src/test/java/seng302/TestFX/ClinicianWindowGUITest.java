@@ -21,8 +21,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.testfx.api.FxRobot;
 import seng302.Generic.DataManager;
 import seng302.Generic.IO;
@@ -32,8 +30,8 @@ import seng302.User.Clinician;
 import seng302.User.User;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 

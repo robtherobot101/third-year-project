@@ -569,6 +569,11 @@ public class CommandLineInterface {
                 toSet.setName(value);
                 printLine("New name set.");
                 return true;
+            case "prefname":
+                toSet.setPreferredName(value);
+                printLine("New preferred name set.");
+                return true;
+
             case "dateofbirth":
                 try {
                     toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
@@ -1017,7 +1022,7 @@ public class CommandLineInterface {
                             + "The syntax is: updateUser <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
-                            + "-The attribute must be one of the following (case insensitive): name, dateOfBirth, dateOfDeath, gender, height, "
+                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateOfDeath, gender, height, "
                             + "weight, bloodType, region, currentAddress\n"
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-The gender must be: male, female, or other\n"
