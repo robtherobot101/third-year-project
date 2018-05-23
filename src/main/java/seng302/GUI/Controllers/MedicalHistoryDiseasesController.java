@@ -16,6 +16,7 @@ import javafx.util.Pair;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.net.URL;
@@ -48,11 +49,9 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
     private boolean sortCurrentDiagnosisAscending, sortCurrentDatesAscending, sortCurrentByDate;
     private boolean sortCuredDiagnosisAscending, sortCuredDatesAscending, sortCuredByDate;
-    private User currentUser;
     private ObservableList<Disease> currentDiseaseItems, curedDiseaseItems;
     private Label currentDiagnosisColumnLabel, currentDateColumnLabel;
     private Label curedDiagnosisColumnLabel, curedDateColumnLabel;
-    private UserWindowController userWindowController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -712,15 +711,6 @@ public class MedicalHistoryDiseasesController extends PageController implements 
     }
 
     /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
-    }
-
-    /**
      * Function to set the current donor of this class to that of the instance of the application.
      *
      * @param currentUser The donor to set the current donor.
@@ -740,5 +730,30 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         sortCuredDiseases(false);
 
         System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
+    }
+
+    @Override
+    public void undo() {
+        updateUser();
+        //Add the current disease lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the disease lists from the top element of the undo stack
+        currentUser.copyDiseaseListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateDiseases();
+
+    }
+
+    @Override
+    public void redo() {
+        updateUser();
+        //Add the current disease lists to the redo stack
+        undoStack.add(new User(currentUser));
+        //Copy the disease lists from the top element of the undo stack
+        currentUser.copyDiseaseListsFrom(redoStack.getLast());
+        //Remove the top element of the undo stack
+        redoStack.removeLast();
+        updateDiseases();
     }
 }

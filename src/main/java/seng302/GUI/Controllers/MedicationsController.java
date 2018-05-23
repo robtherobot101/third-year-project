@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.History;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
@@ -40,19 +41,17 @@ public class MedicationsController extends PageController implements Initializab
     private Button moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
 
     private boolean movingItem = false;
-    private User currentUser;
     private ObservableList<Medication> historicItems, currentItems;
     private InteractionApi interactionApi = new InteractionApi();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
-    private UserWindowController userWindowController;
 
     /**
      * Initializes the medications pane to show medications for a specified user.
      *
      * @param currentUser The user to initialize the medications pane with
      */
-    public void initializeUser(User currentUser) {
+    public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         userNameLabel.setText("User: " + currentUser.getName());
         addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());
@@ -382,15 +381,6 @@ public class MedicationsController extends PageController implements Initializab
         }
     }
 
-    /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -431,4 +421,27 @@ public class MedicationsController extends PageController implements Initializab
         });
     }
 
+    @Override
+    public void undo() {
+        updateUser();
+        //Add the current medication lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the medication lists from the top element of the undo stack
+        currentUser.copyMedicationListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateMedications();
+    }
+
+    @Override
+    public void redo() {
+        updateUser();
+        //Add the current medication lists to the undo stack
+        undoStack.add(new User(currentUser));
+        //Copy the medications lists from the top element of the redo stack
+        currentUser.copyMedicationListsFrom(redoStack.getLast());
+        //Remove the top element of the redo stack
+        redoStack.removeLast();
+        updateMedications();
+    }
 }

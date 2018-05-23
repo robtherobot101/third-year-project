@@ -26,7 +26,7 @@ import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
 import seng302.Generic.*;
 import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.LoginType;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -156,6 +156,34 @@ public class ClinicianController implements Initializable {
     private void edited() {
         titleBar.saved(false);
     }
+
+//    /**
+//     * Refreshes the results in the user profile table to match the values
+//     * in the user ArrayList in WindowManager
+//     */
+//    public void updateUserTable(){
+//        updatePageButtons();
+//        displayCurrentPage();
+//        updateResultsSummary();
+//    }
+
+    /**
+     * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
+     * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
+     */
+    public void logout() {
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
+                "Logging out without saving loses your non-saved data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            WindowManager.closeAllChildren();
+            WindowManager.setScene(TFScene.login);
+            WindowManager.resetScene(TFScene.clinician);
+        } else {
+            alert.close();
+        }
+    }
+
 
     /**
      * Function which is called when the user wants to update their account settings in the user Window,
@@ -298,36 +326,6 @@ public class ClinicianController implements Initializable {
         });
     }
 
-//    /**
-//     * Refreshes the results in the user profile table to match the values
-//     * in the user ArrayList in WindowManager
-//     */
-//    public void updateUserTable(){
-//        updatePageButtons();
-//        displayCurrentPage();
-//        updateResultsSummary();
-//    }
-
-    /**
-     * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
-     * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
-     */
-    public void logout() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
-                "Logging out without saving loses your non-saved data.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
-                userWindow.close();
-            }
-            WindowManager.setScene(TFScene.login);
-            WindowManager.resetScene(TFScene.clinician);
-        } else {
-            alert.close();
-        }
-    }
-
-
     /**
      * Saves the clinician ArrayList to a JSON file
      */
@@ -336,8 +334,8 @@ public class ClinicianController implements Initializable {
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
+            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
         }
         alert.close();
     }

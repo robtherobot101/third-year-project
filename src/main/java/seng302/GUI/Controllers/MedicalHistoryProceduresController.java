@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import seng302.Generic.History;
 import seng302.Generic.Procedure;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -57,10 +58,6 @@ public class MedicalHistoryProceduresController extends PageController implement
     private Label donatingLabel;
 
     private ArrayList<CheckBox> affectedOrganCheckBoxes = new ArrayList<>();
-
-
-    private User currentUser;
-    private UserWindowController userWindowController;
     private ObservableList<Procedure> pendingProcedureItems, previousProcedureItems;
 
 
@@ -666,15 +663,6 @@ public class MedicalHistoryProceduresController extends PageController implement
     }
 
     /**
-     * Sets up a reference to the parent user window controller for this controller.
-     *
-     * @param parent The user window controller that is the parent of this controller
-     */
-    public void setParent(UserWindowController parent) {
-        userWindowController = parent;
-    }
-
-    /**
      * Function to set the current user of this class to that of the instance of the application.
      *
      * @param currentUser The donor to set the current donor.
@@ -702,5 +690,29 @@ public class MedicalHistoryProceduresController extends PageController implement
         //unsavedDonorDiseases = currentDonor.getDiseases();
         //pastDiseasesCopy = currentDonor.getCuredDiseases();
         System.out.println("MedicalHistoryProcedureController: Setting donor of Medical History pane...");
+    }
+
+    @Override
+    public void undo() {
+        updateUser();
+        //Add the current procedures lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the procedures lists from the top element of the undo stack
+        currentUser.copyProceduresListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateProcedures();
+    }
+
+    @Override
+    public void redo() {
+        updateUser();
+        //Add the current procedures lists to the redo stack
+        undoStack.add(new User(currentUser));
+        //Copy the procedures lists from the top element of the undo stack
+        currentUser.copyProceduresListsFrom(redoStack.getLast());
+        //Remove the top element of the undo stack
+        redoStack.removeLast();
+        updateProcedures();
     }
 }

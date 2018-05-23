@@ -39,7 +39,8 @@
             <menus>
                 <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" text="Save" visible="false" />
+                        <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#load" text="Load" />
                   <Menu fx:id="createMenu" mnemonicParsing="false" text="Create">
                     <items>
                       <MenuItem fx:id="adminMenuItem" mnemonicParsing="false" onAction="#createAdmin" text="Admin" />

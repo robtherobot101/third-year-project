@@ -2,11 +2,26 @@ package seng302.GUI.Controllers;
 
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
+import seng302.User.User;
+
+import java.util.LinkedList;
 
 public abstract class PageController {
 
     protected StatusIndicator statusIndicator;
     protected TitleBar titleBar;
+    protected UserWindowController userWindowController;
+    protected LinkedList<User> undoStack = new LinkedList<>(), redoStack = new LinkedList<>();
+    protected User currentUser;
+
+    /**
+     * Sets the current user being modified
+     * @param currentUser The user object being modified
+     */
+    public void setCurrentUser(User currentUser){
+        this.currentUser = currentUser;
+    }
+
 
     /**
      * Set the status indicator object from the user window the page is being displayed in
@@ -24,6 +39,50 @@ public abstract class PageController {
      */
     public void setTitleBar(TitleBar titleBar) {
         this.titleBar = titleBar;
+    }
+
+    /**
+     * Sets up a reference to the parent user window controller for this controller.
+     *
+     * @param parent The user window controller that is the parent of this controller
+     */
+    public void setParent(UserWindowController parent) {
+        userWindowController = parent;
+    }
+
+    /**
+     * Undoes the previous action performed on the page
+     */
+    public abstract void undo();
+
+    /**
+     * Redoes the previous action performed on the page
+     */
+    public abstract void redo();
+
+    /**
+     * Add an action to the undo stack
+     * @param user The user with the old fields
+     */
+    public void addToUndoStack(User user){
+        undoStack.add(new User(user));
+        redoStack.clear();
+    }
+
+    /**
+     * Returns whether the undo stack is empty
+     * @return true only if the undo stack contains items
+     */
+    public boolean undoEmpty(){
+        return undoStack.isEmpty();
+    }
+
+    /**
+     * Returns whether the redo stack is empty
+     * @return true only if the redo stack contains items
+     */
+    public boolean redoEmpty(){
+        return redoStack.isEmpty();
     }
 
 }
