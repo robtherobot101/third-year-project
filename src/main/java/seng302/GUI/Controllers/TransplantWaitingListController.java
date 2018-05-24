@@ -98,7 +98,7 @@ public class TransplantWaitingListController implements Initializable {
     }
 
     /**
-     * updates the transplant waiting list table and filters users by a region.
+     * updates the transplant  list table and filters users by a region.
      *
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch  the organ to specifically search for given by a user.
@@ -196,7 +196,7 @@ public class TransplantWaitingListController implements Initializable {
                 i.deregisterOrgan(1);
                 History.prepareFileStringGUI(userId, "deregisterError");
                 try {
-                    WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), userId);
+                    WindowManager.getDatabase().transplantDeregister(i);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -228,7 +228,7 @@ public class TransplantWaitingListController implements Initializable {
                     if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                         i.deregisterOrgan(2);
                         try {
-                            WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), selectedUser.getId());
+                            WindowManager.getDatabase().transplantDeregister(i);
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -245,7 +245,7 @@ public class TransplantWaitingListController implements Initializable {
                 if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                     i.deregisterOrgan(2);
                     try {
-                        WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), selectedUser.getId());
+                        WindowManager.getDatabase().transplantDeregister(i);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -320,7 +320,7 @@ public class TransplantWaitingListController implements Initializable {
                         if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                             i.deregisterOrgan(2);
                             try {
-                                WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), selectedUser.getId());
+                                WindowManager.getDatabase().transplantDeregister(i);
                                 WindowManager.getDatabase().updateUserDiseases(selectedUser);
                             } catch (SQLException e) {
                                 e.printStackTrace();
@@ -420,7 +420,7 @@ public class TransplantWaitingListController implements Initializable {
             if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                 i.deregisterOrgan(4);
                 try {
-                    WindowManager.getDatabase().transplantDeregister(i.getWaitingListItemId(), user.getId());
+                    WindowManager.getDatabase().transplantDeregister(i);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -452,6 +452,15 @@ public class TransplantWaitingListController implements Initializable {
             selectedUser.getWaitingListItems().clear();
             selectedUser.getWaitingListItems().addAll(tempItems);
         }
+
+        for (ReceiverWaitingListItem item : selectedUser.getWaitingListItems()) {
+            try {
+                WindowManager.getDatabase().transplantDeregister(item);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         selectedUser.setDateOfDeath(deathDateInput);
 
         try {
