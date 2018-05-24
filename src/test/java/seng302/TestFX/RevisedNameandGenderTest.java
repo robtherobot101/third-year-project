@@ -407,6 +407,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         verifyThat("#bmiLabel", LabeledMatchers.hasText("BMI: 22.72"));
     }
 
+    @Ignore
     @Test
     public void testHistoryPaneButtonTest() throws SQLException{
 
