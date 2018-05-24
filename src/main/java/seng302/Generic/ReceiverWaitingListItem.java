@@ -17,9 +17,12 @@ public class ReceiverWaitingListItem extends WaitingListItem {
 
 
     /**
+     * /**
      * creates a new object with a given object type
      *
      * @param organType type of organ to use
+     * @param id id of the item
+     * @param userId Id of the user
      */
     public ReceiverWaitingListItem(Organ organType, int id, long userId) {
         super(organType, id, userId);
@@ -39,6 +42,15 @@ public class ReceiverWaitingListItem extends WaitingListItem {
         this.organDeregisteredCode = copy.organDeregisteredCode;
     }
 
+    /**
+     *
+     * @param organType Organ to add
+     * @param registeredDate the date added
+     * @param deregisteredDate the date removed
+     * @param userId the users Id
+     * @param deregisteredCode the reason for deregistering
+     * @param waitingListitemId the id of the item
+     */
     public ReceiverWaitingListItem(Organ organType, LocalDate registeredDate, LocalDate deregisteredDate, Long userId, Integer deregisteredCode, Integer waitingListitemId) {
         this.organType = organType;
         this.organRegisteredDate = registeredDate;

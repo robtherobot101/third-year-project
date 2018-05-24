@@ -109,9 +109,13 @@ public class UserAttributesController extends PageController implements Initiali
         }
     }
 
+
     /**
+     * /**
      * Function which takes all the inputs of the user attributes window.
      * Checks if all these inputs are valid and then sets the user's attributes to those inputted.
+     *
+     * @return returns boolean of it working or not
      */
     public boolean updateUser() {
         //Extract names from user
