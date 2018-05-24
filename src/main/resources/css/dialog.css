@@ -1,3 +1,4 @@
+/*
 @font-face {
   src: url("/fonts/OpenSans-Regular.ttf");
 }
@@ -8,6 +9,7 @@
 .label {
   -fx-font-family: "Open Sans";
 }
+*/
 
 .dialog-pane {
   -fx-background-color: #1d3549;
