@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+
 <?import org.controlsfx.control.StatusBar?>
 
 <GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
@@ -226,28 +227,28 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Label mouseTransparent="true" text="▤" GridPane.rowIndex="1">
+                        <Label mouseTransparent="true" stylesheets="@../css/symbol.css" text="▤" GridPane.rowIndex="1">
                            <font>
-                              <Font size="50.0" />
+                              <Font name="Noto Sans Symbols2 Regular" size="35.0" />
                            </font>
                            <GridPane.margin>
-                              <Insets left="18.0" />
+                              <Insets bottom="6.0" left="15.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label mouseTransparent="true" text="🏠">
+                        <Label mouseTransparent="true" stylesheets="@../css/symbol.css" text="🏠">
                            <GridPane.margin>
-                              <Insets left="17.0" />
+                              <Insets bottom="6.0" left="12.0" />
                            </GridPane.margin>
                            <font>
-                              <Font size="27.0" />
+                              <Font name="Noto Sans Symbols2 Regular" size="31.0" />
                            </font>
                         </Label>
-                        <Label mouseTransparent="true" text="⌨" GridPane.rowIndex="2">
+                        <Label mouseTransparent="true" stylesheets="@../css/symbol.css" text="⌨" GridPane.rowIndex="2">
                            <GridPane.margin>
-                              <Insets left="15.0" />
+                              <Insets bottom="6.0" left="15.0" />
                            </GridPane.margin>
                            <font>
-                              <Font size="28.0" />
+                              <Font name="Noto Sans Symbols2 Regular" size="31.0" />
                            </font>
                         </Label>
                      </children>
