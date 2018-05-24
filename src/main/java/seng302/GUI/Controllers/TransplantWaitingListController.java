@@ -481,7 +481,7 @@ public class TransplantWaitingListController implements Initializable {
     private void deregisterAllItems(User user) {
         for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
             try {
-                WindowManager.getDatabase().transplantDeregister(item.getWaitingListItemId(), user.getId());
+                WindowManager.getDatabase().transplantDeregister(item);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
