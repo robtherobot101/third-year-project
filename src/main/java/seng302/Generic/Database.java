@@ -84,15 +84,15 @@ public class Database {
         ResultSet resultSet = queryStatement.executeQuery();
         resultSet.next();
         if (resultSet.getInt(1) != 0) {
-
+            System.out.println("deleting");
             String deleteQuery = "DELETE FROM " + testDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
             deleteStatement.setLong(1, waitingListItem.getUserId());
             deleteStatement.setString(2, waitingListItem.organType.toString().toLowerCase());
-            queryStatement.executeQuery();
+            deleteStatement.executeQuery();
         }
 
-        String insert = "INSERT INTO " + testDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id) VALUES  (?, ?, ?)";
+        String insert = "INSERT INTO " + testDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id ) VALUES  (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(insert);
         statement.setString(1, waitingListItem.organType.toString());
         statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));

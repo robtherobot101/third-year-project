@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers;
 
+import java.awt.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -178,8 +179,9 @@ public class TransplantWaitingListController implements Initializable {
             transplantDeregister(selectedItem);
         }
 
-        updateFoundUsersWithFiltering("", "None");
+
         WindowManager.updateUserWaitingLists();
+        updateFoundUsersWithFiltering("", "None");
         deregisterReceiverButton.setDisable(true);
     }
 
@@ -211,7 +213,6 @@ public class TransplantWaitingListController implements Initializable {
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Cure Disease?", "Would you like to select the cured disease?", "Cure a" +
                 " Disease?");
-            alert.showAndWait();
 
             ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -462,9 +463,28 @@ public class TransplantWaitingListController implements Initializable {
         }
 
         selectedUser.setDateOfDeath(deathDateInput);
+
+        try {
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(selectedUser);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        deregisterAllItems(selectedUser);
+
         for (UserWindowController userWindowController : WindowManager.getCliniciansUserWindows().values()) {
             if (userWindowController.getCurrentUser() == selectedUser) {
                 userWindowController.populateUserAttributes();
+            }
+        }
+    }
+
+    private void deregisterAllItems(User user) {
+        for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
+            try {
+                WindowManager.getDatabase().transplantDeregister(item.getWaitingListItemId(), user.getId());
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
