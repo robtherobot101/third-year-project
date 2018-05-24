@@ -2,6 +2,7 @@ package seng302.TestFX;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,7 +43,7 @@ public class DrugInteractionGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException{
         User user = addTestUser();
         user.setGender(Gender.FEMALE);
         user.setDateOfBirth(LocalDate.of(1985, 12, 12));

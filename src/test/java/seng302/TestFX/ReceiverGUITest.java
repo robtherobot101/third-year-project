@@ -1,6 +1,7 @@
 package seng302.TestFX;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.TimeoutException;
 
 import javafx.application.Platform;
@@ -28,7 +29,8 @@ public class ReceiverGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
+        WindowManager.getDatabase().resetDatabase();
         testUser = addTestUser();
     }
 

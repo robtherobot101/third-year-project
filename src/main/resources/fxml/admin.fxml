@@ -20,10 +20,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -54,8 +53,9 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Database" visible="true">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Reset" onAction="#databaseReset"/>
-                        <MenuItem mnemonicParsing="false" text="Resample" onAction="#databaseResample"/>
+                        <MenuItem mnemonicParsing="false" onAction="#databaseReset" text="Reset" />
+                        <MenuItem mnemonicParsing="false" onAction="#databaseResample" text="Resample" />
+                  <MenuItem mnemonicParsing="false" onAction="#clearCache" text="Clear Cache" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit" visible="false">

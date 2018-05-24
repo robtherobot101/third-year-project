@@ -21,8 +21,8 @@ import java.util.Arrays;
 
 public class Database {
 
-    private String testDatabase = "`seng302-2018-team300-test`";
-    private String connectDatabase = "seng302-2018-team300-test";
+    private String testDatabase = "`seng302-2018-team300-prod`";
+    private String connectDatabase = "seng302-2018-team300-prod";
     private String username = "seng302-team300";
     private String password = "WeldonAside5766";
     private String url = "jdbc:mysql://mysql2.csse.canterbury.ac.nz/";
@@ -58,20 +58,24 @@ public class Database {
     }
 
     public void insertUser(User user) throws SQLException {
-        String insert = "INSERT INTO " + testDatabase + ".USER(first_name, middle_names, last_name, creation_time, last_modified, username," +
-                " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insert = "INSERT INTO " + testDatabase + ".USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+                " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(insert);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
         statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-        statement.setTimestamp(4, java.sql.Timestamp.valueOf(user.getCreationTime()));
-        statement.setTimestamp(5, java.sql.Timestamp.valueOf(user.getCreationTime()));
-        statement.setString(6, user.getUsername());
-        statement.setString(7, user.getEmail());
+        statement.setString(4, user.getPreferredNameArray()[0]);
+        statement.setString(5, user.getPreferredNameArray().length > 2 ?
+                String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
+        statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
+        statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
+        statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
+        statement.setString(9, user.getUsername());
+        statement.setString(10, user.getEmail());
         //TODO Hash the password
-        statement.setString(8, user.getPassword());
-        statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
+        statement.setString(11, user.getPassword());
+        statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
         System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
 
     }

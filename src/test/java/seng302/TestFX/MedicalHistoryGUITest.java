@@ -8,6 +8,7 @@ import org.testfx.util.WaitForAsyncUtils;
 import seng302.Generic.DataManager;
 import seng302.Generic.Disease;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
@@ -38,7 +39,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
     /**
      * Method that can be called to path correctly to the stage to be tested.
      */
-    private void enterMedicalHistoryView() {
+    private void enterMedicalHistoryView() throws SQLException {
         // Assumed that calling method is currently on login screen
 
         DataManager.users.clear();
@@ -85,7 +86,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addAllValidDisease() {
+    public void addAllValidDisease() throws SQLException{
         enterMedicalHistoryView();
         clickOn("#newDiseaseTextField").write("Alzheimer's disease");
         clickOn("#dateOfDiagnosisInput").write("9/1/2010");
@@ -106,7 +107,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addDiseaseEmptyName() {
+    public void addDiseaseEmptyName() throws SQLException{
         enterMedicalHistoryView();
         clickOn("#dateOfDiagnosisInput").write("4/04/2018");
         clickOn("#addNewDiseaseButton");
@@ -120,7 +121,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addDiseaseCuredAndChronic() {
+    public void addDiseaseCuredAndChronic() throws SQLException{
         enterMedicalHistoryView();
         clickOn("#newDiseaseTextField").write("Alzheimer's disease");
         clickOn("#dateOfDiagnosisInput").write("9/1/2010");
@@ -138,7 +139,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addDiseaseEmptyDate() {
+    public void addDiseaseEmptyDate() throws SQLException{
         enterMedicalHistoryView();
         clickOn("#newDiseaseTextField").write("Diabetes");
         clickOn("#addNewDiseaseButton");
@@ -153,7 +154,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addDiseaseFutureDate() {
+    public void addDiseaseFutureDate() throws SQLException{
         enterMedicalHistoryView();
         clickOn("#newDiseaseTextField").write("Asthma");
         clickOn("#dateOfDiagnosisInput").write("4/04/2020");
@@ -168,7 +169,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void checkChronicToggle() {
+    public void checkChronicToggle() throws SQLException{
         enterMedicalHistoryView();
         currentDiseaseTableView = lookup("#currentDiseaseTableView").query();
 
@@ -200,7 +201,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void checkCuredCurrentToggle() {
+    public void checkCuredCurrentToggle() throws SQLException{
         enterMedicalHistoryView();
 
         clickOn("#newDiseaseTextField").write("Asthma");
@@ -238,7 +239,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void checkSettingACuredDiseaseToChronic() {
+    public void checkSettingACuredDiseaseToChronic() throws SQLException{
         enterMedicalHistoryView();
 
         clickOn("#newDiseaseTextField").write("Asthma");
@@ -268,7 +269,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void updateDisease() {
+    public void updateDisease() throws SQLException{
         enterMedicalHistoryView();
 
         clickOn("#newDiseaseTextField").write("Asthma");

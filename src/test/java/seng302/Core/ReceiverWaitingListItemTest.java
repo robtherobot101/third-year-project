@@ -2,6 +2,7 @@ package seng302.Core;
 
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,11 +28,11 @@ public class ReceiverWaitingListItemTest {
 
     @Test
     public void testNullDeregisteredDateOnRegister() {
-        String date = "notNull";
+        LocalDate date = null;
         item.deregisterOrgan(3);
         item.registerOrgan();
         for (ReceiverWaitingListItem listItem : testUser.getWaitingListItems()) {
-            date = listItem.getOrganDeregisteredDate().toString();
+            date = listItem.getOrganDeregisteredDate();
         }
         Assert.assertNull(date);
     }

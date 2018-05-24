@@ -204,8 +204,8 @@ public class AdminWindowGUITest extends TestFXTest {
     public void checkExistenceDefaultAdmin() {
         loginAsDefaultAdmin();
         clickOn("#administratorsTab");
-        clickOn("default_admin");
+        clickOn("default");
         refreshTableSelections();
-        assertEquals("default_admin", currentSelectedAdmin.getName());
+        assertEquals("default", currentSelectedAdmin.getName());
     }
 }

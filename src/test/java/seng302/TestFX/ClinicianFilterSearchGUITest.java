@@ -6,10 +6,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Generic.DataManager;
+import seng302.Generic.Database;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
@@ -36,8 +39,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
      * Adds three new users to be used for all of the tests.
      */
     @Before
-    public void setUp() {
-        DataManager.users.clear();
+    public void setUp() throws SQLException {
+        WindowManager.getDatabase().resetDatabase();
         testUserBobby = new User(
             "Bobby", new String[]{"Dong"}, "Flame",
             LocalDate.of(1969, 8, 4),
@@ -47,7 +50,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserBobby.setGender(Gender.MALE);
         testUserBobby.setRegion("Auckland");
         testUserBobby.setOrgan(Organ.PANCREAS);
-        DataManager.users.add(testUserBobby);
 
         testUserAndy = new User(
             "Andy", new String[]{"Pandy"}, "Fandy",
@@ -59,7 +61,6 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserAndy.setRegion("Arrowtown");
         testUserAndy.setOrgan(Organ.HEART);
         testUserAndy.setOrgan(Organ.PANCREAS);
-        DataManager.users.add(testUserAndy);
 
         testUserTest = new User(
             "Test", new String[]{"TEST"}, "test",
@@ -70,7 +71,13 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");
 
-        DataManager.users.add(testUserTest);
+        WindowManager.getDatabase().insertUser(testUserBobby);
+        WindowManager.getDatabase().updateUserAttributesAndOrgans(testUserBobby);
+        WindowManager.getDatabase().insertUser(testUserAndy);
+        WindowManager.getDatabase().updateUserAttributesAndOrgans(testUserAndy);
+        WindowManager.getDatabase().insertUser(testUserTest);
+        WindowManager.getDatabase().updateUserAttributesAndOrgans(testUserTest);
+
 
     }
 
@@ -85,12 +92,12 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         loginAsDefaultClinician();
         clickOn("#clinicianRegionField").write("A");
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserAndy, userTableView.getItems().get(0));
-        assertEquals(testUserBobby, userTableView.getItems().get(1));
+        assertEquals(testUserAndy.getName(), userTableView.getItems().get(0).getName());
+        assertEquals(testUserBobby.getName(), userTableView.getItems().get(1).getName());
 
         doubleClickOn("#clinicianRegionField").write("C");
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserTest, userTableView.getItems().get(0));
+        assertEquals(testUserTest.getName(), userTableView.getItems().get(0).getName());
 
         doubleClickOn("#clinicianRegionField").write("D");
         userTableView = lookup("#profileTable").query();
@@ -111,12 +118,12 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         doubleClickOn("#profileSearchTextField").push(KeyCode.BACK_SPACE);
 
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserBobby, userTableView.getItems().get(0));
-        assertEquals(testUserTest, userTableView.getItems().get(1));
+        assertEquals(testUserBobby.getName(), userTableView.getItems().get(0).getName());
+        assertEquals(testUserTest.getName(), userTableView.getItems().get(1).getName());
 
         clickOn("#clinicianGenderComboBox").clickOn("Female");
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserAndy, userTableView.getItems().get(0));
+        assertEquals(testUserAndy.getName(), userTableView.getItems().get(0).getName());
 
         clickOn("#clinicianGenderComboBox").clickOn("Non-Binary");
         userTableView = lookup("#profileTable").query();
@@ -132,12 +139,12 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         loginAsDefaultClinician();
         clickOn("#clinicianAgeField").write("21");
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserAndy, userTableView.getItems().get(0));
-        assertEquals(testUserTest, userTableView.getItems().get(1));
+        assertEquals(testUserAndy.getName(), userTableView.getItems().get(0).getName());
+        assertEquals(testUserTest.getName(), userTableView.getItems().get(1).getName());
 
         doubleClickOn("#clinicianAgeField").write("48");
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserBobby, userTableView.getItems().get(0));
+        assertEquals(testUserBobby.getName(), userTableView.getItems().get(0).getName());
 
         doubleClickOn("#clinicianAgeField").write("100");
         userTableView = lookup("#profileTable").query();
@@ -155,12 +162,12 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         clickOn("#clinicianUserTypeComboBox").clickOn("Donor");
         clickOn("#profileSearchTextField").push(KeyCode.BACK_SPACE);
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserAndy, userTableView.getItems().get(0));
-        assertEquals(testUserBobby, userTableView.getItems().get(1));
+        assertEquals(testUserAndy.getName(), userTableView.getItems().get(0).getName());
+        assertEquals(testUserBobby.getName(), userTableView.getItems().get(1).getName());
 
         clickOn("#clinicianUserTypeComboBox").clickOn("Neither");
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserTest, userTableView.getItems().get(0));
+        assertEquals(testUserTest.getName(), userTableView.getItems().get(0).getName());
 
 
     }
@@ -177,14 +184,14 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         push(KeyCode.DOWN).push(KeyCode.DOWN).push(KeyCode.DOWN);
         push(KeyCode.ENTER);
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserAndy, userTableView.getItems().get(0));
-        assertEquals(testUserBobby, userTableView.getItems().get(1));
+        assertEquals(testUserAndy.getName(), userTableView.getItems().get(0).getName());
+        assertEquals(testUserBobby.getName(), userTableView.getItems().get(1).getName());
 
         clickOn("#clinicianOrganComboBox");
         push(KeyCode.DOWN);
         push(KeyCode.ENTER);
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserAndy, userTableView.getItems().get(0));
+        assertEquals(testUserAndy.getName(), userTableView.getItems().get(0).getName());
     }
 
     /**
@@ -207,7 +214,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         push(KeyCode.ENTER);
 
         userTableView = lookup("#profileTable").query();
-        assertEquals(testUserBobby, userTableView.getItems().get(0));
+        assertEquals(testUserBobby.getName(), userTableView.getItems().get(0).getName());
 
     }
 

@@ -332,8 +332,6 @@ public class WindowManager extends Application {
      */
     public static void main(String[] args) {
         if (args.length == 0) {
-            database = new Database();
-            database.connectToDatabase();
             launch(args);
         } else if (args.length == 1 && args[0].equals("-c")) {
             try {
@@ -377,6 +375,8 @@ public class WindowManager extends Application {
     @Override
     public void start(Stage stage) {
         // This fixes errors which occur in different threads in TestFX
+        database = new Database();
+        database.connectToDatabase();
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
 
         WindowManager.stage = stage;

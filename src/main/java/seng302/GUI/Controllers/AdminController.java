@@ -30,6 +30,7 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 
 import java.io.File;
@@ -38,6 +39,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
+import static seng302.Generic.IO.getJarPath;
 import static seng302.Generic.WindowManager.setButtonSelected;
 
 /**
@@ -970,5 +972,22 @@ public class AdminController implements Initializable {
             e.printStackTrace();
             Platform.exit();
         }
+    }
+
+    public void clearCache (){
+        Cache autocompleteCache = IO.importCache(IO.getJarPath() + "/autocomplete.json");
+        Cache activeIngredientsCache = IO.importCache(IO.getJarPath() + "/activeIngredients.json");
+
+        autocompleteCache.clear();
+        activeIngredientsCache.clear();
+
+        autocompleteCache.save();
+        activeIngredientsCache.save();
+
+        InteractionApi.getInstance();
+        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        cache.clear();
+        cache.save();
+        InteractionApi.setCache(cache);
     }
 }
