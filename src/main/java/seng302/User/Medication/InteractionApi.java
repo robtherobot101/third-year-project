@@ -36,7 +36,7 @@ public class InteractionApi{
     /**
      * Sets the cache for the API to the given cache
      *
-     * @param cacheArg
+     * @param cacheArg The given cache.
      */
     public static void setCache(Cache cacheArg){
         cache =  cacheArg;

@@ -816,7 +816,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Resets the database. Called by Database -> Reset
+     * Resets the database. Called by Database , then Reset
      */
     public void databaseReset() {
 
@@ -841,7 +841,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Resamples the database. Called by Database -> Resample
+     * Resamples the database. Called by Database, then Resample
      */
     public void databaseResample() {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",

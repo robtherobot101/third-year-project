@@ -143,6 +143,8 @@ public class TransplantWaitingListController implements Initializable {
 
     /**
      * Method to show de-registering reason code for a user to make a selection
+     * 
+     * @param selectedItem The item being de registered.
      */
     public void showDeregisterDialog(WaitingListItem selectedItem) {
         //Set dialog window
