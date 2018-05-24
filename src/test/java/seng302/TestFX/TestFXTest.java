@@ -97,6 +97,13 @@ abstract class TestFXTest extends ApplicationTest {
         waitForFxEvents();
     }
 
+    public void userWindowAsClinician(User user){
+        Platform.runLater(() ->{
+            WindowManager.newCliniciansUserWindow(user);
+        });
+        waitForFxEvents();
+    }
+
     protected void openUserAsClinician(String name) {
         Node row = from(lookup("#profileTable")).lookup(name).query();
         doubleClickOn(row);

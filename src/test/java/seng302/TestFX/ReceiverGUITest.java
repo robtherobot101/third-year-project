@@ -23,8 +23,8 @@ public class ReceiverGUITest extends TestFXTest {
     private User testUser;
 
     @BeforeClass
-    public static void setupClass() {
-        //defaultTestSetup();
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     @Before

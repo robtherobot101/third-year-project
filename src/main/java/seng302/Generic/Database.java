@@ -612,14 +612,7 @@ public class Database {
         }
     }
 
-    public void transplantDeregister(Integer waitingListItemId, Long userId) throws SQLException{
-        User user = SearchUtils.getUserById(userId);
-        ReceiverWaitingListItem waitingListItem = null;
-        for (ReceiverWaitingListItem item: user.getWaitingListItems()) {
-            if (item.getWaitingListItemId().equals(waitingListItemId)) {
-                waitingListItem = item;
-            }
-        }
+    public void transplantDeregister(ReceiverWaitingListItem waitingListItem) throws SQLException{
         String update = "UPDATE " + testDatabase + ".WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE id = ?";
         PreparedStatement deregisterStatement = connection.prepareStatement(update);
 
