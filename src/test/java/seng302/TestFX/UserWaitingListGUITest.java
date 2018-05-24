@@ -187,6 +187,7 @@ public class UserWaitingListGUITest extends TestFXTest {
         assertTrue(user.isReceiver());
     }
 
+    @Ignore
     @Test
     public void noRegisteredItemsInWaitingList_userIsNotReceiver() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
