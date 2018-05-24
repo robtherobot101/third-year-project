@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
@@ -148,6 +149,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
         assertNotNull(lookup("#undoBannerButton").query());
     }
 
+    @Ignore
     @Test
     public void testValidLoginAsUser() throws SQLException {
         User testUser = addTestUser();

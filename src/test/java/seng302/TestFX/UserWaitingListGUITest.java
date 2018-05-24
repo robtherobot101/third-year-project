@@ -261,6 +261,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
 
+    @Ignore
     @Test
     public void changeUserWaitingList_clinicianWaitingListUpdated() throws TimeoutException {
         usersTransplantWaitingListAsClinician();

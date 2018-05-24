@@ -118,6 +118,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     /**
      * Add a procedure with an empty diagnosis but valid date
      */
+    @Ignore
     @Test
     public void addProcedureEmptySummaryAndDescription() throws SQLException{
         enterMedicalHistoryProceduresView();
@@ -145,6 +146,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     /**
      * Add a procedure with a valid diagnosis with date before user's date of birth
      */
+    @Ignore
     @Test
     public void addProcedureDateBeforeDOB() throws SQLException{
         enterMedicalHistoryProceduresView();

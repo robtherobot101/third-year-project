@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
@@ -34,6 +35,7 @@ public class ReceiverGUITest extends TestFXTest {
         testUser = addTestUser();
     }
 
+    @Ignore
     @Test
     public void navigateToWaitingList() {
         loginAsDefaultClinician();
