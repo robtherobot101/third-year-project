@@ -1,26 +1,23 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
-
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.GUI.TFScene;
+import seng302.Generic.DataManager;
 import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.Main;
-import seng302.User.Attribute.LoginType;
+import seng302.Generic.WindowManager;
 import seng302.User.User;
+
+import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * A controller class for the create account screen.
@@ -54,8 +51,8 @@ public class CreateAccountController implements Initializable {
      */
     public void returnToLogin() {
         // If we are creating from login window, return us to login
-        if (background.getScene().getWindow() == Main.getStage()) {
-            Main.setScene(TFScene.login);
+        if (background.getScene().getWindow() == WindowManager.getStage()) {
+            WindowManager.setScene(TFScene.login);
         }
         // Otherwise close the stage and return us to wherever we were before
         else {
@@ -76,16 +73,19 @@ public class CreateAccountController implements Initializable {
      * @return The created user
      */
     public User createAccount() {
-        for (User user : Main.users) {
-            if (!usernameInput.getText().isEmpty() && usernameInput.getText().equals(user.getUsername())) {
+
+        try {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if (!emailInput.getText().isEmpty() && emailInput.getText().equals(user.getEmail())) {
+            } else if(!WindowManager.getDatabase().isUniqueUser(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
@@ -101,15 +101,30 @@ public class CreateAccountController implements Initializable {
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
-                dateOfBirthInput.getValue(), username, email, passwordInput.getText());
+                    dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             // If we are creating from the login screen
-            if (background.getScene().getWindow() == Main.getStage()) {
-                Main.users.add(user);
+            if (background.getScene().getWindow() == WindowManager.getStage()) {
+                //Got rid of the Local Data management of users
+                DataManager.users.add(user);
+                //
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
                 History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
-                Main.setCurrentUser(user);
-                IO.saveUsers(IO.getUserPath(), LoginType.USER);
-                Main.setScene(TFScene.userWindow);
+                WindowManager.setCurrentUser(user);
+
+
+                try {
+                    WindowManager.getDatabase().insertUser(user);
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+
+                //Got rid of the users being saved to a json file
+                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
+                //
+
+
+                WindowManager.setScene(TFScene.userWindow);
+                WindowManager.resetScene(TFScene.createAccount);
                 return null;
             }
 
@@ -123,14 +138,14 @@ public class CreateAccountController implements Initializable {
      */
     private void checkRequiredFields() {
         createAccountButton.setDisable((usernameInput.getText().isEmpty() && emailInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
-            passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null);
+                passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null);
     }
 
     /**
      * Sets the enter key press to attempt log in if sufficient information is present.
      */
     public void setEnterEvent() {
-        Main.getScene(TFScene.createAccount).setOnKeyPressed(event -> {
+        WindowManager.getScene(TFScene.createAccount).setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !createAccountButton.isDisable()) {
                 createAccount();
             }
@@ -140,12 +155,12 @@ public class CreateAccountController implements Initializable {
     /**
      * Add listeners to enable/disable the create account button based on information supplied
      *
-     * @param location Not used
+     * @param location  Not used
      * @param resources Not used
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setCreateAccountController(this);
+        WindowManager.setCreateAccountController(this);
         usernameInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         emailInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         passwordInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());

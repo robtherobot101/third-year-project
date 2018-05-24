@@ -1,8 +1,10 @@
 package seng302.Generic;
 
-import java.time.LocalDateTime;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 /**
@@ -11,16 +13,16 @@ import seng302.User.User;
 public class WaitingListItem {
 
     protected Organ organType;
-    protected String organRegisteredDate;
+    protected LocalDate organRegisteredDate;
     protected Integer waitingListItemId;
     protected Long userId;
 
 
-    public WaitingListItem(Organ organType) {
+    public WaitingListItem(Organ organType, int id, long userId) {
         this.organType = organType;
-        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
-        this.waitingListItemId = Main.getNextWaitingListId();
-        this.userId = Main.getUserWindowController().getCurrentUser().getId();
+        this.organRegisteredDate = LocalDate.now();
+        this.waitingListItemId = id;
+        this.userId = userId;
     }
 
     public WaitingListItem(ReceiverWaitingListItem copy) {
@@ -30,22 +32,22 @@ public class WaitingListItem {
         this.userId = copy.userId;
     }
 
-    public WaitingListItem(Organ organ, String date, long id, Integer waitingListId) {
+    public WaitingListItem(Organ organ, LocalDate date, long userId, Integer waitingListId) {
         this.organType = organ;
         this.organRegisteredDate = date;
-        this.userId = id;
+        this.userId = userId;
         this.waitingListItemId = waitingListId;
     }
 
     public WaitingListItem() {
-
     }
+
 
     public Organ getOrganType() {
         return organType;
     }
 
-    public String getOrganRegisteredDate() {
+    public LocalDate getOrganRegisteredDate() {
         return organRegisteredDate;
     }
 

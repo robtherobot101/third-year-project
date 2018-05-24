@@ -1,9 +1,10 @@
 package seng302.User.Medication;
 
+import seng302.User.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
-import seng302.User.User;
 
 /**
  * Class contains all the information for a given Medication.
@@ -22,6 +23,19 @@ public class Medication {
         this.name = name;
         this.activeIngredients = activeIngredients;
         history = new ArrayList<>();
+    }
+
+    /**
+     * Constructor used for the creation of a medication from the database
+     * @param name Name of the medication
+     * @param activeIngredients All the ingredients in the medication
+     * @param history All of the history of the medication's use.
+     */
+    public Medication(String name, String[] activeIngredients, ArrayList<String> history) {
+        this.name = name;
+        this.activeIngredients = activeIngredients;
+        this.history = new ArrayList<>();
+        this.history.addAll(history);
     }
 
     public String getName() {

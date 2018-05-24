@@ -1,23 +1,28 @@
 package seng302.GUI;
 
-import seng302.Generic.Main;
+import seng302.Generic.WindowManager;
 
 /**
  * An enum to store constants that refer to each GUI window.
  */
 public enum TFScene {
-    login(400, 280),
-    createAccount(400, 450),
-    clinician(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight),
-    admin(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight),
-    userWindow(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight),
-    transplantList(Main.mainWindowPrefWidth, Main.mainWindowPrefHeight);
+    login("login", 400, 280),
+    createAccount("createAccount", 400, 450),
+    clinician("clinician", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight), //Don't reorder these
+    admin("admin", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
+    userWindow("userWindow", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
 
     private int width, height;
+    private String name;
 
-    TFScene(int width, int height) {
+    TFScene(String name, int width, int height) {
+        this.name = name;
         this.width = width;
         this.height = height;
+    }
+
+    public String getPath() {
+        return "/fxml/" + name + ".fxml";
     }
 
     public int getWidth() {

@@ -1,0 +1,26 @@
+/*@font-face {
+	src: url("/fonts/OpenSans-Regular.ttf");
+}
+.root,
+.button,
+.button:hover,
+.button:pressed,
+.label {
+	-fx-font-family: "Open Sans";
+}*/
+.button {
+	-fx-text-fill: white;
+	-fx-padding: 7 8 7 8;
+	-fx-background-insets: 3 3 3 3, 3 3 4 3, 3 3 5 3;
+	-fx-background-radius: 8;
+	-fx-label-padding: 0 0 0 45;
+	-fx-background-color: #457fb0, #4f89ba, #4785b8;
+}
+.button:hover {
+	-fx-background-color: #4785b8, #568ebd, #4f89ba;
+}
+.button:pressed {
+	-fx-background-color: #6c9dc6;
+	-fx-padding: 7 8 7 8;
+	-fx-background-insets: 3 3 3 3, 3 3 4 3, 3 3 5 3;
+}

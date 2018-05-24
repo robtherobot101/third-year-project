@@ -1,7 +1,7 @@
 package seng302.User;
 
-import seng302.Generic.IO;
-import seng302.User.Attribute.LoginType;
+import seng302.Generic.DataManager;
+import seng302.User.Attribute.ProfileType;
 
 /**
  * This class contains information about clinicians.
@@ -9,29 +9,32 @@ import seng302.User.Attribute.LoginType;
 public class Clinician {
 
     private String name, workAddress, region, username, password;
+    public static final String tableHeader = "User ID  | Name    | Work address           | region        | Username   ";
+
+
     private long staffID;
-    private LoginType accountType;
+    private ProfileType accountType;
 
     public Clinician(String username, String password, String name) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
-        this.accountType = LoginType.CLINICIAN;
+        this.accountType = ProfileType.CLINICIAN;
     }
 
     /**
      * Used by Admin to pick its own ID
      *
-     * @param username The username of the clinician
-     * @param password The clinician's password
-     * @param name The clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
-     * @param staffID The clinician's ID
+     * @param staffID     The clinician's ID
      */
-    public Clinician(String username, String password, String name, LoginType accountType, long staffID) {
+    public Clinician(String username, String password, String name, ProfileType accountType, long staffID) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -44,16 +47,16 @@ public class Clinician {
     /**
      * Used by Admin to pick its own ID
      *
-     * @param username The username of the clinician
-     * @param password The clinician's password
-     * @param name The clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
      */
-    public Clinician(String username, String password, String name, LoginType accountType) {
+    public Clinician(String username, String password, String name, ProfileType accountType) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = IO.getNextId(true, LoginType.CLINICIAN);
+        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
         this.accountType = accountType;
@@ -71,6 +74,10 @@ public class Clinician {
         this.staffID = clinician.staffID;
         this.region = clinician.region;
         this.workAddress = clinician.workAddress;
+    }
+
+    public void setStaffID(long staffID) {
+        this.staffID = staffID;
     }
 
     public String getName() {
@@ -123,15 +130,35 @@ public class Clinician {
         this.workAddress = clinician.workAddress;
     }
 
+
+    /**
+     * Get a string containing key information about the user. Can be formatted as a table row.
+     *
+     * @param table Whether to format the information as a table row
+     * @return The information string
+     */
+    public String getString(boolean table) {
+
+        if (table) {
+            return String.format("%-8d | %s | %-22s | %10s    | %-10s    ", staffID,
+                    name, workAddress,region, username);
+        } else {
+                return String.format("Clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
+                        , name, workAddress, region, username);
+            }
+    }
+
+
+
     @Override
     public String toString() {
         return "Clinician{" +
-            "name='" + name + '\'' +
-            ", staffID='" + staffID + '\'' +
-            ", workAddress='" + workAddress + '\'' +
-            ", region='" + region + '\'' +
-            ", username='" + username + '\'' +
-            ", password='" + password + '\'' +
-            '}';
+                "name='" + name + '\'' +
+                ", staffID='" + staffID + '\'' +
+                ", workAddress='" + workAddress + '\'' +
+                ", region='" + region + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

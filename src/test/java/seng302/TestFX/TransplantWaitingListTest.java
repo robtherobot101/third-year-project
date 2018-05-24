@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
@@ -13,9 +14,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.Main;
+import seng302.GUI.TFScene;
+import seng302.Generic.DataManager;
 import seng302.Generic.TransplantWaitingListItem;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.User;
 
 public class TransplantWaitingListTest extends TestFXTest {
 
@@ -25,11 +29,6 @@ public class TransplantWaitingListTest extends TestFXTest {
     @BeforeClass
     public static void setupClass() throws TimeoutException {
         defaultTestSetup();
-    }
-
-    @Before
-    public void setup() {
-        Main.users.clear();
     }
 
     /**
@@ -45,7 +44,7 @@ public class TransplantWaitingListTest extends TestFXTest {
      * helper function to create two new users. One a receiver and one a dummy.
      */
     private void createAccounts() {
-        Main.users.clear();
+        DataManager.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -68,6 +67,7 @@ public class TransplantWaitingListTest extends TestFXTest {
 
         // Logout to be able to create another account
         clickOn("#logoutButton");
+        sleep(100);
         clickOn("OK");
 
         try {
@@ -371,9 +371,27 @@ public class TransplantWaitingListTest extends TestFXTest {
     /**
      * Test to check if region filtering removes recievers that don't have the region searched.
      */
+    @Ignore
     @Test
     public void checkRegionFilter() {
-        createAccounts();
+        User testUser = new User(
+                "Bobby", new String[]{"Dong"}, "Flame",
+                LocalDate.of(1969, 8, 4),
+                "bflame",
+                "flameman@hotmail.com",
+                "password123");
+        testUser.setRegion("Canterbury");
+        DataManager.users.add(testUser);
+        testUser = new User(
+                "Bob", new String[]{}, "Ross",
+                LocalDate.of(1957, 12, 12),
+                "bobr",
+                "bob@live.com",
+                "password");
+        DataManager.users.add(testUser);
+
+        WindowManager.resetScene(TFScene.userWindow);
+        //createAccounts();
 
         //login as clinician
         clickOn("#identificationInput").write("default");
@@ -386,7 +404,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#organTypeComboBox");
         clickOn("heart");
         clickOn("#registerOrganButton");
-        clickOn("#saveUserButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("#exitUserButton");
         clickOn("OK");
@@ -397,13 +415,13 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#organTypeComboBox");
         clickOn("liver");
         clickOn("#registerOrganButton");
-        clickOn("#saveUserButton");
+        clickOn("#saveButton");
         clickOn("OK");
         clickOn("#exitUserButton");
         clickOn("OK");
 
         //check the transplant list
-        clickOn("#transplantList");
+        clickOn("#transplantListButton");
 
         clickOn("#regionSearchTextField").write("Canterb");
         //check the transplant table

@@ -2,15 +2,11 @@ package seng302.User.Medication;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 import seng302.User.Attribute.Gender;
+
+import java.util.*;
 
 /**
  * Contains information about a response from the medication interaction API.
@@ -32,15 +28,15 @@ public class DrugInteraction {
      * @param json The result of the api call, either a json report or an error message.
      */
     public DrugInteraction(String json) {
-        durations = new ArrayList<String>(Arrays.asList(
-            "not specified",
-            "< 1 month",
-            "1 - 6 months",
-            "6 - 12 months",
-            "1 - 2 years",
-            "2 - 5 years",
-            "5 - 10 years",
-            "10+ years"));
+        durations = new ArrayList<>(Arrays.asList(
+                "not specified",
+                "< 1 month",
+                "1 - 6 months",
+                "6 - 12 months",
+                "1 - 2 years",
+                "2 - 5 years",
+                "5 - 10 years",
+                "10+ years"));
         try {
             JSONObject jsonObj = new JSONObject(json);
             ageMap = getOrCreateMap(jsonObj, "age_interaction");
@@ -59,16 +55,16 @@ public class DrugInteraction {
      * otherwise returns a new HashMap
      *
      * @param jsonObj The drug interaction json object.
-     * @param key The identifier of the HashMap to look for
+     * @param key     The identifier of the HashMap to look for
      * @return The HashMap of strings to symptom sets
      */
     public HashMap<String, HashSet<String>> getOrCreateMap(JSONObject jsonObj, String key) {
         if (jsonObj.keySet().contains(key)) {
             return new Gson().fromJson(jsonObj.get(key).toString(),
-                new TypeToken<HashMap<String, HashSet<String>>>() {
-                }.getType());
+                    new TypeToken<HashMap<String, HashSet<String>>>() {
+                    }.getType());
         } else {
-            return new HashMap<String, HashSet<String>>();
+            return new HashMap<>();
         }
     }
 
@@ -159,7 +155,7 @@ public class DrugInteraction {
         } else if (age >= 60) {
             return ageRangeInteraction("60+");
         } else {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
     }
 
@@ -175,7 +171,6 @@ public class DrugInteraction {
         if (ageMap.containsKey(key)) {
             HashSet<String> results = ageMap.get(key);
             results.addAll(nanAgeInteraction());
-            System.out.println("Age Interaction: " + key);
             return results;
         } else {
             return nanAgeInteraction();
@@ -192,7 +187,7 @@ public class DrugInteraction {
         if (ageMap.containsKey("nan")) {
             return ageMap.get("nan");
         } else {
-            return new HashSet<java.lang.String>();
+            return new HashSet<>();
         }
     }
 
@@ -204,10 +199,10 @@ public class DrugInteraction {
     public HashSet<String> allGenderInteractions() {
         HashSet<String> maleInteractions = genderInteraction(Gender.MALE);
         HashSet<String> femaleInteractions = genderInteraction(Gender.FEMALE);
-        Set<String> interactions = new HashSet<String>();
+        Set<String> interactions = new HashSet<>();
         interactions.addAll(maleInteractions);
         interactions.addAll(femaleInteractions);
-        return new HashSet<String>(interactions);
+        return new HashSet<>(interactions);
     }
 
     /**
@@ -219,7 +214,7 @@ public class DrugInteraction {
         if (genderMap.containsKey("male")) {
             return genderMap.get("male");
         } else {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
     }
 
@@ -232,7 +227,7 @@ public class DrugInteraction {
         if (genderMap.containsKey("female")) {
             return genderMap.get("female");
         } else {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
     }
 
@@ -255,7 +250,7 @@ public class DrugInteraction {
         } else if (gender.equals(Gender.NONBINARY)) {
             return allGenderInteractions();
         } else {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
     }
 

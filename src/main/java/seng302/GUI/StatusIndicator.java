@@ -20,7 +20,7 @@ public class StatusIndicator {
      * Set the status and progress bar on the status bar
      *
      * @param status A string representing the result of the last operation
-     * @param busy A boolean indicating whether a process is running in the background (e.g. an API call)
+     * @param busy   A boolean indicating whether a process is running in the background (e.g. an API call)
      */
     public void setStatus(String status, boolean busy) {
         statusBar.setText(status);

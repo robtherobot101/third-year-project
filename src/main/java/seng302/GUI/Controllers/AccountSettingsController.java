@@ -1,26 +1,22 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
-
-import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.Main;
-import seng302.User.Attribute.LoginType;
+import seng302.Generic.WindowManager;
 import seng302.User.User;
+
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
 
 /**
  * Class to handle all the logic for the Account Settings window.
@@ -58,23 +54,27 @@ public class AccountSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        for (User user : Main.users) {
-            if (user != currentUser) {
-                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
-                    errorLabel.setText("That username is already taken.");
-                    errorLabel.setVisible(true);
-                    return;
-                } else if (!emailField.getText().isEmpty() && emailField.getText().equals(user.getEmail())) {
-                    errorLabel.setText("There is already a user account with that email.");
-                    errorLabel.setVisible(true);
-                    return;
-                }
+        int userId = 0;
+        try {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
+                errorLabel.setText("That username is already taken.");
+                errorLabel.setVisible(true);
+                return;
+            } else if(!WindowManager.getDatabase().isUniqueUser(emailField.getText())) {
+                errorLabel.setText("There is already a user account with that email.");
+                errorLabel.setVisible(true);
+                return;
             }
+            userId = WindowManager.getDatabase().getUserId(currentUser.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         errorLabel.setVisible(false);
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ", "The changes made will take place instantly.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
+                "The changes made will take place instantly.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
@@ -83,8 +83,13 @@ public class AccountSettingsController implements Initializable {
             History.printToFile(streamOut, text);
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            Main.setCurrentUser(currentUser);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
+            WindowManager.setCurrentUser(currentUser);
+            try{
+                WindowManager.getDatabase().updateUserAccountSettings(currentUser, userId);
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();
         }
@@ -119,7 +124,7 @@ public class AccountSettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setAccountSettingsController(this);
+        WindowManager.setAccountSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));

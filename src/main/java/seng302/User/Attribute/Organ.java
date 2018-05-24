@@ -5,7 +5,7 @@ package seng302.User.Attribute;
  */
 public enum Organ {
     LIVER("liver"), KIDNEY("kidney"), PANCREAS("pancreas"), HEART("heart"), LUNG("lung"), INTESTINE("intestine"), CORNEA("cornea"), EAR
-        ("middle-ear"), SKIN("skin"), BONE("bone-marrow"), TISSUE("connective-tissue");
+            ("middle-ear"), SKIN("skin"), BONE("bone-marrow"), TISSUE("connective-tissue");
 
     private String organ;
 

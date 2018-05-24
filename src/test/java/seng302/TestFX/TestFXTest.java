@@ -1,12 +1,9 @@
 package seng302.TestFX;
 
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
-
-import java.time.LocalDate;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import javafx.application.Platform;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.Property;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -15,8 +12,21 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.Main;
+import seng302.GUI.TFScene;
+import seng302.Generic.DataManager;
+import seng302.Generic.WindowManager;
+import seng302.User.Admin;
+import seng302.User.Clinician;
 import seng302.User.User;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxToolkit.registerPrimaryStage;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 abstract class TestFXTest extends ApplicationTest {
 
@@ -24,14 +34,23 @@ abstract class TestFXTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) {
-        Main mainGUI = new Main();
+        DataManager.users.clear();
+        DataManager.clinicians.clear();
+        DataManager.clinicians.add(new Clinician("default", "default", "default"));
+        DataManager.admins.clear();
+        DataManager.admins.add(new Admin("admin", "default", "default_admin"));
+        WindowManager.resetScene(TFScene.userWindow);
+        WindowManager mainGUI = new WindowManager();
         mainGUI.start(stage);
-        Main.users.clear();
     }
 
     @After
-    public void tearDown() throws TimeoutException {
-        Main.users.clear();
+    public void tearDown() throws TimeoutException, SQLException {
+        DataManager.users.clear();
+        DataManager.clinicians.clear();
+        DataManager.admins.clear();
+        WindowManager.getDatabase().resetDatabase();
+        WindowManager.getDatabase().loadSampleData();
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -51,14 +70,14 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
 
-    protected User addTestUser() {
+    protected User addTestUser() throws SQLException{
         User testUser = new User(
             "Bobby", new String[]{"Dong"}, "Flame",
             LocalDate.of(1969, 8, 4),
             "bflame",
             "flameman@hotmail.com",
             "password123");
-        Main.users.add(testUser);
+        WindowManager.getDatabase().insertUser(testUser);
         return testUser;
     }
 
@@ -76,13 +95,21 @@ abstract class TestFXTest extends ApplicationTest {
         clickOn("#loginButton");
     }
 
-    protected void loginAs(User user) {
-        clickOn("#identificationInput");
-        write(user.getEmail());
-        clickOn("#passwordInput");
-        write(user.getPassword());
-        clickOn("#loginButton");
+    protected void userWindow(User user) {
+        Platform.runLater(() ->{
+            WindowManager.setCurrentUser(user);
+            WindowManager.setScene(TFScene.userWindow);
+        });
+        waitForFxEvents();
     }
+
+    public void userWindowAsClinician(User user){
+        Platform.runLater(() ->{
+            WindowManager.newCliniciansUserWindow(user);
+        });
+        waitForFxEvents();
+    }
+
 
     protected void openUserAsClinician(String name) {
         Node row = from(lookup("#profileTable")).lookup(name).query();
@@ -100,6 +127,13 @@ abstract class TestFXTest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
+    public void openClinicianWindow(Clinician testClinician){
+        Platform.runLater(() ->{
+            WindowManager.setClinician(testClinician);
+            WindowManager.setScene(TFScene.clinician);
+        });
+        waitForFxEvents();
+    }
 
     /**
      * Waits until the node denoted by the given id can be found and is visible.

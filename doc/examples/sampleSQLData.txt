@@ -1,0 +1,11 @@
+INSERT INTO USER VALUES("Andrew", "Robert, Ben", "French", "Andy", "Pandy", "Fandy", "2018-05-14T15:17:43.940", "2018-05-14T15:17:43.940", "Male", "Male", 180.01, 120.01, "B+", 1, "44 Creyke Road", "Canterbury", "andy", "andy@andy.com", "andrew", ""20/30", "Never", "Alcoholic", "2018-05-14T15:17:43.940", "2018-05-14T15:17:43.940");
+INSERT INTO USER(first_name, creation_time, last_modified, password, date_of_birth) VALUES("TESTER", "2018-05-14T15:17:43.940", "2018-05-14T15:17:43.940", "tester", "2018-05-14T15:17:43.940");
+INSERT INTO USER(first_name, creation_time, last_modified, password, date_of_birth) VALUES("TESTER2", "2018-05-14T15:17:43.940", "2018-05-14T15:17:43.940", "tester2", "2018-05-14T15:17:43.940");
+
+INSERT INTO USER VALUES("Andrew", "Robert, Ben", "French", "Andy", "Pandy", "Fandy", "2018-05-14T15:17:43.940", "2018-05-14T15:17:43.940", "Male", "Male", 180.01, 120.01, "B+", 1, "44 Creyke Road", "Canterbury", "andy", "andy@andy.com", "andrew", ""20/30", "Never", "Alcoholic", "2018-05-14T15:17:43.940", "2018-05-14T15:17:43.940");
+
+
+
+
+
+

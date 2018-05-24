@@ -1,36 +1,29 @@
 package seng302.GUI.Controllers;
 
-import static seng302.Generic.IO.streamOut;
-
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import seng302.Generic.Cache;
 import seng302.Generic.History;
 import seng302.Generic.IO;
-import seng302.Generic.Main;
-import seng302.User.Attribute.LoginType;
+import seng302.Generic.WindowManager;
+import seng302.User.Attribute.ProfileType;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
+
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.*;
+
+import static seng302.Generic.IO.streamOut;
 
 
 /**
@@ -43,25 +36,94 @@ public class MedicationsController extends PageController implements Initializab
     @FXML
     private TextField newMedicationField;
     @FXML
-    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel, interactionsContentLabel, historyTitleLabel, historyContentLabel;
+    private Label userNameLabel, newMedicationLabel, activeIngredientsTitleLabel, activeIngredientsContentLabel, interactionsTitleLabel,
+            interactionsContentLabel, historyTitleLabel, historyContentLabel;
     @FXML
     private ListView<Medication> historyListView = new ListView<>(), currentListView = new ListView<>();
     @FXML
-    private Button saveMedicationButton, moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
+    private Button moveToHistoryButton, moveToCurrentButton, addNewMedicationButton, deleteMedicationButton, compareButton;
 
     private boolean movingItem = false;
-    private User currentUser;
     private ObservableList<Medication> historicItems, currentItems;
-    private InteractionApi interactionApi = new InteractionApi();
+    private InteractionApi interactionApi = InteractionApi.getInstance();
     private String drugA = null, drugB = null;
     private boolean retrievingInteractions = false;
+
+    private Cache autocompleteCache;
+    private Cache activeIngredientsCache;
+
+    /**
+     * imports new caches if the caches have not been initialized
+     */
+    public void importCaches(){
+        autocompleteCache = IO.importCache(IO.getJarPath() + "/autocomplete.json");
+        activeIngredientsCache = IO.importCache(IO.getJarPath() + "/activeIngredients.json");
+    }
+
+    /**
+     * Searches the autocomplete cache to see if this has already been queried and returns it. If it has not been queried it sends a
+     * query to the MAPI autocomplete api and saves the result.
+     * @param query The query to search for.
+     * @return The results of the autocomplete api query as an ArrayList of String.
+     */
+    public ArrayList<String> searchAutocomplete(String query){
+        if (autocompleteCache == null){
+            importCaches();
+        }
+
+        String result;
+        if (autocompleteCache.contains(query)) {
+           result = autocompleteCache.get(query);
+        } else {
+            result = Mapi.autocomplete(query);
+            autocompleteCache.put(query,result);
+            autocompleteCache.save();
+        }
+        String[] temp = result.split("\\[");
+        result = temp[1];
+        if (result.length() > 4) {
+            result = result.substring(1, result.length() - 3);
+        } else {
+            result = "";
+        }
+        temp = result.split("\",\"");
+
+        return new ArrayList<>(Arrays.asList(temp));
+    }
+
+    /**
+     * Searches the autocomplete cache to see if this has already been queried and returns it. If it has not been queried it sends a
+     * query to the MAPI active ingredients api and saves the result.
+     * @param query The medicine to search for.
+     * @return The results of the active ingredients api query as an ArrayList of String.
+     */
+    public ArrayList<String> searchActiveIngredients(String query){
+        if (activeIngredientsCache == null){
+            importCaches();
+        }
+        String result;
+        if (activeIngredientsCache.contains(query)) {
+            result = activeIngredientsCache.get(query);
+        } else {
+             result = Mapi.activeIngredients(query);
+             activeIngredientsCache.put(query, result);
+             activeIngredientsCache.save();
+        }
+        if (result.length() > 4) {
+            result = result.substring(2, result.length() - 2);
+        } else {
+            result = "";
+        }
+        String[] temp = result.split("\",\"");
+        return new ArrayList<>(Arrays.asList(temp));
+    }
 
     /**
      * Initializes the medications pane to show medications for a specified user.
      *
      * @param currentUser The user to initialize the medications pane with
      */
-    public void initializeUser(User currentUser) {
+    public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         userNameLabel.setText("User: " + currentUser.getName());
         addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());
@@ -94,7 +156,7 @@ public class MedicationsController extends PageController implements Initializab
      *
      */
     private void saveToUndoStack() {
-        Main.addCurrentToMedicationUndoStack();
+        userWindowController.addCurrentUserToUndoStack();
         currentUser.getCurrentMedications().clear();
         currentUser.getCurrentMedications().addAll(currentItems);
         currentUser.getHistoricMedications().clear();
@@ -129,19 +191,19 @@ public class MedicationsController extends PageController implements Initializab
         // This step is for getting the text from the text field.
         String medicationChoice = newMedicationField.getText();
         if (medicationChoice.equals("")) {
-            Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "The input must not be empty.").show();
         } else {
             // Check for duplicates
             if (historicItems.contains(new Medication(medicationChoice)) ||
-                currentItems.contains(new Medication(medicationChoice))) {
-                Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to this person.").show();
+                    currentItems.contains(new Medication(medicationChoice))) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", "That medication is already registered to " +
+                        "this person.").show();
             } else {
                 // This step is for adding a new medication to the copy of the user's medication list (which will then be saved later)
                 // and then the list views are updated after.
-                System.out.println(medicationChoice);
                 statusIndicator.setStatus("Fetching from API", true);
                 new Thread(() -> {
-                    List<String> activeIngredients = Mapi.activeIngredients(medicationChoice);
+                    List<String> activeIngredients = searchActiveIngredients(medicationChoice);
                     Platform.runLater(() -> {
                         if (!activeIngredients.get(0).equals("")) {
                             Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
@@ -155,7 +217,8 @@ public class MedicationsController extends PageController implements Initializab
                             statusIndicator.setStatus("Added " + medicationChoice, false);
                             titleBar.saved(false);
                         } else {
-                            Main.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s does not exist.", medicationChoice)).show();
+                            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s" +
+                                    " does not exist.", medicationChoice)).show();
                         }
                     });
                 }).start();
@@ -171,8 +234,8 @@ public class MedicationsController extends PageController implements Initializab
      * Removes the medication from the user's personal list and then updates the respective listview.
      */
     public void deleteSelectedMedication() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?",
-            "Are you sure would like to delete the selected medication? ", "By doing so, the medication will be erased from the database.");
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
+                "Are you sure would like to delete the selected medication? ", "By doing so, the medication will be erased from the database.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
@@ -214,7 +277,7 @@ public class MedicationsController extends PageController implements Initializab
     /**
      * Move a selected Medication from its corresponding Medication list to another Medication list.
      *
-     * @param to The Medication list to move the medication from
+     * @param to   The Medication list to move the medication from
      * @param view The ListView to get the selected medication from
      * @return The medication which was moved
      */
@@ -230,26 +293,20 @@ public class MedicationsController extends PageController implements Initializab
     }
 
     /**
-     * Saves the current state of the user's medications lists for both their historic and current medications.
+     * Updates the user to the current state of the medications lists for both their historic and current medications.
      */
-    public void save() {
-        Alert alert = Main.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update the current user? ",
-            "By doing so, the user will be updated with the following medication details.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            currentUser.getHistoricMedications().clear();
-            currentUser.getHistoricMedications().addAll(historicItems);
-            currentUser.getCurrentMedications().clear();
-            currentUser.getCurrentMedications().addAll(currentItems);
-            IO.saveUsers(IO.getUserPath(), LoginType.USER);
-
-            String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
-            History.printToFile(streamOut, text);
-            //populateHistoryTable();
-            statusIndicator.setStatus("Saved changes", false);
-            titleBar.saved(true);
-        }
-        alert.close();
+    public void updateUser() {
+        currentUser.getHistoricMedications().clear();
+        currentUser.getHistoricMedications().addAll(historicItems);
+        currentUser.getCurrentMedications().clear();
+        currentUser.getCurrentMedications().addAll(currentItems);
+        String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
+        History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserMedications(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**
@@ -310,13 +367,12 @@ public class MedicationsController extends PageController implements Initializab
         LinkedList<String> symptoms = new LinkedList<>();
         drugA = drugA.replace(' ', '-');
         drugB = drugB.replace(' ', '-');
-        DrugInteraction result = new DrugInteraction(interactionApi.interactions(drugA, drugB));
+
+        DrugInteraction result = interactionApi.interactions(drugA, drugB);
         // Check to see if the api call was successful
         if (!result.getError()) {
             HashSet<String> ageSymptoms = result.ageInteraction(currentUser.getAgeDouble());
-            //System.out.println("age symptoms: "+ ageSymptoms);
             HashSet<String> genderSymptoms = result.genderInteraction(currentUser.getGender());
-            //System.out.println("gender symptoms: " + genderSymptoms);
             ageSymptoms.retainAll(genderSymptoms);
 
             for (String symptom : ageSymptoms) {
@@ -342,7 +398,6 @@ public class MedicationsController extends PageController implements Initializab
         deleteMedicationButton.setVisible(shown);
         moveToCurrentButton.setVisible(shown);
         moveToHistoryButton.setVisible(shown);
-        saveMedicationButton.setVisible(shown);
         newMedicationField.setVisible(shown);
         newMedicationLabel.setVisible(shown);
     }
@@ -350,7 +405,8 @@ public class MedicationsController extends PageController implements Initializab
     /**
      * Ensure that there is only one selection.
      *
-     * @param currentUpdated Whether the current medications list view was just updated. If this field is false then the historic medications field has just been edited instead.
+     * @param currentUpdated Whether the current medications list view was just updated. If this field is false then the historic medications field
+     *                       has just been edited instead.
      */
     private void checkSelectionNumber(boolean currentUpdated) {
         if (!(historyListView.getSelectionModel().getSelectedItem() == null) && !(currentListView.getSelectionModel().getSelectedItem() == null)) {
@@ -363,10 +419,12 @@ public class MedicationsController extends PageController implements Initializab
     }
 
     /**
-     * Sets controls enabled or disabled based on the current selections made. Sets active ingredients to show based on the currently selected medication.
+     * Sets controls enabled or disabled based on the current selections made. Sets active ingredients to show based on the currently selected
+     * medication.
      */
     private void checkSelections() {
-        boolean historySelectionIsNull = historyListView.getSelectionModel().getSelectedItem() == null, currentSelectionIsNull = currentListView.getSelectionModel().getSelectedItem() == null;
+        boolean historySelectionIsNull = historyListView.getSelectionModel().getSelectedItem() == null, currentSelectionIsNull = currentListView
+                .getSelectionModel().getSelectedItem() == null;
         moveToCurrentButton.setDisable(historySelectionIsNull);
         moveToHistoryButton.setDisable(currentSelectionIsNull);
         deleteMedicationButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
@@ -374,33 +432,28 @@ public class MedicationsController extends PageController implements Initializab
             compareButton.setDisable(historySelectionIsNull && currentSelectionIsNull);
         }
         Medication selected;
-        if (!historySelectionIsNull) {
-            selected = historyListView.getSelectionModel().getSelectedItem();
-            // Display the ingredients
-            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
-            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
-            // Display the usage history
-            historyTitleLabel.setText("History of usage for " + selected.getName());
-            historyContentLabel.setText(String.join("\n", selected.getHistory()));
-        } else if (!currentSelectionIsNull) {
-            selected = currentListView.getSelectionModel().getSelectedItem();
-            // Display the ingredients
-            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
-            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
-            // Display the usage history
-            historyTitleLabel.setText("History of usage for " + selected.getName());
-            historyContentLabel.setText(String.join("\n", selected.getHistory()));
-        } else {
+        if(historySelectionIsNull && currentSelectionIsNull){
             activeIngredientsTitleLabel.setText("");
             activeIngredientsContentLabel.setText("");
             historyTitleLabel.setText("");
             historyContentLabel.setText("");
+        } else {
+            if (!historySelectionIsNull ) {
+                selected = historyListView.getSelectionModel().getSelectedItem();
+            } else {
+                selected = currentListView.getSelectionModel().getSelectedItem();
+            }
+            // Display the ingredients
+            activeIngredientsTitleLabel.setText("Active Ingredients in " + selected.getName());
+            activeIngredientsContentLabel.setText(convertArrayListIngredientsToString(selected.getActiveIngredients()));
+            // Display the usage history
+            historyTitleLabel.setText("History of usage for " + selected.getName());
+            historyContentLabel.setText(String.join("\n", selected.getHistory()));
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setMedicationsController(this);
 
         // Attach the autocompletion box and set its endpoint to the MAPI API
         // ALso only enable the add button if a medication has been autocompleted
@@ -411,7 +464,7 @@ public class MedicationsController extends PageController implements Initializab
             String medicine = newMedicationField.getText();
             // Show API call on status bar
             Platform.runLater(() -> statusIndicator.setStatus("Fetching from API", true));
-            ArrayList<String> medicines = Mapi.autocomplete(medicine);
+            ArrayList<String> medicines = searchAutocomplete(medicine);
             // Reset status bar
             Platform.runLater(() -> Platform.runLater(() -> statusIndicator.ready()));
             if (medicines.size() > 5) {
@@ -439,4 +492,27 @@ public class MedicationsController extends PageController implements Initializab
         });
     }
 
+    @Override
+    public void undo() {
+        updateUser();
+        //Add the current medication lists to the redo stack
+        redoStack.add(new User(currentUser));
+        //Copy the medication lists from the top element of the undo stack
+        currentUser.copyMedicationListsFrom(undoStack.getLast());
+        //Remove the top element of the undo stack
+        undoStack.removeLast();
+        updateMedications();
+    }
+
+    @Override
+    public void redo() {
+        updateUser();
+        //Add the current medication lists to the undo stack
+        undoStack.add(new User(currentUser));
+        //Copy the medications lists from the top element of the redo stack
+        currentUser.copyMedicationListsFrom(redoStack.getLast());
+        //Remove the top element of the redo stack
+        redoStack.removeLast();
+        updateMedications();
+    }
 }

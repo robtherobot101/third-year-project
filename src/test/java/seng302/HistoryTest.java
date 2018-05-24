@@ -1,16 +1,17 @@
 package seng302;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.net.URISyntaxException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.Generic.History;
 import seng302.Generic.IO;
-import seng302.Generic.Main;
+import seng302.Generic.WindowManager;
+
+import java.io.File;
+import java.net.URISyntaxException;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class HistoryTest {
 
@@ -18,7 +19,7 @@ public class HistoryTest {
 
     @Before
     public void setup() throws URISyntaxException {
-        jarpath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+        jarpath = new File(WindowManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
         IO.setJarPath(jarpath);
     }
 
@@ -33,9 +34,10 @@ public class HistoryTest {
 
     @Test
     public void prepareFileStringTest() {
-        String[] testCommand = new String[]{"list"};
+        String[] testCommand = new String[]{"listusers"};
         String result = History.prepareFileStringCLI(testCommand);
-        assertEquals(result.substring(25), "list null null null [Listed all users.]");
+
+        assertEquals(result.substring(28), "listusers [-Admin- Listed all users.]");
     }
 
     @After

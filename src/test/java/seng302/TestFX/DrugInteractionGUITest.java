@@ -1,7 +1,8 @@
 package seng302.TestFX;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,6 +15,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
 
 public class DrugInteractionGUITest extends TestFXTest {
 
@@ -35,7 +43,7 @@ public class DrugInteractionGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException{
         User user = addTestUser();
         user.setGender(Gender.FEMALE);
         user.setDateOfBirth(LocalDate.of(1985, 12, 12));

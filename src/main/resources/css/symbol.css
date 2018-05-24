@@ -1,0 +1,8 @@
+@font-face {
+    src: url("/fonts/NotoSansSymbols2-Regular.ttf");
+}
+
+.root,
+.label {
+    -fx-font-family: "Noto Sans Symbols2";
+}
