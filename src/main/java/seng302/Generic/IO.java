@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import seng302.ProfileReader.Users.UserReader;
+import seng302.ProfileReader.Users.UserReaderCSV;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
@@ -177,53 +179,8 @@ public class IO {
      * @return Whether the command executed successfully
      */
     public static boolean importUsers(String path, ProfileType loginType) {
-        File inputFile = new File(path);
-        Path filePath;
-        try {
-            filePath = inputFile.toPath();
-        } catch (InvalidPathException e) {
-            return false;
-        }
-        Type type;
-        try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            switch (loginType) {
-                case USER:
-                    type = new TypeToken<ArrayList<User>>() {
-                    }.getType();
-                    ArrayList<User> importedUsers = gson.fromJson(reader, type);
-                    System.out.println("Opened user file successfully.");
-                    DataManager.users.clear();
-                    DataManager.users.addAll(importedUsers);
-                    DataManager.recalculateNextId(ProfileType.USER);
-                    break;
-                case CLINICIAN:
-                    type = new TypeToken<ArrayList<Clinician>>() {
-                    }.getType();
-                    ArrayList<Clinician> importedClinicians = gson.fromJson(reader, type);
-                    System.out.println("Opened clinician file successfully.");
-                    DataManager.clinicians.clear();
-                    DataManager.clinicians.addAll(importedClinicians);
-                    DataManager.recalculateNextId(ProfileType.CLINICIAN);
-                    break;
-                case ADMIN:
-                    type = new TypeToken<ArrayList<Admin>>() {
-                    }.getType();
-                    ArrayList<Admin> importedAdmins = gson.fromJson(reader, type);
-                    System.out.println("Opened admin file successfully.");
-                    DataManager.admins.clear();
-                    DataManager.admins.addAll(importedAdmins);
-                    DataManager.recalculateNextId(ProfileType.ADMIN);
-            }
-            System.out.println("Imported list successfully.");
-            return true;
-        } catch (IOException e) {
-            System.out.println("IOException on " + path + ": Check your inputs and permissions!");
-        } catch (JsonSyntaxException | DateTimeException e1) {
-            System.out.println("Invalid syntax in input file.");
-        } catch (NullPointerException e2) {
-            System.out.println("Input file was empty.");
-            return true;
-        }
+        UserReader userReaderCSV = new UserReaderCSV();
+        //TODO DEPRECATED
         return false;
     }
 
