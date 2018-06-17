@@ -356,7 +356,6 @@ public class WindowManager extends Application {
                 }
                 DataManager.clinicians.add(new Clinician("default", "default", "default"));
                 IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
-
             }
             File admins = new File(IO.getAdminPath());
             if (admins.exists()) {

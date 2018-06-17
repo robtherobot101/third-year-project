@@ -10,7 +10,7 @@ public class Debugger {
     private Debugger() {}
 
     public static boolean isEnabled(){
-        // Toggle this value to toggle debug messages
+        // Toggle this value to toggle debug messages globally
         return true;
     }
 

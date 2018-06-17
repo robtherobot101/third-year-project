@@ -78,6 +78,27 @@ public class User {
         this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 
+    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender,
+                Gender genderIdentity) {
+        int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
+        this.name = new String[1 + isLastName];
+        this.name[0] = firstName;
+        if (isLastName == 1) {
+            this.name[this.name.length - 1] = lastNames;
+        }
+
+        this.preferredName = this.name;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+
+        this.creationTime = LocalDateTime.now();
+        this.gender = gender;
+        this.genderIdentity = genderIdentity;
+        this.email = email;
+        this.password = password;
+        this.id = DataManager.getNextId(true, ProfileType.USER);
+    }
+
     /**
      * Used to create a deep copy of the object. Does not copy username, password, or email.
      *
