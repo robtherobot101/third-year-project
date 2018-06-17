@@ -1,5 +1,6 @@
 package seng302.GUI;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
@@ -12,6 +13,7 @@ import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -296,13 +298,24 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean addUser(String[] nextCommand) {
-        if (nextCommand.length == 3) {
+        if (nextCommand.length == 5) {
             try {
-                DataManager.users.add(new User(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], User.dateFormat)));
+
+                User insertUser = new User(nextCommand[3].replace("\"", ""), LocalDate.parse(nextCommand[4], User.dateFormat));
+                insertUser.setUsername(nextCommand[1]);
+                insertUser.setPassword(nextCommand[2]);
+                WindowManager.getDatabase().insertUser(insertUser);
+
                 printLine("New user created.");
+
+                DataManager.users.add(insertUser);
+
                 return true;
             } catch (DateTimeException e) {
                 printLine("Please enter a valid date of birth in the format dd/mm/yyyy.");
+            } catch (SQLException e) {
+                printLine("An error occurred creating this user.");
+                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("addUser", 2, "\"name part 1,name part 2\" <date of birth>");
@@ -313,8 +326,16 @@ public class CommandLineInterface {
 
     private boolean addClinician(String[] nextCommand) {
         if (nextCommand.length == 4) {
-            DataManager.clinicians.add(new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", "")));
-            printLine("New clinician created.");
+
+            try {
+                Clinician insertClinician = new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", ""));
+                WindowManager.getDatabase().insertClinician(insertClinician);
+                DataManager.clinicians.add(insertClinician);
+                printLine("New clinician created.");
+            } catch (SQLException e) {
+                printLine("An error occurred creating this clinician.");
+                e.printStackTrace();
+            }
             return true;
 
         } else {
@@ -349,11 +370,15 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -978,7 +1003,7 @@ public class CommandLineInterface {
         if (nextCommand.length == 1) {
             printLine("Valid commands are: "
                     + "\n\t-addClinician <username> <password> <name>"
-                    + "\n\t-addUser \"First Name,name part 2,name part n\" <date of birth>"
+                    + "\n\t-addUser <username> <password> \"First Name,name part 2,name part n\" <date of birth>"
                     + "\n\t-addDonationOrgan <id> <organ>"
                     + "\n\t-addWaitingListOrgan <id> <organ>"
                     + "\n\t-deleteClinician<id>"
