@@ -973,7 +973,7 @@ public class CommandLineInterface {
                 } else {
                     path = nextCommand[1];
                 }
-                if (IO.importUsers(path, ProfileType.USER)) {
+                if (IO.importProfiles(path, ProfileType.USER)) {
                     printLine("User imported from " + path + ".");
                     WindowManager.closeAllChildren();
                     return true;
