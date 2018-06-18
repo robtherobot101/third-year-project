@@ -17,6 +17,7 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -64,18 +65,11 @@ public class WaitingListController extends PageController implements Initializab
         if (organTypeSelected != null) {
             userWindowController.addCurrentUserToUndoStack();
             ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected, currentUser.getWaitingListItems().size(), currentUser.getId());
-            boolean found = false;
-            for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()) {
-                if (temp.getOrganType() == item.getOrganType() && item.getOrganDeregisteredDate() != null) {
-                    currentUser.getWaitingListItems().remove(item);
-                    currentUser.getWaitingListItems().add(new ReceiverWaitingListItem(item));
-                    currentUser.getWaitingListItems().get(currentUser.getWaitingListItems().size() - 1).registerOrgan();
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                currentUser.getWaitingListItems().add(temp);
+            currentUser.getWaitingListItems().add(temp);
+            try {
+                WindowManager.getDatabase().insertWaitingListItem(currentUser, temp);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             populateWaitingList();
             statusIndicator.setStatus("Registered " + temp.getOrganType(), false);

@@ -117,6 +117,46 @@ public class User {
         this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 
+
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+        int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
+        System.out.println(isLastName);
+        int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
+        this.name = new String[1 + lenMiddleNames + isLastName];
+        this.name[0] = firstName;
+        if (middleNames != null) {
+            System.arraycopy(middleNames, 0, this.name, 1, lenMiddleNames);
+        }
+        if (isLastName == 1) {
+            this.name[this.name.length - 1] = lastName;
+        }
+        this.preferredName = this.name;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+        this.gender = gender;
+        this.genderIdentity = gender;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.region = region;
+        this.currentAddress = currentAddress;
+        this.creationTime = LocalDateTime.now();
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.id = DataManager.getNextId(true, ProfileType.USER);
+        this.currentMedications = new ArrayList<>();
+        this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
+    }
+
+
+
     /**
      * Used to create a deep copy of the object. Does not copy username, password, or email.
      *
@@ -273,6 +313,10 @@ public class User {
         setLastModified();
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setPreferredNameArray(String[] name) {
         this.preferredName = name;
     }
@@ -414,6 +458,10 @@ public class User {
         setLastModified();
     }
 
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
     public void setCurrentAddress(String currentAddress) {
         this.currentAddress = currentAddress;
         setLastModified();
@@ -439,8 +487,12 @@ public class User {
         setLastModified();
     }
 
-    private void setLastModified() {
+    public void setLastModified() {
         lastModified = LocalDateTime.now();
+    }
+
+    public void setLastModifiedForDatabase(LocalDateTime time) {
+        lastModified = time;
     }
 
     public String getBloodPressure() {
@@ -551,6 +603,14 @@ public class User {
     public Boolean isDonor() {
         return !organs.isEmpty();
     }
+
+    public void setPendingProcedures(ArrayList<Procedure> item) { this.pendingProcedures = item; }
+
+    public void setPreviousProcedures(ArrayList<Procedure> item) { this.previousProcedures = item; }
+
+    public void setHistoricMedications(ArrayList<Medication> item) { this.historicMedications = item; }
+
+    public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
     public boolean isReceiver() {
         boolean receiver = false;

@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -33,6 +36,7 @@ import seng302.User.User;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
@@ -334,8 +338,14 @@ public class ClinicianController implements Initializable {
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
-            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
+            try {
+                WindowManager.getDatabase().updateClinicianDetails(clinician);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
+            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         }
         alert.close();
     }
@@ -587,6 +597,8 @@ public class ClinicianController implements Initializable {
 
         });
 
+
+
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
         profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
         profileAge.setCellValueFactory(new PropertyValueFactory<>("ageString"));
@@ -616,6 +628,24 @@ public class ClinicianController implements Initializable {
         WindowManager.setClinicianController(this);
 
         updateFoundUsers();
+
+//        if (TFScene.clinician != null) {
+//            WindowManager.getScene(TFScene.clinician).setOnKeyReleased(event -> {
+//                if (event.getCode() == KeyCode.F5) {
+//                    DataManager.users.clear();
+//                    try {
+//                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+//                        WindowManager.getDatabase().refreshUserWaitinglists();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                    WindowManager.updateTransplantWaitingList();
+//                    updateFoundUsers();
+//                    profileTable.setItems(currentPage);
+//                    profileTable.refresh();
+//                }
+//            });
+//        }
 
         profileTable.setItems(currentPage);
 
@@ -650,7 +680,15 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem());
+                        User currentUser = null;
+                        try {
+                            currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
+                        } catch(SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        WindowManager.newCliniciansUserWindow(currentUser);
+
                     }
                 });
                 return row;

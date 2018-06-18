@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.concurrent.TimeoutException;
 
 import javafx.application.Platform;
@@ -34,7 +35,7 @@ public class MedicationsGUITest extends TestFXTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
         testUser = addTestUser();
         System.out.println("PN"+testUser.getPreferredName());
         testUser.setGender(Gender.FEMALE);

@@ -20,6 +20,7 @@ import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -192,6 +193,11 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
         History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

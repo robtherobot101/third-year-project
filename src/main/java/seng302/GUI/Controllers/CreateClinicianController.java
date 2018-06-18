@@ -8,9 +8,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -63,17 +65,27 @@ public class CreateClinicianController implements Initializable {
      */
     public void createAccount() {
 
-        if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
-            errorText.setText("Passwords do not match");
-            errorText.setVisible(true);
-        } else {
-            errorText.setVisible(false);
-            String username = usernameInput.getText();
-            String name = firstNameInput.getText() + " " + middleNamesInput.getText() + " " + lastNameInput.getText();
-            String password = passwordInput.getText();
-            clinician = new Clinician(username, password, name);
-            stage.close();
+        try {
+            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
+                errorText.setText("That username is already taken.");
+                errorText.setVisible(true);
+            }
+            else if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
+                errorText.setText("Passwords do not match");
+                errorText.setVisible(true);
+            } else {
+                errorText.setVisible(false);
+                String username = usernameInput.getText();
+                String name = firstNameInput.getText() + " " + middleNamesInput.getText() + " " + lastNameInput.getText();
+                String password = passwordInput.getText();
+                clinician = new Clinician(username, password, name);
+                stage.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+
     }
 
     /**

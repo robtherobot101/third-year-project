@@ -19,6 +19,7 @@ import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -44,10 +45,12 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
     @After
-    public void tearDown() throws TimeoutException {
+    public void tearDown() throws TimeoutException, SQLException {
         DataManager.users.clear();
         DataManager.clinicians.clear();
         DataManager.admins.clear();
+        WindowManager.getDatabase().resetDatabase();
+        WindowManager.getDatabase().loadSampleData();
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -67,14 +70,14 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
 
-    protected User addTestUser() {
+    protected User addTestUser() throws SQLException{
         User testUser = new User(
             "Bobby", new String[]{"Dong"}, "Flame",
             LocalDate.of(1969, 8, 4),
             "bflame",
             "flameman@hotmail.com",
             "password123");
-        DataManager.users.add(testUser);
+        WindowManager.getDatabase().insertUser(testUser);
         return testUser;
     }
 

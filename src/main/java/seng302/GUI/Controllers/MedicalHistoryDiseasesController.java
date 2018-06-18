@@ -20,6 +20,7 @@ import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -116,6 +117,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
             } else {
                 addCurrentDisease(diseaseToAdd);
             }
+            userWindowController.addCurrentUserToUndoStack();
             System.out.println("MedicalHistoryDiseasesController: Finished adding new disease");
             statusIndicator.setStatus("Added " + diseaseToAdd, false);
             titleBar.saved(false);
@@ -206,6 +208,11 @@ public class MedicalHistoryDiseasesController extends PageController implements 
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
         History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

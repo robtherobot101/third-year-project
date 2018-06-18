@@ -18,8 +18,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.GUI.CommandLineInterface;
 import seng302.GUI.Controllers.AccountSettingsController;
 import seng302.GUI.Controllers.AdminController;
 import seng302.GUI.Controllers.ClinicianAccountSettingsController;
@@ -30,10 +32,22 @@ import seng302.GUI.Controllers.TransplantWaitingListController;
 import seng302.GUI.Controllers.UserWindowController;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
+import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
+
+import javax.xml.crypto.Data;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
+import static seng302.Generic.IO.streamOut;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -59,6 +73,17 @@ public class WindowManager extends Application {
     private static AccountSettingsController accountSettingsController;
     private static ClinicianAccountSettingsController clinicianAccountSettingsController;
     private static TransplantWaitingListController clinicianTransplantWaitingListController, adminTransplantWaitingListController;
+
+    private static Database database;
+
+
+    public static Database getDatabase() {
+        return database;
+    }
+
+    public static void setDatabase(Database database) {
+        WindowManager.database = database;
+    }
 
     /**
      * Returns the program icon.
@@ -100,10 +125,17 @@ public class WindowManager extends Application {
             String text = History.prepareFileStringGUI(user.getId(), "view");
             History.printToFile(streamOut, text);
 
-            newUserWindowController.setCurrentUser(user);
+            User currentUser = null;
+            try {
+                currentUser = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+            newUserWindowController.setCurrentUser(currentUser);
             newUserWindowController.populateHistoryTable();
             newUserWindowController.setControlsShown(true);
             cliniciansUserWindows.put(stage, newUserWindowController);
+
 
             Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
             stage.setScene(newScene);
@@ -124,6 +156,7 @@ public class WindowManager extends Application {
         clinicianController.setClinician(clinician);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
+        updateTransplantWaitingList();
     }
 
     /**
@@ -188,6 +221,7 @@ public class WindowManager extends Application {
     public static void updateTransplantWaitingList() {
         clinicianTransplantWaitingListController.updateTransplantList();
         adminTransplantWaitingListController.updateTransplantList();
+
     }
 
     /**
@@ -198,6 +232,10 @@ public class WindowManager extends Application {
     public static void setCurrentUserForAccountSettings(User currentUser) {
         accountSettingsController.setCurrentUser(currentUser);
         accountSettingsController.populateAccountDetails();
+    }
+
+    public void refreshUser() {
+        userWindowController.setCurrentUser(userWindowController.getCurrentUser());
     }
 
     /**
@@ -240,6 +278,7 @@ public class WindowManager extends Application {
         } else {
             WindowManager.adminTransplantWaitingListController = transplantWaitingListController;
         }
+
     }
 
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -252,6 +291,11 @@ public class WindowManager extends Application {
 
     public static ClinicianController getClinicianController() {
         return WindowManager.clinicianController;
+    }
+
+    public static void refreshAdmin() {
+        adminController.refreshLatestProfiles();
+        adminController.updateFoundUsers();
     }
 
     public static void showDeregisterDialog(WaitingListItem waitingListItem) {
@@ -287,7 +331,22 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        if (args.length == 0) {
+            launch(args);
+        } else if (args.length == 1 && args[0].equals("-c")) {
+            try {
+                IO.setPaths();
+                CommandLineInterface commandLineInterface = new CommandLineInterface();
+                //commandLineInterface.run(System.in);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Please either run using:" +
+                    "\nGUI mode: java -jar app-0.0.jar" +
+                    "\nCommand line mode: java -jar app-0.0.jar -c.");
+        }
+
     }
 
     /**
@@ -316,6 +375,8 @@ public class WindowManager extends Application {
     @Override
     public void start(Stage stage) {
         // This fixes errors which occur in different threads in TestFX
+        database = new Database();
+        database.connectToDatabase();
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
 
         WindowManager.stage = stage;
@@ -335,41 +396,6 @@ public class WindowManager extends Application {
         try {
             IO.setPaths();
             setupDrugInteractionCache();
-            File users = new File(IO.getUserPath());
-            if (users.exists()) {
-                if (!IO.importProfiles(users.getAbsolutePath(), ProfileType.USER)) {
-                    throw new IOException("User save file could not be loaded.");
-                }
-            } else {
-                if (!users.createNewFile()) {
-                    throw new IOException("User save file could not be created.");
-                }
-            }
-            File clinicians = new File(IO.getClinicianPath());
-            if (clinicians.exists()) {
-                if (!IO.importProfiles(clinicians.getAbsolutePath(), ProfileType.CLINICIAN)) {
-                    throw new IOException("Clinician save file could not be loaded.");
-                }
-            } else {
-                if (!clinicians.createNewFile()) {
-                    throw new IOException("Clinician save file could not be created.");
-                }
-                DataManager.clinicians.add(new Clinician("default", "default", "default"));
-                IO.saveUsers(IO.getClinicianPath(), ProfileType.CLINICIAN);
-            }
-            File admins = new File(IO.getAdminPath());
-            if (admins.exists()) {
-                if (!IO.importProfiles(admins.getAbsolutePath(), ProfileType.ADMIN)) {
-                    throw new IOException("Admin save file could not be loaded.");
-                }
-            } else {
-                if (!admins.createNewFile()) {
-                    throw new IOException("Admin save file could not be created.");
-                }
-                DataManager.admins.add(new Admin("admin", "default", "default_admin"));
-                IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
-
-            }
             IO.streamOut = History.init();
             for (TFScene scene : TFScene.values()) {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
@@ -391,6 +417,51 @@ public class WindowManager extends Application {
             e.printStackTrace();
             stop();
         }
+        getScene(TFScene.clinician).setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                System.out.println("Refreshing");
+                DataManager.users.clear();
+                try {
+                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    getDatabase().refreshUserWaitinglists();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                updateTransplantWaitingList();
+                updateUserWaitingLists();
+                refreshAdmin();
+            }
+        });
+
+        getScene(TFScene.admin).setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                DataManager.users.clear();
+                try {
+                    DataManager.users.addAll(getDatabase().getAllUsers());
+
+                    getDatabase().refreshUserWaitinglists();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                updateTransplantWaitingList();
+                updateUserWaitingLists();
+
+            }
+        });
+
+        getScene(TFScene.userWindow).setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                DataManager.users.clear();
+                try {
+                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    getDatabase().refreshUserWaitinglists();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                refreshUser();
+
+            }
+        });
     }
 
     public void setupDrugInteractionCache(){

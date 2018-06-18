@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers;
 
+import java.awt.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +46,15 @@ import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import javax.swing.*;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
  */
@@ -88,12 +98,13 @@ public class TransplantWaitingListController implements Initializable {
     }
 
     /**
-     * updates the transplant waiting list table and filters users by a region.
+     * updates the transplant  list table and filters users by a region.
      *
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch  the organ to specifically search for given by a user.
      */
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+
         transplantList.clear();
         for (User user : DataManager.users) {
             for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
@@ -114,12 +125,15 @@ public class TransplantWaitingListController implements Initializable {
             }
         }
         deregisterReceiverButton.setDisable(true);
+        transplantTable.refresh();
     }
 
     /**
      * method to handle when the organ filter combo box is changed and then updates the transplant waiting list
      */
     public void updateFoundUsersOnOrganChange() {
+        System.out.println(organSearchComboBox.getValue().toString());
+        System.out.println(regionSearchTextField.getText());
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
     }
 
@@ -129,6 +143,8 @@ public class TransplantWaitingListController implements Initializable {
 
     /**
      * Method to show de-registering reason code for a user to make a selection
+     * 
+     * @param selectedItem The item being de registered.
      */
     public void showDeregisterDialog(WaitingListItem selectedItem) {
         //Set dialog window
@@ -165,8 +181,9 @@ public class TransplantWaitingListController implements Initializable {
             transplantDeregister(selectedItem);
         }
 
-        updateFoundUsersWithFiltering("", "None");
+
         WindowManager.updateUserWaitingLists();
+        updateFoundUsersWithFiltering("", "None");
         deregisterReceiverButton.setDisable(true);
     }
 
@@ -180,6 +197,11 @@ public class TransplantWaitingListController implements Initializable {
             if (Objects.equals(i.getWaitingListItemId(), selectedWaitingListItem.getWaitingListItemId())) {
                 i.deregisterOrgan(1);
                 History.prepareFileStringGUI(userId, "deregisterError");
+                try {
+                    WindowManager.getDatabase().transplantDeregister(i);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
@@ -193,7 +215,6 @@ public class TransplantWaitingListController implements Initializable {
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Cure Disease?", "Would you like to select the cured disease?", "Cure a" +
                 " Disease?");
-            alert.showAndWait();
 
             ButtonType buttonTypeOne = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
             ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -208,6 +229,11 @@ public class TransplantWaitingListController implements Initializable {
                 for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                     if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                         i.deregisterOrgan(2);
+                        try {
+                            WindowManager.getDatabase().transplantDeregister(i);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                         alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason " +
                             "Code 2 selected. No disease cured");
                         alert.showAndWait();
@@ -220,6 +246,11 @@ public class TransplantWaitingListController implements Initializable {
             for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                 if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                     i.deregisterOrgan(2);
+                    try {
+                        WindowManager.getDatabase().transplantDeregister(i);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code " +
                         "2 selected. No disease cured");
                     alert.showAndWait();
@@ -290,6 +321,12 @@ public class TransplantWaitingListController implements Initializable {
                     for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
                         if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
                             i.deregisterOrgan(2);
+                            try {
+                                WindowManager.getDatabase().transplantDeregister(i);
+                                WindowManager.getDatabase().updateUserDiseases(selectedUser);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                             Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered",
                                 "Reason Code 2 selected and disease cured");
                             alert.showAndWait();
@@ -383,10 +420,16 @@ public class TransplantWaitingListController implements Initializable {
         User user = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
         for (ReceiverWaitingListItem i : user.getWaitingListItems()) {
             if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
-                i.deregisterOrgan(1);
+                i.deregisterOrgan(4);
+                try {
+                    WindowManager.getDatabase().transplantDeregister(i);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
+
     }
 
 
@@ -411,10 +454,38 @@ public class TransplantWaitingListController implements Initializable {
             selectedUser.getWaitingListItems().clear();
             selectedUser.getWaitingListItems().addAll(tempItems);
         }
+
+        for (ReceiverWaitingListItem item : selectedUser.getWaitingListItems()) {
+            try {
+                WindowManager.getDatabase().transplantDeregister(item);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         selectedUser.setDateOfDeath(deathDateInput);
+
+        try {
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(selectedUser);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        deregisterAllItems(selectedUser);
+
         for (UserWindowController userWindowController : WindowManager.getCliniciansUserWindows().values()) {
             if (userWindowController.getCurrentUser() == selectedUser) {
                 userWindowController.populateUserAttributes();
+            }
+        }
+    }
+
+    private void deregisterAllItems(User user) {
+        for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
+            try {
+                WindowManager.getDatabase().transplantDeregister(item);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -432,13 +503,14 @@ public class TransplantWaitingListController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
-        transplantTable.setItems(transplantList);
+        //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
         WindowManager.setTransplantWaitingListController(this);
 
-        updateTransplantList();
+        transplantTable.setItems(transplantList);
+        updateFoundUsersWithFiltering("", "None");
         transplantTable.setItems(transplantList);
 
         //add options to organ filter combobox
@@ -490,5 +562,8 @@ public class TransplantWaitingListController implements Initializable {
 
             }
         });
+
+
+
     }
 }

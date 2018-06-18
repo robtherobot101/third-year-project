@@ -20,6 +20,7 @@ import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.IO.streamOut;
@@ -301,6 +302,11 @@ public class MedicationsController extends PageController implements Initializab
         currentUser.getCurrentMedications().addAll(currentItems);
         String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
         History.printToFile(streamOut, text);
+            try {
+                WindowManager.getDatabase().updateUserMedications(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

@@ -1,6 +1,7 @@
 package seng302.TestFX;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.TimeoutException;
 
 import javafx.application.Platform;
@@ -11,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
@@ -23,15 +25,17 @@ public class ReceiverGUITest extends TestFXTest {
     private User testUser;
 
     @BeforeClass
-    public static void setupClass() {
-        //defaultTestSetup();
+    public static void setupClass() throws TimeoutException {
+        defaultTestSetup();
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
+        WindowManager.getDatabase().resetDatabase();
         testUser = addTestUser();
     }
 
+    @Ignore
     @Test
     public void navigateToWaitingList() {
         loginAsDefaultClinician();

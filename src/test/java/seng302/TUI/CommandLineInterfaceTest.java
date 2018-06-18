@@ -53,7 +53,7 @@ public class CommandLineInterfaceTest {
         commandLine.readCommand("removeWaitingListOrgan 0 heart");
         assertFalse(DataManager.users.get(0).isReceiver());
     }
-    
+
     @Test
     public void addDonationOrgan() {
         commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");

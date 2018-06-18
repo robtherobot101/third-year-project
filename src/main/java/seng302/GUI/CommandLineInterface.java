@@ -1,5 +1,7 @@
 package seng302.GUI;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import seng302.GUI.Controllers.UserWindowController;
@@ -11,9 +13,13 @@ import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import static seng302.Generic.IO.streamOut;
+import java.util.ArrayList;
 import java.util.List;
 
 import static seng302.Generic.IO.streamOut;
@@ -211,14 +217,18 @@ public class CommandLineInterface {
                 case "help":
                     success = showHelp(nextCommand);
                     break;
+                case "sql":
+                    queryDatabase(nextCommand);
+                    break;
                 default:
                     printLine("Command not recognised. Enter 'help' to view available commands, or help <command> to view information " +
                             "about a specific command.");
             }
         }
         if (success) {
-            String text = History.prepareFileStringCLI(nextCommand);
-            History.printToFile(streamOut, text);
+            //TODO SORT OUT HISTORY
+            //String text = History.prepareFileStringCLI(nextCommand);
+            //History.printToFile(streamOut, text);
         }
     }
 
@@ -269,6 +279,19 @@ public class CommandLineInterface {
 
     }
 
+    private void queryDatabase(String[] nextCommand){
+        SqlSanitation sqlSanitation = new SqlSanitation();
+        String[] sqlArray = Arrays.copyOfRange(nextCommand, 1, nextCommand.length);
+        String query = String.join(" ", sqlArray);
+        String result = sqlSanitation.sanitizeSqlString(query);
+        if (!result.equals("")){
+            printLine(result);
+        } else {
+            printLine(sqlSanitation.executeQuery(query));
+        }
+    }
+
+
     /**
      * Creates a new user with a name and date of birth.
      *
@@ -276,13 +299,26 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean addUser(String[] nextCommand) {
-        if (nextCommand.length == 3) {
+        if (nextCommand.length == 5) {
             try {
-                DataManager.users.add(new User(nextCommand[1].replace("\"", ""), LocalDate.parse(nextCommand[2], User.dateFormat)));
+
+                User insertUser = new User(nextCommand[3].replace("\"", ""), LocalDate.parse(nextCommand[4], User.dateFormat));
+                insertUser.setUsername(nextCommand[1]);
+                insertUser.setPassword(nextCommand[2]);
+                WindowManager.getDatabase().insertUser(insertUser);
+
                 printLine("New user created.");
+
+                insertUser.setId(WindowManager.getDatabase().getUserId(insertUser.getUsername()));
+
+                DataManager.users.add(insertUser);
+
                 return true;
             } catch (DateTimeException e) {
                 printLine("Please enter a valid date of birth in the format dd/mm/yyyy.");
+            } catch (SQLException e) {
+                printLine("An error occurred creating this user. This username may already be taken");
+                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("addUser", 2, "\"name part 1,name part 2\" <date of birth>");
@@ -293,9 +329,19 @@ public class CommandLineInterface {
 
     private boolean addClinician(String[] nextCommand) {
         if (nextCommand.length == 4) {
-            DataManager.clinicians.add(new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", "")));
-            printLine("New clinician created.");
-            return true;
+
+            try {
+                Clinician insertClinician = new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", ""));
+                WindowManager.getDatabase().insertClinician(insertClinician);
+                insertClinician.setStaffID(WindowManager.getDatabase().getClinicianId(insertClinician.getUsername()));
+                DataManager.clinicians.add(insertClinician);
+                printLine("New clinician created.");
+                return true;
+            } catch (SQLException e) {
+                printLine("An error occurred creating this clinician. This username may already be taken");
+                //e.printStackTrace();
+            }
+
 
         } else {
             printIncorrectUsageString("addClinician", 3, "<username> <password> <name>");
@@ -310,10 +356,10 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean addDonationOrgan(String[] nextCommand) {
-        User toSet;
+        User toSet = null;
         if (nextCommand.length == 3) {
             try {
-                toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
+                toSet = SearchUtils.getUserById(Integer.parseInt(nextCommand[1]));
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
                 return false;
@@ -329,11 +375,16 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
-            refreshUser(toSet);
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            printLine("Successful update of Organs");
+            //refreshUser(toSet); NOT DOING ANYTHING
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -345,10 +396,10 @@ public class CommandLineInterface {
      * @return True if the organ was added, otherwise returns false.
      */
     private boolean addWaitingListOrgan(String[] nextCommand) {
-        User toSet;
+        User toSet = null;
         if (nextCommand.length == 3) {
             try {
-                toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
+                toSet = SearchUtils.getUserById(Integer.parseInt(nextCommand[1]));
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
                 return false;
@@ -365,6 +416,8 @@ public class CommandLineInterface {
         try {
             ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
             toSet.getWaitingListItems().add(item);
+            //WindowManager.getDatabase().insertWaitingListItem(item); TODO Kyran i have no idea how to do this.
+            printLine("Successful update of Waiting List Items");
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
@@ -382,7 +435,7 @@ public class CommandLineInterface {
     private void deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
-                long id = Long.parseLong(nextCommand[1]);
+                int id = Integer.parseInt(nextCommand[1]);
                 User user = SearchUtils.getUserById(id);
                 if (user == null) {
                     printLine(String.format("User with ID %d not found.", id));
@@ -408,16 +461,18 @@ public class CommandLineInterface {
     private void deleteClinician(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
-                long id = Long.parseLong(nextCommand[1]);
-                if(id!=0) {
+                int id = Integer.parseInt(nextCommand[1]);
+                if(id!=1) {
                     Clinician clinician = SearchUtils.getClinicianById(id);
                     if (clinician == null) {
                         printLine(String.format("Clinician with staff ID %d not found.", id));
+                    } else {
+                        print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
+                        deleteCommand = nextCommand;
+                        isDeleting = true;
+                        clinicianToDelete = clinician;
                     }
-                    print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
-                    deleteCommand = nextCommand;
-                    isDeleting = true;
-                    clinicianToDelete = clinician;
+
                 }else{
                     printLine("The default clinician cannot be deleted.");
                 }
@@ -443,40 +498,65 @@ public class CommandLineInterface {
         if (nextLine.equals("y")) {
             boolean deleted;
             if(userToDelete == null){
-                deleted = DataManager.clinicians.remove(clinicianToDelete);
-                if (deleted) {
-                    printLine("Clinician removed. This change will permanent once the user list is saved.");
-                    isDeleting = false;
-                    clinicianToDelete = null;
-                    return true;
-                } else {
-                    printLine("The clinician has already been removed in the GUI.");
+                try {
+                    WindowManager.getDatabase().removeClinician(clinicianToDelete);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+                int index = 0;
+                for(Clinician clincian: DataManager.clinicians) {
+                    System.out.println("Andy" + clincian.getStaffID());
+                    System.out.println("Bro" + clinicianToDelete.getStaffID());
+                    System.out.println("Hey");
+                    if(clincian.getStaffID() == clinicianToDelete.getStaffID()) {
+
+                        break;
+                    }
+                    index++;
+                }
+                DataManager.clinicians.remove(index);
+
+                printLine("Clinician removed");
+                isDeleting = false;
+                clinicianToDelete = null;
+                return true;
+
+
             }else{
-                deleted = DataManager.users.remove(userToDelete);
-                if (deleted) {
-                    //Close the window for the deleted user if it is open.
-                    Stage toClose;
-                    do {
-                        toClose = null;
-                        for (Stage stage : WindowManager.getCliniciansUserWindows().keySet()) {
-                            if (WindowManager.getCliniciansUserWindows().get(stage).getCurrentUser().getId() == userToDelete.getId()) {
-                                toClose = stage;
-                                break;
-                            }
-                        }
-                        if (toClose != null) {
-                            WindowManager.getCliniciansUserWindows().remove(toClose);
-                            toClose.close();
-                        }
-                    } while (toClose != null);
-                    printLine("User removed. This change will permanent once the user list is saved.");
-                    isDeleting = false;
-                    userToDelete = null;
-                    return true;
-                } else {
-                    printLine("The user has already been removed in the GUI.");
+                try {
+                    WindowManager.getDatabase().removeUser(userToDelete);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+                int index = 0;
+                for(User user: DataManager.users) {
+                    if(user.getId() == userToDelete.getId()) {
+                        break;
+                    }
+                    index++;
+                }
+                DataManager.users.remove(index);
+
+                //Close the window for the deleted user if it is open.
+                Stage toClose;
+                do {
+                    toClose = null;
+                    for (Stage stage : WindowManager.getCliniciansUserWindows().keySet()) {
+                        if (WindowManager.getCliniciansUserWindows().get(stage).getCurrentUser().getId() == userToDelete.getId()) {
+                            toClose = stage;
+                            break;
+                        }
+                    }
+                    if (toClose != null) {
+                        WindowManager.getCliniciansUserWindows().remove(toClose);
+                        toClose.close();
+                    }
+                } while (toClose != null);
+                printLine("User removed.");
+                isDeleting = false;
+                userToDelete = null;
+                return true;
+
             }
 
         } else {
@@ -495,7 +575,7 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean removeDonationOrgan(String[] nextCommand) {
-        User toSet;
+        User toSet = null;
         if (nextCommand.length == 3) {
             try {
                 toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
@@ -514,11 +594,15 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -958,10 +1042,10 @@ public class CommandLineInterface {
         if (nextCommand.length == 1) {
             printLine("Valid commands are: "
                     + "\n\t-addClinician <username> <password> <name>"
-                    + "\n\t-addUser \"First Name,name part 2,name part n\" <date of birth>"
+                    + "\n\t-addUser <username> <password> \"First Name,name part 2,name part n\" <date of birth>"
                     + "\n\t-addDonationOrgan <id> <organ>"
                     + "\n\t-addWaitingListOrgan <id> <organ>"
-                    + "\n\t-deleteClinician<id>"
+                    + "\n\t-deleteClinician <id>"
                     + "\n\t-deleteUser <id>"
                     + "\n\t-describeClinician <id>"
                     + "\n\t-describeUser <id> OR describeUser \"name substring 1,name substring 2,name substring n\""
@@ -1150,6 +1234,13 @@ public class CommandLineInterface {
                             + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, updateUser, describeUser, "
                             + "describeOrgans, listUsers, listOrgans, import, save, help, or quit.\n"
                             + "Example valid usage: help help");
+                    break;
+                case "sql":
+                    printLine("This command can be used to query sql select commands to the database.\n"
+                            + "The syntax is: sql <SQL query>\n"
+                            + "Rules:\n"
+                            + "-Only SELECT queries can be sent"
+                            + "Example valid usage: sql SELECT id from user where first_name = 'Steve' and last_name = 'Johnson'");
                     break;
                 default:
                     printLine("Can not offer help with this command as it is not a valid command.");

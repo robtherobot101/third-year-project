@@ -3,6 +3,7 @@ package seng302.Generic;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -10,15 +11,18 @@ import java.time.LocalDateTime;
  */
 public class ReceiverWaitingListItem extends WaitingListItem {
 
-    public String organDeregisteredDate;
+    public LocalDate organDeregisteredDate;
     public boolean stillWaitingOn;
     public Integer organDeregisteredCode;
 
 
     /**
+     * /**
      * creates a new object with a given object type
      *
      * @param organType type of organ to use
+     * @param id id of the item
+     * @param userId Id of the user
      */
     public ReceiverWaitingListItem(Organ organType, int id, long userId) {
         super(organType, id, userId);
@@ -39,6 +43,25 @@ public class ReceiverWaitingListItem extends WaitingListItem {
     }
 
     /**
+     *
+     * @param organType Organ to add
+     * @param registeredDate the date added
+     * @param deregisteredDate the date removed
+     * @param userId the users Id
+     * @param deregisteredCode the reason for deregistering
+     * @param waitingListitemId the id of the item
+     */
+    public ReceiverWaitingListItem(Organ organType, LocalDate registeredDate, LocalDate deregisteredDate, Long userId, Integer deregisteredCode, Integer waitingListitemId) {
+        this.organType = organType;
+        this.organRegisteredDate = registeredDate;
+        this.organDeregisteredDate = deregisteredDate;
+        this.userId = userId;
+        this.organDeregisteredCode = deregisteredCode;
+        this.waitingListItemId = waitingListitemId;
+        if (deregisteredDate == null) { this.stillWaitingOn = true; } else { this.stillWaitingOn = false;}
+    }
+
+    /**
      * Creates a new object with restricted parameters
      * Used in testing
      *
@@ -48,7 +71,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
     public ReceiverWaitingListItem(Organ heart, Long id) {
         this.organType = heart;
         this.userId = id;
-        this.organRegisteredDate = User.dateFormat.format(LocalDateTime.now());
+        this.organRegisteredDate = LocalDate.now();
         this.stillWaitingOn = true;
     }
 
@@ -57,7 +80,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      * Can be called when registering a previously deregistered organ.
      */
     public void registerOrgan() {
-        this.organRegisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+        this.organRegisteredDate = LocalDate.now();
         this.organDeregisteredCode = null;
         this.stillWaitingOn = true;
         this.organDeregisteredDate = null;
@@ -83,11 +106,11 @@ public class ReceiverWaitingListItem extends WaitingListItem {
                 selectedUser.getWaitingListItems().remove(this);
                 temp = new ReceiverWaitingListItem(this);
                 selectedUser.getWaitingListItems().add(temp);
-                temp.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+                temp.organDeregisteredDate = LocalDate.now();
                 temp.organDeregisteredCode = reasonCode;
                 temp.stillWaitingOn = false;
             } else {
-                this.organDeregisteredDate = User.dateTimeFormat.format(LocalDateTime.now());
+                this.organDeregisteredDate = LocalDate.now();
                 this.organDeregisteredCode = reasonCode;
             }
 
@@ -119,7 +142,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      *
      * @return de-registered date of an object
      */
-    public String getOrganDeregisteredDate() {
+    public LocalDate getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
 

@@ -15,16 +15,23 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javax.xml.crypto.Data;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
+import seng302.Generic.Disease;
+import seng302.Generic.History;
+import seng302.Generic.IO;
+import seng302.Generic.WindowManager;
 import seng302.Generic.*;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -455,10 +462,23 @@ public class UserWindowController implements Initializable {
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+            try {
+                WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+                WindowManager.getDatabase().updateUserMedications(currentUser);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            //TODO Update history with new database calls
+//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
+//            History.printToFile(streamOut, text);
+
             medicationsController.updateUser();
             diseasesController.updateUser();
             proceduresController.updateUser();
-            IO.saveUsers(IO.getUserPath(), ProfileType.USER);
             attributesController.populateUserFields();
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
@@ -466,6 +486,7 @@ public class UserWindowController implements Initializable {
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
+
             WindowManager.getClinicianController().updateFoundUsers();
             WindowManager.updateTransplantWaitingList();
         }

@@ -23,7 +23,7 @@
 
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -50,6 +50,13 @@
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Database" visible="true">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#databaseReset" text="Reset" />
+                        <MenuItem mnemonicParsing="false" onAction="#databaseResample" text="Resample" />
+                  <MenuItem mnemonicParsing="false" onAction="#clearCache" text="Clear Cache" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit" visible="false">
