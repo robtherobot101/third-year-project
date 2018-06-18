@@ -314,7 +314,7 @@ public class CommandLineInterface {
             } catch (DateTimeException e) {
                 printLine("Please enter a valid date of birth in the format dd/mm/yyyy.");
             } catch (SQLException e) {
-                printLine("An error occurred creating this user.");
+                printLine("An error occurred creating this user. This username may already be taken");
                 e.printStackTrace();
             }
         } else {
@@ -330,10 +330,11 @@ public class CommandLineInterface {
             try {
                 Clinician insertClinician = new Clinician(nextCommand[1], nextCommand[2],nextCommand[3].replace("\"", ""));
                 WindowManager.getDatabase().insertClinician(insertClinician);
+                insertClinician.setStaffID(WindowManager.getDatabase().getClinicianId(insertClinician.getUsername()));
                 DataManager.clinicians.add(insertClinician);
                 printLine("New clinician created.");
             } catch (SQLException e) {
-                printLine("An error occurred creating this clinician.");
+                printLine("An error occurred creating this clinician. This username may already be taken");
                 e.printStackTrace();
             }
             return true;
@@ -351,13 +352,15 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean addDonationOrgan(String[] nextCommand) {
-        User toSet;
+        User toSet = null;
         if (nextCommand.length == 3) {
             try {
-                toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
+                toSet = WindowManager.getDatabase().getUserFromId(Integer.parseInt(nextCommand[1]));
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
                 return false;
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("addDonationOrgan", 2, "<id> <organ>");
@@ -371,7 +374,8 @@ public class CommandLineInterface {
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
             WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
-            refreshUser(toSet);
+            printLine("Successful update of Organs");
+            //refreshUser(toSet); NOT DOING ANYTHING
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
@@ -390,13 +394,15 @@ public class CommandLineInterface {
      * @return True if the organ was added, otherwise returns false.
      */
     private boolean addWaitingListOrgan(String[] nextCommand) {
-        User toSet;
+        User toSet = null;
         if (nextCommand.length == 3) {
             try {
-                toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
+                toSet = WindowManager.getDatabase().getUserFromId(Integer.parseInt(nextCommand[1]));
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
                 return false;
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("addWaitingListOrgan", 2, "<id> <organ>");
@@ -410,6 +416,8 @@ public class CommandLineInterface {
         try {
             ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
             toSet.getWaitingListItems().add(item);
+            //WindowManager.getDatabase().insertWaitingListItem(item); TODO Kyran i have no idea how to do this.
+            printLine("Successful update of Waiting List Items");
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
@@ -427,8 +435,8 @@ public class CommandLineInterface {
     private void deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
-                long id = Long.parseLong(nextCommand[1]);
-                User user = SearchUtils.getUserById(id);
+                int id = Integer.parseInt(nextCommand[1]);
+                User user = WindowManager.getDatabase().getUserFromId(id);
                 if (user == null) {
                     printLine(String.format("User with ID %d not found.", id));
                 } else {
@@ -439,6 +447,8 @@ public class CommandLineInterface {
                 }
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("delete", 1, "<id>");
@@ -453,21 +463,25 @@ public class CommandLineInterface {
     private void deleteClinician(String[] nextCommand) {
         if (nextCommand.length == 2) {
             try {
-                long id = Long.parseLong(nextCommand[1]);
+                int id = Integer.parseInt(nextCommand[1]);
                 if(id!=0) {
-                    Clinician clinician = SearchUtils.getClinicianById(id);
+                    Clinician clinician = WindowManager.getDatabase().getClinicianFromId(id);
                     if (clinician == null) {
                         printLine(String.format("Clinician with staff ID %d not found.", id));
+                    } else {
+                        print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
+                        deleteCommand = nextCommand;
+                        isDeleting = true;
+                        clinicianToDelete = clinician;
                     }
-                    print(String.format("Are you sure you want to delete %s, ID %d? (y/n) ", clinician.getName(), clinician.getStaffID()));
-                    deleteCommand = nextCommand;
-                    isDeleting = true;
-                    clinicianToDelete = clinician;
+
                 }else{
                     printLine("The default clinician cannot be deleted.");
                 }
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("delete", 1, "<id>");
@@ -488,40 +502,65 @@ public class CommandLineInterface {
         if (nextLine.equals("y")) {
             boolean deleted;
             if(userToDelete == null){
-                deleted = DataManager.clinicians.remove(clinicianToDelete);
-                if (deleted) {
-                    printLine("Clinician removed. This change will permanent once the user list is saved.");
-                    isDeleting = false;
-                    clinicianToDelete = null;
-                    return true;
-                } else {
-                    printLine("The clinician has already been removed in the GUI.");
+                try {
+                    WindowManager.getDatabase().removeClinician(clinicianToDelete);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+                int index = 0;
+                for(Clinician clincian: DataManager.clinicians) {
+                    System.out.println("Andy" + clincian.getStaffID());
+                    System.out.println("Bro" + clinicianToDelete.getStaffID());
+                    System.out.println("Hey");
+                    if(clincian.getStaffID() == clinicianToDelete.getStaffID()) {
+
+                        break;
+                    }
+                    index++;
+                }
+                DataManager.clinicians.remove(index);
+
+                printLine("Clinician removed");
+                isDeleting = false;
+                clinicianToDelete = null;
+                return true;
+
+
             }else{
-                deleted = DataManager.users.remove(userToDelete);
-                if (deleted) {
-                    //Close the window for the deleted user if it is open.
-                    Stage toClose;
-                    do {
-                        toClose = null;
-                        for (Stage stage : WindowManager.getCliniciansUserWindows().keySet()) {
-                            if (WindowManager.getCliniciansUserWindows().get(stage).getCurrentUser().getId() == userToDelete.getId()) {
-                                toClose = stage;
-                                break;
-                            }
-                        }
-                        if (toClose != null) {
-                            WindowManager.getCliniciansUserWindows().remove(toClose);
-                            toClose.close();
-                        }
-                    } while (toClose != null);
-                    printLine("User removed. This change will permanent once the user list is saved.");
-                    isDeleting = false;
-                    userToDelete = null;
-                    return true;
-                } else {
-                    printLine("The user has already been removed in the GUI.");
+                try {
+                    WindowManager.getDatabase().removeUser(userToDelete);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+                int index = 0;
+                for(User user: DataManager.users) {
+                    if(user.getId() == userToDelete.getId()) {
+                        break;
+                    }
+                    index++;
+                }
+                DataManager.users.remove(index);
+
+                //Close the window for the deleted user if it is open.
+                Stage toClose;
+                do {
+                    toClose = null;
+                    for (Stage stage : WindowManager.getCliniciansUserWindows().keySet()) {
+                        if (WindowManager.getCliniciansUserWindows().get(stage).getCurrentUser().getId() == userToDelete.getId()) {
+                            toClose = stage;
+                            break;
+                        }
+                    }
+                    if (toClose != null) {
+                        WindowManager.getCliniciansUserWindows().remove(toClose);
+                        toClose.close();
+                    }
+                } while (toClose != null);
+                printLine("User removed.");
+                isDeleting = false;
+                userToDelete = null;
+                return true;
+
             }
 
         } else {
@@ -1006,7 +1045,7 @@ public class CommandLineInterface {
                     + "\n\t-addUser <username> <password> \"First Name,name part 2,name part n\" <date of birth>"
                     + "\n\t-addDonationOrgan <id> <organ>"
                     + "\n\t-addWaitingListOrgan <id> <organ>"
-                    + "\n\t-deleteClinician<id>"
+                    + "\n\t-deleteClinician <id>"
                     + "\n\t-deleteUser <id>"
                     + "\n\t-describeClinician <id>"
                     + "\n\t-describeUser <id> OR describeUser \"name substring 1,name substring 2,name substring n\""

@@ -438,6 +438,7 @@ public class WindowManager extends Application {
                 DataManager.users.clear();
                 try {
                     DataManager.users.addAll(getDatabase().getAllUsers());
+
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
                     e.printStackTrace();
