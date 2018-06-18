@@ -16,10 +16,7 @@ public class Tester {
         UserReader userReaderCSV = new UserReaderCSV();
         UserReader userReaderJSON = new UserReaderJSON();
 
-        List<User> usersList = userReaderJSON.getProfiles("target/users.json");
-        /*for (User currentUser: usersList) {
-            System.out.println(currentUser);
-        }*/
+        List<User> userListJSON = userReaderJSON.getProfiles("doc/examples/testData.json");
         userReaderCSV.getProfiles("doc/examples/SENG302_Project_Profiles v3.csv");
     }
 }

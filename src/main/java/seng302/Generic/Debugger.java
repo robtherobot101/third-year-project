@@ -9,15 +9,21 @@ import java.sql.Timestamp;
 public class Debugger {
     private Debugger() {}
 
-    public static boolean isEnabled(){
+    public static boolean consoleEnabled(){
         // Toggle this value to toggle debug messages globally
         return true;
     }
 
     public static void log(Object o){
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        if (Debugger.isEnabled()) {
-            System.out.println(timestamp + ": " + o.toString());
+
+        String callerClassName = new Exception().getStackTrace()[1].getClassName();
+        String message = timestamp + ": " + callerClassName + " -> " + o.toString();
+
+        //TODO log to file
+
+        if (Debugger.consoleEnabled()) {
+            System.out.println(message);
         }
     }
 }

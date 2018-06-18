@@ -293,7 +293,7 @@ public class AdminController implements Initializable {
                 case "Users":
                     fileToLoadPath = getSelectedFilePath(ProfileType.USER);
                     if (fileToLoadPath != null) {
-                        loadSuccessful = IO.importUsers(fileToLoadPath, ProfileType.USER);
+                        loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER);
                     } else {
                         loadAborted = true;
                     }
@@ -301,7 +301,7 @@ public class AdminController implements Initializable {
                 case "Clinicians":
                     fileToLoadPath = getSelectedFilePath(ProfileType.CLINICIAN);
                     if (fileToLoadPath != null) {
-                        loadSuccessful = IO.importUsers(fileToLoadPath, ProfileType.CLINICIAN);
+                        loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.CLINICIAN);
                     } else {
                         loadAborted = true;
                     }
@@ -309,7 +309,7 @@ public class AdminController implements Initializable {
                 case "Admins":
                     String fileToLoad = getSelectedFilePath(ProfileType.ADMIN);
                     if (fileToLoad != null) {
-                        loadSuccessful = IO.importUsers(fileToLoad, ProfileType.ADMIN);
+                        loadSuccessful = IO.importProfiles(fileToLoad, ProfileType.ADMIN);
                     } else {
                         loadAborted = true;
                     }

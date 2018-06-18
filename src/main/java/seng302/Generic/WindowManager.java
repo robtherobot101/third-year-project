@@ -337,7 +337,7 @@ public class WindowManager extends Application {
             setupDrugInteractionCache();
             File users = new File(IO.getUserPath());
             if (users.exists()) {
-                if (!IO.importUsers(users.getAbsolutePath(), ProfileType.USER)) {
+                if (!IO.importProfiles(users.getAbsolutePath(), ProfileType.USER)) {
                     throw new IOException("User save file could not be loaded.");
                 }
             } else {
@@ -347,7 +347,7 @@ public class WindowManager extends Application {
             }
             File clinicians = new File(IO.getClinicianPath());
             if (clinicians.exists()) {
-                if (!IO.importUsers(clinicians.getAbsolutePath(), ProfileType.CLINICIAN)) {
+                if (!IO.importProfiles(clinicians.getAbsolutePath(), ProfileType.CLINICIAN)) {
                     throw new IOException("Clinician save file could not be loaded.");
                 }
             } else {
@@ -359,7 +359,7 @@ public class WindowManager extends Application {
             }
             File admins = new File(IO.getAdminPath());
             if (admins.exists()) {
-                if (!IO.importUsers(admins.getAbsolutePath(), ProfileType.ADMIN)) {
+                if (!IO.importProfiles(admins.getAbsolutePath(), ProfileType.ADMIN)) {
                     throw new IOException("Admin save file could not be loaded.");
                 }
             } else {

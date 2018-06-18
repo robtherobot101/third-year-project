@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class IO {
 
@@ -178,9 +179,10 @@ public class IO {
      * @param loginType the account type of the users
      * @return Whether the command executed successfully
      */
-    public static boolean importUsers(String path, ProfileType loginType) {
+    public static boolean importProfiles(String path, ProfileType loginType) {
         UserReader userReaderCSV = new UserReaderCSV();
-        //TODO DEPRECATED
+        List<User> readUsers = userReaderCSV.getProfiles(path);
+        DataManager.users.addAll(readUsers);
         return false;
     }
 

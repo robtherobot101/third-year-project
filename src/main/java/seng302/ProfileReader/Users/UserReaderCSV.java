@@ -3,6 +3,7 @@ package seng302.ProfileReader.Users;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.AbstractCSVToBean;
 import seng302.Generic.Debugger;
+import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
 
@@ -10,8 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.Inet4Address;
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +24,8 @@ public class UserReaderCSV implements UserReader {
     private List<User> readUsers;
 
     public List<User> getProfiles(String path) {
-        Debugger.log("UserReaderCSV: getProfiles called");
-
+        Debugger.log("getProfiles called");
+        long startTime = System.nanoTime();
         try {
             reader = new CSVReader(new FileReader(path));
         } catch (FileNotFoundException fnfe) {
@@ -32,7 +35,12 @@ public class UserReaderCSV implements UserReader {
         String[] nextLine;
         readUsers = new ArrayList<>();
         try {
+            boolean headerLine = true;
             while ((nextLine = reader.readNext()) != null) {
+                if (headerLine) {
+                    headerLine = false;
+                    continue;
+                }
                 entryCount++;
 
                 // Parse all single profile details, not all are used
@@ -43,10 +51,10 @@ public class UserReaderCSV implements UserReader {
                 String rawDateOfDeath = nextLine[4];
                 String rawBirthGender = nextLine[5];
                 String rawIdentityGender = nextLine[6];
-                String bloodType = nextLine[7];
+                String rawBloodType = nextLine[7];
                 int height = Integer.parseInt(nextLine[8]);
                 int weight = Integer.parseInt(nextLine[9]);
-                int streetNumber = Integer.parseInt(nextLine[10]);
+                String streetNumber = nextLine[10];
                 String streetName = nextLine[11];
                 String suburb = nextLine[12];
                 String city = nextLine[13];
@@ -58,23 +66,54 @@ public class UserReaderCSV implements UserReader {
                 String email = nextLine[19];
 
                 // Convert raw dates to LocalDates
-                DateTimeFormatter csvDateFormat = DateTimeFormatter.ofPattern("MM/DD/yyyy");
-                LocalDate dateOfBirth = LocalDate.parse(rawDateOfBirth, csvDateFormat);
-                if (rawDateOfDeath.isEmpty()) {
-                    Debugger.log(NHI + ": profile is dead");
-                    LocalDate dateOfDeath = null;
-                } else {
-                    LocalDate dateOfDeath = LocalDate.parse(rawDateOfDeath, csvDateFormat);
+                LocalDate dateOfBirth = null;
+                LocalDate dateOfDeath = null;
+
+                // Form a list of possible formats to iterate through
+                List<DateTimeFormatter> dateFormats = new ArrayList<>();
+                dateFormats.add(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                dateFormats.add(DateTimeFormatter.ofPattern("M/dd/yyyy"));
+
+                for (DateTimeFormatter df : dateFormats) {
+                    try {
+                        dateOfBirth = LocalDate.parse(rawDateOfBirth, df);
+                    } catch (DateTimeParseException e) {
+                        // Do nothing, try another date formatter
+                        e.getMessage();
+                    }
+                }
+
+                if (!rawDateOfDeath.isEmpty()) {
+                    for (DateTimeFormatter df : dateFormats) {
+                        try {
+                            dateOfDeath = LocalDate.parse(rawDateOfDeath, df);
+                        } catch (DateTimeParseException e) {
+                            // Do nothing, try another date formatter
+                            e.getMessage();
+                        }
+                    }
                 }
 
                 // Convert raw genders to enum
                 Gender birthGender = Gender.parse(rawBirthGender);
                 Gender identityGender = Gender.parse(rawIdentityGender);
 
+                // Convert raw blood types to enum
+                BloodType bloodType = BloodType.parse(rawBloodType);
+
+                // Process address
+                String address = String.format("%s %s, %s", streetNumber, streetName, suburb);
+
                 // Finally create the user profile
-                User readUser = new User(firstName, null, lastNames, dateOfBirth);
+                User readUser = new User(firstName, lastNames, dateOfBirth, dateOfDeath,
+                        birthGender, identityGender, bloodType, height, weight, address, region, city,
+                        zipCode, country, homePhone, mobilePhone, email);
+                readUsers.add(readUser);
             }
-            System.out.println(entryCount + " entries");
+            long endTime = System.nanoTime();
+
+            double duration = (endTime - startTime) / 1000000000.0;
+            Debugger.log(entryCount + " entries imported in " + duration + "s");
         } catch (IOException ioe) {
             Debugger.log(ioe);
         }
