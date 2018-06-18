@@ -22,12 +22,28 @@ public class UserReaderCSV implements ProfileReader<User> {
 
     public List<User> getProfiles(String path) {
         Debugger.log("getProfiles called");
-        long startTime = System.nanoTime();
+
+
+        // Initialise reader and check path
         try {
             reader = new CSVReader(new FileReader(path));
         } catch (FileNotFoundException fnfe) {
-            Debugger.error(fnfe);
+            Debugger.error("Invalid file path");
+            return null;
         }
+
+
+
+        // Check file type is CSV
+        String extension = "";
+        int i = path.lastIndexOf('.');
+        if (i > 0) {
+            extension = path.substring(i+1);
+        }
+        assert(extension.equals("csv"));
+
+        long startTime = System.nanoTime();
+
         int entryCount = 0;
         String[] nextLine;
         readUsers = new ArrayList<>();

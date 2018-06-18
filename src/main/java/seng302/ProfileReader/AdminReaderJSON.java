@@ -23,9 +23,18 @@ public class AdminReaderJSON implements ProfileReader<Admin> {
         try {
             filePath = inputFile.toPath();
         } catch (InvalidPathException e) {
-            Debugger.log("Invalid file path.");
+            Debugger.log("Invalid file path");
             return null;
         }
+
+        // Check file type is JSON
+        String extension = "";
+        int i = path.lastIndexOf('.');
+        if (i > 0) {
+            extension = path.substring(i+1);
+        }
+        assert(extension.equals("json"));
+
         Type type;
         List<Admin> importedProfiles = null;
 
