@@ -246,7 +246,7 @@ public class AdminController implements Initializable {
      * Saves the currentAdmin ArrayList to a JSON file
      */
     public void save() {
-        System.out.println("AdminController: Save called");
+        Debugger.log("AdminController: Save called");
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
                 "Are you sure would like to save all profiles? ",
                 "All profiles will be saved (user, clinician, admin).");
@@ -263,12 +263,12 @@ public class AdminController implements Initializable {
      * Shows a dialog to load a profile JSON from file, along with success/failure alerts.
      */
     public void load() {
-        System.out.println("AdminController: Load called");
+        Debugger.log("AdminController: Load called");
 
         // Formats the initial load dialog window
         Alert loadDialog = new Alert(Alert.AlertType.CONFIRMATION);
         loadDialog.setTitle("Confirm Data Type");
-        loadDialog.setHeaderText("Please Select the JSON Profile Type to Import");
+        loadDialog.setHeaderText("Please Select the Profile Type to Import");
         loadDialog.setContentText("This will close other open ODMS windows.");
 
         // Add in custom ButtonTypes
@@ -293,7 +293,20 @@ public class AdminController implements Initializable {
                 case "Users":
                     fileToLoadPath = getSelectedFilePath(ProfileType.USER);
                     if (fileToLoadPath != null) {
-                        loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER);
+                        String extension = "";
+
+                        int i = fileToLoadPath.lastIndexOf('.');
+                        if (i > 0) {
+                            extension = fileToLoadPath.substring(i+1);
+                        }
+                        if (extension.equals("csv")) {
+                            loadSuccessful = IO.importUserCSV(fileToLoadPath);
+                        } else if (extension.equals("json")) {
+                            loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER);
+                        } else {
+                            loadSuccessful = false;
+                        }
+
                     } else {
                         loadAborted = true;
                     }
@@ -346,14 +359,20 @@ public class AdminController implements Initializable {
      */
     private String getSelectedFilePath(ProfileType profileType) {
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter fileExtensions =
+        FileChooser.ExtensionFilter fileExtensionJSON =
                 new FileChooser.ExtensionFilter(
                         "JSON Files", "*.json");
-        fileChooser.getExtensionFilters().add(fileExtensions);
 
-        // Customise the titlebar to help the user (and us!) on the profile type to browse for
+        fileChooser.getExtensionFilters().add(fileExtensionJSON);
+
+        // Customise the title bar to help the user (and us!) on the profile type to browse for
         switch (profileType) {
             case USER:
+                FileChooser.ExtensionFilter fileExtensionJSONCSV =
+                        new FileChooser.ExtensionFilter(
+                                "JSON/CSV Files", "*.csv", "*.json");
+                fileChooser.getExtensionFilters().remove(fileExtensionJSON);
+                fileChooser.getExtensionFilters().add(fileExtensionJSONCSV);
                 fileChooser.setTitle("Open User File");
                 break;
             case CLINICIAN:
@@ -363,7 +382,7 @@ public class AdminController implements Initializable {
                 fileChooser.setTitle("Open Admin File");
                 break;
             default:
-                throw new IllegalArgumentException("Not a valid JSON import type.");
+                throw new IllegalArgumentException("Not a valid file import type.");
         }
 
         // Present the FileChooser, return null on cancel
@@ -571,19 +590,19 @@ public class AdminController implements Initializable {
             if (result.orElse(null) == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
-                    System.out.println("AdminController: Deleting User: " + selectedUser);
+                    Debugger.log("AdminController: Deleting User: " + selectedUser);
                     DataManager.users.remove(selectedUser);
                     IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                     statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                 } else if (selectedClinician != null) {
                     // A clinician has been selected for deletion
-                    System.out.println("AdminController: Deleting Clinician: " + selectedClinician);
+                    Debugger.log("AdminController: Deleting Clinician: " + selectedClinician);
                     DataManager.clinicians.remove(selectedClinician);
                     IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                     statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                 } else if (selectedAdmin != null) {
                     // An admin has been selected for deletion
-                    System.out.println("AdminController: Deleting Admin: " + selectedAdmin);
+                    Debugger.log("AdminController: Deleting Admin: " + selectedAdmin);
                     DataManager.admins.remove(selectedAdmin);
                     IO.saveUsers(IO.getAdminPath(), ProfileType.ADMIN);
                     statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
@@ -870,10 +889,10 @@ public class AdminController implements Initializable {
                 IO.saveUsers(IO.getUserPath(), ProfileType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
-                System.out.println("AdminController: Failed to create user");
+                Debugger.error("AdminController: Failed to create user");
             }
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
+            Debugger.error("Unable to load fxml or save file.");
             e.printStackTrace();
             Platform.exit();
         }

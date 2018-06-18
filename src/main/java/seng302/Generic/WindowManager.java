@@ -479,10 +479,10 @@ public class WindowManager extends Application {
                 History.printToFile(IO.streamOut, text);
             }
         } catch (Exception e) {
-            System.out.println("Error writing history.");
+            Debugger.error("Error writing history.");
         }
 
-        System.out.println("Exiting GUI");
+        Debugger.log("Exiting GUI");
         Platform.exit();
     }
 }

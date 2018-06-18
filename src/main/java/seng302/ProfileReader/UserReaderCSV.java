@@ -1,7 +1,6 @@
-package seng302.ProfileReader.Users;
+package seng302.ProfileReader;
 
 import com.opencsv.CSVReader;
-import com.opencsv.bean.AbstractCSVToBean;
 import seng302.Generic.Debugger;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
@@ -10,18 +9,16 @@ import seng302.User.User;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserReaderCSV implements UserReader {
+public class UserReaderCSV implements ProfileReader<User> {
 
     private CSVReader reader;
-    private List<User> readUsers;
+    private List<seng302.User.User> readUsers;
 
     public List<User> getProfiles(String path) {
         Debugger.log("getProfiles called");
@@ -29,7 +26,7 @@ public class UserReaderCSV implements UserReader {
         try {
             reader = new CSVReader(new FileReader(path));
         } catch (FileNotFoundException fnfe) {
-            Debugger.log(fnfe);
+            Debugger.error(fnfe);
         }
         int entryCount = 0;
         String[] nextLine;
@@ -105,7 +102,7 @@ public class UserReaderCSV implements UserReader {
                 String address = String.format("%s %s, %s", streetNumber, streetName, suburb);
 
                 // Finally create the user profile
-                User readUser = new User(firstName, lastNames, dateOfBirth, dateOfDeath,
+                seng302.User.User readUser = new seng302.User.User(firstName, lastNames, dateOfBirth, dateOfDeath,
                         birthGender, identityGender, bloodType, height, weight, address, region, city,
                         zipCode, country, homePhone, mobilePhone, email);
                 readUsers.add(readUser);
@@ -115,7 +112,7 @@ public class UserReaderCSV implements UserReader {
             double duration = (endTime - startTime) / 1000000000.0;
             Debugger.log(entryCount + " entries imported in " + duration + "s");
         } catch (IOException ioe) {
-            Debugger.log(ioe);
+            Debugger.error(ioe);
         }
         return readUsers;
     }
