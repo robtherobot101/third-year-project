@@ -810,6 +810,39 @@ public class Database {
         statement = connection.prepareStatement(update);
         System.out.println("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
+
+        update = "ALTER TABLE " + currentDatabase + ".USER AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(USER): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".CLINICIAN AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(CLINICIAN): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".ADMIN AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(ADMIN): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".DISEASE AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(DISEASE): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".DONATION_LIST_ITEM AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(DONATION LIST ITEM): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".MEDICATION AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(MEDICATION): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".PROCEDURES AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(PROCEDURES): -> Successful -> " + statement.executeUpdate());
+
+        update = "ALTER TABLE " + currentDatabase + ".WAITING_LIST_ITEM AUTO_INCREMENT = 1";
+        statement = connection.prepareStatement(update);
+        System.out.println("Reset of AutoIncrement(WAITING LIST ITEM): -> Successful -> " + statement.executeUpdate());
+
         String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region, staff_id) " +
                 "VALUES(?, ?, ?, ?, ?, ?)";
         statement = connection.prepareStatement(insert);

@@ -682,7 +682,9 @@ public class ClinicianController implements Initializable {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         User currentUser = null;
                         try {
+
                             currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
+
                         } catch(SQLException e) {
                             e.printStackTrace();
                         }
