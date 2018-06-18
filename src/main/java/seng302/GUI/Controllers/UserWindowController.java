@@ -462,6 +462,7 @@ public class UserWindowController implements Initializable {
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+
             try {
                 WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
                 WindowManager.getDatabase().updateUserDiseases(currentUser);
@@ -470,7 +471,6 @@ public class UserWindowController implements Initializable {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
 
             //TODO Update history with new database calls
 //            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
@@ -489,6 +489,16 @@ public class UserWindowController implements Initializable {
 
             WindowManager.getClinicianController().updateFoundUsers();
             WindowManager.updateTransplantWaitingList();
+
+
+            int index = 0;
+            for(User user: DataManager.users) {
+                if(user.getUsername().equals(currentUser.getUsername())) {
+                    break;
+                }
+                index++;
+            }
+            DataManager.users.set(index, currentUser);
         }
         alert.close();
     }

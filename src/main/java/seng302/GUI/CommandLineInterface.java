@@ -1,5 +1,6 @@
 package seng302.GUI;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
@@ -207,9 +208,6 @@ public class CommandLineInterface {
                 case "import":
                     success = importUsers(nextCommand);
                     break;
-                case "save":
-                    success = save(nextCommand);
-                    break;
                 case "clear":
                     success = true;
                     outputString.clear();
@@ -385,6 +383,7 @@ public class CommandLineInterface {
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
+            printLine("An error occurred creating a new organ.");
             return false;
         }
     }
@@ -603,6 +602,7 @@ public class CommandLineInterface {
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
+            printLine("An error occurred removing an organ.");
             return false;
         }
     }
@@ -633,11 +633,16 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeWaitingListItem(Organ.parse(nextCommand[2]));
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            printLine("An error occurred removing a waiting list organ.");
             return false;
         }
     }
@@ -665,6 +670,7 @@ public class CommandLineInterface {
             return false;
         }
 
+        boolean wasSuccessful = false;
         User toSet = SearchUtils.getUserById(id);
         if (toSet == null) {
             printLine(String.format("User with ID %d not found.", id));
@@ -675,42 +681,47 @@ public class CommandLineInterface {
                 toSet.setName(value);
                 refreshUser(toSet);
                 printLine("New name set.");
-                return true;
+                wasSuccessful = true;
+                break;
             case "prefname":
                 toSet.setPreferredName(value);
                 printLine("New preferred name set.");
-                return true;
-
+                wasSuccessful = true;
+                break;
             case "dateofbirth":
                 try {
                     toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
                     refreshUser(toSet);
                     printLine("New date of birth set.");
-                    return true;
+                    wasSuccessful = true;
                 } catch (DateTimeException e) {
                     printLine("Please enter a valid date in the format dd/mm/yyyy.");
+                    wasSuccessful = false;
                 }
-                return false;
+                break;
             case "dateofdeath":
                 try {
                     toSet.setDateOfDeath(LocalDate.parse(value, User.dateFormat));
                     refreshUser(toSet);
                     printLine("New date of death set.");
-                    return true;
+                    wasSuccessful = true;
                 } catch (DateTimeException e) {
                     printLine("Please enter a valid date in the format dd/mm/yyyy.");
+                    wasSuccessful = false;
                 }
-                return false;
+                break;
             case "gender":
                 try {
                     toSet.setGender(Gender.parse(value));
                     refreshUser(toSet);
                     printLine("New gender set.");
-                    return true;
+                    wasSuccessful = true;
                 } catch (IllegalArgumentException e) {
                     printLine("Please enter gender as other, female, or male.");
+                    wasSuccessful = false;
                 }
-                return false;
+
+                break;
             case "height":
                 try {
                     double height = Double.parseDouble(value);
@@ -720,12 +731,13 @@ public class CommandLineInterface {
                         toSet.setHeight(height);
                         refreshUser(toSet);
                         printLine("New height set.");
-                        return true;
+                        wasSuccessful = true;
                     }
                 } catch (NumberFormatException e) {
                     printLine("Please enter a numeric height.");
+                    wasSuccessful = false;
                 }
-                return false;
+                break;
             case "weight":
                 try {
                     double weight = Double.parseDouble(value);
@@ -735,37 +747,53 @@ public class CommandLineInterface {
                         toSet.setWeight(weight);
                         refreshUser(toSet);
                         printLine("New weight set.");
-                        return true;
+                        wasSuccessful = true;
                     }
                 } catch (NumberFormatException e) {
                     printLine("Please enter a numeric weight.");
+                    wasSuccessful = false;
                 }
-                return false;
+
+                break;
             case "bloodtype":
                 try {
                     toSet.setBloodType(BloodType.parse(value));
                     refreshUser(toSet);
                     printLine("New blood type set.");
-                    return true;
+                    wasSuccessful = true;
                 } catch (IllegalArgumentException e) {
                     printLine("Please enter blood type as A-, A+, B-, B+, AB-, AB+, O-, or O+.");
+                    wasSuccessful = false;
                 }
-                return false;
+
+                break;
             case "region":
                 toSet.setRegion(value);
                 refreshUser(toSet);
                 printLine("New region set.");
-                return true;
+                wasSuccessful = true;
+                break;
             case "currentaddress":
                 toSet.setCurrentAddress(value);
                 refreshUser(toSet);
                 printLine("New address set.");
-                return true;
+                wasSuccessful = true;
+                break;
             default:
                 printLine("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
                         "bloodType, region, or currentAddress.");
-                return false;
+                wasSuccessful = false;
+                break;
         }
+        if(wasSuccessful) {
+            try {
+                WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
 
@@ -787,6 +815,7 @@ public class CommandLineInterface {
             return false;
         }
 
+        boolean wasSuccessful = false;
         Clinician toSet = SearchUtils.getClinicianById(id);
         if (toSet == null) {
             printLine(String.format("Clinician with staff ID %d not found.", id));
@@ -796,27 +825,42 @@ public class CommandLineInterface {
             case "name":
                 toSet.setName(value);
                 printLine("New name set.");
-                return true;
+                wasSuccessful = true;
+                break;
             case "region":
                 toSet.setRegion(value);
                 printLine("New region set.");
-                return true;
+                wasSuccessful = true;
+                break;
             case "workaddress":
                 toSet.setWorkAddress(value);
                 printLine("New work address set.");
-                return true;
+                wasSuccessful = true;
+                break;
             case "username":
                 toSet.setUsername(value);
                 printLine("New username set.");
-                return true;
+                wasSuccessful = true;
+                break;
             case "password":
                 toSet.setPassword(value);
                 printLine("New password set.");
-                return true;
+                wasSuccessful = true;
+                break;
             default:
                 printLine("Attribute '" + attribute + "' not recognised. Try name, region, workaddress, username, password.");
-                return false;
+                wasSuccessful = false;
+                break;
         }
+        if(wasSuccessful) {
+            try {
+                WindowManager.getDatabase().updateClinicianDetails(toSet);
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
 
@@ -964,70 +1008,6 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean importUsers(String[] nextCommand) {
-        if (nextCommand.length >= 2) {
-            boolean relative = nextCommand[1].equals("-r");
-            if ((relative && nextCommand.length == 3) || (!relative && nextCommand.length == 2)) {
-                String path;
-                if (relative) {
-                    path = IO.getJarPath() + File.separatorChar + nextCommand[2].replace('/', File.separatorChar);
-                } else {
-                    path = nextCommand[1];
-                }
-                if (IO.importProfiles(path, ProfileType.USER)) {
-                    printLine("User imported from " + path + ".");
-                    WindowManager.closeAllChildren();
-                    return true;
-                } else {
-                    printLine("Failed to import from " + path + ". Make sure the program has access to this file.");
-                    return false;
-                }
-            }
-        }
-        printLine("The import command must be used with 1 or 2 arguments (import -r <filepath> or import <filepath>).");
-        return false;
-    }
-
-    /**
-     * Save the user list to a file.
-     *
-     * @param nextCommand The command entered by the user
-     * @return Whether the command was executed
-     */
-    private boolean save(String[] nextCommand) {
-        if (nextCommand.length >= 3) {
-            boolean relative = nextCommand[1].equals("-r");
-            if ((relative && nextCommand.length == 4) || (!relative && nextCommand.length == 3)) {
-                String path;
-                if (relative) {
-                    path = IO.getJarPath() + File.separatorChar + nextCommand[3].replace('/', File.separatorChar);
-                } else {
-                    path = nextCommand[1];
-                }
-                String type = nextCommand[2];
-                if(type.equals("users")){
-                    if (IO.saveUsers(path, ProfileType.USER)) {
-                        printLine("Users saved to " + path + ".");
-                        return true;
-                    } else {
-                        printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
-                        return false;
-                    }
-                }else if(type.equals("clinicians")){
-                    if (IO.saveUsers(path, ProfileType.CLINICIAN)) {
-                        printLine("Clinicians saved to " + path + ".");
-                        return true;
-                    } else {
-                        printLine("Failed to save to " + path + ". Make sure the program has access to this file.");
-                        return false;
-                    }
-                }else{
-                    printLine("Unknown login type " + type + ". Should be either 'users' or 'clinicians'");
-                    return false;
-                }
-
-            }
-        }
-        printLine("The save command must be used with 2 or 3 arguments (save -r <type> <filepath> or save <type> <filepath>).");
         return false;
     }
 
@@ -1057,11 +1037,9 @@ public class CommandLineInterface {
                     + "\n\t-removeWaitingListOrgan <id> <organ>"
                     + "\n\t-updateClinician <id> <attribute> <value>"
                     + "\n\t-updateUser <id> <attribute> <value>"
-                    + "\n\t-import [-r] <filename>"
-                    + "\n\t-save [-r] <path> OR save [-r] \"File path with spaces\""
+                    + "\n\t-import <profiletype> <filename>"
                     + "\n\t-clear"
-                    + "\n\t-help [<command>]"
-                    + "\n\t-quit");
+                    + "\n\t-help [<command>]");
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
                 case "adduser":
