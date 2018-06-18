@@ -1,13 +1,5 @@
 package seng302.Generic;
 
-import static seng302.Generic.IO.getJarPath;
-import static seng302.Generic.IO.streamOut;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -22,31 +14,20 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.GUI.CommandLineInterface;
-import seng302.GUI.Controllers.AccountSettingsController;
-import seng302.GUI.Controllers.AdminController;
-import seng302.GUI.Controllers.ClinicianAccountSettingsController;
-import seng302.GUI.Controllers.ClinicianController;
-import seng302.GUI.Controllers.CreateAccountController;
-import seng302.GUI.Controllers.LoginController;
-import seng302.GUI.Controllers.TransplantWaitingListController;
-import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
+import static seng302.Generic.IO.getJarPath;
 import static seng302.Generic.IO.streamOut;
 
 /**

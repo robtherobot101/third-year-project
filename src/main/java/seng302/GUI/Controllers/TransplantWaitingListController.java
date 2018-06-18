@@ -192,13 +192,17 @@ public class TransplantWaitingListController implements Initializable {
      */
     private void errorDeregister(WaitingListItem selectedWaitingListItem) {
         User user = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
+        System.out.println(user.getName());
         Long userId = user.getId();
-        for (ReceiverWaitingListItem i : user.getWaitingListItems()) {
-            if (Objects.equals(i.getWaitingListItemId(), selectedWaitingListItem.getWaitingListItemId())) {
-                i.deregisterOrgan(1);
+        System.out.println(userId);
+        for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
+            System.out.println(item.getOrganType());
+            System.out.println(selectedWaitingListItem.getOrganType() + "\n");
+            if (Objects.equals(item.getOrganType(), selectedWaitingListItem.getOrganType())) {
+                item = item.deregisterOrgan(1);
                 History.prepareFileStringGUI(userId, "deregisterError");
                 try {
-                    WindowManager.getDatabase().transplantDeregister(i);
+                    WindowManager.getDatabase().transplantDeregister(item);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -227,8 +231,8 @@ public class TransplantWaitingListController implements Initializable {
             } else {
                 ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems = selectedUser.getWaitingListItems();
                 for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
-                    if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
-                        i.deregisterOrgan(2);
+                    if (Objects.equals(i.getOrganType(), selectedWaitingListItem.getOrganType())) {
+                        i = i.deregisterOrgan(2);
                         try {
                             WindowManager.getDatabase().transplantDeregister(i);
                         } catch (SQLException e) {
@@ -244,8 +248,8 @@ public class TransplantWaitingListController implements Initializable {
         } else {
             ArrayList<ReceiverWaitingListItem> selectedUserWaitingListItems = selectedUser.getWaitingListItems();
             for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
-                if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
-                    i.deregisterOrgan(2);
+                if (Objects.equals(i.getOrganType(), selectedWaitingListItem.getOrganType())) {
+                    i = i.deregisterOrgan(2);
                     try {
                         WindowManager.getDatabase().transplantDeregister(i);
                     } catch (SQLException e) {
@@ -319,8 +323,8 @@ public class TransplantWaitingListController implements Initializable {
                     currentDiseases.remove(selected);
                     selectedUser.setCurrentDiseases(currentDiseases);
                     for (ReceiverWaitingListItem i : selectedUserWaitingListItems) {
-                        if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
-                            i.deregisterOrgan(2);
+                        if (Objects.equals(i.getOrganType(), selectedWaitingListItem.getOrganType())) {
+                            i = i.deregisterOrgan(2);
                             try {
                                 WindowManager.getDatabase().transplantDeregister(i);
                                 WindowManager.getDatabase().updateUserDiseases(selectedUser);
@@ -419,8 +423,8 @@ public class TransplantWaitingListController implements Initializable {
     private void transplantDeregister(WaitingListItem selectedWaitingListItem) {
         User user = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
         for (ReceiverWaitingListItem i : user.getWaitingListItems()) {
-            if (i.getWaitingListItemId().equals(selectedWaitingListItem.getWaitingListItemId())) {
-                i.deregisterOrgan(4);
+            if (Objects.equals(i.getOrganType(), selectedWaitingListItem.getOrganType())) {
+                i = i.deregisterOrgan(4);
                 try {
                     WindowManager.getDatabase().transplantDeregister(i);
                 } catch (SQLException e) {
@@ -442,20 +446,21 @@ public class TransplantWaitingListController implements Initializable {
     private void deathDeregister(LocalDate deathDateInput, WaitingListItem selectedWaitingListItem) {
         User selectedUser = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
         Long userId = selectedUser.getId();
-
+        ArrayList<ReceiverWaitingListItem> tempItems = new ArrayList<>();
         if (selectedUser.getWaitingListItems() != null) {
             History.prepareFileStringGUI(userId, "deregisterDeath");
-            ArrayList<ReceiverWaitingListItem> tempItems = new ArrayList<>();
+
             for (ReceiverWaitingListItem item : selectedUser.getWaitingListItems()) {
                 ReceiverWaitingListItem temp = new ReceiverWaitingListItem(item);
-                temp.deregisterOrgan(3);
+                temp = temp.deregisterOrgan(3);
                 tempItems.add(temp);
             }
             selectedUser.getWaitingListItems().clear();
             selectedUser.getWaitingListItems().addAll(tempItems);
         }
 
-        for (ReceiverWaitingListItem item : selectedUser.getWaitingListItems()) {
+        // remove from DB
+        for (ReceiverWaitingListItem item : tempItems) {
             try {
                 WindowManager.getDatabase().transplantDeregister(item);
             } catch (SQLException e) {
@@ -465,13 +470,12 @@ public class TransplantWaitingListController implements Initializable {
 
         selectedUser.setDateOfDeath(deathDateInput);
 
+        // updates the users date of death in the DB
         try {
             WindowManager.getDatabase().updateUserAttributesAndOrgans(selectedUser);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        deregisterAllItems(selectedUser);
 
         for (UserWindowController userWindowController : WindowManager.getCliniciansUserWindows().values()) {
             if (userWindowController.getCurrentUser() == selectedUser) {
@@ -480,15 +484,6 @@ public class TransplantWaitingListController implements Initializable {
         }
     }
 
-    private void deregisterAllItems(User user) {
-        for (ReceiverWaitingListItem item : user.getWaitingListItems()) {
-            try {
-                WindowManager.getDatabase().transplantDeregister(item);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /**
      * Initilizes the gui display with the correct content in the table.

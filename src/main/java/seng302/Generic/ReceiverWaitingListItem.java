@@ -98,7 +98,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
      *
      * @param reasonCode reason code to assign to an organ upon deregister
      */
-    public void deregisterOrgan(Integer reasonCode) {
+    public ReceiverWaitingListItem deregisterOrgan(Integer reasonCode) {
         if (this.organDeregisteredDate == null) {
             ReceiverWaitingListItem temp;
             if (reasonCode != 3) {
@@ -109,6 +109,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
                 temp.organDeregisteredDate = LocalDate.now();
                 temp.organDeregisteredCode = reasonCode;
                 temp.stillWaitingOn = false;
+                return temp;
             } else {
                 this.organDeregisteredDate = LocalDate.now();
                 this.organDeregisteredCode = reasonCode;
@@ -116,6 +117,7 @@ public class ReceiverWaitingListItem extends WaitingListItem {
 
         }
         this.stillWaitingOn = false;
+        return this;
     }
 
     /**

@@ -20,6 +20,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static seng302.Generic.IO.streamOut;
@@ -65,7 +66,15 @@ public class WaitingListController extends PageController implements Initializab
         if (organTypeSelected != null) {
             userWindowController.addCurrentUserToUndoStack();
             ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected, currentUser.getWaitingListItems().size(), currentUser.getId());
-            currentUser.getWaitingListItems().add(temp);
+            //Check if already in list and act accordingly
+            for (ReceiverWaitingListItem item : currentUser.getWaitingListItems()){
+                if (Objects.equals(item.getOrganType(), temp.getOrganType())){
+                    // update the local view to avoid duplicates
+                    currentUser.getWaitingListItems().remove(item);
+                    break;
+                }
+            }
+            currentUser.addWaitingListItem(temp);
             try {
                 WindowManager.getDatabase().insertWaitingListItem(currentUser, temp);
             } catch (SQLException e) {

@@ -624,4 +624,23 @@ public class User {
             }
         }
     }
+
+    /**
+     * Adds the given waitingListItem to the users WaitingListItems, unless already added.
+     * Then it just updates the organs registration dates.
+     * This was added to stop .getFoo().add(object) calls.
+     *
+     * @param temp The receiverWaitingListItem being added.
+     */
+    public void addWaitingListItem(ReceiverWaitingListItem temp) {
+        boolean found = false;
+        for(ReceiverWaitingListItem item : waitingListItems){
+            if(Objects.equals(temp.getOrganType(), item.getOrganType())){
+                found = true;
+            }
+        }
+        if(!found) {
+            waitingListItems.add(temp);
+        }
+    }
 }

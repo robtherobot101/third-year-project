@@ -81,19 +81,20 @@ public class Database {
     }
 
     public void insertWaitingListItem(User currentUser, WaitingListItem waitingListItem) throws SQLException{
-        String query = "SELECT COUNT(*) FROM " + testDatabase + ".WAITING_LIST_ITEM WHERE id = user_id = ? AND organ_type = ?";
+        String query = "SELECT COUNT(*) FROM " + testDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
         PreparedStatement queryStatement  =connection.prepareStatement(query);
         queryStatement.setLong(1, waitingListItem.getUserId());
         queryStatement.setString(2, waitingListItem.organType.toString().toLowerCase());
         ResultSet resultSet = queryStatement.executeQuery();
         resultSet.next();
+        System.out.println("Count: " + resultSet.getInt(1));
         if (resultSet.getInt(1) != 0) {
             System.out.println("deleting");
             String deleteQuery = "DELETE FROM " + testDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
             deleteStatement.setLong(1, waitingListItem.getUserId());
             deleteStatement.setString(2, waitingListItem.organType.toString().toLowerCase());
-            deleteStatement.executeQuery();
+            System.out.println("Deleting old waiting list item -> Successful -> Rows Removed: " + deleteStatement.executeUpdate());
         }
 
         String insert = "INSERT INTO " + testDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id ) VALUES  (?, ?, ?)";
@@ -617,12 +618,19 @@ public class Database {
     }
 
     public void transplantDeregister(ReceiverWaitingListItem waitingListItem) throws SQLException{
-        String update = "UPDATE " + testDatabase + ".WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE id = ?";
+        System.out.println("Forming deregister query...");
+        System.out.println(waitingListItem.getOrganDeregisteredDate());
+        System.out.println(waitingListItem.getOrganDeregisteredCode());
+        System.out.println(waitingListItem.getOrganType());
+        System.out.println(waitingListItem.getUserId());
+        String update = "UPDATE " + testDatabase + ".WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE organ_type = ? AND user_id = ?";
         PreparedStatement deregisterStatement = connection.prepareStatement(update);
 
         deregisterStatement.setDate(1, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
         deregisterStatement.setInt(2, waitingListItem.getOrganDeregisteredCode());
-        deregisterStatement.setInt(3, waitingListItem.getWaitingListItemId());
+        deregisterStatement.setString(3, waitingListItem.getOrganType().toString());
+        deregisterStatement.setLong(4, waitingListItem.getUserId());
+        System.out.println(deregisterStatement);
         System.out.println("Update waitinglist Attributes -> Successful -> Rows Updated: " + deregisterStatement.executeUpdate());
         refreshUserWaitinglists();
     }
