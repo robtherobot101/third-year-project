@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import seng302.GUI.Controllers.ClinicianController;
+import seng302.ProfileReader.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
@@ -19,7 +21,7 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 public class IO {
 
@@ -173,58 +175,45 @@ public class IO {
      * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
      *
      * @param path      path of the file.
-     * @param loginType the account type of the users
+     * @param profileType the account type of the users
      * @return Whether the command executed successfully
      */
-    public static boolean importUsers(String path, ProfileType loginType) {
-        File inputFile = new File(path);
-        Path filePath;
-        try {
-            filePath = inputFile.toPath();
-        } catch (InvalidPathException e) {
-            return false;
-        }
-        Type type;
-        try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            switch (loginType) {
-                case USER:
-                    type = new TypeToken<ArrayList<User>>() {
-                    }.getType();
-                    ArrayList<User> importedUsers = gson.fromJson(reader, type);
-                    System.out.println("Opened user file successfully.");
-                    DataManager.users.clear();
-                    DataManager.users.addAll(importedUsers);
-                    DataManager.recalculateNextId(ProfileType.USER);
-                    break;
-                case CLINICIAN:
-                    type = new TypeToken<ArrayList<Clinician>>() {
-                    }.getType();
-                    ArrayList<Clinician> importedClinicians = gson.fromJson(reader, type);
-                    System.out.println("Opened clinician file successfully.");
-                    DataManager.clinicians.clear();
-                    DataManager.clinicians.addAll(importedClinicians);
-                    DataManager.recalculateNextId(ProfileType.CLINICIAN);
-                    break;
-                case ADMIN:
-                    type = new TypeToken<ArrayList<Admin>>() {
-                    }.getType();
-                    ArrayList<Admin> importedAdmins = gson.fromJson(reader, type);
-                    System.out.println("Opened admin file successfully.");
-                    DataManager.admins.clear();
-                    DataManager.admins.addAll(importedAdmins);
-                    DataManager.recalculateNextId(ProfileType.ADMIN);
-            }
-            System.out.println("Imported list successfully.");
-            return true;
-        } catch (IOException e) {
-            System.out.println("IOException on " + path + ": Check your inputs and permissions!");
-        } catch (JsonSyntaxException | DateTimeException e1) {
-            System.out.println("Invalid syntax in input file.");
-        } catch (NullPointerException e2) {
-            System.out.println("Input file was empty.");
-            return true;
+    public static boolean importProfiles(String path, ProfileType profileType) {
+        Debugger.log("importProfile called with profile type: " + profileType);
+        switch (profileType) {
+            case USER:
+                ProfileReader<User> userReader = new UserReaderJSON();
+                List<User> readUsers = userReader.getProfiles(path);
+                if (readUsers != null) {
+                    DataManager.users.addAll(readUsers);
+                }
+                return true;
+            case CLINICIAN:
+                ProfileReader<Clinician> clinicianReader = new ClinicianReaderJSON();
+                List<Clinician> readClinicians = clinicianReader.getProfiles(path);
+                if (readClinicians != null) {
+                    DataManager.clinicians.addAll(readClinicians);
+                }
+                return true;
+            case ADMIN:
+                ProfileReader<Admin> adminReader = new AdminReaderJSON();
+                List<Admin> readAdmins = adminReader.getProfiles(path);
+                if (readAdmins != null) {
+                    DataManager.admins.addAll(readAdmins);
+                }
+                return true;
         }
         return false;
+    }
+
+    public static boolean importUserCSV(String path) {
+        Debugger.log("importUserCSV called");
+        ProfileReader<User> userReader = new UserReaderCSV();
+        List<User> readUsers = userReader.getProfiles(path);
+        if (readUsers != null) {
+            DataManager.users.addAll(readUsers);
+        }
+        return true;
     }
 
     /**
@@ -245,15 +234,15 @@ public class IO {
             Type type = new TypeToken<Cache>() {
             }.getType();
             Cache importedCache = gson.fromJson(reader, type);
-            System.out.println("Opened user file successfully.");
+            Debugger.log("Opened user file successfully.");
             importedCache.purgeEntriesOlderThan(Duration.ofDays(7));
             return importedCache;
         } catch (IOException e) {
-            System.out.println("IOException on " + path + ": Check your inputs and permissions!");
+            Debugger.error("IOException on " + path + ": Check your inputs and permissions!");
         } catch (JsonSyntaxException | DateTimeException e1) {
-            System.out.println("Invalid syntax in input file.");
+            Debugger.error("Invalid syntax in input file.");
         } catch (NullPointerException e2) {
-            System.out.println("Input file was empty.");
+            Debugger.error("Input file was empty.");
         }
         return new Cache(path);
     }

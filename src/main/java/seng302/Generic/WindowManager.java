@@ -358,12 +358,12 @@ public class WindowManager extends Application {
      * @param e Exception?
      */
     private static void showError(Thread t, Throwable e) {
-        System.err.println("Non-critical error caught, probably platform dependent.");
-        e.printStackTrace();
+        Debugger.log("Non-critical error caught, probably platform dependent.");
+        Debugger.error(e.getStackTrace());
         if (Platform.isFxApplicationThread()) {
-            e.printStackTrace();
+            Debugger.error(e.getStackTrace());
         } else {
-            System.err.println("An unexpected error occurred in " + t);
+            Debugger.error("An unexpected error occurred in " + t);
         }
     }
 
@@ -550,10 +550,10 @@ public class WindowManager extends Application {
                 History.printToFile(IO.streamOut, text);
             }
         } catch (Exception e) {
-            System.out.println("Error writing history.");
+            Debugger.error("Error writing history.");
         }
 
-        System.out.println("Exiting GUI");
+        Debugger.log("Exiting GUI");
         Platform.exit();
     }
 }

@@ -28,7 +28,8 @@ public class User {
     private BloodType bloodType = null;
     private long id;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
-    private String currentAddress = "", region = "", username, email, password, bloodPressure = "";
+    private int zipCode=0;
+    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -75,6 +76,44 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.id = DataManager.getNextId(true, ProfileType.USER);
+    }
+
+    // Used by CSV import to form profiles
+    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender,
+                Gender genderIdentity, BloodType bloodType, int height, int weight, String address, String region,
+                String city, int zipCode, String country, String homePhone, String mobilePhone, String email) {
+        int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
+        this.name = new String[1 + isLastName];
+        this.name[0] = firstName;
+        if (isLastName == 1) {
+            this.name[this.name.length - 1] = lastNames;
+        }
+
+        this.preferredName = this.name;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+
+        this.creationTime = LocalDateTime.now();
+        this.gender = gender;
+        this.genderIdentity = genderIdentity;
+        this.bloodType = bloodType;
+
+        // Uses Java automatic type recognition to convert int -> double
+        this.height = 1.0 * height;
+        this.weight = 1.0 * weight;
+
+        this.currentAddress = address;
+        this.region = region;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.country = country;
+
+        this.homePhone = homePhone;
+        this.mobilePhone = mobilePhone;
+
+        this.email = email;
+        this.password = "password";
         this.id = DataManager.getNextId(true, ProfileType.USER);
     }
 

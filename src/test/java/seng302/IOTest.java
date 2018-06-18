@@ -37,7 +37,7 @@ public class IOTest {
         IO.saveUsers("testsave", ProfileType.USER);
         DataManager.users.remove(5);
         assertEquals(5, DataManager.users.size());
-        IO.importUsers("testsave", ProfileType.USER);
+        IO.importProfiles("testsave", ProfileType.USER);
         assertEquals("extra", DataManager.users.get(5).getName());
         new File("testsave").delete();
     }
@@ -51,7 +51,7 @@ public class IOTest {
         DataManager.users.add(oldUser);
         IO.saveUsers("testsave", ProfileType.USER);
         DataManager.users.remove(5);
-        IO.importUsers("testsave", ProfileType.USER);
+        IO.importProfiles("testsave", ProfileType.USER);
         assertEquals(DataManager.users.get(5).toString(), oldUser.toString());
         new File("testsave").delete();
     }
@@ -61,7 +61,7 @@ public class IOTest {
         String invalidFile = "OrganDonation.jpg";
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(out));
-        IO.importUsers(invalidFile, ProfileType.USER);
+        IO.importProfiles(invalidFile, ProfileType.USER);
         String text = out.toString();
         String expected = "IOException on " + invalidFile + ": Check your inputs and permissions!";
         assertEquals(expected, text.trim());
