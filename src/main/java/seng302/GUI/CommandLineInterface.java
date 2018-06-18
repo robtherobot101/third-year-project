@@ -226,8 +226,9 @@ public class CommandLineInterface {
             }
         }
         if (success) {
-            String text = History.prepareFileStringCLI(nextCommand);
-            History.printToFile(streamOut, text);
+            //TODO SORT OUT HISTORY
+            //String text = History.prepareFileStringCLI(nextCommand);
+            //History.printToFile(streamOut, text);
         }
     }
 
@@ -308,6 +309,8 @@ public class CommandLineInterface {
 
                 printLine("New user created.");
 
+                insertUser.setId(WindowManager.getDatabase().getUserId(insertUser.getUsername()));
+
                 DataManager.users.add(insertUser);
 
                 return true;
@@ -333,11 +336,12 @@ public class CommandLineInterface {
                 insertClinician.setStaffID(WindowManager.getDatabase().getClinicianId(insertClinician.getUsername()));
                 DataManager.clinicians.add(insertClinician);
                 printLine("New clinician created.");
+                return true;
             } catch (SQLException e) {
                 printLine("An error occurred creating this clinician. This username may already be taken");
-                e.printStackTrace();
+                //e.printStackTrace();
             }
-            return true;
+
 
         } else {
             printIncorrectUsageString("addClinician", 3, "<username> <password> <name>");
@@ -355,12 +359,10 @@ public class CommandLineInterface {
         User toSet = null;
         if (nextCommand.length == 3) {
             try {
-                toSet = WindowManager.getDatabase().getUserFromId(Integer.parseInt(nextCommand[1]));
+                toSet = SearchUtils.getUserById(Integer.parseInt(nextCommand[1]));
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
                 return false;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("addDonationOrgan", 2, "<id> <organ>");
@@ -397,12 +399,10 @@ public class CommandLineInterface {
         User toSet = null;
         if (nextCommand.length == 3) {
             try {
-                toSet = WindowManager.getDatabase().getUserFromId(Integer.parseInt(nextCommand[1]));
+                toSet = SearchUtils.getUserById(Integer.parseInt(nextCommand[1]));
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
                 return false;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("addWaitingListOrgan", 2, "<id> <organ>");
@@ -436,7 +436,7 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 int id = Integer.parseInt(nextCommand[1]);
-                User user = WindowManager.getDatabase().getUserFromId(id);
+                User user = SearchUtils.getUserById(id);
                 if (user == null) {
                     printLine(String.format("User with ID %d not found.", id));
                 } else {
@@ -447,8 +447,6 @@ public class CommandLineInterface {
                 }
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("delete", 1, "<id>");
@@ -464,8 +462,8 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 int id = Integer.parseInt(nextCommand[1]);
-                if(id!=0) {
-                    Clinician clinician = WindowManager.getDatabase().getClinicianFromId(id);
+                if(id!=1) {
+                    Clinician clinician = SearchUtils.getClinicianById(id);
                     if (clinician == null) {
                         printLine(String.format("Clinician with staff ID %d not found.", id));
                     } else {
@@ -480,8 +478,6 @@ public class CommandLineInterface {
                 }
             } catch (NumberFormatException e) {
                 printLine("Please enter a valid ID number.");
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } else {
             printIncorrectUsageString("delete", 1, "<id>");
@@ -579,7 +575,7 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private boolean removeDonationOrgan(String[] nextCommand) {
-        User toSet;
+        User toSet = null;
         if (nextCommand.length == 3) {
             try {
                 toSet = SearchUtils.getUserById(Long.parseLong(nextCommand[1]));
@@ -598,11 +594,15 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
