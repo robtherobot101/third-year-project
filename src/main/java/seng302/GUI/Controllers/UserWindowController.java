@@ -154,7 +154,7 @@ public class UserWindowController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (WindowManager.getScene(TFScene.userWindow) == null) {
-            System.out.println("Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)");
+            Debugger.log("Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)");
             WindowManager.setUserWindowController(this);
         }
         welcomePane.setVisible(true);
@@ -614,7 +614,7 @@ public class UserWindowController implements Initializable {
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("exitOK");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            System.out.println("Exiting GUI");
+            Debugger.log("Exiting GUI");
             String text = History.prepareFileStringGUI(currentUser.getId(), "quit");
             History.printToFile(streamOut, text);
 

@@ -216,7 +216,7 @@ public class ClinicianController implements Initializable {
 
                     stage.showAndWait();
                 } catch (Exception e) {
-                    System.out.println("here");
+                    Debugger.error("here");
                     e.printStackTrace();
                 }
             } else { // Password incorrect
@@ -233,7 +233,7 @@ public class ClinicianController implements Initializable {
     public void updateClinicianPopUp() {
         clinicianUndoStack.add(new Clinician(clinician));
         undoWelcomeButton.setDisable(false);
-        System.out.println("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
+        Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
@@ -319,7 +319,7 @@ public class ClinicianController implements Initializable {
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
         result.ifPresent(newClinicianDetails -> {
-            System.out.println("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
+            Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
                     .get(2));
             clinician.setName(newClinicianDetails.get(0));
             clinician.setWorkAddress(newClinicianDetails.get(1));
@@ -526,7 +526,7 @@ public class ClinicianController implements Initializable {
         int firstIndex = Math.max((page - 1), 0) * pageSize;
         int lastIndex = Math.min(users.size(), page * pageSize);
         if (lastIndex < firstIndex) {
-            System.out.println(firstIndex + " to " + lastIndex + " is an illegal page");
+            Debugger.error(firstIndex + " to " + lastIndex + " is an illegal page");
             return FXCollections.observableArrayList(new ArrayList<User>());
         }
         return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));

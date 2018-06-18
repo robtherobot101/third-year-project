@@ -1,6 +1,7 @@
 package seng302.Generic;
 
 
+import java.io.*;
 import java.sql.Timestamp;
 
 /**
@@ -24,13 +25,20 @@ public class Debugger {
         return true;
     }
 
+    public static boolean logToFile(){
+        // Toggle this value to toggle logging to file
+        return true;
+    }
+
     public static void log(Object o){
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         String callerClassName = new Exception().getStackTrace()[1].getClassName();
         String message = timestamp + ": " + callerClassName + " -> " + o.toString();
 
-        //TODO log to file
+        if (Debugger.logToFile()) {
+            appendLog(message);
+        }
 
         if (Debugger.consoleEnabled()) {
             System.out.println(message);
@@ -41,12 +49,30 @@ public class Debugger {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         String callerClassName = new Exception().getStackTrace()[1].getClassName();
-        String message = ANSI_YELLOW + timestamp + ": " + callerClassName + " -> " + o.toString() + ANSI_RESET;
+        String message = timestamp + ": " + callerClassName + " -> " + o.toString();
 
-        //TODO log to file
+        if (Debugger.logToFile()) {
+            appendLog(message);
+        }
 
         if (Debugger.consoleEnabled()) {
-            System.out.println(message);
+            System.out.println(ANSI_YELLOW + message + ANSI_RESET);
+        }
+    }
+
+    private static void appendLog(String message) {
+        File log = new File("debuglog.txt");
+        try {
+            log.createNewFile(); // if file already exists will do nothing
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(log, true))) {
+            writer.append('\n');
+            writer.append(message);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

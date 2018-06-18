@@ -7,7 +7,7 @@ import seng302.User.User;
 /**
  * Just a temporary class to test method calls
  */
-public class Tester {
+public class TEMPORARY_Tester {
     public static void main(String[] args) {
         ProfileReader<User> userReaderCSV = new UserReaderCSV();
 

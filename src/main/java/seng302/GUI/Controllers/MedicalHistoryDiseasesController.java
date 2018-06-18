@@ -13,6 +13,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import seng302.Generic.Debugger;
 import seng302.Generic.Disease;
 import seng302.Generic.History;
 import seng302.Generic.WindowManager;
@@ -74,7 +75,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
      * Also checks for invalid input in both the disease text field and date field.
      */
     public void addNewDisease() {
-        System.out.println("MedicalHistoryDiseasesController: Adding new disease");
+        Debugger.log("Adding new disease");
         // Check for empty disease name
         if (newDiseaseTextField.getText().isEmpty()) {
             Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Disease", "",
@@ -118,7 +119,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
                 addCurrentDisease(diseaseToAdd);
             }
             userWindowController.addCurrentUserToUndoStack();
-            System.out.println("MedicalHistoryDiseasesController: Finished adding new disease");
+            Debugger.log("Finished adding new disease");
             statusIndicator.setStatus("Added " + diseaseToAdd, false);
             titleBar.saved(false);
         }
@@ -164,7 +165,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
      * Deletes a disease from either the current or cured list views for the donor.
      */
     public void deleteDisease() {
-        System.out.println("MedicalHistoryDiseasesController: Deleting disease");
+        Debugger.log("Deleting disease");
 
         if (currentDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
 
@@ -294,7 +295,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         Optional<Pair<String, LocalDate>> result = dialog.showAndWait();
 
         result.ifPresent(newDiseaseDetails -> {
-            System.out.println("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
+            Debugger.log("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
             userWindowController.addCurrentUserToUndoStack();
             selectedDisease.setName(newDiseaseDetails.getKey());
             selectedDisease.setDiagnosisDate(newDiseaseDetails.getValue());
@@ -736,7 +737,7 @@ public class MedicalHistoryDiseasesController extends PageController implements 
         curedDiseaseTableView.setItems(curedDiseaseItems);
         sortCuredDiseases(false);
 
-        System.out.println("MedicalHistoryDiseasesController: Setting donor of Medical History pane...");
+        Debugger.log("Setting donor of Medical History pane...");
     }
 
     @Override

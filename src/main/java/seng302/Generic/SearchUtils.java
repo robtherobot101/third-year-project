@@ -343,17 +343,17 @@ public class SearchUtils {
      * @return A sorted list of results
      */
     public static ArrayList<User> getUsersByNameAlternative(String term) {
-        System.out.println("search: " + "'" + term + "'");
+        Debugger.log("search: " + "'" + term + "'");
         if (term.equals("")) {
-            System.out.println("Empty");
+            Debugger.log("Empty");
             ArrayList<User> sorted = new ArrayList<>(DataManager.users);
             sorted.sort(Comparator.comparing(User::getName));
             return sorted;
         }
         String[] t = term.split(" ", -1);
         ArrayList<String> tokens = new ArrayList<>(Arrays.asList(t));
-        System.out.println("token 1: " + "'" + tokens.get(0) + "'");
-        //System.out.println("token 2: " + "'"+tokens.get(1)+"'");
+        Debugger.log("token 1: " + "'" + tokens.get(0) + "'");
+        //Debugger.log("token 2: " + "'"+tokens.get(1)+"'");
         if (tokens.contains("")) {
             tokens.remove("");
         }

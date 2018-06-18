@@ -419,7 +419,7 @@ public class WindowManager extends Application {
         }
         getScene(TFScene.clinician).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                System.out.println("Refreshing");
+                Debugger.log("Refreshing...");
                 DataManager.users.clear();
                 try {
                     DataManager.users.addAll(getDatabase().getAllUsers());

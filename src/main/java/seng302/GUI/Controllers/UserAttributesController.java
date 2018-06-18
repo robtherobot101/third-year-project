@@ -16,6 +16,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import seng302.Generic.Debugger;
 import seng302.Generic.WaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.AlcoholConsumption;
@@ -236,7 +237,7 @@ public class UserAttributesController extends PageController implements Initiali
         }
         userWindowController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        System.out.println(currentUser.toString());
+        Debugger.log(currentUser.toString());
         return true;
     }
 

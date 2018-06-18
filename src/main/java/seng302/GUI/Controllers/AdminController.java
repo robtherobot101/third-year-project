@@ -841,7 +841,7 @@ public class AdminController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
 
-            System.out.println("AdminController: DB reset called");
+            Debugger.log("DB reset called");
             try {
                 WindowManager.getDatabase().resetDatabase();
                 DataManager.users.clear();
@@ -864,7 +864,7 @@ public class AdminController implements Initializable {
                 "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
-            System.out.println("AdminController: DB resample called");
+            Debugger.log("DB resample called");
             try {
                 WindowManager.getDatabase().loadSampleData();
                 DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());

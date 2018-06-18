@@ -9,10 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
-import seng302.Generic.History;
-import seng302.Generic.IO;
-import seng302.Generic.WindowManager;
+import seng302.Generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
@@ -58,7 +55,7 @@ public class LoginController implements Initializable {
         if(currentUser != null) {
             typeMatched = ProfileType.USER;
             identificationMatched = true;
-            System.out.println("LoginController: Logging in as user...");
+            Debugger.log("LoginController: Logging in as user...");
         }
 
 
@@ -75,7 +72,7 @@ public class LoginController implements Initializable {
         if(currentClinician != null) {
             typeMatched = ProfileType.CLINICIAN;
             identificationMatched = true;
-            System.out.println("LoginController: Logging in as clinician...");
+            Debugger.log("LoginController: Logging in as clinician...");
         }
 
         // Check for an admin match
@@ -90,7 +87,7 @@ public class LoginController implements Initializable {
         if(currentAdmin != null) {
             typeMatched = ProfileType.ADMIN;
             identificationMatched = true;
-            System.out.println("LoginController: Logging in as admin...");
+            Debugger.log("LoginController: Logging in as admin...");
         }
 
 

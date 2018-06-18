@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import seng302.Generic.Debugger;
 import seng302.Generic.History;
 import seng302.Generic.Procedure;
 import seng302.Generic.WindowManager;
@@ -95,7 +96,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      * Also checks for invalid input in the procedure summary, description and date fields.
      */
     public void addNewProcedure() {
-        System.out.println("MedicalHistoryProceduresController: Adding new procedure");
+        Debugger.log("MedicalHistoryProceduresController: Adding new procedure");
         // Check for empty disease name TODO could be a listener to disable the add button
         if (summaryInput.getText().equals("")) {
             Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invalid Procedure", "",
@@ -138,7 +139,7 @@ public class MedicalHistoryProceduresController extends PageController implement
             summaryInput.clear();
             descriptionInput.clear();
             dateOfProcedureInput.getEditor().clear();
-            System.out.println("MedicalHistoryProceduresController: Finished adding new procedure");
+            Debugger.log("MedicalHistoryProceduresController: Finished adding new procedure");
             statusIndicator.setStatus("Added " + procedureToAdd, false);
             titleBar.saved(false);
         }
@@ -149,7 +150,7 @@ public class MedicalHistoryProceduresController extends PageController implement
      * Deletes a procedure from either the pending or previous table views for the procedures.
      */
     public void deleteProcedure() {
-        System.out.println("MedicalHistoryProceduresController: Deleting disease");
+        Debugger.log("MedicalHistoryProceduresController: Deleting disease");
 
         if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
 
@@ -398,7 +399,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
-                System.out.println(dateDue.getValue());
+                Debugger.log(dateDue.getValue());
                 String newSummary;
                 String newDescription;
                 String newDate = "";
@@ -454,7 +455,7 @@ public class MedicalHistoryProceduresController extends PageController implement
         Optional<ArrayList<String>> result = dialog.showAndWait();
 
         result.ifPresent(newProcedureDetails -> {
-            System.out.println("Summary=" + newProcedureDetails.get(0) + ", Description=" + newProcedureDetails.get(1) + ", DateDue=" +
+            Debugger.log("Summary=" + newProcedureDetails.get(0) + ", Description=" + newProcedureDetails.get(1) + ", DateDue=" +
                     newProcedureDetails.get(2));
             selectedProcedure.setSummary(newProcedureDetails.get(0));
             selectedProcedure.setDescription(newProcedureDetails.get(1));
@@ -695,7 +696,7 @@ public class MedicalHistoryProceduresController extends PageController implement
 
         //unsavedDonorDiseases = currentDonor.getDiseases();
         //pastDiseasesCopy = currentDonor.getCuredDiseases();
-        System.out.println("MedicalHistoryProcedureController: Setting donor of Medical History pane...");
+        Debugger.log("MedicalHistoryProcedureController: Setting donor of Medical History pane...");
     }
 
     @Override

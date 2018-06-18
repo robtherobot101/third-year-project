@@ -35,14 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import seng302.Generic.DataManager;
-import seng302.Generic.Disease;
-import seng302.Generic.History;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.Generic.SearchUtils;
-import seng302.Generic.TransplantWaitingListItem;
-import seng302.Generic.WaitingListItem;
-import seng302.Generic.WindowManager;
+import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -132,8 +125,8 @@ public class TransplantWaitingListController implements Initializable {
      * method to handle when the organ filter combo box is changed and then updates the transplant waiting list
      */
     public void updateFoundUsersOnOrganChange() {
-        System.out.println(organSearchComboBox.getValue().toString());
-        System.out.println(regionSearchTextField.getText());
+        Debugger.log(organSearchComboBox.getValue().toString());
+        Debugger.log(regionSearchTextField.getText());
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
     }
 

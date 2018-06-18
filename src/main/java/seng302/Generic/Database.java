@@ -70,7 +70,7 @@ public class Database {
         statement.setString(10, user.getEmail());
         statement.setString(11, user.getPassword());
         statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
-        System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
+        Debugger.log("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
 
     }
 
@@ -82,7 +82,7 @@ public class Database {
         ResultSet resultSet = queryStatement.executeQuery();
         resultSet.next();
         if (resultSet.getInt(1) != 0) {
-            System.out.println("deleting");
+            Debugger.log("deleting");
             String deleteQuery = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
             deleteStatement.setLong(1, waitingListItem.getUserId());
@@ -95,7 +95,7 @@ public class Database {
         statement.setString(1, waitingListItem.organType.toString());
         statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
         statement.setLong(3, currentUser.getId());
-        System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
+        Debugger.log("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
     }
 
     public void updateUserAccountSettings(User user, int userId) throws SQLException {
@@ -105,7 +105,7 @@ public class Database {
         statement.setString(2, user.getEmail());
         statement.setString(3, user.getPassword());
         statement.setInt(4, userId);
-        System.out.println("Update User Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
+        Debugger.log("Update User Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
 
     }
 
@@ -139,7 +139,7 @@ public class Database {
         statement.setString(17, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
         statement.setString(18, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
         statement.setString(19, user.getUsername());
-        System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        Debugger.log("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
 
         int userId = getUserId(user.getUsername());
@@ -149,7 +149,7 @@ public class Database {
         String deleteOrgansQuery = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
         PreparedStatement deleteOrgansStatement = connection.prepareStatement(deleteOrgansQuery);
         deleteOrgansStatement.setInt(1, userId);
-        System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
+        Debugger.log("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
 
         int totalAdded = 0;
         //Then repopulate it with the new updated organs
@@ -160,7 +160,7 @@ public class Database {
             insertOrgansStatement.setInt(2, userId);
             totalAdded += insertOrgansStatement.executeUpdate();
         }
-        System.out.println("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);
+        Debugger.log("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);
     }
 
     public void updateUserProcedures(User user) throws SQLException {
@@ -171,7 +171,7 @@ public class Database {
         String deleteProceduresQuery = "DELETE FROM " + currentDatabase + ".PROCEDURES WHERE user_id = ?";
         PreparedStatement deleteProceduresStatement = connection.prepareStatement(deleteProceduresQuery);
         deleteProceduresStatement.setInt(1, userId);
-        System.out.println("Procedure rows deleted: " + deleteProceduresStatement.executeUpdate());
+        Debugger.log("Procedure rows deleted: " + deleteProceduresStatement.executeUpdate());
 
 
         int totalAdded = 0;
@@ -200,7 +200,7 @@ public class Database {
             totalAdded += insertProceduresStatement.executeUpdate();
         }
 
-        System.out.println("Update User Procedures -> Successful -> Rows Updated: " + totalAdded);
+        Debugger.log("Update User Procedures -> Successful -> Rows Updated: " + totalAdded);
 
     }
 
@@ -212,7 +212,7 @@ public class Database {
         String deleteDiseasesQuery = "DELETE FROM " + currentDatabase + ".DISEASE WHERE user_id = ?";
         PreparedStatement deleteDiseasesStatement = connection.prepareStatement(deleteDiseasesQuery);
         deleteDiseasesStatement.setInt(1, userId);
-        System.out.println("Disease rows deleted: " + deleteDiseasesStatement.executeUpdate());
+        Debugger.log("Disease rows deleted: " + deleteDiseasesStatement.executeUpdate());
 
 
         int totalAdded = 0;
@@ -234,7 +234,7 @@ public class Database {
             totalAdded += insertDiseasesStatement.executeUpdate();
         }
 
-        System.out.println("Update User Diseases -> Successful -> Rows Updated: " + totalAdded);
+        Debugger.log("Update User Diseases -> Successful -> Rows Updated: " + totalAdded);
 
     }
 
@@ -247,7 +247,7 @@ public class Database {
         PreparedStatement deleteMedicationsStatement = connection.prepareStatement(deleteMedicationsQuery);
 
         deleteMedicationsStatement.setInt(1, userId);
-        System.out.println("Medication rows deleted: " + deleteMedicationsStatement.executeUpdate());
+        Debugger.log("Medication rows deleted: " + deleteMedicationsStatement.executeUpdate());
 
 
         int totalAdded = 0;
@@ -271,7 +271,7 @@ public class Database {
             totalAdded += insertMedicationsStatement.executeUpdate();
         }
 
-        System.out.println("Update User Medications -> Successful -> Rows Updated: " + totalAdded);
+        Debugger.log("Update User Medications -> Successful -> Rows Updated: " + totalAdded);
 
     }
 
@@ -314,7 +314,7 @@ public class Database {
         statement.setString(3, clinician.getName());
         statement.setString(4, clinician.getWorkAddress());
         statement.setString(5, clinician.getRegion());
-        System.out.println("Inserting new Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
+        Debugger.log("Inserting new Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
 
     }
 
@@ -326,7 +326,7 @@ public class Database {
         statement.setString(2, clinician.getWorkAddress());
         statement.setString(3, clinician.getRegion());
         statement.setString(4, clinician.getUsername());
-        System.out.println("Update Clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        Debugger.log("Update Clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
     }
 
@@ -337,7 +337,7 @@ public class Database {
         statement.setString(1, clinician.getUsername());
         statement.setString(2, clinician.getPassword());
         statement.setInt(3, clinicianId);
-        System.out.println("Update Clinician Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
+        Debugger.log("Update Clinician Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
     }
 
     public void insertAdmin(Admin admin) throws SQLException {
@@ -350,7 +350,7 @@ public class Database {
         statement.setString(3, admin.getName());
         statement.setString(4, admin.getWorkAddress());
         statement.setString(5, admin.getRegion());
-        System.out.println("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+        Debugger.log("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
 
     }
 
@@ -362,7 +362,7 @@ public class Database {
         statement.setString(2, admin.getWorkAddress());
        // statement.setString(3, admin.getegion()); -- No Region for an Admin!
         statement.setString(3, admin.getUsername());
-        System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        Debugger.log("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
 
     }
 
@@ -635,7 +635,7 @@ public class Database {
         deregisterStatement.setDate(1, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
         deregisterStatement.setInt(2, waitingListItem.getOrganDeregisteredCode());
         deregisterStatement.setInt(3, waitingListItem.getWaitingListItemId());
-        System.out.println("Update waitinglist Attributes -> Successful -> Rows Updated: " + deregisterStatement.executeUpdate());
+        Debugger.log("Update waitinglist Attributes -> Successful -> Rows Updated: " + deregisterStatement.executeUpdate());
         refreshUserWaitinglists();
     }
 
@@ -760,55 +760,55 @@ public class Database {
         String update = "DELETE FROM " + currentDatabase + ".USER WHERE username = ?";
         PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, user.getUsername());
-        System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
     public void removeClinician(Clinician clinician) throws SQLException {
         String update = "DELETE FROM " + currentDatabase + ".CLINICIAN WHERE username = ?";
         PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, clinician.getUsername());
-        System.out.println("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
     public void removeAdmin(Admin admin) throws SQLException {
         String update = "DELETE FROM " + currentDatabase + ".ADMIN WHERE username = ?";
         PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, admin.getUsername());
-        System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
     public void resetDatabase() throws SQLException{
         String update = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM";
         PreparedStatement statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".PROCEDURES";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".MEDICATION";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (MEDICATION): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (MEDICATION): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (DONATION_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (DONATION_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".DISEASE";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (DISEASE): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (DISEASE): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".ADMIN";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (ADMIN): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (ADMIN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".CLINICIAN";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (CLINICIAN): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (CLINICIAN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         update = "DELETE FROM " + currentDatabase + ".USER";
         statement = connection.prepareStatement(update);
-        System.out.println("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
+        Debugger.log("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
         String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region, staff_id) " +
                 "VALUES(?, ?, ?, ?, ?, ?)";
@@ -819,7 +819,7 @@ public class Database {
         statement.setString(4, "default");
         statement.setString(5, "default");
         statement.setInt(6, 1);
-        System.out.println("Inserting Default Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
+        Debugger.log("Inserting Default Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
 
         insert = "INSERT INTO " + currentDatabase + ".ADMIN(username, password, name, work_address, region, staff_id) " +
                 "VALUES(?, ?, ?, ?, ?, ?)";
@@ -830,7 +830,7 @@ public class Database {
         statement.setString(4, "default");
         statement.setString(5, "default");
         statement.setInt(6, 1);
-        System.out.println("Inserting Default Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+        Debugger.log("Inserting Default Admin -> Successful -> Rows Added: " + statement.executeUpdate());
 
     }
 
@@ -872,11 +872,9 @@ public class Database {
             Class.forName(jdbcDriver);
             connection = DriverManager.getConnection(
                     url + connectDatabase, username, password);
-            System.out.println("Connected to " + connectDatabase + " database");
-            System.out.println(LocalDateTime.now());
-
+            Debugger.log("Connected to " + connectDatabase + " database");
         } catch(Exception e){
-            System.out.println(e);
+            Debugger.log(e);
         }
     }
 }
