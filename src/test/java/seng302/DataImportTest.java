@@ -3,8 +3,10 @@ package seng302;
 import org.junit.Test;
 import seng302.ProfileReader.ProfileReader;
 import seng302.ProfileReader.UserReaderCSV;
+import seng302.ProfileReader.UserReaderJSON;
 import seng302.User.User;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,6 +25,13 @@ public class DataImportTest {
     public void testInvalidPathCSV() {
         ProfileReader<User> userProfileReader = new UserReaderCSV();
         List<User> readUsers = userProfileReader.getProfiles("doc/exam.csv");
+        assertNull(readUsers);
+    }
+
+    @Test
+    public void testWrongTypeJSON() {
+        ProfileReader<User> userProfileReader = new UserReaderJSON();
+        List<User> readUsers = userProfileReader.getProfiles("target/clinicians.json");
         assertNull(readUsers);
     }
 }
