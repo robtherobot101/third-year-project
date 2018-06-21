@@ -655,11 +655,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Buzz\\source\\repos\\mobileClient\\mobileClient\\mobileClient.iOS\\mobileClient.iOS.csproj",
+      "projectUniqueName": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.iOS\\mobileClient.iOS.csproj",
       "projectName": "mobileClient.iOS",
-      "projectPath": "C:\\Users\\Buzz\\source\\repos\\mobileClient\\mobileClient\\mobileClient.iOS\\mobileClient.iOS.csproj",
+      "projectPath": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.iOS\\mobileClient.iOS.csproj",
       "packagesPath": "C:\\Users\\Buzz\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Buzz\\source\\repos\\mobileClient\\mobileClient\\mobileClient.iOS\\obj\\",
+      "outputPath": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.iOS\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
