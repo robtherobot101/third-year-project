@@ -5,7 +5,7 @@
              x:Class="mobileClient.MainPage">
 
     <StackLayout>
-        <!-- Place new controls here TEST CHANGE -->
+        <!-- Place new controls here TEST CHANGE 2 -->
     	<Label Text="Welcome to Xamarin.Forms!" 
            HorizontalOptions="Center"
            VerticalOptions="CenterAndExpand" />
