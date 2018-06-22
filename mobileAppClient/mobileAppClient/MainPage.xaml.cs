@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
+
 
 namespace mobileAppClient
 {
@@ -12,6 +16,31 @@ namespace mobileAppClient
         public MainPage()
         {
             InitializeComponent();
+            HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create("http://localhost:6976/api/v1/users/1");
+            // Get the response.  
+            WebResponse response = myReq.GetResponse();  
+            // Display the status.  
+            Console.WriteLine (((HttpWebResponse)response).StatusDescription);
+            // Get the stream containing content returned by the server.  
+            Stream dataStream = response.GetResponseStream();  
+            // Open the stream using a StreamReader for easy access.  
+            StreamReader reader = new StreamReader(dataStream);  
+            // Read the content.  
+            string responseFromServer = reader.ReadToEnd();
+
+            Console.WriteLine("-------------------------------------");
+            // Display the content.  
+            Console.WriteLine(responseFromServer);  
+
+            Console.WriteLine("-------------------------------------");
+
+            User user = JsonConvert.DeserializeObject<User>(responseFromServer);
+            Console.WriteLine(user.email);
+
+            // Clean up the streams and the response.  
+            reader.Close();  
+            response.Close(); 
+
         }
     }
 }
