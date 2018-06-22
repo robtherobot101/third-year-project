@@ -650,27 +650,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Buzz\\.nuget\\packages\\": {}
+    "/Users/andyfrench/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.iOS\\mobileClient.iOS.csproj",
+      "projectUniqueName": "/Users/andyfrench/Documents/Andy's Files/2018/Semester 1/SENG302/team-300/mobileClient/mobileClient/mobileClient.iOS/mobileClient.iOS.csproj",
       "projectName": "mobileClient.iOS",
-      "projectPath": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.iOS\\mobileClient.iOS.csproj",
-      "packagesPath": "C:\\Users\\Buzz\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.iOS\\obj\\",
+      "projectPath": "/Users/andyfrench/Documents/Andy's Files/2018/Semester 1/SENG302/team-300/mobileClient/mobileClient/mobileClient.iOS/mobileClient.iOS.csproj",
+      "packagesPath": "/Users/andyfrench/.nuget/packages/",
+      "outputPath": "/Users/andyfrench/Documents/Andy's Files/2018/Semester 1/SENG302/team-300/mobileClient/mobileClient/mobileClient.iOS/obj",
       "projectStyle": "PackageReference",
-      "skipContentFileWrite": true,
       "configFilePaths": [
-        "C:\\Users\\Buzz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/andyfrench/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "xamarinios10"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -684,7 +681,7 @@
         "dependencies": {
           "Xamarin.Forms": {
             "target": "Package",
-            "version": "[3.0.0.446417, )"
+            "version": "3.0.0.446417"
           }
         }
       }

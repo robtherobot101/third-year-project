@@ -13,8 +13,8 @@
 namespace mobileClient {
     
     
-    [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient\\A" +
-        "pp.xaml")]
+    [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("/Users/andyfrench/Documents/Andy\'s Files/2018/Semester 1/SENG302/team-300/mobileC" +
+        "lient/mobileClient/mobileClient/App.xaml")]
     public partial class App : global::Xamarin.Forms.Application {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]

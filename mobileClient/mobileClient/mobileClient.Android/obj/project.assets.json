@@ -732,27 +732,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Buzz\\.nuget\\packages\\": {}
+    "/Users/andyfrench/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.Android\\mobileClient.Android.csproj",
+      "projectUniqueName": "/Users/andyfrench/Documents/Andy's Files/2018/Semester 1/SENG302/team-300/mobileClient/mobileClient/mobileClient.Android/mobileClient.Android.csproj",
       "projectName": "mobileClient.Android",
-      "projectPath": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.Android\\mobileClient.Android.csproj",
-      "packagesPath": "C:\\Users\\Buzz\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Buzz\\Documents\\seng302\\team-300\\mobileClient\\mobileClient\\mobileClient.Android\\obj\\",
+      "projectPath": "/Users/andyfrench/Documents/Andy's Files/2018/Semester 1/SENG302/team-300/mobileClient/mobileClient/mobileClient.Android/mobileClient.Android.csproj",
+      "packagesPath": "/Users/andyfrench/.nuget/packages/",
+      "outputPath": "/Users/andyfrench/Documents/Andy's Files/2018/Semester 1/SENG302/team-300/mobileClient/mobileClient/mobileClient.Android/obj",
       "projectStyle": "PackageReference",
-      "skipContentFileWrite": true,
       "configFilePaths": [
-        "C:\\Users\\Buzz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/andyfrench/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "monoandroid81"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -764,29 +761,29 @@
     "frameworks": {
       "monoandroid81": {
         "dependencies": {
+          "Xamarin.Forms": {
+            "target": "Package",
+            "version": "3.0.0.446417"
+          },
           "Xamarin.Android.Support.Design": {
             "target": "Package",
-            "version": "[27.0.2, )"
-          },
-          "Xamarin.Android.Support.v4": {
-            "target": "Package",
-            "version": "[27.0.2, )"
+            "version": "27.0.2"
           },
           "Xamarin.Android.Support.v7.AppCompat": {
             "target": "Package",
-            "version": "[27.0.2, )"
+            "version": "27.0.2"
+          },
+          "Xamarin.Android.Support.v4": {
+            "target": "Package",
+            "version": "27.0.2"
           },
           "Xamarin.Android.Support.v7.CardView": {
             "target": "Package",
-            "version": "[27.0.2, )"
+            "version": "27.0.2"
           },
           "Xamarin.Android.Support.v7.MediaRouter": {
             "target": "Package",
-            "version": "[27.0.2, )"
-          },
-          "Xamarin.Forms": {
-            "target": "Package",
-            "version": "[3.0.0.446417, )"
+            "version": "27.0.2"
           }
         }
       }
