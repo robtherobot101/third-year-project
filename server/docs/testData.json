@@ -1,0 +1,127 @@
+//ALL DATA HERE IS TEST REQUEST DATA
+
+//TEST USER OBJECT
+{
+  "name": ["Bobby", "Dong", "Flame"],
+  "preferredName": ["Bobby", "Dong", "Flame"],
+  "dateOfBirth": {
+    "year": 1997,
+    "month": 6,
+    "day": 19
+  },
+  "creationTime": {
+    "date": {
+      "year": 2018,
+      "month": 6,
+      "day": 19
+    },
+    "time": {
+      "hour": 15,
+      "minute": 26,
+      "second": 9,
+      "nano": 0
+    }
+  },
+  "username": "Bobby",
+  "email": null,
+  "password": "a"
+}
+
+//TEST ADMIN OBJECT
+{
+  "username": "Hallo",
+  "password": "a",
+  "name": "Testy McTest Face",
+  "workAddress": null,
+  "region": null
+}
+
+//TEST CLINICIAN OBJECT
+{
+  "username": "GdayMate",
+  "password": "a",
+  "name": "Buzzy Wuzzzy Fuzzzy",
+  "workAddress": null,
+  "region": null
+}
+
+//TEST MEDICATION OBJECT
+{
+  "name": "Aminophyllin",
+  "activeIngredients": [
+    "Aminophylline"
+  ],
+  "history": [
+    "Started taking on 20/06/2018, 10:02:35"
+  ]
+}
+
+//TEST PROCEDURE OBJECT
+{
+  "summary": "Andy",
+  "description": "Pandy",
+  "date": {
+    "year": 2020,
+    "month": 6,
+    "day": 18
+  },
+  "organsAffected": [
+    "HEART",
+    "KIDNEY"
+  ]
+}
+
+//TEST DISEASE OBJECT
+{
+  "name": "Cholera",
+  "diagnosisDate": {
+    "year": 2018,
+    "month": 6,
+    "day": 20
+  },
+  "isChronic": true,
+  "isCured": false
+}
+
+//TEST HISTORY OBJECT
+{
+  "dateTime": {
+    "date": {
+      "year": 2018,
+      "month": 6,
+      "day": 19
+    },
+    "time": {
+      "hour": 15,
+      "minute": 26,
+      "second": 9,
+      "nano": 0
+    }
+  },
+  "action": "Andy TEST",
+  "description": "GDAY MASSSAAAATE"
+}
+
+//TEST WAITING LIST ITEM OBJECT (INSERT)
+{
+  "organType": "BONE",
+  "organRegisteredDate": {
+    "year": 2018,
+    "month": 6,
+    "day": 21
+  },
+  "userId": 1
+}
+
+//TEST WAITING LIST ITEM OBJECT (PATCH)
+{
+  "organType": "PANCREAS",
+  "organRegisteredDate": {
+    "year": 2018,
+    "month": 6,
+    "day": 21
+  },
+  "id": 1,
+  "userId": 1,
+  "organDeregisteredCode": 0
+}
