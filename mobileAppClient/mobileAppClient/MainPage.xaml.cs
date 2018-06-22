@@ -16,7 +16,15 @@ namespace mobileAppClient
         public MainPage()
         {
             InitializeComponent();
-            HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create("http://localhost:6976/api/v1/users/1");
+            HttpWebRequest myReq = null;
+            try
+            {
+                myReq = (HttpWebRequest)WebRequest.Create("http://localhost:6976/api/v1/users/1");
+                Console.WriteLine("------------------CONNECTION TO SERVER SUCCESSFUL.-----------------------");
+            } catch (Exception e) {
+                Console.WriteLine("------------------CONNECTION TO SERVER FAILED.-----------------------");
+                Console.WriteLine(e.StackTrace);
+            }
             // Get the response.  
             WebResponse response = myReq.GetResponse();  
             // Display the status.  
