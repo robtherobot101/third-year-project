@@ -59,7 +59,7 @@ public class Server {
             });
 
             path("/users", () -> {
-                get("",            userController::getAllUsers);
+                get("",            userController::getUsers);
                 post( "",          userController::addUser);
                 before("/:id",     profileUtils::checkId);
                 get( "/:id",       userController::getUser);
@@ -143,7 +143,7 @@ public class Server {
      * Initialises server config + controllers
      */
     private void initConfig() {
-        port(6976);
+        port(7010);
         databaseController = new DatabaseController();
         userController = new UserController();
         authorizationController = new AuthorizationController();

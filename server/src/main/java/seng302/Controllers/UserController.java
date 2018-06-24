@@ -11,7 +11,7 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.*;
 
 public class UserController {
     private GeneralUser model;
@@ -20,14 +20,24 @@ public class UserController {
         model = new GeneralUser();
     }
 
-    public String getAllUsers(Request request, Response response) {
-        //TODO Add in query parameters for the specific searching of users
-        String startIndex;
-        String count;
+
+    public String getUsers(Request request, Response response) {
+        Map<String, String> params = new HashMap<String, String>();
+        List<String> possibleParams = new ArrayList<String>(Arrays.asList(
+                "name","password","userType","age","gender","region","organ",
+                "startIndex","count"
+        ));
+        for(String param:possibleParams){
+            if(request.queryParams(param) != null){
+                params.put(param,request.queryParams(param));
+            }
+        }
+        System.out.println("Params: "+params);
+
 
         ArrayList<User> queriedUsers;
         try {
-            queriedUsers = model.getAllUsers();
+            queriedUsers = model.getUsers(params);
         } catch (SQLException e) {
             Server.log.error(e.getMessage());
             response.status(500);

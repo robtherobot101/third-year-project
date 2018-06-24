@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class GeneralUser {
 
@@ -25,18 +27,115 @@ public class GeneralUser {
         currentDatabase = databaseConfiguration.getCurrentDatabase();
     }
 
-    public ArrayList<User> getAllUsers() throws SQLException{
-        ArrayList<User> allUsers = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".USER";
+
+    public ArrayList<User> getUsers(Map<String,String> params) throws SQLException{
+        // TODO Add in functionality for the startIndex and count parameters, and sort results
+
+        ArrayList<User> users = new ArrayList<>();
+
+        String query = buildUserQuery(params);
+        System.out.println(query);
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
-            allUsers.add(getUserFromResultSet(resultSet));
+            users.add(getUserFromResultSet(resultSet));
         }
 
-        return allUsers;
+        return users;
+
     }
 
+    public String buildUserQuery(Map<String,String> params){
+        if(params.keySet().size()==0) {
+            return "SELECT * FROM " + currentDatabase + ".USER";
+        }
+
+        StringBuilder queryBuilder = new StringBuilder();
+
+        queryBuilder.append("SELECT * FROM " + currentDatabase + ".USER WHERE ");
+
+
+        String nameFilter = nameFilter(params);
+        String passwordFilter = matchFilter(params, "password", true);
+
+        String userTypeFilter = matchFilter(params, "userType", false);
+
+        String ageFilter = ageFilter(params);
+
+        String genderFilter = matchFilter(params, "gender", false);
+
+        String regionFilter = matchFilter(params, "region", false);
+
+        String organFilter = organFilter(params);
+
+        List<String> filters = new ArrayList<String>();
+        filters.addAll(Arrays.asList(
+                nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
+
+        ));
+
+        filters.removeIf((String filter) -> filter.equals(""));
+
+        queryBuilder.append(String.join(" AND ",filters));
+        return queryBuilder.toString();
+    }
+
+    public String nameFilter(Map<String, String> params){
+        List<String> tokenFilters = new ArrayList<>();
+        if(params.containsKey("name")){
+            for(String token : params.get("name").trim().split(" ")){
+                StringBuilder tokenFilter = new StringBuilder();
+                tokenFilter.append("(");
+                tokenFilter.append("last_name LIKE \'" + token+"%\'" + " OR ");
+                tokenFilter.append("middle_names LIKE \'" + token+"%\'" + " OR middle_names LIKE \'" + "% "+token+"%\'" + " OR ");
+                tokenFilter.append("first_name LIKE \'" + token+"%\'" + " OR ");
+
+                tokenFilter.append("preferred_name LIKE \'" + token+"%\'" + " OR ");
+                tokenFilter.append("preferred_middle_names LIKE \'" + token+"%\'" + " OR preferred_middle_names LIKE \'" + "% "+token+"%\'" + " OR ");
+                tokenFilter.append("preferred_last_name LIKE \'" + token+"%\'");
+                tokenFilter.append(")");
+                tokenFilters.add(tokenFilter.toString());
+            }
+        }
+        tokenFilters.removeIf((String filter) -> filter.equals(""));
+        return String.join(" AND ", tokenFilters);
+    }
+    public String matchFilter(Map<String,String> params, String paramName, Boolean caseSensitive){
+        StringBuilder sb = new StringBuilder();
+        if(caseSensitive){
+            if(params.containsKey(paramName)){
+                sb.append(paramName + " = " + params.get(paramName));
+            }
+        }else{
+            if(params.containsKey(paramName)){
+                sb.append("LOWER(" + paramName.toLowerCase() + ") = \'" + params.get(paramName).toLowerCase() + "\'");
+            }
+        }
+        return sb.toString();
+    }
+
+    public String ageFilter(Map<String, String> params){
+        StringBuilder sb = new StringBuilder();
+        if(params.containsKey("age")){
+            sb.append("DATEDIFF(NOW(),date_of_birth)/365.25 LIKE \'" + params.get("age")+".%\'");
+        }
+        return sb.toString();
+    }
+
+    public String organFilter(Map<String, String> params){
+        StringBuilder sb = new StringBuilder();
+        if(params.containsKey("organ")){
+            sb.append("EXISTS (SELECT * FROM " +
+                            currentDatabase + ".DONATION_LIST_ITEM" +
+                    " WHERE " +
+
+                            currentDatabase + ".DONATION_LIST_ITEM.user_id = " + currentDatabase + ".USER.id" +
+                            " AND " +
+                            currentDatabase + ".DONATION_LIST_ITEM.name = \'" + params.get("organ") + "\'" +
+                    ")");
+        }
+        return sb.toString();
+    }
     public User getUserFromId(int id) throws SQLException {
         // SELECT * FROM USER id = id;
         String query = "SELECT * FROM " + currentDatabase + ".USER WHERE id = ?";
