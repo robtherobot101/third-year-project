@@ -143,7 +143,7 @@ public class Server {
      * Initialises server config + controllers
      */
     private void initConfig() {
-        port(7010);
+        port(7011);
         databaseController = new DatabaseController();
         userController = new UserController();
         authorizationController = new AuthorizationController();

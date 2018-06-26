@@ -58,7 +58,7 @@ public class GeneralUser {
         String nameFilter = nameFilter(params);
         String passwordFilter = matchFilter(params, "password", true);
 
-        String userTypeFilter = matchFilter(params, "userType", false);
+        String userTypeFilter = userTypeFilter(params);
 
         String ageFilter = ageFilter(params);
 
@@ -136,6 +136,34 @@ public class GeneralUser {
         }
         return sb.toString();
     }
+
+    public String userTypeFilter(Map<String, String> params){
+        if(params.containsKey("userType")) {
+            switch (params.get("userType").toLowerCase()){
+                case "neither": return "NOT " + isDonorFilter() + " AND NOT " + isReceiverFilter();
+                case "donor":   return isDonorFilter() + " AND NOT " + isReceiverFilter();
+                case "receiver":   return "NOT " + isDonorFilter() + " AND " + isReceiverFilter();
+                case "both":   return isDonorFilter() + " AND " + isReceiverFilter();
+            }
+        }
+        return "";
+    }
+
+    public String isDonorFilter(){
+        return "EXISTS (SELECT * FROM " +
+                currentDatabase + ".DONATION_LIST_ITEM" +
+                " WHERE " +
+                currentDatabase + ".DONATION_LIST_ITEM.user_id = " + currentDatabase + ".USER.id)";
+    }
+
+    public String isReceiverFilter(){
+        return "EXISTS (SELECT * FROM " +
+                currentDatabase + ".WAITING_LIST_ITEM" +
+                " WHERE " +
+                currentDatabase + ".WAITING_LIST_ITEM.user_id = " + currentDatabase + ".USER.id)";
+    }
+
+
     public User getUserFromId(int id) throws SQLException {
         // SELECT * FROM USER id = id;
         String query = "SELECT * FROM " + currentDatabase + ".USER WHERE id = ?";
