@@ -28,9 +28,8 @@ public class GeneralUser {
     }
 
 
-    public ArrayList<User> getUsers(Map<String,String> params) throws SQLException{
-        // TODO Add in functionality for the startIndex and count parameters, and sort results
-
+    public List<User> getUsers(Map<String,String> params) throws SQLException{
+        // TODO Sort the users before taking the sublist
         ArrayList<User> users = new ArrayList<>();
 
         String query = buildUserQuery(params);
@@ -41,12 +40,28 @@ public class GeneralUser {
             users.add(getUserFromResultSet(resultSet));
         }
 
-        return users;
+        int startIndex = 0;
+        if(params.containsKey("startIndex")){
+            startIndex = Integer.parseInt(params.get("startIndex"));
+        }
 
+        int count = 100;
+        if(params.containsKey("count")){
+            count = Integer.parseInt(params.get("count"));
+        }
+
+        return users.subList(startIndex, Math.min(startIndex+count, users.size()));
     }
 
+
     public String buildUserQuery(Map<String,String> params){
-        if(params.keySet().size()==0) {
+        boolean hasWhereClause = false;
+        for(String param:params.keySet()){
+            if(!param.equals("count") && !param.equals("startIndex")){
+                hasWhereClause = true;
+            }
+        }
+        if(!hasWhereClause) {
             return "SELECT * FROM " + currentDatabase + ".USER";
         }
 

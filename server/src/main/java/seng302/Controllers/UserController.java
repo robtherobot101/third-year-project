@@ -35,7 +35,7 @@ public class UserController {
         System.out.println("Params: "+params);
 
 
-        ArrayList<User> queriedUsers;
+        List<User> queriedUsers;
         try {
             queriedUsers = model.getUsers(params);
         } catch (SQLException e) {
