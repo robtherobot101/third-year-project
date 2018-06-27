@@ -22,7 +22,7 @@ namespace mobileAppClient
                 myReq = (HttpWebRequest)WebRequest.Create("http://localhost:6976/api/v1/users/1");
                 Console.WriteLine("------------------CONNECTION TO SERVER SUCCESSFUL.-----------------------");
             } catch (Exception e) {
-                Console.WriteLine("------------------CONNECTION TO SERVER FAILED.------------------------");
+                Console.WriteLine("------------------CONNECTION TO SERVER FAILED.-----------------------");
                 Console.WriteLine(e.StackTrace);
             }
             // Get the response.  
