@@ -39,7 +39,7 @@ public class UserController {
         try {
             queriedUsers = model.getUsers(params);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -65,14 +65,14 @@ public class UserController {
         try {
             queriedUser = model.getUserFromId(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedUser == null) {
-            Server.log.warn(String.format("No user of ID: %d found", requestedUserId));
+            Server.getInstance().log.warn(String.format("No user of ID: %d found", requestedUserId));
             response.status(404);
             response.body("Not found");
             return null;
@@ -88,13 +88,13 @@ public class UserController {
         try {
             receivedUser = gson.fromJson(request.body(), User.class);
         } catch (JsonSyntaxException jse) {
-            Server.log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";
         }
 
         if (receivedUser == null) {
-            Server.log.warn("Empty request body");
+            Server.getInstance().log.warn("Empty request body");
             response.status(400);
             return "Missing User Body";
         } else {
@@ -104,7 +104,7 @@ public class UserController {
                 response.status(201);
                 return "placeholder token";
             } catch (SQLException e) {
-                Server.log.error(e.getMessage());
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }
@@ -146,7 +146,7 @@ public class UserController {
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
-                Server.log.error(e.getMessage());
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }
@@ -165,7 +165,7 @@ public class UserController {
             response.status(201);
             return "USER DELETED";
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "Internal Server Error";
         }

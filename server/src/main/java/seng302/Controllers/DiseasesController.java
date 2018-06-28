@@ -28,7 +28,7 @@ public class DiseasesController {
         try {
             queriedDiseases = model.getAllDiseases(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -141,14 +141,14 @@ public class DiseasesController {
         try {
             queriedDisease = model.getDiseaseFromId(requestedDiseaseId, requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedDisease == null) {
-            Server.log.warn(String.format("No disease of ID: %d found", requestedDiseaseId));
+            Server.getInstance().log.warn(String.format("No disease of ID: %d found", requestedDiseaseId));
             response.status(404);
             response.body("Not found");
             return null;

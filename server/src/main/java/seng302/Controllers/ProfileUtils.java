@@ -24,14 +24,14 @@ public class ProfileUtils {
         try {
             requestedUserId = Integer.parseInt(request.params(":id"));
         } catch (NumberFormatException nfe) {
-            Server.log.warn(String.format("Invalid ID: %s", request.params(":id")));
+            Server.getInstance().log.warn(String.format("Invalid ID: %s", request.params(":id")));
             halt(400, "Bad Request");
             return false;
         }
 
         // Check for an invalid ID extracted from the URL param
         if (requestedUserId <= 0) {
-            Server.log.warn(String.format("Non-positive ID: %d", requestedUserId));
+            Server.getInstance().log.warn(String.format("Non-positive ID: %d", requestedUserId));
             halt(400, "Bad Request");
             return false;
         }

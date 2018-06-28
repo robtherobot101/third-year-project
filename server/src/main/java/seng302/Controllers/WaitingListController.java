@@ -26,7 +26,7 @@ public class WaitingListController {
         try {
             queriedWaitingListItems = model.getAllWaitingListItems();
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -47,7 +47,7 @@ public class WaitingListController {
         try {
             queriedUserWaitingListItems = model.getAllUserWaitingListItems(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -161,14 +161,14 @@ public class WaitingListController {
         try {
             queriedWaitingListItem = model.getWaitingListItemFromId(requestedWaitingListItemId, requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedWaitingListItem == null) {
-            Server.log.warn(String.format("No waiting list item of ID: %d found", requestedWaitingListItemId));
+            Server.getInstance().log.warn(String.format("No waiting list item of ID: %d found", requestedWaitingListItemId));
             response.status(404);
             response.body("Not found");
             return null;

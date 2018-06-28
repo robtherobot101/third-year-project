@@ -27,7 +27,7 @@ public class ProceduresController {
         try {
             queriedProcedures = model.getAllProcedures(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -142,14 +142,14 @@ public class ProceduresController {
         try {
             queriedProcedure = model.getProcedureFromId(requestedProcedureId, requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedProcedure == null) {
-            Server.log.warn(String.format("No procedure of ID: %d found", requestedProcedureId));
+            Server.getInstance().log.warn(String.format("No procedure of ID: %d found", requestedProcedureId));
             response.status(404);
             response.body("Not found");
             return null;

@@ -19,7 +19,7 @@ public class DatabaseConfiguration {
             Class.forName(jdbcDriver);
             Connection connection = DriverManager.getConnection(
                     url + connectDatabase, username, password);
-            Server.log.info("Connected to " + connectDatabase + " database ");
+            Server.getInstance().log.info("Connected to " + connectDatabase + " database ");
             return connection;
 
         } catch (Exception e) {

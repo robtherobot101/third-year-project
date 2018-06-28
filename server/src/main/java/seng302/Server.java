@@ -8,7 +8,9 @@ import static spark.Spark.*;
 
 public class Server {
 
-    public static final Logger log = LoggerFactory.getLogger(Server.class);
+    private static final Server INSTANCE = new Server();
+
+    public final Logger log = LoggerFactory.getLogger(Server.class);
 
     private DatabaseController databaseController;
     private UserController userController;
@@ -24,6 +26,12 @@ public class Server {
     private int port = 7015;
 
     private ProfileUtils profileUtils;
+
+    private Server() {}
+
+    public static Server getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Initialises API Routes, and starts the server
@@ -136,16 +144,15 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server apiServer = new Server();
         if(args.length > 0){
             try{
-                apiServer.port = Integer.parseInt(args[0]);
+                INSTANCE.port = Integer.parseInt(args[0]);
             }
             catch (Exception ignored){
 
             }
         }
-        apiServer.start();
+        INSTANCE.start();
     }
 
     /**

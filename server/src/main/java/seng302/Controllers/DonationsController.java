@@ -30,7 +30,7 @@ public class DonationsController {
         try {
             queriedDonations = model.getAllUserDonations(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -70,7 +70,7 @@ public class DonationsController {
         try {
             queriedDonations = model.getAllDonations();
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -132,14 +132,14 @@ public class DonationsController {
         try {
             queriedDonationListItem = model.getDonationListItemFromName(requestedDonationItemName, requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedDonationListItem == null) {
-            Server.log.warn(String.format("No donation list item of NAME: %s found", requestedDonationItemName));
+            Server.getInstance().log.warn(String.format("No donation list item of NAME: %s found", requestedDonationItemName));
             response.status(404);
             response.body("Not found");
             return null;

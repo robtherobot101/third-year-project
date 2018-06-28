@@ -29,7 +29,7 @@ public class MedicationsController {
         try {
             queriedMedications = model.getAllMedications(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -143,14 +143,14 @@ public class MedicationsController {
         try {
             queriedMedication = model.getMedicationFromId(requestedMedicationId, requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedMedication == null) {
-            Server.log.warn(String.format("No medication of ID: %d found", requestedMedicationId));
+            Server.getInstance().log.warn(String.format("No medication of ID: %d found", requestedMedicationId));
             response.status(404);
             response.body("Not found");
             return null;

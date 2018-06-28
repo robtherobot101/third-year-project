@@ -28,7 +28,7 @@ public class HistoryController {
         try {
             queriedHistoryItems = model.getAllHistoryItems(requestedUserId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }

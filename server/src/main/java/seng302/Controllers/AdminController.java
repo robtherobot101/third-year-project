@@ -32,14 +32,14 @@ public class AdminController {
         try {
             queriedAdmin = model.getAdminFromId(requestedAdminId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedAdmin == null) {
-            Server.log.warn(String.format("No user of ID: %d found", requestedAdminId));
+            Server.getInstance().log.warn(String.format("No user of ID: %d found", requestedAdminId));
             response.status(404);
             response.body("Not found");
             return null;
@@ -75,12 +75,12 @@ public class AdminController {
         try {
             receivedAdmin = gson.fromJson(request.body(), Admin.class);
         } catch (JsonSyntaxException jse) {
-            Server.log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";
         }
         if (receivedAdmin == null) {
-            Server.log.warn("Empty request body");
+            Server.getInstance().log.warn("Empty request body");
             response.status(400);
             return "Missing Admin Body";
         } else {
@@ -90,7 +90,7 @@ public class AdminController {
                 response.status(201);
                 return "placeholder token";
             } catch (SQLException e) {
-                Server.log.error(e.getMessage());
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }

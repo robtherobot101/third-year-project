@@ -32,14 +32,14 @@ public class ClinicianController {
         try {
             queriedClinician = model.getClinicianFromId(requestedClinicianId);
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             response.body("Internal server error");
             return null;
         }
 
         if (queriedClinician == null) {
-            Server.log.warn(String.format("No clinician of ID: %d found", requestedClinicianId));
+            Server.getInstance().log.warn(String.format("No clinician of ID: %d found", requestedClinicianId));
             response.status(404);
             response.body("Not found");
             return null;
@@ -52,7 +52,7 @@ public class ClinicianController {
         try {
             queriedClinicians = model.getAllClinicians();
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
@@ -73,13 +73,13 @@ public class ClinicianController {
         try {
             receivedClinician = gson.fromJson(request.body(), Clinician.class);
         } catch (JsonSyntaxException jse) {
-            Server.log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";
         }
 
         if (receivedClinician == null) {
-            Server.log.warn("Empty request body");
+            Server.getInstance().log.warn("Empty request body");
             response.status(400);
             return "Missing Clinician Body";
         } else {
@@ -89,7 +89,7 @@ public class ClinicianController {
                 response.status(201);
                 return "placeholder token";
             } catch (SQLException e) {
-                Server.log.error(e.getMessage());
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }
@@ -131,7 +131,7 @@ public class ClinicianController {
                 response.status(201);
                 return "CLINICIAN SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
-                Server.log.error(e.getMessage());
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }
@@ -150,7 +150,7 @@ public class ClinicianController {
             response.status(201);
             return "CLINICIAN DELETED";
         } catch (SQLException e) {
-            Server.log.error(e.getMessage());
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "Internal Server Error";
         }
