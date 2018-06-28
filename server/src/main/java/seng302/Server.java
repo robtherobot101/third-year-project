@@ -21,6 +21,7 @@ public class Server {
     private HistoryController historyController;
     private DonationsController donationsController;
     private WaitingListController waitingListController;
+    private int port = 7015;
 
     private ProfileUtils profileUtils;
 
@@ -136,6 +137,14 @@ public class Server {
 
     public static void main(String[] args) {
         Server apiServer = new Server();
+        if(args.length > 0){
+            try{
+                apiServer.port = Integer.parseInt(args[0]);
+            }
+            catch (Exception ignored){
+
+            }
+        }
         apiServer.start();
     }
 
@@ -143,7 +152,7 @@ public class Server {
      * Initialises server config + controllers
      */
     private void initConfig() {
-        port(7015);
+        port(port);
         databaseController = new DatabaseController();
         userController = new UserController();
         authorizationController = new AuthorizationController();
