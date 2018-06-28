@@ -47,7 +47,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
 import static seng302.Generic.IO.streamOut;
 
 /**
