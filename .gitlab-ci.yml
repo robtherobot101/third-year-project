@@ -9,6 +9,8 @@ junit:
   stage: test
   script:
     - mvn -B clean test
+    except:
+      - server-deployment@seng302-2018/team-300
 
 recent-artifacts:
   stage: deploy
@@ -20,6 +22,7 @@ recent-artifacts:
     expire_in: 1 week
   except:
     - tags
+    - server-deployment@seng302-2018/team-300
 
 server-deployment:
   stage: deploy
@@ -27,7 +30,7 @@ server-deployment:
     - docker-compose down --remove-orphans
     - docker-compose up -d
   only:
-    - clientServerIntegration(STORY41)@seng302-2018/team-300
+    - server-deployment@seng302-2018/team-300
 
 release-artifacts:
   stage: deploy
