@@ -9,8 +9,8 @@ junit:
   stage: test
   script:
     - mvn -B clean test
-    except:
-      - server-deployment@seng302-2018/team-300
+  except:
+    - server-deployment@seng302-2018/team-300
 
 recent-artifacts:
   stage: deploy
