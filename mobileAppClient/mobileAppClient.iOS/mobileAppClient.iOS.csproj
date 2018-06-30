@@ -161,4 +161,11 @@
       <Name>mobileAppClient</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\ic_local_shipping.png" />
+    <BundleResource Include="Resources\ic_my_location.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\ic_home.png" />
+  </ItemGroup>
 </Project>
