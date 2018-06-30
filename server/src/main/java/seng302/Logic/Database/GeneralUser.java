@@ -49,7 +49,10 @@ public class GeneralUser {
         if(params.containsKey("count")){
             count = Integer.parseInt(params.get("count"));
         }
-
+        int toIndex = Math.min(startIndex+count, users.size());
+        if(startIndex > toIndex){
+            return new ArrayList<User>();
+        }
         return users.subList(startIndex, Math.min(startIndex+count, users.size()));
     }
 
