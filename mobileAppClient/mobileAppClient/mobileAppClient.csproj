@@ -15,8 +15,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />
+    <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Views\AttributesPage.xaml %28copy%29.cs" />
     <Compile Remove="Views\AttributesPage.xaml %28copy%29.cs" />
   </ItemGroup>
 </Project>
