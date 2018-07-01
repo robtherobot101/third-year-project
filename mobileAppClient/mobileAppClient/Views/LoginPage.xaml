@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.LoginPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Login/Register"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+
+            <Entry x:Name="usernameEmailInput" Placeholder="Username/Email"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+
+            <Entry x:Name="passwordInput" Placeholder="Password"
+                IsPassword="true"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+
+            <Button Text="Login"
+                HorizontalOptions="Center"
+                VerticalOptions="CenterAndExpand"
+                Clicked="LoginButtonClicked" />
+
+            <Button Text="Register"
+                HorizontalOptions="Center"
+                VerticalOptions="CenterAndExpand"
+                Clicked="RegisterButtonClicked" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

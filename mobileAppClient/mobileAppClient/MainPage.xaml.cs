@@ -18,6 +18,7 @@ namespace mobileAppClient
 
         public MainPage()
         {
+            OpenLogin();
             InitializeComponent();
             menuList = new List<MasterPageItem>();
 
@@ -44,6 +45,11 @@ namespace mobileAppClient
             };
         }
 
+        private async void OpenLogin()
+        {
+            var loginPage = new LoginPage();
+            await Navigation.PushModalAsync(loginPage);
+        }
 
 
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
