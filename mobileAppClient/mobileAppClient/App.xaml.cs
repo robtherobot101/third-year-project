@@ -13,7 +13,14 @@ namespace mobileAppClient
 
             RequestTester request = new RequestTester();
             User user = request.LiveGetRequestTest();
+<<<<<<< HEAD
             Console.WriteLine(user.Email);
+=======
+            Console.WriteLine(user.AlcoholConsumption);
+            Console.WriteLine(user.SmokerStatus);
+    
+
+>>>>>>> b780a7b... Added in all user attributes apart from: - Medications - Diseases - Procedures - Waiting List Items #implement
             MainPage = new MainPage();
         }
 

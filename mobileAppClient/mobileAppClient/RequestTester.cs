@@ -13,6 +13,7 @@ namespace mobileAppClient
         }
 
         public User LiveGetRequestTest() {
+            Console.WriteLine("--------------GET SINGLE USER REQUEST-----------------------");
             HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create("http://csse-s302g3.canterbury.ac.nz:80/api/v1/users/1");
 
             // Get the response.  
@@ -30,14 +31,13 @@ namespace mobileAppClient
                 // Read the content.  
                 string responseFromServer = reader.ReadToEnd();
 
-                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("--------------RESPONSE-----------------------");
                 // Display the content.  
                 Console.WriteLine(responseFromServer);
 
-                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("---------------END OF RESPONSE----------------------");
 
                 User user = JsonConvert.DeserializeObject<User>(responseFromServer);
-                Console.WriteLine(user.Email);
 
                 // Clean up the streams and the response.  
                 reader.Close();

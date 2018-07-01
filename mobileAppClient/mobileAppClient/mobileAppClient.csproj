@@ -19,6 +19,7 @@
   <ItemGroup>
     <Compile Remove="Views\AttributesPage.xaml %28copy%29.cs" />
     <Compile Remove="Views\AttributesPage.xaml %28copy%29.cs" />
+    <Compile Remove="Models\EmptyEnumeration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\LoginPage.xaml.cs">
