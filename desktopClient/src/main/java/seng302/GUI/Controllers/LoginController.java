@@ -3,10 +3,7 @@ package seng302.GUI.Controllers;
 import com.sun.org.apache.xerces.internal.util.URI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -150,8 +147,18 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void testConnection(){
-
+    public void testConnection(){
+        APIServer server = new APIServer("http://" + serverInput.getText());
+        try {
+            if(server.testConnection()){
+                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Connection successful", "Success", "Successfully connected to the server").showAndWait();
+            }
+            else{
+                WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
+            }
+        } catch (IOException e) {
+            WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
+        }
     }
 
     private boolean connectServer(String url){

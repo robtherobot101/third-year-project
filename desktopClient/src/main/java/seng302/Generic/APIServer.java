@@ -17,6 +17,7 @@ public class APIServer {
         this.url = url;
     }
 
+    // VERY temporary method until we decide on a library to use
     public boolean testConnection() throws IOException {
         URLConnection request = (new URL(url + "/hello")).openConnection();
         request.connect();
@@ -26,7 +27,6 @@ public class APIServer {
         JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
         JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
         String version = rootobj.get("version").getAsString(); //just grab the zipcode
-        System.out.println(version);
         return version.equals("1");
     }
 }
