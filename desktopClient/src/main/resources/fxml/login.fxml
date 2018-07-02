@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="250.0" maxWidth="400.0" minHeight="250.0" minWidth="400.0" onMouseClicked="#requestFocus" prefHeight="250.0" prefWidth="400.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.LoginController">
+<AnchorPane fx:id="background" maxHeight="295.0" maxWidth="400.0" minHeight="250.0" minWidth="400.0" onMouseClicked="#requestFocus" prefHeight="276.0" prefWidth="400.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.LoginController">
    <children>
       <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="286.0" layoutY="43.0" text="Log in or" AnchorPane.leftAnchor="95.0" AnchorPane.topAnchor="25.0">
          <font>
@@ -23,23 +23,29 @@
             <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
          </padding>
       </Button>
-      <Label layoutX="41.0" layoutY="93.0" text="Username/Email" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="95.0">
+      <Label layoutX="28.0" layoutY="127.0" text="Username/Email" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="127.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="33.0" layoutY="119.0" text="Password" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="135.0">
+      <Label layoutX="84.0" layoutY="167.0" text="Password" AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="167.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="identificationInput" layoutX="176.0" layoutY="90.0" AnchorPane.leftAnchor="176.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="95.0" />
-      <PasswordField fx:id="passwordInput" layoutX="176.0" layoutY="130.0" AnchorPane.leftAnchor="176.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="135.0" />
-      <Button fx:id="loginButton" disable="true" layoutX="293.0" layoutY="172.0" mnemonicParsing="false" onAction="#login" text="Log in" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="185.0">
+      <TextField fx:id="identificationInput" layoutX="176.0" layoutY="127.0" AnchorPane.leftAnchor="176.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="127.0" />
+      <PasswordField fx:id="passwordInput" layoutX="176.0" layoutY="167.0" AnchorPane.leftAnchor="176.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="167.0" />
+      <Button fx:id="loginButton" disable="true" layoutX="288.0" layoutY="217.0" mnemonicParsing="false" onAction="#login" text="Log in" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="217.0">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
       <Label fx:id="errorMessage" layoutX="76.0" layoutY="194.0" text="Username or email not recognised" textFill="RED" visible="false" AnchorPane.rightAnchor="141.0" />
+      <Label layoutX="62.0" layoutY="91.0" text="Server: http://">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="serverInput" layoutX="176.0" layoutY="88.0" prefHeight="26.0" prefWidth="184.0" text="csse-s302g3.canterbury.ac.nz:80/api/v1/users" />
    </children>
 </AnchorPane>

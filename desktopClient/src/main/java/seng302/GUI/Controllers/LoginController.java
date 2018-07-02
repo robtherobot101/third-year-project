@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers;
 
+import com.sun.org.apache.xerces.internal.util.URI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -8,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import org.apache.commons.validator.routines.UrlValidator;
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Admin;
@@ -26,6 +28,8 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
 
     @FXML
+    private TextField serverInput;
+    @FXML
     private TextField identificationInput;
     @FXML
     private PasswordField passwordInput;
@@ -42,6 +46,9 @@ public class LoginController implements Initializable {
     public void login() {
         boolean identificationMatched = false;
         ProfileType typeMatched = null;
+
+        // Try to connect to the given server
+        if(!connectServer("http://" + serverInput.getText())) return;
 
         // Check for a user match
         User currentUser = null;
@@ -139,6 +146,19 @@ public class LoginController implements Initializable {
         } else {
             errorMessage.setText("Username/email and password combination not recognized.");
             errorMessage.setVisible(true);
+        }
+    }
+
+    private boolean connectServer(String url){
+        UrlValidator urlValidator = new UrlValidator();
+        if (urlValidator.isValid(url)) {
+            //TODO try to connect
+            return true;
+        }
+        else{
+            errorMessage.setText("Invalid URL given");
+            errorMessage.setVisible(true);
+            return false;
         }
     }
 
