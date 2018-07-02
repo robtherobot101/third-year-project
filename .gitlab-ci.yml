@@ -24,6 +24,13 @@ recent-artifacts:
     - tags
     - server-deployment@seng302-2018/team-300
 
+server-build-image:
+  stage: build
+  script:
+    - docker-compose build
+  only:
+    - server-deployment@seng302-2018/team-300
+
 server-deployment:
   stage: deploy
   script:
