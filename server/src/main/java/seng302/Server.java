@@ -52,11 +52,11 @@ public class Server {
             /*post( "/clearCache",   Server::stubMethod);*/
 
             // Path to check connection/version matches client
-            get("/hello", (Request request, Response response) -> {
+            path("/hello", () -> get("", (Request request, Response response) -> {
                 response.type("application/json");
                 response.status(200);
                 return "{version: 1}";
-            });
+            }));
 
             path("/admins", () -> {
                 get("",             adminController::getAllAdmins);
