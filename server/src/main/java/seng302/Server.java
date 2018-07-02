@@ -3,6 +3,8 @@ package seng302;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Controllers.*;
+import spark.Request;
+import spark.Response;
 
 import static spark.Spark.*;
 
@@ -48,6 +50,13 @@ public class Server {
 
             // TODO discuss where cache is stored
             /*post( "/clearCache",   Server::stubMethod);*/
+
+            // Path to check connection/version matches client
+            get("/hello", (Request request, Response response) -> {
+                response.type("application/json");
+                response.status(200);
+                return "{version: 1}";
+            });
 
             path("/admins", () -> {
                 get("",             adminController::getAllAdmins);
