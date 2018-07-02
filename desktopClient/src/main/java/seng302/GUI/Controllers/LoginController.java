@@ -17,6 +17,7 @@ import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -149,11 +150,21 @@ public class LoginController implements Initializable {
         }
     }
 
+    private void testConnection(){
+
+    }
+
     private boolean connectServer(String url){
         UrlValidator urlValidator = new UrlValidator();
         if (urlValidator.isValid(url)) {
-            //TODO try to connect
-            return true;
+            APIServer server = new APIServer(url);
+            try {
+                server.testConnection();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         else{
             errorMessage.setText("Invalid URL given");
