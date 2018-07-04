@@ -55,7 +55,7 @@ public class Server {
             get("/hello", (Request request, Response response) -> {
                 response.type("application/json");
                 response.status(200);
-                return "{version: 1}";
+                return "{\"version\": \"1\"}";
             });
 
             path("/admins", () -> {

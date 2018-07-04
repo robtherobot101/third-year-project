@@ -1,32 +1,56 @@
 package seng302.Generic;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 public class APIServer {
     private String url;
+    private Client client = ClientBuilder.newClient();
+    private JsonParser jp = new JsonParser();
 
     public APIServer(String url){
         this.url = url;
     }
 
-    // VERY temporary method until we decide on a library to use
-    public boolean testConnection() throws IOException {
-        URLConnection request = (new URL(url + "/hello")).openConnection();
-        request.connect();
+    /**
+     * Perform a get request to the given endpoint and return the results as a JsonObject
+     * @param path The endopint to query
+     * @return The result as a JsonObject
+     */
+    private JsonObject getRequest(String path) {
+        //TODO query params, headers and catch exceptions
+        return jp.parse(client.target(url)
+                // Specifies the endpoint to query
+                .path(path)
+                // Specifies the data content-type
+                .request(MediaType.APPLICATION_JSON)
+                // Performs the GET request and converts to an JsonObject
+                .get(String.class)).getAsJsonObject();
+    }
 
-        // Convert to a JSON object to print data
-        JsonParser jp = new JsonParser(); //from gson
-        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-        JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
-        String version = rootobj.get("version").getAsString(); //just grab the zipcode
-        return version.equals("1");
+    // DISCLAIMER - I have no idea if this works or not ~jma326
+    private JsonObject postRequest(String path,JsonObject body){
+        return jp.parse(client.target(url)
+                // Specifies the endpoint to query
+                .path(path)
+                // Specifies the data content-type of response
+                .request(MediaType.APPLICATION_JSON)
+                // Send the data in the post request as JSON -
+                .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON))
+                // Parse the JSON response
+                .readEntity(String.class)).getAsJsonObject();
+    }
+
+    /**
+     * Queries the 'hello' endpoint to test connection
+     * @return A string containing the version of the queries server
+     */
+    public String testConnection() {
+        return getRequest("hello").get("version").toString();
     }
 }

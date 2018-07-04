@@ -198,14 +198,10 @@ public class LoginController implements Initializable {
 
     public void testConnection(){
         APIServer server = new APIServer("http://" + serverInput.getText());
-        try {
-            if(server.testConnection()){
-                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Connection successful", "Success", "Successfully connected to the server").showAndWait();
-            }
-            else{
-                WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
-            }
-        } catch (IOException e) {
+        if(server.testConnection().equals("1")){
+            WindowManager.createAlert(Alert.AlertType.INFORMATION, "Connection successful", "Success", "Successfully connected to the server").showAndWait();
+        }
+        else{
             WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
         }
     }
@@ -214,13 +210,8 @@ public class LoginController implements Initializable {
         UrlValidator urlValidator = new UrlValidator();
         if (urlValidator.isValid(url)) {
             APIServer server = new APIServer(url);
-            try {
-                server.testConnection();
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
+            server.testConnection();
+            return true;
         }
         else{
             errorMessage.setText("Invalid URL given");

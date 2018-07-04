@@ -359,7 +359,9 @@ public class WindowManager extends Application {
      */
     private static void showError(Thread t, Throwable e) {
         Debugger.log("Non-critical error caught, probably platform dependent.");
+        Debugger.log(e.getStackTrace());
         Debugger.error(e.getStackTrace());
+        e.printStackTrace();
         if (Platform.isFxApplicationThread()) {
             Debugger.error(e.getStackTrace());
         } else {

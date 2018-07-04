@@ -1,0 +1,225 @@
+
+2018-07-05 00:23:55.377: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:23:55.595: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:23:56.745: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:23:56.745: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:23:57.53: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:24:00.995: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:24:00.995: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@49537458
+2018-07-05 00:24:00.996: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5b1ce997
+2018-07-05 00:24:13.493: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 00:26:35.872: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:26:36.028: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:26:37.235: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:26:37.235: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:26:38.033: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:26:40.288: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:26:40.289: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73d8285b
+2018-07-05 00:26:40.289: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7639fbf6
+2018-07-05 00:26:48.893: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:26:48.894: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3395bed8
+2018-07-05 00:26:48.895: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@70f01d64
+2018-07-05 00:27:59.188: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:27:59.354: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:28:00.498: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:28:00.499: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:28:01.198: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:28:04.086: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:28:04.086: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@28f032df
+2018-07-05 00:28:04.087: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@44b70009
+2018-07-05 00:28:04.087: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2422343b
+2018-07-05 00:28:33.251: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:28:33.4: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:28:34.508: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:28:34.508: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:28:35.235: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:28:38.09: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:28:38.091: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@28f032df
+2018-07-05 00:28:38.091: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@44b70009
+2018-07-05 00:28:38.092: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@66d0da10
+2018-07-05 00:28:53.475: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:28:53.63: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:28:54.792: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:28:54.792: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:28:55.537: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:28:57.33: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:28:57.331: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@bf28ecd
+2018-07-05 00:28:57.331: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@61911c5b
+2018-07-05 00:28:57.335: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@72a79a38
+2018-07-05 00:29:52.947: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:29:53.129: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:29:54.224: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:29:54.225: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:29:54.966: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:29:57.281: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:29:57.282: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@49537458
+2018-07-05 00:29:57.282: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5b1ce997
+2018-07-05 00:29:57.286: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@385d0052
+2018-07-05 00:34:50.305: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:34:50.498: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:34:51.651: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:34:51.651: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:34:52.399: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:34:54.147: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:34:54.148: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@28f032df
+2018-07-05 00:34:54.148: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@44b70009
+2018-07-05 00:34:54.151: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@33549c7d
+2018-07-05 00:35:31.969: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:35:32.15: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:35:33.344: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:35:33.344: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:35:34.064: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:35:36.507: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:35:36.508: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73d8285b
+2018-07-05 00:35:36.508: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7639fbf6
+2018-07-05 00:35:36.512: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7b87dc27
+2018-07-05 00:36:55.13: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:36:55.314: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:36:56.624: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:36:56.625: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:36:57.344: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:36:59.452: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:36:59.453: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@28f032df
+2018-07-05 00:36:59.453: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@44b70009
+2018-07-05 00:36:59.457: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@33549c7d
+2018-07-05 00:37:36.921: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:37:37.043: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:37:38.268: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:37:38.268: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:37:39.038: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:37:40.857: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:37:40.857: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@28f032df
+2018-07-05 00:37:40.858: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@44b70009
+2018-07-05 00:37:40.862: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@33549c7d
+2018-07-05 00:38:02.507: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:38:02.657: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:38:03.829: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:38:03.829: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:38:04.562: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:38:06.453: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:38:06.453: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73d8285b
+2018-07-05 00:38:06.454: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7639fbf6
+2018-07-05 00:38:06.456: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7b87dc27
+2018-07-05 00:39:32.411: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:39:32.545: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:39:33.691: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:39:33.691: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:39:34.444: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:39:42.624: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 00:40:49.08: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:40:49.253: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:40:50.502: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:40:50.502: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:40:51.431: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:40:53.886: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:40:53.887: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3ac7e31e
+2018-07-05 00:40:53.887: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5764c19b
+2018-07-05 00:40:53.892: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@57998b54
+2018-07-05 00:45:17.956: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:45:18.22: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:45:23.065: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:45:23.221: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:45:24.434: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:45:24.434: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:45:25.214: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:45:28.237: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:45:28.238: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2b9d668a
+2018-07-05 00:45:28.238: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@19691ebc
+2018-07-05 00:45:28.243: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@15a8a897
+2018-07-05 00:48:26.141: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:48:26.303: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:48:27.482: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:48:27.482: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:48:28.238: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:48:30.968: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:48:30.969: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@25929f03
+2018-07-05 00:48:30.969: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@47921bee
+2018-07-05 00:48:30.973: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5310bc46
+2018-07-05 00:49:14.771: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 00:49:14.924: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 00:49:16.198: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 00:49:16.198: seng302.Generic.SearchUtils -> Empty
+2018-07-05 00:49:16.997: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 00:49:19.976: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:49:19.976: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@32189361
+2018-07-05 00:49:19.976: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@42452b1d
+2018-07-05 00:49:19.98: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@45516948
+2018-07-05 00:59:06.272: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:59:06.272: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2d9dbc2d
+2018-07-05 00:59:06.272: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7f041a5b
+2018-07-05 00:59:06.276: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5aa365e8
+2018-07-05 00:59:33.486: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 00:59:33.486: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7fc93d25
+2018-07-05 00:59:33.487: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@48d8b46e
+2018-07-05 00:59:33.49: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5fc453db
+2018-07-05 01:01:43.057: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 01:01:43.224: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 01:01:44.407: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 01:01:44.408: seng302.Generic.SearchUtils -> Empty
+2018-07-05 01:01:45.179: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 01:03:49.663: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 01:03:49.818: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 01:03:51.019: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 01:03:51.02: seng302.Generic.SearchUtils -> Empty
+2018-07-05 01:03:51.79: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 01:04:12.346: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 01:04:51.367: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 01:04:51.544: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 01:04:52.744: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 01:04:52.744: seng302.Generic.SearchUtils -> Empty
+2018-07-05 01:04:53.501: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 01:04:55.771: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 01:04:55.772: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@c361d84
+2018-07-05 01:04:55.772: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@34f79cc7
+2018-07-05 01:04:55.776: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@605cc765
+2018-07-05 01:05:20.607: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-05 01:05:20.76: seng302.Generic.IO -> IOException on /home/james/IdeaProjects/team-300/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 01:05:22.022: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 01:05:22.022: seng302.Generic.SearchUtils -> Empty
+2018-07-05 01:05:22.778: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 01:05:27.455: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 01:05:27.456: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6e81220a
+2018-07-05 01:05:27.456: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3646024e
+2018-07-05 01:05:27.461: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@51f384da
