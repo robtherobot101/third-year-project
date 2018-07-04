@@ -1,6 +1,9 @@
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
@@ -14,9 +17,6 @@ namespace mobileAppClient
             RequestTester request = new RequestTester();
             User user = request.LiveGetRequestTest();
 
-            Console.WriteLine(user.Email);
-            Console.WriteLine(user.AlcoholConsumption);
-            Console.WriteLine(user.SmokerStatus);
             MainPage = new MainPage();
         }
 
