@@ -15,9 +15,10 @@ namespace mobileAppClient
         public string AlcoholConsumption { get; set; }
 
         //JSON Deserializer cannot seem to parse the dateTime objects currently
-        //public DateTime DateOfBirth { get; set; }
-        //public DateTime CreationTime { get; set; }
-        //public DateTime LastModified { get; set; }
+        public CustomDate DateOfBirth { get; set; }
+        public CustomDate DateOfDeath { get; set; }
+        public CustomDateTime CreationTime { get; set; }
+        public CustomDateTime LastModified { get; set; }
 
         public double Height { get; set; }
         public double Weight { get; set; }
