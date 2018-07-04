@@ -89,8 +89,8 @@ namespace mobileAppClient
                 Console.WriteLine("Logged in as " + uc.LoggedInUser.Name.ToString());
                 return true;
             } else
-            {
-                Console.WriteLine("Failed login");
+            {   
+                Console.WriteLine(String.Format("Failed login ({0})", response.StatusCode));
                 return false;
             }
         }

@@ -11,12 +11,12 @@
 
             <Entry x:Name="usernameEmailInput" Placeholder="Username/Email"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                />
 
             <Entry x:Name="passwordInput" Placeholder="Password"
                 IsPassword="true"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                />
 
             <Button Text="Login"
                 HorizontalOptions="Center"

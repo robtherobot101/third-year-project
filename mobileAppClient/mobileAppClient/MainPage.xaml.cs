@@ -25,11 +25,14 @@ namespace mobileAppClient
             var page2 = new MasterPageItem() { Title = "Overview", Icon = "ic_home.png", TargetType = typeof(OverviewPage) };
             var page1 = new MasterPageItem() { Title = "Attributes", Icon = "ic_local_shipping.png", TargetType = typeof(AttributesPage) };
             var page6 = new MasterPageItem() { Title = "Organs", Icon = "ic_my_location.png", TargetType = typeof(OrgansPage) };
+            var loginPage = new MasterPageItem() { Title = "Logout", TargetType = typeof(LoginPage) };
+
 
             // Adding menu items to menuList
             menuList.Add(page2);
             menuList.Add(page1);
             menuList.Add(page6);
+            menuList.Add(loginPage);
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
             navigationDrawerList.ItemsSource = menuList;
@@ -39,8 +42,7 @@ namespace mobileAppClient
             {
                 Header = "",
                 Image = "http://www3.hilton.com/resources/media/hi/GSPSCHF/en_US/img/shared/full_page_image_gallery/main/HH_food_22_675x359_FitToBoxSmallDimension_Center.jpg",
-                //Footer = "         -------- Welcome To HotelPlaza --------           "
-                Footer = "      Welcome To SENG302 - Team 300     "
+                Footer = "      Welcome To SENG302     "
             };
         }
 
@@ -51,13 +53,22 @@ namespace mobileAppClient
         }
 
 
-        private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private async void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-
+            
             var item = (MasterPageItem)e.SelectedItem;
             Type page = item.TargetType;
-            Detail = new NavigationPage((Page)Activator.CreateInstance(page));
-            IsPresented = false;
+            // Is there a better way to engage the logout button than creating a fake masterdetailpage and catching it here?
+            if (page.Name == "LoginPage")
+            {
+                var loginPage = new LoginPage();
+                await Navigation.PushModalAsync(loginPage);
+            } else
+            {
+                Detail = new NavigationPage((Page)Activator.CreateInstance(page));
+                IsPresented = false;
+            }
+            
         }
     }
 }
