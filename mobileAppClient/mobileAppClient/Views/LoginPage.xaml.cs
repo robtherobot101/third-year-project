@@ -19,10 +19,19 @@ namespace mobileAppClient
 
         async void LoginButtonClicked(object sender, EventArgs args)
         {
-            Console.WriteLine(usernameEmailInput.Text);
-            Console.WriteLine(passwordInput.Text);
-
-            //await Navigation.PopModalAsync();
+            RequestTester rt = new RequestTester();
+            bool result = await rt.LoginUser(usernameEmailInput.Text, passwordInput.Text);
+            if (!result)
+            {
+                // Display alert on failed login
+                await DisplayAlert("",
+                    "Incorrect username/password",
+                    "OK");
+            } else
+            {
+                // Pop away login screen on successful login
+                await Navigation.PopModalAsync();
+            }
         }
 
         async void RegisterButtonClicked(object sender, EventArgs args)

@@ -25,12 +25,11 @@ namespace mobileAppClient
             var page2 = new MasterPageItem() { Title = "Overview", Icon = "ic_home.png", TargetType = typeof(OverviewPage) };
             var page1 = new MasterPageItem() { Title = "Attributes", Icon = "ic_local_shipping.png", TargetType = typeof(AttributesPage) };
             var page6 = new MasterPageItem() { Title = "Organs", Icon = "ic_my_location.png", TargetType = typeof(OrgansPage) };
+
             // Adding menu items to menuList
             menuList.Add(page2);
             menuList.Add(page1);
             menuList.Add(page6);
-
-
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
             navigationDrawerList.ItemsSource = menuList;
@@ -62,3 +61,4 @@ namespace mobileAppClient
         }
     }
 }
+ 

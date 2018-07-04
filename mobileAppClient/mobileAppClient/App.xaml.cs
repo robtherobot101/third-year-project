@@ -11,12 +11,6 @@ namespace mobileAppClient
         {
             InitializeComponent();
 
-            RequestTester request = new RequestTester();
-            User user = request.LiveGetRequestTest();
-
-            Console.WriteLine(user.Email);
-            Console.WriteLine(user.AlcoholConsumption);
-            Console.WriteLine(user.SmokerStatus);
             MainPage = new MainPage();
         }
 

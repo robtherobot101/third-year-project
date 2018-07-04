@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.IO;
 using Newtonsoft.Json;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace mobileAppClient
 {
@@ -11,6 +13,8 @@ namespace mobileAppClient
         public RequestTester()
         {
         }
+
+        static HttpClient client = new HttpClient();
 
         public User LiveGetRequestTest() {
             Console.WriteLine("--------------GET SINGLE USER REQUEST-----------------------");
@@ -58,6 +62,37 @@ namespace mobileAppClient
            
             Console.WriteLine(" TO MOCK S");
             return mockUser;
+        }
+
+        public async Task<bool> LoginUser(String usernameEmail, String password)
+        {
+            String queries = null;
+            if (usernameEmail == "" || password == "")
+            {
+                // No valid identification provided -> return non-successful
+                return false;
+            }
+
+            queries = String.Format("?usernameEmail={0}&password={1}", usernameEmail, password);
+
+            var content = new StringContent("");
+
+            var response = await client.PostAsync("http://csse-s302g3.canterbury.ac.nz:80/api/v1/login" + queries, content);
+            //response.EnsureSuccessStatusCode();
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                UserController uc = UserController.Instance;
+                var responseContent = await response.Content.ReadAsStringAsync();
+                User user = JsonConvert.DeserializeObject<User>(responseContent);
+                uc.LoggedInUser = user;
+                Console.WriteLine("Logged in as " + uc.LoggedInUser.Name.ToString());
+                return true;
+            } else
+            {
+                Console.WriteLine("Failed login");
+                return false;
+            }
         }
     }
 }
