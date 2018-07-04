@@ -1,6 +1,5 @@
 package seng302.GUI.Controllers;
 
-import com.sun.org.apache.xerces.internal.util.URI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -8,7 +7,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.validator.routines.UrlValidator;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.APIServer;
+import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
@@ -17,7 +19,6 @@ import seng302.User.User;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -50,6 +51,54 @@ public class LoginController implements Initializable {
 
         // Check for a user match
         User currentUser = null;
+
+        /*      Here is some skeleton code of what I think would work for Login with the server.
+                I don't know enough about the whole system to go ahead with it, and have been looking at Apaches HTTPClient as well
+                Also it doesn't work properly atm - sends a GET instead of a POST.
+                Something to discuss at standups!
+                Sourced some stuff from https://tinyurl.com/y7uf24be
+                - Jono
+
+        try {
+            String url = ("http://" + serverInput.getText() + "/login");
+            URL obj = new URL(url);
+            HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
+
+
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            String urlParameters = "usernameEmail=" + identificationInput.getText() + "&password=" + passwordInput.getText();
+            System.out.println(urlParameters);
+
+            connection.setDoOutput(true); // Triggers POST.
+            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+            output.writeBytes(urlParameters);
+            output.flush();
+            output.close();
+
+            System.out.println("\nSending 'POST' request to URL : " + url);
+
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            //print result
+            System.out.println(response.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        */
+
         try {
             currentUser = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
         } catch(SQLException e) {
