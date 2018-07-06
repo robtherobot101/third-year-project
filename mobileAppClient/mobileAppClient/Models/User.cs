@@ -14,7 +14,8 @@ namespace mobileAppClient
         public string SmokerStatus { get; set; }
         public string AlcoholConsumption { get; set; }
 
-        //JSON Deserializer cannot seem to parse the dateTime objects currently
+        //Use their own custom objects as the JSON deserializer cannot deserialize the incoming
+        // Objects as C# DateTime objects
         public CustomDate DateOfBirth { get; set; }
         public CustomDate DateOfDeath { get; set; }
         public CustomDateTime CreationTime { get; set; }
@@ -38,8 +39,21 @@ namespace mobileAppClient
         public string Username { get; set; }
         public string Password { get; set; }
 
-        //public List<Organ> Organs { get; set; }
+        public List<String> Organs { get; set; }
 
+        public List<Medication> CurrentMedications { get; set; }
+        public List<Medication> HistoricMedications { get; set; }
+
+        public List<Disease> CurrentDiseases { get; set; }
+        public List<Disease> CuredDiseases { get; set; }
+
+        public List<Procedure> PendingProcedures { get; set; }
+        public List<Procedure> PreviousProcedures { get; set; }
+
+        public List<WaitingListItem> WaitingListItems { get; set; }
+
+        //TO BE TESTED
+        public List<HistoryItem> HistoryItems { get; set; }
 
         public User(string email) {
             Email = email;

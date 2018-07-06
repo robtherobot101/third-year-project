@@ -56,12 +56,15 @@ namespace mobileAppClient
             }
         }
 
-        public User mockGetRequestTest() {
+        public void MockUserCreation() {
             Console.WriteLine("------------------CONNECTION TO MOCK SERVER SUCCESSFUL.-----------------------");
+            UserController uc = UserController.Instance;
             User mockUser = new User("abc@123.com");
-           
-            Console.WriteLine(" TO MOCK S");
-            return mockUser;
+            mockUser.Email = "Andy's Mock User!";
+            uc.LoggedInUser = mockUser;
+
+            Console.WriteLine("Logged in as " + uc.LoggedInUser.Email);
+          
         }
 
         public async Task<bool> LoginUser(String usernameEmail, String password)

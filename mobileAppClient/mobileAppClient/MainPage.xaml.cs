@@ -40,7 +40,7 @@ namespace mobileAppClient
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(OverviewPage)));
             this.BindingContext = new
             {
-                Header = "",
+                Header = "heeeeeey",
                 Image = "http://www3.hilton.com/resources/media/hi/GSPSCHF/en_US/img/shared/full_page_image_gallery/main/HH_food_22_675x359_FitToBoxSmallDimension_Center.jpg",
                 Footer = "      Welcome To SENG302     "
             };
