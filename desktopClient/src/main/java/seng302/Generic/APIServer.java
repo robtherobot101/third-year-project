@@ -1,12 +1,15 @@
 package seng302.Generic;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import java.util.Map;
 
 public class APIServer {
     private String url;
@@ -34,16 +37,20 @@ public class APIServer {
     }
 
     // DISCLAIMER - I have no idea if this works or not ~jma326
-    private JsonObject postRequest(String path,JsonObject body){
-        return jp.parse(client.target(url)
-                // Specifies the endpoint to query
-                .path(path)
-                // Specifies the data content-type of response
-                .request(MediaType.APPLICATION_JSON)
+    public Response postRequest(String path, JsonObject body, Map<String, String> queryParams){
+        // Creates a pointer to the end-point
+        WebTarget target = client.target(url).path(path);
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new Response(target.request(MediaType.APPLICATION_JSON)
                 // Send the data in the post request as JSON -
                 .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON))
                 // Parse the JSON response
-                .readEntity(String.class)).getAsJsonObject();
+                .readEntity(String.class));
     }
 
     /**

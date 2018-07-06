@@ -223,3 +223,559 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2018-07-05 01:05:27.456: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6e81220a
 2018-07-05 01:05:27.456: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3646024e
 2018-07-05 01:05:27.461: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@51f384da
+2018-07-05 13:59:44.691: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 13:59:44.764: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 13:59:45.213: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 13:59:45.216: seng302.Generic.SearchUtils -> Empty
+2018-07-05 13:59:45.532: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:00:46.181: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:00:46.184: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4b02241
+2018-07-05 14:00:46.187: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1840fdac
+2018-07-05 14:00:46.192: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@678ba4ea
+2018-07-05 14:02:26.573: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:02:26.641: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:02:27.097: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:02:27.099: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:02:27.447: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:05:58.643: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:06:00.243: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:06:01.62: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:15:28.58: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:15:28.65: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:15:29.09: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:15:29.093: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:15:29.471: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:15:40.558: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:15:40.561: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@22bd854f
+2018-07-05 14:15:40.564: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@370c914
+2018-07-05 14:15:40.568: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1cc9e3be
+2018-07-05 14:16:07.462: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:07.465: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@39af9b39
+2018-07-05 14:16:07.468: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3d4bff8b
+2018-07-05 14:16:07.477: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2ce0ea7e
+2018-07-05 14:16:08.582: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:08.585: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@637afbc4
+2018-07-05 14:16:08.588: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@525ba7e7
+2018-07-05 14:16:08.597: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2574e7d3
+2018-07-05 14:16:09.048: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:09.052: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@40bc98f1
+2018-07-05 14:16:09.055: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4f5c87ea
+2018-07-05 14:16:09.059: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@430895e5
+2018-07-05 14:16:09.319: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:09.322: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@486f0086
+2018-07-05 14:16:09.325: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@29567461
+2018-07-05 14:16:09.328: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@18de1245
+2018-07-05 14:16:09.529: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:09.533: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@616fc302
+2018-07-05 14:16:09.535: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@18c5b624
+2018-07-05 14:16:09.539: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@234c16f4
+2018-07-05 14:16:09.719: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:09.721: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@ad28b26
+2018-07-05 14:16:09.724: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@59c8acd0
+2018-07-05 14:16:09.73: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2519fa44
+2018-07-05 14:16:10.407: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:10.41: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@37911198
+2018-07-05 14:16:10.413: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@f74438e
+2018-07-05 14:16:10.417: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1f1dc095
+2018-07-05 14:16:14.455: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:14.458: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@790d70c
+2018-07-05 14:16:14.461: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@84b9fb9
+2018-07-05 14:16:14.466: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3b61873b
+2018-07-05 14:16:14.739: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:14.741: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2329fef4
+2018-07-05 14:16:14.744: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3d1dd4fa
+2018-07-05 14:16:14.748: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3d45076c
+2018-07-05 14:16:15.129: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:15.132: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4926092c
+2018-07-05 14:16:15.135: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@176577ae
+2018-07-05 14:16:15.14: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@33bac16e
+2018-07-05 14:16:15.313: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:15.317: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@47f9e98a
+2018-07-05 14:16:15.32: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7cdb1201
+2018-07-05 14:16:15.324: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1006765b
+2018-07-05 14:16:20.48: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:20.484: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4728b7f5
+2018-07-05 14:16:20.487: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@47cd23fd
+2018-07-05 14:16:20.491: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@48df4aaf
+2018-07-05 14:16:20.905: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:20.909: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4520303b
+2018-07-05 14:16:20.913: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@237046e8
+2018-07-05 14:16:20.916: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1fa0b379
+2018-07-05 14:16:21.128: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:21.131: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@298202f
+2018-07-05 14:16:21.134: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@74480f3
+2018-07-05 14:16:21.137: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4295f469
+2018-07-05 14:16:21.27: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:21.273: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@71431b5d
+2018-07-05 14:16:21.276: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@ceae58d
+2018-07-05 14:16:21.28: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@22ded4ab
+2018-07-05 14:16:23.934: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:16:23.937: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@48af86dd
+2018-07-05 14:16:23.939: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7279e4ae
+2018-07-05 14:16:23.942: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@63899244
+2018-07-05 14:16:24.984: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:16:27.77: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:16:27.846: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:16:28.314: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:16:28.317: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:16:28.634: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:17:27.071: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:17:29.372: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:17:29.448: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:17:29.881: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:17:29.884: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:17:30.244: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:26:54.167: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:26:54.248: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:26:54.703: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:26:54.706: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:26:55.04: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:27:25.147: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:27:25.224: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:27:25.689: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:27:25.692: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:27:26.061: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:27:26.354: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:27:27.623: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:29:44.609: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:29:44.674: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:29:45.096: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:29:45.099: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:29:45.431: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:29:53.092: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:29:53.095: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7f8e7629
+2018-07-05 14:29:53.097: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7feaaf39
+2018-07-05 14:29:53.101: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4ff86f92
+2018-07-05 14:30:06.515: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:30:06.519: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@436d65cd
+2018-07-05 14:30:06.522: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@118bbb13
+2018-07-05 14:30:06.527: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@34fd2b
+2018-07-05 14:32:12.825: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:32:14.39: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:32:16.553: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:32:16.637: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:32:17.124: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:32:17.134: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:32:17.493: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:36:16.998: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:36:17.078: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:36:17.53: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:36:17.532: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:36:17.896: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:36:20.855: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:20.858: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@24836f1c
+2018-07-05 14:36:20.862: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@18c36b98
+2018-07-05 14:36:20.867: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@76fbe8fa
+2018-07-05 14:36:39.656: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:39.659: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1e4228a6
+2018-07-05 14:36:39.662: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@375147c6
+2018-07-05 14:36:39.668: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1545f88a
+2018-07-05 14:36:40.554: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:40.557: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@53ebe5af
+2018-07-05 14:36:40.559: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@f50bad7
+2018-07-05 14:36:40.562: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@15c48e35
+2018-07-05 14:36:40.843: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:40.846: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@13735e36
+2018-07-05 14:36:40.848: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1d8dca7f
+2018-07-05 14:36:40.852: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2dca347f
+2018-07-05 14:36:41.039: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:41.042: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@34b3fbf
+2018-07-05 14:36:41.045: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@48d01575
+2018-07-05 14:36:41.049: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@39872f97
+2018-07-05 14:36:41.216: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:41.219: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1195758d
+2018-07-05 14:36:41.221: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@64a1c290
+2018-07-05 14:36:41.225: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@28db33fd
+2018-07-05 14:36:42.877: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:36:45.206: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:36:45.285: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:36:45.76: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:36:45.762: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:36:46.092: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:36:48.663: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:36:48.666: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3025d9bb
+2018-07-05 14:36:48.668: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6e0127ba
+2018-07-05 14:36:48.672: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4073fc71
+2018-07-05 14:37:43.799: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:37:43.802: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@e30abdc
+2018-07-05 14:37:43.804: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@39decd48
+2018-07-05 14:37:43.808: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4ede14f
+2018-07-05 14:37:45.432: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:37:45.435: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@60747a61
+2018-07-05 14:37:45.438: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@13c5ce7d
+2018-07-05 14:37:45.442: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@57a0903c
+2018-07-05 14:43:27.746: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:43:27.816: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:43:28.252: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:43:28.255: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:43:28.606: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:43:31.442: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:43:31.445: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@dd12bb9
+2018-07-05 14:43:31.447: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5aa66af8
+2018-07-05 14:43:31.451: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2f2e2a97
+2018-07-05 14:43:54.22: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:43:54.294: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:43:54.757: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:43:54.76: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:43:55.133: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:43:57.121: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-05 14:43:57.123: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@429a9575
+2018-07-05 14:43:57.126: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7ada0ee5
+2018-07-05 14:43:57.129: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7d763277
+2018-07-05 14:43:58.581: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:44:07.333: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:44:07.405: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:44:07.841: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:44:07.844: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:44:08.17: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:44:26.839: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:44:31.059: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:44:32.804: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:44:33.898: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:44:36.865: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:44:36.93: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:44:37.386: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:44:37.389: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:44:37.76: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:45:10.21: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-05 14:45:10.26: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:45:10.263: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:46:04.35: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:46:04.419: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:46:04.878: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:46:04.881: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:46:05.207: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:47:08.416: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:47:08.477: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:47:08.951: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:47:08.954: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:47:09.308: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:49:33.076: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:49:33.15: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:49:33.61: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:49:33.612: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:49:33.935: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:50:02.815: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:50:03.878: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:50:04.969: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:50:06.011: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 14:50:10.661: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:50:10.74: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:50:11.196: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:50:11.199: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:50:11.559: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:56:53.812: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:56:53.882: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:56:54.359: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:56:54.366: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:56:54.716: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:57:49.774: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:57:49.849: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:57:50.337: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:57:50.339: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:57:50.675: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:58:15.69: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 14:58:15.761: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 14:58:16.184: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 14:58:16.187: seng302.Generic.SearchUtils -> Empty
+2018-07-05 14:58:16.536: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 14:58:33.337: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-05 15:07:36.947: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 15:07:37.014: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 15:07:37.473: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:07:37.476: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:07:37.853: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 15:08:30.085: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-05 15:08:30.152: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:08:30.156: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:10:13.66: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 15:10:13.737: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 15:10:14.175: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:10:14.177: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:10:14.489: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 15:15:00.801: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 15:15:00.876: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 15:15:01.348: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:15:01.35: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:15:01.685: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 15:19:01.59: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 15:19:01.664: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 15:19:02.118: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:19:02.121: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:19:02.44: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-05 15:19:42.437: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-05 15:19:42.522: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:19:42.525: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:19:51.35: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-05 15:19:51.42: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-05 15:19:51.895: seng302.Generic.SearchUtils -> search: ''
+2018-07-05 15:19:51.898: seng302.Generic.SearchUtils -> Empty
+2018-07-05 15:19:52.229: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 11:50:17.642: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 11:50:18.359: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 11:50:18.425: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 11:50:19.024: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 11:50:19.026: seng302.Generic.SearchUtils -> Empty
+2018-07-06 11:50:19.403: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 11:50:47.463: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 11:53:25.243: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 11:53:25.308: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 11:53:25.782: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 11:53:25.784: seng302.Generic.SearchUtils -> Empty
+2018-07-06 11:53:26.134: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 11:53:29.317: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 11:53:29.32: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@20811e07
+2018-07-06 11:53:29.322: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7623623b
+2018-07-06 11:53:29.326: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2c0f88b
+2018-07-06 12:00:47.631: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:00:47.699: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:00:48.081: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:00:48.084: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:00:48.401: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:00:51.9: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:00:51.903: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@20811e07
+2018-07-06 12:00:51.906: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7623623b
+2018-07-06 12:00:51.91: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2c0f88b
+2018-07-06 12:01:27.594: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:01:28.226: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:02:16.837: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:02:16.916: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:02:17.413: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:02:17.417: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:02:17.75: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:02:20.2: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:02:20.203: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73f11fbb
+2018-07-06 12:02:20.206: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3cb1e66a
+2018-07-06 12:02:20.213: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@60fe5ab2
+2018-07-06 12:02:57.834: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:03:09.842: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:03:09.908: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:03:10.332: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:03:10.335: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:03:10.692: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:03:12.928: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:03:12.932: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1bc09b70
+2018-07-06 12:03:12.935: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5cd741bb
+2018-07-06 12:03:12.941: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@47c9e9b
+2018-07-06 12:03:41.048: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:04:13.862: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:04:13.939: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:04:14.369: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:04:14.371: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:04:14.698: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:04:16.378: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:04:34.103: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:04:34.177: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:04:34.648: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:04:34.651: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:04:34.966: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:04:38.156: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:04:38.158: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@20811e07
+2018-07-06 12:04:38.161: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7623623b
+2018-07-06 12:04:38.165: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2c0f88b
+2018-07-06 12:06:30.869: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:06:30.934: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:06:31.386: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:06:31.388: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:06:31.741: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:06:35.11: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:06:35.113: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@20811e07
+2018-07-06 12:06:35.116: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7623623b
+2018-07-06 12:06:35.121: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2c0f88b
+2018-07-06 12:06:59.455: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:09:47.694: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:09:48.33: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:09:48.399: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:09:48.868: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:09:48.87: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:09:49.202: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:10:01.913: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:10:01.916: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@25ef0520
+2018-07-06 12:10:01.919: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7ba5d0bd
+2018-07-06 12:10:01.923: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5cd741bb
+2018-07-06 12:14:50.519: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:14:50.604: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:14:51.062: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:14:51.064: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:14:51.386: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:14:57.163: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:14:57.165: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4a90f539
+2018-07-06 12:14:57.168: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7e567804
+2018-07-06 12:14:57.172: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3617c71a
+2018-07-06 12:16:05.801: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:16:05.881: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:16:05.956: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:16:06.418: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:16:06.421: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:16:06.769: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:16:06.938: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:16:19.825: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-06 12:16:19.873: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:16:19.876: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:21:46.258: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:21:46.327: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:21:46.755: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:21:46.758: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:21:47.09: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:23:40.417: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:23:40.484: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:23:40.91: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:23:40.913: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:23:41.241: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:24:12.612: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:24:12.671: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:24:13.073: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:24:13.076: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:24:13.433: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:24:23.534: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:24:23.536: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4fa70c8b
+2018-07-06 12:24:23.539: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4cedbd48
+2018-07-06 12:24:23.543: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@65301a94
+2018-07-06 12:24:41.996: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:24:42.061: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:24:42.485: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:24:42.488: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:24:42.816: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:25:55.74: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:25:55.813: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:25:56.268: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:25:56.271: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:25:56.606: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:26:50.32: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:26:51.567: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:26:52.586: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:26:53.519: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:26:54.404: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:26:55.31: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:27:53.565: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:27:53.627: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:27:54.084: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:27:54.087: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:27:54.422: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:28:07.008: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-06 12:28:07.081: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:28:07.083: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:28:40.578: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:31:28.811: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:31:28.882: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:31:29.385: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:31:29.388: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:31:29.888: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:31:32.107: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 12:31:34.83: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:31:34.916: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:31:35.325: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:31:35.327: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:31:35.643: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:37:05.199: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 12:37:05.273: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 12:37:05.699: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:37:05.701: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:37:06.045: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 12:37:19.901: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:37:19.904: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@271443a2
+2018-07-06 12:37:19.906: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7a959c30
+2018-07-06 12:37:19.91: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73f11fbb
+2018-07-06 12:37:23.799: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-06 12:37:23.871: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:37:23.874: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:37:29.073: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 12:37:29.076: seng302.Generic.SearchUtils -> Empty
+2018-07-06 12:37:35.721: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as admin...
+2018-07-06 12:37:39.481: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 12:37:39.483: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@41cf677
+2018-07-06 12:37:39.486: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@131272bc
+2018-07-06 12:37:39.488: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4d3f3541
+2018-07-06 12:37:41.692: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 13:07:54.249: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 13:07:54.986: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 13:07:55.053: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 13:07:55.528: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:07:55.531: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:07:55.906: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:08:07.299: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-06 13:08:07.362: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:08:07.365: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:08:11.968: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:08:11.971: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:08:15.831: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as admin...
+2018-07-06 13:09:37.02: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 13:09:37.088: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 13:09:37.548: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:09:37.551: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:09:37.893: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:09:50.318: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-06 13:09:50.321: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-06 13:09:50.336: seng302.Generic.Database -> Inserting new user -> Successful -> Rows Added: 1
+2018-07-06 13:09:53.141: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:09:53.154: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:09:53.156: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1e2dbbed
+2018-07-06 13:09:53.158: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5c68b46f
+2018-07-06 13:09:53.161: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@51bcd38c
+2018-07-06 13:10:05.918: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:10:05.92: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@659199b1
+2018-07-06 13:10:05.923: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@43b4a599
+2018-07-06 13:10:05.926: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6748340e
+2018-07-06 13:10:07.824: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:10:07.826: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3f33730b
+2018-07-06 13:10:07.829: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@527a7cfc
+2018-07-06 13:10:07.831: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@a33b34a
+2018-07-06 13:10:09.008: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:10:09.011: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@76c1a4c0
+2018-07-06 13:10:09.014: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3b32cc4f
+2018-07-06 13:10:09.018: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@54e5275a
+2018-07-06 13:10:09.658: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:10:09.662: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@148ec32
+2018-07-06 13:10:09.664: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@52c56356
+2018-07-06 13:10:09.668: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5c009fa
+2018-07-06 13:10:10.201: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:10:10.204: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@24fe7036
+2018-07-06 13:10:10.206: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@41cb5871
+2018-07-06 13:10:10.209: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5ca256d8
+2018-07-06 13:10:10.682: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:10:10.686: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@36cba0b2
+2018-07-06 13:10:10.689: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@61034a1c
+2018-07-06 13:10:10.692: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@9a1a08e
+2018-07-06 13:10:12.914: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 13:15:13.543: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:15:13.547: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4f4eba9a
+2018-07-06 13:15:13.55: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@71688853
+2018-07-06 13:15:13.556: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@38e58875
+2018-07-06 13:15:17.528: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:15:17.53: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@383facd
+2018-07-06 13:15:17.533: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7f03b0f8
+2018-07-06 13:15:17.537: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@327b088a
+2018-07-06 13:15:21.546: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 13:15:23.973: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 13:15:24.037: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 13:15:24.489: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:15:24.491: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:15:24.867: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:15:41.937: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:15:41.941: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@538babdf
+2018-07-06 13:15:41.944: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5fd3acd5
+2018-07-06 13:15:41.951: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1bbc2e5f
+2018-07-06 13:16:40.948: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-06 13:16:41.562: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 13:16:41.627: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 13:16:42.144: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:16:42.147: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:16:42.533: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:16:51.443: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:16:51.447: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7a959c30
+2018-07-06 13:16:51.45: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@f0a4e0
+2018-07-06 13:16:51.455: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73f11fbb
+2018-07-06 13:23:26.227: seng302.Generic.Database -> Connected to seng302-2018-team300-prod database
+2018-07-06 13:23:26.293: seng302.Generic.IO -> IOException on /home/cosc/student/nzo13/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-06 13:23:26.759: seng302.Generic.SearchUtils -> search: ''
+2018-07-06 13:23:26.761: seng302.Generic.SearchUtils -> Empty
+2018-07-06 13:23:27.098: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:23:36.226: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-06 13:23:36.231: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-06 13:23:36.234: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-06 13:23:39.143: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-06 13:23:39.16: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-06 13:23:39.169: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7df5ecf
+2018-07-06 13:23:39.171: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5d7ee49c
+2018-07-06 13:23:39.174: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5ea27d7
+2018-07-06 13:23:41.283: seng302.Generic.WindowManager -> Exiting GUI
