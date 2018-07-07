@@ -4,7 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.MalformedJsonException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.StringReader;
 
 public class Response {
     private String response;
@@ -15,7 +21,16 @@ public class Response {
     }
 
     public boolean isValidJson(){
-        return (jp.parse(response).isJsonArray() || jp.parse(response).isJsonObject());
+        try{
+            new JSONObject(response);
+        } catch (JSONException oe){
+            try {
+                new JSONArray(response);
+            } catch (JSONException ae){
+                return false;
+            }
+        }
+        return true;
     }
 
     public JsonObject getAsJsonObject(){

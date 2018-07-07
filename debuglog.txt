@@ -888,3 +888,1054 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2018-07-07 15:47:02.229: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
 2018-07-07 15:47:10.929: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
 2018-07-07 15:47:15.43: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 20:20:15.194: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 20:20:21.987: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:20:22.363: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:20:24.722: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:20:24.723: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:20:26.041: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:21:41.056: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:21:41.349: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:21:43.543: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:21:43.544: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:21:44.888: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:33:48.976: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:33:49.265: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:33:51.353: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:33:51.354: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:33:52.767: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:33:59.992: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 20:33:59.993: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4a04c7d4
+2018-07-07 20:33:59.993: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7051612
+2018-07-07 20:34:00.007: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@63c4e7b5
+2018-07-07 20:46:40.86: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:46:41.127: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:46:43.343: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:46:43.344: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:46:44.797: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:47:04.087: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 20:47:04.088: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6a2c3c43
+2018-07-07 20:47:04.089: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@59ea0921
+2018-07-07 20:47:04.096: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6682db8b
+2018-07-07 20:48:21.614: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 20:48:24.099: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:48:24.393: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:48:26.836: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:48:26.836: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:48:28.258: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:48:33.679: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 20:48:33.68: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7ff5bd25
+2018-07-07 20:48:33.681: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@72460b99
+2018-07-07 20:48:33.689: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3dd32d8e
+2018-07-07 20:48:33.727: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 20:48:33.728: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5ffab948
+2018-07-07 20:48:33.728: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1b47144d
+2018-07-07 20:48:33.733: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7169d4fd
+2018-07-07 20:51:53.127: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:51:53.379: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:51:55.93: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:51:55.931: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:51:57.428: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:52:13.367: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 20:52:13.452: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 20:52:13.453: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@80603d6
+2018-07-07 20:52:13.454: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1699b86b
+2018-07-07 20:52:13.46: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@15960efd
+2018-07-07 20:53:13.507: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 20:53:13.777: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 20:53:17.097: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 20:53:17.109: seng302.Generic.SearchUtils -> Empty
+2018-07-07 20:53:19.224: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 20:53:34.944: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 20:53:35.049: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 20:53:35.049: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@633018af
+2018-07-07 20:53:35.05: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2c0c85f5
+2018-07-07 20:53:35.056: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6ba3bd19
+2018-07-07 21:06:48.294: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:06:48.907: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:06:54.353: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:06:54.354: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:06:56.503: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:07:10.249: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 21:07:10.448: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:07:10.449: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:07:13.445: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:15:58.782: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:15:59.06: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:16:01.825: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:16:01.826: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:16:03.607: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:16:12.693: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 21:16:12.861: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:16:12.863: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:16:21.128: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:16:21.129: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:16:31.644: seng302.GUI.Controllers.UserAttributesController -> User (ID 2) created at 06/07/2018, 04:25:40 
+-Name: Buzz Buzzy Knight
+-Preferred Name: Buzz Buzzy Knight
+-Date of Birth: 05/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:16:31
+-Organs to donate: [].
+2018-07-07 21:16:36.194: seng302.GUI.Controllers.UserAttributesController -> User (ID 2) created at 06/07/2018, 04:25:40 
+-Name: Buzz Buzzy Knight
+-Preferred Name: Buzz Buzzy Knight
+-Date of Birth: 05/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:16:36
+-Organs to donate: [].
+2018-07-07 21:18:22.795: seng302.GUI.Controllers.UserAttributesController -> User (ID 2) created at 06/07/2018, 04:25:40 
+-Name: Buzz Buzzy Knight
+-Preferred Name: Buzz Buzzy Knight
+-Date of Birth: 05/07/2018
+-Date of death: null
+-Gender: null
+-Height: 20.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:18:22
+-Organs to donate: [].
+2018-07-07 21:18:27.205: seng302.GUI.Controllers.UserAttributesController -> User (ID 2) created at 06/07/2018, 04:25:40 
+-Name: Buzz Buzzy Knight
+-Preferred Name: Buzz Buzzy Knight
+-Date of Birth: 05/07/2018
+-Date of death: null
+-Gender: null
+-Height: 20.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:18:27
+-Organs to donate: [].
+2018-07-07 21:18:27.292: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 21:18:27.293: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@737a3857
+2018-07-07 21:18:27.294: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@fa8bb75
+2018-07-07 21:18:27.3: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@327540a7
+2018-07-07 21:25:21.482: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:25:21.923: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:25:25.621: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:25:25.622: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:25:28.373: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:25:42.728: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 21:25:42.892: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:25:42.893: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:25:51.646: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:25:51.648: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:25:56.497: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 21:25:59.151: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:25:59.165: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:26:10.6: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 18/07/2007
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:26:10
+-Organs to donate: [].
+2018-07-07 21:27:14.983: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 21:27:18.015: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:27:20.096: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:27:25.971: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:27:26.258: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:27:28.907: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:27:28.908: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:27:30.368: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:27:38.433: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-07 21:27:38.44: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:27:38.441: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:27:50.386: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2007
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:27:50
+-Organs to donate: [].
+2018-07-07 21:28:06.154: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 21:28:06.167: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:28:18.319: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:28:18.582: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:28:20.857: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:28:20.857: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:28:22.27: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:28:31.818: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-07 21:28:31.83: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:28:31.831: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:30:00.176: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:30:00.459: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:30:02.914: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:30:02.915: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:30:04.409: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:30:15.076: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-07 21:30:15.086: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:30:15.087: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:30:47.355: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 08/07/2009
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:30:47
+-Organs to donate: [].
+2018-07-07 21:31:07.146: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 08/07/2009
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:31:07
+-Organs to donate: [].
+2018-07-07 21:31:07.227: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 21:31:07.228: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2b4b5200
+2018-07-07 21:31:07.228: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3f812b05
+2018-07-07 21:31:07.235: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2874a2ba
+2018-07-07 21:31:20.606: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 21:31:20.632: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:31:24.015: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 21:31:24.025: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:31:29.76: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:31:30.027: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:31:32.385: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:31:32.386: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:31:34.092: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:32:10.385: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-07 21:32:10.396: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:32:10.397: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:32:24.853: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 28/07/2011
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:32:24
+-Organs to donate: [].
+2018-07-07 21:32:27.148: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 28/07/2011
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:32:27
+-Organs to donate: [].
+2018-07-07 21:32:27.225: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 21:32:27.226: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5ba5c3ec
+2018-07-07 21:32:27.226: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73566cd8
+2018-07-07 21:32:27.235: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@59508d4d
+2018-07-07 21:36:29.393: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:36:29.667: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:36:32.379: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:36:32.38: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:36:34.341: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:36:45.574: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 21:36:46.131: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:36:46.132: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:36:53.168: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 21:36:53.171: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 21:37:04.199: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 08/07/2010
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:37:04
+-Organs to donate: [].
+2018-07-07 21:37:13.854: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 08/07/2010
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 21:37:13
+-Organs to donate: [].
+2018-07-07 21:37:13.925: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 21:37:13.926: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@109f9713
+2018-07-07 21:37:13.927: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@73825749
+2018-07-07 21:37:13.947: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7c35b6e6
+2018-07-07 21:41:00.461: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:41:01.965: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:42:07.009: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:42:07.395: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:42:09.574: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:42:09.575: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:42:11.129: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:48:35.973: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:48:45.02: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:48:45.503: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:48:49.07: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:48:49.071: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:48:51.122: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:54:30.158: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:54:36.368: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:54:36.731: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:54:40.393: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:54:40.394: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:54:42.56: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:59:14.175: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 21:59:27.35: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 21:59:27.641: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 21:59:30.894: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 21:59:30.895: seng302.Generic.SearchUtils -> Empty
+2018-07-07 21:59:33.869: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 21:59:43.444: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 21:59:43.445: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3951fcc5
+2018-07-07 21:59:43.446: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4c355bb3
+2018-07-07 21:59:43.454: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3113799d
+2018-07-07 22:02:40.36: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 22:02:52.386: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:02:52.719: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:02:55.178: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:02:55.18: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:02:56.729: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:03:05.257: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 22:03:05.5: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:03:05.501: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:03:15.128: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:03:15.133: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:03:22.9: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 21/07/2009
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:03:22
+-Organs to donate: [].
+2018-07-07 22:03:24.946: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 06/07/2018, 04:25:40 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 21/07/2009
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:03:24
+-Organs to donate: [].
+2018-07-07 22:03:25.032: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:03:25.033: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@f91e80
+2018-07-07 22:03:25.033: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@a95037d
+2018-07-07 22:03:25.039: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@31b40d8e
+2018-07-07 22:03:31.858: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 22:08:38.219: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:08:38.22: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:08:50.496: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 100000.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:08:50
+-Organs to donate: [].
+2018-07-07 22:08:55.165: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 100000.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:08:55
+-Organs to donate: [].
+2018-07-07 22:08:55.248: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:08:55.249: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@11e316bb
+2018-07-07 22:08:55.25: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@70ddc184
+2018-07-07 22:08:55.255: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3d631947
+2018-07-07 22:08:58.348: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 100000.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:08:58
+-Organs to donate: [].
+2018-07-07 22:08:58.419: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:08:58.419: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@34c7037c
+2018-07-07 22:08:58.42: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6e84d286
+2018-07-07 22:08:58.424: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5b0b69f8
+2018-07-07 22:09:00.609: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 22:09:02.151: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:09:02.152: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:09:08.443: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:09:08
+-Organs to donate: [].
+2018-07-07 22:09:08.959: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:09:08
+-Organs to donate: [].
+2018-07-07 22:09:12.999: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:09:12
+-Organs to donate: [].
+2018-07-07 22:09:16.607: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 07/07/2018, 22:09:16
+-Organs to donate: [].
+2018-07-07 22:09:16.68: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:09:16.68: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2d6a5c1d
+2018-07-07 22:09:16.681: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@72ddab43
+2018-07-07 22:09:16.684: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@12e1ced8
+2018-07-07 22:09:21.822: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:09:21
+-Organs to donate: [].
+2018-07-07 22:09:23.655: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:08:02 
+-Name: shaggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 04/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:09:23
+-Organs to donate: [].
+2018-07-07 22:09:23.725: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:09:23.726: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7d34fd1
+2018-07-07 22:09:23.726: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6a950eca
+2018-07-07 22:09:23.729: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4c728b6e
+2018-07-07 22:12:09.941: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 22:12:12.087: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:12:12.088: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:12:19.084: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: doggy The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:12:19
+-Organs to donate: [].
+2018-07-07 22:12:23.138: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:12:23
+-Organs to donate: [].
+2018-07-07 22:12:24.849: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:12:24
+-Organs to donate: [].
+2018-07-07 22:12:24.949: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:12:24.95: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@133aa373
+2018-07-07 22:12:24.95: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@55e4ae5e
+2018-07-07 22:12:24.952: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1818d76a
+2018-07-07 22:12:27.22: seng302.GUI.Controllers.UserWindowController -> Exiting GUI
+2018-07-07 22:12:30.308: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:12:30.309: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:12:38.865: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:12:38
+-Organs to donate: [].
+2018-07-07 22:12:42.006: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:12:42
+-Organs to donate: [].
+2018-07-07 22:12:42.219: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:12:42.219: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5e11b782
+2018-07-07 22:12:42.22: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@68454bb7
+2018-07-07 22:12:42.223: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@651f22c1
+2018-07-07 22:13:02.864: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:13:02
+-Organs to donate: [].
+2018-07-07 22:13:02.937: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:13:02.938: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1e8721ae
+2018-07-07 22:13:02.939: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@71175956
+2018-07-07 22:13:02.941: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@78151d71
+2018-07-07 22:13:30.959: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: null
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:13:30
+-Organs to donate: [].
+2018-07-07 22:13:48.868: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:13:48
+-Organs to donate: [].
+2018-07-07 22:13:49.936: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: cranky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:13:49
+-Organs to donate: [].
+2018-07-07 22:13:50.011: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:13:50.012: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@32d409f5
+2018-07-07 22:13:50.013: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3ce2db89
+2018-07-07 22:13:50.016: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7dbcb8fb
+2018-07-07 22:16:36.767: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:16:36
+-Organs to donate: [].
+2018-07-07 22:16:40.603: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: tulip
+-Last Modified: 07/07/2018, 22:16:40
+-Organs to donate: [].
+2018-07-07 22:16:43.267: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:16:43
+-Organs to donate: [].
+2018-07-07 22:16:45.236: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:16:45
+-Organs to donate: [kidney].
+2018-07-07 22:16:45.586: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:16:45
+-Organs to donate: [].
+2018-07-07 22:16:47.434: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:11:35 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 03/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:16:47
+-Organs to donate: [].
+2018-07-07 22:16:47.722: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:16:47.723: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5045b437
+2018-07-07 22:16:47.723: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@45681fcf
+2018-07-07 22:16:47.725: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@15048a9c
+2018-07-07 22:35:18.356: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:35:18.782: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:35:22.576: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:35:22.576: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:35:24.207: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:35:34.586: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 22:35:34.763: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:35:34.764: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:35:38.888: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:35:38.89: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:35:45.972: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: sssss
+-Last Modified: 07/07/2018, 22:35:45
+-Organs to donate: [].
+2018-07-07 22:35:47.482: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: sssss
+-Last Modified: 07/07/2018, 22:35:47
+-Organs to donate: [].
+2018-07-07 22:35:47.56: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:35:47.561: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4fdb7002
+2018-07-07 22:35:47.561: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@15483f87
+2018-07-07 22:35:47.568: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1c21abe3
+2018-07-07 22:36:21.018: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 22:36:23.416: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 22:41:53.885: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:41:54.153: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:41:56.563: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:41:56.564: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:41:58.015: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:42:09.568: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 22:42:09.727: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:42:09.728: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:42:13.906: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:42:13.907: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:42:20.456: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nickydsfg The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:42:20
+-Organs to donate: [].
+2018-07-07 22:42:21.741: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nickydsfg The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:42:21
+-Organs to donate: [].
+2018-07-07 22:42:21.825: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:42:21.827: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6c4c58de
+2018-07-07 22:42:21.827: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@47b2b4bb
+2018-07-07 22:42:21.841: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6540a8a7
+2018-07-07 22:42:42.008: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nickydsfg The Dark Horse Zohrab-Henricks
+-Preferred Name: Nickygrshtjd The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:42:42
+-Organs to donate: [].
+2018-07-07 22:42:43.096: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nickydsfg The Dark Horse Zohrab-Henricks
+-Preferred Name: Nickygrshtjd The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:42:43
+-Organs to donate: [].
+2018-07-07 22:42:43.452: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:42:43.458: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@1e7566a2
+2018-07-07 22:42:43.459: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@23d53757
+2018-07-07 22:42:43.464: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6b1be531
+2018-07-07 22:54:06.563: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:54:06.886: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:54:09.367: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:54:09.367: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:54:10.772: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:54:16.866: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-07 22:54:44.174: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:54:44.528: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:54:46.921: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:54:46.922: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:54:48.42: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:54:59.669: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 22:54:59.849: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:54:59.85: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:55:04.209: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:55:04.211: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:55:10.023: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: gerhwhnegne
+-Last Modified: 07/07/2018, 22:55:10
+-Organs to donate: [].
+2018-07-07 22:55:11.156: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: gerhwhnegne
+-Last Modified: 07/07/2018, 22:55:11
+-Organs to donate: [].
+2018-07-07 22:55:11.179: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:55:11.181: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@24162d68
+2018-07-07 22:55:11.182: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6a19f04d
+2018-07-07 22:55:11.193: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@fa8bb75
+2018-07-07 22:57:17.868: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:57:18.164: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:57:20.883: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:57:20.884: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:57:22.298: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:57:30.611: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 22:57:30.773: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:57:30.774: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:57:35.167: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:57:35.168: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:57:40.69: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: 
+-Last Modified: 07/07/2018, 22:57:40
+-Organs to donate: [].
+2018-07-07 22:57:43.183: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: gg
+-Last Modified: 07/07/2018, 22:57:43
+-Organs to donate: [].
+2018-07-07 22:57:44.376: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:20:56 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 02/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: gg
+-Last Modified: 07/07/2018, 22:57:44
+-Organs to donate: [].
+2018-07-07 22:57:44.545: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:57:44.546: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5ed5c759
+2018-07-07 22:57:44.546: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@3a56f388
+2018-07-07 22:57:44.84: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@290e02e9
+2018-07-07 22:58:26.336: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-07 22:58:26.685: seng302.Generic.IO -> IOException on /home/nicky/IdeaProjects/team-300-clientServer/desktopClient/target/interactions.json: Check your inputs and permissions!
+2018-07-07 22:58:28.935: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:58:28.936: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:58:30.376: seng302.GUI.Controllers.UserWindowController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-07 22:58:42.689: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-07 22:58:43.272: seng302.Generic.SearchUtils -> search: ''
+2018-07-07 22:58:43.273: seng302.Generic.SearchUtils -> Empty
+2018-07-07 22:58:47.511: seng302.GUI.Controllers.MedicalHistoryDiseasesController -> Setting donor of Medical History pane...
+2018-07-07 22:58:47.513: seng302.GUI.Controllers.MedicalHistoryProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-07 22:58:58.673: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:57:44 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 01/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: addchange
+-Last Modified: 07/07/2018, 22:58:58
+-Organs to donate: [].
+2018-07-07 22:59:00.094: seng302.GUI.Controllers.UserAttributesController -> User (ID 6) created at 07/07/2018, 10:57:44 
+-Name: Nicky The Dark Horse Zohrab-Henricks
+-Preferred Name: Nicky The Dark Horse Zohrab-Henricks
+-Date of Birth: 01/07/2018
+-Date of death: null
+-Gender: null
+-Height: 120000.00
+-Weight: 5000.00
+-Blood type: null
+-Region: kreay
+-Current address: addchange
+-Last Modified: 07/07/2018, 22:59:00
+-Organs to donate: [].
+2018-07-07 22:59:00.208: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-07 22:59:00.209: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@50f538cc
+2018-07-07 22:59:00.21: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@7790292c
+2018-07-07 22:59:00.231: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@dd9e2c6

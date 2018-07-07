@@ -3,6 +3,7 @@ package seng302.Generic;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import seng302.User.Admin;
 import seng302.User.Attribute.*;
@@ -113,41 +114,17 @@ public class Database {
 
     }
 
+
+    //Uses API server for updating attributes
     public void updateUserAttributesAndOrgans(User user) throws SQLException {
-        //Attributes update
-        String update = "UPDATE " + currentDatabase + ".USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
-                " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
-                "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
-                "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?  WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, user.getNameArray()[0]);
-        statement.setString(2, user.getNameArray().length > 2 ?
-                String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
-        statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-
-        statement.setString(4, user.getPreferredNameArray()[0]);
-        statement.setString(5, user.getPreferredNameArray().length > 2 ?
-                String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
-        statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
-
-        statement.setString(7, user.getCurrentAddress());
-        statement.setString(8, user.getRegion());
-        statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
-        statement.setDate(10, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
-        statement.setDouble(11, user.getHeight());
-        statement.setDouble(12, user.getWeight());
-        statement.setString(13, user.getBloodPressure());
-        statement.setString(14, user.getGender() != null ? user.getGender().toString() : null);
-        statement.setString(15, user.getGenderIdentity() != null ? user.getGenderIdentity().toString() : null);
-        statement.setString(16, user.getBloodType() != null ? user.getBloodType().toString() : null);
-        statement.setString(17, user.getSmokerStatus() != null ? user.getSmokerStatus().toString() : null);
-        statement.setString(18, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
-        statement.setString(19, user.getUsername());
-        Debugger.log("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        JsonParser jp = new JsonParser();
+        JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        Response response = server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
 
 
-        int userId = getUserId(user.getUsername());
 
+        //TODO Update organ list using api server
+/*
         //Organ Updates
         //First get rid of all the users organs in the table
         String deleteOrgansQuery = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
@@ -165,6 +142,7 @@ public class Database {
             totalAdded += insertOrgansStatement.executeUpdate();
         }
         Debugger.log("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);
+*/
     }
 
     public void updateUserProcedures(User user) throws SQLException {
@@ -375,7 +353,7 @@ public class Database {
         Map<String,String> queryParameters = new HashMap<String,String>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
-        return server.postRequest("login", new JsonObject(), queryParameters);
+        return server.postRequest(new JsonObject(), queryParameters, "login");
     }
 
     public User getUserFromId(int id) throws SQLException {
