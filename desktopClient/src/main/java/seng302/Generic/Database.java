@@ -371,25 +371,11 @@ public class Database {
     }
 
 
-    public User loginUser(String usernameEmail, String password) throws SQLException {
-        //First needs to do a search to see if there is a unique user with the given inputs
-        // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-        String query = "SELECT * FROM " + currentDatabase + ".USER WHERE (username = ? OR email = ?) AND password = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setString(1, usernameEmail);
-        statement.setString(2, usernameEmail);
-        statement.setString(3, password);
-        ResultSet resultSet = statement.executeQuery();
-
-        //If response is empty then return null
-        if(!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a new User Object with the fields from the database
-            return getUserFromResultSet(resultSet);
-        }
-
+    public Response loginUser(String usernameEmail, String password) {
+        Map<String,String> queryParameters = new HashMap<String,String>();
+        queryParameters.put("usernameEmail", usernameEmail);
+        queryParameters.put("password", password);
+        return server.postRequest("login", new JsonObject(), queryParameters);
     }
 
     public User getUserFromId(int id) throws SQLException {

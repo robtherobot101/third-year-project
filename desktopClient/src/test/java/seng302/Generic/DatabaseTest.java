@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import com.google.gson.Gson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -412,11 +413,16 @@ public class DatabaseTest {
     public void loginUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
+        
         try {
             database.insertUser(testUser);
-            assertEquals(testUser.getEmail(), database.loginUser("bdong", "password").getEmail());
-            assertEquals(testUser.getUsername(),
-                    database.loginUser("flameman@hotmail.com", "password").getUsername());
+
+            User loggedInA = new Gson().fromJson(database.loginUser("bdong", "password").getAsJsonObject(), User.class);
+            assertEquals(testUser.getEmail(), loggedInA.getEmail());
+
+            User loggedInB = new Gson().fromJson(database.loginUser("flameman@hotmail.com", "password").getAsJsonObject(), User.class);
+            assertEquals(testUser.getUsername(), loggedInB.getUsername());
+
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }

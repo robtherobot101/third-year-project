@@ -203,12 +203,7 @@ public class LoginController implements Initializable {
     }*/
 
     public void login(){
-        APIServer server = new APIServer("http://" + serverInput.getText());
-        Map<String,String> queryParameters = new HashMap<String,String>();
-        queryParameters.put("usernameEmail",identificationInput.getText());
-        queryParameters.put("password",passwordInput.getText());
-
-        Response response = server.postRequest("login", new JsonObject(), queryParameters);
+        Response response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
         System.out.println(response.getAsString());
         if(response.isValidJson()) {
             login(response.getAsJsonObject());

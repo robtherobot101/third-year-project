@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -126,11 +127,11 @@ public class WindowManager extends Application {
             History.printToFile(streamOut, text);
 
             User currentUser = null;
-            try {
-                currentUser = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
-            } catch(SQLException e) {
-                e.printStackTrace();
+            Response response = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
+            if(response.isValidJson()){
+                currentUser = new Gson().fromJson(response.getAsJsonObject(), User.class);
             }
+
             newUserWindowController.setCurrentUser(currentUser);
             newUserWindowController.populateHistoryTable();
             newUserWindowController.setControlsShown(true);

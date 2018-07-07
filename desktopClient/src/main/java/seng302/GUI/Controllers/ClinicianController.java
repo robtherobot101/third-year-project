@@ -680,17 +680,7 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        User currentUser = null;
-                        try {
-
-                            currentUser = WindowManager.getDatabase().loginUser(row.getItem().getUsername(), row.getItem().getPassword());
-
-                        } catch(SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        WindowManager.newCliniciansUserWindow(currentUser);
-
+                        WindowManager.newCliniciansUserWindow(row.getItem());
                     }
                 });
                 return row;
