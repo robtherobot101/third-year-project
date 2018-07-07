@@ -3,7 +3,7 @@ package seng302.Core;
 
 import java.time.LocalDate;
 import org.junit.Before;
-import seng302.Generic.ReceiverWaitingListItem;
+import seng302.User.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 

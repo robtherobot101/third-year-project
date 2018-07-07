@@ -2,12 +2,11 @@ package seng302.Core;
 
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Generic.ReceiverWaitingListItem;
+import seng302.User.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 

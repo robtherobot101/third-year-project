@@ -117,6 +117,7 @@ app.iml
 server.iml
 desktopClient.iml
 testsave
+debuglog.txt
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/

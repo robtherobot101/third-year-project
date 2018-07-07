@@ -3,7 +3,9 @@ package seng302.GUI.Controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.MalformedJsonException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -205,75 +207,62 @@ public class LoginController implements Initializable {
     public void login(){
         Response response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
         System.out.println(response.getAsString());
-        if(response.isValidJson()) {
-            login(response.getAsJsonObject());
-        }else {
+        if (response.isValidJson()) {
+            JsonObject serverResponse = response.getAsJsonObject();
+            if (serverResponse.get("accountType") == null) {
+                Debugger.log("LoginController: Logging in as user...");
+                loadUser(gson.fromJson(serverResponse, User.class));
+            } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
+                Debugger.log("LoginController: Logging in as clinician...");
+                loadClinician(gson.fromJson(serverResponse, Clinician.class));
+            } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
+                Debugger.log("LoginController: Logging in as admin...");
+                loadAdmin(gson.fromJson(serverResponse, Admin.class));
+            } else {
+                errorMessage.setText("Username/email and password combination not recognized.");
+                errorMessage.setVisible(true);
+            }
+        } else {
             errorMessage.setText("Username/email and password combination not recognized.");
             errorMessage.setVisible(true);
         }
     }
 
-    private void login(JsonObject serverResponse) {
-        boolean identificationMatched = false;
-        ProfileType typeMatched = null;
+    private void loadUser(User user) {
+        WindowManager.setCurrentUser(user);
+        WindowManager.setScene(TFScene.userWindow);
+        resetScene();
+    }
 
-        User currentUser = null;
-        Clinician currentClinician = null;
-        Admin currentAdmin = null;
-        if(serverResponse.get("accountType") == null){
-            currentUser = gson.fromJson(serverResponse, User.class);
-            typeMatched = ProfileType.USER;
-            identificationMatched = true;
-            Debugger.log("LoginController: Logging in as user...");
-
-        }else if(serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
-            currentClinician = gson.fromJson(serverResponse, Clinician.class);
-            typeMatched = ProfileType.CLINICIAN;
-            identificationMatched = true;
-            Debugger.log("LoginController: Logging in as clinician...");
-
-        }else if(serverResponse.get("accountType").getAsString().equals("ADMIN")){
-            currentAdmin = gson.fromJson(serverResponse, Admin.class);
-            typeMatched = ProfileType.ADMIN;
-            identificationMatched = true;
-            Debugger.log("LoginController: Logging in as admin...");
+    private void loadClinician(Clinician clinician) {
+        //Add all users from Database
+        DataManager.users.clear();
+        try{
+            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            WindowManager.getDatabase().refreshUserWaitinglists();
+        } catch(SQLException e) {
+            e.printStackTrace();
         }
 
-        if (identificationMatched) {
-            resetScene();
-            switch (typeMatched) {
-                case USER:
-                    WindowManager.setCurrentUser(currentUser);
-                    WindowManager.setScene(TFScene.userWindow);
-                    break;
-                case CLINICIAN:
-                    //Add all users from Database
-                    DataManager.users.clear();
-                    try{
-                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                        WindowManager.getDatabase().refreshUserWaitinglists();
-                    } catch(SQLException e) {
-                        e.printStackTrace();
-                    }
+        WindowManager.setClinician(clinician);
+        WindowManager.setScene(TFScene.clinician);
+        resetScene();
+    }
 
-                    WindowManager.setClinician(currentClinician);
-                    WindowManager.setScene(TFScene.clinician);
-                    break;
-                case ADMIN:
-                    DataManager.users.clear();
-                    DataManager.clinicians.clear();
-                    DataManager.admins.clear();
-                    try{
-                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                        DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
-                        DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
-                    } catch(SQLException e) {
-                        e.printStackTrace();
-                    }
-                    WindowManager.setAdmin(currentAdmin);
-                    WindowManager.setScene(TFScene.admin);
-            }
+    private void loadAdmin(Admin admin) {
+        DataManager.users.clear();
+        DataManager.clinicians.clear();
+        DataManager.admins.clear();
+        try{
+            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
+            DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
+        } catch(SQLException e) {
+            e.printStackTrace();
         }
+        WindowManager.setAdmin(admin);
+        WindowManager.setScene(TFScene.admin);
+        resetScene();
     }
 
     private void resetScene(){

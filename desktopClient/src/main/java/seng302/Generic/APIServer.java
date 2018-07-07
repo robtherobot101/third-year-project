@@ -24,7 +24,7 @@ public class APIServer {
 
     /**
      * Perform a get request to the given endpoint and return the results as a JsonObject
-     * @param path The endopint to query
+     * @param path The endpoint to query
      * @param queryParams The query parameters
      * @return The result as a response object
      */

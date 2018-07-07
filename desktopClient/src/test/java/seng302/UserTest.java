@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.DataManager;
-import seng302.Generic.ReceiverWaitingListItem;
+import seng302.User.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 

@@ -13,7 +13,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.junit.*;
-import org.testfx.api.FxRobot;
 import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
@@ -230,7 +229,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
     public void changeAccountSettings_updatesClinician() throws TimeoutException {
         Platform.runLater(() ->{
             try{
-                Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/accountSettingsClinician.fxml"));
+                Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
                 Stage stage = new Stage();
                 stage.getIcons().add(WindowManager.getIcon());
                 stage.setResizable(false);

@@ -2,16 +2,13 @@ package seng302.TestFX;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -22,17 +19,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.testfx.matcher.control.TableViewMatchers;
-import seng302.Generic.ReceiverWaitingListItem;
-import seng302.Generic.TransplantWaitingListItem;
+import seng302.User.ReceiverWaitingListItem;
+import seng302.User.TransplantWaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;

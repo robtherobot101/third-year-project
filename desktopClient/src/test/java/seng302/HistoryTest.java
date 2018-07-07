@@ -3,7 +3,7 @@ package seng302;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Generic.History;
+import seng302.User.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 

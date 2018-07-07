@@ -8,14 +8,15 @@ import com.google.gson.reflect.TypeToken;
 import seng302.User.Admin;
 import seng302.User.Attribute.*;
 import seng302.User.Clinician;
+import seng302.User.Disease;
 import seng302.User.Medication.Medication;
+import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 
 import java.sql.*;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
+import seng302.User.WaitingListItem;
 
 
 public class Database {
@@ -83,7 +84,7 @@ public class Database {
         String query = "SELECT COUNT(*) FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE id = user_id = ? AND organ_type = ?";
         PreparedStatement queryStatement  =connection.prepareStatement(query);
         queryStatement.setLong(1, waitingListItem.getUserId());
-        queryStatement.setString(2, waitingListItem.organType.toString().toLowerCase());
+        queryStatement.setString(2, waitingListItem.getOrganType().toString().toLowerCase());
         ResultSet resultSet = queryStatement.executeQuery();
         resultSet.next();
         if (resultSet.getInt(1) != 0) {
@@ -91,13 +92,13 @@ public class Database {
             String deleteQuery = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
             deleteStatement.setLong(1, waitingListItem.getUserId());
-            deleteStatement.setString(2, waitingListItem.organType.toString().toLowerCase());
+            deleteStatement.setString(2, waitingListItem.getOrganType().toString().toLowerCase());
             deleteStatement.executeQuery();
         }
 
         String insert = "INSERT INTO " + currentDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id ) VALUES  (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(insert);
-        statement.setString(1, waitingListItem.organType.toString());
+        statement.setString(1, waitingListItem.getOrganType().toString());
         statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
         statement.setLong(3, currentUser.getId());
         Debugger.log("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
@@ -116,11 +117,10 @@ public class Database {
 
 
     //Uses API server for updating attributes
-    public void updateUserAttributesAndOrgans(User user) throws SQLException {
+    public void updateUserAttributesAndOrgans(User user) {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         Response response = server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
-
 
 
         //TODO Update organ list using api server

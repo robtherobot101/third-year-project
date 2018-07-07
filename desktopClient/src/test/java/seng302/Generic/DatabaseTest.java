@@ -3,7 +3,6 @@ package seng302.Generic;
 import com.google.gson.Gson;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.User.Admin;
 import seng302.User.Attribute.AlcoholConsumption;
@@ -11,17 +10,17 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.Disease;
 import seng302.User.Medication.Medication;
+import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import seng302.User.WaitingListItem;
 
-import static java.lang.Math.toIntExact;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -1,30 +1,21 @@
 package seng302.GUI;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.Controllers.User.UserController;
 import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import static seng302.Generic.IO.streamOut;
-import java.util.ArrayList;
 import java.util.List;
-
-import static seng302.Generic.IO.streamOut;
-
 
 
 /**
@@ -47,10 +38,10 @@ public class CommandLineInterface {
      * @param user The user to update
      */
     private void refreshUser(User user) {
-        for (UserWindowController userWindowController: WindowManager.getCliniciansUserWindows().values()) {
-            if (user == userWindowController.getCurrentUser()) {
-                userWindowController.populateUserAttributes();
-                userWindowController.populateHistoryTable();
+        for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
+            if (user == userController.getCurrentUser()) {
+                userController.populateUserAttributes();
+                userController.populateHistoryTable();
             }
         }
     }
@@ -381,10 +372,6 @@ public class CommandLineInterface {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
             return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            printLine("An error occurred creating a new organ.");
-            return false;
         }
     }
 
@@ -600,10 +587,6 @@ public class CommandLineInterface {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
             return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            printLine("An error occurred removing an organ.");
-            return false;
         }
     }
 
@@ -639,10 +622,6 @@ public class CommandLineInterface {
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            printLine("An error occurred removing a waiting list organ.");
             return false;
         }
     }
@@ -786,12 +765,8 @@ public class CommandLineInterface {
                 break;
         }
         if(wasSuccessful) {
-            try {
-                WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            return true;
         }
         return false;
     }
