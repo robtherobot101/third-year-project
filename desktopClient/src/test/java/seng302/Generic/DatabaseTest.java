@@ -413,7 +413,7 @@ public class DatabaseTest {
     public void loginUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
-        
+
         try {
             database.insertUser(testUser);
 

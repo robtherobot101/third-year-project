@@ -24,7 +24,8 @@ public class APIServer {
     /**
      * Perform a get request to the given endpoint and return the results as a JsonObject
      * @param path The endopint to query
-     * @return The result as a JsonObject
+     * @param queryParams The query parameters
+     * @return The result as a response object
      */
     public Response getRequest(String path, Map<String,String> queryParams) {
         WebTarget target = client.target(url).path(path);
@@ -40,7 +41,13 @@ public class APIServer {
     }
 
 
-    // DISCLAIMER - I have no idea if this works or not ~jma326
+    /**
+     * Perform a post to the given endpoint and return the results as a JsonObject
+     * @param path The endopint to query
+     * @param queryParams The query parameters
+     * @param body The body of the request as a JsonObject
+     * @return The result as a response object
+     */
     public Response postRequest(String path, JsonObject body, Map<String, String> queryParams){
         WebTarget target = client.target(url).path(path);
         // Creates a pointer to the end-point

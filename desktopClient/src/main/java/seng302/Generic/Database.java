@@ -370,7 +370,7 @@ public class Database {
 
     }
 
-
+    // Now uses API server!
     public Response loginUser(String usernameEmail, String password) {
         Map<String,String> queryParameters = new HashMap<String,String>();
         queryParameters.put("usernameEmail", usernameEmail);
