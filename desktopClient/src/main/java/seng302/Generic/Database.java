@@ -737,27 +737,21 @@ public class Database {
     }
 
     public ArrayList<Clinician> getAllClinicians() throws SQLException{
-        ArrayList<Clinician> allClinicans = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".CLINICIAN";
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allClinicans.add(getClinicianFromResultSet(resultSet));
+        Response response = server.getRequest("clinicians", new HashMap<>());
+        if(response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Clinician>>(){}.getType());
+        }else {
+            return new ArrayList<Clinician>();
         }
-
-        return allClinicans;
     }
 
     public ArrayList<Admin> getAllAdmins() throws SQLException{
-        ArrayList<Admin> allAdmins = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".ADMIN";
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allAdmins.add(getAdminFromResultSet(resultSet));
+        Response response = server.getRequest("admins", new HashMap<>());
+        if(response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Admin>>(){}.getType());
+        }else {
+            return new ArrayList<Admin>();
         }
-
-        return allAdmins;
     }
 
     public void removeUser(User user) throws SQLException {
