@@ -1,5 +1,9 @@
 package seng302.Generic;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import seng302.User.Admin;
 import seng302.User.Attribute.*;
 import seng302.User.Clinician;
@@ -7,11 +11,10 @@ import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import java.util.*;
 
 
 public class Database {
@@ -24,6 +27,7 @@ public class Database {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 
+    APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
 
     public int getUserId(String username) throws SQLException{
         String query = "SELECT id FROM " + currentDatabase + ".USER WHERE username = ?";
@@ -605,26 +609,28 @@ public class Database {
         return user;
     }
 
-
+    // Now uses API server!
     public void refreshUserWaitinglists() throws SQLException{
-        String waitingListQuery = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM";
-        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
-        ResultSet waitingListResultSet = waitingListStatement.executeQuery();
+        Response response = server.getRequest("waitingListItems", new HashMap<>());
+        if(response.isValidJson()){
 
-        for (User user: DataManager.users) {
-            user.getWaitingListItems().clear();
-        }
+            //Remove all waiting list items from all users
+            for (User user: DataManager.users) {
+                user.getWaitingListItems().clear();
+            }
 
-        while(waitingListResultSet.next()) {
-            Organ organ = Organ.parse(waitingListResultSet.getString("organ_type"));
-            LocalDate registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate();
-            LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
-            Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
-            Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
-            Integer waitingListId = waitingListResultSet.getInt("id");
+            //Add updated waiting list items backto all users
+            for(JsonElement item:response.getAsJsonArray()){
+                Organ organ = Organ.parse(item.getAsJsonObject().get("organ_type").getAsString());
+                LocalDate registeredDate = LocalDate.parse(item.getAsJsonObject().get("organ_registered_date").getAsString());
+                LocalDate deregisteredDate = item.getAsJsonObject().get("organ_deregistered_date") != null ? LocalDate.parse(item.getAsJsonObject().get("organ_deregistered_date").getAsString()) : null;
+                Long waitinguserId = item.getAsJsonObject().get("user_id").getAsLong();
+                Integer deregisteredCode = item.getAsJsonObject().get("deregistered_code") != null ? item.getAsJsonObject().get("deregistered_code").getAsInt() : null;
+                Integer waitingListId = item.getAsJsonObject().get("id").getAsInt();
 
+                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode, waitingListId));
 
-            SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode, waitingListId));
+            }
         }
     }
 
@@ -720,16 +726,14 @@ public class Database {
         return admin;
     }
 
-    public ArrayList<User> getAllUsers() throws SQLException{
-        ArrayList<User> allUsers = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".USER";
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allUsers.add(getUserFromResultSet(resultSet));
+    // Now uses API server!
+    public List<User> getAllUsers() throws SQLException{
+        Response response = server.getRequest("users", new HashMap<>());
+        if(response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
+        }else {
+            return new ArrayList<User>();
         }
-
-        return allUsers;
     }
 
     public ArrayList<Clinician> getAllClinicians() throws SQLException{

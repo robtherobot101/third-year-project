@@ -9,6 +9,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
 import java.util.Map;
 
 public class APIServer {
@@ -25,21 +26,24 @@ public class APIServer {
      * @param path The endopint to query
      * @return The result as a JsonObject
      */
-    private JsonObject getRequest(String path) {
-        //TODO query params, headers and catch exceptions
-        return jp.parse(client.target(url)
-                // Specifies the endpoint to query
-                .path(path)
-                // Specifies the data content-type
-                .request(MediaType.APPLICATION_JSON)
-                // Performs the GET request and converts to an JsonObject
-                .get(String.class)).getAsJsonObject();
+    public Response getRequest(String path, Map<String,String> queryParams) {
+        WebTarget target = client.target(url).path(path);
+        // Creates a pointer to the end-point
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new Response(target.request(MediaType.APPLICATION_JSON)
+                .get(String.class));
     }
+
 
     // DISCLAIMER - I have no idea if this works or not ~jma326
     public Response postRequest(String path, JsonObject body, Map<String, String> queryParams){
-        // Creates a pointer to the end-point
         WebTarget target = client.target(url).path(path);
+        // Creates a pointer to the end-point
 
         // Adds all the query parameters
         for (Map.Entry<String, String> entry : queryParams.entrySet()) {
@@ -58,6 +62,6 @@ public class APIServer {
      * @return A string containing the version of the queries server
      */
     public String testConnection() {
-        return getRequest("hello").get("version").toString();
+        return getRequest("hello", new HashMap<>()).getAsJsonObject().get("version").toString();
     }
 }

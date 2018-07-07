@@ -17,7 +17,6 @@ public class WaitingListItem {
     protected Integer waitingListItemId;
     protected Long userId;
 
-
     public WaitingListItem(Organ organType, int id, long userId) {
         this.organType = organType;
         this.organRegisteredDate = LocalDate.now();

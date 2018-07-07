@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -14,16 +15,15 @@ public class Response {
     }
 
     public boolean isValidJson(){
-        try{
-            jp.parse(response).getAsJsonObject();
-        }catch(JsonSyntaxException e){
-            return false;
-        }
-        return true;
+        return (jp.parse(response).isJsonArray() || jp.parse(response).isJsonObject());
     }
 
     public JsonObject getAsJsonObject(){
         return jp.parse(response).getAsJsonObject();
+    }
+
+    public JsonArray getAsJsonArray(){
+        return jp.parse(response).getAsJsonArray();
     }
 
     public String getAsString(){
