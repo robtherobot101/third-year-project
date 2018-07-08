@@ -121,10 +121,9 @@ public class Server {
                     before("",                  profileUtils::checkId);
                     get("",                     donationsController::getAllUserDonations);
                     post("",                    donationsController::addDonation);
+                    delete("",                  donationsController::deleteAllUserDonations);
                     get("/:donationListItemName", donationsController::getSingleUserDonationItem);
                     delete("/:donationListItemName", donationsController::deleteUserDonationItem);
-
-
                 });
 
                 path("/:id/waitingListItems", () -> {

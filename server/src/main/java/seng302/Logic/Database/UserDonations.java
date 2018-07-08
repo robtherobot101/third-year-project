@@ -91,4 +91,12 @@ public class UserDonations {
         System.out.println("Deletion of Donation List Item - NAME: " + donationListItemName + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
+    public void removeAllUserDonations(int userId) throws SQLException {
+        String update = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement statement = connection.prepareStatement(update);
+        statement.setInt(1, userId);
+        System.out.println("Deletion of all Donation List Items for - " + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+    }
+
+
 }
