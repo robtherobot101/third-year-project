@@ -299,7 +299,7 @@ public class GeneralUser {
         ResultSet organsResultSet = organsStatement.executeQuery();
 
         while (organsResultSet.next()) {
-            user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
+            user.getOrgans().add(Organ.valueOf(organsResultSet.getString("name")));
         }
 
         //Get all the medications for the given user
