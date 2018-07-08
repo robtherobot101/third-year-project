@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:mobileAppClient" x:Class="mobileAppClient.OrgansPage">
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:mobileAppClient" x:Class="mobileAppClient.OrgansPage" Title="Organs" NavigationPage.HasNavigationBar="True">
     <StackLayout>
         <!-- Place new controls here BUZZ TEST CHANGE 1 -->
         <Label Text="Organs Page" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />

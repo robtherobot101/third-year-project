@@ -26,6 +26,7 @@ namespace mobileAppClient
             var page1 = new MasterPageItem() { Title = "Attributes", Icon = "ic_local_shipping.png", TargetType = typeof(AttributesPage) };
             var page6 = new MasterPageItem() { Title = "Organs", Icon = "ic_my_location.png", TargetType = typeof(OrgansPage) };
             var loginPage = new MasterPageItem() { Title = "Logout", TargetType = typeof(LoginPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", TargetType = typeof(DiseasesPage) };
 
 
             // Adding menu items to menuList
@@ -33,6 +34,7 @@ namespace mobileAppClient
             menuList.Add(page1);
             menuList.Add(page6);
             menuList.Add(loginPage);
+            menuList.Add(diseasesPage);
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
             navigationDrawerList.ItemsSource = menuList;
@@ -40,7 +42,7 @@ namespace mobileAppClient
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(OverviewPage)));
             this.BindingContext = new
             {
-                Header = "heeeeeey",
+                Header = "",
                 Image = "http://www3.hilton.com/resources/media/hi/GSPSCHF/en_US/img/shared/full_page_image_gallery/main/HH_food_22_675x359_FitToBoxSmallDimension_Center.jpg",
                 Footer = "      Welcome To SENG302     "
             };

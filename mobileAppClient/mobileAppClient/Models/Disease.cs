@@ -9,8 +9,10 @@ namespace mobileAppClient
         public bool IsCured { get; set; }
         public int Id { get; set; }
 
-        public Disease()
+        public Disease(string name, int id)
         {
+            this.Name = name;
+            this.Id = id;
         }
     }
 }
