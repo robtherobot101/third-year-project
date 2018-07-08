@@ -10,15 +10,38 @@ namespace mobileAppClient
 {
     public class RequestTester
     {
-        public RequestTester()
+        private String url;
+        public RequestTester(String url)
         {
+            this.url = url;
         }
 
         static HttpClient client = new HttpClient();
 
+        public String connect()
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url + "/hello");
+            try
+            {
+                WebResponse res = req.GetResponse();
+                StreamReader reader = new StreamReader(res.GetResponseStream());
+                JsonTextReader jreader = new JsonTextReader(reader);
+                if (!jreader.Read())
+                {
+                    return "0";
+                }
+                System.Diagnostics.Debug.WriteLine(jreader.TokenType);
+                String s = (String) jreader.Value;
+                return s;
+            }
+            catch (WebException e)
+            {
+                return "0";
+            }
+        }
         public User LiveGetRequestTest() {
             Console.WriteLine("--------------GET SINGLE USER REQUEST-----------------------");
-            HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create("http://csse-s302g3.canterbury.ac.nz:80/api/v1/users/1");
+            HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create(url + "/users/1");
 
             // Get the response.  
             WebResponse response = null;
@@ -80,7 +103,7 @@ namespace mobileAppClient
 
             var content = new StringContent("");
 
-            var response = await client.PostAsync("http://csse-s302g3.canterbury.ac.nz:80/api/v1/login" + queries, content);
+            var response = await client.PostAsync(url + "/login" + queries, content);
             //response.EnsureSuccessStatusCode();
 
             if (response.StatusCode == HttpStatusCode.OK)

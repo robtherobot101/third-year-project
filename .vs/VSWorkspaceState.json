@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\desktopClient",
-    "\\server"
+    "\\mobileAppClient",
+    "\\mobileAppClient\\mobileAppClient"
   ],
-  "SelectedNode": "\\server",
+  "SelectedNode": "\\mobileAppClient\\mobileAppClient.sln",
   "PreviewInSolutionExplorer": false
 }

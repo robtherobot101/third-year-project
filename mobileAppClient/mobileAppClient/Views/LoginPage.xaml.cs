@@ -19,7 +19,17 @@ namespace mobileAppClient
 
         async void LoginButtonClicked(object sender, EventArgs args)
         {
-            RequestTester rt = new RequestTester();
+            if(!Uri.IsWellFormedUriString(serverInput.Text, UriKind.Absolute))
+            {
+                await DisplayAlert("Error", "Invalid server address. Please enter the URL in the form http://domain.tld/path/to/api", "OK");
+                return;
+            }
+            RequestTester rt = new RequestTester(serverInput.Text);
+            //if (!rt.connect().Equals("1"))
+            //{
+            //    await DisplayAlert("Error", "Could not connect to server", "OK");
+            //    return;
+            //}
             bool result = await rt.LoginUser(usernameEmailInput.Text, passwordInput.Text);
             if (!result)
             {
