@@ -205,7 +205,7 @@ public class LoginController implements Initializable {
     }*/
 
     public void login(){
-        Response response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
+        APIResponse response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
         System.out.println(response.getAsString());
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();

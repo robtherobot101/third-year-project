@@ -118,6 +118,19 @@ public class DonationsController {
         }
     }
 
+    public String deleteAllUserDonations(Request request, Response response) {
+        int requestedUserId = Integer.parseInt(request.params(":id"));
+
+        try {
+            model.removeAllUserDonations(requestedUserId);
+            response.status(201);
+            return "ALL DONATION LIST ITEMS FOR USER ID: "+ requestedUserId +" DELETED";
+        } catch (SQLException e) {
+            response.status(500);
+            return e.getMessage();
+        }
+    }
+
     /**
      * Checks for the validity of the request ID, and returns a DonationListItem obj
      * @param request HTTP request

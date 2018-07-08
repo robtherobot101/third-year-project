@@ -32,12 +32,12 @@ public class Database {
     APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
 
     public int getUserId(String username) throws SQLException{
-        String query = "SELECT id FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, username);
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        return resultSet.getInt("id");
+        for(User user:getAllUsers()){
+            if(user.getUsername().equals(username)) {
+                return (int)user.getId();
+            }
+        }
+        return -1;
     }
 
     public int getClinicianId(String username) throws SQLException{
@@ -118,31 +118,39 @@ public class Database {
 
     //Uses API server for updating attributes
     public void updateUserAttributesAndOrgans(User user) {
+        //updateUserAttributes(user);
+        clearUserDonations((int)user.getId());
+        insertAllUserDonations(user);
+        Debugger.log("Update User Attributes and Donations -> Successful");
+    }
+
+
+    private APIResponse updateUserAttributes(User user) {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        Response response = server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
+        System.out.println("Patch: " + userJson);
+        return server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
+    }
 
+    private APIResponse clearUserDonations(int userID) {
+        return server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"donations");
+    }
 
-        //TODO Update organ list using api server
-/*
-        //Organ Updates
-        //First get rid of all the users organs in the table
-        String deleteOrgansQuery = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement deleteOrgansStatement = connection.prepareStatement(deleteOrgansQuery);
-        deleteOrgansStatement.setInt(1, userId);
-        Debugger.log("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated organs
+    private APIResponse insertAllUserDonations(User user) {
         for (Organ organ: user.getOrgans()) {
-            String insertOrgansQuery = "INSERT INTO " + currentDatabase + ".DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
-            PreparedStatement insertOrgansStatement = connection.prepareStatement(insertOrgansQuery);
-            insertOrgansStatement.setString(1, organ.toString());
-            insertOrgansStatement.setInt(2, userId);
-            totalAdded += insertOrgansStatement.executeUpdate();
+            APIResponse response = insertUserDonation(user.getId(), organ);
+            if(response.getStatusCode()!=201) {
+                return new APIResponse(response.getStatusCode());
+            }
+
         }
-        Debugger.log("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);
-*/
+        return new APIResponse(201);
+    }
+
+    private APIResponse insertUserDonation(long userID, Organ organ) {
+        JsonObject organJson = new JsonObject();
+        organJson.addProperty("name", organ.name());
+        return server.postRequest(organJson, new HashMap<>(),"users",String.valueOf(userID),"donations");
     }
 
     public void updateUserProcedures(User user) throws SQLException {
@@ -183,7 +191,6 @@ public class Database {
         }
 
         Debugger.log("Update User Procedures -> Successful -> Rows Updated: " + totalAdded);
-
     }
 
     public void updateUserDiseases(User user) throws SQLException {
@@ -349,7 +356,7 @@ public class Database {
     }
 
     // Now uses API server!
-    public Response loginUser(String usernameEmail, String password) {
+    public APIResponse loginUser(String usernameEmail, String password) {
         Map<String,String> queryParameters = new HashMap<String,String>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
@@ -575,7 +582,7 @@ public class Database {
 
     // Now uses API server!
     public void refreshUserWaitinglists() throws SQLException{
-        Response response = server.getRequest("waitingListItems", new HashMap<>());
+        APIResponse response = server.getRequest(new HashMap<>(),"waitingListItems");
         if(response.isValidJson()){
 
             //Remove all waiting list items from all users
@@ -692,7 +699,7 @@ public class Database {
 
     // Now uses API server!
     public List<User> getAllUsers() throws SQLException{
-        Response response = server.getRequest("users", new HashMap<>());
+        APIResponse response = server.getRequest(new HashMap<>(),"users");
         if(response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
         }else {
@@ -701,7 +708,7 @@ public class Database {
     }
 
     public ArrayList<Clinician> getAllClinicians() throws SQLException{
-        Response response = server.getRequest("clinicians", new HashMap<>());
+        APIResponse response = server.getRequest(new HashMap<>(),"clinicians");
         if(response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Clinician>>(){}.getType());
         }else {
@@ -710,7 +717,7 @@ public class Database {
     }
 
     public ArrayList<Admin> getAllAdmins() throws SQLException{
-        Response response = server.getRequest("admins", new HashMap<>());
+        APIResponse response = server.getRequest(new HashMap<>(),"admins");
         if(response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Admin>>(){}.getType());
         }else {

@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,28 +29,7 @@ public class APIServer {
      * @param queryParams The query parameters
      * @return The result as a response object
      */
-    public Response getRequest(String path, Map<String,String> queryParams) {
-        // Creates a pointer to the api
-        WebTarget target = client.target(url).path(path);
-
-        // Adds all the query parameters
-        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
-            target = target.queryParam(entry.getKey(), entry.getValue());
-        }
-
-        return new Response(target.request(MediaType.APPLICATION_JSON)
-                .get(String.class));
-    }
-
-
-    /**
-     * Perform a post to the given endpoint and return the results as a JsonObject
-     * @param path The endopint to query
-     * @param queryParams The query parameters
-     * @param body The body of the request as a JsonObject
-     * @return The result as a response object
-     */
-    public Response postRequest(JsonObject body, Map<String, String> queryParams, String... path){
+    public APIResponse getRequest(Map<String, String> queryParams, String... path) {
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
@@ -63,13 +43,8 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        System.out.println(target);
-
-        return new Response(target.request(MediaType.APPLICATION_JSON)
-                // Send the data in the post request as JSON -
-                .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON))
-                // Parse the JSON response
-                .readEntity(String.class));
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                .get());
     }
 
 
@@ -80,7 +55,7 @@ public class APIServer {
      * @param body The body of the request as a JsonObject
      * @return The result as a response object
      */
-    public Response patchRequest(JsonObject body, Map<String, String> queryParams, String... path){
+    public APIResponse postRequest(JsonObject body, Map<String, String> queryParams, String... path){
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
@@ -94,11 +69,55 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        System.out.println(target);
-
-        return new Response(target.request(MediaType.APPLICATION_JSON)
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
                 // Send the data in the post request as JSON -
-                .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)).toString());
+                .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+    }
+
+
+    /**
+     * Perform a post to the given endpoint and return the results as a JsonObject
+     * @param path The endopint to query
+     * @param queryParams The query parameters
+     * @param body The body of the request as a JsonObject
+     * @return The result as a response object
+     */
+    public APIResponse patchRequest(JsonObject body, Map<String, String> queryParams, String... path){
+        // Creates a pointer to the api
+        WebTarget target = client.target(url);
+
+        // Adds all the query parameters
+        for(String pathParam:path){
+            target = target.path(pathParam);
+        }
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                // Send the data in the patch request as JSON -
+                .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+    }
+
+    public APIResponse deleteRequest(Map<String, String> queryParams, String... path) {
+        // Creates a pointer to the api
+        WebTarget target = client.target(url);
+
+        // Adds all the query parameters
+        for(String pathParam:path){
+            target = target.path(pathParam);
+        }
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                // Send the data in the post request as JSON -
+                .delete());
     }
 
 
@@ -107,6 +126,6 @@ public class APIServer {
      * @return A string containing the version of the queries server
      */
     public String testConnection() {
-        return getRequest("hello", new HashMap<>()).getAsJsonObject().get("version").toString();
+        return getRequest(new HashMap<>(),"hello").getAsJsonObject().get("version").toString();
     }
 }

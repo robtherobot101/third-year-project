@@ -118,7 +118,7 @@ public class WindowManager extends Application {
             History.printToFile(streamOut, text);
 
             User currentUser = null;
-            Response response = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
+            APIResponse response = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
             if(response.isValidJson()){
                 currentUser = new Gson().fromJson(response.getAsJsonObject(), User.class);
             }

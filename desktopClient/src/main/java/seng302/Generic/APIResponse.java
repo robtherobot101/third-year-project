@@ -10,22 +10,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.ws.rs.core.Response;
 import java.io.StringReader;
 
-public class Response {
-    private String response;
+public class APIResponse{
     private JsonParser jp;
-    public Response(String response){
+    private String body;
+    private int status;
+    public APIResponse(Response response){
         jp = new JsonParser();
-        this.response = response;
+        this.body = response.readEntity(String.class);
+        this.status = response.getStatus();
+    }
+
+    public APIResponse(int status) {
+        this.body = "";
+        this.status = status;
     }
 
     public boolean isValidJson(){
         try{
-            new JSONObject(response);
+            new JSONObject(body);
         } catch (JSONException oe){
             try {
-                new JSONArray(response);
+                new JSONArray(body);
             } catch (JSONException ae){
                 return false;
             }
@@ -34,14 +42,18 @@ public class Response {
     }
 
     public JsonObject getAsJsonObject(){
-        return jp.parse(response).getAsJsonObject();
+        return jp.parse(body).getAsJsonObject();
     }
 
     public JsonArray getAsJsonArray(){
-        return jp.parse(response).getAsJsonArray();
+        return jp.parse(body).getAsJsonArray();
     }
 
     public String getAsString(){
-        return response;
+        return body;
+    }
+
+    public int getStatusCode() {
+        return status;
     }
 }
