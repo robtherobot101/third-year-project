@@ -8,12 +8,17 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
-    public partial class OrgansPage : ContentPage
+    public partial class OrgansPage : ContentPage, UserObserver 
     {
 
         public OrgansPage()
         {
             InitializeComponent();
+        }
+
+        public void updateUser()
+        {
+
         }
     }
 }

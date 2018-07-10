@@ -39,6 +39,7 @@ namespace mobileAppClient
             } else
             {
                 // Pop away login screen on successful login
+                UserController.Instance.Login();
                 await Navigation.PopModalAsync();
             }
         }
