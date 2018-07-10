@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.RegisterPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Register Placeholder"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+
+            <Entry x:Name="firstNameInput" Placeholder="First Name"
+                VerticalOptions="CenterAndExpand" 
+                />
+
+            <Entry x:Name="lastNameInput" Placeholder="Last Name"
+                VerticalOptions="CenterAndExpand" 
+                />
+
+            <DatePicker x:Name="dobInput"
+                Format="D"
+                MinimumDate="01/01/1900"
+                MaximumDate="12/31/2018"
+                />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

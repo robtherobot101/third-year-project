@@ -5,7 +5,7 @@
              x:Class="mobileAppClient.LoginPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Login/Register"
+            <Label Text="Login"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
 
@@ -28,10 +28,10 @@
                 VerticalOptions="CenterAndExpand"
                 Clicked="LoginButtonClicked" />
 
-            <Button Text="Register"
+            <Button Text="Sign Up"
                 HorizontalOptions="Center"
                 VerticalOptions="CenterAndExpand"
-                Clicked="RegisterButtonClicked" />
+                Clicked="SignUpButtonClicked" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

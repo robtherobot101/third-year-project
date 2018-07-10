@@ -18,6 +18,12 @@ namespace mobileAppClient
 			InitializeComponent ();
 		}
 
+        async void SignUpButtonClicked(Object sender, EventArgs args)
+        {
+            var registerPage = new RegisterPage();
+            await Navigation.PushModalAsync(registerPage);
+        }
+
         async void LoginButtonClicked(object sender, EventArgs args)
         {
             // Check server address syntax
