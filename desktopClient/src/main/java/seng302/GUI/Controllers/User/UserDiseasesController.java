@@ -208,11 +208,11 @@ public class UserDiseasesController extends UserTabController implements Initial
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
         History.printToFile(streamOut, text);
-            try {
+            /*try {
                 WindowManager.getDatabase().updateUserDiseases(currentUser);
             } catch (SQLException e) {
                 e.printStackTrace();
-            }
+            }*/
     }
 
     /**

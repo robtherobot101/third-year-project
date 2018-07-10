@@ -1,7 +1,6 @@
 package seng302.User;
 
 import seng302.Generic.DataManager;
-import seng302.Generic.Procedure;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 

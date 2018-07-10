@@ -301,11 +301,12 @@ public class UserMedicationsController extends UserTabController implements Init
         currentUser.getCurrentMedications().addAll(currentItems);
         String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
         History.printToFile(streamOut, text);
-            try {
-                WindowManager.getDatabase().updateUserMedications(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        //WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+        /*try {
+            WindowManager.getDatabase().updateUserMedications(currentUser);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
     }
 
     /**
@@ -393,6 +394,7 @@ public class UserMedicationsController extends UserTabController implements Init
      * @param shown A Boolean where true shows the control buttons and false hides them.
      */
     public void setControlsShown(boolean shown) {
+        System.out.println("setting med buttons shown: " + shown);
         addNewMedicationButton.setVisible(shown);
         deleteMedicationButton.setVisible(shown);
         moveToCurrentButton.setVisible(shown);

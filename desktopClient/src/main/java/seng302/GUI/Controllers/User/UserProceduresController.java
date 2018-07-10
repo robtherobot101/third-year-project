@@ -14,7 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import seng302.Generic.Debugger;
 import seng302.User.History;
-import seng302.Generic.Procedure;
+import seng302.User.Procedure;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -193,11 +193,11 @@ public class UserProceduresController extends UserTabController implements Initi
 
         String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
         History.printToFile(streamOut, text);
-            try {
+            /*try {
                 WindowManager.getDatabase().updateUserProcedures(currentUser);
             } catch (SQLException e) {
                 e.printStackTrace();
-            }
+            }*/
     }
 
     /**

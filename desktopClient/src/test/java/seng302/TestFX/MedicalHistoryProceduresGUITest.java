@@ -11,12 +11,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.Procedure;
+import seng302.User.Procedure;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 

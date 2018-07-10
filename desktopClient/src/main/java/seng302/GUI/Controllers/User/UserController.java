@@ -100,7 +100,11 @@ public class UserController implements Initializable {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-        setWelcomeText("Welcome, " + currentUser.getPreferredName());
+        if (currentUser.getPreferredName() != null) {
+            setWelcomeText("Welcome, " + currentUser.getPreferredName());
+        } else {
+            setWelcomeText("Welcome, " + currentUser.getName());
+        }
 
         diseasesController.setCurrentUser(currentUser);
         proceduresController.setCurrentUser(currentUser);
@@ -343,7 +347,6 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
 
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
             /*try {
                 WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
                 WindowManager.getDatabase().updateUserDiseases(currentUser);
@@ -362,6 +365,8 @@ public class UserController implements Initializable {
             proceduresController.updateUser();
             attributesController.populateUserFields();
             historyController.populateTable();
+            WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
             History.printToFile(streamOut, text);
             titleBar.saved(true);
@@ -372,14 +377,14 @@ public class UserController implements Initializable {
             WindowManager.updateTransplantWaitingList();
 
 
-            int index = 0;
+            /*int index = 0;
             for(User user: DataManager.users) {
                 if(user.getUsername().equals(currentUser.getUsername())) {
                     break;
                 }
                 index++;
             }
-            DataManager.users.set(index, currentUser);
+            DataManager.users.set(index, currentUser);*/
         }
         alert.close();
     }

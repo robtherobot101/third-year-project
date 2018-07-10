@@ -12,6 +12,7 @@ import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.Disease;
 import seng302.User.Medication.Medication;
+import seng302.User.Procedure;
 import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 

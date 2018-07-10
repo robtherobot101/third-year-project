@@ -1,4 +1,4 @@
-package seng302.Generic;
+package seng302.User;
 
 import seng302.User.Attribute.Organ;
 

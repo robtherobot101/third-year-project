@@ -4175,3 +4175,569 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2018-07-08 20:24:15.752: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@2fd61c81
 2018-07-08 20:24:15.759: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5a96727
 2018-07-08 20:26:08.403: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 16:12:47.6: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 16:12:47.989: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 16:12:49.126: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 16:12:49.132: seng302.Generic.SearchUtils -> Empty
+2018-07-10 16:12:50.096: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 16:13:26.712: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 16:13:35.17: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 16:13:35.298: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 16:13:36.241: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 16:13:36.247: seng302.Generic.SearchUtils -> Empty
+2018-07-10 16:13:36.724: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 16:13:50.381: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:16:18.952: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:16:19.532: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:16:21.399: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:16:21.405: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:16:22.673: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:16:30.958: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:16:31.01: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:16:31.016: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:16:49.08: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:16:55.49: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:16:55.665: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:16:55.671: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:16:59.819: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:18:55.098: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:18:55.282: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:18:56.626: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:18:56.632: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:18:57.181: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:19:13.103: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:19:13.126: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:19:13.133: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:19:29.744: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:19:34.119: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:19:34.244: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:19:34.249: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:19:36.086: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:19:36.092: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:20:00.302: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:20:00.308: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:20:16.551: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:22:38.531: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:22:38.66: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:22:39.859: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:22:39.867: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:22:40.399: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:22:46.135: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:22:46.154: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:22:46.16: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:22:55.396: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:23:00.263: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:23:00.399: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:23:00.404: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:23:02.274: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:23:02.286: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:25:10.295: seng302.GUI.Controllers.User.UserController -> Exiting GUI
+2018-07-10 19:25:12.535: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:25:12.547: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:25:17.436: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:25:17.443: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:25:17.449: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:25:24.708: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:25:29.458: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:25:29.571: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:25:29.576: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:25:31.111: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:25:31.116: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:25:37.856: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:25:55.352: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:25:55.652: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:25:56.717: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:25:56.724: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:25:57.699: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:26:02.321: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:26:02.472: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:26:02.477: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:26:04.497: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:26:04.504: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:26:07.639: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/autocomplete.json: Check your inputs and permissions!
+2018-07-10 19:26:07.646: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/activeIngredients.json: Check your inputs and permissions!
+2018-07-10 19:28:14.249: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:18:39 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 10/07/2018, 19:28:14
+-Organs to donate: [].
+2018-07-10 19:28:14.319: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:28:14.404: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-10 19:28:14.414: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@6c03d9fd
+2018-07-10 19:28:14.421: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@29da41d7
+2018-07-10 19:28:14.432: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@168f3b3a
+2018-07-10 19:36:27.903: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:36:33.239: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:36:33.387: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:36:34.635: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:36:34.644: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:36:35.938: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:36:41.658: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:36:41.816: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:36:41.821: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:36:43.717: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:36:43.729: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:36:48.124: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:36:48.139: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:36:57.764: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:18:39 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 10/07/2018, 19:36:57
+-Organs to donate: [].
+2018-07-10 19:36:57.829: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:36:57.868: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:36:57.948: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-10 19:36:57.954: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@4674a92e
+2018-07-10 19:36:57.96: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@41bcbed9
+2018-07-10 19:36:57.971: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@757168cc
+2018-07-10 19:37:01.255: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:41:56.451: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:41:56.581: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:41:57.885: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:41:57.891: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:41:58.479: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:42:05.481: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:42:05.627: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:42:05.632: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:42:08.076: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:42:08.087: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:42:11.556: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:42:11.566: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:42:23.536: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:18:39 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 10/07/2018, 19:42:23
+-Organs to donate: [].
+2018-07-10 19:42:23.617: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:42:23.624: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:42:23.629: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:42:32.542: seng302.GUI.Controllers.User.UserController -> Exiting GUI
+2018-07-10 19:42:34.805: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:42:34.819: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:42:38.336: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:42:38.345: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:42:38.351: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:42:41.933: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:43:47.76: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:43:47.964: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:43:49.198: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:43:49.204: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:43:49.76: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:43:57.396: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:43:57.424: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:43:57.435: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:44:00.494: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:44:55.663: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:44:55.876: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:44:57.123: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:44:57.128: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:44:57.635: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:45:06.541: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:45:06.675: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:45:06.681: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:45:11.712: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:45:11.721: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:45:15.463: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:45:15.472: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:45:21.212: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:18:39 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 10/07/2018, 19:45:21
+-Organs to donate: [].
+2018-07-10 19:45:21.489: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:45:21.495: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:45:21.501: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:45:26.486: seng302.GUI.Controllers.User.UserController -> Exiting GUI
+2018-07-10 19:45:29.354: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:45:29.36: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:45:32.837: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:45:32.844: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:45:32.852: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:45:37.818: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:46:43.263: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:46:43.488: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:46:44.732: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:46:44.738: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:46:45.287: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:46:55.425: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:46:55.555: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:46:55.561: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:47:03.27: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:47:03.279: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:47:07.524: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:47:07.536: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:47:30.124: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:45:20 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 08/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: null
+-Current address: null
+-Last Modified: 10/07/2018, 19:47:30
+-Organs to donate: [].
+2018-07-10 19:47:30.258: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:47:30.264: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:47:30.27: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:48:51.063: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:48:54.029: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:48:54.175: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:48:55.416: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:48:55.421: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:48:55.967: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:49:04.654: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:49:04.675: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:49:04.684: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:49:24.235: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:49:42.712: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:50:21.809: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:50:21.944: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:50:23.078: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:50:23.084: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:50:23.631: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:50:34.057: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:50:34.078: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:50:34.087: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:50:37.376: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:47:28 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 07/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:50:37
+-Organs to donate: [].
+2018-07-10 19:50:38.504: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:47:28 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 07/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:50:38
+-Organs to donate: [].
+2018-07-10 19:50:38.6: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:50:38.606: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:50:38.614: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:50:38.62: seng302.Generic.WindowManager -> Non-critical error caught, probably platform dependent.
+2018-07-10 19:50:38.625: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5e784cdb
+2018-07-10 19:50:38.63: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@5ffb43d8
+2018-07-10 19:50:38.638: seng302.Generic.WindowManager -> [Ljava.lang.StackTraceElement;@154e77ee
+2018-07-10 19:52:37.495: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:52:42.299: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:52:42.419: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:52:43.754: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:52:43.762: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:52:44.435: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:52:55.682: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:52:55.702: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:52:55.708: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:53:03.715: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:52:29 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:53:03
+-Organs to donate: [].
+2018-07-10 19:53:04.934: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:52:29 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:53:04
+-Organs to donate: [].
+2018-07-10 19:53:05.058: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:53:05.064: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:53:05.069: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:53:09.731: seng302.GUI.Controllers.User.UserController -> Exiting GUI
+2018-07-10 19:53:09.758: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:53:12.479: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:53:12.628: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:53:13.724: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:53:13.73: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:53:14.266: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:53:29.636: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:53:29.71: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:53:29.716: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:53:36.584: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:53:36.59: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:53:44.894: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:53:44.905: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:53:44.91: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:53:51.639: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:53:54.789: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:53:54.796: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:53:54.802: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:54:23.83: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:55:48.11: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:55:48.286: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:55:49.349: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:55:49.354: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:55:49.942: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:55:54.976: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:55:55.008: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:55:55.014: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:55:59.246: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:54:53 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:55:59
+-Organs to donate: [].
+2018-07-10 19:56:01.329: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:54:53 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 09/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:56:01
+-Organs to donate: [].
+2018-07-10 19:56:01.459: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:56:01.467: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:56:01.472: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:56:53.208: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:56:57.659: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:56:57.811: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:56:59.165: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:56:59.171: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:56:59.72: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:57:05.424: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:57:05.443: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:57:05.449: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:57:12.918: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:56:00 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 08/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdfasdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:57:12
+-Organs to donate: [].
+2018-07-10 19:57:14.695: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:56:00 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 08/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdfasdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:57:14
+-Organs to donate: [].
+2018-07-10 19:57:14.811: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:57:14.817: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:57:14.824: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:57:20.846: seng302.GUI.Controllers.User.UserController -> Exiting GUI
+2018-07-10 19:57:20.873: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:57:23.565: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:57:23.704: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:57:25.065: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:57:25.071: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:57:25.612: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:57:31.759: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:57:31.78: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:57:31.786: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:58:06.989: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:58:09.901: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:58:10.035: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:58:11.206: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:58:11.212: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:58:11.78: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:58:16.438: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:58:16.572: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:58:16.578: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:58:18.497: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:58:18.505: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:58:24.645: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:57:13 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 07/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:58:24
+-Organs to donate: [].
+2018-07-10 19:58:25.791: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:57:13 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 07/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:58:25
+-Organs to donate: [].
+2018-07-10 19:58:25.957: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:58:25.964: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:58:25.969: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:58:38.947: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:58:41.402: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:58:41.568: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:58:42.951: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:58:42.956: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:58:43.507: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:58:49.034: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:58:49.055: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:58:49.064: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:58:56.939: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:58:59.55: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:58:59.683: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:59:00.985: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:59:00.997: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:59:01.589: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:59:06.67: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as clinician...
+2018-07-10 19:59:06.807: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:59:06.812: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:59:09.737: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:59:09.744: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 19:59:14.754: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:59:14.764: seng302.Generic.IO -> Opened user file successfully.
+2018-07-10 19:59:19.452: seng302.GUI.Controllers.User.UserAttributesController -> User (ID 8) created at 10/07/2018, 07:58:24 
+-Name: Andrew Daveo Davidson
+-Preferred Name: Andrew Daveo Davidson
+-Date of Birth: 06/07/2018
+-Date of death: null
+-Gender: null
+-Height: 0.00
+-Weight: 0.00
+-Blood type: null
+-Region: asdf
+-Current address: null
+-Last Modified: 10/07/2018, 19:59:19
+-Organs to donate: [].
+2018-07-10 19:59:19.761: seng302.Generic.Database -> Update User Attributes and Donations -> Successful
+2018-07-10 19:59:19.768: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:59:19.774: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:59:23.71: seng302.Generic.WindowManager -> Exiting GUI
+2018-07-10 19:59:26.268: seng302.Generic.Database -> com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-07-10 19:59:26.494: seng302.Generic.IO -> IOException on C:\Files\Programming\team-300\desktopClient\target/interactions.json: Check your inputs and permissions!
+2018-07-10 19:59:27.727: seng302.Generic.SearchUtils -> search: ''
+2018-07-10 19:59:27.733: seng302.Generic.SearchUtils -> Empty
+2018-07-10 19:59:28.299: seng302.GUI.Controllers.User.UserController -> Setting this as the main user window controller. This should NOT be coming up if this is a child window (popup from clinician or admin)
+2018-07-10 19:59:33.93: seng302.GUI.Controllers.LoginController -> LoginController: Logging in as user...
+2018-07-10 19:59:33.951: seng302.GUI.Controllers.User.UserDiseasesController -> Setting donor of Medical History pane...
+2018-07-10 19:59:33.958: seng302.GUI.Controllers.User.UserProceduresController -> MedicalHistoryProcedureController: Setting donor of Medical History pane...
+2018-07-10 20:16:19.648: seng302.Generic.WindowManager -> Exiting GUI

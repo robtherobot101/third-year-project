@@ -10,6 +10,7 @@ import seng302.User.Attribute.*;
 import seng302.User.Clinician;
 import seng302.User.Disease;
 import seng302.User.Medication.Medication;
+import seng302.User.Procedure;
 import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 
@@ -118,7 +119,7 @@ public class Database {
 
     //Uses API server for updating attributes
     public void updateUserAttributesAndOrgans(User user) {
-        //updateUserAttributes(user);
+        System.out.println(updateUserAttributes(user).getAsString());
         clearUserDonations((int)user.getId());
         insertAllUserDonations(user);
         Debugger.log("Update User Attributes and Donations -> Successful");
