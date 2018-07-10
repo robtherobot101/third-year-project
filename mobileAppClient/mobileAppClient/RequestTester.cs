@@ -90,35 +90,6 @@ namespace mobileAppClient
           
         }
 
-        public async Task<bool> LoginUser(String usernameEmail, String password)
-        {
-            String queries = null;
-            if (usernameEmail == "" || password == "")
-            {
-                // No valid identification provided -> return non-successful
-                return false;
-            }
 
-            queries = String.Format("?usernameEmail={0}&password={1}", usernameEmail, password);
-
-            var content = new StringContent("");
-
-            var response = await client.PostAsync(url + "/login" + queries, content);
-            //response.EnsureSuccessStatusCode();
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                UserController uc = UserController.Instance;
-                var responseContent = await response.Content.ReadAsStringAsync();
-                User user = JsonConvert.DeserializeObject<User>(responseContent);
-                uc.LoggedInUser = user;
-                Console.WriteLine("Logged in as " + uc.LoggedInUser.Name.ToString());
-                return true;
-            } else
-            {   
-                Console.WriteLine(String.Format("Failed login ({0})", response.StatusCode));
-                return false;
-            }
-        }
     }
 }

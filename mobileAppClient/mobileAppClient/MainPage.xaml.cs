@@ -50,27 +50,30 @@ namespace mobileAppClient
 
         private async void OpenLogin()
         {
+            // Logout any currently stored user
+            UserController.Instance.Logout();
+
+            // Open the login page
             var loginPage = new LoginPage();
             await Navigation.PushModalAsync(loginPage);
         }
 
 
-        private async void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            
             var item = (MasterPageItem)e.SelectedItem;
             Type page = item.TargetType;
-            // Is there a better way to engage the logout button than creating a fake masterdetailpage and catching it here?
-            if (page.Name == "LoginPage")
+
+            switch(page.Name)
             {
-                var loginPage = new LoginPage();
-                await Navigation.PushModalAsync(loginPage);
-            } else
-            {
-                Detail = new NavigationPage((Page)Activator.CreateInstance(page));
-                IsPresented = false;
+                case "LoginPage":
+                    OpenLogin();
+                    break;
+                default:
+                    Detail = new NavigationPage((Page)Activator.CreateInstance(page));
+                    IsPresented = false;
+                    break;
             }
-            
         }
     }
 }
