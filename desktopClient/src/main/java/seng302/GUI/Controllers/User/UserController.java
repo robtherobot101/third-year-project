@@ -367,7 +367,7 @@ public class UserController implements Initializable {
             historyController.populateTable();
             WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
             WindowManager.getDatabase().updateUserProcedures(currentUser);
-
+            WindowManager.getDatabase().updateUserDiseases(currentUser);
 
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");

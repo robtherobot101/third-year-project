@@ -184,39 +184,37 @@ public class Database {
         }
     }
 
-    public void updateUserDiseases(User user) throws SQLException {
+    public void updateUserDiseases(User user) {
         int userId = getUserId(user.getUsername());
 
         //Disease Updates
         //First get rid of all the users diseases in the table
-        String deleteDiseasesQuery = "DELETE FROM " + currentDatabase + ".DISEASE WHERE user_id = ?";
-        PreparedStatement deleteDiseasesStatement = connection.prepareStatement(deleteDiseasesQuery);
-        deleteDiseasesStatement.setInt(1, userId);
-        Debugger.log("Disease rows deleted: " + deleteDiseasesStatement.executeUpdate());
+        clearUserDiseases(userId);
 
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated diseases
-        ArrayList<Disease> allDiseases = new ArrayList<>();
-        allDiseases.addAll(user.getCurrentDiseases());
-        allDiseases.addAll(user.getCuredDiseases());
-        for (Disease disease: allDiseases) {
-            String insertDiseasesQuery = "INSERT INTO " + currentDatabase + ".DISEASE (name, diagnosis_date, is_cured, is_chronic, user_id) " +
-                    "VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement insertDiseasesStatement = connection.prepareStatement(insertDiseasesQuery);
-
-            insertDiseasesStatement.setString(1, disease.getName());
-            insertDiseasesStatement.setDate(2, java.sql.Date.valueOf(disease.getDiagnosisDate()));
-            insertDiseasesStatement.setBoolean(3, disease.isCured());
-            insertDiseasesStatement.setBoolean(4, disease.isChronic());
-            insertDiseasesStatement.setInt(5, userId);
-
-            totalAdded += insertDiseasesStatement.executeUpdate();
+        for (Disease disease: user.getCuredDiseases()) {
+            JsonParser jp = new JsonParser();
+            JsonObject diseaseJson = jp.parse(new Gson().toJson(disease)).getAsJsonObject();
+            server.postRequest(diseaseJson, new HashMap<String, String>(), "users",String.valueOf(userId), "diseases");
         }
 
-        Debugger.log("Update User Diseases -> Successful -> Rows Updated: " + totalAdded);
-
+        for (Disease disease: user.getCurrentDiseases()) {
+            JsonParser jp = new JsonParser();
+            JsonObject diseaseJson = jp.parse(new Gson().toJson(disease)).getAsJsonObject();
+            server.postRequest(diseaseJson, new HashMap<String, String>(), "users",String.valueOf(userId), "diseases");
+        }
     }
+
+    private void clearUserDiseases(int userID) {
+        APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(userID),"diseases");
+        System.out.println(response.getAsString());
+        if(response.isValidJson()){
+            for(JsonElement diseaseJson: response.getAsJsonArray()) {
+                int procedureId = ((JsonObject)diseaseJson).get("id").getAsInt();
+                System.out.println(server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"diseases",String.valueOf(procedureId)).getAsString());
+            }
+        }
+    }
+
 
     public void updateUserMedications(User user) throws SQLException {
         int userId = getUserId(user.getUsername());
