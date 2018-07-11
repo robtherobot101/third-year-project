@@ -32,7 +32,7 @@ public class Database {
 
     APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
 
-    public int getUserId(String username) throws SQLException{
+    public int getUserId(String username) {
         for(User user:getAllUsers()){
             if(user.getUsername().equals(username)) {
                 return (int)user.getId();
@@ -119,7 +119,7 @@ public class Database {
 
     //Uses API server for updating attributes
     public void updateUserAttributesAndOrgans(User user) {
-        System.out.println(updateUserAttributes(user).getAsString());
+        updateUserAttributes(user).getAsString();
         clearUserDonations((int)user.getId());
         insertAllUserDonations(user);
         Debugger.log("Update User Attributes and Donations -> Successful");
@@ -154,44 +154,34 @@ public class Database {
         return server.postRequest(organJson, new HashMap<>(),"users",String.valueOf(userID),"donations");
     }
 
-    public void updateUserProcedures(User user) throws SQLException {
+    public void updateUserProcedures(User user) {
         int userId = getUserId(user.getUsername());
 
         //Procedure Updates
         //First get rid of all the users procedures in the table
-        String deleteProceduresQuery = "DELETE FROM " + currentDatabase + ".PROCEDURES WHERE user_id = ?";
-        PreparedStatement deleteProceduresStatement = connection.prepareStatement(deleteProceduresQuery);
-        deleteProceduresStatement.setInt(1, userId);
-        Debugger.log("Procedure rows deleted: " + deleteProceduresStatement.executeUpdate());
+        clearUserProcedures(userId);
 
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated procedures
-        ArrayList<Procedure> allProcedures = new ArrayList<>();
-        allProcedures.addAll(user.getPendingProcedures());
-        allProcedures.addAll(user.getPreviousProcedures());
-        for (Procedure procedure: allProcedures) {
-            String insertProceduresQuery = "INSERT INTO " + currentDatabase + ".PROCEDURES (summary, description, date, organs_affected, user_id) " +
-                    "VALUES(?, ?, ?, ?, ?)";
-            PreparedStatement insertProceduresStatement = connection.prepareStatement(insertProceduresQuery);
-
-            insertProceduresStatement.setString(1, procedure.getSummary());
-            insertProceduresStatement.setString(2, procedure.getDescription());
-            insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
-
-            String organsAffected = "";
-            for (Organ organ: procedure.getOrgansAffected()) {
-                organsAffected += organ.toString() + ",";
-            }
-            organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
-
-            insertProceduresStatement.setString(4, organsAffected);
-            insertProceduresStatement.setInt(5, userId);
-
-            totalAdded += insertProceduresStatement.executeUpdate();
+        for (Procedure procedure: user.getPendingProcedures()) {
+            JsonParser jp = new JsonParser();
+            JsonObject procedureJson = jp.parse(new Gson().toJson(procedure)).getAsJsonObject();
+            server.postRequest(procedureJson, new HashMap<String, String>(), "users",String.valueOf(userId), "procedures");
         }
 
-        Debugger.log("Update User Procedures -> Successful -> Rows Updated: " + totalAdded);
+        for (Procedure procedure: user.getPreviousProcedures()) {
+            JsonParser jp = new JsonParser();
+            JsonObject procedureJson = jp.parse(new Gson().toJson(procedure)).getAsJsonObject();
+            server.postRequest(procedureJson, new HashMap<String, String>(), "users",String.valueOf(userId), "procedures");
+        }
+    }
+
+    private void clearUserProcedures(int userID) {
+        APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(userID),"procedures");
+        if(response.isValidJson()){
+            for(JsonElement procedureJson: response.getAsJsonArray()) {
+                int procedureId = ((JsonObject)procedureJson).get("id").getAsInt();
+                server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"procedures",String.valueOf(procedureId));
+            }
+        }
     }
 
     public void updateUserDiseases(User user) throws SQLException {
@@ -699,7 +689,7 @@ public class Database {
     }
 
     // Now uses API server!
-    public List<User> getAllUsers() throws SQLException{
+    public List<User> getAllUsers() {
         APIResponse response = server.getRequest(new HashMap<>(),"users");
         if(response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
