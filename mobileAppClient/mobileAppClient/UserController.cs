@@ -7,7 +7,6 @@ namespace mobileAppClient
     sealed class UserController
     {
         public User LoggedInUser { get; set; }
-        public String serverAddress { get; set; }
         private String AuthToken { get; set; }
 
         private List<UserObserver> userObservers;
@@ -38,6 +37,7 @@ namespace mobileAppClient
 
         private UserController()
         {
+            
             userObservers = new List<UserObserver>();
         }
     }

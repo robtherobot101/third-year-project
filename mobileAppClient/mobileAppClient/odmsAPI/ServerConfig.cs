@@ -22,6 +22,9 @@ namespace mobileAppClient.odmsAPI
         private ServerConfig()
         {
             client = new HttpClient();
+
+            // Sets default addr -> needed for register pane
+            serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/api/vi";
         }
     }
 }

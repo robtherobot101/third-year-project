@@ -33,6 +33,14 @@ namespace mobileAppClient
                 return;
             }
 
+            if (usernameEmailInput.Text == null || passwordInput.Text == null)
+            {
+                await DisplayAlert("",
+                    "Please enter a username/email and password",
+                    "OK");
+                return;
+            }
+
             LoginAPI loginAPI = new LoginAPI();
             bool result = await Task.Run(() => loginAPI.LoginUser(usernameEmailInput.Text, passwordInput.Text, serverInput.Text));
 
@@ -48,6 +56,11 @@ namespace mobileAppClient
                 UserController.Instance.Login();
                 await Navigation.PopModalAsync();
             }
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
 
         async void RegisterButtonClicked(object sender, EventArgs args)

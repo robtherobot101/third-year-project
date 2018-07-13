@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\mobileAppClient",
-    "\\mobileAppClient\\mobileAppClient"
+    "\\mobileAppClient\\mobileAppClient",
+    "\\mobileAppClient\\mobileAppClient\\Models"
   ],
-  "SelectedNode": "\\mobileAppClient\\mobileAppClient.sln",
+  "SelectedNode": "\\mobileAppClient\\mobileAppClient\\Models\\CustomDateTime.cs",
   "PreviewInSolutionExplorer": false
 }
