@@ -89,7 +89,11 @@ public class UserWaitingList {
         PreparedStatement statement = connection.prepareStatement(insert);
         statement.setString(1, waitingListItem.getOrganType().toString());
         statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
-        statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+        if(waitingListItem.getOrganDeregisteredDate() == null) {
+            statement.setNull(3, Types.DATE);
+        }else{
+            statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+        }
         statement.setInt(4, waitingListItem.getOrganDeregisteredCode());
         statement.setInt(5, userId);
 
