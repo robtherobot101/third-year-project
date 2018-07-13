@@ -10,14 +10,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
+import seng302.Generic.SearchUtils;
 import seng302.User.History;
-import seng302.User.ReceiverWaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -33,7 +33,7 @@ public class UserWaitingListController extends UserTabController implements Init
     @FXML
     private Button registerOrganButton, deregisterOrganButton;
     @FXML
-    private TableView<ReceiverWaitingListItem> waitingListTableView;
+    private TableView<WaitingListItem> waitingListTableView;
     @FXML
     private ComboBox<Organ> organTypeComboBox;
     @FXML
@@ -41,7 +41,7 @@ public class UserWaitingListController extends UserTabController implements Init
     @FXML
     private Label organComboBoxLabel, transplantWaitingListLabel;
 
-    private ObservableList<ReceiverWaitingListItem> waitingListItems = FXCollections.observableArrayList();
+    private ObservableList<WaitingListItem> waitingListItems = FXCollections.observableArrayList();
     private ObservableList<Organ> organsInDropDown = FXCollections.observableArrayList(Arrays.asList(Organ.values()));
 
     /**
@@ -64,15 +64,12 @@ public class UserWaitingListController extends UserTabController implements Init
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
             userController.addCurrentUserToUndoStack();
-            ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected, currentUser.getWaitingListItems().size(), currentUser.getId());
-            currentUser.getWaitingListItems().add(temp);
-            try {
-                WindowManager.getDatabase().insertWaitingListItem(currentUser, temp);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+            WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
+
+            currentUser.getWaitingListItems().add(newWaitingListItem);
             populateWaitingList();
-            statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
+            statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
 
         }
         populateOrgansComboBox();
@@ -88,11 +85,17 @@ public class UserWaitingListController extends UserTabController implements Init
     public void deregisterOrgan() {
         String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
         History.printToFile(streamOut, text);
-        ReceiverWaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
+        WaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             userController.addCurrentUserToUndoStack();
             WindowManager.showDeregisterDialog(waitingListItemSelected);
-            //statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
+            System.out.println(currentUser.hashCode());
+            System.out.println(SearchUtils.getUserById(currentUser.getId()).hashCode());
+            System.out.println(currentUser.equals(SearchUtils.getUserById(currentUser.getId())));
+            for(WaitingListItem i: SearchUtils.getUserById(currentUser.getId()).getWaitingListItems()){
+                i.deregisterOrgan(3);
+            }
+            statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }
         populateOrgansComboBox();
@@ -133,7 +136,7 @@ public class UserWaitingListController extends UserTabController implements Init
     public void populateOrgansComboBox() {
         ArrayList<Organ> toBeRemoved = new ArrayList<>();
         ArrayList<Organ> toBeAdded = new ArrayList<>(Arrays.asList(Organ.values()));
-        for (ReceiverWaitingListItem waitingListItem : waitingListItems) {
+        for (WaitingListItem waitingListItem : waitingListItems) {
             for (Organ type : Organ.values()) {
                 if (waitingListItem.getOrganType() == type) {
                     if (waitingListItem.getStillWaitingOn()) {
@@ -190,12 +193,12 @@ public class UserWaitingListController extends UserTabController implements Init
             }
         });
 
-        waitingListTableView.setRowFactory(new Callback<TableView<ReceiverWaitingListItem>, TableRow<ReceiverWaitingListItem>>() {
+        waitingListTableView.setRowFactory(new Callback<TableView<WaitingListItem>, TableRow<WaitingListItem>>() {
             @Override
-            public TableRow<ReceiverWaitingListItem> call(TableView<ReceiverWaitingListItem> tableView) {
-                return new TableRow<ReceiverWaitingListItem>() {
+            public TableRow<WaitingListItem> call(TableView<WaitingListItem> tableView) {
+                return new TableRow<WaitingListItem>() {
                     @Override
-                    public void updateItem(ReceiverWaitingListItem item, boolean empty) {
+                    public void updateItem(WaitingListItem item, boolean empty) {
                         super.updateItem(item, empty);
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);

@@ -91,6 +91,7 @@ public class UserWaitingList {
         statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
         statement.setInt(3, userId);
         System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
+
     }
 
     public void updateWaitingListItem(WaitingListItem waitingListItem, int waitingListItemId, int userId) throws SQLException {

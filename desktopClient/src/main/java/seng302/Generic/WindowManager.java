@@ -117,13 +117,7 @@ public class WindowManager extends Application {
             String text = History.prepareFileStringGUI(user.getId(), "view");
             History.printToFile(streamOut, text);
 
-            User currentUser = null;
-            APIResponse response = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
-            if(response.isValidJson()){
-                currentUser = new Gson().fromJson(response.getAsJsonObject(), User.class);
-            }
-
-            newUserController.setCurrentUser(currentUser);
+            newUserController.setCurrentUser(user);
             newUserController.setControlsShown(true);
             cliniciansUserWindows.put(stage, newUserController);
 
@@ -414,7 +408,7 @@ public class WindowManager extends Application {
                 Debugger.log("Refreshing...");
                 DataManager.users.clear();
                 try {
-                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -429,7 +423,7 @@ public class WindowManager extends Application {
             if (event.getCode() == KeyCode.F5) {
                 DataManager.users.clear();
                 try {
-                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    DataManager.addAllUsers(getDatabase().getAllUsers());
 
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
@@ -445,7 +439,7 @@ public class WindowManager extends Application {
             if (event.getCode() == KeyCode.F5) {
                 DataManager.users.clear();
                 try {
-                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
                     e.printStackTrace();

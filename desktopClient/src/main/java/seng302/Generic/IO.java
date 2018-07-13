@@ -184,7 +184,7 @@ public class IO {
                 ProfileReader<User> userReader = new UserReaderJSON();
                 List<User> readUsers = userReader.getProfiles(path);
                 if (readUsers != null) {
-                    DataManager.users.addAll(readUsers);
+                    DataManager.addAllUsers(readUsers);
                 }
                 return true;
             case CLINICIAN:
@@ -210,7 +210,7 @@ public class IO {
         ProfileReader<User> userReader = new UserReaderCSV();
         List<User> readUsers = userReader.getProfiles(path);
         if (readUsers != null) {
-            DataManager.users.addAll(readUsers);
+            DataManager.addAllUsers(readUsers);
         }
         return true;
     }

@@ -19,12 +19,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.User.ReceiverWaitingListItem;
-import seng302.User.TransplantWaitingListItem;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -130,7 +129,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      *
      * @return The items in the transplant waiting list
      */
-    public List<ReceiverWaitingListItem> waitingListItems() {
+    public List<WaitingListItem> waitingListItems() {
         ArrayList waitingListItems = new ArrayList<>();
         for (Object o : lookup("#waitingListTableView").queryTableView().getItems()) {
             waitingListItems.add(o);
@@ -149,7 +148,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     @Ignore
     @Test
     public void receiverCannotUpdateTransplantWaitingList() throws TimeoutException {
-        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.BONE,(long)-1));
+        user.getWaitingListItems().add(new WaitingListItem("","",-1,Organ.BONE));
         usersTransplantWaitingListAsUser();
         assert (!lookup("#registerOrganButton").query().isVisible());
         assert (!lookup("#deregisterOrganButton").query().isVisible());
@@ -194,8 +193,7 @@ public class UserWaitingListGUITest extends TestFXTest {
         usersTransplantWaitingListAsClinician();
         register(Organ.LIVER);
         deregister(Organ.LIVER);
-        assert (!waitingListItems().get(0).getStillWaitingOn());
-        assert (waitingListItems().get(0).getOrganDeregisteredDate() != null);
+        assert (!(waitingListItems().get(0).getStillWaitingOn()));
     }
 
     @Test
@@ -227,15 +225,15 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
 
-    public boolean transplantListHasItem(TableView<TransplantWaitingListItem> table, Organ organ, String receiverName){
+    public boolean transplantListHasItem(TableView<WaitingListItem> table, Organ organ, String receiverName){
         return getTransplantListItem(table,organ,receiverName)!=null;
     }
 
-    public TransplantWaitingListItem getTransplantListItem(TableView<TransplantWaitingListItem> table, Organ organ, String receiverName){
-        for(TransplantWaitingListItem item:table.getItems()){
-            System.out.println("item name: "+item.getName());
+    public WaitingListItem getTransplantListItem(TableView<WaitingListItem> table, Organ organ, String receiverName){
+        for(WaitingListItem item:table.getItems()){
+            System.out.println("item name: "+item.getReceiverName());
             System.out.println("item organ: "+item.getOrganType());
-            if(item.getName().equals(receiverName) && item.getOrganType()==organ){
+            if(item.getReceiverName().equals(receiverName) && item.getOrganType()==organ){
                 return item;
             }
         }
@@ -269,7 +267,9 @@ public class UserWaitingListGUITest extends TestFXTest {
     @Ignore
     @Test
     public void changeClinicianList_userWaitingListUpdated() throws TimeoutException {
-        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.HEART,0, user.getId()));
+        user.getWaitingListItems().add(
+                new WaitingListItem("","",user.getId(),Organ.HEART));
+
         openClinicianWindow(new Clinician("test","test","test"));
         waitForNodeVisible(5,"#transplantListButton");
         clickOn("#transplantListButton");

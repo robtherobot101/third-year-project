@@ -6,9 +6,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.DataManager;
-import seng302.User.ReceiverWaitingListItem;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -65,7 +65,7 @@ public class UserTest {
     @Test
     public void testIsReceiver_registeredOrgansInWaitingList_returnsTrue() {
         User user = DataManager.users.get(0);
-        ReceiverWaitingListItem newItem = new ReceiverWaitingListItem(Organ.LIVER, 0, 0);
+        WaitingListItem newItem = new WaitingListItem("","",0, Organ.LIVER);
         newItem.registerOrgan();
         user.getWaitingListItems().add(newItem);
         assertTrue(user.isReceiver());
@@ -74,7 +74,8 @@ public class UserTest {
     @Test
     public void testConflictingOrgans_noConflictingOrgans_returnsEmptySet(){
         User user = new User("test user", LocalDate.now());
-        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.HEART,(long)-1));
+        user.getWaitingListItems().add(
+                new WaitingListItem("","",-1,Organ.HEART));
         user.getOrgans().add(Organ.KIDNEY);
         assertTrue(user.conflictingOrgans().isEmpty());
     }
@@ -82,8 +83,8 @@ public class UserTest {
     @Test
     public void testConflictingOrgans_conflictingOrgans_returnsConflictingOrgans(){
         User user = new User("test user", LocalDate.now());
-        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.KIDNEY,(long)-1));
-        user.getWaitingListItems().add(new ReceiverWaitingListItem(Organ.HEART,(long)-1));
+        user.getWaitingListItems().add(new WaitingListItem("","",-1,Organ.KIDNEY));
+        user.getWaitingListItems().add(new WaitingListItem("","",-1,Organ.HEART));
         user.getOrgans().add(Organ.KIDNEY);
         user.getOrgans().add(Organ.HEART);
         assertEquals(new HashSet<Organ>(Arrays.asList(Organ.KIDNEY,Organ.HEART)),user.conflictingOrgans());
@@ -93,7 +94,7 @@ public class UserTest {
     @Test
     public void testIsReceiver_noRegisteredOrgansInWaitingList_returnsFalse() {
         User user = DataManager.users.get(0);
-        ReceiverWaitingListItem newItem = new ReceiverWaitingListItem(Organ.LIVER, 0, 0);
+        WaitingListItem newItem = new WaitingListItem("","",-1,Organ.LIVER);
         newItem.registerOrgan();
         //TODO fix this test
         //newItem.deregisterOrgan();

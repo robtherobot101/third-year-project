@@ -11,7 +11,6 @@ import seng302.User.Clinician;
 import seng302.User.Disease;
 import seng302.User.Medication.Medication;
 import seng302.User.Procedure;
-import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 
 import java.sql.*;
@@ -105,6 +104,37 @@ public class Database {
         Debugger.log("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
     }
 
+    public void updateWaitingListItems(User user){
+        int userId = getUserId(user.getUsername());
+
+        //First get rid of all the users waiting list items in the table
+        clearUserWaitingListItems(userId);
+
+        for (WaitingListItem item: user.getWaitingListItems()) {
+
+            JsonObject waitingListItemJson = new JsonObject();
+            waitingListItemJson.addProperty("organType", item.getOrganType().name());
+            waitingListItemJson.add("organRegisteredDate", new Gson().toJsonTree(item.getOrganRegisteredDate(),LocalDate.class));
+            waitingListItemJson.add("organDeregisteredDate", new Gson().toJsonTree(item.organDeregisteredDate(),LocalDate.class));
+            waitingListItemJson.addProperty("organDeregisteredCode", item.getOrganDeregisteredCode());
+            waitingListItemJson.addProperty("userId", item.getUserId());
+            System.out.println("Item: " + waitingListItemJson);
+            APIResponse res = server.postRequest(waitingListItemJson, new HashMap<String, String>(), "users",String.valueOf(userId), "waitingListItems");
+            System.out.println("Response: " + res.getAsString());
+
+        }
+    }
+
+    private void clearUserWaitingListItems(int userId){
+        APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(userId),"waitingListItems");
+        if(response.isValidJson()){
+            for(JsonElement itemJson: response.getAsJsonArray()) {
+                int itemId = ((JsonObject)itemJson).get("id").getAsInt();
+                server.deleteRequest(new HashMap<>(), "users",String.valueOf(userId),"waitingListItems",String.valueOf(itemId));
+            }
+        }
+    }
+
     public void updateUserAccountSettings(User user, int userId) throws SQLException {
         String update = "UPDATE " + currentDatabase + ".USER SET username = ?, email = ?, password = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(update);
@@ -113,7 +143,6 @@ public class Database {
         statement.setString(3, user.getPassword());
         statement.setInt(4, userId);
         Debugger.log("Update User Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
-
     }
 
 
@@ -206,11 +235,10 @@ public class Database {
 
     private void clearUserDiseases(int userID) {
         APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(userID),"diseases");
-        System.out.println(response.getAsString());
         if(response.isValidJson()){
             for(JsonElement diseaseJson: response.getAsJsonArray()) {
                 int procedureId = ((JsonObject)diseaseJson).get("id").getAsInt();
-                System.out.println(server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"diseases",String.valueOf(procedureId)).getAsString());
+                server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"diseases",String.valueOf(procedureId));
             }
         }
     }
@@ -353,6 +381,13 @@ public class Database {
     }
 
     public User getUserFromId(int id) throws SQLException {
+        //TODO add procedures,waitingListItems, diseases, etc. Need to finish "getUserFromResultSet"
+        APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(id));
+        if(response.isValidJson()){
+            return new Gson().fromJson(response.getAsJsonObject(), User.class);
+        }
+        return null;
+/*
         // SELECT * FROM USER id = id;
         String query = "SELECT * FROM " + currentDatabase + ".USER WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -368,6 +403,7 @@ public class Database {
             return getUserFromResultSet(resultSet);
         }
 
+*/
     }
 
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
@@ -564,7 +600,7 @@ public class Database {
             Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
             Integer waitingListId = waitingListResultSet.getInt("id");
 
-            user.getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode, waitingListId));
+            user.getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),registeredDate,deregisteredDate,deregisteredCode,organ));
         }
         return user;
     }
@@ -581,28 +617,18 @@ public class Database {
 
             //Add updated waiting list items backto all users
             for(JsonElement item:response.getAsJsonArray()){
-                Organ organ = Organ.parse(item.getAsJsonObject().get("organ_type").getAsString());
-                LocalDate registeredDate = LocalDate.parse(item.getAsJsonObject().get("organ_registered_date").getAsString());
-                LocalDate deregisteredDate = item.getAsJsonObject().get("organ_deregistered_date") != null ? LocalDate.parse(item.getAsJsonObject().get("organ_deregistered_date").getAsString()) : null;
-                Long waitinguserId = item.getAsJsonObject().get("user_id").getAsLong();
-                Integer deregisteredCode = item.getAsJsonObject().get("deregistered_code") != null ? item.getAsJsonObject().get("deregistered_code").getAsInt() : null;
+                Organ organ = Organ.valueOf(item.getAsJsonObject().get("organType").getAsString());
+                LocalDate registeredDate = new Gson().fromJson(item.getAsJsonObject().get("organRegisteredDate"), LocalDate.class);
+                Long waitinguserId = item.getAsJsonObject().get("userId").getAsLong();
+                Integer deregisteredCode = item.getAsJsonObject().get("organDeregisteredCode") != null ? item.getAsJsonObject().get("organDeregisteredCode").getAsInt() : null;
                 Integer waitingListId = item.getAsJsonObject().get("id").getAsInt();
 
-                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new ReceiverWaitingListItem(organ, registeredDate, deregisteredDate, waitinguserId, deregisteredCode, waitingListId));
+                User user = getUserFromId(waitinguserId.intValue());
+
+                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),organ));
 
             }
         }
-    }
-
-    public void transplantDeregister(ReceiverWaitingListItem waitingListItem) throws SQLException{
-        String update = "UPDATE " + currentDatabase + ".WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE id = ?";
-        PreparedStatement deregisterStatement = connection.prepareStatement(update);
-
-        deregisterStatement.setDate(1, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
-        deregisterStatement.setInt(2, waitingListItem.getOrganDeregisteredCode());
-        deregisterStatement.setInt(3, waitingListItem.getWaitingListItemId());
-        Debugger.log("Update waitinglist Attributes -> Successful -> Rows Updated: " + deregisterStatement.executeUpdate());
-        refreshUserWaitinglists();
     }
 
     public Clinician loginClinician(String username, String password) throws SQLException{
@@ -620,7 +646,6 @@ public class Database {
             //If response is not empty then return a new Clinican Object with the fields from the database
             return getClinicianFromResultSet(resultSet);
         }
-
     }
 
     public Clinician getClinicianFromId(int id) throws SQLException {
@@ -670,7 +695,6 @@ public class Database {
             //If response is not empty then return a new Admin Object with the fields from the database
             return getAdminFromResultSet(resultSet);
         }
-
     }
 
     private Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{

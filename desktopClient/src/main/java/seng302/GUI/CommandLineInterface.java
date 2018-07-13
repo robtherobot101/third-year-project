@@ -9,8 +9,8 @@ import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
-import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -300,7 +300,7 @@ public class CommandLineInterface {
 
                 insertUser.setId(WindowManager.getDatabase().getUserId(insertUser.getUsername()));
 
-                DataManager.users.add(insertUser);
+                DataManager.addUser(insertUser);
 
                 return true;
             } catch (DateTimeException e) {
@@ -400,7 +400,7 @@ public class CommandLineInterface {
             return false;
         }
         try {
-            ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
+            WaitingListItem item = new WaitingListItem(toSet.getName(), toSet.getRegion(), toSet.getId(), Organ.parse(nextCommand[2]));
             toSet.getWaitingListItems().add(item);
             //WindowManager.getDatabase().insertWaitingListItem(item); TODO Kyran i have no idea how to do this.
             printLine("Successful update of Waiting List Items");
@@ -515,13 +515,13 @@ public class CommandLineInterface {
                     e.printStackTrace();
                 }
                 int index = 0;
-                for(User user: DataManager.users) {
+                for(User user: DataManager.getUsers()) {
                     if(user.getId() == userToDelete.getId()) {
                         break;
                     }
                     index++;
                 }
-                DataManager.users.remove(index);
+                DataManager.removeUser(index);
 
                 //Close the window for the deleted user if it is open.
                 Stage toClose;
@@ -912,8 +912,8 @@ public class CommandLineInterface {
      */
     private boolean listUsers(String[] nextCommand) {
         if (nextCommand.length == 1) {
-            if (DataManager.users.size() > 0) {
-                for (User user : DataManager.users) {
+            if (DataManager.getUsers().size() > 0) {
+                for (User user : DataManager.getUsers()) {
                     printLine(user.getSummaryString());
                 }
             } else {
@@ -960,7 +960,7 @@ public class CommandLineInterface {
     private boolean listOrgans(String[] nextCommand) {
         if (nextCommand.length == 1) {
             boolean organsAvailable = false;
-            for (User user : DataManager.users) {
+            for (User user : DataManager.getUsers()) {
                 if (!user.getOrgans().isEmpty()) {
                     printLine(user.getName() + ": " + user.getOrgans());
                     organsAvailable = true;

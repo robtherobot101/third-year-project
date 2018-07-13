@@ -368,6 +368,7 @@ public class UserController implements Initializable {
             WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
             WindowManager.getDatabase().updateUserProcedures(currentUser);
             WindowManager.getDatabase().updateUserDiseases(currentUser);
+            WindowManager.getDatabase().updateWaitingListItems(currentUser);
 
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");

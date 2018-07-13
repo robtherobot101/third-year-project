@@ -628,7 +628,7 @@ public class ClinicianController implements Initializable {
 //                if (event.getCode() == KeyCode.F5) {
 //                    DataManager.users.clear();
 //                    try {
-//                        DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+//                        Datamanager.addUsers(WindowManager.getDatabase().getAllUsers());
 //                        WindowManager.getDatabase().refreshUserWaitinglists();
 //                    } catch (SQLException e) {
 //                        e.printStackTrace();

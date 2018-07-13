@@ -847,7 +847,7 @@ public class AdminController implements Initializable {
             try {
                 WindowManager.getDatabase().resetDatabase();
                 DataManager.users.clear();
-                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
                 WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
@@ -869,7 +869,7 @@ public class AdminController implements Initializable {
             Debugger.log("DB resample called");
             try {
                 WindowManager.getDatabase().loadSampleData();
-                DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
             } catch (SQLException e) {
                 e.printStackTrace();
             }

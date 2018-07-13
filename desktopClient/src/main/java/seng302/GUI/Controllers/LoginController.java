@@ -171,7 +171,7 @@ public class LoginController implements Initializable {
                         //Add all users from Database
                         DataManager.users.clear();
                         try{
-                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                            Datamanager.addUsers(WindowManager.getDatabase().getAllUsers());
                             WindowManager.getDatabase().refreshUserWaitinglists();
                         } catch(SQLException e) {
                             e.printStackTrace();
@@ -185,7 +185,7 @@ public class LoginController implements Initializable {
                         DataManager.clinicians.clear();
                         DataManager.admins.clear();
                         try{
-                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+                            Datamanager.addUsers(WindowManager.getDatabase().getAllUsers());
                             DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
                             DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
                         } catch(SQLException e) {
@@ -229,7 +229,8 @@ public class LoginController implements Initializable {
     }
 
     private void loadUser(User user) {
-        WindowManager.setCurrentUser(user);
+        User matched = SearchUtils.getUserById(user.getId());
+        WindowManager.setCurrentUser(matched);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();
     }
@@ -238,7 +239,7 @@ public class LoginController implements Initializable {
         //Add all users from Database
         DataManager.users.clear();
         try{
-            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
             WindowManager.getDatabase().refreshUserWaitinglists();
         } catch(SQLException e) {
             e.printStackTrace();
@@ -254,7 +255,7 @@ public class LoginController implements Initializable {
         DataManager.clinicians.clear();
         DataManager.admins.clear();
         try{
-            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
+            DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
             DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
             DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
         } catch(SQLException e) {

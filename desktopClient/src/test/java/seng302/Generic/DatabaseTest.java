@@ -13,7 +13,6 @@ import seng302.User.Clinician;
 import seng302.User.Disease;
 import seng302.User.Medication.Medication;
 import seng302.User.Procedure;
-import seng302.User.ReceiverWaitingListItem;
 import seng302.User.User;
 
 import java.sql.Connection;
@@ -80,8 +79,8 @@ public class DatabaseTest {
     public void insertWaitingListItem() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
-        WaitingListItem testWaitingListItem = new WaitingListItem(Organ.KIDNEY, LocalDate.now(), testUser.getId(), 100);
-
+        WaitingListItem testWaitingListItem = new WaitingListItem(
+                testUser.getName(), testUser.getRegion(), testUser.getId(),Organ.KIDNEY);
 
         try {
             database.insertUser(testUser);
@@ -437,8 +436,10 @@ public class DatabaseTest {
             database.insertUser(testUser);
             assertEquals(new ArrayList<>(), database.getAllUsers().get(0).getWaitingListItems());
 
-            database.insertWaitingListItem(testUser, new ReceiverWaitingListItem(Organ.BONE, LocalDate.now(),
-                    null, database.getAllUsers().get(0).getId(), null, 1));
+            database.insertWaitingListItem(testUser,
+                    new WaitingListItem(database.getAllUsers().get(0).getName(), database.getAllUsers().get(0).getRegion(),
+                            database.getAllUsers().get(0).getId(), Organ.BONE)
+            );
 
             User queriedUser = database.getAllUsers().get(0);
             assertTrue(queriedUser.getWaitingListItems().get(0).getStillWaitingOn());

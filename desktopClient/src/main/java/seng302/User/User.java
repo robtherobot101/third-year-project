@@ -32,7 +32,7 @@ public class User {
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
     private ArrayList<Disease> currentDiseases = new ArrayList<>(), curedDiseases = new ArrayList<>();
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
-    private ArrayList<ReceiverWaitingListItem> waitingListItems = new ArrayList<>();
+    private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -398,7 +398,7 @@ public class User {
         return dateOfDeath;
     }
 
-    public ArrayList<ReceiverWaitingListItem> getWaitingListItems() {
+    public ArrayList<WaitingListItem> getWaitingListItems() {
         return waitingListItems;
     }
 
@@ -611,8 +611,8 @@ public class User {
 
     public boolean isReceiver() {
         boolean receiver = false;
-        for (ReceiverWaitingListItem item : waitingListItems) {
-            if (item.getOrganDeregisteredDate() == null) {
+        for (WaitingListItem item : waitingListItems) {
+            if (item.getStillWaitingOn()) {
                 receiver = true;
             }
         }
@@ -626,7 +626,7 @@ public class User {
      */
     public Set<Organ> conflictingOrgans(){
         Set<Organ> conflicting = new HashSet<>();
-        for(ReceiverWaitingListItem item: waitingListItems) {
+        for(WaitingListItem item: waitingListItems) {
             if(item.getStillWaitingOn()){
                 if(organs.contains(item.getOrganType())){
                     conflicting.add(item.getOrganType());
@@ -653,7 +653,7 @@ public class User {
      * @param toRemove The organ being removed from the waiting list.
      */
     public void removeWaitingListItem(Organ toRemove) {
-        for (ReceiverWaitingListItem item : waitingListItems){
+        for (WaitingListItem item : waitingListItems){
             if (item.getOrganType() == toRemove) {
                 item.deregisterOrgan(5);
                 break;
