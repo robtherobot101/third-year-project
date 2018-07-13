@@ -90,7 +90,7 @@ public class UserWaitingList {
         statement.setString(1, waitingListItem.getOrganType().toString());
         statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
         if(waitingListItem.getOrganDeregisteredDate() == null) {
-            statement.setNull(3, Types.DATE);
+            statement.setNull(3, java.sql.Types.DATE);
         }else{
             statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
         }
