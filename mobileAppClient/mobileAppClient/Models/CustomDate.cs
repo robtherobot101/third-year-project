@@ -9,6 +9,9 @@ namespace mobileAppClient
 
         public CustomDate()
         {
+            
+          
         }
+
     }
 }

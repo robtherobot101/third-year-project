@@ -2,30 +2,27 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:mobileAppClient" 
              x:Class="mobileAppClient.DiseasesPage" 
              Title="Diseases" NavigationPage.HasNavigationBar="True"
-             xmlns:fe="clr-namespace:FreshEssentials;assembly=FreshEssentials">
+             xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
-             <fe:SegmentedButtonGroup OnColor="Blue" OffColor="White" SelectedIndex="{Binding SelectIndex, Mode=TwoWay}" CornerRadius="5" HeightRequest="50" >
-                <fe:SegmentedButtonGroup.LabelStyle>
-                    <Style TargetType="Label">
-                        <Setter Property="FontSize" Value="12" />
-                        <Setter Property="FontAttributes" Value="Bold" />
-                    </Style>
-                </fe:SegmentedButtonGroup.LabelStyle>
-                <fe:SegmentedButtonGroup.SegmentedButtons>
-                    <fe:SegmentedButton Title="Current" />
-                    <fe:SegmentedButton Title="Cured"/>
-                 
-                </fe:SegmentedButtonGroup.SegmentedButtons>
-            </fe:SegmentedButtonGroup>
+            <controls:SegmentedControl x:Name="SegControl" 
+                                       TintColor="#007AFF" 
+                                       SelectedSegment="0"
+                                       ValueChanged="Handle_ValueChanged"
+                                       HeightRequest="40">
+              <controls:SegmentedControl.Children>
+                <controls:SegmentedControlOption Text="Current" />
+                <controls:SegmentedControlOption Text="Cured" />
+              </controls:SegmentedControl.Children>
+            </controls:SegmentedControl>
 
             <ListView x:Name="DiseasesList"
-                      ItemTapped="OnDiseaseItemSelection">
+                      ItemTapped="Handle_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding Name}"
-                         Detail="{Binding Id}" />
+                         Detail="{Binding DiagnosisDateString}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
