@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:local="clr-namespace:mobileAppClient" 
-             x:Class="mobileAppClient.DiseasesPage" 
-             Title="Diseases" NavigationPage.HasNavigationBar="True"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="mobileAppClient.ProceduresPage"
+             xmlns:local="clr-namespace:mobileAppClient"
+             Title="Procedures" NavigationPage.HasNavigationBar="True"
              xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
+
     <ContentPage.Content>
+
         <StackLayout Orientation="Vertical">
 
             <controls:SegmentedControl x:Name="SegControl" 
                                        TintColor="#007AFF" 
                                        SelectedSegment="0"
-                                       ValueChanged="Handle_ValueChanged"
+                                       ValueChanged="Handle_ProcedureChanged"
                                        HeightRequest="40">
               <controls:SegmentedControl.Children>
-                <controls:SegmentedControlOption Text="Current" />
-                <controls:SegmentedControlOption Text="Cured" />
+                <controls:SegmentedControlOption Text="Pending" />
+                <controls:SegmentedControlOption Text="Previous" />
               </controls:SegmentedControl.Children>
             </controls:SegmentedControl>
 
-            <ListView x:Name="DiseasesList"
-                      ItemTapped="Handle_ItemTapped">
+            <ListView x:Name="ProceduresList"
+                      ItemTapped="Handle_ProcedureTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Name}"
-                         Detail="{Binding DiagnosisDateString}" />
+                        <TextCell Text="{Binding Summary}"
+                         Detail="{Binding DetailString}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
 
+        
     </ContentPage.Content>
 </ContentPage>

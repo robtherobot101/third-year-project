@@ -10,6 +10,8 @@ namespace mobileAppClient
         public CustomDate Date { get; set; }
         public List<String> OrgansAffected { get; set; }
         public int Id { get; set; }
+        public string DetailString { get; set; }
+
 
 
         public Procedure()

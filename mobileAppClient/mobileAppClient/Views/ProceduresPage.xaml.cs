@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+
+using Xamarin.Forms;
+
+namespace mobileAppClient
+{
+    public partial class ProceduresPage : ContentPage
+    {
+        void Handle_ProcedureChanged(object sender, SegmentedControl.FormsPlugin.Abstractions.ValueChangedEventArgs e)
+        {
+            switch (e.NewValue)
+            {
+                case 0:
+                    ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PendingProcedures;
+                    break;
+                case 1:
+                    ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PreviousProcedures;
+                    break;
+            }
+        }
+
+        public ProceduresPage()
+        {
+            InitializeComponent();
+
+            //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
+
+            foreach (Procedure item in UserController.Instance.LoggedInUser.PendingProcedures)
+            {
+                item.DetailString = item.Description + ", due on " + item.Date.Day + ", " + item.Date.Month + ", " + item.Date.Year;
+            }
+            foreach (Procedure item in UserController.Instance.LoggedInUser.PreviousProcedures)
+            {
+                item.DetailString = item.Description + ", due on " + item.Date.Day + ", " + item.Date.Month + ", " + item.Date.Year;
+            }
+
+            ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PendingProcedures;
+        }
+
+        async void Handle_ProcedureTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        {
+            if (e == null)
+            {
+                return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
+            }
+            var singleProcedurePage = new SingleProcedurePage((Procedure)ProceduresList.SelectedItem);
+            await Navigation.PushModalAsync(singleProcedurePage);
+        }
+    }
+}

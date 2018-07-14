@@ -8,6 +8,7 @@
     <Compile Remove="NewFolder1\**" />
     <EmbeddedResource Remove="NewFolder1\**" />
     <None Remove="NewFolder1\**" />
+    <Compile Remove="Views\Diseases\DiseasesPage.xaml.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,8 +38,13 @@
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\DiseasesPage.xaml.cs">
-      <DependentUpon>DiseasesPage.xaml</DependentUpon>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\DiseasesPage.xaml.cs">
+      <DependentUpon>Views\DiseasesPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\SingleDiseasePage.xaml.cs">
+      <DependentUpon>Views\SingleDiseasePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
