@@ -1,6 +1,9 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Controllers.DiseasesController;
+import seng302.Controllers.MedicationsController;
+import seng302.Controllers.ProceduresController;
 import seng302.Model.*;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
@@ -27,6 +30,176 @@ public class GeneralUser {
         currentDatabase = databaseConfiguration.getCurrentDatabase();
     }
 
+    /**
+     * Update a user's attributes, medications, procedures, diseases, organ donations, waiting list items, and history.
+     *
+     * @param user The user to update
+     * @param userId The id of the user to update
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void patchEntireUser(User user, int userId) throws SQLException {
+        updateUserAttributes(user, userId);
+
+        List<Medication> newMedications = new ArrayList<>();
+        newMedications.addAll(user.getCurrentMedications());
+        newMedications.addAll(user.getHistoricMedications());
+        updateAllMedications(newMedications, userId);
+
+        List<Procedure> newProcedures = new ArrayList<>();
+        newProcedures.addAll(user.getPendingProcedures());
+        newProcedures.addAll(user.getPreviousProcedures());
+        updateAllProcedures(newProcedures, userId);
+
+        List<Disease> newDiseases = new ArrayList<>();
+        newDiseases.addAll(user.getCuredDiseases());
+        newDiseases.addAll(user.getCurrentDiseases());
+        updateAllDiseases(newDiseases, userId);
+
+        //TODO add donations
+        //TODO add waiting list items
+        //TODO add history
+    }
+
+    /**
+     * Replace a user's medications on the database with a new set of medications.
+     *
+     * @param newMedications The list of medications to replace the old one with
+     * @param userId The id of the user to replace medications of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
+        UserMedications userMedications = new UserMedications();
+        List<Medication> oldMedications = userMedications.getAllMedications(userId);
+
+        //Remove all medications that are already on the database
+        for (int i = oldMedications.size() - 1; i >= 0; i--) {
+            Medication found = null;
+            for (Medication newMedication: newMedications) {
+                if (newMedication.equals(oldMedications.get(i))) {
+                    found = newMedication;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Medication newMedication: newMedications) {
+                    if (newMedication.getId() == oldMedications.get(i).getId()) {
+                        userMedications.updateMedication(oldMedications.get(i), oldMedications.get(i).getId(), userId);
+                        found = newMedication;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newMedications.remove(found);
+                oldMedications.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Medication medication: oldMedications) {
+            userMedications.removeMedication(userId, medication.getId());
+        }
+
+        //Upload all new medications
+        for (Medication medication: newMedications) {
+            userMedications.insertMedication(medication, userId);
+        }
+    }
+
+    /**
+     * Replace a user's procedures on the database with a new set of procedures.
+     *
+     * @param newProcedures The list of procedures to replace the old one with
+     * @param userId The id of the user to replace procedures of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllProcedures(List<Procedure> newProcedures, int userId) throws SQLException {
+        UserProcedures userProcedures = new UserProcedures();
+        List<Procedure> oldProcedures = userProcedures.getAllProcedures(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldProcedures.size() - 1; i >= 0; i--) {
+            Procedure found = null;
+            for (Procedure newProcedure: newProcedures) {
+                if (newProcedure.equals(oldProcedures.get(i))) {
+                    found = newProcedure;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Procedure newProcedure: newProcedures) {
+                    if (newProcedure.getId() == oldProcedures.get(i).getId()) {
+                        userProcedures.updateProcedure(oldProcedures.get(i), oldProcedures.get(i).getId(), userId);
+                        found = newProcedure;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newProcedures.remove(found);
+                oldProcedures.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Procedure procedure: oldProcedures) {
+            userProcedures.removeProcedure(userId, procedure.getId());
+        }
+
+        //Upload all new medications
+        for (Procedure procedure: newProcedures) {
+            userProcedures.insertProcedure(procedure, userId);
+        }
+    }
+
+    /**
+     * Replace a user's diseases on the database with a new set of diseases.
+     *
+     * @param newDiseases The list of diseases to replace the old one with
+     * @param userId The id of the user to replace diseases of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllDiseases(List<Disease> newDiseases, int userId) throws SQLException {
+        UserDiseases userDiseases = new UserDiseases();
+        List<Disease> oldDiseases = userDiseases.getAllDiseases(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldDiseases.size() - 1; i >= 0; i--) {
+            Disease found = null;
+            for (Disease newDisease: newDiseases) {
+                if (newDisease.equals(oldDiseases.get(i))) {
+                    found = newDisease;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Disease newDisease: newDiseases) {
+                    if (newDisease.getId() == oldDiseases.get(i).getId()) {
+                        userDiseases.updateDisease(oldDiseases.get(i), oldDiseases.get(i).getId(), userId);
+                        found = newDisease;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newDiseases.remove(found);
+                oldDiseases.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Disease disease: oldDiseases) {
+            userDiseases.removeDisease(userId, disease.getId());
+        }
+
+        //Upload all new medications
+        for (Disease disease: newDiseases) {
+            userDiseases.insertDisease(disease, userId);
+        }
+    }
 
     public List<User> getUsers(Map<String,String> params) throws SQLException{
         // TODO Sort the users before taking the sublist

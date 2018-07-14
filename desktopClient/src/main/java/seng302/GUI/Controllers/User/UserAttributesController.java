@@ -236,7 +236,7 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        Debugger.log(currentUser.toString());
+        //Debugger.log(currentUser.toString());
         return true;
     }
 
