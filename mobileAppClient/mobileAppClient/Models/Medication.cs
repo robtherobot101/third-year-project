@@ -7,6 +7,8 @@ namespace mobileAppClient
         public string Name { get; set; }
         public List<String> ActiveIngredients { get; set; }
         public List<String> History { get; set; }
+        public string DetailString { get; set; }
+        public int Id { get; set; }
 
         public Medication()
         {
