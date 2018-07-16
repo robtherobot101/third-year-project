@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import seng302.Server;
 
 import java.beans.PropertyVetoException;
+import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class DatabaseConfiguration {
     private String connectDatabase = "seng302-2018-team300-prod";
     private String username = "seng302-team300";
     private String password = "WeldonAside5766";
-    private String url = "jdbc:mysql://mysql2.csse.canterbury.ac.nz/";
+    private String url = "jdbc:mysql://mysql2.csse.canterbury.ac.nz";
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
 
     private DatabaseConfiguration() {
@@ -26,7 +27,7 @@ public class DatabaseConfiguration {
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-        cpds.setJdbcUrl(url + connectDatabase);
+        cpds.setJdbcUrl(url + "/" + connectDatabase);
         cpds.setUser(username);
         cpds.setPassword(password);
     }
@@ -36,6 +37,9 @@ public class DatabaseConfiguration {
     }
 
     public Connection getConnection() {
+
+
+        public Connection getConnection() {
         try {
             return cpds.getConnection();
 //            Class.forName(jdbcDriver);
