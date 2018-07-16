@@ -39,11 +39,6 @@ public class DatabaseConfiguration {
     public Connection getConnection() {
         try {
             return cpds.getConnection();
-//            Class.forName(jdbcDriver);
-//            Connection connection = DriverManager.getConnection(
-//                    url + connectDatabase, username, password);
-//            Server.getInstance().log.info("Connected to " + connectDatabase + " database ");
-//            return connection;
 
         } catch (Exception e) {
             e.printStackTrace();
