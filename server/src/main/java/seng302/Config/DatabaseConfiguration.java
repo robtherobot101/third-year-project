@@ -37,9 +37,6 @@ public class DatabaseConfiguration {
     }
 
     public Connection getConnection() {
-
-
-        public Connection getConnection() {
         try {
             return cpds.getConnection();
 //            Class.forName(jdbcDriver);
