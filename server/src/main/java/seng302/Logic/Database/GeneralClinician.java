@@ -12,15 +12,6 @@ import java.util.ArrayList;
 
 public class GeneralClinician {
 
-    private Connection connection;
-    private String currentDatabase;
-
-    public GeneralClinician() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
-
     public Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException {
         Clinician clinician = new Clinician(
                 resultSet.getString("username"),
@@ -36,8 +27,8 @@ public class GeneralClinician {
 
     public Clinician getClinicianFromId(int id) throws SQLException {
         // SELECT * FROM CLINICIAN id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".CLINICIAN WHERE staff_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM CLINICIAN WHERE staff_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
@@ -53,9 +44,9 @@ public class GeneralClinician {
     }
 
     public void insertClinician(Clinician clinician) throws SQLException {
-        String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region) " +
+        String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region) " +
                 "VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insert);
 
         statement.setString(1, clinician.getUsername());
         statement.setString(2, clinician.getPassword());
@@ -68,8 +59,8 @@ public class GeneralClinician {
 
     public ArrayList<Clinician> getAllClinicians() throws SQLException{
         ArrayList<Clinician> allClinicans = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".CLINICIAN";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM CLINICIAN";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
             allClinicans.add(getClinicianFromResultSet(resultSet));
@@ -79,15 +70,15 @@ public class GeneralClinician {
     }
 
     public void removeClinician(Clinician clinician) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".CLINICIAN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM CLINICIAN WHERE username = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setString(1, clinician.getUsername());
         System.out.println("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }
 
     public void updateClinicianDetails(Clinician clinician, int clinicianId) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".CLINICIAN SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "UPDATE CLINICIAN SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
 
         statement.setString(1, clinician.getName());
         statement.setString(2, clinician.getWorkAddress());

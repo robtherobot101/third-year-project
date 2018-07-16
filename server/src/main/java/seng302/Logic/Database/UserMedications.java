@@ -12,19 +12,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class UserMedications {
-    private Connection connection;
-    private String currentDatabase;
-
-    public UserMedications() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
 
     public ArrayList<Medication> getAllMedications(int userId) throws SQLException{
         ArrayList<Medication> allMedications = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".MEDICATION WHERE user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM MEDICATION WHERE user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
@@ -34,9 +26,9 @@ public class UserMedications {
     }
 
     public void insertMedication(Medication medication, int userId) throws SQLException {
-        String insertMedicationsQuery = "INSERT INTO " + currentDatabase + ".MEDICATION (name, active_ingredients, history, user_id) " +
+        String insertMedicationsQuery = "INSERT INTO MEDICATION (name, active_ingredients, history, user_id) " +
                 "VALUES (?, ?, ?, ?)";
-        PreparedStatement insertMedicationsStatement = connection.prepareStatement(insertMedicationsQuery);
+        PreparedStatement insertMedicationsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertMedicationsQuery);
 
         String activeIngredientsString = String.join(",", medication.getActiveIngredients());
         String historyString = String.join(",", medication.getHistory());
@@ -51,8 +43,8 @@ public class UserMedications {
 
     public Medication getMedicationFromId(int medicationId, int userId) throws SQLException {
         // SELECT * FROM MEDICATION id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".MEDICATION WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM MEDICATION WHERE id = ? AND user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setInt(1, medicationId);
         statement.setInt(2, userId);
@@ -69,8 +61,8 @@ public class UserMedications {
     }
 
     public void updateMedication(Medication medication, int medicationId, int userId) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "UPDATE MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
 
         statement.setString(1, medication.getName());
         statement.setString(2, String.join(",", medication.getActiveIngredients()));
@@ -81,8 +73,8 @@ public class UserMedications {
     }
 
     public void removeMedication(int userId, int medicationId) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".MEDICATION WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM MEDICATION WHERE id = ? AND user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setInt(1, medicationId);
         statement.setInt(2, userId);
         System.out.println("Deletion of Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());

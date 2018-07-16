@@ -25,15 +25,6 @@ import seng302.Model.WaitingListItem;
 
 public class GeneralUser {
 
-    private Connection connection;
-    private String currentDatabase;
-
-    public GeneralUser() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
-
     /**
      * Update a user's attributes, medications, procedures, diseases, organ donations, waiting list items, and history.
      *
@@ -268,7 +259,7 @@ public class GeneralUser {
 
         String query = buildUserQuery(params);
         System.out.println(query);
-        PreparedStatement statement = connection.prepareStatement(query);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
             users.add(getUserFromResultSet(resultSet));
@@ -299,12 +290,12 @@ public class GeneralUser {
             }
         }
         if(!hasWhereClause) {
-            return "SELECT * FROM " + currentDatabase + ".USER";
+            return "SELECT * FROM USER";
         }
 
         StringBuilder queryBuilder = new StringBuilder();
 
-        queryBuilder.append("SELECT * FROM " + currentDatabase + ".USER WHERE ");
+        queryBuilder.append("SELECT * FROM USER WHERE ");
 
 
         String nameFilter = nameFilter(params);
@@ -377,13 +368,9 @@ public class GeneralUser {
     public String organFilter(Map<String, String> params){
         StringBuilder sb = new StringBuilder();
         if(params.containsKey("organ")){
-            sb.append("EXISTS (SELECT * FROM " +
-                            currentDatabase + ".DONATION_LIST_ITEM" +
-                    " WHERE " +
-
-                            currentDatabase + ".DONATION_LIST_ITEM.user_id = " + currentDatabase + ".USER.id" +
-                            " AND " +
-                            currentDatabase + ".DONATION_LIST_ITEM.name = \'" + params.get("organ") + "\'" +
+            sb.append("EXISTS (SELECT * FROM DONATION_LIST_ITEM" +
+                    " WHERE DONATION_LIST_ITEM.user_id = USER.id" +
+                            " AND DONATION_LIST_ITEM.name = \'" + params.get("organ") + "\'" +
                     ")");
         }
         return sb.toString();
@@ -402,24 +389,20 @@ public class GeneralUser {
     }
 
     public String isDonorFilter(){
-        return "EXISTS (SELECT * FROM " +
-                currentDatabase + ".DONATION_LIST_ITEM" +
-                " WHERE " +
-                currentDatabase + ".DONATION_LIST_ITEM.user_id = " + currentDatabase + ".USER.id)";
+        return "EXISTS (SELECT * FROM DONATION_LIST_ITEM" +
+                " WHERE DONATION_LIST_ITEM.user_id = USER.id)";
     }
 
     public String isReceiverFilter(){
-        return "EXISTS (SELECT * FROM " +
-                currentDatabase + ".WAITING_LIST_ITEM" +
-                " WHERE " +
-                currentDatabase + ".WAITING_LIST_ITEM.user_id = " + currentDatabase + ".USER.id)";
+        return "EXISTS (SELECT * FROM WAITING_LIST_ITEM" +
+                " WHERE WAITING_LIST_ITEM.user_id = USER.id)";
     }
 
 
     public User getUserFromId(int id) throws SQLException {
         // SELECT * FROM USER id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".USER WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM USER WHERE id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
@@ -435,9 +418,9 @@ public class GeneralUser {
 
     public void insertUser(User user) throws SQLException{
 
-        String insert = "INSERT INTO " + currentDatabase + ".USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+        String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
                 " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insert);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -458,8 +441,8 @@ public class GeneralUser {
 
     public int getIdFromUser(String username) throws SQLException{
 
-        String query = "SELECT id FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT id FROM USER WHERE username = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         statement.setString(1, username);
         ResultSet resultSet = statement.executeQuery();
         resultSet.next();
@@ -526,8 +509,8 @@ public class GeneralUser {
         int userId = getIdFromUser(resultSet.getString("username"));
         user.setId(userId);
 
-        String organsQuery = "SELECT * FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
+        String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement organsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(organsQuery);
 
         organsStatement.setInt(1, userId);
         ResultSet organsResultSet = organsStatement.executeQuery();
@@ -538,8 +521,8 @@ public class GeneralUser {
 
         //Get all the medications for the given user
 
-        String medicationsQuery = "SELECT * FROM " + currentDatabase + ".MEDICATION WHERE user_id = ?";
-        PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
+        String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
+        PreparedStatement medicationsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(medicationsQuery);
 
         medicationsStatement.setInt(1, userId);
         ResultSet medicationsResultSet = medicationsStatement.executeQuery();
@@ -586,8 +569,8 @@ public class GeneralUser {
 
         //Get all the procedures for the given user
 
-        String proceduresQuery = "SELECT * FROM " + currentDatabase + ".PROCEDURES WHERE user_id = ?";
-        PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
+        String proceduresQuery = "SELECT * FROM PROCEDURES WHERE user_id = ?";
+        PreparedStatement proceduresStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(proceduresQuery);
 
         proceduresStatement.setInt(1, userId);
         ResultSet proceduresResultSet = proceduresStatement.executeQuery();
@@ -624,8 +607,8 @@ public class GeneralUser {
 
         //Get all the diseases for the given user
 
-        String diseasesQuery = "SELECT * FROM " + currentDatabase + ".DISEASE WHERE user_id = ?";
-        PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
+        String diseasesQuery = "SELECT * FROM DISEASE WHERE user_id = ?";
+        PreparedStatement diseasesStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(diseasesQuery);
 
         diseasesStatement.setInt(1, userId);
         ResultSet diseasesResultSet = diseasesStatement.executeQuery();
@@ -653,8 +636,8 @@ public class GeneralUser {
         }
 
         //Get all waiting list items from database
-        String waitingListQuery = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
+        String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement waitingListStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(waitingListQuery);
         waitingListStatement.setInt(1, userId);
         ResultSet waitingListResultSet = waitingListStatement.executeQuery();
 
@@ -674,12 +657,12 @@ public class GeneralUser {
 
     public void updateUserAttributes(User user, int userId) throws SQLException {
         //Attributes update
-        String update = "UPDATE " + currentDatabase + ".USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
+        String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                 " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                 "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                 "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? " +
                 "WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -713,16 +696,16 @@ public class GeneralUser {
 
         //Organ Updates
         //First get rid of all the users organs in the table
-        String deleteOrgansQuery = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement deleteOrgansStatement = connection.prepareStatement(deleteOrgansQuery);
+        String deleteOrgansQuery = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement deleteOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(deleteOrgansQuery);
         deleteOrgansStatement.setInt(1, userId);
         System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
 
         int totalAdded = 0;
         //Then repopulate it with the new updated organs
         for (Organ organ: user.getOrgans()) {
-            String insertOrgansQuery = "INSERT INTO " + currentDatabase + ".DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
-            PreparedStatement insertOrgansStatement = connection.prepareStatement(insertOrgansQuery);
+            String insertOrgansQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
+            PreparedStatement insertOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertOrgansQuery);
             insertOrgansStatement.setString(1, organ.toString());
             insertOrgansStatement.setInt(2, userId);
             totalAdded += insertOrgansStatement.executeUpdate();
@@ -731,8 +714,8 @@ public class GeneralUser {
     }
 
     public void removeUser(User user) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM USER WHERE username = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setString(1, user.getUsername());
         System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }

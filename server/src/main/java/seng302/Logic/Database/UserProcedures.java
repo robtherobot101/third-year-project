@@ -13,19 +13,10 @@ import java.util.ArrayList;
 
 public class UserProcedures {
 
-    private Connection connection;
-    private String currentDatabase;
-
-    public UserProcedures() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
-
     public ArrayList<Procedure> getAllProcedures(int userId) throws SQLException{
         ArrayList<Procedure> allProcedures = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".PROCEDURES WHERE user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM PROCEDURES WHERE user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
@@ -35,9 +26,9 @@ public class UserProcedures {
     }
 
     public void insertProcedure(Procedure procedure, int userId) throws SQLException {
-        String insertProceduresQuery = "INSERT INTO " + currentDatabase + ".PROCEDURES (summary, description, date, organs_affected, user_id) " +
+        String insertProceduresQuery = "INSERT INTO PROCEDURES (summary, description, date, organs_affected, user_id) " +
                 "VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement insertProceduresStatement = connection.prepareStatement(insertProceduresQuery);
+        PreparedStatement insertProceduresStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertProceduresQuery);
 
         insertProceduresStatement.setString(1, procedure.getSummary());
         insertProceduresStatement.setString(2, procedure.getDescription());
@@ -57,8 +48,8 @@ public class UserProcedures {
 
     public Procedure getProcedureFromId(int procedureId, int userId) throws SQLException {
         // SELECT * FROM PROCEDURES id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".PROCEDURES WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM PROCEDURES WHERE id = ? AND user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setInt(1, procedureId);
         statement.setInt(2, userId);
@@ -75,8 +66,8 @@ public class UserProcedures {
     }
 
     public void updateProcedure(Procedure procedure, int procedureId, int userId) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".PROCEDURES SET summary = ?, description = ?, date = ?, organs_affected = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "UPDATE PROCEDURES SET summary = ?, description = ?, date = ?, organs_affected = ? WHERE user_id = ? AND id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
 
         statement.setString(1, procedure.getSummary());
         statement.setString(2, procedure.getDescription());
@@ -96,8 +87,8 @@ public class UserProcedures {
     }
 
     public void removeProcedure(int userId, int procedureId) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".PROCEDURES WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM PROCEDURES WHERE id = ? AND user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setInt(1, procedureId);
         statement.setInt(2, userId);
         System.out.println("Deletion of Procedure - ID: " + procedureId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
