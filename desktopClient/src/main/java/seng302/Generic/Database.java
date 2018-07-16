@@ -29,7 +29,7 @@ public class Database {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 
-    APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
+    APIServer server = new APIServer("http://localhost:7015/api/v1");
 
     public int getUserId(String username) {
         for(User user:getAllUsers()){
@@ -59,25 +59,10 @@ public class Database {
     }
 
     public void insertUser(User user) throws SQLException {
-        String insert = "INSERT INTO " + currentDatabase + ".USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
-        statement.setString(1, user.getNameArray()[0]);
-        statement.setString(2, user.getNameArray().length > 2 ?
-                String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
-        statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-        statement.setString(4, user.getPreferredNameArray()[0]);
-        statement.setString(5, user.getPreferredNameArray().length > 2 ?
-                String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
-        statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
-        statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
-        statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
-        statement.setString(9, user.getUsername());
-        statement.setString(10, user.getEmail());
-        statement.setString(11, user.getPassword());
-        statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
-        Debugger.log("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
-
+        JsonParser jp = new JsonParser();
+        JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
+        System.out.println(response.getAsString());
     }
 
     public void insertWaitingListItem(User currentUser, WaitingListItem waitingListItem) throws SQLException{
