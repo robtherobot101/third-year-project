@@ -1,14 +1,5 @@
 package seng302.Logic.Database;
 
-import seng302.Config.DatabaseConfiguration;
-import seng302.Controllers.DiseasesController;
-import seng302.Controllers.MedicationsController;
-import seng302.Controllers.ProceduresController;
-import seng302.Model.*;
-import seng302.Model.Attribute.*;
-import seng302.Model.Medication.Medication;
-import seng302.Server;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,8 +7,21 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import seng302.Config.DatabaseConfiguration;
+import seng302.Model.Attribute.AlcoholConsumption;
+import seng302.Model.Attribute.BloodType;
+import seng302.Model.Attribute.Gender;
+import seng302.Model.Attribute.Organ;
+import seng302.Model.Attribute.SmokerStatus;
+import seng302.Model.Disease;
+import seng302.Model.Medication.Medication;
+import seng302.Model.Procedure;
+import seng302.Model.User;
+import seng302.Model.WaitingListItem;
 
 public class GeneralUser {
 
@@ -55,8 +59,18 @@ public class GeneralUser {
         newDiseases.addAll(user.getCurrentDiseases());
         updateAllDiseases(newDiseases, userId);
 
-        //TODO add donations
-        //TODO add waiting list items
+        Set<Organ> newDonations = new HashSet<>(user.getOrgans());
+        UserDonations userDonations = new UserDonations();
+        userDonations.removeAllUserDonations(userId);
+        for (Organ organ: newDonations) {
+            userDonations.insertDonation(organ, userId);
+        }
+
+        List<WaitingListItem> newWaitingListItems = new ArrayList<>(user.getWaitingListItems());
+        updateWaitingListItems(newWaitingListItems, userId);
+
+        UserHistory userHistory = new UserHistory();
+        int currentLength = userHistory.getAllHistoryItems(userId).size();
         //TODO add history
     }
 
@@ -198,6 +212,53 @@ public class GeneralUser {
         //Upload all new medications
         for (Disease disease: newDiseases) {
             userDiseases.insertDisease(disease, userId);
+        }
+    }
+
+    /**
+     * Replace a user's waiting list items on the database with a new set of waiting list items.
+     *
+     * @param newWaitingListItems The list of waiting list items to replace the old one with
+     * @param userId The id of the user to replace waiting list items of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateWaitingListItems(List<WaitingListItem> newWaitingListItems, int userId) throws SQLException {
+        UserWaitingList userWaitingList = new UserWaitingList();
+        List<WaitingListItem> oldWaitingListItems = userWaitingList.getAllUserWaitingListItems(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldWaitingListItems.size() - 1; i >= 0; i--) {
+            WaitingListItem found = null;
+            for (WaitingListItem newWaitingListItem: newWaitingListItems) {
+                if (newWaitingListItem.equals(oldWaitingListItems.get(i))) {
+                    found = newWaitingListItem;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (WaitingListItem newWaitingListItem: newWaitingListItems) {
+                    if (newWaitingListItem.getId() == oldWaitingListItems.get(i).getId()) {
+                        userWaitingList.updateWaitingListItem(oldWaitingListItems.get(i), oldWaitingListItems.get(i).getId(), userId);
+                        found = newWaitingListItem;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newWaitingListItems.remove(found);
+                oldWaitingListItems.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (WaitingListItem waitingListItem: oldWaitingListItems) {
+            userWaitingList.removeWaitingListItem(userId, waitingListItem.getId());
+        }
+
+        //Upload all new medications
+        for (WaitingListItem waitingListItem: newWaitingListItems) {
+            userWaitingList.insertWaitingListItem(waitingListItem, userId);
         }
     }
 
