@@ -44,6 +44,8 @@ import seng302.User.User;
 import java.sql.SQLException;
 import seng302.User.WaitingListItem;
 
+import static seng302.Generic.WindowManager.getDatabase;
+
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
  */
@@ -124,7 +126,9 @@ public class ClinicianWaitingListController implements Initializable {
     }
 
     public void showDeregisterDialogFromClinicianList() {
-        showDeregisterDialog((WaitingListItem) transplantTable.getSelectionModel().getSelectedItem());
+        WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+        showDeregisterDialog(selectedItem);
+        getDatabase().updateWaitingListItems(SearchUtils.getUserById(selectedItem.getUserId()));
     }
 
     /**
