@@ -281,12 +281,11 @@ public class ClinicianController implements Initializable {
         // Request focus on the username field by default.
         Platform.runLater(clinicianName::requestFocus);
 
-        // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
+            String newName = "";
+            String newAddress = "";
+            String newRegion = "";
             if (dialogButton == updateButtonType) {
-                String newName;
-                String newAddress;
-                String newRegion;
 
                 if (clinicianName.getText().equals("")) {
                     newName = clinician.getName();
@@ -305,14 +304,13 @@ public class ClinicianController implements Initializable {
                 } else {
                     newRegion = clinicianRegion.getText();
                 }
-
-                return new ArrayList<>(Arrays.asList(newName, newAddress, newRegion));
             }
-            return null;
+            return new ArrayList<>(Arrays.asList(newName, newAddress, newRegion));
         });
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
         result.ifPresent(newClinicianDetails -> {
+            System.out.println("is result");
             Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
                     .get(2));
             clinician.setName(newClinicianDetails.get(0));
@@ -334,7 +332,7 @@ public class ClinicianController implements Initializable {
         if (result.get() == ButtonType.OK) {
             try {
                 WindowManager.getDatabase().updateClinicianDetails(clinician);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

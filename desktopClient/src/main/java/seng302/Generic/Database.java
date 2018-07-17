@@ -309,7 +309,22 @@ public class Database {
 
     }
 
-    public void updateClinicianDetails(Clinician clinician) throws SQLException {
+    public void updateClinicianDetails(Clinician clinician) {
+        JsonParser jp = new JsonParser();
+        JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
+        System.out.println(clinicianJson);
+        APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), "clinicians",String.valueOf(clinician.getStaffID()));
+
+
+
+
+
+
+        System.out.println("Before saving:" +clinician.getString(false));
+        System.out.println(response.getAsString());
+
+
+/*
         String update = "UPDATE " + currentDatabase + ".CLINICIAN SET name = ?, work_address = ?, region = ? WHERE username = ?";
         PreparedStatement statement = connection.prepareStatement(update);
 
@@ -318,6 +333,7 @@ public class Database {
         statement.setString(3, clinician.getRegion());
         statement.setString(4, clinician.getUsername());
         Debugger.log("Update Clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+*/
 
     }
 

@@ -831,7 +831,7 @@ public class CommandLineInterface {
             try {
                 WindowManager.getDatabase().updateClinicianDetails(toSet);
                 return true;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

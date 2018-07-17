@@ -67,7 +67,8 @@ public class ClinicianSettingsController implements Initializable {
 //        }
         int clinicianId = 0;
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
+            // Display an error if the username is taken and the input has not been changed (The username can be taken by the clinician being modified).
+            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
