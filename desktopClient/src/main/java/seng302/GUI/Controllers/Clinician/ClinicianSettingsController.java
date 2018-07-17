@@ -92,8 +92,8 @@ public class ClinicianSettingsController implements Initializable {
             stage.close();
             WindowManager.setClinician(clinician);
             try {
-                WindowManager.getDatabase().updateClinicianAccountSettings(clinician, clinicianId);
-            } catch (SQLException e) {
+                WindowManager.getDatabase().updateClinician(clinician);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);

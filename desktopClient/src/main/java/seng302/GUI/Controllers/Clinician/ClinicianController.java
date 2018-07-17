@@ -331,7 +331,7 @@ public class ClinicianController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                WindowManager.getDatabase().updateClinicianDetails(clinician);
+                WindowManager.getDatabase().updateClinician(clinician);
             } catch (Exception e) {
                 e.printStackTrace();
             }

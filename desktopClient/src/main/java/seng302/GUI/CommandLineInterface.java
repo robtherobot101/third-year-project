@@ -829,7 +829,7 @@ public class CommandLineInterface {
         }
         if(wasSuccessful) {
             try {
-                WindowManager.getDatabase().updateClinicianDetails(toSet);
+                WindowManager.getDatabase().updateClinician(toSet);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();

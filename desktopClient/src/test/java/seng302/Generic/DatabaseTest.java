@@ -344,7 +344,7 @@ public class DatabaseTest {
             testClinician.setWorkAddress("321 Ekaf Avenue");
             testClinician.setRegion("Roundtown");
 
-            database.updateClinicianDetails(testClinician);
+            database.updateClinician(testClinician);
             Clinician queriedClinician = database.getAllClinicians().get(1);
             assertEquals(testClinician.getName(), queriedClinician.getName());
             assertEquals(testClinician.getWorkAddress(), queriedClinician.getWorkAddress());
@@ -365,7 +365,7 @@ public class DatabaseTest {
             testClinician.setUsername("profflame");
             testClinician.setPassword("Password123");
 
-            database.updateClinicianAccountSettings(testClinician, database.getClinicianId(testClinician.getUsername()));
+            database.updateClinician(testClinician);
             Clinician queriedClinician = database.getAllClinicians().get(1);
             assertEquals(testClinician.getUsername(), queriedClinician.getUsername());
             assertEquals(testClinician.getPassword(), queriedClinician.getPassword());

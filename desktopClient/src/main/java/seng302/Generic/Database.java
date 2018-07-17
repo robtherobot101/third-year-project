@@ -296,81 +296,35 @@ public class Database {
     }
 
     public void insertClinician(Clinician clinician) throws SQLException {
-        String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region) " +
-                "VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
-
-        statement.setString(1, clinician.getUsername());
-        statement.setString(2, clinician.getPassword());
-        statement.setString(3, clinician.getName());
-        statement.setString(4, clinician.getWorkAddress());
-        statement.setString(5, clinician.getRegion());
-        Debugger.log("Inserting new Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
-
-    }
-
-    public void updateClinicianDetails(Clinician clinician) {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
-        System.out.println(clinicianJson);
-        APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), "clinicians",String.valueOf(clinician.getStaffID()));
-
-
-
-
-
-
-        System.out.println("Before saving:" +clinician.getString(false));
-        System.out.println(response.getAsString());
-
-
-/*
-        String update = "UPDATE " + currentDatabase + ".CLINICIAN SET name = ?, work_address = ?, region = ? WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-
-        statement.setString(1, clinician.getName());
-        statement.setString(2, clinician.getWorkAddress());
-        statement.setString(3, clinician.getRegion());
-        statement.setString(4, clinician.getUsername());
-        Debugger.log("Update Clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
-*/
-
+        APIResponse response = server.postRequest(clinicianJson, new HashMap<>(), "clinicians");
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == 201;
     }
 
-    public void updateClinicianAccountSettings(Clinician clinician, int clinicianId) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".CLINICIAN SET username = ?, password = ? WHERE staff_id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-
-        statement.setString(1, clinician.getUsername());
-        statement.setString(2, clinician.getPassword());
-        statement.setInt(3, clinicianId);
-        Debugger.log("Update Clinician Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
+    public void updateClinician(Clinician clinician) {
+        JsonParser jp = new JsonParser();
+        JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
+        APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), "clinicians",String.valueOf(clinician.getStaffID()));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == 201;
     }
 
     public void insertAdmin(Admin admin) throws SQLException {
-        String insert = "INSERT INTO " + currentDatabase + ".ADMIN(username, password, name, work_address, region) " +
-                "VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
-
-        statement.setString(1, admin.getUsername());
-        statement.setString(2, admin.getPassword());
-        statement.setString(3, admin.getName());
-        statement.setString(4, admin.getWorkAddress());
-        statement.setString(5, admin.getRegion());
-        Debugger.log("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
-
+        JsonParser jp = new JsonParser();
+        JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
+        APIResponse response = server.postRequest(adminJson, new HashMap<>(), "admins");
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == 201;
     }
 
     public void updateAdminDetails(Admin admin) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".ADMIN SET name = ?, work_address = ? WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-
-        statement.setString(1, admin.getName());
-        statement.setString(2, admin.getWorkAddress());
-       // statement.setString(3, admin.getegion()); -- No Region for an Admin!
-        statement.setString(3, admin.getUsername());
-        Debugger.log("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
-
+        JsonParser jp = new JsonParser();
+        JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
+        APIResponse response = server.patchRequest(adminJson, new HashMap<>(), "admins", String.valueOf(admin.getStaffID()));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == 201;
     }
 
     // Now uses API server!
