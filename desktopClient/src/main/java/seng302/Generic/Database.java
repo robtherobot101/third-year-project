@@ -29,7 +29,7 @@ public class Database {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 
-    APIServer server = new APIServer("http://localhost:7015/api/v1");
+    APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
 
     public int getUserId(String username) {
         for(User user:getAllUsers()){
