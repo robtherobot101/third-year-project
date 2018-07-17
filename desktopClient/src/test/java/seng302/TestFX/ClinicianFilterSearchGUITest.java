@@ -73,11 +73,14 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserTest.setRegion("Canterbury");
 
         WindowManager.getDatabase().insertUser(testUserBobby);
-        WindowManager.getDatabase().updateUserAttributesAndOrgans(testUserBobby);
+        WindowManager.getDatabase().updateUser(testUserBobby);
+        WindowManager.getDatabase().updateUserOrgans(testUserBobby);
         WindowManager.getDatabase().insertUser(testUserAndy);
-        WindowManager.getDatabase().updateUserAttributesAndOrgans(testUserAndy);
+        WindowManager.getDatabase().updateUser(testUserAndy);
+        WindowManager.getDatabase().updateUserOrgans(testUserAndy);
         WindowManager.getDatabase().insertUser(testUserTest);
-        WindowManager.getDatabase().updateUserAttributesAndOrgans(testUserTest);
+        WindowManager.getDatabase().updateUser(testUserTest);
+        WindowManager.getDatabase().updateUserOrgans(testUserTest);
 
 
     }

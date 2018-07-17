@@ -41,21 +41,13 @@ public class Database {
     }
 
     public int getClinicianId(String username) throws SQLException{
-        String query = "SELECT staff_id FROM " + currentDatabase + ".CLINICIAN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, username);
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        return resultSet.getInt("staff_id");
-    }
-
-    public int getAdminId(String username) throws SQLException{
-        String query = "SELECT staff_id FROM " + currentDatabase + ".ADMIN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, username);
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        return resultSet.getInt("staff_id");
+        List<Clinician> clinicians = getAllClinicians();
+        for(Clinician clinician:clinicians){
+            if(clinician.getUsername().equals(username)){
+                return (int)clinician.getStaffID();
+            }
+        }
+        return -1;
     }
 
     public void insertUser(User user) throws SQLException {
@@ -63,30 +55,6 @@ public class Database {
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
         System.out.println(response.getAsString());
-    }
-
-    public void insertWaitingListItem(User currentUser, WaitingListItem waitingListItem) throws SQLException{
-        String query = "SELECT COUNT(*) FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE id = user_id = ? AND organ_type = ?";
-        PreparedStatement queryStatement  =connection.prepareStatement(query);
-        queryStatement.setLong(1, waitingListItem.getUserId());
-        queryStatement.setString(2, waitingListItem.getOrganType().toString().toLowerCase());
-        ResultSet resultSet = queryStatement.executeQuery();
-        resultSet.next();
-        if (resultSet.getInt(1) != 0) {
-            Debugger.log("deleting");
-            String deleteQuery = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ? AND organ_type = ?";
-            PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
-            deleteStatement.setLong(1, waitingListItem.getUserId());
-            deleteStatement.setString(2, waitingListItem.getOrganType().toString().toLowerCase());
-            deleteStatement.executeQuery();
-        }
-
-        String insert = "INSERT INTO " + currentDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id ) VALUES  (?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
-        statement.setString(1, waitingListItem.getOrganType().toString());
-        statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
-        statement.setLong(3, currentUser.getId());
-        Debugger.log("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
     }
 
     public void updateWaitingListItems(User user){
@@ -120,46 +88,31 @@ public class Database {
         }
     }
 
-    public void updateUserAccountSettings(User user, int userId) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".USER SET username = ?, email = ?, password = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, user.getUsername());
-        statement.setString(2, user.getEmail());
-        statement.setString(3, user.getPassword());
-        statement.setInt(4, userId);
-        Debugger.log("Update User Account Settings -> Successful -> Rows Updated: " + statement.executeUpdate());
-    }
-
-
     //Uses API server for updating attributes
-    public void updateUserAttributesAndOrgans(User user) {
-        updateUserAttributes(user).getAsString();
+    public void updateUserOrgans(User user) {
         clearUserDonations((int)user.getId());
         insertAllUserDonations(user);
-        Debugger.log("Update User Attributes and Donations -> Successful");
     }
 
-
-    private APIResponse updateUserAttributes(User user) {
+    public void updateUser(User user) {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        System.out.println("Patch: " + userJson);
-        return server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
+        APIResponse response = server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == 201;
     }
 
-    private APIResponse clearUserDonations(int userID) {
-        return server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"donations");
+    private void clearUserDonations(int userID) {
+        APIResponse response = server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"donations");
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == 201;
     }
 
-    private APIResponse insertAllUserDonations(User user) {
+    private void insertAllUserDonations(User user) {
         for (Organ organ: user.getOrgans()) {
             APIResponse response = insertUserDonation(user.getId(), organ);
-            if(response.getStatusCode()!=201) {
-                return new APIResponse(response.getStatusCode());
-            }
-
+            assert response.getStatusCode() == 201;
         }
-        return new APIResponse(201);
     }
 
     private APIResponse insertUserDonation(long userID, Organ organ) {
@@ -342,222 +295,6 @@ public class Database {
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
         }
         return null;
-/*
-        // SELECT * FROM USER id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".USER WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setInt(1, id);
-        ResultSet resultSet = statement.executeQuery();
-
-        //If response is empty then return null
-        if(!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a new User Object with the fields from the database
-            return getUserFromResultSet(resultSet);
-        }
-
-*/
-    }
-
-    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
-
-        User user = new User(
-                resultSet.getString("first_name"),
-                resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
-                resultSet.getString("last_name"),
-                resultSet.getDate("date_of_birth").toLocalDate(),
-                resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
-                resultSet.getString("gender") != null ? Gender.parse(resultSet.getString("gender")) : null,
-                resultSet.getDouble("height"),
-                resultSet.getDouble("weight"),
-                resultSet.getString("blood_type") != null ? BloodType.parse(resultSet.getString("blood_type")) : null,
-                resultSet.getString("region"),
-                resultSet.getString("current_address"),
-                resultSet.getString("username"),
-                resultSet.getString("email"),
-                resultSet.getString("password"));
-        user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
-        user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
-
-
-        String preferredNameString = "";
-        preferredNameString += resultSet.getString("preferred_name") + " ";
-        if(resultSet.getString("preferred_middle_names") != null) {
-            for (String middleName: resultSet.getString("preferred_middle_names").split(",")) {
-                preferredNameString += middleName + " ";
-            }
-        }
-        preferredNameString += resultSet.getString("preferred_last_name");
-
-        user.setPreferredNameArray(preferredNameString.split(" "));
-
-
-        user.setGenderIdentity(resultSet.getString("gender_identity") != null ? Gender.parse(resultSet.getString("gender_identity")) : null);
-
-        if(resultSet.getString("blood_pressure") != null) {
-            user.setBloodPressure(resultSet.getString("blood_pressure"));
-        } else {
-            user.setBloodPressure("");
-        }
-
-        if(resultSet.getString("smoker_status") != null) {
-            user.setSmokerStatus(SmokerStatus.parse(resultSet.getString("smoker_status")));
-        } else {
-            user.setSmokerStatus(null);
-        }
-
-        if(resultSet.getString("alcohol_consumption") != null) {
-            user.setAlcoholConsumption(AlcoholConsumption.parse(resultSet.getString("alcohol_consumption")));
-        } else {
-            user.setAlcoholConsumption(null);
-        }
-
-        //Get all the organs for the given user
-
-        int userId = getUserId(resultSet.getString("username"));
-        user.setId(userId);
-
-        String organsQuery = "SELECT * FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
-
-        organsStatement.setInt(1, userId);
-        ResultSet organsResultSet = organsStatement.executeQuery();
-
-        while(organsResultSet.next()) {
-            user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
-        }
-
-        //Get all the medications for the given user
-
-        String medicationsQuery = "SELECT * FROM " + currentDatabase + ".MEDICATION WHERE user_id = ?";
-        PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
-
-        medicationsStatement.setInt(1, userId);
-        ResultSet medicationsResultSet = medicationsStatement.executeQuery();
-
-        while(medicationsResultSet.next()) {
-            String[] activeIngredients = medicationsResultSet.getString("active_ingredients").split(",");
-            String[] historyStringList = medicationsResultSet.getString("history").split(",");
-
-            ArrayList<String> historyList = new ArrayList<>();
-            //Iterate through the history list to get associated values together
-            int counter = 1;
-            String historyItem = "";
-            for(int i = 0; i < historyStringList.length; i++) {
-                if(counter % 2 == 1) {
-                    historyItem += historyStringList[i] + ",";
-                    counter++;
-                } else {
-                    historyItem += historyStringList[i];
-                    historyList.add(historyItem);
-                    historyItem = "";
-                    counter++;
-                }
-
-            }
-
-
-            if(historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
-                user.getHistoricMedications().add(new Medication(
-                        medicationsResultSet.getString("name"),
-                        activeIngredients,
-                        historyList
-                ));
-            } else { //Medication is Current
-                user.getCurrentMedications().add(new Medication(
-                        medicationsResultSet.getString("name"),
-                        activeIngredients,
-                        historyList
-                ));
-            }
-        }
-
-
-        //Get all the procedures for the given user
-
-        String proceduresQuery = "SELECT * FROM " + currentDatabase + ".PROCEDURES WHERE user_id = ?";
-        PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
-
-        proceduresStatement.setInt(1, userId);
-        ResultSet proceduresResultSet = proceduresStatement.executeQuery();
-
-        while(proceduresResultSet.next()) {
-
-            if(proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
-                ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
-                    procedureOrgans.add(Organ.parse(organ));
-                }
-                user.getPendingProcedures().add(new Procedure(
-                        proceduresResultSet.getString("summary"),
-                        proceduresResultSet.getString("description"),
-                        proceduresResultSet.getDate("date").toLocalDate(),
-                        procedureOrgans
-                ));
-            } else {
-                ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
-                    procedureOrgans.add(Organ.parse(organ));
-                }
-                user.getPreviousProcedures().add(new Procedure(
-                        proceduresResultSet.getString("summary"),
-                        proceduresResultSet.getString("description"),
-                        proceduresResultSet.getDate("date").toLocalDate(),
-                        procedureOrgans
-                ));
-            }
-
-        }
-
-        //Get all the diseases for the given user
-
-        String diseasesQuery = "SELECT * FROM " + currentDatabase + ".DISEASE WHERE user_id = ?";
-        PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
-
-        diseasesStatement.setInt(1, userId);
-        ResultSet diseasesResultSet = diseasesStatement.executeQuery();
-
-        while(diseasesResultSet.next()) {
-
-            if(diseasesResultSet.getBoolean("is_cured")) {
-                user.getCuredDiseases().add(new Disease(
-                        diseasesResultSet.getString("name"),
-                        diseasesResultSet.getDate("diagnosis_date").toLocalDate(),
-                        diseasesResultSet.getBoolean("is_chronic"),
-                        diseasesResultSet.getBoolean("is_cured")
-                ));
-            } else {
-                user.getCurrentDiseases().add(new Disease(
-                        diseasesResultSet.getString("name"),
-                        diseasesResultSet.getDate("diagnosis_date").toLocalDate(),
-                        diseasesResultSet.getBoolean("is_chronic"),
-                        diseasesResultSet.getBoolean("is_cured")
-                ));
-            }
-
-        }
-
-        //Get all waiting list items from database
-        String waitingListQuery = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
-        waitingListStatement.setInt(1, userId);
-        ResultSet waitingListResultSet = waitingListStatement.executeQuery();
-
-        //user.setGenderIdentity(resultSet.getString("gender_identity") != null ? Gender.parse(resultSet.getString("gender_identity")) : null);
-
-        while(waitingListResultSet.next()) {
-            Organ organ = Organ.parse(waitingListResultSet.getString("organ_type"));
-            LocalDate registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate();
-            LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
-            Long waitinguserId = Long.valueOf(String.valueOf(waitingListResultSet.getInt("user_id")));
-            Integer deregisteredCode = String.valueOf(waitingListResultSet.getInt("deregistered_code")) != null ? waitingListResultSet.getInt("deregistered_code") : null;
-            Integer waitingListId = waitingListResultSet.getInt("id");
-
-            user.getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),registeredDate,deregisteredDate,deregisteredCode,organ));
-        }
-        return user;
     }
 
     // Now uses API server!
@@ -583,23 +320,6 @@ public class Database {
                 SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),organ));
 
             }
-        }
-    }
-
-    public Clinician loginClinician(String username, String password) throws SQLException{
-        //First needs to do a search to see if there is a unique clinician with the given inputs
-        String query = "SELECT * FROM " + currentDatabase + ".CLINICIAN WHERE username = ? AND password = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, username);
-        statement.setString(2, password);
-        ResultSet resultSet = statement.executeQuery();
-
-        //If response is empty then return null
-        if(!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a new Clinican Object with the fields from the database
-            return getClinicianFromResultSet(resultSet);
         }
     }
 
@@ -632,24 +352,6 @@ public class Database {
         clinician.setStaffID(resultSet.getInt("staff_id"));
 
         return clinician;
-    }
-
-    public Admin loginAdmin(String usernameEmail, String password) throws SQLException {
-        //First needs to do a search to see if there is a unique admin with the given inputs
-        String query = "SELECT * FROM " + currentDatabase + ".ADMIN WHERE username = ? AND password = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setString(1, usernameEmail);
-        statement.setString(2, password);
-        ResultSet resultSet = statement.executeQuery();
-
-        //If response is empty then return null
-        if(!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a new Admin Object with the fields from the database
-            return getAdminFromResultSet(resultSet);
-        }
     }
 
     private Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{

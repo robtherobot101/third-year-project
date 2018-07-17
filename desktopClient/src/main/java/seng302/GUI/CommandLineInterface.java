@@ -364,7 +364,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateUserOrgans(toSet);
             printLine("Successful update of Organs");
             //refreshUser(toSet); NOT DOING ANYTHING
             return true;
@@ -580,7 +580,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateUserOrgans(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
@@ -616,7 +616,7 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeWaitingListItem(Organ.parse(nextCommand[2]));
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateWaitingListItems(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
@@ -765,7 +765,7 @@ public class CommandLineInterface {
                 break;
         }
         if(wasSuccessful) {
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateUser(toSet);
             return true;
         }
         return false;

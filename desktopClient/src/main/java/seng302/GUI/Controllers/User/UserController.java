@@ -347,15 +347,6 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
 
-            /*try {
-                WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
-                WindowManager.getDatabase().updateUserDiseases(currentUser);
-                WindowManager.getDatabase().updateUserProcedures(currentUser);
-                WindowManager.getDatabase().updateUserMedications(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }*/
-
             //TODO Update history with new database calls
 //            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
 //            History.printToFile(streamOut, text);
@@ -365,7 +356,8 @@ public class UserController implements Initializable {
             proceduresController.updateUser();
             attributesController.populateUserFields();
             historyController.populateTable();
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
+            WindowManager.getDatabase().updateUser(currentUser);
+            WindowManager.getDatabase().updateUserOrgans(currentUser);
             WindowManager.getDatabase().updateUserProcedures(currentUser);
             WindowManager.getDatabase().updateUserDiseases(currentUser);
             WindowManager.getDatabase().updateWaitingListItems(currentUser);

@@ -85,8 +85,8 @@ public class UserSettingsController implements Initializable {
             stage.close();
             WindowManager.setCurrentUser(currentUser);
             try{
-                WindowManager.getDatabase().updateUserAccountSettings(currentUser, userId);
-            } catch(SQLException e) {
+                WindowManager.getDatabase().updateUser(currentUser);
+            } catch(Exception e) {
                 e.printStackTrace();
             }
             //IO.saveUsers(IO.getUserPath(), LoginType.USER);

@@ -73,78 +73,6 @@ public class DatabaseTest {
     }
 
     /**
-     * Insert a user then a WaitingListItem, then query the DB
-     */
-    @Test
-    public void insertWaitingListItem() {
-        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
-                "bdong", "flameman@hotmail.com", "password");
-        WaitingListItem testWaitingListItem = new WaitingListItem(
-                testUser.getName(), testUser.getRegion(), testUser.getId(),Organ.KIDNEY);
-
-        try {
-            database.insertUser(testUser);
-            database.insertWaitingListItem(testUser, testWaitingListItem);
-
-            User queriedUser = database.getAllUsers().get(0);
-            assertEquals(testWaitingListItem, queriedUser.getWaitingListItems().get(0));
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
-     * Insert a user, modify account settings, check that is IS NOT reflected in DB, then check after
-     * running updateUserAccountSettings()
-     */
-    @Test
-    public void updateUserAccountSettings() {
-        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
-                "bdong", "flameman@hotmail.com", "password");
-
-        try {
-            database.insertUser(testUser);
-
-            testUser.setUsername("dr.bdong");
-            testUser.setEmail("flameman21@gmail.com");
-            testUser.setPassword("password123");
-
-            database.updateUserAccountSettings(testUser, database.getUserId(testUser.getUsername()));
-            User queriedUser = database.getAllUsers().get(0);
-            assertEquals(testUser.getUsername(), queriedUser.getUsername());
-            assertEquals(testUser.getEmail(), queriedUser.getEmail());
-            assertEquals(testUser.getPassword(), queriedUser.getPassword());
-
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
-     * Insert a user, modify profile attributes, check that is IS NOT reflected in DB, then check after
-     * running updateUserAttributesAndOrgans()
-     */
-    @Test
-    public void updateUserAttributesAndOrgans() {
-        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
-                "bdong", "flameman@hotmail.com", "password");
-
-        try {
-            database.insertUser(testUser);
-
-            testUser.setAlcoholConsumption(AlcoholConsumption.VERYHIGH);
-            testUser.setGender(Gender.FEMALE);
-
-            database.updateUserAttributesAndOrgans(testUser);
-            User queriedUser = database.getAllUsers().get(0);
-            assertEquals(testUser.getAlcoholConsumption(), queriedUser.getAlcoholConsumption());
-            assertEquals(testUser.getGender(), queriedUser.getGender());
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
      * Insert a user with a test procedure, check that is IS NOT reflected in DB, then check after
      * running updateUserProcedures()
      */
@@ -435,11 +363,9 @@ public class DatabaseTest {
         try {
             database.insertUser(testUser);
             assertEquals(new ArrayList<>(), database.getAllUsers().get(0).getWaitingListItems());
-
-            database.insertWaitingListItem(testUser,
-                    new WaitingListItem(database.getAllUsers().get(0).getName(), database.getAllUsers().get(0).getRegion(),
-                            database.getAllUsers().get(0).getId(), Organ.BONE)
-            );
+            testUser.getWaitingListItems().add(new WaitingListItem(database.getAllUsers().get(0).getName(), database.getAllUsers().get(0).getRegion(),
+                    database.getAllUsers().get(0).getId(), Organ.BONE));
+            database.updateWaitingListItems(testUser);
 
             User queriedUser = database.getAllUsers().get(0);
             assertTrue(queriedUser.getWaitingListItems().get(0).getStillWaitingOn());
@@ -459,8 +385,9 @@ public class DatabaseTest {
                 ProfileType.CLINICIAN);
         try {
             database.insertClinician(testClinician);
-            assertEquals(testClinician.getName(),
-                    database.loginClinician("drflame", "password").getName());
+            APIResponse response = database.loginUser("drflame", "password");
+            Clinician loggedIn = new Gson().fromJson(response.getAsJsonObject(), Clinician.class);
+            assertEquals(testClinician.getName(), loggedIn.getName());
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -471,8 +398,9 @@ public class DatabaseTest {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
         try {
             database.insertAdmin(testAdmin);
-            assertEquals(testAdmin.getName(),
-                    database.loginAdmin("Xx_bobbythetechsupport007_xX", "password").getName());
+            APIResponse response = database.loginUser("Xx_bobbythetechsupport007_xX", "password");
+            Admin loggedIn = new Gson().fromJson(response.getAsJsonObject(), Admin.class);
+            assertEquals(testAdmin.getName(), loggedIn.getName());
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
