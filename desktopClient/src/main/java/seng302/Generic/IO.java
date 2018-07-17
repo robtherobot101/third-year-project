@@ -4,8 +4,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.ClinicianController;
-import seng302.ProfileReader.*;
+import seng302.User.Importers.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
@@ -185,7 +184,7 @@ public class IO {
                 ProfileReader<User> userReader = new UserReaderJSON();
                 List<User> readUsers = userReader.getProfiles(path);
                 if (readUsers != null) {
-                    DataManager.users.addAll(readUsers);
+                    DataManager.addAllUsers(readUsers);
                 }
                 return true;
             case CLINICIAN:
@@ -211,7 +210,7 @@ public class IO {
         ProfileReader<User> userReader = new UserReaderCSV();
         List<User> readUsers = userReader.getProfiles(path);
         if (readUsers != null) {
-            DataManager.users.addAll(readUsers);
+            DataManager.addAllUsers(readUsers);
         }
         return true;
     }

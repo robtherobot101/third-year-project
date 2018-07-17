@@ -2,10 +2,14 @@ package seng302.Generic;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.collections.list.UnmodifiableList;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
+
+import java.util.Collections;
+import java.util.List;
 
 public class DataManager {
 
@@ -13,6 +17,28 @@ public class DataManager {
     public static ObservableList<Clinician> clinicians = FXCollections.observableArrayList();
     public static ObservableList<Admin> admins = FXCollections.observableArrayList();
     private static long nextUserId = -1, nextClinicianId = -1, nextAdminId = -1;
+
+
+
+    public static List<User> getUsers(){
+        return Collections.unmodifiableList(users);
+    }
+
+    public static void clearUsers(){
+        users.clear();
+    }
+
+    public static void addUser(User user){
+        users.add(user);
+    }
+
+    public static void addAllUsers(List<User> newUsers){
+        users.addAll(newUsers);
+    }
+
+    public static void removeUser(int index){
+        users.remove(index);
+    }
 
     /**
      * Get the unique id number for the next user or the last id number issued.

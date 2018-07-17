@@ -3,30 +3,129 @@ package seng302.Generic;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 public class APIServer {
     private String url;
+    private Client client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
+    private JsonParser jp = new JsonParser();
 
     public APIServer(String url){
         this.url = url;
     }
 
-    public boolean testConnection() throws IOException {
-        URLConnection request = (new URL(url + "/hello")).openConnection();
-        request.connect();
+    /**
+     * Perform a get request to the given endpoint and return the results as a JsonObject
+     * @param path The endpoint to query
+     * @param queryParams The query parameters
+     * @return The result as a response object
+     */
+    public APIResponse getRequest(Map<String, String> queryParams, String... path) {
+        // Creates a pointer to the api
+        WebTarget target = client.target(url);
 
-        // Convert to a JSON object to print data
-        JsonParser jp = new JsonParser(); //from gson
-        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-        JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
-        String version = rootobj.get("version").getAsString(); //just grab the zipcode
-        System.out.println(version);
-        return version.equals("1");
+        // Adds all the query parameters
+        for(String pathParam:path){
+            target = target.path(pathParam);
+        }
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                .get());
+    }
+
+
+    /**
+     * Perform a post to the given endpoint and return the results as a JsonObject
+     * @param path The endopint to query
+     * @param queryParams The query parameters
+     * @param body The body of the request as a JsonObject
+     * @return The result as a response object
+     */
+    public APIResponse postRequest(JsonObject body, Map<String, String> queryParams, String... path){
+        // Creates a pointer to the api
+        WebTarget target = client.target(url);
+
+        // Adds all the query parameters
+        for(String pathParam:path){
+            target = target.path(pathParam);
+        }
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                // Send the data in the post request as JSON -
+                .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+    }
+
+
+    /**
+     * Perform a post to the given endpoint and return the results as a JsonObject
+     * @param path The endopint to query
+     * @param queryParams The query parameters
+     * @param body The body of the request as a JsonObject
+     * @return The result as a response object
+     */
+    public APIResponse patchRequest(JsonObject body, Map<String, String> queryParams, String... path){
+        // Creates a pointer to the api
+        WebTarget target = client.target(url);
+
+        // Adds all the query parameters
+        for(String pathParam:path){
+            target = target.path(pathParam);
+        }
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                // Send the data in the patch request as JSON -
+                .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+    }
+
+    public APIResponse deleteRequest(Map<String, String> queryParams, String... path) {
+        // Creates a pointer to the api
+        WebTarget target = client.target(url);
+
+        // Adds all the query parameters
+        for(String pathParam:path){
+            target = target.path(pathParam);
+        }
+
+        // Adds all the query parameters
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue());
+        }
+
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+                // Send the data in the post request as JSON -
+                .delete());
+    }
+
+
+    /**
+     * Queries the 'hello' endpoint to test connection
+     * @return A string containing the version of the queries server
+     */
+    public String testConnection() {
+        return getRequest(new HashMap<>(),"hello").getAsJsonObject().get("version").toString();
     }
 }
