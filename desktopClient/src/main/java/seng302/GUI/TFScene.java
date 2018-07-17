@@ -7,10 +7,10 @@ import seng302.Generic.WindowManager;
  */
 public enum TFScene {
     login("login", 600, 320),
-    createAccount("createAccount", 400, 450),
-    clinician("clinician", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight), //Don't reorder these
-    admin("admin", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
-    userWindow("userWindow", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
+    createAccount("user/createUser", 400, 450),
+    clinician("clinician/clinician", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight), //Don't reorder these
+    admin("admin/admin", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
+    userWindow("user/user", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
 
     private int width, height;
     private String name;

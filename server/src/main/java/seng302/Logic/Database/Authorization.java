@@ -13,21 +13,12 @@ import java.sql.SQLException;
 
 public class Authorization {
 
-    private Connection connection;
-    private String currentDatabase;
-
-    public Authorization() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
-
     public User loginUser(String usernameEmail, String password) throws SQLException{
 
         //First needs to do a search to see if there is a unique user with the given inputs
         // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-        String query = "SELECT * FROM " + currentDatabase + ".USER WHERE (username = ? OR email = ?) AND password = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setString(1, usernameEmail);
         statement.setString(2, usernameEmail);
@@ -47,8 +38,8 @@ public class Authorization {
 
     public Clinician loginClinician(String username, String password) throws SQLException{
         //First needs to do a search to see if there is a unique clinician with the given inputs
-        String query = "SELECT * FROM " + currentDatabase + ".CLINICIAN WHERE username = ? AND password = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         statement.setString(1, username);
         statement.setString(2, password);
         ResultSet resultSet = statement.executeQuery();
@@ -66,8 +57,8 @@ public class Authorization {
 
     public Admin loginAdmin(String usernameEmail, String password) throws SQLException {
         //First needs to do a search to see if there is a unique admin with the given inputs
-        String query = "SELECT * FROM " + currentDatabase + ".ADMIN WHERE username = ? AND password = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setString(1, usernameEmail);
         statement.setString(2, password);

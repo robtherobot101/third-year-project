@@ -1,30 +1,21 @@
 package seng302.GUI;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.Controllers.User.UserController;
 import seng302.Generic.*;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import static seng302.Generic.IO.streamOut;
-import java.util.ArrayList;
 import java.util.List;
-
-import static seng302.Generic.IO.streamOut;
-
 
 
 /**
@@ -47,10 +38,10 @@ public class CommandLineInterface {
      * @param user The user to update
      */
     private void refreshUser(User user) {
-        for (UserWindowController userWindowController: WindowManager.getCliniciansUserWindows().values()) {
-            if (user == userWindowController.getCurrentUser()) {
-                userWindowController.populateUserAttributes();
-                userWindowController.populateHistoryTable();
+        for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
+            if (user == userController.getCurrentUser()) {
+                userController.populateUserAttributes();
+                userController.populateHistoryTable();
             }
         }
     }
@@ -309,7 +300,7 @@ public class CommandLineInterface {
 
                 insertUser.setId(WindowManager.getDatabase().getUserId(insertUser.getUsername()));
 
-                DataManager.users.add(insertUser);
+                DataManager.addUser(insertUser);
 
                 return true;
             } catch (DateTimeException e) {
@@ -373,17 +364,13 @@ public class CommandLineInterface {
         }
         try {
             toSet.setOrgan(Organ.parse(nextCommand[2]));
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateUserOrgans(toSet);
             printLine("Successful update of Organs");
             //refreshUser(toSet); NOT DOING ANYTHING
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            printLine("An error occurred creating a new organ.");
             return false;
         }
     }
@@ -413,7 +400,7 @@ public class CommandLineInterface {
             return false;
         }
         try {
-            ReceiverWaitingListItem item = new ReceiverWaitingListItem(Organ.parse(nextCommand[2]), Long.parseLong(nextCommand[1]));
+            WaitingListItem item = new WaitingListItem(toSet.getName(), toSet.getRegion(), toSet.getId(), Organ.parse(nextCommand[2]));
             toSet.getWaitingListItems().add(item);
             //WindowManager.getDatabase().insertWaitingListItem(item); TODO Kyran i have no idea how to do this.
             printLine("Successful update of Waiting List Items");
@@ -528,13 +515,13 @@ public class CommandLineInterface {
                     e.printStackTrace();
                 }
                 int index = 0;
-                for(User user: DataManager.users) {
+                for(User user: DataManager.getUsers()) {
                     if(user.getId() == userToDelete.getId()) {
                         break;
                     }
                     index++;
                 }
-                DataManager.users.remove(index);
+                DataManager.removeUser(index);
 
                 //Close the window for the deleted user if it is open.
                 Stage toClose;
@@ -593,16 +580,12 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeOrgan(Organ.parse(nextCommand[2]));
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateUserOrgans(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            printLine("An error occurred removing an organ.");
             return false;
         }
     }
@@ -633,16 +616,12 @@ public class CommandLineInterface {
         }
         try {
             toSet.removeWaitingListItem(Organ.parse(nextCommand[2]));
-            WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
+            WindowManager.getDatabase().updateWaitingListItems(toSet);
             refreshUser(toSet);
             return true;
         } catch (IllegalArgumentException e) {
             printLine("Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            printLine("An error occurred removing a waiting list organ.");
             return false;
         }
     }
@@ -786,12 +765,8 @@ public class CommandLineInterface {
                 break;
         }
         if(wasSuccessful) {
-            try {
-                WindowManager.getDatabase().updateUserAttributesAndOrgans(toSet);
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            WindowManager.getDatabase().updateUser(toSet);
+            return true;
         }
         return false;
     }
@@ -854,9 +829,9 @@ public class CommandLineInterface {
         }
         if(wasSuccessful) {
             try {
-                WindowManager.getDatabase().updateClinicianDetails(toSet);
+                WindowManager.getDatabase().updateClinician(toSet);
                 return true;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -937,8 +912,8 @@ public class CommandLineInterface {
      */
     private boolean listUsers(String[] nextCommand) {
         if (nextCommand.length == 1) {
-            if (DataManager.users.size() > 0) {
-                for (User user : DataManager.users) {
+            if (DataManager.getUsers().size() > 0) {
+                for (User user : DataManager.getUsers()) {
                     printLine(user.getSummaryString());
                 }
             } else {
@@ -985,7 +960,7 @@ public class CommandLineInterface {
     private boolean listOrgans(String[] nextCommand) {
         if (nextCommand.length == 1) {
             boolean organsAvailable = false;
-            for (User user : DataManager.users) {
+            for (User user : DataManager.getUsers()) {
                 if (!user.getOrgans().isEmpty()) {
                     printLine(user.getName() + ": " + user.getOrgans());
                     organsAvailable = true;

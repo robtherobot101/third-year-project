@@ -1,8 +1,8 @@
 package seng302.Generic;
 
+import com.google.gson.Gson;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.User.Admin;
 import seng302.User.Attribute.AlcoholConsumption;
@@ -10,17 +10,17 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.Disease;
 import seng302.User.Medication.Medication;
+import seng302.User.Procedure;
 import seng302.User.User;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import seng302.User.WaitingListItem;
 
-import static java.lang.Math.toIntExact;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -67,78 +67,6 @@ public class DatabaseTest {
             assertEquals(testUser.getUsername(), queriedUser.getUsername());
             assertEquals(testUser.getEmail(), queriedUser.getEmail());
             assertEquals(testUser.getPassword(), queriedUser.getPassword());
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
-     * Insert a user then a WaitingListItem, then query the DB
-     */
-    @Test
-    public void insertWaitingListItem() {
-        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
-                "bdong", "flameman@hotmail.com", "password");
-        WaitingListItem testWaitingListItem = new WaitingListItem(Organ.KIDNEY, LocalDate.now(), testUser.getId(), 100);
-
-
-        try {
-            database.insertUser(testUser);
-            database.insertWaitingListItem(testUser, testWaitingListItem);
-
-            User queriedUser = database.getAllUsers().get(0);
-            assertEquals(testWaitingListItem, queriedUser.getWaitingListItems().get(0));
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
-     * Insert a user, modify account settings, check that is IS NOT reflected in DB, then check after
-     * running updateUserAccountSettings()
-     */
-    @Test
-    public void updateUserAccountSettings() {
-        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
-                "bdong", "flameman@hotmail.com", "password");
-
-        try {
-            database.insertUser(testUser);
-
-            testUser.setUsername("dr.bdong");
-            testUser.setEmail("flameman21@gmail.com");
-            testUser.setPassword("password123");
-
-            database.updateUserAccountSettings(testUser, database.getUserId(testUser.getUsername()));
-            User queriedUser = database.getAllUsers().get(0);
-            assertEquals(testUser.getUsername(), queriedUser.getUsername());
-            assertEquals(testUser.getEmail(), queriedUser.getEmail());
-            assertEquals(testUser.getPassword(), queriedUser.getPassword());
-
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    /**
-     * Insert a user, modify profile attributes, check that is IS NOT reflected in DB, then check after
-     * running updateUserAttributesAndOrgans()
-     */
-    @Test
-    public void updateUserAttributesAndOrgans() {
-        User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
-                "bdong", "flameman@hotmail.com", "password");
-
-        try {
-            database.insertUser(testUser);
-
-            testUser.setAlcoholConsumption(AlcoholConsumption.VERYHIGH);
-            testUser.setGender(Gender.FEMALE);
-
-            database.updateUserAttributesAndOrgans(testUser);
-            User queriedUser = database.getAllUsers().get(0);
-            assertEquals(testUser.getAlcoholConsumption(), queriedUser.getAlcoholConsumption());
-            assertEquals(testUser.getGender(), queriedUser.getGender());
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -344,7 +272,7 @@ public class DatabaseTest {
             testClinician.setWorkAddress("321 Ekaf Avenue");
             testClinician.setRegion("Roundtown");
 
-            database.updateClinicianDetails(testClinician);
+            database.updateClinician(testClinician);
             Clinician queriedClinician = database.getAllClinicians().get(1);
             assertEquals(testClinician.getName(), queriedClinician.getName());
             assertEquals(testClinician.getWorkAddress(), queriedClinician.getWorkAddress());
@@ -365,7 +293,7 @@ public class DatabaseTest {
             testClinician.setUsername("profflame");
             testClinician.setPassword("Password123");
 
-            database.updateClinicianAccountSettings(testClinician, database.getClinicianId(testClinician.getUsername()));
+            database.updateClinician(testClinician);
             Clinician queriedClinician = database.getAllClinicians().get(1);
             assertEquals(testClinician.getUsername(), queriedClinician.getUsername());
             assertEquals(testClinician.getPassword(), queriedClinician.getPassword());
@@ -412,11 +340,16 @@ public class DatabaseTest {
     public void loginUser() {
         User testUser = new User("Bobby", new String[]{"Dongeth"}, "Flame", LocalDate.now(),
                 "bdong", "flameman@hotmail.com", "password");
+
         try {
             database.insertUser(testUser);
-            assertEquals(testUser.getEmail(), database.loginUser("bdong", "password").getEmail());
-            assertEquals(testUser.getUsername(),
-                    database.loginUser("flameman@hotmail.com", "password").getUsername());
+
+            User loggedInA = new Gson().fromJson(database.loginUser("bdong", "password").getAsJsonObject(), User.class);
+            assertEquals(testUser.getEmail(), loggedInA.getEmail());
+
+            User loggedInB = new Gson().fromJson(database.loginUser("flameman@hotmail.com", "password").getAsJsonObject(), User.class);
+            assertEquals(testUser.getUsername(), loggedInB.getUsername());
+
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -430,9 +363,9 @@ public class DatabaseTest {
         try {
             database.insertUser(testUser);
             assertEquals(new ArrayList<>(), database.getAllUsers().get(0).getWaitingListItems());
-
-            database.insertWaitingListItem(testUser, new ReceiverWaitingListItem(Organ.BONE, LocalDate.now(),
-                    null, database.getAllUsers().get(0).getId(), null, 1));
+            testUser.getWaitingListItems().add(new WaitingListItem(database.getAllUsers().get(0).getName(), database.getAllUsers().get(0).getRegion(),
+                    database.getAllUsers().get(0).getId(), Organ.BONE));
+            database.updateWaitingListItems(testUser);
 
             User queriedUser = database.getAllUsers().get(0);
             assertTrue(queriedUser.getWaitingListItems().get(0).getStillWaitingOn());
@@ -452,8 +385,9 @@ public class DatabaseTest {
                 ProfileType.CLINICIAN);
         try {
             database.insertClinician(testClinician);
-            assertEquals(testClinician.getName(),
-                    database.loginClinician("drflame", "password").getName());
+            APIResponse response = database.loginUser("drflame", "password");
+            Clinician loggedIn = new Gson().fromJson(response.getAsJsonObject(), Clinician.class);
+            assertEquals(testClinician.getName(), loggedIn.getName());
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -464,8 +398,9 @@ public class DatabaseTest {
         Admin testAdmin = new Admin("Xx_bobbythetechsupport007_xX", "password", "Flame, Bobby");
         try {
             database.insertAdmin(testAdmin);
-            assertEquals(testAdmin.getName(),
-                    database.loginAdmin("Xx_bobbythetechsupport007_xX", "password").getName());
+            APIResponse response = database.loginUser("Xx_bobbythetechsupport007_xX", "password");
+            Admin loggedIn = new Gson().fromJson(response.getAsJsonObject(), Admin.class);
+            assertEquals(testAdmin.getName(), loggedIn.getName());
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }

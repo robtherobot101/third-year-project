@@ -1,11 +1,5 @@
 package seng302.Logic.Database;
 
-import seng302.Config.DatabaseConfiguration;
-import seng302.Model.*;
-import seng302.Model.Attribute.*;
-import seng302.Model.Medication.Medication;
-import seng302.Server;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,20 +7,251 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import seng302.Config.DatabaseConfiguration;
+import seng302.Model.Attribute.AlcoholConsumption;
+import seng302.Model.Attribute.BloodType;
+import seng302.Model.Attribute.Gender;
+import seng302.Model.Attribute.Organ;
+import seng302.Model.Attribute.SmokerStatus;
+import seng302.Model.Disease;
+import seng302.Model.Medication.Medication;
+import seng302.Model.Procedure;
+import seng302.Model.User;
+import seng302.Model.WaitingListItem;
 
 public class GeneralUser {
 
-    private Connection connection;
-    private String currentDatabase;
+    /**
+     * Update a user's attributes, medications, procedures, diseases, organ donations, waiting list items, and history.
+     *
+     * @param user The user to update
+     * @param userId The id of the user to update
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void patchEntireUser(User user, int userId) throws SQLException {
+        updateUserAttributes(user, userId);
 
-    public GeneralUser() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
+        List<Medication> newMedications = new ArrayList<>();
+        newMedications.addAll(user.getCurrentMedications());
+        newMedications.addAll(user.getHistoricMedications());
+        updateAllMedications(newMedications, userId);
+
+        List<Procedure> newProcedures = new ArrayList<>();
+        newProcedures.addAll(user.getPendingProcedures());
+        newProcedures.addAll(user.getPreviousProcedures());
+        updateAllProcedures(newProcedures, userId);
+
+        List<Disease> newDiseases = new ArrayList<>();
+        newDiseases.addAll(user.getCuredDiseases());
+        newDiseases.addAll(user.getCurrentDiseases());
+        updateAllDiseases(newDiseases, userId);
+
+        Set<Organ> newDonations = new HashSet<>(user.getOrgans());
+        UserDonations userDonations = new UserDonations();
+        userDonations.removeAllUserDonations(userId);
+        for (Organ organ: newDonations) {
+            userDonations.insertDonation(organ, userId);
+        }
+
+        List<WaitingListItem> newWaitingListItems = new ArrayList<>(user.getWaitingListItems());
+        updateWaitingListItems(newWaitingListItems, userId);
+
+        UserHistory userHistory = new UserHistory();
+        int currentLength = userHistory.getAllHistoryItems(userId).size();
+        //TODO add history
     }
 
+    /**
+     * Replace a user's medications on the database with a new set of medications.
+     *
+     * @param newMedications The list of medications to replace the old one with
+     * @param userId The id of the user to replace medications of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
+        UserMedications userMedications = new UserMedications();
+        List<Medication> oldMedications = userMedications.getAllMedications(userId);
+
+        //Remove all medications that are already on the database
+        for (int i = oldMedications.size() - 1; i >= 0; i--) {
+            Medication found = null;
+            for (Medication newMedication: newMedications) {
+                if (newMedication.equals(oldMedications.get(i))) {
+                    found = newMedication;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Medication newMedication: newMedications) {
+                    if (newMedication.getId() == oldMedications.get(i).getId()) {
+                        userMedications.updateMedication(oldMedications.get(i), oldMedications.get(i).getId(), userId);
+                        found = newMedication;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newMedications.remove(found);
+                oldMedications.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Medication medication: oldMedications) {
+            userMedications.removeMedication(userId, medication.getId());
+        }
+
+        //Upload all new medications
+        for (Medication medication: newMedications) {
+            userMedications.insertMedication(medication, userId);
+        }
+    }
+
+    /**
+     * Replace a user's procedures on the database with a new set of procedures.
+     *
+     * @param newProcedures The list of procedures to replace the old one with
+     * @param userId The id of the user to replace procedures of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllProcedures(List<Procedure> newProcedures, int userId) throws SQLException {
+        UserProcedures userProcedures = new UserProcedures();
+        List<Procedure> oldProcedures = userProcedures.getAllProcedures(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldProcedures.size() - 1; i >= 0; i--) {
+            Procedure found = null;
+            for (Procedure newProcedure: newProcedures) {
+                if (newProcedure.equals(oldProcedures.get(i))) {
+                    found = newProcedure;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Procedure newProcedure: newProcedures) {
+                    if (newProcedure.getId() == oldProcedures.get(i).getId()) {
+                        userProcedures.updateProcedure(oldProcedures.get(i), oldProcedures.get(i).getId(), userId);
+                        found = newProcedure;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newProcedures.remove(found);
+                oldProcedures.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Procedure procedure: oldProcedures) {
+            userProcedures.removeProcedure(userId, procedure.getId());
+        }
+
+        //Upload all new medications
+        for (Procedure procedure: newProcedures) {
+            userProcedures.insertProcedure(procedure, userId);
+        }
+    }
+
+    /**
+     * Replace a user's diseases on the database with a new set of diseases.
+     *
+     * @param newDiseases The list of diseases to replace the old one with
+     * @param userId The id of the user to replace diseases of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllDiseases(List<Disease> newDiseases, int userId) throws SQLException {
+        UserDiseases userDiseases = new UserDiseases();
+        List<Disease> oldDiseases = userDiseases.getAllDiseases(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldDiseases.size() - 1; i >= 0; i--) {
+            Disease found = null;
+            for (Disease newDisease: newDiseases) {
+                if (newDisease.equals(oldDiseases.get(i))) {
+                    found = newDisease;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Disease newDisease: newDiseases) {
+                    if (newDisease.getId() == oldDiseases.get(i).getId()) {
+                        userDiseases.updateDisease(oldDiseases.get(i), oldDiseases.get(i).getId(), userId);
+                        found = newDisease;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newDiseases.remove(found);
+                oldDiseases.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Disease disease: oldDiseases) {
+            userDiseases.removeDisease(userId, disease.getId());
+        }
+
+        //Upload all new medications
+        for (Disease disease: newDiseases) {
+            userDiseases.insertDisease(disease, userId);
+        }
+    }
+
+    /**
+     * Replace a user's waiting list items on the database with a new set of waiting list items.
+     *
+     * @param newWaitingListItems The list of waiting list items to replace the old one with
+     * @param userId The id of the user to replace waiting list items of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateWaitingListItems(List<WaitingListItem> newWaitingListItems, int userId) throws SQLException {
+        UserWaitingList userWaitingList = new UserWaitingList();
+        List<WaitingListItem> oldWaitingListItems = userWaitingList.getAllUserWaitingListItems(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldWaitingListItems.size() - 1; i >= 0; i--) {
+            WaitingListItem found = null;
+            for (WaitingListItem newWaitingListItem: newWaitingListItems) {
+                if (newWaitingListItem.equals(oldWaitingListItems.get(i))) {
+                    found = newWaitingListItem;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (WaitingListItem newWaitingListItem: newWaitingListItems) {
+                    if (newWaitingListItem.getId() == oldWaitingListItems.get(i).getId()) {
+                        userWaitingList.updateWaitingListItem(oldWaitingListItems.get(i), oldWaitingListItems.get(i).getId(), userId);
+                        found = newWaitingListItem;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newWaitingListItems.remove(found);
+                oldWaitingListItems.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (WaitingListItem waitingListItem: oldWaitingListItems) {
+            userWaitingList.removeWaitingListItem(userId, waitingListItem.getId());
+        }
+
+        //Upload all new medications
+        for (WaitingListItem waitingListItem: newWaitingListItems) {
+            userWaitingList.insertWaitingListItem(waitingListItem, userId);
+        }
+    }
 
     public List<User> getUsers(Map<String,String> params) throws SQLException{
         // TODO Sort the users before taking the sublist
@@ -34,7 +259,7 @@ public class GeneralUser {
 
         String query = buildUserQuery(params);
         System.out.println(query);
-        PreparedStatement statement = connection.prepareStatement(query);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
             users.add(getUserFromResultSet(resultSet));
@@ -65,12 +290,12 @@ public class GeneralUser {
             }
         }
         if(!hasWhereClause) {
-            return "SELECT * FROM " + currentDatabase + ".USER";
+            return "SELECT * FROM USER";
         }
 
         StringBuilder queryBuilder = new StringBuilder();
 
-        queryBuilder.append("SELECT * FROM " + currentDatabase + ".USER WHERE ");
+        queryBuilder.append("SELECT * FROM USER WHERE ");
 
 
         String nameFilter = nameFilter(params);
@@ -143,13 +368,9 @@ public class GeneralUser {
     public String organFilter(Map<String, String> params){
         StringBuilder sb = new StringBuilder();
         if(params.containsKey("organ")){
-            sb.append("EXISTS (SELECT * FROM " +
-                            currentDatabase + ".DONATION_LIST_ITEM" +
-                    " WHERE " +
-
-                            currentDatabase + ".DONATION_LIST_ITEM.user_id = " + currentDatabase + ".USER.id" +
-                            " AND " +
-                            currentDatabase + ".DONATION_LIST_ITEM.name = \'" + params.get("organ") + "\'" +
+            sb.append("EXISTS (SELECT * FROM DONATION_LIST_ITEM" +
+                    " WHERE DONATION_LIST_ITEM.user_id = USER.id" +
+                            " AND DONATION_LIST_ITEM.name = \'" + params.get("organ") + "\'" +
                     ")");
         }
         return sb.toString();
@@ -168,24 +389,20 @@ public class GeneralUser {
     }
 
     public String isDonorFilter(){
-        return "EXISTS (SELECT * FROM " +
-                currentDatabase + ".DONATION_LIST_ITEM" +
-                " WHERE " +
-                currentDatabase + ".DONATION_LIST_ITEM.user_id = " + currentDatabase + ".USER.id)";
+        return "EXISTS (SELECT * FROM DONATION_LIST_ITEM" +
+                " WHERE DONATION_LIST_ITEM.user_id = USER.id)";
     }
 
     public String isReceiverFilter(){
-        return "EXISTS (SELECT * FROM " +
-                currentDatabase + ".WAITING_LIST_ITEM" +
-                " WHERE " +
-                currentDatabase + ".WAITING_LIST_ITEM.user_id = " + currentDatabase + ".USER.id)";
+        return "EXISTS (SELECT * FROM WAITING_LIST_ITEM" +
+                " WHERE WAITING_LIST_ITEM.user_id = USER.id)";
     }
 
 
     public User getUserFromId(int id) throws SQLException {
         // SELECT * FROM USER id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".USER WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM USER WHERE id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
@@ -201,9 +418,9 @@ public class GeneralUser {
 
     public void insertUser(User user) throws SQLException{
 
-        String insert = "INSERT INTO " + currentDatabase + ".USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+        String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
                 " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insert);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -224,8 +441,8 @@ public class GeneralUser {
 
     public int getIdFromUser(String username) throws SQLException{
 
-        String query = "SELECT id FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT id FROM USER WHERE username = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         statement.setString(1, username);
         ResultSet resultSet = statement.executeQuery();
         resultSet.next();
@@ -292,8 +509,8 @@ public class GeneralUser {
         int userId = getIdFromUser(resultSet.getString("username"));
         user.setId(userId);
 
-        String organsQuery = "SELECT * FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
+        String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement organsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(organsQuery);
 
         organsStatement.setInt(1, userId);
         ResultSet organsResultSet = organsStatement.executeQuery();
@@ -304,8 +521,8 @@ public class GeneralUser {
 
         //Get all the medications for the given user
 
-        String medicationsQuery = "SELECT * FROM " + currentDatabase + ".MEDICATION WHERE user_id = ?";
-        PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
+        String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
+        PreparedStatement medicationsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(medicationsQuery);
 
         medicationsStatement.setInt(1, userId);
         ResultSet medicationsResultSet = medicationsStatement.executeQuery();
@@ -352,8 +569,8 @@ public class GeneralUser {
 
         //Get all the procedures for the given user
 
-        String proceduresQuery = "SELECT * FROM " + currentDatabase + ".PROCEDURES WHERE user_id = ?";
-        PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
+        String proceduresQuery = "SELECT * FROM PROCEDURES WHERE user_id = ?";
+        PreparedStatement proceduresStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(proceduresQuery);
 
         proceduresStatement.setInt(1, userId);
         ResultSet proceduresResultSet = proceduresStatement.executeQuery();
@@ -390,8 +607,8 @@ public class GeneralUser {
 
         //Get all the diseases for the given user
 
-        String diseasesQuery = "SELECT * FROM " + currentDatabase + ".DISEASE WHERE user_id = ?";
-        PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
+        String diseasesQuery = "SELECT * FROM DISEASE WHERE user_id = ?";
+        PreparedStatement diseasesStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(diseasesQuery);
 
         diseasesStatement.setInt(1, userId);
         ResultSet diseasesResultSet = diseasesStatement.executeQuery();
@@ -419,8 +636,8 @@ public class GeneralUser {
         }
 
         //Get all waiting list items from database
-        String waitingListQuery = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
+        String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement waitingListStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(waitingListQuery);
         waitingListStatement.setInt(1, userId);
         ResultSet waitingListResultSet = waitingListStatement.executeQuery();
 
@@ -440,12 +657,12 @@ public class GeneralUser {
 
     public void updateUserAttributes(User user, int userId) throws SQLException {
         //Attributes update
-        String update = "UPDATE " + currentDatabase + ".USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
+        String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                 " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                 "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                 "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? " +
                 "WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -479,16 +696,16 @@ public class GeneralUser {
 
         //Organ Updates
         //First get rid of all the users organs in the table
-        String deleteOrgansQuery = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement deleteOrgansStatement = connection.prepareStatement(deleteOrgansQuery);
+        String deleteOrgansQuery = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
+        PreparedStatement deleteOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(deleteOrgansQuery);
         deleteOrgansStatement.setInt(1, userId);
         System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
 
         int totalAdded = 0;
         //Then repopulate it with the new updated organs
         for (Organ organ: user.getOrgans()) {
-            String insertOrgansQuery = "INSERT INTO " + currentDatabase + ".DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
-            PreparedStatement insertOrgansStatement = connection.prepareStatement(insertOrgansQuery);
+            String insertOrgansQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
+            PreparedStatement insertOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertOrgansQuery);
             insertOrgansStatement.setString(1, organ.toString());
             insertOrgansStatement.setInt(2, userId);
             totalAdded += insertOrgansStatement.executeUpdate();
@@ -497,8 +714,8 @@ public class GeneralUser {
     }
 
     public void removeUser(User user) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM USER WHERE username = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setString(1, user.getUsername());
         System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
     }

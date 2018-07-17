@@ -3,12 +3,12 @@ package seng302.Generic;
 import static seng302.Generic.IO.getJarPath;
 import static seng302.Generic.IO.streamOut;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -23,31 +23,23 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.GUI.CommandLineInterface;
-import seng302.GUI.Controllers.AccountSettingsController;
-import seng302.GUI.Controllers.AdminController;
-import seng302.GUI.Controllers.ClinicianAccountSettingsController;
-import seng302.GUI.Controllers.ClinicianController;
-import seng302.GUI.Controllers.CreateAccountController;
+import seng302.GUI.Controllers.User.UserSettingsController;
+import seng302.GUI.Controllers.Admin.AdminController;
+import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
+import seng302.GUI.Controllers.Clinician.ClinicianController;
+import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.LoginController;
-import seng302.GUI.Controllers.TransplantWaitingListController;
-import seng302.GUI.Controllers.UserWindowController;
+import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
+import seng302.GUI.Controllers.User.UserController;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.History;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 
-import javax.xml.crypto.Data;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static seng302.Generic.IO.streamOut;
+import seng302.User.WaitingListItem;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -59,20 +51,20 @@ public class WindowManager extends Application {
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
-    private static Map<Stage, UserWindowController> cliniciansUserWindows = new HashMap<>();
+    private static Map<Stage, UserController> cliniciansUserWindows = new HashMap<>();
     private static Image icon;
     private static String dialogStyle, menuButtonStyle, selectedMenuButtonStyle;
 
     //Main windows
     private static LoginController loginController;
-    private static CreateAccountController createAccountController;
+    private static CreateUserController createUserController;
     private static ClinicianController clinicianController;
     private static AdminController adminController;
-    private static UserWindowController userWindowController;
+    private static UserController userController;
 
-    private static AccountSettingsController accountSettingsController;
-    private static ClinicianAccountSettingsController clinicianAccountSettingsController;
-    private static TransplantWaitingListController clinicianTransplantWaitingListController, adminTransplantWaitingListController;
+    private static UserSettingsController userSettingsController;
+    private static ClinicianSettingsController clinicianSettingsController;
+    private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
 
     private static Database database;
 
@@ -118,23 +110,16 @@ public class WindowManager extends Application {
         stage.initModality(Modality.NONE);
 
         try {
-            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/userWindow.fxml"));
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/user/user.fxml"));
             Parent root = loader.load();
-            UserWindowController newUserWindowController = loader.getController();
-            newUserWindowController.setTitleBar(stage);
+            UserController newUserController = loader.getController();
+            newUserController.setTitleBar(stage);
             String text = History.prepareFileStringGUI(user.getId(), "view");
             History.printToFile(streamOut, text);
 
-            User currentUser = null;
-            try {
-                currentUser = WindowManager.getDatabase().loginUser(user.getUsername(), user.getPassword());
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
-            newUserWindowController.setCurrentUser(currentUser);
-            newUserWindowController.populateHistoryTable();
-            newUserWindowController.setControlsShown(true);
-            cliniciansUserWindows.put(stage, newUserWindowController);
+            newUserController.setCurrentUser(user);
+            newUserController.setControlsShown(true);
+            cliniciansUserWindows.put(stage, newUserController);
 
 
             Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
@@ -190,17 +175,16 @@ public class WindowManager extends Application {
      * @param currentUser the current user
      */
     public static void setCurrentUser(User currentUser) {
-        userWindowController.setCurrentUser(currentUser);
-        userWindowController.populateHistoryTable();
-        userWindowController.setControlsShown(false);
+        userController.setCurrentUser(currentUser);
+        userController.setControlsShown(false);
     }
 
     /**
      * Calls the function which updates the waiting list pane.
      */
     public static void updateUserWaitingLists() {
-        for (UserWindowController userWindowController: cliniciansUserWindows.values()) {
-            userWindowController.populateWaitingList();
+        for (UserController userController : cliniciansUserWindows.values()) {
+            userController.populateWaitingList();
         }
     }
 
@@ -208,8 +192,8 @@ public class WindowManager extends Application {
      * Calls the function which updates the the attributes panel of each user window.
      */
     public static void updateUserAttributes() {
-        for (UserWindowController userWindowController: cliniciansUserWindows.values()) {
-            userWindowController.populateUserAttributes();
+        for (UserController userController : cliniciansUserWindows.values()) {
+            userController.populateUserAttributes();
         }
     }
 
@@ -219,8 +203,8 @@ public class WindowManager extends Application {
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
-        clinicianTransplantWaitingListController.updateTransplantList();
-        adminTransplantWaitingListController.updateTransplantList();
+        clinicianClinicianWaitingListController.updateTransplantList();
+        adminClinicianWaitingListController.updateTransplantList();
 
     }
 
@@ -230,12 +214,12 @@ public class WindowManager extends Application {
      * @param currentUser the current user
      */
     public static void setCurrentUserForAccountSettings(User currentUser) {
-        accountSettingsController.setCurrentUser(currentUser);
-        accountSettingsController.populateAccountDetails();
+        userSettingsController.setCurrentUser(currentUser);
+        userSettingsController.populateAccountDetails();
     }
 
     public void refreshUser() {
-        userWindowController.setCurrentUser(userWindowController.getCurrentUser());
+        userController.setCurrentUser(userController.getCurrentUser());
     }
 
     /**
@@ -244,8 +228,8 @@ public class WindowManager extends Application {
      * @param currentClinician the current clinician
      */
     public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
-        clinicianAccountSettingsController.setCurrentClinician(currentClinician);
-        clinicianAccountSettingsController.populateAccountDetails();
+        clinicianSettingsController.setCurrentClinician(currentClinician);
+        clinicianSettingsController.populateAccountDetails();
     }
 
 
@@ -260,23 +244,23 @@ public class WindowManager extends Application {
     }
 
 
-    public static void setCreateAccountController(CreateAccountController createAccountController) {
-        WindowManager.createAccountController = createAccountController;
+    public static void setCreateUserController(CreateUserController createUserController) {
+        WindowManager.createUserController = createUserController;
     }
 
-    public static void setAccountSettingsController(AccountSettingsController accountSettingsController) {
-        WindowManager.accountSettingsController = accountSettingsController;
+    public static void setUserSettingsController(UserSettingsController userSettingsController) {
+        WindowManager.userSettingsController = userSettingsController;
     }
 
-    public static void setClincianAccountSettingsController(ClinicianAccountSettingsController clinicianAccountSettingsController) {
-        WindowManager.clinicianAccountSettingsController = clinicianAccountSettingsController;
+    public static void setClincianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
+        WindowManager.clinicianSettingsController = clinicianSettingsController;
     }
 
-    public static void setTransplantWaitingListController(TransplantWaitingListController transplantWaitingListController) {
+    public static void setTransplantWaitingListController(ClinicianWaitingListController clinicianWaitingListController) {
         if (scenes.get(TFScene.clinician) == null) {
-            WindowManager.clinicianTransplantWaitingListController = transplantWaitingListController;
+            WindowManager.clinicianClinicianWaitingListController = clinicianWaitingListController;
         } else {
-            WindowManager.adminTransplantWaitingListController = transplantWaitingListController;
+            WindowManager.adminClinicianWaitingListController = clinicianWaitingListController;
         }
 
     }
@@ -299,10 +283,10 @@ public class WindowManager extends Application {
     }
 
     public static void showDeregisterDialog(WaitingListItem waitingListItem) {
-        clinicianTransplantWaitingListController.showDeregisterDialog(waitingListItem);
+        clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem);
     }
 
-    public static Map<Stage, UserWindowController> getCliniciansUserWindows() {
+    public static Map<Stage, UserController> getCliniciansUserWindows() {
         return cliniciansUserWindows;
     }
 
@@ -313,16 +297,16 @@ public class WindowManager extends Application {
         cliniciansUserWindows.clear();
     }
 
-    public static void setUserWindowController(UserWindowController userWindowController) {
-        WindowManager.userWindowController = userWindowController;
+    public static void setUserController(UserController userController) {
+        WindowManager.userController = userController;
     }
 
     public static void setAccountSettingsEnterEvent() {
-        accountSettingsController.setEnterEvent();
+        userSettingsController.setEnterEvent();
     }
 
     public static void setClinicianAccountSettingsEnterEvent() {
-        clinicianAccountSettingsController.setEnterEvent();
+        clinicianSettingsController.setEnterEvent();
     }
 
     /**
@@ -359,7 +343,9 @@ public class WindowManager extends Application {
      */
     private static void showError(Thread t, Throwable e) {
         Debugger.log("Non-critical error caught, probably platform dependent.");
+        Debugger.log(e.getStackTrace());
         Debugger.error(e.getStackTrace());
+        e.printStackTrace();
         if (Platform.isFxApplicationThread()) {
             Debugger.error(e.getStackTrace());
         } else {
@@ -401,7 +387,7 @@ public class WindowManager extends Application {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
             }
             loginController.setEnterEvent();
-            createAccountController.setEnterEvent();
+            createUserController.setEnterEvent();
 
             stage.setX(100);
             stage.setY(80);
@@ -422,7 +408,7 @@ public class WindowManager extends Application {
                 Debugger.log("Refreshing...");
                 DataManager.users.clear();
                 try {
-                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -437,7 +423,7 @@ public class WindowManager extends Application {
             if (event.getCode() == KeyCode.F5) {
                 DataManager.users.clear();
                 try {
-                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    DataManager.addAllUsers(getDatabase().getAllUsers());
 
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
@@ -453,7 +439,7 @@ public class WindowManager extends Application {
             if (event.getCode() == KeyCode.F5) {
                 DataManager.users.clear();
                 try {
-                    DataManager.users.addAll(getDatabase().getAllUsers());
+                    DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -545,8 +531,8 @@ public class WindowManager extends Application {
     @Override
     public void stop() {
         try {
-            if (userWindowController.getCurrentUser() != null) {
-                String text = History.prepareFileStringGUI(userWindowController.getCurrentUser().getId(), "quit");
+            if (userController.getCurrentUser() != null) {
+                String text = History.prepareFileStringGUI(userController.getCurrentUser().getId(), "quit");
                 History.printToFile(IO.streamOut, text);
             }
         } catch (Exception e) {

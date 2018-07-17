@@ -13,19 +13,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UserDiseases {
-    private Connection connection;
-    private String currentDatabase;
-
-    public UserDiseases() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
 
     public ArrayList<Disease> getAllDiseases(int userId) throws SQLException{
         ArrayList<Disease> allDiseases = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".DISEASE WHERE user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM DISEASE WHERE user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
@@ -35,9 +27,9 @@ public class UserDiseases {
     }
 
     public void insertDisease(Disease disease, int userId) throws SQLException {
-        String insertDiseasesQuery = "INSERT INTO " + currentDatabase + ".DISEASE (name, diagnosis_date, is_cured, is_chronic, user_id) " +
+        String insertDiseasesQuery = "INSERT INTO DISEASE (name, diagnosis_date, is_cured, is_chronic, user_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement insertDiseasesStatement = connection.prepareStatement(insertDiseasesQuery);
+        PreparedStatement insertDiseasesStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertDiseasesQuery);
 
         insertDiseasesStatement.setString(1, disease.getName());
         insertDiseasesStatement.setDate(2, java.sql.Date.valueOf(disease.getDiagnosisDate()));
@@ -50,8 +42,8 @@ public class UserDiseases {
 
     public Disease getDiseaseFromId(int diseaseId, int userId) throws SQLException {
         // SELECT * FROM DISEASE id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".DISEASE WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        String query = "SELECT * FROM DISEASE WHERE id = ? AND user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
 
         statement.setInt(1, diseaseId);
         statement.setInt(2, userId);
@@ -68,8 +60,8 @@ public class UserDiseases {
     }
 
     public void updateDisease(Disease disease, int diseaseId, int userId) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".DISEASE SET name = ?, diagnosis_date = ?, is_cured = ?, is_chronic = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "UPDATE DISEASE SET name = ?, diagnosis_date = ?, is_cured = ?, is_chronic = ? WHERE user_id = ? AND id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
 
         statement.setString(1, disease.getName());
         statement.setDate(2, java.sql.Date.valueOf(disease.getDiagnosisDate()));
@@ -81,8 +73,8 @@ public class UserDiseases {
     }
 
     public void removeDisease(int userId, int diseaseId) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".DISEASE WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM DISEASE WHERE id = ? AND user_id = ?";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         statement.setInt(1, diseaseId);
         statement.setInt(2, userId);
         System.out.println("Deletion of Disease - ID: " + diseaseId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());

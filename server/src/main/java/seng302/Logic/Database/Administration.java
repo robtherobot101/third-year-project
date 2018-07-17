@@ -12,14 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Administration {
-    private Connection connection;
-    private String currentDatabase;
-
-    public Administration() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
 
 
     public void resample() throws SQLException{
@@ -49,82 +41,82 @@ public class Administration {
 
     public void reset() throws SQLException{
 
-        String update = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM";
-        PreparedStatement statement = connection.prepareStatement(update);
+        String update = "DELETE FROM WAITING_LIST_ITEM";
+        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".PROCEDURES";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM PROCEDURES";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".MEDICATION";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM MEDICATION";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (MEDICATION): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM DONATION_LIST_ITEM";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (DONATION_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".DISEASE";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM DISEASE";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (DISEASE): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".HISTORY_ITEM";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM HISTORY_ITEM";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (HISTORY_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".ADMIN";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM ADMIN";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (ADMIN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".CLINICIAN";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM CLINICIAN";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (CLINICIAN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
-        update = "DELETE FROM " + currentDatabase + ".USER";
-        statement = connection.prepareStatement(update);
+        update = "DELETE FROM USER";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
 
-        update = "ALTER TABLE " + currentDatabase + ".USER AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE USER AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(USER): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".CLINICIAN AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE CLINICIAN AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(CLINICIAN): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".ADMIN AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE ADMIN AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(ADMIN): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".DISEASE AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE DISEASE AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(DISEASE): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".DONATION_LIST_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE DONATION_LIST_ITEM AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(DONATION LIST ITEM): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".MEDICATION AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE MEDICATION AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(MEDICATION): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".PROCEDURES AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE PROCEDURES AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(PROCEDURES): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".WAITING_LIST_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE WAITING_LIST_ITEM AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(WAITING LIST ITEM): -> Successful -> " + statement.executeUpdate());
 
-        update = "ALTER TABLE " + currentDatabase + ".HISTORY_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
+        update = "ALTER TABLE HISTORY_ITEM AUTO_INCREMENT = 1";
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
         System.out.println("Reset of AutoIncrement(HISTORY_ITEM): -> Successful -> " + statement.executeUpdate());
 
-        String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region, staff_id) " +
+        String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) " +
                 "VALUES(?, ?, ?, ?, ?, ?)";
-        statement = connection.prepareStatement(insert);
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insert);
         statement.setString(1, "default");
         statement.setString(2, "default");
         statement.setString(3, "default");
@@ -133,9 +125,9 @@ public class Administration {
         statement.setInt(6, 1);
         System.out.println("Inserting Default Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
 
-        insert = "INSERT INTO " + currentDatabase + ".ADMIN(username, password, name, work_address, region, staff_id) " +
+        insert = "INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) " +
                 "VALUES(?, ?, ?, ?, ?, ?)";
-        statement = connection.prepareStatement(insert);
+        statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insert);
         statement.setString(1, "admin");
         statement.setString(2, "default");
         statement.setString(3, "default");

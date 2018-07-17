@@ -105,7 +105,6 @@ public class MedicationsController {
                 response.status(500);
                 return "Internal Server Error";
             }
-
         }
     }
 
