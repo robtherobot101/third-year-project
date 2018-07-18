@@ -80,15 +80,20 @@ public class UserWaitingList {
     }
 
     public void insertWaitingListItem(WaitingListItem waitingListItem, int userId) throws SQLException{
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insert = "INSERT INTO WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id ) VALUES  (?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(insert);
-            statement.setString(1, waitingListItem.getOrganType().toString());
-            statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
-            statement.setInt(3, userId);
-            System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
-        }
 
+        String insert = "INSERT INTO " + currentDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, organ_deregistered_date, deregistered_code, user_id) VALUES  (?, ?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(insert);
+        statement.setString(1, waitingListItem.getOrganType().toString());
+        statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
+        if(waitingListItem.getOrganDeregisteredDate() == null) {
+            statement.setNull(3, java.sql.Types.DATE);
+        }else{
+            statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+        }
+        statement.setInt(4, waitingListItem.getOrganDeregisteredCode());
+        statement.setInt(5, userId);
+
+        System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
     }
 
     public void updateWaitingListItem(WaitingListItem waitingListItem, int waitingListItemId, int userId) throws SQLException {
