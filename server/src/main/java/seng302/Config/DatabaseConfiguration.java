@@ -38,6 +38,24 @@ public class DatabaseConfiguration {
         return INSTANCE;
     }
 
+    /**
+     * Send an SQL update command to the database and return whether or not it was successful
+     * @param sql The command to be run
+     * @return Whether the update completed successfully
+     */
+    public boolean updateSql(String sql){
+        try (Connection connection = cpds.getConnection()){
+            return connection.prepareStatement(sql).execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Get a connection to the database from the pool
+     * @return a connection to the database
+     */
     public Connection getConnection() {
         try {
             return cpds.getConnection();
