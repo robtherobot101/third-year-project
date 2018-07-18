@@ -29,7 +29,7 @@ public class Database {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 
-    APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
+    APIServer server = new APIServer("http://localhost:7015/api/v1");
 
     public int getUserId(String username) {
         for(User user:getAllUsers()){
@@ -533,10 +533,21 @@ public class Database {
 
     }
 
-    public ResultSet adminQuery(String query) throws SQLException{
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet;
+    /*public void insertUser(User user) throws SQLException {
+        JsonParser jp = new JsonParser();
+        JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
+        System.out.println(response.getAsString());
+    } */
+
+
+    public String adminQuery(String query) throws SQLException{
+
+        JsonObject queryJson = new JsonObject();
+        queryJson.addProperty("query", query);
+        APIResponse response = server.postRequest(queryJson, new HashMap<>(), "sql");
+        String results = response.getAsString();
+        return results;
     }
 
     public void connectToDatabase() {

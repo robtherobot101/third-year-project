@@ -71,15 +71,12 @@ public class SqlSanitation {
      * @param query The query to execute.
      * @return Returns a string table of the results.
      */
-    public String executeQuery(String query){
-        Database database = new Database();
-        database.connectToDatabase();
-        ResultSet resultSet;
+    public String executeQuery(String query) {
         try {
-            resultSet = database.adminQuery(query);
+            return  WindowManager.getDatabase().adminQuery(query);
         } catch (SQLException e) {
-            return e.toString();
+            e.printStackTrace();
         }
-        return createTable(resultSet);
+        return null;
     }
 }
