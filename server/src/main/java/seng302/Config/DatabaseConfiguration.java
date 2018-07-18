@@ -30,6 +30,8 @@ public class DatabaseConfiguration {
         cpds.setJdbcUrl(url + "/" + connectDatabase);
         cpds.setUser(username);
         cpds.setPassword(password);
+        cpds.setMaxPoolSize(100);
+        cpds.setMaxStatementsPerConnection(10);
     }
 
     public static DatabaseConfiguration getInstance() {
