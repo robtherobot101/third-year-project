@@ -18,9 +18,11 @@ public class UserDonations {
     public Set<Organ> getAllUserDonations(int userId) throws SQLException {
         Set<Organ> organs = new HashSet<>();
         String query = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         while(resultSet.next()) {
             organs.add(getOrganFromResultSet(resultSet));
@@ -31,8 +33,10 @@ public class UserDonations {
     public Set<Organ> getAllDonations() throws SQLException {
         Set<Organ> organs = new HashSet<>();
         String query = "SELECT * FROM DONATION_LIST_ITEM";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         while(resultSet.next()) {
             organs.add(getOrganFromResultSet(resultSet));
@@ -43,12 +47,14 @@ public class UserDonations {
     public void insertDonation(Organ organ, int userId) throws SQLException {
         String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) " +
                 "VALUES (?,?)";
-        PreparedStatement insertDonationStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertDonationQuery);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
 
         insertDonationStatement.setString(1, organ.name());
         insertDonationStatement.setInt(2, userId);
 
         System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
+        connection.close();
     }
 
     public Organ getOrganFromResultSet(ResultSet resultSet) throws SQLException {
@@ -58,11 +64,13 @@ public class UserDonations {
     public Organ getDonationListItemFromName(String donationListItemName, int userId) throws SQLException {
         // SELECT * FROM DONATION_LIST_ITEM id = id;
         String query = "SELECT * FROM DONATION_LIST_ITEM WHERE name = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setString(1, donationListItemName);
         statement.setInt(2, userId);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if (!resultSet.next()) {
@@ -76,17 +84,21 @@ public class UserDonations {
 
     public void removeDonationListItem(int userId, String donationListItemName) throws SQLException {
         String update = "DELETE FROM DONATION_LIST_ITEM WHERE name = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, donationListItemName);
         statement.setInt(2, userId);
         System.out.println("Deletion of Donation List Item - NAME: " + donationListItemName + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        connection.close();
     }
 
     public void removeAllUserDonations(int userId) throws SQLException {
         String update = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
         statement.setInt(1, userId);
         System.out.println("Deletion of all Donation List Items for - " + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        connection.close();
     }
 
 

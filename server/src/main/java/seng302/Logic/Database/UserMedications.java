@@ -16,9 +16,11 @@ public class UserMedications {
     public ArrayList<Medication> getAllMedications(int userId) throws SQLException{
         ArrayList<Medication> allMedications = new ArrayList<>();
         String query = "SELECT * FROM MEDICATION WHERE user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
         while(resultSet.next()) {
             allMedications.add(getMedicationFromResultSet(resultSet));
         }
@@ -28,7 +30,8 @@ public class UserMedications {
     public void insertMedication(Medication medication, int userId) throws SQLException {
         String insertMedicationsQuery = "INSERT INTO MEDICATION (name, active_ingredients, history, user_id) " +
                 "VALUES (?, ?, ?, ?)";
-        PreparedStatement insertMedicationsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertMedicationsQuery);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement insertMedicationsStatement = connection.prepareStatement(insertMedicationsQuery);
 
         String activeIngredientsString = String.join(",", medication.getActiveIngredients());
         String historyString = String.join(",", medication.getHistory());
@@ -39,16 +42,19 @@ public class UserMedications {
         insertMedicationsStatement.setInt(4, userId);
 
         System.out.println("Inserting new medication -> Successful -> Rows Added: " + insertMedicationsStatement.executeUpdate());
+        connection.close();
     }
 
     public Medication getMedicationFromId(int medicationId, int userId) throws SQLException {
         // SELECT * FROM MEDICATION id = id;
         String query = "SELECT * FROM MEDICATION WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, medicationId);
         statement.setInt(2, userId);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if (!resultSet.next()) {
@@ -62,7 +68,8 @@ public class UserMedications {
 
     public void updateMedication(Medication medication, int medicationId, int userId) throws SQLException {
         String update = "UPDATE MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
 
         statement.setString(1, medication.getName());
         statement.setString(2, String.join(",", medication.getActiveIngredients()));
@@ -70,14 +77,17 @@ public class UserMedications {
         statement.setInt(4, userId);
         statement.setInt(5, medicationId);
         System.out.println("Update Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
+        connection.close();
     }
 
     public void removeMedication(int userId, int medicationId) throws SQLException {
         String update = "DELETE FROM MEDICATION WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
         statement.setInt(1, medicationId);
         statement.setInt(2, userId);
         System.out.println("Deletion of Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        connection.close();
     }
 
     public Medication getMedicationFromResultSet(ResultSet medicationsResultSet) throws SQLException {

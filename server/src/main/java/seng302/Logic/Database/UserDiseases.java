@@ -17,9 +17,11 @@ public class UserDiseases {
     public ArrayList<Disease> getAllDiseases(int userId) throws SQLException{
         ArrayList<Disease> allDiseases = new ArrayList<>();
         String query = "SELECT * FROM DISEASE WHERE user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
         while(resultSet.next()) {
             allDiseases.add(getDiseaseFromResultSet(resultSet));
         }
@@ -29,7 +31,8 @@ public class UserDiseases {
     public void insertDisease(Disease disease, int userId) throws SQLException {
         String insertDiseasesQuery = "INSERT INTO DISEASE (name, diagnosis_date, is_cured, is_chronic, user_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement insertDiseasesStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertDiseasesQuery);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement insertDiseasesStatement = connection.prepareStatement(insertDiseasesQuery);
 
         insertDiseasesStatement.setString(1, disease.getName());
         insertDiseasesStatement.setDate(2, java.sql.Date.valueOf(disease.getDiagnosisDate()));
@@ -38,16 +41,19 @@ public class UserDiseases {
         insertDiseasesStatement.setInt(5, userId);
 
         System.out.println("Inserting new disease  -> Successful -> Rows Added: " + insertDiseasesStatement.executeUpdate());
+        connection.close();
     }
 
     public Disease getDiseaseFromId(int diseaseId, int userId) throws SQLException {
         // SELECT * FROM DISEASE id = id;
         String query = "SELECT * FROM DISEASE WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, diseaseId);
         statement.setInt(2, userId);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if (!resultSet.next()) {
@@ -61,7 +67,8 @@ public class UserDiseases {
 
     public void updateDisease(Disease disease, int diseaseId, int userId) throws SQLException {
         String update = "UPDATE DISEASE SET name = ?, diagnosis_date = ?, is_cured = ?, is_chronic = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
 
         statement.setString(1, disease.getName());
         statement.setDate(2, java.sql.Date.valueOf(disease.getDiagnosisDate()));
@@ -70,14 +77,17 @@ public class UserDiseases {
         statement.setInt(5, userId);
         statement.setInt(6, diseaseId);
         System.out.println("Update Disease - ID: " + diseaseId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
+        connection.close();
     }
 
     public void removeDisease(int userId, int diseaseId) throws SQLException {
         String update = "DELETE FROM DISEASE WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
         statement.setInt(1, diseaseId);
         statement.setInt(2, userId);
         System.out.println("Deletion of Disease - ID: " + diseaseId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        connection.close();
     }
 
     public Disease getDiseaseFromResultSet(ResultSet diseasesResultSet) throws SQLException {

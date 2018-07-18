@@ -259,8 +259,10 @@ public class GeneralUser {
 
         String query = buildUserQuery(params);
         System.out.println(query);
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
         while(resultSet.next()) {
             users.add(getUserFromResultSet(resultSet));
         }
@@ -402,10 +404,12 @@ public class GeneralUser {
     public User getUserFromId(int id) throws SQLException {
         // SELECT * FROM USER id = id;
         String query = "SELECT * FROM USER WHERE id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if(!resultSet.next()) {
@@ -420,7 +424,8 @@ public class GeneralUser {
 
         String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
                 " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insert);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(insert);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -436,15 +441,18 @@ public class GeneralUser {
         statement.setString(11, user.getPassword());
         statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
         System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
+        connection.close();
 
     }
 
     public int getIdFromUser(String username) throws SQLException{
 
         String query = "SELECT id FROM USER WHERE username = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, username);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
         resultSet.next();
         return resultSet.getInt("id");
 
@@ -510,7 +518,8 @@ public class GeneralUser {
         user.setId(userId);
 
         String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement organsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(organsQuery);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
 
         organsStatement.setInt(1, userId);
         ResultSet organsResultSet = organsStatement.executeQuery();
@@ -522,7 +531,7 @@ public class GeneralUser {
         //Get all the medications for the given user
 
         String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
-        PreparedStatement medicationsStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(medicationsQuery);
+        PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
 
         medicationsStatement.setInt(1, userId);
         ResultSet medicationsResultSet = medicationsStatement.executeQuery();
@@ -570,7 +579,7 @@ public class GeneralUser {
         //Get all the procedures for the given user
 
         String proceduresQuery = "SELECT * FROM PROCEDURES WHERE user_id = ?";
-        PreparedStatement proceduresStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(proceduresQuery);
+        PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
 
         proceduresStatement.setInt(1, userId);
         ResultSet proceduresResultSet = proceduresStatement.executeQuery();
@@ -608,7 +617,7 @@ public class GeneralUser {
         //Get all the diseases for the given user
 
         String diseasesQuery = "SELECT * FROM DISEASE WHERE user_id = ?";
-        PreparedStatement diseasesStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(diseasesQuery);
+        PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
 
         diseasesStatement.setInt(1, userId);
         ResultSet diseasesResultSet = diseasesStatement.executeQuery();
@@ -637,9 +646,11 @@ public class GeneralUser {
 
         //Get all waiting list items from database
         String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement waitingListStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(waitingListQuery);
+        PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
         waitingListStatement.setInt(1, userId);
         ResultSet waitingListResultSet = waitingListStatement.executeQuery();
+
+        connection.close();
 
 
         while (waitingListResultSet.next()) {
@@ -662,7 +673,8 @@ public class GeneralUser {
                 "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                 "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? " +
                 "WHERE id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, user.getNameArray()[0]);
         statement.setString(2, user.getNameArray().length > 2 ?
                 String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -690,6 +702,7 @@ public class GeneralUser {
         statement.setString(21, user.getPassword());
         statement.setInt(22, userId);
         System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        connection.close();
 
 
 /*        int userId = getUserId(user.getUsername());
@@ -715,8 +728,10 @@ public class GeneralUser {
 
     public void removeUser(User user) throws SQLException {
         String update = "DELETE FROM USER WHERE username = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(update);
         statement.setString(1, user.getUsername());
         System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        connection.close();
     }
 }

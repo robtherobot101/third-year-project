@@ -18,12 +18,14 @@ public class Authorization {
         //First needs to do a search to see if there is a unique user with the given inputs
         // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
         String query = "SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setString(1, usernameEmail);
         statement.setString(2, usernameEmail);
         statement.setString(3, password);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if (!resultSet.next()) {
@@ -39,10 +41,12 @@ public class Authorization {
     public Clinician loginClinician(String username, String password) throws SQLException{
         //First needs to do a search to see if there is a unique clinician with the given inputs
         String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, username);
         statement.setString(2, password);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if(!resultSet.next()) {
@@ -58,11 +62,13 @@ public class Authorization {
     public Admin loginAdmin(String usernameEmail, String password) throws SQLException {
         //First needs to do a search to see if there is a unique admin with the given inputs
         String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        Connection connection = DatabaseConfiguration.getInstance().getConnection();
+        PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setString(1, usernameEmail);
         statement.setString(2, password);
         ResultSet resultSet = statement.executeQuery();
+        connection.close();
 
         //If response is empty then return null
         if(!resultSet.next()) {
