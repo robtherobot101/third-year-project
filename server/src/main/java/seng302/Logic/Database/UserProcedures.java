@@ -14,84 +14,94 @@ import java.util.ArrayList;
 public class UserProcedures {
 
     public ArrayList<Procedure> getAllProcedures(int userId) throws SQLException{
-        ArrayList<Procedure> allProcedures = new ArrayList<>();
-        String query = "SELECT * FROM PROCEDURES WHERE user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
-        statement.setInt(1, userId);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allProcedures.add(getProcedureFromResultSet(resultSet));
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            ArrayList<Procedure> allProcedures = new ArrayList<>();
+            String query = "SELECT * FROM PROCEDURES WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allProcedures.add(getProcedureFromResultSet(resultSet));
+            }
+            return allProcedures;
         }
-        return allProcedures;
     }
 
     public void insertProcedure(Procedure procedure, int userId) throws SQLException {
-        String insertProceduresQuery = "INSERT INTO PROCEDURES (summary, description, date, organs_affected, user_id) " +
-                "VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement insertProceduresStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertProceduresQuery);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String insertProceduresQuery = "INSERT INTO PROCEDURES (summary, description, date, organs_affected, user_id) " +
+                    "VALUES(?, ?, ?, ?, ?)";
+            PreparedStatement insertProceduresStatement = connection.prepareStatement(insertProceduresQuery);
 
-        insertProceduresStatement.setString(1, procedure.getSummary());
-        insertProceduresStatement.setString(2, procedure.getDescription());
-        insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
+            insertProceduresStatement.setString(1, procedure.getSummary());
+            insertProceduresStatement.setString(2, procedure.getDescription());
+            insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
 
-        String organsAffected = "";
-        for (Organ organ: procedure.getOrgansAffected()) {
-            organsAffected += organ.toString() + ",";
+            String organsAffected = "";
+            for (Organ organ : procedure.getOrgansAffected()) {
+                organsAffected += organ.toString() + ",";
+            }
+            organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
+
+            insertProceduresStatement.setString(4, organsAffected);
+            insertProceduresStatement.setInt(5, userId);
+
+            System.out.println("Inserting new procedure -> Successful -> Rows Added: " + insertProceduresStatement.executeUpdate());
         }
-        organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
-
-        insertProceduresStatement.setString(4, organsAffected);
-        insertProceduresStatement.setInt(5, userId);
-
-        System.out.println("Inserting new procedure -> Successful -> Rows Added: " + insertProceduresStatement.executeUpdate());
     }
 
     public Procedure getProcedureFromId(int procedureId, int userId) throws SQLException {
-        // SELECT * FROM PROCEDURES id = id;
-        String query = "SELECT * FROM PROCEDURES WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(query);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            // SELECT * FROM PROCEDURES id = id;
+            String query = "SELECT * FROM PROCEDURES WHERE id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1, procedureId);
-        statement.setInt(2, userId);
-        ResultSet resultSet = statement.executeQuery();
+            statement.setInt(1, procedureId);
+            statement.setInt(2, userId);
+            ResultSet resultSet = statement.executeQuery();
 
-        //If response is empty then return null
-        if (!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a indication that fields arent empty
-            return getProcedureFromResultSet(resultSet);
+
+            //If response is empty then return null
+            if (!resultSet.next()) {
+                return null;
+            } else {
+                //If response is not empty then return a indication that fields arent empty
+                return getProcedureFromResultSet(resultSet);
+            }
         }
-
     }
 
     public void updateProcedure(Procedure procedure, int procedureId, int userId) throws SQLException {
-        String update = "UPDATE PROCEDURES SET summary = ?, description = ?, date = ?, organs_affected = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE PROCEDURES SET summary = ?, description = ?, date = ?, organs_affected = ? WHERE user_id = ? AND id = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
 
-        statement.setString(1, procedure.getSummary());
-        statement.setString(2, procedure.getDescription());
-        statement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
+            statement.setString(1, procedure.getSummary());
+            statement.setString(2, procedure.getDescription());
+            statement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
 
-        String organsAffected = "";
-        for (Organ organ: procedure.getOrgansAffected()) {
-            organsAffected += organ.toString() + ",";
+            String organsAffected = "";
+            for (Organ organ : procedure.getOrgansAffected()) {
+                organsAffected += organ.toString() + ",";
+            }
+            organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
+
+            statement.setString(4, organsAffected);
+
+            statement.setInt(5, userId);
+            statement.setInt(6, procedureId);
+            System.out.println("Update Procedure - ID: " + procedureId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
-        organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
-
-        statement.setString(4, organsAffected);
-
-        statement.setInt(5, userId);
-        statement.setInt(6, procedureId);
-        System.out.println("Update Procedure - ID: " + procedureId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
     }
 
     public void removeProcedure(int userId, int procedureId) throws SQLException {
-        String update = "DELETE FROM PROCEDURES WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(update);
-        statement.setInt(1, procedureId);
-        statement.setInt(2, userId);
-        System.out.println("Deletion of Procedure - ID: " + procedureId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "DELETE FROM PROCEDURES WHERE id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
+            statement.setInt(1, procedureId);
+            statement.setInt(2, userId);
+            System.out.println("Deletion of Procedure - ID: " + procedureId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
     }
 
     public Procedure getProcedureFromResultSet(ResultSet proceduresResultSet) throws SQLException {
