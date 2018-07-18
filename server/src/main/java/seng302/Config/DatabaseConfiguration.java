@@ -39,16 +39,16 @@ public class DatabaseConfiguration {
     }
 
     /**
-     * Send an SQL update command to the database and return whether or not it was successful
+     * Send an SQL update command to the database and return how many rows were affected or -1 if the command failed
      * @param sql The command to be run
-     * @return Whether the update completed successfully
+     * @return The number of rows affected
      */
-    public boolean updateSql(String sql){
+    public int updateSql(String sql){
         try (Connection connection = cpds.getConnection()){
-            return connection.prepareStatement(sql).execute();
+            return connection.prepareStatement(sql).executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
