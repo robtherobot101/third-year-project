@@ -13,32 +13,32 @@ import java.util.ArrayList;
 public class UserHistory {
 
     public ArrayList<HistoryItem> getAllHistoryItems(int userId) throws SQLException {
-        ArrayList<HistoryItem> allHistoryItems = new ArrayList<>();
-        String query = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
-        Connection connection = DatabaseConfiguration.getInstance().getConnection();
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, userId);
-        ResultSet resultSet = statement.executeQuery();
-        connection.close();
-        while(resultSet.next()) {
-            allHistoryItems.add(getHistoryItemFromResultSet(resultSet));
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            ArrayList<HistoryItem> allHistoryItems = new ArrayList<>();
+            String query = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allHistoryItems.add(getHistoryItemFromResultSet(resultSet));
+            }
+            return allHistoryItems;
         }
-        return allHistoryItems;
     }
 
     public void insertHistoryItem(HistoryItem historyItem, int userId) throws SQLException {
-        String insertHistoryItemQuery = "INSERT INTO HISTORY_ITEM (dateTime, action, description, user_id) " +
-                "VALUES (?, ?, ?, ?)";
-        Connection connection = DatabaseConfiguration.getInstance().getConnection();
-        PreparedStatement insertHistoryItemStatement = connection.prepareStatement(insertHistoryItemQuery);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String insertHistoryItemQuery = "INSERT INTO HISTORY_ITEM (dateTime, action, description, user_id) " +
+                    "VALUES (?, ?, ?, ?)";
+            PreparedStatement insertHistoryItemStatement = connection.prepareStatement(insertHistoryItemQuery);
 
-        insertHistoryItemStatement.setTimestamp(1, java.sql.Timestamp.valueOf(historyItem.getDateTime()));
-        insertHistoryItemStatement.setString(2, historyItem.getAction());
-        insertHistoryItemStatement.setString(3, historyItem.getDescription());
-        insertHistoryItemStatement.setInt(4, userId);
+            insertHistoryItemStatement.setTimestamp(1, java.sql.Timestamp.valueOf(historyItem.getDateTime()));
+            insertHistoryItemStatement.setString(2, historyItem.getAction());
+            insertHistoryItemStatement.setString(3, historyItem.getDescription());
+            insertHistoryItemStatement.setInt(4, userId);
 
-        System.out.println("Inserting new history item -> Successful -> Rows Added: " + insertHistoryItemStatement.executeUpdate());
-        connection.close();
+            System.out.println("Inserting new history item -> Successful -> Rows Added: " + insertHistoryItemStatement.executeUpdate());
+        }
     }
 
     public HistoryItem getHistoryItemFromResultSet(ResultSet historyItemsResultSet) throws SQLException {
