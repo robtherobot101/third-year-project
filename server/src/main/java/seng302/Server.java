@@ -30,7 +30,7 @@ public class Server {
     private WaitingListController waitingListController;
     private SQLController sqlController;
     private int port = 7015;
-    private boolean testing = false;
+    private boolean testing = true;
 
     private ProfileUtils profileUtils;
 
@@ -158,6 +158,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
             try{
