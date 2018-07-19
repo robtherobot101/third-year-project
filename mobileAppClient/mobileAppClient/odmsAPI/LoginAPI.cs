@@ -17,11 +17,8 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns true or false depending on the success of the attempted login 
          */
-        public async Task<bool> LoginUser(String usernameEmail, String password, String address)
+        public async Task<bool> LoginUser(String usernameEmail, String password)
         {
-            // Set the server address from the field on login
-            ServerConfig.Instance.serverAddress = address;
-
             // Get the single userController instance
             UserController userController = UserController.Instance;
 
@@ -39,7 +36,7 @@ namespace mobileAppClient.odmsAPI
             queries = String.Format("?usernameEmail={0}&password={1}", usernameEmail, password);
 
             HttpContent content = new StringContent("");
-
+            Console.WriteLine("THIS IS THE URL: " + url + "/login");
             var response = await client.PostAsync(url + "/login" + queries, content);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -58,7 +55,7 @@ namespace mobileAppClient.odmsAPI
         }
 
         public async Task<bool> RegisterUser(String firstName, String lastName, String email,
-            String username, String password, DateTime dateOfBirth)
+            String username, String password, DateTime dateOfBirthRaw)
         {
             // Get the single userController instance
             UserController userController = UserController.Instance;
@@ -70,11 +67,20 @@ namespace mobileAppClient.odmsAPI
 
             RegisterRequest registerRequest = new RegisterRequest();
             
-            registerRequest.names[0] = firstName;
-            registerRequest.names[1] = "";
-            registerRequest.names[2] = lastName;
+            registerRequest.name[0] = firstName;
+            registerRequest.name[1] = "";
+            registerRequest.name[2] = lastName;
+
+
+            // Apply preferredName as the inputted names
+            registerRequest.preferredName[0] = firstName;
+            registerRequest.preferredName[1] = "";
+            registerRequest.preferredName[2] = lastName;
+
             registerRequest.password = password;
-            registerRequest.dateOfBirth = dateOfBirth.Date.ToString("MM/dd/yyyy");
+
+            registerRequest.dateOfBirth = new CustomDate(dateOfBirthRaw);
+            registerRequest.creationTime = new CustomDateTime(DateTime.Now);
 
             if (username != null)
             {
@@ -93,7 +99,6 @@ namespace mobileAppClient.odmsAPI
                             });
             HttpContent body = new StringContent(registerUserRequestBody);
             Console.WriteLine(registerUserRequestBody);
-            Console.WriteLine("-------------------------ERROR: " + url + "/users");
             var response = await client.PostAsync(url + "/users", body);
 
             if (response.StatusCode == HttpStatusCode.Created)

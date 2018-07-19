@@ -67,12 +67,35 @@ namespace mobileAppClient
 
             if (successfullyRegisteredUser)
             {
-                await DisplayAlert("",
-                    "Account successfully created",
-                    "OK");
-                
-                // Pop the register pane off
-                await Navigation.PopModalAsync();
+                // Attempt login with the newly created account
+                bool loginSuccessful;
+                if (usernameInput.Text != null)
+                {
+                    loginSuccessful = await loginAPI.LoginUser(usernameInput.Text, passwordInput.Text);
+                } else
+                {
+                    loginSuccessful = await loginAPI.LoginUser(emailInput.Text, passwordInput.Text);
+                }
+
+                if (loginSuccessful)
+                {
+                    
+                    // Pop away login screen on successful login
+                    UserController.Instance.Login();
+                    await DisplayAlert("",
+                        "Account successfully created",
+                        "OK");
+                    await Navigation.PopModalAsync();
+                    await Navigation.PopModalAsync();
+                }
+                else
+                {
+                    // Display alert on failed login
+                    await DisplayAlert("",
+                        "Failed to login",
+                        "OK");
+                    await Navigation.PopModalAsync();
+                }
             } else
             {
                 await DisplayAlert("",

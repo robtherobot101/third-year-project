@@ -9,10 +9,13 @@ namespace mobileAppClient.odmsAPI.RequestFormat
      */
     class RegisterRequest
     {
-        public String[] names = new String[3];
+        public String[] name = new String[3];
+        public String[] preferredName = new String[3];
+
         public String username { get; set; }
         public String email { get; set; }
         public String password { get; set; }
-        public String dateOfBirth { get; set; }
+        public CustomDate dateOfBirth { get; set; }
+        public CustomDateTime creationTime { get; set; }
     }
 }

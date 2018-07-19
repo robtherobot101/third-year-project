@@ -20,18 +20,13 @@ namespace mobileAppClient
 
         async void SignUpButtonClicked(Object sender, EventArgs args)
         {
-            var registerPage = new RegisterPage();
+            var registerPage = new NavigationPage(new RegisterPage());
             await Navigation.PushModalAsync(registerPage);
+            Console.WriteLine("HEHEHREERERE************************************************");
         }
 
         async void LoginButtonClicked(object sender, EventArgs args)
         {
-            // Check server address syntax
-            if(!Uri.IsWellFormedUriString(serverInput.Text, UriKind.Absolute))
-            {
-                await DisplayAlert("Error", "Invalid server address. Please enter the URL in the form http://domain.tld/path/to/api", "OK");
-                return;
-            }
 
             if (usernameEmailInput.Text == null || passwordInput.Text == null)
             {
@@ -42,13 +37,13 @@ namespace mobileAppClient
             }
 
             LoginAPI loginAPI = new LoginAPI();
-            bool result = await Task.Run(() => loginAPI.LoginUser(usernameEmailInput.Text, passwordInput.Text, serverInput.Text));
+            bool result = await Task.Run(() => loginAPI.LoginUser(usernameEmailInput.Text, passwordInput.Text));
 
             if (!result)
             {
                 // Display alert on failed login
                 await DisplayAlert("",
-                    "Incorrect username/password",
+                    "Failed to login",
                     "OK");
             } else
             {
@@ -60,12 +55,8 @@ namespace mobileAppClient
 
         protected override bool OnBackButtonPressed()
         {
+            // Stops the back button from working
             return true;
-        }
-
-        async void RegisterButtonClicked(object sender, EventArgs args)
-        {
-            await Navigation.PopModalAsync();
         }
     }
 }

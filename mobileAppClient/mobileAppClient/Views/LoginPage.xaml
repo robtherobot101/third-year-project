@@ -9,11 +9,6 @@
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
 
-            <Entry x:Name="serverInput" Placeholder="Server Address"
-                Text="http://csse-s302g3.canterbury.ac.nz/api/v1"
-                VerticalOptions="CenterAndExpand" 
-                />
-
             <Entry x:Name="usernameEmailInput" Placeholder="Username/Email"
                 VerticalOptions="CenterAndExpand" 
                 />

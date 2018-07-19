@@ -3,13 +3,17 @@ namespace mobileAppClient
 {
     public class CustomTime
     {
-        public int Hour { get; set; }
-        public int Minute { get; set; }
-        public int Second { get; set; }
-        public long Nano { get; set; }
+        public int hour { get; set; }
+        public int minute { get; set; }
+        public int second { get; set; }
+        public long nano { get; set; }
 
-        public CustomTime()
+        public CustomTime(DateTime timeToParse)
         {
+            this.hour = Convert.ToInt32(timeToParse.ToString("HH"));
+            this.minute = Convert.ToInt32(timeToParse.ToString("mm"));
+            this.second = Convert.ToInt32(timeToParse.ToString("ss"));
+            this.nano = 0;
         }
     }
 }

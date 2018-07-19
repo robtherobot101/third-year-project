@@ -4,6 +4,7 @@ using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
+using mobileAppClient.odmsAPI;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
@@ -13,7 +14,9 @@ namespace mobileAppClient
         public App()
         {
             InitializeComponent();
-
+            // Ensure config is set
+            ServerConfig serverConfig = ServerConfig.Instance;
+            UserController userController = UserController.Instance;
             //RequestTester request = new RequestTester();
             //User user = request.LiveGetRequestTest();
 
