@@ -14,5 +14,5 @@ RUN ["mvn", "verify", "-DskipTests"]
 
 RUN ["mvn", "package", "-DskipTests"]
 
-EXPOSE 80
-CMD ["/srv/java/jvm/bin/java", "-jar", "server/target/server-1.0-SNAPSHOT.jar", "80"]
+EXPOSE 7015
+CMD ["/srv/java/jvm/bin/java", "-jar", "server/target/server-1.0-SNAPSHOT.jar"]
