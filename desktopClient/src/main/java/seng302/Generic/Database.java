@@ -5,18 +5,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import seng302.User.Admin;
-import seng302.User.Attribute.*;
-import seng302.User.Clinician;
-import seng302.User.Disease;
+import seng302.User.*;
+import seng302.User.Attribute.Organ;
 import seng302.User.Medication.Medication;
-import seng302.User.Procedure;
-import seng302.User.User;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.*;
-import seng302.User.WaitingListItem;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Database {
@@ -29,7 +27,7 @@ public class Database {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 
-    APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
+    APIServer server = new APIServer("http://localhost:7015/api/v1");
 
     public int getUserId(String username) {
         for(User user:getAllUsers()){
@@ -288,6 +286,11 @@ public class Database {
         return server.postRequest(new JsonObject(), queryParameters, "login");
     }
 
+    // WIP - Need to discuss the map<string, string> handling with ints and doubles. Jono
+    // public APIResponse getUsers(Map<String,Object> searchMap) {
+   //     return server.getRequest(searchMap, "users");
+   // }
+
     public User getUserFromId(int id) throws SQLException {
         //TODO add procedures,waitingListItems, diseases, etc. Need to finish "getUserFromResultSet"
         APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(id));
@@ -533,10 +536,21 @@ public class Database {
 
     }
 
-    public ResultSet adminQuery(String query) throws SQLException{
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet;
+    /*public void insertUser(User user) throws SQLException {
+        JsonParser jp = new JsonParser();
+        JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
+        System.out.println(response.getAsString());
+    } */
+
+
+    public String adminQuery(String query) throws SQLException{
+
+        JsonObject queryJson = new JsonObject();
+        queryJson.addProperty("query", query);
+        APIResponse response = server.postRequest(queryJson, new HashMap<>(), "sql");
+        String results = response.getAsString();
+        return results;
     }
 
     public void connectToDatabase() {
@@ -549,4 +563,6 @@ public class Database {
             Debugger.log(e);
         }
     }
+
+
 }

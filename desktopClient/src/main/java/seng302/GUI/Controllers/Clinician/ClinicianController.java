@@ -24,14 +24,16 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.*;
+import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.SearchUtils;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.WindowManager.setButtonSelected;
@@ -425,9 +427,13 @@ public class ClinicianController implements Initializable {
         profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
         usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
 
+        Map<String, Object> searchMap = new HashMap<>();
+
         //Add in check for region
 
         if (!searchRegionTerm.equals("")) {
+            searchMap.put("region", searchRegionTerm);
+
             ArrayList<User> newUsersFound = SearchUtils.getUsersByRegionAlternative(searchRegionTerm);
             usersFound.retainAll(newUsersFound);
 
@@ -436,6 +442,8 @@ public class ClinicianController implements Initializable {
         //Add in check for age
 
         if (!searchAgeTerm.equals("")) {
+            searchMap.put("age", Double.parseDouble(searchAgeTerm));
+            //searchUser.setDateOfBirth(searchAgeTerm);
             ArrayList<User> newUsersFound = SearchUtils.getUsersByAgeAlternative(searchAgeTerm);
             usersFound.retainAll(newUsersFound);
         }
@@ -443,6 +451,8 @@ public class ClinicianController implements Initializable {
         //Add in check for gender
 
         if (searchGenderTerm != null) {
+            searchMap.put("gender", searchGenderTerm);
+
             ArrayList<User> newUsersFound = new ArrayList<>();
             for (User user : usersFound) {
                 if ((user.getGender() != null) && searchGenderTerm.equals(user.getGender().toString())) {
@@ -455,6 +465,8 @@ public class ClinicianController implements Initializable {
         //Add in check for organ
 
         if (searchOrganTerm != null) {
+            searchMap.put("organ", searchOrganTerm);
+
             ArrayList<User> newUsersFound = new ArrayList<>();
             for (User user : usersFound) {
                 if ((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
@@ -468,8 +480,11 @@ public class ClinicianController implements Initializable {
 
         if (searchUserTypeTerm != null) {
             if (searchUserTypeTerm.equals("Neither")) {
+                searchMap.put("userType", "");
                 searchUserTypeTerm = "";
             }
+            searchMap.put("userType", searchUserTypeTerm);
+
             ArrayList<User> newUsersFound = new ArrayList<>();
             for (User user : usersFound) {
                 if (user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
@@ -480,6 +495,9 @@ public class ClinicianController implements Initializable {
             }
             usersFound = newUsersFound;
         }
+
+        //APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+        //System.out.printf( "JSON: %s", json.toString(2) );
 
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
