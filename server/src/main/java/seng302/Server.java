@@ -6,6 +6,9 @@ import seng302.Controllers.*;
 import spark.Request;
 import spark.Response;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static spark.Spark.*;
 
 public class Server {
@@ -27,6 +30,7 @@ public class Server {
     private WaitingListController waitingListController;
     private SQLController sqlController;
     private int port = 7015;
+    private boolean testing = false;
 
     private ProfileUtils profileUtils;
 
@@ -154,15 +158,27 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        if(args.length > 0){
+        List<String> argz = Arrays.asList(args);
+        if(argz.size() > 0){
             try{
-                INSTANCE.port = Integer.parseInt(args[0]);
+                if(argz.contains("-t")){
+                    INSTANCE.testing = true;
+                }
+                INSTANCE.port = Integer.parseInt(argz.get(0));
             }
             catch (Exception ignored){
 
             }
         }
         INSTANCE.start();
+    }
+
+    /**
+     * Returns whether or not the program is under test
+     * @return whether or not the program is under test
+     */
+    public boolean isTesting(){
+        return testing;
     }
 
     /**
