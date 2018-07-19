@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:local="clr-namespace:mobileAppClient"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="mobileAppClient.SingleProcedurePage">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            
+            <Button x:Name="PressMeButton"
+            Text="Back"
+            Pressed="BackButtonClicked"
+            />
+
+            <TableView Intent="Menu" >
+                <TableRoot>
+                    <TableSection Title="Procedure Details">
+                        <EntryCell Label="Summary" x:Name="SummaryEntry" IsEnabled="false"/>
+                        <EntryCell Label="Description" x:Name="DescriptionEntry" IsEnabled="false"/>
+                        <EntryCell Label="Date Due" x:Name="DateDueEntry" IsEnabled="false"/>
+                        <EntryCell Label="Organs Affected" x:Name="OrgansAffectedEntry" IsEnabled="false"/>
+                        <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+            
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -7,28 +7,49 @@ namespace mobileAppClient
 {
     public partial class DiseasesPage : ContentPage
     {
-        ObservableCollection<Disease> diseasesList = new ObservableCollection<Disease>();
+        void Handle_ValueChanged(object sender, SegmentedControl.FormsPlugin.Abstractions.ValueChangedEventArgs e)
+        {
+            switch (e.NewValue)
+            {
+                case 0:
+                    DiseasesList.ItemsSource = UserController.Instance.LoggedInUser.CurrentDiseases;
+                    break;
+                case 1:
+                    DiseasesList.ItemsSource = UserController.Instance.LoggedInUser.CuredDiseases;
+                    break;
+            }
+        }
 
         public DiseasesPage()
         {
             InitializeComponent();
 
-            diseasesList.Add(new Disease("David", 2));
-            diseasesList.Add(new Disease("Andy", 2));
-            diseasesList.Add(new Disease("Tom", 2));
-            diseasesList.Add(new Disease("AHAHAHAHHAHAHHAHAHAHAHHA", 2));
-            DiseasesList.ItemsSource = diseasesList;
+            //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
+
+            foreach(Disease item in UserController.Instance.LoggedInUser.CurrentDiseases) {
+                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.Day + ", " + item.DiagnosisDate.Month + ", " + item.DiagnosisDate.Year;
+            }
+            foreach (Disease item in UserController.Instance.LoggedInUser.CuredDiseases)
+            {
+                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.Day + ", " + item.DiagnosisDate.Month + ", " + item.DiagnosisDate.Year;
+            }
+
+            DiseasesList.ItemsSource = UserController.Instance.LoggedInUser.CurrentDiseases;
+  
 
         }
 
-        void OnDiseaseItemSelection(object sender, SelectedItemChangedEventArgs e)
+
+
+
+        async void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
-            if (e.SelectedItem == null)
+            if (e == null)
             {
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
-            DisplayAlert("Item Selected", e.SelectedItem.ToString(), "Ok");
-            //((ListView)sender).SelectedItem = null; //uncomment line if you want to disable the visual selection state.
+            var singleDiseasePage = new SingleDiseasePage((Disease)DiseasesList.SelectedItem);
+            await Navigation.PushModalAsync(singleDiseasePage);
         }
     }
 }

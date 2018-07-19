@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.WaitingListItemsPage"
+             xmlns:local="clr-namespace:mobileAppClient"
+             Title="Waiting List" NavigationPage.HasNavigationBar="True">
+    <ContentPage.Content>
+         <StackLayout Orientation="Vertical">
+
+            <ListView x:Name="WaitingListItemsList"
+                      ItemTapped="Handle_WaitingListItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding OrganType}"
+                         Detail="{Binding DetailString}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

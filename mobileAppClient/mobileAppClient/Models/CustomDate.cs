@@ -13,5 +13,6 @@ namespace mobileAppClient
             this.month = Convert.ToInt32(dateToParse.ToString("MM"));
             this.year = Convert.ToInt32(dateToParse.ToString("yyyy"));
         }
+
     }
 }

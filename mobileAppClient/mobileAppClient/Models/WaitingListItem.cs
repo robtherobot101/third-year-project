@@ -9,6 +9,7 @@ namespace mobileAppClient
         public int UserId { get; set; }
         public CustomDate OrganDeregisteredDate { get; set; }
         public int OrganDeregisteredCode { get; set; }
+        public string DetailString { get; set; }
 
         public WaitingListItem()
         {
