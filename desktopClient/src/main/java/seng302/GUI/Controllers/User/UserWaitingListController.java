@@ -189,10 +189,12 @@ public class UserWaitingListController extends UserTabController implements Init
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            if(currentUser.conflictingOrgans().contains(item.getOrganType())) {
-                                setTooltip(new Tooltip("User is currently donating this organ"));
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
+                            for(Organ o:currentUser.getOrgans()){
+                                if(o.equals(item.getOrganType()) && item.getStillWaitingOn()){
+                                    setTooltip(new Tooltip("User is currently donating this organ"));
+                                    if (!getStyleClass().contains("highlighted-row")) {
+                                        getStyleClass().add("highlighted-row");
+                                    }
                                 }
                             }
                         }

@@ -48,7 +48,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 organTickBoxes.get(organ).setTooltip(null);
             }
             for(WaitingListItem item: currentUser.getWaitingListItems()){
-                if(!organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox") && item.getOrganType()==organ && organTickBoxes.get(organ).isSelected()){
+                if(!organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox") && item.getOrganType() == organ && organTickBoxes.get(organ).isSelected() && item.getStillWaitingOn()){
                     organTickBoxes.get(organ).getStyleClass().add("highlighted-checkbox");
                     organTickBoxes.get(organ).setTooltip(new Tooltip("User is waiting to receive this organ"));
                 }
