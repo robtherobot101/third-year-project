@@ -51,6 +51,9 @@ public class Database {
     public void insertUser(User user) throws SQLException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        userJson.remove("id");
+
+        System.out.println(userJson);
         APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
         System.out.println(response.getAsString());
     }
@@ -291,7 +294,6 @@ public class Database {
    // }
 
     public User getUserFromId(int id) throws SQLException {
-        //TODO add procedures,waitingListItems, diseases, etc. Need to finish "getUserFromResultSet"
         APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(id));
         if(response.isValidJson()){
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
