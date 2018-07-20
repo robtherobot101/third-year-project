@@ -115,4 +115,14 @@ public class UserWaitingList {
             System.out.println("Deletion of Waiting List Item - ID: " + waitingListItemId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
+
+    public void removeWaitingListItem(int userId, Organ organ) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND organ_type = ? AND organ_deregistered_date = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setDate(1,java.sql.Date.valueOf(LocalDate.now()));
+            statement.setInt(2,5);
+            System.out.println("Deletion of Waiting List Item - Organ: " + organ.toString() + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
 }

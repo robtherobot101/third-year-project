@@ -299,18 +299,12 @@ public class GeneralUser {
 
         queryBuilder.append("SELECT * FROM USER WHERE ");
 
-
         String nameFilter = nameFilter(params);
         String passwordFilter = matchFilter(params, "password", true);
-
         String userTypeFilter = userTypeFilter(params);
-
         String ageFilter = ageFilter(params);
-
         String genderFilter = matchFilter(params, "gender", false);
-
         String regionFilter = matchFilter(params, "region", false);
-
         String organFilter = organFilter(params);
 
         List<String> filters = new ArrayList<String>();
