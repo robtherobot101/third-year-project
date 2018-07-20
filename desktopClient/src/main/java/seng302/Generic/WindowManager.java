@@ -1,14 +1,5 @@
 package seng302.Generic;
 
-import static seng302.Generic.IO.getJarPath;
-import static seng302.Generic.IO.streamOut;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -22,23 +13,25 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.GUI.Controllers.User.UserSettingsController;
 import seng302.GUI.Controllers.Admin.AdminController;
-import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
-import seng302.GUI.Controllers.User.CreateUserController;
-import seng302.GUI.Controllers.LoginController;
+import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
+import seng302.GUI.Controllers.LoginController;
+import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.User.UserController;
+import seng302.GUI.Controllers.User.UserSettingsController;
 import seng302.GUI.TFScene;
-import seng302.User.Admin;
-import seng302.User.Clinician;
-import seng302.User.History;
+import seng302.User.*;
 import seng302.User.Medication.InteractionApi;
-import seng302.User.User;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
-import seng302.User.WaitingListItem;
+import java.util.HashMap;
+import java.util.Map;
+
+import static seng302.Generic.IO.getJarPath;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -113,8 +106,7 @@ public class WindowManager extends Application {
             Parent root = loader.load();
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
-            String text = History.prepareFileStringGUI(user.getId(), "view");
-            History.printToFile(streamOut, text);
+            user.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setCurrentUser(user);
             System.out.println("Opening window for user");
@@ -533,15 +525,6 @@ public class WindowManager extends Application {
      */
     @Override
     public void stop() {
-        try {
-            if (userController.getCurrentUser() != null) {
-                String text = History.prepareFileStringGUI(userController.getCurrentUser().getId(), "quit");
-                History.printToFile(IO.streamOut, text);
-            }
-        } catch (Exception e) {
-            Debugger.error("Error writing history.");
-        }
-
         Debugger.log("Exiting GUI");
         Platform.exit();
     }

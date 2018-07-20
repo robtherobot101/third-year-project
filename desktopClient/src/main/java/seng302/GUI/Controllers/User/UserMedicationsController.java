@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import seng302.Generic.Cache;
-import seng302.User.History;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Medication.DrugInteraction;
@@ -19,10 +18,7 @@ import seng302.User.Medication.Medication;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
-
-import static seng302.Generic.IO.streamOut;
 
 
 /**
@@ -299,14 +295,6 @@ public class UserMedicationsController extends UserTabController implements Init
         currentUser.getHistoricMedications().addAll(historicItems);
         currentUser.getCurrentMedications().clear();
         currentUser.getCurrentMedications().addAll(currentItems);
-        String text = History.prepareFileStringGUI(currentUser.getId(), "medications");
-        History.printToFile(streamOut, text);
-        //WindowManager.getDatabase().updateUserAttributesAndOrgans(currentUser);
-        /*try {
-            WindowManager.getDatabase().updateUserMedications(currentUser);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
     }
 
     /**

@@ -18,8 +18,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static java.lang.Thread.sleep;
-
 /**
  * A controller class for the log in screen.
  */
@@ -42,7 +40,6 @@ public class LoginController implements Initializable {
 
     public void login(){
         APIResponse response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
-        System.out.println(response.getAsString());
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
             if (serverResponse.get("accountType") == null) {
@@ -65,7 +62,6 @@ public class LoginController implements Initializable {
     }
 
     private void loadUser(User user) {
-        //User matched = SearchUtils.getUserById(user.getId());
         WindowManager.setCurrentUser(user);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();

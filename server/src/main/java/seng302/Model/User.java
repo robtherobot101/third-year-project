@@ -3,7 +3,6 @@ package seng302.Model;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
-import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,31 +31,7 @@ public class User {
     private ArrayList<Disease> currentDiseases = new ArrayList<>(), curedDiseases = new ArrayList<>();
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
-
-    public User(String name, LocalDate dateOfBirth) {
-        this.name = name.split(",");
-        this.preferredName = this.name;
-        this.dateOfBirth = dateOfBirth;
-        this.creationTime = LocalDateTime.now();
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
-    }
-
-    public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
-                String currentAddress) throws DateTimeException, IllegalArgumentException {
-        this.name = name.split(",");
-        this.preferredName = this.name;
-        this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
-        this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
-        this.gender = Gender.parse(gender);
-        this.genderIdentity = this.gender;
-        this.height = height;
-        this.weight = weight;
-        this.bloodType = BloodType.parse(bloodType);
-        this.region = region;
-        this.currentAddress = currentAddress;
-        this.creationTime = LocalDateTime.now();
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
-    }
+    private ArrayList<HistoryItem> userHistory = new ArrayList<>();
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
@@ -75,49 +50,10 @@ public class User {
         /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
     }
 
-    // Used by CSV import to form profiles
-    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender,
-                Gender genderIdentity, BloodType bloodType, int height, int weight, String address, String region,
-                String city, int zipCode, String country, String homePhone, String mobilePhone, String email) {
-        int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
-        this.name = new String[1 + isLastName];
-        this.name[0] = firstName;
-        if (isLastName == 1) {
-            this.name[this.name.length - 1] = lastNames;
-        }
 
-        this.preferredName = this.name;
-        this.dateOfBirth = dateOfBirth;
-        this.dateOfDeath = dateOfDeath;
-
-        this.creationTime = LocalDateTime.now();
-        this.gender = gender;
-        this.genderIdentity = genderIdentity;
-        this.bloodType = bloodType;
-
-        // Uses Java automatic type recognition to convert int -> double
-        this.height = 1.0 * height;
-        this.weight = 1.0 * weight;
-
-        this.currentAddress = address;
-        this.region = region;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.country = country;
-
-        this.homePhone = homePhone;
-        this.mobilePhone = mobilePhone;
-
-        this.email = email;
-        this.password = "password";
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
-    }
-
-
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
+    public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
-        System.out.println(isLastName);
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
         this.name[0] = firstName;
@@ -141,7 +77,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
+        this.id = id;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -150,8 +86,6 @@ public class User {
         this.pendingProcedures = new ArrayList<>();
         this.previousProcedures = new ArrayList<>();
     }
-
-
 
     /**
      * Used to create a deep copy of the object. Does not copy username, password, or email.
@@ -483,6 +417,10 @@ public class User {
         setLastModified();
     }
 
+    public void sortHistory() {
+        userHistory.sort(Comparator.comparing(HistoryItem::getDateTime));
+    }
+
     public void setLastModified() {
         lastModified = LocalDateTime.now();
     }
@@ -531,6 +469,9 @@ public class User {
         return previousProcedures;
     }
 
+    public ArrayList<HistoryItem> getUserHistory() {
+        return userHistory;
+    }
 
     /**
      * Get a string containing key information about the user.
@@ -559,7 +500,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("Model (ID %d) created at %s "
+        return String.format("User (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"
@@ -608,55 +549,8 @@ public class User {
 
     public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
-    public boolean isReceiver() {
-        boolean receiver = false;
-        for (WaitingListItem item : waitingListItems) {
-            if (item.getOrganDeregisteredDate() == null) {
-                receiver = true;
-            }
-        }
-        return receiver;
-    }
 
-    /**
-     * Returns the intersection of the organs which are being donated and organs that the
-     * user is currently waiting to receive
-     * @return The organs which are being donated and the user is currently waiting on
-     */
-    public Set<Organ> conflictingOrgans(){
-        Set<Organ> conflicting = new HashSet<>();
-        for(WaitingListItem item: waitingListItems) {
-            if(item.getOrganDeregisteredDate() == null){
-                if(organs.contains(item.getOrganType())){
-                    conflicting.add(item.getOrganType());
-                }
-            }
-        }
-        return conflicting;
+    public void addHistoryItem(HistoryItem historyItem) {
+        userHistory.add(historyItem);
     }
-
-    public String getType() {
-        if (isDonor() && isReceiver()) {
-            return "Donor/Receiver";
-        } else if (isDonor() && !isReceiver()) {
-            return "Donor";
-        } else if (!isDonor() && isReceiver()) {
-            return "Receiver";
-        } else {
-            return "";
-        }
-    }
-
-//    /**
-//     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
-//     * @param toRemove The organ being removed from the waiting list.
-//     */
-//    public void removeWaitingListItem(Organ toRemove) {
-//        for (ReceiverWaitingListItem item : waitingListItems){
-//            if (item.getOrganType() == toRemove) {
-//                item.deregisterOrgan(5);
-//                break;
-//            }
-//        }
-//    }
 }
