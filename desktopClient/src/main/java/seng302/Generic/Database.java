@@ -74,7 +74,6 @@ public class Database {
             System.out.println("Item: " + waitingListItemJson);
             APIResponse res = server.postRequest(waitingListItemJson, new HashMap<String, String>(), "users",String.valueOf(userId), "waitingListItems");
             System.out.println("Response: " + res.getAsString());
-
         }
     }
 
@@ -311,17 +310,17 @@ public class Database {
             for(JsonElement item:response.getAsJsonArray()){
                 Organ organ = Organ.valueOf(item.getAsJsonObject().get("organType").getAsString());
                 LocalDate registeredDate = new Gson().fromJson(item.getAsJsonObject().get("organRegisteredDate"), LocalDate.class);
+                LocalDate deregisteredDate = new Gson().fromJson(item.getAsJsonObject().get("organDeregisteredDate"), LocalDate.class);
                 Long waitinguserId = item.getAsJsonObject().get("userId").getAsLong();
                 Integer deregisteredCode = item.getAsJsonObject().get("organDeregisteredCode") != null ? item.getAsJsonObject().get("organDeregisteredCode").getAsInt() : null;
                 Integer waitingListId = item.getAsJsonObject().get("id").getAsInt();
 
                 User user = getUserFromId(waitinguserId.intValue());
-
-                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),organ));
-
+                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),registeredDate,deregisteredDate,deregisteredCode,organ));
             }
         }
     }
+
 
     public Clinician getClinicianFromId(int id) throws SQLException {
         // SELECT * FROM CLINICIAN id = id;
@@ -371,7 +370,21 @@ public class Database {
     public List<User> getAllUsers() {
         APIResponse response = server.getRequest(new HashMap<>(),"users");
         if(response.isValidJson()) {
-            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
+            List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
+
+            // Debugging
+            for(User u:responses){
+                if(u.getId() == 6){
+                    System.out.println("Getting all users from database");
+                    System.out.println("CurrentState: ");
+                    for(WaitingListItem i:u.getWaitingListItems()){
+                        System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
+                    }
+                }
+            }
+            //
+
+            return responses;
         }else {
             return new ArrayList<User>();
         }
@@ -533,21 +546,11 @@ public class Database {
 
     }
 
-    /*public void insertUser(User user) throws SQLException {
-        JsonParser jp = new JsonParser();
-        JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
-        System.out.println(response.getAsString());
-    } */
-
-
-    public String adminQuery(String query) throws SQLException{
-
-        JsonObject queryJson = new JsonObject();
-        queryJson.addProperty("query", query);
-        APIResponse response = server.postRequest(queryJson, new HashMap<>(), "sql");
-        String results = response.getAsString();
-        return results;
+    public String sendCommand(String command) {
+        JsonObject commandObject = new JsonObject();
+        commandObject.addProperty("command", command);
+        APIResponse response = server.postRequest(commandObject, new HashMap<>(), "cli");
+        return response.getAsString();
     }
 
     public void connectToDatabase() {

@@ -443,6 +443,7 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
+                            System.out.println("tableItem: " +item.getUserId());
                             if (SearchUtils.getUserById(item.getUserId()).getOrgans().contains(item.getOrganType())) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
                                 if (!getStyleClass().contains("highlighted-row")) {

@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static java.lang.Thread.sleep;
+
 /**
  * A controller class for the log in screen.
  */
@@ -82,9 +84,10 @@ public class LoginController implements Initializable {
         //Add all users from Database
         DataManager.users.clear();
         try{
+            DataManager.clearUsers();
             DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
             WindowManager.getDatabase().refreshUserWaitinglists();
-        } catch(SQLException e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
 

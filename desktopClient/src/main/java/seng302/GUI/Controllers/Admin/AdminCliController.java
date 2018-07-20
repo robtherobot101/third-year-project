@@ -8,10 +8,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import seng302.GUI.CommandLineInterface;
+import seng302.Generic.WindowManager;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class AdminCliController implements Initializable {
@@ -19,8 +20,6 @@ public class AdminCliController implements Initializable {
     private TextField commandInputField;
     @FXML
     private ListView<String> commandOutputView;
-
-    private CommandLineInterface commandLineInterface;
 
     private ObservableList<String> capturedOutput;
 
@@ -55,8 +54,6 @@ public class AdminCliController implements Initializable {
         });
 
         // Instantiate a new CLI and pipe its output to our ObservableList
-        commandLineInterface = new CommandLineInterface();
-        commandLineInterface.setOutput(capturedOutput);
     }
 
     /**
@@ -100,12 +97,32 @@ public class AdminCliController implements Initializable {
     public void onEnter() {
         if (!commandInputField.getText().equals("TF > ")) {
             capturedOutput.add(commandInputField.getText());
-            commandLineInterface.readCommand(commandInputField.getText().substring(5));
+
+            String response = WindowManager.getDatabase().sendCommand(commandInputField.getText().substring(5));
+            if(isInstruction(response)) {
+                executeInstruction(response);
+            }else{
+                capturedOutput.add(response);
+            }
+
+
+
             commandInputHistory.add(commandInputField.getText());
             currentHistoryIndex = commandInputHistory.size();
             commandInputField.setText("TF > ");
             commandInputField.positionCaret(5);
             commandOutputView.scrollTo(capturedOutput.size() - 1);
+        }
+    }
+
+
+    public boolean isInstruction(String response){
+        return Arrays.asList("CLEAR").contains(response);
+    }
+
+    public void executeInstruction(String response){
+        switch (response) {
+            case "CLEAR": capturedOutput.clear();
         }
     }
 }

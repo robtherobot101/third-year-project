@@ -22,7 +22,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.GUI.CommandLineInterface;
 import seng302.GUI.Controllers.User.UserSettingsController;
 import seng302.GUI.Controllers.Admin.AdminController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
@@ -118,6 +117,12 @@ public class WindowManager extends Application {
             History.printToFile(streamOut, text);
 
             newUserController.setCurrentUser(user);
+            System.out.println("Opening window for user");
+            System.out.println("CurrentState: ");
+            for(WaitingListItem i:user.getWaitingListItems()){
+                System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
+            }
+
             newUserController.setControlsShown(true);
             cliniciansUserWindows.put(stage, newUserController);
 
@@ -320,8 +325,6 @@ public class WindowManager extends Application {
         } else if (args.length == 1 && args[0].equals("-c")) {
             try {
                 IO.setPaths();
-                CommandLineInterface commandLineInterface = new CommandLineInterface();
-                //commandLineInterface.run(System.in);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }

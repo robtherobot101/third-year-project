@@ -39,6 +39,7 @@ import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.History;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -360,7 +361,15 @@ public class UserController implements Initializable {
             WindowManager.getDatabase().updateUserOrgans(currentUser);
             WindowManager.getDatabase().updateUserProcedures(currentUser);
             WindowManager.getDatabase().updateUserDiseases(currentUser);
+
+            System.out.println("Attempting to save waitingListItems");
+            System.out.println("CurrentState: ");
+            for(WaitingListItem i:currentUser.getWaitingListItems()){
+                System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
+            }
+
             WindowManager.getDatabase().updateWaitingListItems(currentUser);
+
 
 
             String text = History.prepareFileStringGUI(currentUser.getId(), "update");
