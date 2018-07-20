@@ -89,13 +89,7 @@ public class UserWaitingListController extends UserTabController implements Init
         if (waitingListItemSelected != null) {
             userController.addCurrentUserToUndoStack();
             WindowManager.showDeregisterDialog(waitingListItemSelected);
-            System.out.println(currentUser.hashCode());
-            System.out.println(SearchUtils.getUserById(currentUser.getId()).hashCode());
-            System.out.println(currentUser.equals(SearchUtils.getUserById(currentUser.getId())));
-            for(WaitingListItem i: SearchUtils.getUserById(currentUser.getId()).getWaitingListItems()){
-                i.deregisterOrgan(3);
-            }
-            statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
+            statusIndicator.setStatus("De-registered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }
         populateOrgansComboBox();

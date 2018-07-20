@@ -66,7 +66,7 @@ public class Database {
             JsonObject waitingListItemJson = new JsonObject();
             waitingListItemJson.addProperty("organType", item.getOrganType().name());
             waitingListItemJson.add("organRegisteredDate", new Gson().toJsonTree(item.getOrganRegisteredDate(),LocalDate.class));
-            waitingListItemJson.add("organDeregisteredDate", new Gson().toJsonTree(item.organDeregisteredDate(),LocalDate.class));
+            waitingListItemJson.add("organDeregisteredDate", new Gson().toJsonTree(item.getOrganDeregisteredDate(),LocalDate.class));
             waitingListItemJson.addProperty("organDeregisteredCode", item.getOrganDeregisteredCode());
             waitingListItemJson.addProperty("userId", item.getUserId());
             System.out.println("Item: " + waitingListItemJson);

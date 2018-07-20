@@ -107,7 +107,7 @@ public class WaitingListItem {
         return organRegisteredDate;
     }
 
-    public LocalDate organDeregisteredDate() {
+    public LocalDate getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
 
