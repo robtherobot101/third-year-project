@@ -5,18 +5,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import seng302.User.Admin;
-import seng302.User.Attribute.*;
-import seng302.User.Clinician;
-import seng302.User.Disease;
+import seng302.User.*;
+import seng302.User.Attribute.Organ;
 import seng302.User.Medication.Medication;
-import seng302.User.Procedure;
-import seng302.User.User;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.*;
-import seng302.User.WaitingListItem;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Database {
@@ -286,6 +284,11 @@ public class Database {
         queryParameters.put("password", password);
         return server.postRequest(new JsonObject(), queryParameters, "login");
     }
+
+    // WIP - Need to discuss the map<string, string> handling with ints and doubles. Jono
+    // public APIResponse getUsers(Map<String,Object> searchMap) {
+   //     return server.getRequest(searchMap, "users");
+   // }
 
     public User getUserFromId(int id) throws SQLException {
         //TODO add procedures,waitingListItems, diseases, etc. Need to finish "getUserFromResultSet"
@@ -563,4 +566,6 @@ public class Database {
             Debugger.log(e);
         }
     }
+
+
 }

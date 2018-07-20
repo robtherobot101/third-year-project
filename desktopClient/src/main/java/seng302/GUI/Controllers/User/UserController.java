@@ -1,45 +1,36 @@
 package seng302.GUI.Controllers.User;
 
-import static seng302.Generic.IO.streamOut;
-import static seng302.Generic.WindowManager.setButtonSelected;
-
-import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.DataManager;
+import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.History;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.IO.streamOut;
+import static seng302.Generic.WindowManager.setButtonSelected;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -153,6 +144,41 @@ public class UserController implements Initializable {
      */
     public void updateDiseases() {
         diseasesController.updateDiseases();
+    }
+
+    /**
+     * Updates the current user with the most recent server version
+     */
+    public void refresh() {
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
+                "Refreshing will overwrite your all unsaved changes.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+            Gson gson = new Gson();
+            APIResponse response = WindowManager.getDatabase().loginUser(currentUser.getUsername(), currentUser.getPassword());
+            System.out.println(response.getAsString());
+            if (response.isValidJson()) {
+                attributesController.undoStack.clear();
+                attributesController.redoStack.clear();
+                medicationsController.undoStack.clear();
+                medicationsController.redoStack.clear();
+                proceduresController.undoStack.clear();
+                proceduresController.redoStack.clear();
+                diseasesController.undoStack.clear();
+                diseasesController.redoStack.clear();
+                waitingListController.undoStack.clear();
+                waitingListController.redoStack.clear();
+                setUndoRedoButtonsDisabled(true, true);
+                JsonObject serverResponse = response.getAsJsonObject();
+                setCurrentUser(gson.fromJson(serverResponse, User.class));
+                alert.close();
+            } else {
+                alert.close();
+                alert = WindowManager.createAlert(AlertType.ERROR, "Refresh Failed", "Refresh failed",
+                        "User data could not be refreshed because there was an error contacting the server.");
+                alert.showAndWait();
+            }
+        }
     }
 
     /**

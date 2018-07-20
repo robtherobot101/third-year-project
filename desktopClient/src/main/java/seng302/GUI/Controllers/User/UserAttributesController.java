@@ -1,29 +1,20 @@
 package seng302.GUI.Controllers.User;
 
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
+import seng302.Generic.WindowManager;
+import seng302.User.Attribute.*;
+import seng302.User.User;
+import seng302.User.WaitingListItem;
+
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
-import seng302.Generic.Debugger;
-import seng302.User.WaitingListItem;
-import seng302.Generic.WindowManager;
-import seng302.User.Attribute.AlcoholConsumption;
-import seng302.User.Attribute.BloodType;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.Organ;
-import seng302.User.Attribute.SmokerStatus;
-import seng302.User.User;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
@@ -236,7 +227,6 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        //Debugger.log(currentUser.toString());
         return true;
     }
 
@@ -431,10 +421,5 @@ public class UserAttributesController extends UserTabController implements Initi
         //Remove the top element of the redo stack
         redoStack.removeLast();
         populateUserFields();
-    }
-
-    @Override
-    public void addToUndoStack(User user) {
-
     }
 }
