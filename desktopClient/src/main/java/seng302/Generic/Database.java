@@ -174,7 +174,6 @@ public class Database {
         }
     }
 
-
     public void insertClinician(Clinician clinician) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
@@ -309,12 +308,12 @@ public class Database {
 
     public void resetDatabase() throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "reset");
-        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        if(response.getStatusCode() != 200) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     public void loadSampleData() throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "resample");
-        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        if(response.getStatusCode() != 200) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     public String sendCommand(String command) {
@@ -334,6 +333,4 @@ public class Database {
             Debugger.log(e);
         }
     }
-
-
 }
