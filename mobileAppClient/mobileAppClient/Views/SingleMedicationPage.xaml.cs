@@ -11,9 +11,27 @@ namespace mobileAppClient
         {
             InitializeComponent();
             NameEntry.Text = medication.Name;
-            ActiveIngredientsEntry.Text = String.Join(", ", medication.ActiveIngredients);
-            HistoryEntry.Text = String.Join(", ", medication.History);
+
+            //ActiveIngredientsTable. = medication.ActiveIngredients;
+
+            //ActiveIngredientsEntry.Text = String.Join(", ", medication.ActiveIngredients);
+            //HistoryEntry.Text = String.Join(", ", medication.History);
             IDEntry.Text = medication.Id.ToString();
+            foreach(string item in medication.ActiveIngredients) 
+            {
+                TextCell cell = new TextCell();
+                cell.Text = item;
+                cell.TextColor = Color.Black;
+                activeIngredientsTableSection.Add(cell);
+            }
+
+            foreach (string item in medication.History)
+            {
+                TextCell cell = new TextCell();
+                cell.Text = item;
+                cell.TextColor = Color.Black;
+                historyTableSection.Add(cell);
+            }
         }
 
         async void BackButtonClicked(object sender, EventArgs args)
