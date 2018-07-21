@@ -5,18 +5,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import seng302.User.Admin;
-import seng302.User.Attribute.*;
-import seng302.User.Clinician;
-import seng302.User.Disease;
+import seng302.User.*;
+import seng302.User.Attribute.Organ;
 import seng302.User.Medication.Medication;
-import seng302.User.Procedure;
-import seng302.User.User;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.*;
-import seng302.User.WaitingListItem;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Database {
@@ -53,6 +51,9 @@ public class Database {
     public void insertUser(User user) throws SQLException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        userJson.remove("id");
+
+        System.out.println(userJson);
         APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
         System.out.println(response.getAsString());
     }
@@ -68,13 +69,12 @@ public class Database {
             JsonObject waitingListItemJson = new JsonObject();
             waitingListItemJson.addProperty("organType", item.getOrganType().name());
             waitingListItemJson.add("organRegisteredDate", new Gson().toJsonTree(item.getOrganRegisteredDate(),LocalDate.class));
-            waitingListItemJson.add("organDeregisteredDate", new Gson().toJsonTree(item.organDeregisteredDate(),LocalDate.class));
+            waitingListItemJson.add("organDeregisteredDate", new Gson().toJsonTree(item.getOrganDeregisteredDate(),LocalDate.class));
             waitingListItemJson.addProperty("organDeregisteredCode", item.getOrganDeregisteredCode());
             waitingListItemJson.addProperty("userId", item.getUserId());
             System.out.println("Item: " + waitingListItemJson);
             APIResponse res = server.postRequest(waitingListItemJson, new HashMap<String, String>(), "users",String.valueOf(userId), "waitingListItems");
             System.out.println("Response: " + res.getAsString());
-
         }
     }
 
@@ -288,8 +288,17 @@ public class Database {
         return server.postRequest(new JsonObject(), queryParameters, "login");
     }
 
+    /**
+     * Used for searching, takes a hashmap of keyvalue pairs and searches the DB for them.
+     * eg. "age", "10" returns all users aged 10.
+     * @param searchMap The hashmap with associated key value pairs
+     * @return a JSON array of users.
+     */
+    public APIResponse getUsers(Map<String,String> searchMap) {
+        return server.getRequest(searchMap, "users");
+    }
+
     public User getUserFromId(int id) throws SQLException {
-        //TODO add procedures,waitingListItems, diseases, etc. Need to finish "getUserFromResultSet"
         APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(id));
         if(response.isValidJson()){
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
@@ -311,17 +320,17 @@ public class Database {
             for(JsonElement item:response.getAsJsonArray()){
                 Organ organ = Organ.valueOf(item.getAsJsonObject().get("organType").getAsString());
                 LocalDate registeredDate = new Gson().fromJson(item.getAsJsonObject().get("organRegisteredDate"), LocalDate.class);
+                LocalDate deregisteredDate = new Gson().fromJson(item.getAsJsonObject().get("organDeregisteredDate"), LocalDate.class);
                 Long waitinguserId = item.getAsJsonObject().get("userId").getAsLong();
                 Integer deregisteredCode = item.getAsJsonObject().get("organDeregisteredCode") != null ? item.getAsJsonObject().get("organDeregisteredCode").getAsInt() : null;
                 Integer waitingListId = item.getAsJsonObject().get("id").getAsInt();
 
                 User user = getUserFromId(waitinguserId.intValue());
-
-                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),organ));
-
+                SearchUtils.getUserById(waitinguserId).getWaitingListItems().add(new WaitingListItem(user.getName(),user.getRegion(),user.getId(),registeredDate,deregisteredDate,deregisteredCode,organ));
             }
         }
     }
+
 
     public Clinician getClinicianFromId(int id) throws SQLException {
         // SELECT * FROM CLINICIAN id = id;
@@ -371,7 +380,21 @@ public class Database {
     public List<User> getAllUsers() {
         APIResponse response = server.getRequest(new HashMap<>(),"users");
         if(response.isValidJson()) {
-            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
+            List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
+
+            // Debugging
+            for(User u:responses){
+                if(u.getId() == 6){
+                    System.out.println("Getting all users from database");
+                    System.out.println("CurrentState: ");
+                    for(WaitingListItem i:u.getWaitingListItems()){
+                        System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
+                    }
+                }
+            }
+            //
+
+            return responses;
         }else {
             return new ArrayList<User>();
         }
@@ -396,147 +419,35 @@ public class Database {
     }
 
     public void removeUser(User user) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, user.getUsername());
-        Debugger.log("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        APIResponse response = server.deleteRequest(new HashMap<>(), "users",String.valueOf(user.getId()));
+        assert response.getStatusCode() == 201;
     }
 
     public void removeClinician(Clinician clinician) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".CLINICIAN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, clinician.getUsername());
-        Debugger.log("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        APIResponse response = server.deleteRequest(new HashMap<>(), "clinician",String.valueOf(clinician.getStaffID()));
+        assert response.getStatusCode() == 201;
     }
 
     public void removeAdmin(Admin admin) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".ADMIN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, admin.getUsername());
-        Debugger.log("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        APIResponse response = server.deleteRequest(new HashMap<>(), "admin",String.valueOf(admin.getStaffID()));
+        assert response.getStatusCode() == 201;
     }
 
     public void resetDatabase() throws SQLException{
-        String update = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM";
-        PreparedStatement statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".PROCEDURES";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".MEDICATION";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (MEDICATION): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (DONATION_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".DISEASE";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (DISEASE): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".ADMIN";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (ADMIN): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".CLINICIAN";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (CLINICIAN): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".USER";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-
-        update = "ALTER TABLE " + currentDatabase + ".USER AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(USER): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".CLINICIAN AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(CLINICIAN): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".ADMIN AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(ADMIN): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".DISEASE AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(DISEASE): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".DONATION_LIST_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(DONATION LIST ITEM): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".MEDICATION AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(MEDICATION): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".PROCEDURES AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(PROCEDURES): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".WAITING_LIST_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(WAITING LIST ITEM): -> Successful -> " + statement.executeUpdate());
-
-        String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region, staff_id) " +
-                "VALUES(?, ?, ?, ?, ?, ?)";
-        statement = connection.prepareStatement(insert);
-        statement.setString(1, "default");
-        statement.setString(2, "default");
-        statement.setString(3, "default");
-        statement.setString(4, "default");
-        statement.setString(5, "default");
-        statement.setInt(6, 1);
-        Debugger.log("Inserting Default Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
-
-        insert = "INSERT INTO " + currentDatabase + ".ADMIN(username, password, name, work_address, region, staff_id) " +
-                "VALUES(?, ?, ?, ?, ?, ?)";
-        statement = connection.prepareStatement(insert);
-        statement.setString(1, "admin");
-        statement.setString(2, "default");
-        statement.setString(3, "default");
-        statement.setString(4, "default");
-        statement.setString(5, "default");
-        statement.setInt(6, 1);
-        Debugger.log("Inserting Default Admin -> Successful -> Rows Added: " + statement.executeUpdate());
-
+        APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "reset");
+        assert response.getStatusCode() == 201;
     }
 
     public void loadSampleData() throws SQLException {
-
-        ArrayList<User> allUsers = new ArrayList<>();
-        User user1 = new User("Andy", new String[]{"Robert"}, "French", LocalDate.now(), "andy", "andy@andy.com", "andrew");
-        allUsers.add(user1);
-        User user2 = new User("Buzz", new String[]{"Buzzy"}, "Knight", LocalDate.now(), "buzz", "buzz@buzz.com", "drowssap");
-        allUsers.add(user2);
-        User user3 = new User("James", new String[]{"Mozza"}, "Morritt", LocalDate.now(), "mozza", "mozza@mozza.com", "mozza");
-        allUsers.add(user3);
-        User user4 = new User("Jono", new String[]{"Zilla"}, "Hills", LocalDate.now(), "jonozilla", "zilla@zilla.com", "zilla");
-        allUsers.add(user4);
-        User user5 = new User("James", new String[]{"Mackas"}, "Mackay", LocalDate.now(), "mackas", "mackas@mackas.com", "mackas");
-        allUsers.add(user5);
-        User user6 = new User("Nicky", new String[]{"The Dark Horse"}, "Zohrab-Henricks", LocalDate.now(), "nicky", "nicky@nicky.com", "nicky");
-        allUsers.add(user6);
-        User user7 = new User("Kyran", new String[]{"Playing Fortnite"}, "Stagg", LocalDate.now(), "kyran", "kyran@kyran.com", "fortnite");
-        allUsers.add(user7);
-        User user8 = new User("Andrew", new String[]{"Daveo"}, "Davidson", LocalDate.now(), "andrew", "andrew@andrew.com", "andrew");
-        allUsers.add(user8);
-
-        for (User user: allUsers) {
-            insertUser(user);
-        }
-
-
+        APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "resample");
+        assert response.getStatusCode() == 201;
     }
 
-    public ResultSet adminQuery(String query) throws SQLException{
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet;
+    public String sendCommand(String command) {
+        JsonObject commandObject = new JsonObject();
+        commandObject.addProperty("command", command);
+        APIResponse response = server.postRequest(commandObject, new HashMap<>(), "cli");
+        return response.getAsString();
     }
 
     public void connectToDatabase() {
@@ -549,4 +460,6 @@ public class Database {
             Debugger.log(e);
         }
     }
+
+
 }

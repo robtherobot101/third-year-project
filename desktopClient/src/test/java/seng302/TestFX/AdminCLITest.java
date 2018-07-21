@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.GUI.CommandLineInterface;
 import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
@@ -150,12 +149,6 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
         sleep(200);
         assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
-    }
-
-    @Test
-    public void testStringSplitter() {
-        CommandLineInterface commandLineInterface = new CommandLineInterface();
-        assertEquals(5, commandLineInterface.splitByQuotationThenSpace("add \"A new user\" -a -b \"afgafdg\"").length);
     }
 
     @Test

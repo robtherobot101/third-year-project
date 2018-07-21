@@ -3,15 +3,11 @@ package seng302.Generic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.MalformedJsonException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
-import java.io.StringReader;
 
 public class APIResponse{
     private JsonParser jp;

@@ -1,12 +1,7 @@
 package seng302.GUI.Controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.MalformedJsonException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -16,15 +11,11 @@ import org.apache.commons.validator.routines.UrlValidator;
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Admin;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -49,7 +40,6 @@ public class LoginController implements Initializable {
 
     public void login(){
         APIResponse response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
-        System.out.println(response.getAsString());
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
             if (serverResponse.get("accountType") == null) {
@@ -72,8 +62,7 @@ public class LoginController implements Initializable {
     }
 
     private void loadUser(User user) {
-        User matched = SearchUtils.getUserById(user.getId());
-        WindowManager.setCurrentUser(matched);
+        WindowManager.setCurrentUser(user);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();
     }
@@ -82,9 +71,10 @@ public class LoginController implements Initializable {
         //Add all users from Database
         DataManager.users.clear();
         try{
+            DataManager.clearUsers();
             DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
             WindowManager.getDatabase().refreshUserWaitinglists();
-        } catch(SQLException e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
 

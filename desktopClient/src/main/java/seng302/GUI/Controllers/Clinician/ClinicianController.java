@@ -1,5 +1,8 @@
 package seng302.GUI.Controllers.Clinician;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -24,14 +27,17 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.*;
+import seng302.Generic.APIResponse;
+import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.WindowManager.setButtonSelected;
@@ -79,7 +85,7 @@ public class ClinicianController implements Initializable {
     private int numberXofResults;
 
     private int page = 1;
-    private ArrayList<User> usersFound;
+    private ArrayList<User> usersFound = new ArrayList<>();
 
     private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
@@ -92,6 +98,8 @@ public class ClinicianController implements Initializable {
     private String searchAgeTerm = "";
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
+
+    private Gson gson = new Gson();
 
     public ClinicianController() {
         this.titleBar = new TitleBar();
@@ -423,67 +431,60 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers() {
         profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
-        usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
+        Map<String, String> searchMap = new HashMap<>();
+
+        if (!searchNameTerm.equals("")){
+            searchMap.put("name", searchNameTerm);
+        }
 
         //Add in check for region
 
         if (!searchRegionTerm.equals("")) {
-            ArrayList<User> newUsersFound = SearchUtils.getUsersByRegionAlternative(searchRegionTerm);
-            usersFound.retainAll(newUsersFound);
-
+            searchMap.put("region", searchRegionTerm);
         }
 
         //Add in check for age
 
         if (!searchAgeTerm.equals("")) {
-            ArrayList<User> newUsersFound = SearchUtils.getUsersByAgeAlternative(searchAgeTerm);
-            usersFound.retainAll(newUsersFound);
+            searchMap.put("age", searchAgeTerm);
         }
 
         //Add in check for gender
 
         if (searchGenderTerm != null) {
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if ((user.getGender() != null) && searchGenderTerm.equals(user.getGender().toString())) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("gender", searchGenderTerm);
         }
 
         //Add in check for organ
 
         if (searchOrganTerm != null) {
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if ((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("organ", searchOrganTerm);
         }
 
         //Add in check for user type
 
         if (searchUserTypeTerm != null) {
-            if (searchUserTypeTerm.equals("Neither")) {
+            if (searchUserTypeTerm.equals("neither")) {
+                searchMap.put("userType", "");
                 searchUserTypeTerm = "";
             }
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if (user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
-                    newUsersFound.add(user);
-                } else if ((searchUserTypeTerm.equals(user.getType()))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("userType", searchUserTypeTerm);
+        }
+
+        APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+
+        if(response.isValidJson()){
+            JsonArray searchResults = response.getAsJsonArray();
+
+            Type type = new TypeToken<ArrayList<User>>() {
+            }.getType();
+
+            usersFound = gson.fromJson(searchResults, type);
+
         }
 
         users = FXCollections.observableArrayList(usersFound);
         populateNResultsComboBox(usersFound.size());
-        //displayPage(resultsPerPage);
     }
 
     /**

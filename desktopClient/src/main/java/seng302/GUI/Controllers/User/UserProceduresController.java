@@ -13,18 +13,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import seng302.Generic.Debugger;
-import seng302.User.History;
-import seng302.User.Procedure;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.Procedure;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the Medical History (Procedures) Window.
@@ -190,14 +186,6 @@ public class UserProceduresController extends UserTabController implements Initi
 
         currentUser.getPreviousProcedures().clear();
         currentUser.getPreviousProcedures().addAll(previousProcedureItems);
-
-        String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
-        History.printToFile(streamOut, text);
-            /*try {
-                WindowManager.getDatabase().updateUserProcedures(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }*/
     }
 
     /**
@@ -650,7 +638,7 @@ public class UserProceduresController extends UserTabController implements Initi
         pendingProcedureTableView.setDisable(!shown);
         previousProcedureTableView.setDisable(!shown);
         deleteProcedureButton.setVisible(shown);
-        //isOrganAffectingCheckBox.setVisible(shown);
+        organAffectChoiceBox.setVisible(shown);
     }
 
 

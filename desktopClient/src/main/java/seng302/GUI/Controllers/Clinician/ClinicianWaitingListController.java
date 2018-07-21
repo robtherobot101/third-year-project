@@ -80,11 +80,23 @@ public class ClinicianWaitingListController implements Initializable {
             for (WaitingListItem item : user.getWaitingListItems()) {
                 List<Integer> codes = Arrays.asList(1, 2, 3, 4);
                 if (!(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
+                    addUserInfo(item);
                     transplantList.add(item);
                 }
             }
         }
         deregisterReceiverButton.setDisable(true);
+    }
+
+    public void addUserInfo(WaitingListItem item) {
+        try{
+            User user = WindowManager.getDatabase().getUserFromId(item.getUserId().intValue());
+            item.setReceiverName(user.getName());
+            item.setReceiverRegion(user.getRegion());
+            System.out.println("item user Region: " + user.getRegion());
+        } catch (SQLException e) {
+            Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
+        }
     }
 
     /**
@@ -384,6 +396,7 @@ public class ClinicianWaitingListController implements Initializable {
         }
 
         selectedUser.setDateOfDeath(deathDateInput);
+        WindowManager.getDatabase().updateUser(selectedUser);
 
         for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
             if (userController.getCurrentUser() == selectedUser) {
@@ -401,9 +414,9 @@ public class ClinicianWaitingListController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
 
         //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -443,6 +456,7 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
+                            System.out.println("tableItem: " +item.getUserId());
                             if (SearchUtils.getUserById(item.getUserId()).getOrgans().contains(item.getOrganType())) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
                                 if (!getStyleClass().contains("highlighted-row")) {

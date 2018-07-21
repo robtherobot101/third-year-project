@@ -2,7 +2,6 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import seng302.Logic.Database.Administration;
 import seng302.Logic.Database.Authorization;
 import seng302.Model.Admin;
 import seng302.Model.Attribute.ProfileType;

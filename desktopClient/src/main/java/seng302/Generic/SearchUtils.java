@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
@@ -252,6 +253,7 @@ public class SearchUtils {
             return null;
         }
         User found = null;
+        System.out.println(DataManager.users);
         for (User user : DataManager.users) {
             if (user.getId() == id) {
                 found = user;
@@ -360,6 +362,19 @@ public class SearchUtils {
         ArrayList<User> matched;
         matched = new ArrayList<>();
         for (User user : DataManager.users) {
+
+
+            // Debugging
+            if(user.getId() == 6){
+                System.out.println("Searching through all users");
+                System.out.println("CurrentState: ");
+                for(WaitingListItem i:user.getWaitingListItems()){
+                    System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
+                }
+            }
+            //
+
+
             if (scoreUserOnSearch(user, tokens) > 0) {
                 matched.add(user);
             }
