@@ -33,6 +33,19 @@ import java.util.Map;
 
 import static seng302.Generic.IO.getJarPath;
 import static seng302.Generic.IO.streamOut;
+import seng302.GUI.Controllers.Clinician.ClinicianController;
+import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
+import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
+import seng302.GUI.Controllers.LoginController;
+import seng302.GUI.Controllers.User.CreateUserController;
+import seng302.GUI.Controllers.User.UserSettingsController;
+import seng302.User.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static seng302.Generic.IO.getJarPath;
 
 /**
  * WindowManager class that contains program initialization code and data that must be accessible from multiple parts of the
@@ -107,8 +120,7 @@ public class WindowManager extends Application {
             Parent root = loader.load();
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
-            String text = History.prepareFileStringGUI(user.getId(), "view");
-            History.printToFile(streamOut, text);
+            user.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setCurrentUser(user);
             System.out.println("Opening window for user");
@@ -529,15 +541,6 @@ public class WindowManager extends Application {
      */
     @Override
     public void stop() {
-        try {
-            if (userController.getCurrentUser() != null) {
-                String text = History.prepareFileStringGUI(userController.getCurrentUser().getId(), "quit");
-                History.printToFile(IO.streamOut, text);
-            }
-        } catch (Exception e) {
-            Debugger.error("Error writing history.");
-        }
-
         Debugger.log("Exiting GUI");
         Platform.exit();
     }
