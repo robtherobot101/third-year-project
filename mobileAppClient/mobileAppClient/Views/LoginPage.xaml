@@ -17,16 +17,17 @@
                 IsPassword="true"
                 VerticalOptions="CenterAndExpand" 
                 />
-
-            <Button Text="Login"
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Login"
                 HorizontalOptions="Center"
                 VerticalOptions="CenterAndExpand"
                 Clicked="LoginButtonClicked" />
 
-            <Button Text="Sign Up"
+                <Button Text="Sign Up"
                 HorizontalOptions="Center"
                 VerticalOptions="CenterAndExpand"
                 Clicked="SignUpButtonClicked" />
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

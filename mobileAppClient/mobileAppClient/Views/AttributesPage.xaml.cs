@@ -8,13 +8,23 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
-    public partial class AttributesPage : ContentPage
+    public partial class AttributesPage : ContentPage, UserObserver
     {
 
         public AttributesPage()
         {
             InitializeComponent();
+            UserController.Instance.addUserObserver(this);
+        }
 
+        public void updateUser()
+        {
+            fillFields();
+        }
+
+        private void fillFields()
+        {
+          
         }
     }
 }

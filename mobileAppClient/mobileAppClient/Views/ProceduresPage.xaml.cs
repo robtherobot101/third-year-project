@@ -28,11 +28,11 @@ namespace mobileAppClient
 
             foreach (Procedure item in UserController.Instance.LoggedInUser.PendingProcedures)
             {
-                item.DetailString = item.Description + ", due on " + item.Date.Day + ", " + item.Date.Month + ", " + item.Date.Year;
+                item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
             }
             foreach (Procedure item in UserController.Instance.LoggedInUser.PreviousProcedures)
             {
-                item.DetailString = item.Description + ", due on " + item.Date.Day + ", " + item.Date.Month + ", " + item.Date.Year;
+                item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
             }
 
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PendingProcedures;

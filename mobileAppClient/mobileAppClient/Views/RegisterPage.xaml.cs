@@ -13,8 +13,11 @@ namespace mobileAppClient
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class RegisterPage : ContentPage
 	{
-		public RegisterPage ()
+        LoginPage parentLoginPage;
+
+		public RegisterPage (LoginPage loginPage)
 		{
+            parentLoginPage = loginPage;
 			InitializeComponent ();
 		}
 
@@ -43,20 +46,11 @@ namespace mobileAppClient
                 return;
             }
 
-            // Check if a username OR email is entered
-            else if (emailInput.Text == null && usernameInput.Text == null)
+            // Check if a username and valid email is entered
+            else if (emailInput.Text == null || !IsValidEmail(emailInput.Text) || usernameInput.Text == null)
             {
                 await DisplayAlert("",
-                    "Password or email is required",
-                    "OK");
-                return;
-            }
-
-            // If an email is submitted, check its format
-            if (emailInput.Text != null && !IsValidEmail(emailInput.Text))
-            {
-                await DisplayAlert("",
-                    "Valid email is required",
+                    "Password and email is required",
                     "OK");
                 return;
             }
@@ -78,15 +72,17 @@ namespace mobileAppClient
                 }
 
                 if (loginSuccessful)
-                {
-                    
-                    // Pop away login screen on successful login
+                {                    
                     UserController.Instance.Login();
                     await DisplayAlert("",
                         "Account successfully created",
                         "OK");
+
+                    // Dismiss the register modal dialog
                     await Navigation.PopModalAsync();
-                    await Navigation.PopModalAsync();
+
+                    // Dismiss the login modal dialog
+                    await parentLoginPage.Navigation.PopModalAsync();
                 }
                 else
                 {
@@ -103,6 +99,10 @@ namespace mobileAppClient
                     "OK");
             }
         }
+
+        /*
+         * Checks the validity of a given email. test@xamarin is valid for example
+         */
         private bool IsValidEmail(string email)
         {
             try

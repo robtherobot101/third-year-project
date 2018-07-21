@@ -15,9 +15,9 @@ namespace mobileAppClient
 
             foreach (WaitingListItem item in UserController.Instance.LoggedInUser.WaitingListItems)
             {
-                item.DetailString = "Registered on " + item.OrganRegisteredDate.Day + ", " + item.OrganRegisteredDate.Month + ", " + item.OrganRegisteredDate.Year;
+                item.DetailString = "Registered on " + item.OrganRegisteredDate.day + ", " + item.OrganRegisteredDate.month + ", " + item.OrganRegisteredDate.year;
                 if(item.OrganDeregisteredDate != null) {
-                    item.DetailString += ", deregistered on " + item.OrganRegisteredDate.Day + ", " + item.OrganDeregisteredDate.Month + ", " + item.OrganDeregisteredDate.Year;
+                    item.DetailString += ", deregistered on " + item.OrganRegisteredDate.day + ", " + item.OrganDeregisteredDate.month + ", " + item.OrganDeregisteredDate.year;
                 }
             }
 

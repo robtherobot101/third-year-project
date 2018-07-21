@@ -20,14 +20,13 @@ namespace mobileAppClient
 
         async void SignUpButtonClicked(Object sender, EventArgs args)
         {
-            var registerPage = new NavigationPage(new RegisterPage());
+            var registerPage = new NavigationPage(new RegisterPage(this));
             await Navigation.PushModalAsync(registerPage);
             Console.WriteLine("HEHEHREERERE************************************************");
         }
 
         async void LoginButtonClicked(object sender, EventArgs args)
         {
-
             if (usernameEmailInput.Text == null || passwordInput.Text == null)
             {
                 await DisplayAlert("",

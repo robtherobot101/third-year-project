@@ -82,14 +82,9 @@ namespace mobileAppClient.odmsAPI
             registerRequest.dateOfBirth = new CustomDate(dateOfBirthRaw);
             registerRequest.creationTime = new CustomDateTime(DateTime.Now);
 
-            if (username != null)
-            {
-                registerRequest.username = username;
-            } else
-            {
-                registerRequest.email = email;
-            }
-
+            registerRequest.username = username;
+            registerRequest.email = email;
+           
             // Additional parameters on serialization needed to remove null email/username
             registerUserRequestBody = JsonConvert.SerializeObject(registerRequest,
                             Newtonsoft.Json.Formatting.None,
