@@ -13,7 +13,7 @@ namespace mobileAppClient
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
-            foreach (WaitingListItem item in UserController.Instance.LoggedInUser.WaitingListItems)
+            foreach (WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
             {
                 item.DetailString = "Registered on " + item.OrganRegisteredDate.day + ", " + item.OrganRegisteredDate.month + ", " + item.OrganRegisteredDate.year;
                 if(item.OrganDeregisteredDate != null) {
@@ -21,7 +21,7 @@ namespace mobileAppClient
                 }
             }
 
-            WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.WaitingListItems;
+            WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
         }
 
         async void Handle_WaitingListItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)

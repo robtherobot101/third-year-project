@@ -31,6 +31,7 @@
 
             <Button x:Name="PressMeButton"
             Text="COMPARE"
+            Pressed="Handle_CompareButtonPressed"
             />
             
         </StackLayout>

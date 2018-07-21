@@ -4,59 +4,59 @@ namespace mobileAppClient
 {
     public class User
     {
-        public List<string> Name { get; set; }
-        public List<string> PreferredName { get; set; }
+        public List<string> name { get; set; }
+        public List<string> preferredName { get; set; }
 
-        public Gender Gender { get; set; }
-        public Gender GenderIdentity { get; set; }
-        public BloodType BloodType { get; set; }
+        public Gender gender { get; set; }
+        public Gender genderIdentity { get; set; }
+        public BloodType bloodType { get; set; }
         //Could change to Enums however C# doesnt allow for string value Enums. Thoughts??
-        public string SmokerStatus { get; set; }
-        public string AlcoholConsumption { get; set; }
+        public string smokerStatus { get; set; }
+        public string alcoholConsumption { get; set; }
 
         //Use their own custom objects as the JSON deserializer cannot deserialize the incoming
         // Objects as C# DateTime objects
-        public CustomDate DateOfBirth { get; set; }
-        public CustomDate DateOfDeath { get; set; }
-        public CustomDateTime CreationTime { get; set; }
-        public CustomDateTime LastModified { get; set; }
+        public CustomDate dateOfBirth { get; set; }
+        public CustomDate dateOfDeath { get; set; }
+        public CustomDateTime creationTime { get; set; }
+        public CustomDateTime lastModified { get; set; }
 
-        public double Height { get; set; }
-        public double Weight { get; set; }
+        public double height { get; set; }
+        public double weight { get; set; }
 
-        public int Id { get; set; }
-        public int ZipCode { get; set; } 
+        public int id { get; set; }
+        //public int ZipCode { get; set; } 
 
-        public string CurrentAddress { get; set; }
-        public string Region { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string HomePhone { get; set; }
-        public string MobilePhone { get; set; }
-        public string BloodPressure { get; set; }
+        public string currentAddress { get; set; }
+        public string region { get; set; }
+        //public string City { get; set; }
+        //public string Country { get; set; }
+        //public string HomePhone { get; set; }
+        //public string MobilePhone { get; set; }
+        public string bloodPressure { get; set; }
 
-        public string Email { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string email { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
 
-        public List<String> Organs { get; set; }
+        public List<String> organs { get; set; }
 
-        public List<Medication> CurrentMedications { get; set; }
-        public List<Medication> HistoricMedications { get; set; }
+        public List<Medication> currentMedications { get; set; }
+        public List<Medication> historicMedications { get; set; }
 
-        public List<Disease> CurrentDiseases { get; set; }
-        public List<Disease> CuredDiseases { get; set; }
+        public List<Disease> currentDiseases { get; set; }
+        public List<Disease> curedDiseases { get; set; }
 
-        public List<Procedure> PendingProcedures { get; set; }
-        public List<Procedure> PreviousProcedures { get; set; }
+        public List<Procedure> pendingProcedures { get; set; }
+        public List<Procedure> previousProcedures { get; set; }
 
-        public List<WaitingListItem> WaitingListItems { get; set; }
+        public List<WaitingListItem> waitingListItems { get; set; }
 
         //TO BE TESTED
-        public List<HistoryItem> HistoryItems { get; set; }
+        public List<HistoryItem> historyItems { get; set; }
 
         public User(string email) {
-            Email = email;
+            this.email = email;
         }
 
 

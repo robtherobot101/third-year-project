@@ -73,7 +73,7 @@ namespace mobileAppClient
             {
                 Header = "",
                 Image = "https://5.imimg.com/data5/JP/RF/MY-23184303/doctor-stethoscope-500x500.jpg",
-                Footer = "Logged in as " + UserController.Instance.LoggedInUser.Name[0]
+                Footer = "Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
         }
 

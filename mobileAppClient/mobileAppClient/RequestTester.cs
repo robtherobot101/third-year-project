@@ -83,10 +83,10 @@ namespace mobileAppClient
             Console.WriteLine("------------------CONNECTION TO MOCK SERVER SUCCESSFUL.-----------------------");
             UserController uc = UserController.Instance;
             User mockUser = new User("abc@123.com");
-            mockUser.Email = "Andy's Mock User!";
+            mockUser.email = "Andy's Mock User!";
             uc.LoggedInUser = mockUser;
 
-            Console.WriteLine("Logged in as " + uc.LoggedInUser.Email);
+            Console.WriteLine("Logged in as " + uc.LoggedInUser.email);
           
         }
 

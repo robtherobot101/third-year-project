@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:mobileAppClient" x:Class="mobileAppClient.OrgansPage" Title="Organs" NavigationPage.HasNavigationBar="True">
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:mobileAppClient" 
+             x:Class="mobileAppClient.OrgansPage" 
+             Title="Organs" NavigationPage.HasNavigationBar="True">
     <StackLayout>
-        <!-- Place new controls here BUZZ TEST CHANGE 1 -->
-        <Label Text="Organs Page" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
+
+        <Button Text="Donate All?" Pressed="Handle_DonateAllPressed"/>
+        
+        <TableView Intent="Menu" >
+            <TableRoot>
+                <TableSection Title="Organ to Donate">
+                    <SwitchCell Text="Liver" x:Name="LiverCell"/>
+                    <SwitchCell Text="Kidney" x:Name="KidneyCell"/>
+                    <SwitchCell Text="Pancreas" x:Name="PancreasCell"/>
+                    <SwitchCell Text="Heart" x:Name="HeartCell"/>
+                    <SwitchCell Text="Lung" x:Name="LungCell"/>
+                    <SwitchCell Text="Intestine" x:Name="IntestineCell"/>
+                    <SwitchCell Text="Cornea" x:Name="CorneaCell"/>
+                    <SwitchCell Text="Middle Ear" x:Name="MiddleEarCell"/>
+                    <SwitchCell Text="Skin" x:Name="SkinCell"/>
+                    <SwitchCell Text="Bone Marrow" x:Name="BoneMarrowCell"/>
+                    <SwitchCell Text="Connective Tissue" x:Name="ConnectiveTissueCell"/>
+
+                </TableSection>
+
+            </TableRoot>
+        </TableView>
+
+        <Button 
+            Text="SAVE"
+            Pressed="Handle_SavePressed"
+         />
+        
     </StackLayout>
 </ContentPage>
