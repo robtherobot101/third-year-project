@@ -464,7 +464,7 @@ public class ClinicianController implements Initializable {
         //Add in check for user type
 
         if (searchUserTypeTerm != null) {
-            if (searchUserTypeTerm.equals("Neither")) {
+            if (searchUserTypeTerm.equals("neither")) {
                 searchMap.put("userType", "");
                 searchUserTypeTerm = "";
             }

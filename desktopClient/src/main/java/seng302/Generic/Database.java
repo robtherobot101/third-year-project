@@ -288,7 +288,12 @@ public class Database {
         return server.postRequest(new JsonObject(), queryParameters, "login");
     }
 
-    // WIP - Need to discuss the map<string, string> handling with ints and doubles. Jono
+    /**
+     * Used for searching, takes a hashmap of keyvalue pairs and searches the DB for them.
+     * eg. "age", "10" returns all users aged 10.
+     * @param searchMap The hashmap with associated key value pairs
+     * @return a JSON array of users.
+     */
     public APIResponse getUsers(Map<String,String> searchMap) {
         return server.getRequest(searchMap, "users");
     }
