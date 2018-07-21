@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
+import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -26,7 +27,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
     }
 
     @Before
-    public void setup() throws SQLException {
+    public void setup() throws HttpResponseException {
         WindowManager.getDatabase().resetDatabase();
         WindowManager.resetScene(TFScene.createAccount);
         DataManager.users.clear();

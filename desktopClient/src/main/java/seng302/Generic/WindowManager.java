@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.Admin.AdminController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
@@ -419,8 +420,8 @@ public class WindowManager extends Application {
                 try {
                     DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to refresh all user waiting lists.");
                 }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
@@ -435,8 +436,8 @@ public class WindowManager extends Application {
                     DataManager.addAllUsers(getDatabase().getAllUsers());
 
                     getDatabase().refreshUserWaitinglists();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to refresh all user waiting lists.");
                 }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
@@ -452,8 +453,8 @@ public class WindowManager extends Application {
                 try {
                     DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to refresh all user waiting lists.");
                 }
                 refreshUser();
 

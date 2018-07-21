@@ -15,15 +15,18 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
+import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+import sun.security.jgss.HttpCaller;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -42,7 +45,11 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     @Before
     public void setUp() throws SQLException {
-        WindowManager.getDatabase().resetDatabase();
+        try {
+            WindowManager.getDatabase().resetDatabase();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset the database.");
+        }
         user = addTestUser();
     }
 

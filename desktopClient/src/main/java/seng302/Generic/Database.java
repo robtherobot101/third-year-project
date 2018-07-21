@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import org.apache.http.client.HttpResponseException;
 import seng302.User.*;
 import seng302.User.Attribute.Organ;
 import seng302.User.Medication.Medication;
@@ -29,7 +30,7 @@ public class Database {
 
     APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
 
-    public int getUserId(String username) {
+    public int getUserId(String username) throws HttpResponseException {
         for(User user:getAllUsers()){
             if(user.getUsername().equals(username)) {
                 return (int)user.getId();
@@ -38,17 +39,7 @@ public class Database {
         return -1;
     }
 
-    public int getClinicianId(String username) throws SQLException{
-        List<Clinician> clinicians = getAllClinicians();
-        for(Clinician clinician:clinicians){
-            if(clinician.getUsername().equals(username)){
-                return (int)clinician.getStaffID();
-            }
-        }
-        return -1;
-    }
-
-    public void insertUser(User user) throws SQLException {
+    public void insertUser(User user) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         userJson.remove("id");
@@ -58,7 +49,7 @@ public class Database {
         System.out.println(response.getAsString());
     }
 
-    public void updateWaitingListItems(User user){
+    public void updateWaitingListItems(User user) throws HttpResponseException{
         int userId = getUserId(user.getUsername());
 
         //First get rid of all the users waiting list items in the table
@@ -89,29 +80,31 @@ public class Database {
     }
 
     //Uses API server for updating attributes
-    public void updateUserOrgans(User user) {
+    public void updateUserOrgans(User user) throws HttpResponseException {
         clearUserDonations((int)user.getId());
         insertAllUserDonations(user);
     }
 
-    public void updateUser(User user) {
+    public void updateUser(User user) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         APIResponse response = server.patchRequest(userJson, new HashMap<>(), "users",String.valueOf(user.getId()));
         System.out.println(response.getStatusCode());
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    private void clearUserDonations(int userID) {
+    private void clearUserDonations(int userID) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), "users",String.valueOf(userID),"donations");
         System.out.println(response.getStatusCode());
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+
+
     }
 
-    private void insertAllUserDonations(User user) {
+    private void insertAllUserDonations(User user) throws HttpResponseException {
         for (Organ organ: user.getOrgans()) {
             APIResponse response = insertUserDonation(user.getId(), organ);
-            assert response.getStatusCode() == 201;
+            if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         }
     }
 
@@ -121,7 +114,7 @@ public class Database {
         return server.postRequest(organJson, new HashMap<>(),"users",String.valueOf(userID),"donations");
     }
 
-    public void updateUserProcedures(User user) {
+    public void updateUserProcedures(User user) throws HttpResponseException {
         int userId = getUserId(user.getUsername());
 
         //Procedure Updates
@@ -151,7 +144,7 @@ public class Database {
         }
     }
 
-    public void updateUserDiseases(User user) {
+    public void updateUserDiseases(User user) throws HttpResponseException {
         int userId = getUserId(user.getUsername());
 
         //Disease Updates
@@ -182,102 +175,36 @@ public class Database {
     }
 
 
-    public void updateUserMedications(User user) throws SQLException {
-        int userId = getUserId(user.getUsername());
-
-        //Medication Updates
-        //First get rid of all the users medications in the table
-        String deleteMedicationsQuery = "DELETE FROM " + currentDatabase + ".MEDICATION WHERE user_id = ?";
-        PreparedStatement deleteMedicationsStatement = connection.prepareStatement(deleteMedicationsQuery);
-
-        deleteMedicationsStatement.setInt(1, userId);
-        Debugger.log("Medication rows deleted: " + deleteMedicationsStatement.executeUpdate());
-
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated medications
-        ArrayList<Medication> allMedications = new ArrayList<>();
-        allMedications.addAll(user.getCurrentMedications());
-        allMedications.addAll(user.getHistoricMedications());
-        for (Medication medication: allMedications) {
-            String insertMedicationsQuery = "INSERT INTO " + currentDatabase + ".MEDICATION (name, active_ingredients, history, user_id) " +
-                    "VALUES (?, ?, ?, ?)";
-            PreparedStatement insertMedicationsStatement = connection.prepareStatement(insertMedicationsQuery);
-
-            String activeIngredientsString = String.join(",", medication.getActiveIngredients());
-            String historyString = String.join(",", medication.getHistory());
-
-            insertMedicationsStatement.setString(1, medication.getName());
-            insertMedicationsStatement.setString(2, activeIngredientsString);
-            insertMedicationsStatement.setString(3, historyString);
-            insertMedicationsStatement.setInt(4, userId);
-
-            totalAdded += insertMedicationsStatement.executeUpdate();
-        }
-
-        Debugger.log("Update User Medications -> Successful -> Rows Updated: " + totalAdded);
-
-    }
-
-    public boolean isUniqueUser(String item) throws SQLException{
-        String query = "SELECT * FROM " + currentDatabase + ".USER WHERE USER.username = ? OR USER.email = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setString(1, item);
-        statement.setString(2, item);
-        ResultSet resultSet = statement.executeQuery();
-        if(resultSet.next()) {
-            return false;
-        }
-        query = "SELECT * FROM " + currentDatabase + ".CLINICIAN WHERE CLINICIAN.username = ?";
-        statement = connection.prepareStatement(query);
-
-        statement.setString(1, item);
-        resultSet = statement.executeQuery();
-        if(resultSet.next()) {
-            return false;
-        }
-        query = "SELECT * FROM " + currentDatabase + ".ADMIN WHERE ADMIN.username = ?";
-        statement = connection.prepareStatement(query);
-
-        statement.setString(1, item);
-        resultSet = statement.executeQuery();
-        if(resultSet.next()) {
-            return false;
-        }
-        return true;
-    }
-
-    public void insertClinician(Clinician clinician) throws SQLException {
+    public void insertClinician(Clinician clinician) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
         APIResponse response = server.postRequest(clinicianJson, new HashMap<>(), "clinicians");
         System.out.println(response.getStatusCode());
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void updateClinician(Clinician clinician) {
+    public void updateClinician(Clinician clinician) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
         APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), "clinicians",String.valueOf(clinician.getStaffID()));
         System.out.println(response.getStatusCode());
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void insertAdmin(Admin admin) throws SQLException {
+    public void insertAdmin(Admin admin) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
         APIResponse response = server.postRequest(adminJson, new HashMap<>(), "admins");
         System.out.println(response.getStatusCode());
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void updateAdminDetails(Admin admin) throws SQLException {
+    public void updateAdminDetails(Admin admin) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
         APIResponse response = server.patchRequest(adminJson, new HashMap<>(), "admins", String.valueOf(admin.getStaffID()));
         System.out.println(response.getStatusCode());
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     // Now uses API server!
@@ -288,17 +215,22 @@ public class Database {
         return server.postRequest(new JsonObject(), queryParameters, "login");
     }
 
+    public boolean isUniqueUser(String username) throws HttpResponseException {
+        // TODO Add functionality to GET api/v1/users which allows searching for users by username, then implement this method
+        return true;
+    }
+
     /**
      * Used for searching, takes a hashmap of keyvalue pairs and searches the DB for them.
      * eg. "age", "10" returns all users aged 10.
      * @param searchMap The hashmap with associated key value pairs
      * @return a JSON array of users.
      */
-    public APIResponse getUsers(Map<String,String> searchMap) {
+    public APIResponse getUsers(Map<String,String> searchMap) throws HttpResponseException {
         return server.getRequest(searchMap, "users");
     }
 
-    public User getUserFromId(int id) throws SQLException {
+    public User getUserFromId(int id) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), "users",String.valueOf(id));
         if(response.isValidJson()){
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
@@ -307,7 +239,7 @@ public class Database {
     }
 
     // Now uses API server!
-    public void refreshUserWaitinglists() throws SQLException{
+    public void refreshUserWaitinglists() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(),"waitingListItems");
         if(response.isValidJson()){
 
@@ -331,76 +263,18 @@ public class Database {
         }
     }
 
-
-    public Clinician getClinicianFromId(int id) throws SQLException {
-        // SELECT * FROM CLINICIAN id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".CLINICIAN WHERE staff_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setInt(1, id);
-        ResultSet resultSet = statement.executeQuery();
-
-        //If response is empty then return null
-        if(!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a new Clinician Object with the fields from the database
-            return getClinicianFromResultSet(resultSet);
-        }
-
-    }
-
-    private Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException{
-        Clinician clinician = new Clinician(
-                resultSet.getString("username"),
-                resultSet.getString("password"),
-                resultSet.getString("name")
-        );
-        clinician.setWorkAddress(resultSet.getString("work_address"));
-        clinician.setRegion(resultSet.getString("region"));
-        clinician.setStaffID(resultSet.getInt("staff_id"));
-
-        return clinician;
-    }
-
-    private Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException{
-        Admin admin = new Admin(
-                resultSet.getString("username"),
-                resultSet.getString("password"),
-                resultSet.getString("name")
-        );
-        admin.setWorkAddress(resultSet.getString("work_address"));
-        admin.setRegion(resultSet.getString("region"));
-        admin.setStaffID(resultSet.getInt("staff_id"));
-
-        return admin;
-    }
-
     // Now uses API server!
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(),"users");
         if(response.isValidJson()) {
             List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>(){}.getType());
-
-            // Debugging
-            for(User u:responses){
-                if(u.getId() == 6){
-                    System.out.println("Getting all users from database");
-                    System.out.println("CurrentState: ");
-                    for(WaitingListItem i:u.getWaitingListItems()){
-                        System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
-                    }
-                }
-            }
-            //
-
             return responses;
         }else {
             return new ArrayList<User>();
         }
     }
 
-    public ArrayList<Clinician> getAllClinicians() throws SQLException{
+    public ArrayList<Clinician> getAllClinicians() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(),"clinicians");
         if(response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Clinician>>(){}.getType());
@@ -409,7 +283,7 @@ public class Database {
         }
     }
 
-    public ArrayList<Admin> getAllAdmins() throws SQLException{
+    public ArrayList<Admin> getAllAdmins() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(),"admins");
         if(response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Admin>>(){}.getType());
@@ -418,29 +292,29 @@ public class Database {
         }
     }
 
-    public void removeUser(User user) throws SQLException {
+    public void removeUser(User user) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), "users",String.valueOf(user.getId()));
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void removeClinician(Clinician clinician) throws SQLException {
+    public void removeClinician(Clinician clinician) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), "clinician",String.valueOf(clinician.getStaffID()));
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void removeAdmin(Admin admin) throws SQLException {
+    public void removeAdmin(Admin admin) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), "admin",String.valueOf(admin.getStaffID()));
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void resetDatabase() throws SQLException{
+    public void resetDatabase() throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "reset");
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void loadSampleData() throws SQLException {
+    public void loadSampleData() throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "resample");
-        assert response.getStatusCode() == 201;
+        if(response.getStatusCode() != 201) throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     public String sendCommand(String command) {

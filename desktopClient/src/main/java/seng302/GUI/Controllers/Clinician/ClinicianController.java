@@ -23,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
@@ -35,6 +36,7 @@ import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
+import sun.security.jgss.HttpCaller;
 
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -470,21 +472,25 @@ public class ClinicianController implements Initializable {
             }
             searchMap.put("userType", searchUserTypeTerm);
         }
+        try {
+            APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+            if(response.isValidJson()){
+                JsonArray searchResults = response.getAsJsonArray();
 
-        APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+                Type type = new TypeToken<ArrayList<User>>() {
+                }.getType();
 
-        if(response.isValidJson()){
-            JsonArray searchResults = response.getAsJsonArray();
+                usersFound = gson.fromJson(searchResults, type);
 
-            Type type = new TypeToken<ArrayList<User>>() {
-            }.getType();
+            }
 
-            usersFound = gson.fromJson(searchResults, type);
+            users = FXCollections.observableArrayList(usersFound);
+            populateNResultsComboBox(usersFound.size());
 
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to perform user search on the server.");
         }
 
-        users = FXCollections.observableArrayList(usersFound);
-        populateNResultsComboBox(usersFound.size());
     }
 
     /**

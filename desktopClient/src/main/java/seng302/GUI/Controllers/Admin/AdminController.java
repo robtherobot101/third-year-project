@@ -24,6 +24,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
@@ -264,8 +265,8 @@ public class AdminController implements Initializable {
         if (result.get() == ButtonType.OK) {
             try {
                 WindowManager.getDatabase().updateAdminDetails(currentAdmin);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
 
             //TODO PUT in save to Database for Users and Clinicians
@@ -443,8 +444,8 @@ public class AdminController implements Initializable {
         // TODO implement undo
         try {
             WindowManager.getDatabase().resetDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset the database.");
         }
     }
 
@@ -523,20 +524,25 @@ public class AdminController implements Initializable {
             searchMap.put("userType", searchUserTypeTerm);
         }
 
-        APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+        try {
+            APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
 
-        if(response.isValidJson()){
-            JsonArray searchResults = response.getAsJsonArray();
+            if(response.isValidJson()){
+                JsonArray searchResults = response.getAsJsonArray();
 
-            Type type = new TypeToken<ArrayList<User>>() {
-            }.getType();
+                Type type = new TypeToken<ArrayList<User>>() {
+                }.getType();
 
-            usersFound = gson.fromJson(searchResults, type);
+                usersFound = gson.fromJson(searchResults, type);
 
+            }
+
+            currentUsers = FXCollections.observableArrayList(usersFound);
+            userTableView.setItems(currentUsers);
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to perform user search on the server.");
         }
-
-        currentUsers = FXCollections.observableArrayList(usersFound);
-        userTableView.setItems(currentUsers);
     }
 
 
@@ -611,8 +617,8 @@ public class AdminController implements Initializable {
                     DataManager.users.remove(selectedUser);
                     try {
                         WindowManager.getDatabase().removeUser(selectedUser);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to remove user with id: " + selectedUser.getId());
                     }
                     //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
@@ -623,8 +629,8 @@ public class AdminController implements Initializable {
                     DataManager.clinicians.remove(selectedClinician);
                     try {
                         WindowManager.getDatabase().removeClinician(selectedClinician);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
                     }
                     //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
@@ -635,8 +641,8 @@ public class AdminController implements Initializable {
                     DataManager.admins.remove(selectedAdmin);
                     try{
                         WindowManager.getDatabase().removeAdmin(selectedAdmin);
-                    } catch(SQLException e) {
-                        e.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
                     }
                     //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
 
@@ -851,8 +857,8 @@ public class AdminController implements Initializable {
                 WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed reset the database.");
             }
 
         }
@@ -870,8 +876,8 @@ public class AdminController implements Initializable {
             try {
                 WindowManager.getDatabase().loadSampleData();
                 DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to resample the database.");
             }
         }
 
@@ -901,8 +907,8 @@ public class AdminController implements Initializable {
                     DataManager.admins.add(newAdmin);
                 try {
                     WindowManager.getDatabase().insertAdmin(newAdmin);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to post admin to the server.");
                 }
                 //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
@@ -939,8 +945,8 @@ public class AdminController implements Initializable {
                 DataManager.clinicians.add(newClinician);
                 try {
                     WindowManager.getDatabase().insertClinician(newClinician);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to insert post clinician to the server.");
                 }
                 //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
@@ -977,8 +983,8 @@ public class AdminController implements Initializable {
                 DataManager.users.add(user);
                 try{
                     WindowManager.getDatabase().insertUser(user);
-                } catch(SQLException e) {
-                    e.printStackTrace();
+                } catch(HttpResponseException e) {
+                    Debugger.error("Failed to insert new user.");
                 }
                 //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);

@@ -1,6 +1,7 @@
 package seng302.Generic;
 
 import com.google.gson.Gson;
+import org.apache.http.client.HttpResponseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import seng302.User.Procedure;
 import seng302.User.User;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import seng302.User.WaitingListItem;
@@ -37,7 +37,7 @@ public class DatabaseTest {
         database.connectToDatabase();
         try {
             database.resetDatabase();
-        } catch (SQLException e) {
+        } catch (HttpResponseException e) {
             e.printStackTrace();
         }
     }
@@ -46,7 +46,7 @@ public class DatabaseTest {
     public void tearDown() {
         try {
             database.resetDatabase();
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
 
@@ -67,7 +67,7 @@ public class DatabaseTest {
             assertEquals(testUser.getUsername(), queriedUser.getUsername());
             assertEquals(testUser.getEmail(), queriedUser.getEmail());
             assertEquals(testUser.getPassword(), queriedUser.getPassword());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -109,7 +109,7 @@ public class DatabaseTest {
             assertEquals(testUser.getPendingProcedures().get(0).getDescription(), queriedUser.getPendingProcedures().get(0).getDescription());
             assertEquals(testUser.getPreviousProcedures().get(0).getDescription(), queriedUser.getPreviousProcedures().get(0).getDescription());
 
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -153,7 +153,7 @@ public class DatabaseTest {
             assertEquals(testUser.getCuredDiseases().get(0).getDiagnosisDate(),
                     queriedUser.getCuredDiseases().get(0).getDiagnosisDate());
 
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -188,13 +188,13 @@ public class DatabaseTest {
             assertEquals(new ArrayList<Medication>(), queriedUser.getCurrentMedications());
             assertEquals(new ArrayList<Medication>(), queriedUser.getHistoricMedications());
 
-            database.updateUserMedications(testUser);
+            database.updateUser(testUser);
 
             queriedUser = database.getAllUsers().get(0);
             assertEquals(testUser.getCurrentMedications().get(0).getName(), queriedUser.getCurrentMedications().get(0).getName());
             assertEquals(testUser.getHistoricMedications().get(0).getName(), queriedUser.getHistoricMedications().get(0).getName());
 
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -210,7 +210,7 @@ public class DatabaseTest {
             assertFalse(database.isUniqueUser("flameman@hotmail.com"));
             assertTrue(database.isUniqueUser("jsmith"));
             assertTrue(database.isUniqueUser("johnsmith@msn.com"));
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -225,7 +225,7 @@ public class DatabaseTest {
             assertFalse(database.isUniqueUser("drflame"));
             assertTrue(database.isUniqueUser("drjohnsmith"));
             assertTrue(database.isUniqueUser("johnsmith@msn.ac.com"));
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -239,7 +239,7 @@ public class DatabaseTest {
             assertFalse(database.isUniqueUser("Xx_bobbythetechsupport007_xX"));
             assertTrue(database.isUniqueUser("drjohnsmith"));
             assertTrue(database.isUniqueUser("johnsmith@msn.ac.com"));
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -255,7 +255,7 @@ public class DatabaseTest {
             assertEquals(testClinician.getName(), queriedClinician.getName());
             assertEquals(testClinician.getUsername(), queriedClinician.getUsername());
             assertEquals(testClinician.getPassword(), queriedClinician.getPassword());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -277,7 +277,7 @@ public class DatabaseTest {
             assertEquals(testClinician.getName(), queriedClinician.getName());
             assertEquals(testClinician.getWorkAddress(), queriedClinician.getWorkAddress());
             assertEquals(testClinician.getRegion(), queriedClinician.getRegion());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -297,7 +297,7 @@ public class DatabaseTest {
             Clinician queriedClinician = database.getAllClinicians().get(1);
             assertEquals(testClinician.getUsername(), queriedClinician.getUsername());
             assertEquals(testClinician.getPassword(), queriedClinician.getPassword());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -312,7 +312,7 @@ public class DatabaseTest {
             assertEquals(testAdmin.getUsername(), queriedAdmin.getUsername());
             assertEquals(testAdmin.getPassword(), queriedAdmin.getPassword());
             assertEquals(testAdmin.getName(), queriedAdmin.getName());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -331,7 +331,7 @@ public class DatabaseTest {
             Admin queriedAdmin = database.getAllAdmins().get(1);
             assertEquals(testAdmin.getName(), queriedAdmin.getName());
             assertEquals(testAdmin.getWorkAddress(), queriedAdmin.getWorkAddress());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -350,7 +350,7 @@ public class DatabaseTest {
             User loggedInB = new Gson().fromJson(database.loginUser("flameman@hotmail.com", "password").getAsJsonObject(), User.class);
             assertEquals(testUser.getUsername(), loggedInB.getUsername());
 
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -369,7 +369,7 @@ public class DatabaseTest {
 
             User queriedUser = database.getAllUsers().get(0);
             assertTrue(queriedUser.getWaitingListItems().get(0).getStillWaitingOn());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -388,7 +388,7 @@ public class DatabaseTest {
             APIResponse response = database.loginUser("drflame", "password");
             Clinician loggedIn = new Gson().fromJson(response.getAsJsonObject(), Clinician.class);
             assertEquals(testClinician.getName(), loggedIn.getName());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -401,7 +401,7 @@ public class DatabaseTest {
             APIResponse response = database.loginUser("Xx_bobbythetechsupport007_xX", "password");
             Admin loggedIn = new Gson().fromJson(response.getAsJsonObject(), Admin.class);
             assertEquals(testAdmin.getName(), loggedIn.getName());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -416,7 +416,7 @@ public class DatabaseTest {
             database.insertUser(testUser);
             database.removeUser(testUser);
             assertEquals(new ArrayList<User>(), database.getAllUsers());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -431,7 +431,7 @@ public class DatabaseTest {
             database.removeClinician(testClinician);
             // Only the default clinician remains
             assertEquals(1, database.getAllClinicians().size());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -445,7 +445,7 @@ public class DatabaseTest {
             database.removeAdmin(testAdmin);
             // Only the default admin remains
             assertEquals(1, database.getAllAdmins().size());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -473,7 +473,7 @@ public class DatabaseTest {
             assertEquals("admin", database.getAllAdmins().get(0).getUsername());
             assertEquals(1, database.getAllClinicians().get(0).getStaffID());
             assertEquals(1, database.getAllAdmins().get(0).getStaffID());
-        } catch (SQLException sqle) {
+        } catch (HttpResponseException sqle) {
             sqle.printStackTrace();
         }
     }
@@ -483,7 +483,7 @@ public class DatabaseTest {
         try {
             database.loadSampleData();
             assertEquals(8, database.getAllUsers().size());
-        } catch (SQLException e) {
+        } catch (HttpResponseException e) {
             e.printStackTrace();
         }
     }

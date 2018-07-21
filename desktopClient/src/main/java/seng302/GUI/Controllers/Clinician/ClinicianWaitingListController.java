@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
 import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
@@ -94,7 +96,7 @@ public class ClinicianWaitingListController implements Initializable {
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
             System.out.println("item user Region: " + user.getRegion());
-        } catch (SQLException e) {
+        } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
         }
     }
@@ -140,7 +142,11 @@ public class ClinicianWaitingListController implements Initializable {
     public void showDeregisterDialogFromClinicianList() {
         WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         showDeregisterDialog(selectedItem);
-        getDatabase().updateWaitingListItems(SearchUtils.getUserById(selectedItem.getUserId()));
+        try {
+            getDatabase().updateWaitingListItems(SearchUtils.getUserById(selectedItem.getUserId()));
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to update waiting list items for user with id: " + selectedItem.getUserId());
+        }
     }
 
     /**
@@ -396,7 +402,12 @@ public class ClinicianWaitingListController implements Initializable {
         }
 
         selectedUser.setDateOfDeath(deathDateInput);
-        WindowManager.getDatabase().updateUser(selectedUser);
+
+        try {
+            WindowManager.getDatabase().updateUser(selectedUser);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to update the user with id:" + selectedUser.getId());
+        }
 
         for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
             if (userController.getCurrentUser() == selectedUser) {
