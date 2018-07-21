@@ -27,7 +27,7 @@ public class Database {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
     private Connection connection;
 
-    APIServer server = new APIServer("http://localhost:7015/api/v1");
+    APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
 
     public int getUserId(String username) {
         for(User user:getAllUsers()){
@@ -419,141 +419,28 @@ public class Database {
     }
 
     public void removeUser(User user) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".USER WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, user.getUsername());
-        Debugger.log("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        APIResponse response = server.deleteRequest(new HashMap<>(), "users",String.valueOf(user.getId()));
+        assert response.getStatusCode() == 201;
     }
 
     public void removeClinician(Clinician clinician) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".CLINICIAN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, clinician.getUsername());
-        Debugger.log("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        APIResponse response = server.deleteRequest(new HashMap<>(), "clinician",String.valueOf(clinician.getStaffID()));
+        assert response.getStatusCode() == 201;
     }
 
     public void removeAdmin(Admin admin) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".ADMIN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, admin.getUsername());
-        Debugger.log("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        APIResponse response = server.deleteRequest(new HashMap<>(), "admin",String.valueOf(admin.getStaffID()));
+        assert response.getStatusCode() == 201;
     }
 
     public void resetDatabase() throws SQLException{
-        String update = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM";
-        PreparedStatement statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".PROCEDURES";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".MEDICATION";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (MEDICATION): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".DONATION_LIST_ITEM";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (DONATION_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".DISEASE";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (DISEASE): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".ADMIN";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (ADMIN): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".CLINICIAN";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (CLINICIAN): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-        update = "DELETE FROM " + currentDatabase + ".USER";
-        statement = connection.prepareStatement(update);
-        Debugger.log("Reset of database (USER): -> Successful -> Rows Removed: " + statement.executeUpdate());
-
-
-        update = "ALTER TABLE " + currentDatabase + ".USER AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(USER): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".CLINICIAN AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(CLINICIAN): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".ADMIN AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(ADMIN): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".DISEASE AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(DISEASE): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".DONATION_LIST_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(DONATION LIST ITEM): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".MEDICATION AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(MEDICATION): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".PROCEDURES AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(PROCEDURES): -> Successful -> " + statement.executeUpdate());
-
-        update = "ALTER TABLE " + currentDatabase + ".WAITING_LIST_ITEM AUTO_INCREMENT = 1";
-        statement = connection.prepareStatement(update);
-        System.out.println("Reset of AutoIncrement(WAITING LIST ITEM): -> Successful -> " + statement.executeUpdate());
-
-        String insert = "INSERT INTO " + currentDatabase + ".CLINICIAN(username, password, name, work_address, region, staff_id) " +
-                "VALUES(?, ?, ?, ?, ?, ?)";
-        statement = connection.prepareStatement(insert);
-        statement.setString(1, "default");
-        statement.setString(2, "default");
-        statement.setString(3, "default");
-        statement.setString(4, "default");
-        statement.setString(5, "default");
-        statement.setInt(6, 1);
-        Debugger.log("Inserting Default Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
-
-        insert = "INSERT INTO " + currentDatabase + ".ADMIN(username, password, name, work_address, region, staff_id) " +
-                "VALUES(?, ?, ?, ?, ?, ?)";
-        statement = connection.prepareStatement(insert);
-        statement.setString(1, "admin");
-        statement.setString(2, "default");
-        statement.setString(3, "default");
-        statement.setString(4, "default");
-        statement.setString(5, "default");
-        statement.setInt(6, 1);
-        Debugger.log("Inserting Default Admin -> Successful -> Rows Added: " + statement.executeUpdate());
-
+        APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "reset");
+        assert response.getStatusCode() == 201;
     }
 
     public void loadSampleData() throws SQLException {
-
-        ArrayList<User> allUsers = new ArrayList<>();
-        User user1 = new User("Andy", new String[]{"Robert"}, "French", LocalDate.now(), "andy", "andy@andy.com", "andrew");
-        allUsers.add(user1);
-        User user2 = new User("Buzz", new String[]{"Buzzy"}, "Knight", LocalDate.now(), "buzz", "buzz@buzz.com", "drowssap");
-        allUsers.add(user2);
-        User user3 = new User("James", new String[]{"Mozza"}, "Morritt", LocalDate.now(), "mozza", "mozza@mozza.com", "mozza");
-        allUsers.add(user3);
-        User user4 = new User("Jono", new String[]{"Zilla"}, "Hills", LocalDate.now(), "jonozilla", "zilla@zilla.com", "zilla");
-        allUsers.add(user4);
-        User user5 = new User("James", new String[]{"Mackas"}, "Mackay", LocalDate.now(), "mackas", "mackas@mackas.com", "mackas");
-        allUsers.add(user5);
-        User user6 = new User("Nicky", new String[]{"The Dark Horse"}, "Zohrab-Henricks", LocalDate.now(), "nicky", "nicky@nicky.com", "nicky");
-        allUsers.add(user6);
-        User user7 = new User("Kyran", new String[]{"Playing Fortnite"}, "Stagg", LocalDate.now(), "kyran", "kyran@kyran.com", "fortnite");
-        allUsers.add(user7);
-        User user8 = new User("Andrew", new String[]{"Daveo"}, "Davidson", LocalDate.now(), "andrew", "andrew@andrew.com", "andrew");
-        allUsers.add(user8);
-
-        for (User user: allUsers) {
-            insertUser(user);
-        }
-
-
+        APIResponse response = server.postRequest(new JsonObject(),new HashMap<>(), "resample");
+        assert response.getStatusCode() == 201;
     }
 
     public String sendCommand(String command) {
