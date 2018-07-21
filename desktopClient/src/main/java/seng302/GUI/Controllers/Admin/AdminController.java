@@ -1,5 +1,8 @@
 package seng302.GUI.Controllers.Admin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +40,7 @@ import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
@@ -96,7 +100,7 @@ public class AdminController implements Initializable {
     private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-    private ArrayList<User> usersFound;
+    private ArrayList<User> usersFound = new ArrayList<>();
     private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
@@ -112,6 +116,7 @@ public class AdminController implements Initializable {
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
 
+    private Gson gson = new Gson();
 
     /**
      * Sets the current currentAdmin
@@ -477,62 +482,57 @@ public class AdminController implements Initializable {
      * Updates the list of users found from the search
      */
     public void updateFoundUsers() {
-        usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
+        profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
+        Map<String, String> searchMap = new HashMap<>();
+
+        if (!searchNameTerm.equals("")){
+            searchMap.put("name", searchNameTerm);
+        }
 
         //Add in check for region
 
         if (!searchRegionTerm.equals("")) {
-            ArrayList<User> newUsersFound = SearchUtils.getUsersByRegionAlternative(searchRegionTerm);
-            usersFound.retainAll(newUsersFound);
-
+            searchMap.put("region", searchRegionTerm);
         }
 
         //Add in check for age
 
         if (!searchAgeTerm.equals("")) {
-            ArrayList<User> newUsersFound = SearchUtils.getUsersByAgeAlternative(searchAgeTerm);
-            usersFound.retainAll(newUsersFound);
+            searchMap.put("age", searchAgeTerm);
         }
 
         //Add in check for gender
 
         if (searchGenderTerm != null) {
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if ((user.getGender() != null) && (searchGenderTerm.equals(user.getGender().toString()))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("gender", searchGenderTerm);
         }
 
         //Add in check for organ
 
         if (searchOrganTerm != null) {
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if ((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("organ", searchOrganTerm);
         }
 
         //Add in check for user type
 
         if (searchUserTypeTerm != null) {
             if (searchUserTypeTerm.equals("Neither")) {
+                searchMap.put("userType", "");
                 searchUserTypeTerm = "";
             }
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if (user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
-                    newUsersFound.add(user);
-                } else if ((searchUserTypeTerm.equals(user.getType()))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("userType", searchUserTypeTerm);
+        }
+
+        APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+
+        if(response.isValidJson()){
+            JsonArray searchResults = response.getAsJsonArray();
+
+            Type type = new TypeToken<ArrayList<User>>() {
+            }.getType();
+
+            usersFound = gson.fromJson(searchResults, type);
+
         }
 
         currentUsers = FXCollections.observableArrayList(usersFound);

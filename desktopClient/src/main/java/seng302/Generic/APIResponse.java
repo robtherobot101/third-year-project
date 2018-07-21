@@ -30,7 +30,6 @@ public class APIResponse{
         } catch (JSONException oe){
             try {
                 new JSONArray(body);
-                System.out.println("\n\n\n "+ body + "\n\n\n");
             } catch (JSONException ae){
                 return false;
             }
