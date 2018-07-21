@@ -286,9 +286,9 @@ public class Database {
     }
 
     // WIP - Need to discuss the map<string, string> handling with ints and doubles. Jono
-    // public APIResponse getUsers(Map<String,Object> searchMap) {
-   //     return server.getRequest(searchMap, "users");
-   // }
+    public APIResponse getUsers(Map<String,String> searchMap) {
+        return server.getRequest(searchMap, "users");
+    }
 
     public User getUserFromId(int id) throws SQLException {
         //TODO add procedures,waitingListItems, diseases, etc. Need to finish "getUserFromResultSet"
