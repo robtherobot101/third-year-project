@@ -94,9 +94,16 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\drawable\ic_local_shipping.png" />
-    <AndroidResource Include="Resources\drawable\ic_my_location.png" />
-    <AndroidResource Include="Resources\drawable\ic_home.png" />
+    <AndroidResource Include="Resources\drawable\donationIcon.png" />
+    <AndroidResource Include="Resources\drawable\overviewImage.jpg" />
+    <AndroidResource Include="Resources\drawable\home_icon.png" />
+    <AndroidResource Include="Resources\drawable\attributes_icon.png" />
+    <AndroidResource Include="Resources\drawable\organs_icon.png" />
+    <AndroidResource Include="Resources\drawable\logout_icon.png" />
+    <AndroidResource Include="Resources\drawable\medications_icon.png" />
+    <AndroidResource Include="Resources\drawable\diseases_icon.png" />
+    <AndroidResource Include="Resources\drawable\procedures_icon.png" />
+    <AndroidResource Include="Resources\drawable\waitinglist_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

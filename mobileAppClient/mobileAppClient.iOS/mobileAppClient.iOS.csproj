@@ -162,10 +162,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\ic_local_shipping.png" />
-    <BundleResource Include="Resources\ic_my_location.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\ic_home.png" />
+    <BundleResource Include="Resources\donationIcon.png" />
+    <BundleResource Include="Resources\overviewImage.jpg" />
+    <BundleResource Include="Resources\home_icon.png" />
+    <BundleResource Include="Resources\attributes_icon.png" />
+    <BundleResource Include="Resources\organs_icon.png" />
+    <BundleResource Include="Resources\logout_icon.png" />
+    <BundleResource Include="Resources\medications_icon.png" />
+    <BundleResource Include="Resources\diseases_icon.png" />
+    <BundleResource Include="Resources\procedures_icon.png" />
+    <BundleResource Include="Resources\waitinglist_icon.png" />
   </ItemGroup>
 </Project>
