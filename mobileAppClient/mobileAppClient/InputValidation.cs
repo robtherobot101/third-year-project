@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace mobileAppClient
 {
@@ -10,14 +11,14 @@ namespace mobileAppClient
         /*
          * Returns true if the given input string is valid (non-null/empty, alpha chars)
          */
-        public static bool IsValidTextInput(string input, bool nonAlphaAllowed)
+        public static bool IsValidTextInput(string input, bool numbersAllowed)
         {
             // Check if empty
             if (string.IsNullOrEmpty(input))
                 return false;
 
             // Check for numbers
-            if (!nonAlphaAllowed && !input.All(char.IsLetter))
+            if (!numbersAllowed && (input.Any(char.IsDigit) || input.Any(char.IsSymbol)))
             {
                 return false;
             }
@@ -25,6 +26,42 @@ namespace mobileAppClient
             {
                 return true;
             }
+        }
+
+        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit)
+        {
+            if (string.IsNullOrEmpty(input))
+                return false;
+
+            Regex decimalRegex = new Regex(@"^[0 - 9]([.][0 - 9]{ 1, 3 })?$");
+            if (!decimalRegex.Match(input).Success)
+            {
+                return false;
+            }
+
+            try
+            {
+                double inputNumber = Convert.ToDouble(input);
+                if (inputNumber < lowerLimit || inputNumber > upperLimit)
+                {
+                    return false;
+                }
+            } catch (Exception e)
+            {
+                Console.WriteLine("Error parsing string to double");
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IsValidBloodPressure(string input)
+        {
+            Regex bloodPressureRegex = new Regex(@"^\d{1,3}\/\d{1,3}$");
+            if (!bloodPressureRegex.Match(input).Success)
+            {
+                return false;
+            }
+            return true;
         }
 
         /*

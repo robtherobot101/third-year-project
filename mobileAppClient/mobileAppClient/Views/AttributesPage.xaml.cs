@@ -31,8 +31,8 @@ namespace mobileAppClient
             PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
             PrefLastNameInput.Text = loggedInUser.preferredName[2];
 
-            BirthGenderInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.gender);
-            GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.genderIdentity);
+            BirthGenderInput.SelectedItem = GenderExtensions.ToString(loggedInUser.gender);
+            GenderIdentityInput.SelectedItem = GenderExtensions.ToString(loggedInUser.genderIdentity);
 
             AddressInput.Text = loggedInUser.currentAddress;
             RegionInput.Text = loggedInUser.region;
@@ -49,7 +49,7 @@ namespace mobileAppClient
 
             BloodPressureInput.Text = loggedInUser.bloodPressure;
 
-            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.bloodType);
+            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToString(loggedInUser.bloodType);
             SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
@@ -66,9 +66,6 @@ namespace mobileAppClient
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
 
-
-
-
         /*
          * Called when the Save button is pressed, reads + validates input fields and pushes changes to the API
          */
@@ -76,63 +73,112 @@ namespace mobileAppClient
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
 
-            if (!InputValidation.IsValidTextInput(FirstNameInput.Text, false)) {
+            string givenFirstName = InputValidation.Trim(FirstNameInput.Text);
+            string givenMiddleName = InputValidation.Trim(MiddleNameInput.Text);
+            string givenLastName = InputValidation.Trim(LastNameInput.Text);
+
+            string givenPrefFirstName = InputValidation.Trim(PrefFirstNameInput.Text);
+            string givenPrefMiddleName = InputValidation.Trim(PrefMiddleNameInput.Text);
+            string givenPrefLastName = InputValidation.Trim(PrefLastNameInput.Text);
+
+            string givenAddress = InputValidation.Trim(AddressInput.Text);
+            string givenRegion = InputValidation.Trim(RegionInput.Text);
+
+            string givenHeight = InputValidation.Trim(HeightInput.Text);
+            string givenWeight = InputValidation.Trim(WeightInput.Text);
+            string givenBloodPressure = InputValidation.Trim(BloodPressureInput.Text);
+
+            // Birth names
+            if (!InputValidation.IsValidTextInput(givenFirstName, false)) {
                 await DisplayAlert("", "Please enter a valid first name", "OK");
+                return;
             } 
 
-            if (!InputValidation.IsValidTextInput(MiddleNameInput.Text, false)) {
+            if (!InputValidation.IsValidTextInput(givenMiddleName, false)) {
                 await DisplayAlert("", "Please enter a valid middle name", "OK");
+                return;
             }
 
-            if (!InputValidation.IsValidTextInput(LastNameInput.Text, false))
+            if (!InputValidation.IsValidTextInput(givenLastName, false))
             {
                 await DisplayAlert("", "Please enter a valid last name", "OK");
+                return;
             }
 
-            if (!InputValidation.IsValidTextInput(PrefFirstNameInput.Text, false))
+            // Preferred names
+            if (!InputValidation.IsValidTextInput(givenPrefFirstName, false))
             {
                 await DisplayAlert("", "Please enter a valid preferred first name", "OK");
+                return;
             }
 
-            if (!InputValidation.IsValidTextInput(PrefMiddleNameInput.Text, false))
+            if (!InputValidation.IsValidTextInput(givenPrefMiddleName, false))
             {
                 await DisplayAlert("", "Please enter a valid preferred middle name", "OK");
+                return;
             }
 
-            if (!InputValidation.IsValidTextInput(LastNameInput.Text, false))
+            if (!InputValidation.IsValidTextInput(givenPrefLastName, false))
             {
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
+                return;
             }
 
-            loggedInUser.name[0] = FirstNameInput.Text;
-            loggedInUser.name[1] = MiddleNameInput.Text;
-            loggedInUser.name[2] = LastNameInput.Text;
-
-            loggedInUser.preferredName[0] = PrefFirstNameInput.Text;
-            loggedInUser.preferredName[1] =
-            PrefLastNameInput.Text = loggedInUser.preferredName[2];
-
-            BirthGenderInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.gender);
-            GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.genderIdentity);
-
-            AddressInput.Text = loggedInUser.currentAddress;
-            RegionInput.Text = loggedInUser.region;
-
-            dobInput.Date = loggedInUser.dateOfBirth.ToDateTime();
-            // Check if the user is dead
-            if (loggedInUser.dateOfDeath != null)
+            // Address
+            if (!InputValidation.IsValidTextInput(givenAddress, true))
             {
-                dodInput.Date = loggedInUser.dateOfDeath.ToDateTime();
+                await DisplayAlert("", "Please enter a valid address", "OK");
+                return;
             }
 
-            HeightInput.Text = loggedInUser.height.ToString();
-            WeightInput.Text = loggedInUser.weight.ToString();
+            // Physical attributes
+            if (!InputValidation.IsValidNumericInput(givenWeight, 1, 500))
+            {
+                await DisplayAlert("", "Please enter a valid weight in kg", "OK");
+                return;
+            }
 
-            BloodPressureInput.Text = loggedInUser.bloodPressure;
+            if (!InputValidation.IsValidNumericInput(givenHeight, 1, 300))
+            {
+                await DisplayAlert("", "Please enter a valid height in cm", "OK");
+                return;
+            }
 
-            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.bloodType);
-            SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
-            AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
+            if (!InputValidation.IsValidBloodPressure(givenBloodPressure))
+            {
+                await DisplayAlert("", "Please enter a valid blood pressure eg. 120/80", "OK");
+                return;
+            }
+
+            // Set user attributes to the new fields
+            loggedInUser.name[0] = givenFirstName;
+            loggedInUser.name[1] = givenMiddleName;
+            loggedInUser.name[2] = givenLastName;
+
+            loggedInUser.preferredName[0] = givenPrefFirstName;
+            loggedInUser.preferredName[1] = givenPrefMiddleName;
+            loggedInUser.preferredName[2] = givenPrefLastName;
+
+            loggedInUser.gender = GenderExtensions.ToGender(BirthGenderInput.SelectedItem.ToString());
+            loggedInUser.genderIdentity = GenderExtensions.ToGender(GenderIdentityInput.SelectedItem.ToString());
+
+            loggedInUser.currentAddress = givenAddress;
+            loggedInUser.region = givenRegion;
+
+            // TODO check date of death if not changed
+            loggedInUser.dateOfBirth = new CustomDate(dobInput.Date);
+            loggedInUser.dateOfDeath = new CustomDate(dodInput.Date);
+
+            // Don't worry about conversion exceptions -> this was checked with InputValidation
+            loggedInUser.height = Convert.ToDouble(givenHeight);
+            loggedInUser.weight = Convert.ToDouble(givenWeight);
+            loggedInUser.bloodPressure = givenBloodPressure;
+
+            loggedInUser.bloodType = BloodTypeExtensions.ToBloodType(BloodTypeInput.SelectedItem.ToString());
+            loggedInUser.smokerStatus = SmokerStatusInput.SelectedItem.ToString().ToUpper();
+            loggedInUser.alcoholConsumption = AlcoholConsumptionInput.SelectedItem.ToString().ToUpper();
+
+            // TODO wire up api to send the user
         }
     }
 }

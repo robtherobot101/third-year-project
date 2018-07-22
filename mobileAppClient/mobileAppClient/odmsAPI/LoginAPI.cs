@@ -19,6 +19,11 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
+            if (! await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
             // Get the single userController instance
             UserController userController = UserController.Instance;
 
@@ -31,7 +36,15 @@ namespace mobileAppClient.odmsAPI
             queries = String.Format("?usernameEmail={0}&password={1}", usernameEmail, password);
 
             HttpContent content = new StringContent("");
-            var response = await client.PostAsync(url + "/login" + queries, content);
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await client.PostAsync(url + "/login" + queries, content);
+            } catch (HttpRequestException e)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -51,6 +64,11 @@ namespace mobileAppClient.odmsAPI
         public async Task<HttpStatusCode> RegisterUser(String firstName, String lastName, String email,
             String username, String password, DateTime dateOfBirthRaw)
         {
+            if (! await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+   
             // Get the single userController instance
             UserController userController = UserController.Instance;
 

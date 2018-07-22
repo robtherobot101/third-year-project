@@ -13,7 +13,7 @@ namespace mobileAppClient
        /*
         * Converts a given Gender Enum into a string that is easily read by our attribute Pickers
         */
-        public static String ToPickerString(this Gender value)
+        public static String ToString(this Gender value)
         {
             switch (value)
             {

@@ -18,7 +18,7 @@ namespace mobileAppClient
         /*
          * Converts a given BloodType Enum into a string that is easily read by our attribute Pickers
          */
-        public static String ToPickerString(this BloodType value)
+        public static String ToString(this BloodType value)
         {
             switch (value)
             {
@@ -43,5 +43,31 @@ namespace mobileAppClient
                     return null;
             }
         }
+        public static BloodType ToBloodType(this string value)
+        {
+            switch (value)
+            {
+                case "AB-":
+                    return BloodType.AB_NEG;
+                case "AB+":
+                    return BloodType.AB_POS;
+                case "A-":
+                    return BloodType.A_NEG;
+                case "A+":
+                    return BloodType.A_POS;
+                case "B-":
+                    return BloodType.B_NEG;
+                case "B+":
+                    return BloodType.B_POS;
+                case "O-":
+                    return BloodType.O_NEG;
+                case "O+":
+                    return BloodType.O_POS;
+                default:
+                    // Unreachable
+                    return BloodType.O_POS;
+            }
+        }
+
     }
 }
