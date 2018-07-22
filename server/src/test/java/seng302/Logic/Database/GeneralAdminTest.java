@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Config.DatabaseConfiguration;
+import seng302.HelperMethods;
 import seng302.Model.Admin;
 
 import java.sql.SQLException;
@@ -37,9 +38,8 @@ public class GeneralAdminTest {
      */
     @Test
     public void insertAdmin() throws SQLException {
-        Admin admin = new Admin("username", "password", "Full Name");
-        generalAdmin.insertAdmin(admin);
-        assertEquals(admin, generalAdmin.getAdminFromId(generalAdmin.getAdminIdFromUsername("username")));
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
+        assertEquals(admin, generalAdmin.getAdminFromId((int) admin.getStaffID()));
     }
 
     /**
@@ -49,8 +49,7 @@ public class GeneralAdminTest {
     @Test(expected = SQLIntegrityConstraintViolationException.class)
     public void insertDuplicateAdmin() throws SQLException {
         int adminsBefore = generalAdmin.getAllAdmins().size();
-        Admin admin = new Admin("username2", "password2", "Full Name2");
-        generalAdmin.insertAdmin(admin);
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
         generalAdmin.insertAdmin(admin);
         assertEquals(adminsBefore + 1, generalAdmin.getAllAdmins().size());
     }
@@ -71,7 +70,7 @@ public class GeneralAdminTest {
      */
     @Test
     public void getAdminIdFromUsername() throws SQLException {
-        Admin admin = generalAdmin.getAdminFromId(1);
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
         assertEquals(admin.getStaffID(), generalAdmin.getAdminIdFromUsername(admin.getUsername()));
     }
 
@@ -112,8 +111,7 @@ public class GeneralAdminTest {
     @Test
     public void getAllAdmins() throws SQLException {
         List<Admin> adminsBefore = generalAdmin.getAllAdmins();
-        Admin admin = new Admin("username4", "password", "Full Name");
-        generalAdmin.insertAdmin(admin);
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
         List<Admin> adminsAfter = generalAdmin.getAllAdmins();
         assertTrue(adminsAfter.containsAll(adminsBefore));
         assertEquals(adminsBefore.size() + 1, adminsAfter.size());
@@ -121,8 +119,7 @@ public class GeneralAdminTest {
 
     @Test
     public void removeAdmin() throws SQLException {
-        Admin admin = new Admin("username6", "password", "Full Name");
-        generalAdmin.insertAdmin(admin);
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
         assertTrue(generalAdmin.getAllAdmins().contains(admin));
         generalAdmin.removeAdmin(admin);
         assertFalse(generalAdmin.getAllAdmins().contains(admin));
@@ -130,14 +127,13 @@ public class GeneralAdminTest {
 
     @Test
     public void updateAdminDetails() throws SQLException {
-        Admin admin = new Admin("username5", "password", "Full Name");
-        generalAdmin.insertAdmin(admin);
-        admin.setStaffID(generalAdmin.getAdminIdFromUsername("username5"));
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
+        admin.setStaffID(generalAdmin.getAdminIdFromUsername(admin.getUsername()));
         admin.setRegion("The Moon");
         admin.setName("Linus Torvalds");
         admin.setWorkAddress("140 Maidstone Rd");
         generalAdmin.updateAdminDetails(admin);
-        Admin admin2 = generalAdmin.getAdminFromId(generalAdmin.getAdminIdFromUsername("username5"));
+        Admin admin2 = generalAdmin.getAdminFromId(generalAdmin.getAdminIdFromUsername(admin.getUsername()));
         System.out.println(admin2.getRegion());
         assertEquals(admin, admin2);
     }
