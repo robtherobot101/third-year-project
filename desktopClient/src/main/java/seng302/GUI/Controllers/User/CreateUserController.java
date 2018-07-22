@@ -101,12 +101,10 @@ public class CreateUserController implements Initializable {
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
-            user.addHistoryEntry("Created", "This profile was created.");
-            user.addHistoryEntry("Logged in", "This profile was logged in to.");
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
                 //Got rid of the Local Data management of users
-                WindowManager.setCurrentUser(user);
+                WindowManager.setNewUser(user);
 
                 try {
                     WindowManager.getDataManager().getUsers().insertUser(user);

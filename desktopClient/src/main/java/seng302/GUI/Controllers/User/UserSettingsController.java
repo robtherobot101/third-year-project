@@ -33,9 +33,20 @@ public class UserSettingsController implements Initializable {
 
     private User currentUser;
 
+    private UserController userController;
+
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         userNameLabel.setText("user: " + currentUser.getName());
+    }
+
+    /**
+     * Set the parent user controller that spawned this window.
+     *
+     * @param userController The parent user controller
+     */
+    public void setParent(UserController userController) {
+        this.userController = userController;
     }
 
     /**
@@ -53,13 +64,12 @@ public class UserSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        int userId = 0;
         try {
-            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText(), currentUser.getId())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
+            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText(), currentUser.getId())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
@@ -69,23 +79,16 @@ public class UserSettingsController implements Initializable {
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
-                "The changes made will take place instantly.");
+                "The changes made will not be saved to the server until you save.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
 
-            currentUser.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
+            userController.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setCurrentUser(currentUser);
-            try{
-                WindowManager.getDataManager().getUsers().updateUser(currentUser);
-            } catch(HttpResponseException e) {
-                Debugger.error("Failed to upate user with id: " + currentUser.getId());
-            }
         } else {
             alert.close();
         }

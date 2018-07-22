@@ -50,10 +50,8 @@ public class GeneralUser {
         List<WaitingListItem> newWaitingListItems = new ArrayList<>(user.getWaitingListItems());
         updateWaitingListItems(newWaitingListItems, userId);
 
-        UserHistory userHistory = new UserHistory();
         List<HistoryItem> newHistory = user.getUserHistory();
-        List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
-
+        updateHistory(newHistory, userId);
     }
 
     /**
@@ -241,6 +239,25 @@ public class GeneralUser {
         //Upload all new medications
         for (WaitingListItem waitingListItem: newWaitingListItems) {
             userWaitingList.insertWaitingListItem(waitingListItem, userId);
+        }
+    }
+
+    public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
+        UserHistory userHistory = new UserHistory();
+        List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
+        int sameUntil = 0;
+        while (sameUntil < newHistory.size() && sameUntil < oldHistory.size() && newHistory.get(sameUntil).informationEqual(oldHistory.get(sameUntil))) {
+            sameUntil++;
+        }
+
+        newHistory = newHistory.subList(sameUntil, newHistory.size());
+        oldHistory = oldHistory.subList(sameUntil, oldHistory.size());
+
+        for (HistoryItem oldItem: oldHistory) {
+            userHistory.removeHistoryItem(userId, oldItem.getId());
+        }
+        for (HistoryItem newItem: newHistory) {
+            userHistory.insertHistoryItem(newItem, userId);
         }
     }
 

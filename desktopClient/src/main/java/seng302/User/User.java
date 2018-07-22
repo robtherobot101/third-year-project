@@ -214,10 +214,6 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
-        this.waitingListItems.clear();
-        this.waitingListItems.addAll(user.getWaitingListItems());
-
-
     }
 
     public void copyProceduresListsFrom(User user) {
@@ -496,10 +492,6 @@ public class User {
         lastModified = LocalDateTime.now();
     }
 
-    public void setLastModifiedForDatabase(LocalDateTime time) {
-        lastModified = time;
-    }
-
     public String getBloodPressure() {
         return bloodPressure;
     }
@@ -621,13 +613,12 @@ public class User {
     public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
     public boolean isReceiver() {
-        boolean receiver = false;
         for (WaitingListItem item : waitingListItems) {
             if (item.getStillWaitingOn()) {
-                receiver = true;
+                return true;
             }
         }
-        return receiver;
+        return false;
     }
 
     /**
@@ -670,10 +661,6 @@ public class User {
                 break;
             }
         }
-    }
-
-    public void addHistoryItem(HistoryItem historyItem) {
-        userHistory.add(historyItem);
     }
 
     public void addHistoryEntry(String action, String description) {

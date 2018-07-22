@@ -118,14 +118,9 @@ public class WindowManager extends Application {
             Parent root = loader.load();
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
-            user.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setCurrentUser(user);
-            System.out.println("Opening window for user");
-            System.out.println("CurrentState: ");
-            for(WaitingListItem i:user.getWaitingListItems()){
-                System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
-            }
+            newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
             cliniciansUserWindows.put(stage, newUserController);
@@ -183,6 +178,19 @@ public class WindowManager extends Application {
      *
      * @param currentUser the current user
      */
+    public static void setNewUser(User currentUser) {
+        userController.setCurrentUser(currentUser);
+        userController.setControlsShown(false);
+
+        userController.addHistoryEntry("Created", "This profile was created.");
+        userController.addHistoryEntry("Logged in", "This profile was logged in to.");
+    }
+
+    /**
+     * sets the current user
+     *
+     * @param currentUser the current user
+     */
     public static void setCurrentUser(User currentUser) {
         userController.setCurrentUser(currentUser);
         userController.setControlsShown(false);
@@ -215,16 +223,6 @@ public class WindowManager extends Application {
         clinicianClinicianWaitingListController.updateTransplantList();
         adminClinicianWaitingListController.updateTransplantList();
 
-    }
-
-    /**
-     * sets the current user for the account settings controller
-     *
-     * @param currentUser the current user
-     */
-    public static void setCurrentUserForAccountSettings(User currentUser) {
-        userSettingsController.setCurrentUser(currentUser);
-        userSettingsController.populateAccountDetails();
     }
 
     public void refreshUser() {
@@ -308,10 +306,6 @@ public class WindowManager extends Application {
 
     public static void setUserController(UserController userController) {
         WindowManager.userController = userController;
-    }
-
-    public static void setAccountSettingsEnterEvent() {
-        userSettingsController.setEnterEvent();
     }
 
     public static void setClinicianAccountSettingsEnterEvent() {
@@ -406,7 +400,6 @@ public class WindowManager extends Application {
         try {
             IO.setPaths();
             setupDrugInteractionCache();
-            IO.streamOut = History.init();
             for (TFScene scene : TFScene.values()) {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
             }

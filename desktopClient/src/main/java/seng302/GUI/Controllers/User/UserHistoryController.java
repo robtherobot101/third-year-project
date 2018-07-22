@@ -29,6 +29,7 @@ public class UserHistoryController extends UserTabController implements Initiali
 
     public void setCurrentUser(User user) {
         currentUser = user;
+        populateTable();
     }
 
     /**

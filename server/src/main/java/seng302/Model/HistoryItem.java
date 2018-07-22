@@ -30,6 +30,16 @@ public class HistoryItem {
         return description;
     }
 
+    /**
+     * Determines whether the information in this HistoryItem is the same as another (checks all fields apart from ID).
+     *
+     * @param other The object to compare to
+     * @return Whether the information is equal
+     */
+    public boolean informationEqual(HistoryItem other) {
+        return (this.action.equals(other.action) && this.description.equals(other.description) && this.dateTime.equals(other.dateTime));
+    }
+
     public int getId() {
         return id;
     }

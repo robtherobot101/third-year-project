@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#requestFocus" prefHeight="725.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.User.UserController">
+<GridPane fx:id="background" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMousePressed="#requestFocus" prefHeight="725.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.User.UserController">
 	<columnConstraints>
 		<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="90.0" prefWidth="900.0" />
 	</columnConstraints>

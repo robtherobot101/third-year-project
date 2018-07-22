@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers.User;
 
+import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,7 +36,14 @@ public class UserAttributesController extends UserTabController implements Initi
     private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox,
         middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
 
-    private HashMap<Organ, CheckBox> organTickBoxes;
+    private Map<Organ, CheckBox> organTickBoxes;
+
+    public void setCurrentUser(User user) {
+        currentUser = user;
+        populateUserFields();
+        updateBMI();
+        updateAge();
+    }
 
     /**
      * Highlights the checkboxes in red if the user is also waiting to receive an organ of that type.
@@ -86,17 +94,17 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the BMI label for the user based on the height and weight fields inputted.
      */
     private void updateBMI() {
+        bmiLabel.setText("");
         if (!heightField.getText().isEmpty() && !weightField.getText().isEmpty()) {
             try {
                 double height = Double.parseDouble(heightField.getText());
                 double weight = Double.parseDouble(weightField.getText());
                 double BMI = (weight / Math.pow(height, 2)) * 10000;
-                bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
+                if (Double.isNaN(BMI)) {
+                    bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
+                }
             } catch (NumberFormatException e) {
-                bmiLabel.setText("");
             }
-        } else {
-            bmiLabel.setText("");
         }
     }
 

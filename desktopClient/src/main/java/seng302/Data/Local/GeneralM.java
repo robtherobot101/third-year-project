@@ -112,4 +112,26 @@ public class GeneralM implements GeneralDAO {
         }
         return true;
     }
+
+    @Override
+    public boolean isUniqueIdentifier(String usernameEmail, long userId) throws HttpResponseException {
+        for(User u : users.getAllUsers()) {
+            if(u.getId() != userId && (u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail))) {
+                return false;
+            }
+        }
+
+        for(Clinician c : clinicians.getAllClinicians()) {
+            if(c.getUsername().equals(usernameEmail)) {
+                return false;
+            }
+        }
+
+        for(Admin a : admins.getAllAdmins()) {
+            if(a.getUsername().equals(usernameEmail)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

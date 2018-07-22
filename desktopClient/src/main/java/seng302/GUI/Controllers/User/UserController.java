@@ -77,6 +77,11 @@ public class UserController implements Initializable {
         titleBar.setStage(WindowManager.getStage());
     }
 
+    public void addHistoryEntry(String action, String description) {
+        currentUser.addHistoryEntry(action, description);
+        historyController.populateTable();
+    }
+
     /**
      * Set the stage the controller is associated with
      *
@@ -97,20 +102,15 @@ public class UserController implements Initializable {
         } else {
             setWelcomeText("Welcome, " + currentUser.getName());
         }
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
 
         diseasesController.setCurrentUser(currentUser);
         proceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
-        waitingListController.populateWaitingList();
         medicationsController.setCurrentUser(currentUser);
         attributesController.setCurrentUser(currentUser);
-        attributesController.populateUserFields();
         historyController.setCurrentUser(currentUser);
-        historyController.populateTable();
-
         setUndoRedoButtonsDisabled(true, true);
-
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
     }
 
     public void setWelcomeText(String text) {
@@ -168,6 +168,7 @@ public class UserController implements Initializable {
                 waitingListController.redoStack.clear();
                 setUndoRedoButtonsDisabled(true, true);
                 setCurrentUser(latest);
+                addHistoryEntry("Refreshed", "User data was refreshed from the server.");
                 alert.close();
 
             } catch (HttpResponseException e) {
@@ -375,7 +376,6 @@ public class UserController implements Initializable {
             medicationsController.updateUser();
             diseasesController.updateUser();
             proceduresController.updateUser();
-            attributesController.populateUserFields();
             historyController.populateTable();
             try {
                 WindowManager.getDataManager().getUsers().updateUser(currentUser);
@@ -383,24 +383,13 @@ public class UserController implements Initializable {
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }
 
-
-            currentUser.addHistoryEntry("Updated", "Changes were saved to the server.");
+            addHistoryEntry("Updated", "Changes were saved to the server.");
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
 
             WindowManager.getClinicianController().updateFoundUsers();
             WindowManager.updateTransplantWaitingList();
-
-
-            /*int index = 0;
-            for(User user: DataManager.users) {
-                if(user.getUsername().equals(currentUser.getUsername())) {
-                    break;
-                }
-                index++;
-            }
-            DataManager.users.set(index, currentUser);*/
         }
         alert.close();
     }
@@ -428,7 +417,7 @@ public class UserController implements Initializable {
             diseasesController.undo();
             setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), false);
         }
-        currentUser.addHistoryEntry("Action undone", "An action was undone.");
+        addHistoryEntry("Action undone", "An action was undone.");
         historyController.populateTable();
         statusIndicator.setStatus("Undid last action", false);
         titleBar.saved(false);
@@ -456,7 +445,7 @@ public class UserController implements Initializable {
             diseasesController.redo();
             setUndoRedoButtonsDisabled(false, diseasesController.redoEmpty());
         }
-        currentUser.addHistoryEntry("Action redone", "An action was redone.");
+        addHistoryEntry("Action redone", "An action was redone.");
         historyController.populateTable();
         statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
@@ -478,16 +467,21 @@ public class UserController implements Initializable {
         if (password.isPresent()) { //Ok was pressed, Else cancel
             if (password.get().equals(currentUser.getPassword())) {
                 try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
+                    Parent root = fxmlLoader.load();
                     Stage stage = new Stage();
                     stage.getIcons().add(WindowManager.getIcon());
                     stage.setResizable(false);
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 270, 330));
                     stage.initModality(Modality.APPLICATION_MODAL);
-                    WindowManager.setCurrentUserForAccountSettings(currentUser);
-                    WindowManager.setAccountSettingsEnterEvent();
+                    UserSettingsController userSettingsController = fxmlLoader.getController();
+                    userSettingsController.setCurrentUser(currentUser);
+                    userSettingsController.setParent(this);
+                    userSettingsController.populateAccountDetails();
+                    userSettingsController.setEnterEvent();
                     stage.showAndWait();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

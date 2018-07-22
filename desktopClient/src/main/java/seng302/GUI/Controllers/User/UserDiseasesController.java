@@ -102,6 +102,8 @@ public class UserDiseasesController extends UserTabController implements Initial
             chronicCheckBox.setSelected(false);
         } else {
             // Add the new disease
+            String extras = " " + (chronicCheckBox.isSelected() ? "chronic " : "") + (isCuredCheckBox.isSelected() ? "cured " : "");
+            userController.addHistoryEntry("Disease added", "A new" + extras + "disease (" + newDiseaseTextField.getText() + ") was added.");
             Disease diseaseToAdd = new Disease(newDiseaseTextField.getText(), dateOfDiagnosisInput.getValue(),
                     chronicCheckBox.isSelected(), isCuredCheckBox.isSelected());
             newDiseaseTextField.clear();
@@ -173,6 +175,7 @@ public class UserDiseasesController extends UserTabController implements Initial
                 currentDiseaseItems.remove(chosenDisease);
                 statusIndicator.setStatus("Removed " + chosenDisease, false);
                 titleBar.saved(false);
+                userController.addHistoryEntry("Disease removed", "A disease (" + chosenDisease.getName() + ") was removed.");
             }
             alert.close();
         } else if (curedDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
@@ -186,6 +189,7 @@ public class UserDiseasesController extends UserTabController implements Initial
                 curedDiseaseItems.remove(chosenDisease);
                 statusIndicator.setStatus("Removed " + chosenDisease, false);
                 titleBar.saved(false);
+                userController.addHistoryEntry("Cured disease removed", "A cured disease (" + chosenDisease.getName() + ") was removed.");
             }
             alert.close();
         }
@@ -291,9 +295,11 @@ public class UserDiseasesController extends UserTabController implements Initial
                 currentDiseaseItems.add(selectedDisease);
                 sortCurrentDiseases(false);
                 currentDiseaseTableView.refresh();
+                userController.addHistoryEntry("Disease updated", "A disease (" + selectedDisease.getName() + ") was updated.");
             } else {
                 curedDiseaseItems.remove(selectedDisease);
                 curedDiseaseItems.add(selectedDisease);
+                userController.addHistoryEntry("Cured disease updated", "A cured disease (" + selectedDisease.getName() + ") was updated.");
                 sortCuredDiseases(false);
                 curedDiseaseTableView.refresh();
             }
@@ -523,9 +529,11 @@ public class UserDiseasesController extends UserTabController implements Initial
             if (selectedDisease.isChronic()) {
                 selectedDisease.setChronic(false);
                 statusIndicator.setStatus("Marked " + selectedDisease + " as not chronic", false);
+                userController.addHistoryEntry("Marked a disease as not chronic", "Marked a disease (" + selectedDisease + ") as not chronic");
             } else {
                 selectedDisease.setChronic(true);
                 statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
+                userController.addHistoryEntry("Marked a disease as chronic", "Marked a disease (" + selectedDisease + ") as chronic");
             }
             titleBar.saved(false);
             selectedDisease.setDiagnosisDate(LocalDate.now());
@@ -549,6 +557,7 @@ public class UserDiseasesController extends UserTabController implements Initial
             currentDiseaseItems.remove(selectedDisease);
             curedDiseaseItems.add(selectedDisease);
             sortCuredDiseases(false);
+            userController.addHistoryEntry("Marked a disease as cured", "Marked a disease (" + selectedDisease + ") as cured");
 
             statusIndicator.setStatus("Marked " + selectedDisease + " as cured", false);
             titleBar.saved(false);
@@ -582,6 +591,7 @@ public class UserDiseasesController extends UserTabController implements Initial
             sortCurrentDiseases(false);
 
             statusIndicator.setStatus("Marked " + selectedDisease + " as chronic", false);
+            userController.addHistoryEntry("Marked a disease as chronic", "Marked a disease (" + selectedDisease + ") as chronic");
             titleBar.saved(false);
         });
         curedDiseaseContextMenu.getItems().add(setCuredChronicDiseaseMenuItem);
@@ -599,6 +609,7 @@ public class UserDiseasesController extends UserTabController implements Initial
             sortCurrentDiseases(false);
 
             statusIndicator.setStatus("Marked " + selectedDisease + " as uncured", false);
+            userController.addHistoryEntry("Marked a disease as uncured", "Marked a disease (" + selectedDisease + ") as uncured");
             titleBar.saved(false);
         });
         curedDiseaseContextMenu.getItems().add(setUncuredMenuItem);

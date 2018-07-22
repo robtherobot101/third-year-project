@@ -70,5 +70,10 @@ public class GeneralDB implements GeneralDAO {
         return true;
     }
 
+    public boolean isUniqueIdentifier(String username, long userId) throws HttpResponseException {
+        // TODO - Implement this to check for the same username/email over all profile types
+        return true;
+    }
+
 
 }

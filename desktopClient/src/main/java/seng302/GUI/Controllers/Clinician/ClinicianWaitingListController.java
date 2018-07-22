@@ -1,11 +1,14 @@
 package seng302.GUI.Controllers.Clinician;
 
-import java.awt.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,21 +32,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import org.apache.commons.collections.ArrayStack;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
-import seng302.Generic.*;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Disease;
-import seng302.User.History;
 import seng302.User.User;
-
-import java.sql.SQLException;
-import java.util.List;
-
 import seng302.User.WaitingListItem;
 
 /**
@@ -213,10 +210,9 @@ public class ClinicianWaitingListController implements Initializable {
     /**
      * Removes an organ from the transplant waiting list and writes it as an error to the history log.
      */
-    private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) throws HttpResponseException{
+    private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) throws HttpResponseException {
         Long userId = user.getId();
         deregisterWaitingListItem(selectedWaitingListItem,user,1);
-        History.prepareFileStringGUI(userId, "deregisterError");
     }
 
     /**
@@ -432,10 +428,8 @@ public class ClinicianWaitingListController implements Initializable {
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
     private void deathDeregister(LocalDate deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
-        Long userId = selectedUser.getId();
         deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
         if (selectedUser.getWaitingListItems() != null) {
-            History.prepareFileStringGUI(userId, "deregisterDeath");
             for (WaitingListItem item : selectedUser.getWaitingListItems()) {
                 deregisterWaitingListItem(item,selectedUser,3);
             }
@@ -445,6 +439,7 @@ public class ClinicianWaitingListController implements Initializable {
         for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
             if (userController.getCurrentUser() == selectedUser) {
                 userController.populateUserAttributes();
+                userController.addHistoryEntry("Waiting list entry deregistered", "Organ was deregistered from waiting list because the user died.");
             }
         }
     }
