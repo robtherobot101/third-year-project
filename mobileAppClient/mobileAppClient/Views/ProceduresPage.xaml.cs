@@ -12,10 +12,10 @@ namespace mobileAppClient
             switch (e.NewValue)
             {
                 case 0:
-                    ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PendingProcedures;
+                    ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
                     break;
                 case 1:
-                    ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PreviousProcedures;
+                    ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.previousProcedures;
                     break;
             }
         }
@@ -26,16 +26,16 @@ namespace mobileAppClient
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
-            foreach (Procedure item in UserController.Instance.LoggedInUser.PendingProcedures)
+            foreach (Procedure item in UserController.Instance.LoggedInUser.pendingProcedures)
             {
                 item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
             }
-            foreach (Procedure item in UserController.Instance.LoggedInUser.PreviousProcedures)
+            foreach (Procedure item in UserController.Instance.LoggedInUser.previousProcedures)
             {
                 item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
             }
 
-            ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.PendingProcedures;
+            ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
         }
 
         async void Handle_ProcedureTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)

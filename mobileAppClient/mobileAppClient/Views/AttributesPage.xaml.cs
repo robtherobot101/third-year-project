@@ -20,35 +20,35 @@ namespace mobileAppClient
         private void fillFields()
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
-            FirstNameInput.Text = loggedInUser.Name[0];
-            MiddleNameInput.Text = loggedInUser.Name[1];
-            LastNameInput.Text = loggedInUser.Name[2];
+            FirstNameInput.Text = loggedInUser.name[0];
+            MiddleNameInput.Text = loggedInUser.name[1];
+            LastNameInput.Text = loggedInUser.name[2];
 
-            PrefFirstNameInput.Text = loggedInUser.PreferredName[0];
-            PrefMiddleNameInput.Text = loggedInUser.PreferredName[1];
-            PrefLastNameInput.Text = loggedInUser.PreferredName[2];
+            PrefFirstNameInput.Text = loggedInUser.preferredName[0];
+            PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
+            PrefLastNameInput.Text = loggedInUser.preferredName[2];
 
-            BirthGenderInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.Gender);
-            GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.GenderIdentity);
+            BirthGenderInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.gender);
+            GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.genderIdentity);
 
-            AddressInput.Text = loggedInUser.CurrentAddress;
-            RegionInput.Text = loggedInUser.Region;
+            AddressInput.Text = loggedInUser.currentAddress;
+            RegionInput.Text = loggedInUser.region;
 
-            dobInput.Date = loggedInUser.DateOfBirth.ToDateTime();
+            dobInput.Date = loggedInUser.dateOfBirth.ToDateTime();
             // Check if the user is dead
-            if (loggedInUser.DateOfDeath != null)
+            if (loggedInUser.dateOfDeath != null)
             {
-                dodInput.Date = loggedInUser.DateOfDeath.ToDateTime();
+                dodInput.Date = loggedInUser.dateOfDeath.ToDateTime();
             }
-            
-            HeightInput.Text = loggedInUser.Height.ToString();
-            WeightInput.Text = loggedInUser.Weight.ToString();
 
-            BloodPressureInput.Text = loggedInUser.BloodPressure;
+            HeightInput.Text = loggedInUser.height.ToString();
+            WeightInput.Text = loggedInUser.weight.ToString();
 
-            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.BloodType);
-            SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.SmokerStatus);
-            AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.AlcoholConsumption);
+            BloodPressureInput.Text = loggedInUser.bloodPressure;
+
+            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.bloodType);
+            //SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
+            //AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
 
         private string FirstCharToUpper(string input)
@@ -104,31 +104,31 @@ namespace mobileAppClient
             loggedInUser.Name[1] = MiddleNameInput.Text;
             loggedInUser.Name[2] = LastNameInput.Text;
 
-            loggedInUser.PreferredName[0] = PrefFirstNameInput.Text;
-            loggedInUser.PreferredName[1] = PrefMiddleNameInput.Text;
-            loggedInUser.PreferredName[2] = PrefLastNameInput.Text;
+            loggedInUser.preferredName[0] = PrefFirstNameInput.Text;
+            loggedInUser.preferredName[1] =
+            PrefLastNameInput.Text = loggedInUser.preferredName[2];
 
-            BirthGenderInput.SelectedItem = GenderExtensions.ToGender(loggedInUser.Gender.ToString());
-            GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.GenderIdentity);
+            BirthGenderInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.gender);
+            GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.genderIdentity);
 
-            AddressInput.Text = loggedInUser.CurrentAddress;
-            RegionInput.Text = loggedInUser.Region;
+            AddressInput.Text = loggedInUser.currentAddress;
+            RegionInput.Text = loggedInUser.region;
 
-            dobInput.Date = loggedInUser.DateOfBirth.ToDateTime();
+            dobInput.Date = loggedInUser.dateOfBirth.ToDateTime();
             // Check if the user is dead
-            if (loggedInUser.DateOfDeath != null)
+            if (loggedInUser.dateOfDeath != null)
             {
-                dodInput.Date = loggedInUser.DateOfDeath.ToDateTime();
+                dodInput.Date = loggedInUser.dateOfDeath.ToDateTime();
             }
 
-            HeightInput.Text = loggedInUser.Height.ToString();
-            WeightInput.Text = loggedInUser.Weight.ToString();
+            HeightInput.Text = loggedInUser.height.ToString();
+            WeightInput.Text = loggedInUser.weight.ToString();
 
-            BloodPressureInput.Text = loggedInUser.BloodPressure;
+            BloodPressureInput.Text = loggedInUser.bloodPressure;
 
-            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.BloodType);
-            SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.SmokerStatus);
-            AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.AlcoholConsumption);
+            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.bloodType);
+            SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
+            AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
     }
 
