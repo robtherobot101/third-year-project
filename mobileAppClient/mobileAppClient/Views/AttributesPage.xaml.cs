@@ -14,10 +14,13 @@ namespace mobileAppClient
         public AttributesPage()
         {
             InitializeComponent();
-            fillFields();
+            FillFields();
         }
 
-        private void fillFields()
+        /*
+         * Called on page initialisation, populates fields with the current data from the logged in user
+         */
+        private void FillFields()
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
             FirstNameInput.Text = loggedInUser.name[0];
@@ -51,6 +54,10 @@ namespace mobileAppClient
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
 
+        /*
+         * Converts any given string into having an uppercase first char with lowercase for the rest
+         * - Used for Pickers
+         */
         private string FirstCharToUpper(string input)
         {
             if (String.IsNullOrEmpty(input))
@@ -59,43 +66,40 @@ namespace mobileAppClient
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
 
-        private bool isValidTextInput(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return false;
-            else return true;
-        } 
 
 
 
+        /*
+         * Called when the Save button is pressed, reads + validates input fields and pushes changes to the API
+         */
         private async void SaveClicked(object sender, EventArgs e)
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
 
-            if (!isValidTextInput(FirstNameInput.Text)) {
+            if (!InputValidation.IsValidTextInput(FirstNameInput.Text, false)) {
                 await DisplayAlert("", "Please enter a valid first name", "OK");
             } 
 
-            if (!isValidTextInput(MiddleNameInput.Text)) {
+            if (!InputValidation.IsValidTextInput(MiddleNameInput.Text, false)) {
                 await DisplayAlert("", "Please enter a valid middle name", "OK");
             }
 
-            if (!isValidTextInput(LastNameInput.Text))
+            if (!InputValidation.IsValidTextInput(LastNameInput.Text, false))
             {
                 await DisplayAlert("", "Please enter a valid last name", "OK");
             }
 
-            if (!isValidTextInput(PrefFirstNameInput.Text))
+            if (!InputValidation.IsValidTextInput(PrefFirstNameInput.Text, false))
             {
                 await DisplayAlert("", "Please enter a valid preferred first name", "OK");
             }
 
-            if (!isValidTextInput(PrefMiddleNameInput.Text))
+            if (!InputValidation.IsValidTextInput(PrefMiddleNameInput.Text, false))
             {
                 await DisplayAlert("", "Please enter a valid preferred middle name", "OK");
             }
 
-            if (!isValidTextInput(LastNameInput.Text))
+            if (!InputValidation.IsValidTextInput(LastNameInput.Text, false))
             {
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
             }
@@ -131,6 +135,4 @@ namespace mobileAppClient
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
     }
-
-    
 }

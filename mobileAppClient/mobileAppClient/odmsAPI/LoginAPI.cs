@@ -15,9 +15,9 @@ namespace mobileAppClient.odmsAPI
     class LoginAPI
     {
         /*
-         * Returns true or false depending on the success of the attempted login 
+         * Returns response status code of the attempted login 
          */
-        public async Task<bool> LoginUser(String usernameEmail, String password)
+        public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
             // Get the single userController instance
             UserController userController = UserController.Instance;
@@ -27,16 +27,10 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
             
             String queries = null;
-            if (usernameEmail == "" || password == "")
-            {
-                // No valid identification provided -> return non-successful
-                return false;
-            }
 
             queries = String.Format("?usernameEmail={0}&password={1}", usernameEmail, password);
 
             HttpContent content = new StringContent("");
-            Console.WriteLine("THIS IS THE URL: " + url + "/login");
             var response = await client.PostAsync(url + "/login" + queries, content);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -45,16 +39,16 @@ namespace mobileAppClient.odmsAPI
                 User user = JsonConvert.DeserializeObject<User>(responseContent);
                 userController.LoggedInUser = user;
                 Console.WriteLine("Logged in as " + String.Join(String.Empty, userController.LoggedInUser.name));
-                return true;
+                return HttpStatusCode.OK;
             }
             else
             {
                 Console.WriteLine(String.Format("Failed login ({0})", response.StatusCode));
-                return false;
+                return response.StatusCode;
             }
         }
 
-        public async Task<bool> RegisterUser(String firstName, String lastName, String email,
+        public async Task<HttpStatusCode> RegisterUser(String firstName, String lastName, String email,
             String username, String password, DateTime dateOfBirthRaw)
         {
             // Get the single userController instance
@@ -99,13 +93,12 @@ namespace mobileAppClient.odmsAPI
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine("Success on creating user");
-                return true;
             }
             else
             {
                 Console.WriteLine(String.Format("Failed register ({0})", response.StatusCode));
-                return false;
             }
+            return response.StatusCode;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,35 +11,45 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class RegisterPage : ContentPage
-	{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class RegisterPage : ContentPage
+    {
+        // Tracks the login page that called this register page, used for closing the login modal after a successful registration
         LoginPage parentLoginPage;
 
-		public RegisterPage (LoginPage loginPage)
-		{
+        public RegisterPage(LoginPage loginPage)
+        {
             parentLoginPage = loginPage;
-			InitializeComponent ();
-		}
+            InitializeComponent();
+        }
 
+        /*
+         * Called when the Sign Up button is clicked
+         */
         async void SignUpButtonClicked(Object sender, EventArgs args)
         {
+            string givenFirstName = InputValidation.Trim(firstNameInput.Text);
+            string givenLastName = InputValidation.Trim(lastNameInput.Text);
+            string givenPassword = InputValidation.Trim(passwordInput.Text);
+            string givenEmail = InputValidation.Trim(emailInput.Text);
+            string givenUsername = InputValidation.Trim(usernameInput.Text);
+
             // Check for valid inputs
-            if (firstNameInput.Text == null)
+            if (!InputValidation.IsValidTextInput(givenFirstName, false))
             {
                 await DisplayAlert("",
-                    "Please enter a first name",
+                    "Please enter a valid first name",
                     "OK");
                 return;
             }
-            else if (lastNameInput.Text == null)
+            else if (!InputValidation.IsValidTextInput(givenLastName, false))
             {
                 await DisplayAlert("",
-                    "Please enter a last name",
+                    "Please enter a valid last name",
                     "OK");
                 return;
-            } 
-            else if (passwordInput.Text == null)
+            }
+            else if (!InputValidation.IsValidTextInput(givenPassword, false))
             {
                 await DisplayAlert("",
                     "Please enter a password",
@@ -47,7 +58,7 @@ namespace mobileAppClient
             }
 
             // Check if a username and valid email is entered
-            else if (emailInput.Text == null || !IsValidEmail(emailInput.Text) || usernameInput.Text == null)
+            else if (!InputValidation.IsValidEmail(givenEmail) || !InputValidation.IsValidTextInput(givenUsername, true))
             {
                 await DisplayAlert("",
                     "Password and email is required",
@@ -55,24 +66,51 @@ namespace mobileAppClient
                 return;
             }
 
+            // DOB validation is through constraints on the DatePicker in the XAML
+
             LoginAPI loginAPI = new LoginAPI();
-            bool successfullyRegisteredUser = await loginAPI.RegisterUser(firstNameInput.Text, lastNameInput.Text, emailInput.Text, 
-                usernameInput.Text, passwordInput.Text, dobInput.Date);
+            HttpStatusCode registerUserResult = await loginAPI.RegisterUser(givenFirstName, givenLastName, givenEmail,
+                givenUsername, givenPassword, dobInput.Date);
 
-            if (successfullyRegisteredUser)
+            switch (registerUserResult)
             {
-                // Attempt login with the newly created account
-                bool loginSuccessful;
-                if (usernameInput.Text != null)
-                {
-                    loginSuccessful = await loginAPI.LoginUser(usernameInput.Text, passwordInput.Text);
-                } else
-                {
-                    loginSuccessful = await loginAPI.LoginUser(emailInput.Text, passwordInput.Text);
-                }
+                case HttpStatusCode.Created:
+                    await LoginRegisteredUser(givenUsername, givenEmail, givenPassword);
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert(
+                        "Failed to Register",
+                        "Server unavailable, check connection",
+                        "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert(
+                        "Failed to Register",
+                        "Server error",
+                        "OK");
+                    break;
+            }
+        }
 
-                if (loginSuccessful)
-                {                    
+        private async Task LoginRegisteredUser(string givenUsername, string givenEmail, string givenPassword)
+        {
+            LoginAPI loginAPI = new LoginAPI();
+
+            // Attempt login with the newly created account
+            HttpStatusCode loginResult;
+            if (usernameInput.Text != null)
+            {
+                loginResult = await loginAPI.LoginUser(givenUsername, givenPassword);
+            }
+            else
+            {
+                loginResult = await loginAPI.LoginUser(givenEmail, givenPassword);
+            }
+
+            switch (loginResult)
+            {
+                case HttpStatusCode.OK:
+                    // Pop away login screen on successful login
                     UserController.Instance.Login();
                     await DisplayAlert("",
                         "Account successfully created",
@@ -83,36 +121,26 @@ namespace mobileAppClient
 
                     // Dismiss the login modal dialog
                     await parentLoginPage.Navigation.PopModalAsync();
-                }
-                else
-                {
-                    // Display alert on failed login
-                    await DisplayAlert("",
-                        "Failed to login",
-                        "OK");
-                    await Navigation.PopModalAsync();
-                }
-            } else
-            {
-                await DisplayAlert("",
-                    "Failed to create account",
-                    "OK");
-            }
-        }
+                    break;
 
-        /*
-         * Checks the validity of a given email. test@xamarin is valid for example
-         */
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
+                case HttpStatusCode.Unauthorized:
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Incorrent username/password",
+                        "OK");
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Server unavailable, check connection",
+                        "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Server error",
+                        "OK");
+                    break;
             }
         }
     }

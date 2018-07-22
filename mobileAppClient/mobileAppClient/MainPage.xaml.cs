@@ -51,7 +51,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "",
-                Image = "http://www3.hilton.com/resources/media/hi/GSPSCHF/en_US/img/shared/full_page_image_gallery/main/HH_food_22_675x359_FitToBoxSmallDimension_Center.jpg",
+                Image = "",
                 Footer = "      Welcome To SENG302     "
             };
             
