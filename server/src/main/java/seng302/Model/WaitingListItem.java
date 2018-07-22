@@ -3,6 +3,7 @@ package seng302.Model;
 import seng302.Model.Attribute.Organ;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 /**
@@ -51,5 +52,22 @@ public class WaitingListItem {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WaitingListItem that = (WaitingListItem) o;
+        return id == that.id &&
+                userId == that.userId &&
+                organDeregisteredCode == that.organDeregisteredCode &&
+                organType == that.organType &&
+                Objects.equals(organRegisteredDate, that.organRegisteredDate) &&
+                Objects.equals(organDeregisteredDate, that.organDeregisteredDate);
+    }
 
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(organType, organRegisteredDate, id, userId, organDeregisteredDate, organDeregisteredCode);
+    }
 }

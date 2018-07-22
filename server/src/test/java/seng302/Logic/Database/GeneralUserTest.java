@@ -10,6 +10,7 @@ import seng302.Model.Disease;
 import seng302.Model.Medication.Medication;
 import seng302.Model.Procedure;
 import seng302.Model.User;
+import seng302.Model.WaitingListItem;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -84,7 +85,20 @@ public class GeneralUserTest {
     }
 
     @Test
-    public void updateWaitingListItems() {
+    public void updateWaitingListItems() throws SQLException {
+        String[] middle = {"Middle"};
+        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username7", "email7@domain.com", "password");
+        generalUser.insertUser(user);
+        long id = generalUser.getIdFromUser(user.getUsername());
+        user.setId(id);
+
+        ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+        WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) id, null, 0);
+
+        generalUser.updateWaitingListItems(waitingListItems, (int) id);
+
+        User user2 = generalUser.getUserFromId((int) id);
+        assertEquals(waitingListItems, user2.getWaitingListItems());
     }
 
     @Test
