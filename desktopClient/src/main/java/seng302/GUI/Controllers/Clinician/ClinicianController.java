@@ -87,7 +87,7 @@ public class ClinicianController implements Initializable {
     private int numberXofResults;
 
     private int page = 1;
-    private ArrayList<User> usersFound = new ArrayList<>();
+    private List<User> usersFound = new ArrayList<>();
 
     private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
@@ -477,16 +477,7 @@ public class ClinicianController implements Initializable {
             searchMap.put("userType", searchUserTypeTerm);
         }
         try {
-            APIResponse response = WindowManager.getDataManager().getUsers().getUsers(searchMap);
-            if(response.isValidJson()){
-                JsonArray searchResults = response.getAsJsonArray();
-
-                Type type = new TypeToken<ArrayList<User>>() {
-                }.getType();
-
-                usersFound = gson.fromJson(searchResults, type);
-
-            }
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
 
             users = FXCollections.observableArrayList(usersFound);
             populateNResultsComboBox(usersFound.size());

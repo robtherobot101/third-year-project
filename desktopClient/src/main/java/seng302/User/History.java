@@ -11,6 +11,8 @@ import seng302.User.User;
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class History {
@@ -235,7 +237,7 @@ public class History {
      */
     private static void formatClinicianInfo(long id) {
         try {
-            List<Clinician> clinicians = WindowManager.getDataManager().getClinicians().getAllClinicians();
+            Collection<Clinician> clinicians = WindowManager.getDataManager().getClinicians().getAllClinicians();
             if (id == -1){
                 id = Long.MIN_VALUE;
                 for(Clinician c : clinicians) {
@@ -262,7 +264,7 @@ public class History {
      */
     private static void formatUserInfo(long id) {
         try {
-            List<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
+            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
             if (id == -1) {
                 id = Long.MIN_VALUE;
                 for (User c : users) {
@@ -272,7 +274,7 @@ public class History {
                 }
             }
 
-            User user = WindowManager.getDataManager().getUsers().getUserFromId((int)id);
+            User user = WindowManager.getDataManager().getUsers().getUser((int)id);
             if (user != null) {
                 userInfo = "(" + user.getId() + ": " + user.getName() + ")";
             }
@@ -292,7 +294,7 @@ public class History {
     public static String prepareFileStringGUI(long userId, String command) {
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
         try {
-            User user = WindowManager.getDataManager().getUsers().getUserFromId((int)userId);
+            User user = WindowManager.getDataManager().getUsers().getUser((int)userId);
             if (user != null) {
                 userInfo = "(" + user.getId() + ": " + user.getName() + ")";
             }

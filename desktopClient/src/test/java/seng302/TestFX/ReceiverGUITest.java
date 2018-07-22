@@ -36,7 +36,7 @@ public class ReceiverGUITest extends TestFXTest {
     @Before
     public void setUp() throws SQLException {
         try {
-            WindowManager.getDataManager().getGeneral().resetDatabase();
+            WindowManager.getDataManager().getGeneral().reset();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }

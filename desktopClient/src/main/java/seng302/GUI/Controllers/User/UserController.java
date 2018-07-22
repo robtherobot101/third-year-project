@@ -155,7 +155,7 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
             try {
-                User latest = WindowManager.getDataManager().getUsers().getUserFromId((int)currentUser.getId());
+                User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId());
                 attributesController.undoStack.clear();
                 attributesController.redoStack.clear();
                 medicationsController.undoStack.clear();
@@ -379,11 +379,6 @@ public class UserController implements Initializable {
             historyController.populateTable();
             try {
                 WindowManager.getDataManager().getUsers().updateUser(currentUser);
-                WindowManager.getDataManager().getUsers().updateUserOrgans(currentUser);
-                WindowManager.getDataManager().getUsers().updateUserProcedures(currentUser);
-                WindowManager.getDataManager().getUsers().updateUserDiseases(currentUser);
-                WindowManager.getDataManager().getUsers().updateWaitingListItems(currentUser);
-
             } catch (HttpResponseException e ){
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }

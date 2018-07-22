@@ -49,8 +49,8 @@ public class CliniciansDB implements CliniciansDAO {
         }
     }
 
-    public void removeClinician(Clinician clinician) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "clinician", String.valueOf(clinician.getStaffID()));
+    public void removeClinician(long id) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "clinician", String.valueOf(id));
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }

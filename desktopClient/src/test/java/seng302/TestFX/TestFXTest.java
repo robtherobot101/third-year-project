@@ -13,7 +13,19 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
+import seng302.Data.Database.AdminsDB;
+import seng302.Data.Database.CliniciansDB;
+import seng302.Data.Database.UsersDB;
+import seng302.Data.Interfaces.AdminsDAO;
+import seng302.Data.Interfaces.CliniciansDAO;
+import seng302.Data.Interfaces.GeneralDAO;
+import seng302.Data.Interfaces.UsersDAO;
+import seng302.Data.Local.AdminsM;
+import seng302.Data.Local.CliniciansM;
+import seng302.Data.Local.GeneralM;
+import seng302.Data.Local.UsersM;
 import seng302.GUI.TFScene;
+import seng302.Generic.APIServer;
 import seng302.Generic.DataManager;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
@@ -33,39 +45,45 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 abstract class TestFXTest extends ApplicationTest {
 
     protected static final boolean runHeadless = true;
-/*
+
+
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws HttpResponseException {
+        Platform.runLater(() -> {
+
+            try{
+                WindowManager.resetScene(TFScene.userWindow);
+                WindowManager mainGUI = new WindowManager();
+                mainGUI.start(stage);
+
+                WindowManager.getDataManager().getGeneral().reset();
+                WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"));
+                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"));
+            } catch (HttpResponseException e) {
+
+            }
+        });
 
 
-
-
-
-        DataManager.users.clear();
-        DataManager.clinicians.clear();
-        DataManager.clinicians.add(new Clinician("default", "default", "default"));
-        DataManager.admins.clear();
-        DataManager.admins.add(new Admin("admin", "default", "default_admin"));
-        WindowManager.resetScene(TFScene.userWindow);
-        WindowManager mainGUI = new WindowManager();
-        mainGUI.start(stage);
     }
 
     @After
-    public void tearDown() throws TimeoutException, SQLException {
-        DataManager.users.clear();
-        DataManager.clinicians.clear();
-        DataManager.admins.clear();
-        try {
-            WindowManager.getDatabase().resetDatabase();
-            WindowManager.getDatabase().loadSampleData();
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to reset and resample database.");
-        }
+    public void tearDown() throws TimeoutException, SQLException, HttpResponseException {
+        WindowManager.getDataManager().getGeneral().reset();
+        WindowManager.getDataManager().getGeneral().resample();
+
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
-    }*/
+    }
+
+    protected void useLocalStorage() {
+        UsersDAO users = new UsersM();
+        CliniciansDAO clinicians = new CliniciansM();
+        AdminsDAO admins = new AdminsM();
+        GeneralDAO general = new GeneralM(users,clinicians,admins);
+        WindowManager.setDataManager(new DataManager(users,clinicians,admins,general));
+    }
 
     protected static void defaultTestSetup() throws TimeoutException {
         if (runHeadless) {

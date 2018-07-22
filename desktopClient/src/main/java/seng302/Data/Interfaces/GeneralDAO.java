@@ -5,11 +5,11 @@ import seng302.Generic.APIResponse;
 
 public interface GeneralDAO {
     // Now uses API server!
-    APIResponse loginUser(String usernameEmail, String password);
+    Object loginUser(String usernameEmail, String password) throws HttpResponseException;
 
-    void resetDatabase() throws HttpResponseException;
+    void reset() throws HttpResponseException;
 
-    void loadSampleData() throws HttpResponseException;
+    void resample() throws HttpResponseException;
 
     String sendCommand(String command);
 

@@ -1,11 +1,16 @@
 package seng302.Data.Database;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.http.client.HttpResponseException;
+import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
 import seng302.Generic.Debugger;
+import seng302.User.Admin;
+import seng302.User.Clinician;
+import seng302.User.User;
 
 import java.sql.DriverManager;
 import java.util.HashMap;
@@ -18,20 +23,36 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
-    public APIResponse loginUser(String usernameEmail, String password) {
+    public Object loginUser(String usernameEmail, String password) {
+
+        System.out.println("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<String, String>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
-        return server.postRequest(new JsonObject(), queryParameters, "login");
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "login");
+        if (response.isValidJson()) {
+            JsonObject serverResponse = response.getAsJsonObject();
+            if (serverResponse.get("accountType") == null) {
+                return new Gson().fromJson(serverResponse, User.class);
+            } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
+                return new Gson().fromJson(serverResponse, Clinician.class);
+            } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
+                return new Gson().fromJson(serverResponse, Admin.class);
+            } else {
+                return "Username/email and password combination not recognized.";
+            }
+        } else {
+            return "Username/email and password combination not recognized.";
+        }
     }
 
-    public void resetDatabase() throws HttpResponseException {
+    public void reset() throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(), new HashMap<String, String>(), "reset");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void loadSampleData() throws HttpResponseException {
+    public void resample() throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(), new HashMap<String, String>(), "resample");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());

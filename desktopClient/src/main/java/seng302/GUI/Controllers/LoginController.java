@@ -41,25 +41,29 @@ public class LoginController implements Initializable {
     private Gson gson;
 
     public void login(){
-        APIResponse response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
-        if (response.isValidJson()) {
-            JsonObject serverResponse = response.getAsJsonObject();
-            if (serverResponse.get("accountType") == null) {
-                Debugger.log("LoginController: Logging in as user...");
-                loadUser(gson.fromJson(serverResponse, User.class));
-            } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
-                Debugger.log("LoginController: Logging in as clinician...");
-                loadClinician(gson.fromJson(serverResponse, Clinician.class));
-            } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
-                Debugger.log("LoginController: Logging in as admin...");
-                loadAdmin(gson.fromJson(serverResponse, Admin.class));
+        try {
+            Object response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
+            if (response != null) {
+                if (response instanceof User) {
+                    Debugger.log("LoginController: Logging in as user...");
+                    loadUser((User)response);
+                } else if (response instanceof Admin) {
+                    Debugger.log("LoginController: Logging in as admin...");
+                    loadAdmin((Admin)response);
+                } else if (response instanceof Clinician) {
+                    Debugger.log("LoginController: Logging in as clinician...");
+                    loadClinician((Clinician)response);
+                }  else {
+                    errorMessage.setText("Username/email and password combination not recognized.");
+                    errorMessage.setVisible(true);
+                }
             } else {
                 errorMessage.setText("Username/email and password combination not recognized.");
                 errorMessage.setVisible(true);
             }
-        } else {
-            errorMessage.setText("Username/email and password combination not recognized.");
-            errorMessage.setVisible(true);
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not login. ");
         }
     }
 

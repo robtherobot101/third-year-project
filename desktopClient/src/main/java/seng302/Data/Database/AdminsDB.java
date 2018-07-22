@@ -11,6 +11,7 @@ import seng302.Generic.APIServer;
 import seng302.User.Admin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,8 +40,10 @@ public class AdminsDB implements AdminsDAO {
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public ArrayList<Admin> getAllAdmins() throws HttpResponseException {
+    public Collection<Admin> getAllAdmins() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), "admins");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Admin>>() {
             }.getType());
@@ -49,8 +52,20 @@ public class AdminsDB implements AdminsDAO {
         }
     }
 
-    public void removeAdmin(Admin admin) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "admin", String.valueOf(admin.getStaffID()));
+    public Admin getAdmin(long id) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), "admins", String.valueOf(id));
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        if(response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonObject(), Admin.class);
+        } else {
+            return null;
+        }
+    }
+
+
+    public void removeAdmin(long id) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "admin", String.valueOf(id));
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }

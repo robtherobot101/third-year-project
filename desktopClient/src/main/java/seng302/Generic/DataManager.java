@@ -12,12 +12,13 @@ public class DataManager {
     private AdminsDAO admins;
     private GeneralDAO general;
 
-    DataManager(UsersDAO users, CliniciansDAO clinicians, AdminsDAO admins, GeneralDAO general) {
+    public DataManager(UsersDAO users, CliniciansDAO clinicians, AdminsDAO admins, GeneralDAO general) {
         this.users = users;
         this.clinicians = clinicians;
         this.admins = admins;
         this.general = general;
     }
+
 
     public UsersDAO getUsers() {
         return users;

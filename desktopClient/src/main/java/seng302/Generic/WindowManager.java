@@ -22,6 +22,10 @@ import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Data.Interfaces.UsersDAO;
+import seng302.Data.Local.AdminsM;
+import seng302.Data.Local.CliniciansM;
+import seng302.Data.Local.GeneralM;
+import seng302.Data.Local.UsersM;
 import seng302.GUI.Controllers.Admin.AdminController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
@@ -34,6 +38,7 @@ import seng302.GUI.TFScene;
 import seng302.User.*;
 import seng302.User.Medication.InteractionApi;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -355,6 +360,24 @@ public class WindowManager extends Application {
         }
     }
 
+
+    public DataManager createLocalDataManager() {
+        UsersDAO users = new UsersM();
+        CliniciansDAO clinicians = new CliniciansM();
+        AdminsDAO admins = new AdminsM();
+        GeneralDAO general = new GeneralM(users,clinicians,admins);
+        return new DataManager(users,clinicians,admins,general);
+    }
+
+    public DataManager createDatabaseDataManager() {
+        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz/api/v1");
+        UsersDAO users = new UsersDB(server);
+        CliniciansDAO clinicians = new CliniciansDB(server);
+        AdminsDAO admins = new AdminsDB(server);
+        GeneralDAO general = new GeneralM(users,clinicians,admins);
+        return new DataManager(users,clinicians,admins,general);
+    }
+
     /**
      * Load in saved users and clinicians, and initialise the GUI.
      *
@@ -362,13 +385,9 @@ public class WindowManager extends Application {
      */
     @Override
     public void start(Stage stage) {
-        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz/api/v1");
-        UsersDAO users = new UsersDB(server);
-        CliniciansDAO clinicians = new CliniciansDB(server);
-        AdminsDAO admins = new AdminsDB(server);
-        GeneralDAO general = new GeneralDB(server);
+        dataManager = createDatabaseDataManager();
+        //dataManager = createLocalDataManager();
 
-        dataManager = new DataManager(users,clinicians,admins,general);
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
@@ -408,6 +427,7 @@ public class WindowManager extends Application {
             e.printStackTrace();
             stop();
         }
+
 
         getScene(TFScene.clinician).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {

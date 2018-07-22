@@ -73,7 +73,6 @@ public class CreateUserController implements Initializable {
      * @return The created user
      */
     public User createAccount() {
-
         try {
             if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");

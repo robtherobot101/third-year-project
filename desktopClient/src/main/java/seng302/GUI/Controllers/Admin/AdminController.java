@@ -101,7 +101,7 @@ public class AdminController implements Initializable {
     private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-    private ArrayList<User> usersFound = new ArrayList<>();
+    private List<User> usersFound = new ArrayList<>();
     private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
@@ -445,7 +445,7 @@ public class AdminController implements Initializable {
     public void undo() {
         // TODO implement undo
         try {
-            WindowManager.getDataManager().getGeneral().resetDatabase();
+            WindowManager.getDataManager().getGeneral().reset();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }
@@ -531,17 +531,7 @@ public class AdminController implements Initializable {
         }
 
         try {
-            APIResponse response = WindowManager.getDataManager().getUsers().getUsers(searchMap);
-
-            if(response.isValidJson()){
-                JsonArray searchResults = response.getAsJsonArray();
-
-                Type type = new TypeToken<ArrayList<User>>() {
-                }.getType();
-
-                usersFound = gson.fromJson(searchResults, type);
-
-            }
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
 
             currentUsers = FXCollections.observableArrayList(usersFound);
             userTableView.setItems(currentUsers);
@@ -621,7 +611,7 @@ public class AdminController implements Initializable {
                     // A user has been selected for deletion
                     Debugger.log("Deleting User: " + selectedUser);
                     try {
-                        WindowManager.getDataManager().getUsers().removeUser(selectedUser);
+                        WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId());
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove user with id: " + selectedUser.getId());
@@ -634,7 +624,7 @@ public class AdminController implements Initializable {
                     Debugger.log("Deleting Clinician: " + selectedClinician);
 
                     try {
-                        WindowManager.getDataManager().getClinicians().removeClinician(selectedClinician);
+                        WindowManager.getDataManager().getClinicians().removeClinician(selectedClinician.getStaffID());
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
@@ -646,7 +636,7 @@ public class AdminController implements Initializable {
                     // An admin has been selected for deletion
                     Debugger.log("Deleting Admin: " + selectedAdmin);
                     try{
-                        WindowManager.getDataManager().getAdmins().removeAdmin(selectedAdmin);
+                        WindowManager.getDataManager().getAdmins().removeAdmin(selectedAdmin.getStaffID());
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
@@ -858,7 +848,7 @@ public class AdminController implements Initializable {
 
             Debugger.log("DB reset called");
             try {
-                WindowManager.getDataManager().getGeneral().resetDatabase();
+                WindowManager.getDataManager().getGeneral().reset();
                 WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
@@ -879,7 +869,7 @@ public class AdminController implements Initializable {
         if (result.orElse(null) == ButtonType.OK) {
             Debugger.log("DB resample called");
             try {
-                WindowManager.getDataManager().getGeneral().loadSampleData();
+                WindowManager.getDataManager().getGeneral().resample();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to resample the database.");
             }
