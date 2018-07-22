@@ -28,5 +28,24 @@ namespace mobileAppClient
                     return null;
             }
         }
+
+        /*
+        * Converts a given gender string into a Gender enum that is stored in the User's details
+        */
+        public static Gender ToGender(this String value)
+        {
+            switch (value)
+            {
+                case "Male":
+                    return Gender.MALE;
+                case "Female":
+                    return Gender.FEMALE;
+                case "Other":
+                    return Gender.NONBINARY;
+                default:
+                    // Unreachable
+                    return Gender.MALE;
+            }
+        }
     }
 }

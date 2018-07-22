@@ -51,7 +51,7 @@ namespace mobileAppClient
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.AlcoholConsumption);
         }
 
-        public string FirstCharToUpper(string input)
+        private string FirstCharToUpper(string input)
         {
             if (String.IsNullOrEmpty(input))
                 throw new ArgumentException("Incorrect string argument provided");
@@ -59,18 +59,56 @@ namespace mobileAppClient
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
 
-        private void SaveClicked(object sender, EventArgs e)
+        private bool isValidTextInput(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return false;
+            else return true;
+        } 
+
+
+
+        private async void SaveClicked(object sender, EventArgs e)
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
+
+            if (!isValidTextInput(FirstNameInput.Text)) {
+                await DisplayAlert("", "Please enter a valid first name", "OK");
+            } 
+
+            if (!isValidTextInput(MiddleNameInput.Text)) {
+                await DisplayAlert("", "Please enter a valid middle name", "OK");
+            }
+
+            if (!isValidTextInput(LastNameInput.Text))
+            {
+                await DisplayAlert("", "Please enter a valid last name", "OK");
+            }
+
+            if (!isValidTextInput(PrefFirstNameInput.Text))
+            {
+                await DisplayAlert("", "Please enter a valid preferred first name", "OK");
+            }
+
+            if (!isValidTextInput(PrefMiddleNameInput.Text))
+            {
+                await DisplayAlert("", "Please enter a valid preferred middle name", "OK");
+            }
+
+            if (!isValidTextInput(LastNameInput.Text))
+            {
+                await DisplayAlert("", "Please enter a valid preferred last name", "OK");
+            }
+
             loggedInUser.Name[0] = FirstNameInput.Text;
             loggedInUser.Name[1] = MiddleNameInput.Text;
             loggedInUser.Name[2] = LastNameInput.Text;
 
             loggedInUser.PreferredName[0] = PrefFirstNameInput.Text;
-            loggedInUser.PreferredName[1] =
-            PrefLastNameInput.Text = loggedInUser.PreferredName[2];
+            loggedInUser.PreferredName[1] = PrefMiddleNameInput.Text;
+            loggedInUser.PreferredName[2] = PrefLastNameInput.Text;
 
-            BirthGenderInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.Gender);
+            BirthGenderInput.SelectedItem = GenderExtensions.ToGender(loggedInUser.Gender.ToString());
             GenderIdentityInput.SelectedItem = GenderExtensions.ToPickerString(loggedInUser.GenderIdentity);
 
             AddressInput.Text = loggedInUser.CurrentAddress;
