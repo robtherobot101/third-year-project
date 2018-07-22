@@ -80,7 +80,7 @@ public class UserWaitingListController extends UserTabController implements Init
         WaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             userController.addCurrentUserToUndoStack();
-            WindowManager.showDeregisterDialog(waitingListItemSelected);
+            WindowManager.showDeregisterDialog(waitingListItemSelected, currentUser);
             statusIndicator.setStatus("De-registered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }

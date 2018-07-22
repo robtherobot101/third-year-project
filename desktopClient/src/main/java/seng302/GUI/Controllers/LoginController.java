@@ -41,7 +41,7 @@ public class LoginController implements Initializable {
     private Gson gson;
 
     public void login(){
-        APIResponse response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
+        APIResponse response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
             if (serverResponse.get("accountType") == null) {
@@ -70,32 +70,12 @@ public class LoginController implements Initializable {
     }
 
     private void loadClinician(Clinician clinician) {
-        //Add all users from Database
-        DataManager.users.clear();
-        try{
-            DataManager.clearUsers();
-            DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
-            WindowManager.getDatabase().refreshUserWaitinglists();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
         WindowManager.setClinician(clinician);
         WindowManager.setScene(TFScene.clinician);
         resetScene();
     }
 
     private void loadAdmin(Admin admin) {
-        DataManager.users.clear();
-        DataManager.clinicians.clear();
-        DataManager.admins.clear();
-        try{
-            DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
-            DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
-            DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
-        } catch(HttpResponseException e) {
-            Debugger.error("Failed to add all users, clinicians and admins.");
-        }
         WindowManager.setAdmin(admin);
         WindowManager.setScene(TFScene.admin);
         resetScene();

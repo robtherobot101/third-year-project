@@ -66,9 +66,8 @@ public class CreateClinicianController implements Initializable {
      * Attempts to create a new clinician based on the information currently provided by the user. Provides appropriate feedback if this fails.
      */
     public void createAccount() {
-
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
             }

@@ -55,16 +55,15 @@ public class UserSettingsController implements Initializable {
     public void updateAccountDetails() {
         int userId = 0;
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDatabase().isUniqueUser(emailField.getText())) {
+            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
             }
-            userId = WindowManager.getDatabase().getUserId(currentUser.getUsername());
         } catch (HttpResponseException e){
             Debugger.error("Failed to uniqueness of user with id: " + currentUser.getId());
         }
@@ -83,11 +82,10 @@ public class UserSettingsController implements Initializable {
             stage.close();
             WindowManager.setCurrentUser(currentUser);
             try{
-                WindowManager.getDatabase().updateUser(currentUser);
-            } catch(Exception e) {
-                e.printStackTrace();
+                WindowManager.getDataManager().getUsers().updateUser(currentUser);
+            } catch(HttpResponseException e) {
+                Debugger.error("Failed to upate user with id: " + currentUser.getId());
             }
-            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();
         }

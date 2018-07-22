@@ -14,6 +14,14 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
+import seng302.Data.Database.AdminsDB;
+import seng302.Data.Database.CliniciansDB;
+import seng302.Data.Database.GeneralDB;
+import seng302.Data.Database.UsersDB;
+import seng302.Data.Interfaces.AdminsDAO;
+import seng302.Data.Interfaces.CliniciansDAO;
+import seng302.Data.Interfaces.GeneralDAO;
+import seng302.Data.Interfaces.UsersDAO;
 import seng302.GUI.Controllers.Admin.AdminController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
@@ -26,21 +34,6 @@ import seng302.GUI.TFScene;
 import seng302.User.*;
 import seng302.User.Medication.InteractionApi;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static seng302.Generic.IO.getJarPath;
-import static seng302.Generic.IO.streamOut;
-import seng302.GUI.Controllers.Clinician.ClinicianController;
-import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
-import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
-import seng302.GUI.Controllers.LoginController;
-import seng302.GUI.Controllers.User.CreateUserController;
-import seng302.GUI.Controllers.User.UserSettingsController;
-import seng302.User.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -73,15 +66,14 @@ public class WindowManager extends Application {
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
 
-    private static Database database;
+    private static DataManager dataManager;
 
-
-    public static Database getDatabase() {
-        return database;
+    public static DataManager getDataManager() {
+        return dataManager;
     }
 
-    public static void setDatabase(Database database) {
-        WindowManager.database = database;
+    public static void setDataManager(DataManager dataManager) {
+        WindowManager.dataManager = dataManager;
     }
 
     /**
@@ -294,8 +286,8 @@ public class WindowManager extends Application {
         adminController.updateFoundUsers();
     }
 
-    public static void showDeregisterDialog(WaitingListItem waitingListItem) {
-        clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem);
+    public static void showDeregisterDialog(WaitingListItem waitingListItem, User user) {
+        clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem, user);
     }
 
     public static Map<Stage, UserController> getCliniciansUserWindows() {
@@ -370,9 +362,13 @@ public class WindowManager extends Application {
      */
     @Override
     public void start(Stage stage) {
-        // This fixes errors which occur in different threads in TestFX
-        database = new Database();
-        database.connectToDatabase();
+        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz/api/v1");
+        UsersDAO users = new UsersDB(server);
+        CliniciansDAO clinicians = new CliniciansDB(server);
+        AdminsDAO admins = new AdminsDB(server);
+        GeneralDAO general = new GeneralDB(server);
+
+        dataManager = new DataManager(users,clinicians,admins,general);
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
@@ -415,14 +411,6 @@ public class WindowManager extends Application {
 
         getScene(TFScene.clinician).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                Debugger.log("Refreshing...");
-                DataManager.users.clear();
-                try {
-                    DataManager.addAllUsers(getDatabase().getAllUsers());
-                    getDatabase().refreshUserWaitinglists();
-                } catch (HttpResponseException e) {
-                    Debugger.error("Failed to refresh all user waiting lists.");
-                }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
                 refreshAdmin();
@@ -431,14 +419,6 @@ public class WindowManager extends Application {
 
         getScene(TFScene.admin).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                DataManager.users.clear();
-                try {
-                    DataManager.addAllUsers(getDatabase().getAllUsers());
-
-                    getDatabase().refreshUserWaitinglists();
-                } catch (HttpResponseException e) {
-                    Debugger.error("Failed to refresh all user waiting lists.");
-                }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
 
@@ -449,15 +429,7 @@ public class WindowManager extends Application {
 
         getScene(TFScene.userWindow).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                DataManager.users.clear();
-                try {
-                    DataManager.addAllUsers(getDatabase().getAllUsers());
-                    getDatabase().refreshUserWaitinglists();
-                } catch (HttpResponseException e) {
-                    Debugger.error("Failed to refresh all user waiting lists.");
-                }
                 refreshUser();
-
             }
         });
     }

@@ -20,7 +20,8 @@ public class Admin extends Clinician {
      * @param name     the name of the admin
      */
     public Admin(String username, String password, String name) {
-        super(username, password, name, ProfileType.ADMIN, DataManager.getNextId(true, ProfileType.ADMIN));
+        //TODO Implement functionality for getting actual id for all profiles
+        super(username, password, name, ProfileType.ADMIN, 1);
         String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
         Random r = new Random();
         accessLevel = levels[r.nextInt(levels.length)];

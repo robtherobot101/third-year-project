@@ -154,10 +154,8 @@ public class UserController implements Initializable {
                 "Refreshing will overwrite your all unsaved changes.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
-            Gson gson = new Gson();
-            APIResponse response = WindowManager.getDatabase().loginUser(currentUser.getUsername(), currentUser.getPassword());
-            System.out.println(response.getAsString());
-            if (response.isValidJson()) {
+            try {
+                User latest = WindowManager.getDataManager().getUsers().getUserFromId((int)currentUser.getId());
                 attributesController.undoStack.clear();
                 attributesController.redoStack.clear();
                 medicationsController.undoStack.clear();
@@ -169,10 +167,11 @@ public class UserController implements Initializable {
                 waitingListController.undoStack.clear();
                 waitingListController.redoStack.clear();
                 setUndoRedoButtonsDisabled(true, true);
-                JsonObject serverResponse = response.getAsJsonObject();
-                setCurrentUser(gson.fromJson(serverResponse, User.class));
+                setCurrentUser(latest);
                 alert.close();
-            } else {
+
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to fetch user with id: " + currentUser.getId());
                 alert.close();
                 alert = WindowManager.createAlert(AlertType.ERROR, "Refresh Failed", "Refresh failed",
                         "User data could not be refreshed because there was an error contacting the server.");
@@ -379,11 +378,11 @@ public class UserController implements Initializable {
             attributesController.populateUserFields();
             historyController.populateTable();
             try {
-                WindowManager.getDatabase().updateUser(currentUser);
-                WindowManager.getDatabase().updateUserOrgans(currentUser);
-                WindowManager.getDatabase().updateUserProcedures(currentUser);
-                WindowManager.getDatabase().updateUserDiseases(currentUser);
-                WindowManager.getDatabase().updateWaitingListItems(currentUser);
+                WindowManager.getDataManager().getUsers().updateUser(currentUser);
+                WindowManager.getDataManager().getUsers().updateUserOrgans(currentUser);
+                WindowManager.getDataManager().getUsers().updateUserProcedures(currentUser);
+                WindowManager.getDataManager().getUsers().updateUserDiseases(currentUser);
+                WindowManager.getDataManager().getUsers().updateWaitingListItems(currentUser);
 
             } catch (HttpResponseException e ){
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");

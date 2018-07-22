@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers.Clinician;
 
+import java.awt.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,8 +34,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.apache.commons.collections.ArrayStack;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
 import seng302.Generic.*;
@@ -45,8 +48,6 @@ import seng302.User.User;
 
 import java.sql.SQLException;
 import seng302.User.WaitingListItem;
-
-import static seng302.Generic.WindowManager.getDatabase;
 
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
@@ -74,30 +75,36 @@ public class ClinicianWaitingListController implements Initializable {
     }
 
     /**
-     * Updates the transplant waiting list table and checks if reciever is waiting not complete
+     * Updates the transplant waiting list table and checks if receiver is waiting not complete
      */
     public void updateTransplantList() {
-        transplantList.clear();
-        for (User user : DataManager.users) {
-            for (WaitingListItem item : user.getWaitingListItems()) {
-                List<Integer> codes = Arrays.asList(1, 2, 3, 4);
-                if (!(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
-                    addUserInfo(item);
-                    transplantList.add(item);
+        try {
+            transplantList.clear();
+            List<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
+            for (User user : users) {
+                for (WaitingListItem item : user.getWaitingListItems()) {
+                    if (item.getStillWaitingOn()) {
+                        addUserInfo(item);
+                        transplantList.add(item);
+                    }
                 }
             }
+            deregisterReceiverButton.setDisable(true);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
-        deregisterReceiverButton.setDisable(true);
     }
 
     public void addUserInfo(WaitingListItem item) {
         try{
-            User user = WindowManager.getDatabase().getUserFromId(item.getUserId().intValue());
+            User user = WindowManager.getDataManager().getUsers().getUserFromId(item.getUserId().intValue());
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
             System.out.println("item user Region: " + user.getRegion());
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
+        } catch (NullPointerException e) {
+
         }
     }
 
@@ -108,26 +115,29 @@ public class ClinicianWaitingListController implements Initializable {
      * @param organSearch  the organ to specifically search for given by a user.
      */
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
-
-        transplantList.clear();
-        for (User user : DataManager.users) {
-            for (WaitingListItem item : user.getWaitingListItems()) {
-                if (!(item.getOrganRegisteredDate() == null)) {
-                    if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
-                        List<Integer> codes = Arrays.asList(1, 2, 3, 4);
-                        if (regionSearch.equals("") && (user.getRegion() == null) && !(item.getOrganRegisteredDate() == null) && !(codes
-                            .contains(item.getOrganDeregisteredCode()))) {
-                            transplantList.add(item);
-                        } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && !
-                            (item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
-                            transplantList.add(item);
+        try {
+            transplantList.clear();
+            List<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
+            for (User user : users) {
+                for (WaitingListItem item : user.getWaitingListItems()) {
+                    if (!(item.getOrganRegisteredDate() == null)) {
+                        if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
+                            if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
+                                addUserInfo(item);
+                                transplantList.add(item);
+                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && item.getStillWaitingOn()) {
+                                addUserInfo(item);
+                                transplantList.add(item);
+                            }
                         }
                     }
                 }
             }
+            deregisterReceiverButton.setDisable(true);
+            transplantTable.refresh();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve all users and filter transplant waiting list.");
         }
-        deregisterReceiverButton.setDisable(true);
-        transplantTable.refresh();
     }
 
     /**
@@ -140,12 +150,15 @@ public class ClinicianWaitingListController implements Initializable {
     }
 
     public void showDeregisterDialogFromClinicianList() {
-        WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
-        showDeregisterDialog(selectedItem);
         try {
-            getDatabase().updateWaitingListItems(SearchUtils.getUserById(selectedItem.getUserId()));
+            WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
+            User user = WindowManager.getDataManager().getUsers().getUserFromId(selectedItem.getUserId().intValue());
+            showDeregisterDialog(selectedItem, user);
+            System.out.println("----------PUSHING WAITINGLIST ITEM UPDATE TO THE API SERVER---------");
+            WindowManager.getDataManager().getUsers().updateUser(user);
+            WindowManager.getDataManager().getUsers().updateWaitingListItems(user);
         } catch (HttpResponseException e) {
-            Debugger.error("Failed to update waiting list items for user with id: " + selectedItem.getUserId());
+            Debugger.error("Could not update waiting list item.");
         }
     }
 
@@ -154,7 +167,7 @@ public class ClinicianWaitingListController implements Initializable {
      * 
      * @param selectedItem The item being de registered.
      */
-    public void showDeregisterDialog(WaitingListItem selectedItem) {
+    public void showDeregisterDialog(WaitingListItem selectedItem, User user) {
         //Set dialog window
         List<String> reasonCodes = new ArrayList<>();
         reasonCodes.add("1: Error Registering");
@@ -170,7 +183,9 @@ public class ClinicianWaitingListController implements Initializable {
 
         //Get Input Code
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(s -> processDeregister(s, selectedItem));
+        result.ifPresent(s -> {
+            processDeregister(s, selectedItem, user);
+        });
     }
 
     /**
@@ -178,38 +193,40 @@ public class ClinicianWaitingListController implements Initializable {
      *
      * @param reason the reason code given by the clinician
      */
-    private void processDeregister(String reason, WaitingListItem selectedItem) {
-        if (Objects.equals(reason, "1: Error Registering")) {
-            errorDeregister(selectedItem);
-        } else if (Objects.equals(reason, "2: Disease Cured")) {
-            confirmDiseaseCuring(selectedItem);
-        } else if (Objects.equals(reason, "3: Receiver Deceased")) {
-            showDeathDateDialog(selectedItem);
-        } else if (Objects.equals(reason, "4: Successful Transplant")) {
-            transplantDeregister(selectedItem);
+    private void processDeregister(String reason, WaitingListItem selectedItem, User user) {
+        try{
+            if (Objects.equals(reason, "1: Error Registering")) {
+                errorDeregister(selectedItem, user);
+            } else if (Objects.equals(reason, "2: Disease Cured")) {
+                confirmDiseaseCuring(selectedItem, user);
+            } else if (Objects.equals(reason, "3: Receiver Deceased")) {
+                showDeathDateDialog(selectedItem, user);
+            } else if (Objects.equals(reason, "4: Successful Transplant")) {
+                transplantDeregister(selectedItem, user);
+            }
+
+            WindowManager.updateUserWaitingLists();
+            updateFoundUsersWithFiltering("", "None");
+            deregisterReceiverButton.setDisable(true);
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to de-register waiting list item.");
         }
-
-
-        WindowManager.updateUserWaitingLists();
-        updateFoundUsersWithFiltering("", "None");
-        deregisterReceiverButton.setDisable(true);
     }
 
     /**
      * Removes an organ from the transplant waiting list and writes it as an error to the history log.
      */
-    private void errorDeregister(WaitingListItem selectedWaitingListItem) {
-        User user = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
+    private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) throws HttpResponseException{
         Long userId = user.getId();
-        selectedWaitingListItem.deregisterOrgan(1);
+        deregisterWaitingListItem(selectedWaitingListItem,user,1);
         History.prepareFileStringGUI(userId, "deregisterError");
     }
 
     /**
      * method to show dialog to confirm the curing of a disease and then to perform the operations.
      */
-    private void confirmDiseaseCuring(WaitingListItem selectedWaitingListItem) {
-        User selectedUser = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
+    private void confirmDiseaseCuring(WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Cure Disease?", "Would you like to select the cured disease?", "Cure a" +
                 " Disease?");
@@ -221,26 +238,35 @@ public class ClinicianWaitingListController implements Initializable {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == buttonTypeOne) {
-                showDiseaseDeregisterDialog(selectedWaitingListItem);
+                showDiseaseDeregisterDialog(selectedWaitingListItem, selectedUser);
             } else {
-                selectedWaitingListItem.deregisterOrgan(2);
+                deregisterWaitingListItem(selectedWaitingListItem,selectedUser,2);
                 alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason " + "Code 2 selected. No disease cured");
                 alert.showAndWait();
             }
         } else {
-            selectedWaitingListItem.deregisterOrgan(2);
+            deregisterWaitingListItem(selectedWaitingListItem,selectedUser,2);
             Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code " + "2 selected. No disease cured");
             alert.showAndWait();
         }
     }
 
+    public void deregisterWaitingListItem(WaitingListItem item, User user, int code) {
+        for(WaitingListItem i : user.getWaitingListItems()) {
+            if(i.getStillWaitingOn() &&
+                    i.getOrganType().equals(item.getOrganType())) {
+                i.deregisterOrgan(code);
+                item.deregisterOrgan(code);
+                System.out.println("De-registered: " + i.getOrganType());
+            }
+        }
+    }
 
 
     /**
      * method to show dialog for a clinician to choose from a receivers listed diseases, if any, to cure.
      */
-    private void showDiseaseDeregisterDialog(WaitingListItem selectedWaitingListItem) {
-        User selectedUser = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
+    private void showDiseaseDeregisterDialog(WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
 
         Dialog<ButtonType> dialog = new Dialog<>();
         WindowManager.setIconAndStyle(dialog.getDialogPane());
@@ -291,7 +317,8 @@ public class ClinicianWaitingListController implements Initializable {
                     selectedUser.setCuredDiseases(curedDiseases);
                     currentDiseases.remove(selected);
                     selectedUser.setCurrentDiseases(currentDiseases);
-                    selectedWaitingListItem.deregisterOrgan(2);
+
+                    deregisterWaitingListItem(selectedWaitingListItem, selectedUser, 2);
                     Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "De-Registered", "Organ transplant De-registered", "Reason Code 2 selected and disease cured");
                     alert.showAndWait();
                     for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
@@ -301,10 +328,18 @@ public class ClinicianWaitingListController implements Initializable {
                     Alert alert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Invaild Disease", "Please Select a disease", "Select a " +
                         "disease to cure");
                     alert.showAndWait();
-                    showDiseaseDeregisterDialog(selectedWaitingListItem);
+                    try {
+                        showDiseaseDeregisterDialog(selectedWaitingListItem, selectedUser);
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to de-register waiting list item.");
+                    }
                 }
             } else {
-                confirmDiseaseCuring(selectedWaitingListItem);
+                try {
+                    confirmDiseaseCuring(selectedWaitingListItem, selectedUser);
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to de-register waiting list item.");
+                }
             }
         });
     }
@@ -313,7 +348,7 @@ public class ClinicianWaitingListController implements Initializable {
     /**
      * method to show dialog the prompts the user asking for a select receivers date of death
      */
-    private void showDeathDateDialog(WaitingListItem selectedItem) {
+    private void showDeathDateDialog(WaitingListItem selectedItem, User user) throws HttpResponseException {
         Dialog<ButtonType> dialog = new Dialog<>();
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("Date of Death");
@@ -361,14 +396,26 @@ public class ClinicianWaitingListController implements Initializable {
                     Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date needs to be in format dd/mm/yyyy",
                         "Please enter a date that is either today or earlier");
                     alert.showAndWait();
-                    showDeathDateDialog(selectedItem);
+                    try {
+                        showDeathDateDialog(selectedItem, user);
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to de-register waiting list item.");
+                    }
                 } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
                     Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date is in the future", "Please enter a date " +
                         "that is either today or earlier");
                     alert.showAndWait();
-                    showDeathDateDialog(selectedItem);
+                    try {
+                        showDeathDateDialog(selectedItem, user);
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to de-register waiting list item.");
+                    }
                 } else {
-                    deathDeregister(deathDatePicker.getValue(), selectedItem);
+                    try {
+                        deathDeregister(deathDatePicker.getValue(), selectedItem, user);
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to de-register waiting list item.");
+                    }
                 }
             }
         });
@@ -377,8 +424,8 @@ public class ClinicianWaitingListController implements Initializable {
     /**
      * Method to deregister an organ when a successful transplant is complete
      */
-    private void transplantDeregister(WaitingListItem selectedWaitingListItem) {
-        selectedWaitingListItem.deregisterOrgan(4);
+    private void transplantDeregister(WaitingListItem selectedWaitingListItem, User user) {
+        deregisterWaitingListItem(selectedWaitingListItem, user, 4);
     }
 
 
@@ -388,26 +435,16 @@ public class ClinicianWaitingListController implements Initializable {
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
-    private void deathDeregister(LocalDate deathDateInput, WaitingListItem selectedWaitingListItem) {
-        System.out.println("userId: " + selectedWaitingListItem.getUserId());
-
-        User selectedUser = SearchUtils.getUserById(selectedWaitingListItem.getUserId());
+    private void deathDeregister(LocalDate deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
         Long userId = selectedUser.getId();
-
+        deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
         if (selectedUser.getWaitingListItems() != null) {
             History.prepareFileStringGUI(userId, "deregisterDeath");
             for (WaitingListItem item : selectedUser.getWaitingListItems()) {
-                item.deregisterOrgan(3);
+                deregisterWaitingListItem(item,selectedUser,3);
             }
         }
-
         selectedUser.setDateOfDeath(deathDateInput);
-
-        try {
-            WindowManager.getDatabase().updateUser(selectedUser);
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to update the user with id:" + selectedUser.getId());
-        }
 
         for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
             if (userController.getCurrentUser() == selectedUser) {
@@ -467,13 +504,18 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            System.out.println("tableItem: " +item.getUserId());
-                            if (SearchUtils.getUserById(item.getUserId()).getOrgans().contains(item.getOrganType())) {
-                                setTooltip(new Tooltip("User is currently donating this organ"));
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
+                            try {
+                                System.out.println(WindowManager.getDataManager().getUsers().getUserFromId(3));
+                                System.out.println(item.getUserId());
+                                System.out.println(item.getOrganType());
+                                if (WindowManager.getDataManager().getUsers().getUserFromId(item.getUserId().intValue()).getOrgans().contains(item.getOrganType())) {
+                                    setTooltip(new Tooltip("User is currently donating this organ"));
+                                    if (!getStyleClass().contains("highlighted-row")) {
+                                        getStyleClass().add("highlighted-row");
+                                    }
                                 }
-
+                            } catch (HttpResponseException e) {
+                                Debugger.error("Could not properly render waiting list table. Failed to fetch user with id: " + item.getUserId());
                             }
                         }
                     }
@@ -481,7 +523,11 @@ public class ClinicianWaitingListController implements Initializable {
                 //event to open receiver profile when clicked
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(SearchUtils.getUserById(row.getItem().getUserId()));
+                        try {
+                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUserFromId(row.getItem().getUserId().intValue()));
+                        } catch (HttpResponseException e) {
+                            Debugger.error("COuld not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
+                        }
                     }
                 });
                 transplantTable.refresh();

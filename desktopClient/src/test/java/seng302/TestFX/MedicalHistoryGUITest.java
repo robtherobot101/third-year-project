@@ -42,7 +42,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
     private void enterMedicalHistoryView() throws SQLException {
         // Assumed that calling method is currently on login screen
 
-        DataManager.users.clear();
+        //DataManager.users.clear();
 //        System.out.println("MedicalHistoryGUITest: Test user not found -> adding test user");
 //        clickOn("#createAccountButton");
 //        clickOn("#usernameInput").write("buzz");

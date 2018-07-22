@@ -33,9 +33,14 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 abstract class TestFXTest extends ApplicationTest {
 
     protected static final boolean runHeadless = true;
-
+/*
     @Override
     public void start(Stage stage) {
+
+
+
+
+
         DataManager.users.clear();
         DataManager.clinicians.clear();
         DataManager.clinicians.add(new Clinician("default", "default", "default"));
@@ -60,7 +65,7 @@ abstract class TestFXTest extends ApplicationTest {
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
-    }
+    }*/
 
     protected static void defaultTestSetup() throws TimeoutException {
         if (runHeadless) {
@@ -75,28 +80,19 @@ abstract class TestFXTest extends ApplicationTest {
         registerPrimaryStage();
     }
 
-
-    protected User addTestUser() throws SQLException{
+    protected User addTestUser() throws SQLException {
         User testUser = new User(
-            "Bobby", new String[]{"Dong"}, "Flame",
-            LocalDate.of(1969, 8, 4),
-            "bflame",
-            "flameman@hotmail.com",
-            "password123");
+                "Bobby", new String[]{"Dong"}, "Flame",
+                LocalDate.of(1969, 8, 4),
+                "bflame",
+                "flameman@hotmail.com",
+                "password123");
         try {
-            WindowManager.getDatabase().insertUser(testUser);
+            WindowManager.getDataManager().getUsers().insertUser(testUser);
         } catch (HttpResponseException e) {
             Debugger.log("Failed to insert new user.");
         }
         return testUser;
-    }
-
-    protected void loginAsDefaultClinician() {
-        clickOn("#identificationInput");
-        write("default");
-        clickOn("#passwordInput");
-        write("default");
-        clickOn("#loginButton");
     }
 
     protected void loginAsDefaultAdmin() {
@@ -106,15 +102,15 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
     protected void userWindow(User user) {
-        Platform.runLater(() ->{
+        Platform.runLater(() -> {
             WindowManager.setCurrentUser(user);
             WindowManager.setScene(TFScene.userWindow);
         });
         waitForFxEvents();
     }
 
-    public void userWindowAsClinician(User user){
-        Platform.runLater(() ->{
+    public void userWindowAsClinician(User user) {
+        Platform.runLater(() -> {
             WindowManager.newCliniciansUserWindow(user);
         });
         waitForFxEvents();
@@ -137,6 +133,16 @@ abstract class TestFXTest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
+
+    protected void loginAsDefaultClinician() {
+        clickOn("#identificationInput");
+        write("default");
+        clickOn("#passwordInput");
+        write("default");
+        clickOn("#loginButton");
+    }
+
+
     public void openClinicianWindow(Clinician testClinician){
         Platform.runLater(() ->{
             WindowManager.setClinician(testClinician);
@@ -145,15 +151,7 @@ abstract class TestFXTest extends ApplicationTest {
         waitForFxEvents();
     }
 
-    /**
-     * Waits until the node denoted by the given id can be found and is visible.
-     * If the waiting time exceeds the given timeout in seconds, a TimeOutException
-     * is thrown.
-     *
-     * @param timeout The timeout in seconds
-     * @param id The fx identifier of the node
-     * @throws TimeoutException If the waiting time exceeds the given timeout.
-     */
+
     protected void waitForNodeVisible(int timeout, String id) throws TimeoutException {
         Callable<Boolean> callable = () -> {
             Node nodeFound = lookup(id).query();
@@ -172,15 +170,6 @@ abstract class TestFXTest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
-    /**
-     * Waits until the node denoted by the given id can be found and is enabled.
-     * If the waiting time exceeds the given timeout in seconds, a TimeOutException
-     * is thrown.
-     *
-     * @param timeout The timeout in seconds
-     * @param id The fx identifier of the node
-     * @throws TimeoutException If the waiting time exceeds the given timeout.
-     */
     protected void waitForNodeEnabled(int timeout, String id) throws TimeoutException {
         Callable<Boolean> callable = () -> {
             Node nodeFound = lookup(id).query();

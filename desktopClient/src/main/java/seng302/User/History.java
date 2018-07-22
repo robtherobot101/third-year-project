@@ -1,13 +1,17 @@
 package seng302.User;
 
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpResponseException;
+import seng302.Generic.Debugger;
 import seng302.Generic.IO;
-import seng302.Generic.SearchUtils;
+import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class History {
 
@@ -230,14 +234,24 @@ public class History {
      * @param id the staff id of the clinician
      */
     private static void formatClinicianInfo(long id) {
-        Clinician clinician;
-        if (id == -1){
-            clinician = SearchUtils.getLatestClincian();
-        } else {
-            clinician = SearchUtils.getClinicianById(id);
-        }
-        if (clinician != null) {
-            clinicianInfo = "(" + clinician.getStaffID() + ": " + clinician.getName() + ")";
+        try {
+            List<Clinician> clinicians = WindowManager.getDataManager().getClinicians().getAllClinicians();
+            if (id == -1){
+                id = Long.MIN_VALUE;
+                for(Clinician c : clinicians) {
+                    if(c.getStaffID() > id) {
+                        id = c.getStaffID();
+                    }
+                }
+            }
+
+            Clinician clinician = WindowManager.getDataManager().getClinicians().getClinician(id);
+            if (clinician != null) {
+                clinicianInfo = "(" + clinician.getStaffID() + ": " + clinician.getName() + ")";
+            }
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to fetch clinicians");
         }
     }
 
@@ -246,15 +260,24 @@ public class History {
      * If set to -1, it will fetch the most recently created user.
      * @return a tuple with the users id and name
      */
-    private static void formatUserInfo(Long id) {
-        User user;
-        if (id == -1) {
-            user = SearchUtils.getLatestUser();
-        } else {
-            user = SearchUtils.getUserById(id);
-        }
-        if (user != null) {
-            userInfo = "(" + user.getId() + ": " + user.getName() + ")";
+    private static void formatUserInfo(long id) {
+        try {
+            List<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
+            if (id == -1) {
+                id = Long.MIN_VALUE;
+                for (User c : users) {
+                    if (c.getId() > id) {
+                        id = c.getId();
+                    }
+                }
+            }
+
+            User user = WindowManager.getDataManager().getUsers().getUserFromId((int)id);
+            if (user != null) {
+                userInfo = "(" + user.getId() + ": " + user.getName() + ")";
+            }
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to fetch users.");
         }
     }
 
@@ -268,9 +291,13 @@ public class History {
      */
     public static String prepareFileStringGUI(long userId, String command) {
         String text = User.dateTimeFormat.format(LocalDateTime.now()) + " GUI";
-        User user = SearchUtils.getUserById(userId);
-        if (user != null) {
-            userInfo = "(" + user.getId() + ": " + user.getName() + ")";
+        try {
+            User user = WindowManager.getDataManager().getUsers().getUserFromId((int)userId);
+            if (user != null) {
+                userInfo = "(" + user.getId() + ": " + user.getName() + ")";
+            }
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to fetch user with id: " + userId);
         }
         System.out.println("Command: " + command);
 

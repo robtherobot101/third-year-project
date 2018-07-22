@@ -39,7 +39,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
     }
 
 
-    @Before
+/*    @Before
     public void setUp () throws Exception {
         testClinician = new Clinician("testUsername","testPassword","testName");
         openClinicianWindow(testClinician);
@@ -261,5 +261,5 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         pressDialogOKButtons();
         assertEquals("newTestUsername", testClinician.getUsername());
         assertEquals("newTestPassword", testClinician.getPassword());
-    }
+    }*/
 }

@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
@@ -74,11 +75,11 @@ public class CreateUserController implements Initializable {
     public User createAccount() {
 
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if(!WindowManager.getDatabase().isUniqueUser(emailInput.getText())) {
+            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;
@@ -106,26 +107,18 @@ public class CreateUserController implements Initializable {
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
                 //Got rid of the Local Data management of users
-                DataManager.users.add(user);
                 WindowManager.setCurrentUser(user);
 
-
                 try {
-                    WindowManager.getDatabase().insertUser(user);
+                    WindowManager.getDataManager().getUsers().insertUser(user);
                 } catch(HttpResponseException e) {
                     Debugger.error("Failed to insert new user.");
                 }
-
-                //Got rid of the users being saved to a json file
-                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
-                //
-
 
                 WindowManager.setScene(TFScene.userWindow);
                 WindowManager.resetScene(TFScene.createAccount);
                 return null;
             }
-
         }
         stage.close();
         return user;

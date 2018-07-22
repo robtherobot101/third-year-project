@@ -39,7 +39,8 @@ public class User {
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -56,7 +57,8 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -73,7 +75,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     // Used by CSV import to form profiles
@@ -111,7 +114,8 @@ public class User {
 
         this.email = email;
         this.password = "password";
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
 
@@ -141,7 +145,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();

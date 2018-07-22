@@ -46,7 +46,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     @Before
     public void setUp() throws SQLException {
         try {
-            WindowManager.getDatabase().resetDatabase();
+            WindowManager.getDataManager().getGeneral().resetDatabase();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }
