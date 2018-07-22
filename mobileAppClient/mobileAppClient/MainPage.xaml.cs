@@ -24,14 +24,14 @@ namespace mobileAppClient
 
             menuList = new List<MasterPageItem>();
 
-            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "ic_home.png", TargetType = typeof(OverviewPage) };
-            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "ic_local_shipping.png", TargetType = typeof(AttributesPage) };
-            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "ic_my_location.png", TargetType = typeof(OrgansPage) };
-            var loginPage = new MasterPageItem() { Title = "Logout", TargetType = typeof(LoginPage) };
-            var diseasesPage = new MasterPageItem() { Title = "Diseases", TargetType = typeof(DiseasesPage) };
-            var proceduresPage = new MasterPageItem() { Title = "Procedures", TargetType = typeof(ProceduresPage) };
-            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", TargetType = typeof(WaitingListItemsPage) };
-            var medicationsPage = new MasterPageItem() { Title = "Medications", TargetType = typeof(MedicationsPage) };
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
+            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
+            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png" ,TargetType = typeof(LoginPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png",TargetType = typeof(DiseasesPage) };
+            var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
+            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png",TargetType = typeof(WaitingListItemsPage) };
+            var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
 
 
             // Adding menu items to menuList
@@ -42,7 +42,7 @@ namespace mobileAppClient
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
             menuList.Add(waitingListItemsPage);
-            menuList.Add(loginPage);
+            menuList.Add(logoutPage);
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
             navigationDrawerList.ItemsSource = menuList;
@@ -71,7 +71,7 @@ namespace mobileAppClient
         {
             this.BindingContext = new
             {
-                Header = "",
+                Header = "SENG302 - Team300 - ODMS",
                 Image = "https://5.imimg.com/data5/JP/RF/MY-23184303/doctor-stethoscope-500x500.jpg",
                 Footer = "Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
