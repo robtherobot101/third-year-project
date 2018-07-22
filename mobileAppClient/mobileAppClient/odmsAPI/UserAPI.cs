@@ -46,7 +46,7 @@ namespace mobileAppClient.odmsAPI
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine("WHOOPSIES");
+                Console.WriteLine(ex);
                 return false;
             }
 

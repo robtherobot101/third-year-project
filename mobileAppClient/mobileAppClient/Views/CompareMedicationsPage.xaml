@@ -22,27 +22,43 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <StackLayout Grid.Row="1" Orientation="Horizontal" Spacing="0">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="20, 0, 0, 20">
                  <Label  
                         Text="Medication 1"
-                        Style="{DynamicResource LargeLabel}"/>
+                        />
 
                  <Label 
                         Text="Medication 2"
-                        Margin="0,-7,0,0"
-                        Style="{DynamicResource SmallLabel}"/>
+                        HorizontalOptions = "EndAndExpand"
+                        />
             </StackLayout>
             
-            <StackLayout Grid.Row="1" Orientation="Horizontal" Spacing="0">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="20, 0, 0, 20" Spacing="40">
                  <Label x:Name="selectedItem1" 
                         Text=""
-                        Style="{DynamicResource LargeLabel}"/>
+                        />
 
                  <Label x:Name="selectedItem2" 
                         Text=""
-                        Margin="0,-7,0,0"
-                        Style="{DynamicResource SmallLabel}"/>
+                        HorizontalOptions = "EndAndExpand"
+                       />
             </StackLayout>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                <Button 
+                    Text="CLEAR"
+                    Pressed="Handle_Clear1Pressed"
+                />
+                <Button 
+                    Text="CLEAR"
+                    Pressed="Handle_Clear2Pressed"
+                />
+            </StackLayout>
+
+            <Button 
+                Text="COMPARE"
+                Pressed="Handle_ComparePressed"
+            />
 
             
 
