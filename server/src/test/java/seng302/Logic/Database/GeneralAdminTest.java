@@ -9,6 +9,7 @@ import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Admin;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -38,14 +39,14 @@ public class GeneralAdminTest {
     public void insertAdmin() throws SQLException {
         Admin admin = new Admin("username", "password", "Full Name");
         generalAdmin.insertAdmin(admin);
-        assertEquals(admin.getName(), generalAdmin.getAdminFromId(generalAdmin.getAdminIdFromUsername("username")).getName());
+        assertEquals(admin, generalAdmin.getAdminFromId(generalAdmin.getAdminIdFromUsername("username")));
     }
 
     /**
      * Test insertion of an admind with a non-unique username
      * @throws SQLException
      */
-    @Test
+    @Test(expected = SQLIntegrityConstraintViolationException.class)
     public void insertDuplicateAdmin() throws SQLException {
         int adminsBefore = generalAdmin.getAllAdmins().size();
         Admin admin = new Admin("username2", "password2", "Full Name2");
@@ -95,7 +96,7 @@ public class GeneralAdminTest {
     }
 
     /**
-     * Test getting admin with id 1
+     * Test getting admin with id 9999
      * @throws SQLException
      */
     @Test(expected = Exception.class)
@@ -114,15 +115,17 @@ public class GeneralAdminTest {
         Admin admin = new Admin("username4", "password", "Full Name");
         generalAdmin.insertAdmin(admin);
         List<Admin> adminsAfter = generalAdmin.getAllAdmins();
-        System.out.println(adminsBefore);
-        System.out.println(adminsAfter);
-        assertTrue(adminsAfter.containsAll(adminsBefore)); // TODO work out why this fails
+        assertTrue(adminsAfter.containsAll(adminsBefore));
         assertEquals(adminsBefore.size() + 1, adminsAfter.size());
     }
 
     @Test
-    public void removeAdmin() {
-        assertTrue(false);
+    public void removeAdmin() throws SQLException {
+        Admin admin = new Admin("username6", "password", "Full Name");
+        generalAdmin.insertAdmin(admin);
+        assertTrue(generalAdmin.getAllAdmins().contains(admin));
+        generalAdmin.removeAdmin(admin);
+        assertFalse(generalAdmin.getAllAdmins().contains(admin));
     }
 
     @Test
@@ -135,6 +138,7 @@ public class GeneralAdminTest {
         admin.setWorkAddress("140 Maidstone Rd");
         generalAdmin.updateAdminDetails(admin);
         Admin admin2 = generalAdmin.getAdminFromId(generalAdmin.getAdminIdFromUsername("username5"));
+        System.out.println(admin2.getRegion());
         assertEquals(admin, admin2);
     }
 }
