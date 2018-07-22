@@ -19,6 +19,10 @@ public class AdminsM implements AdminsDAO {
         this.admins = new ArrayList<>();
     }
 
+    /**
+     * Adds a new admin
+     * @param admin The admin which will be added
+     */
     @Override
     public void insertAdmin(Admin admin) {
         long nextAdminId = 0;
@@ -31,17 +35,32 @@ public class AdminsM implements AdminsDAO {
         admins.add(admin);
     }
 
+    /**
+     * Updates the given admin. The old admin with a matching ID is replaced.
+     * @param admin The admin which will replace the one with a matching ID
+     */
     @Override
     public void updateAdminDetails(Admin admin) {
         removeAdmin(admin.getStaffID());
         admins.add(admin);
     }
 
+    /**
+     * Returns all admins
+     * @return A List of all the admins
+     */
     @Override
     public List<Admin> getAllAdmins() {
         return admins;
     }
 
+    /**
+     * Returns the admin with the given ID. If no such admin exists, null is returned.
+     * If multiple admins have the given ID, the first one found is returned.
+     *
+     * @param id The id of the requested admin.
+     * @return The admin which has the same ID
+     */
     @Override
     public Admin getAdmin(long id) {
         for(Admin a : admins) {
@@ -53,6 +72,12 @@ public class AdminsM implements AdminsDAO {
         return null;
     }
 
+    /**
+     * Removes the admin with the given ID if it exists.
+     * If multiple admins have the given ID, the first one found is removed.
+     *
+     * @param id The id of the admin which will be removed.
+     */
     @Override
     public void removeAdmin(long id) {
         for(Admin a : admins) {

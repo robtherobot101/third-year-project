@@ -355,6 +355,10 @@ public class WindowManager extends Application {
     }
 
 
+    /**
+     * Creates an internal, non-persistant DataManager (For testing and debugging)
+     * @return A new DataManager instance
+     */
     public DataManager createLocalDataManager() {
         UsersDAO users = new UsersM();
         CliniciansDAO clinicians = new CliniciansM();
@@ -363,6 +367,10 @@ public class WindowManager extends Application {
         return new DataManager(users,clinicians,admins,general);
     }
 
+    /**
+     * Creates a standard DataManager which manipulates the database via the API server.
+     * @return A new DataManager instance
+     */
     public DataManager createDatabaseDataManager() {
         APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz/api/v1");
         UsersDAO users = new UsersDB(server);
