@@ -14,18 +14,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import seng302.Generic.Debugger;
-import seng302.User.Disease;
-import seng302.User.History;
 import seng302.Generic.WindowManager;
+import seng302.User.Disease;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 public class UserDiseasesController extends UserTabController implements Initializable {
 
@@ -205,14 +201,6 @@ public class UserDiseasesController extends UserTabController implements Initial
 
         currentUser.getCuredDiseases().clear();
         currentUser.getCuredDiseases().addAll(curedDiseaseItems);
-
-        String text = History.prepareFileStringGUI(currentUser.getId(), "diseases");
-        History.printToFile(streamOut, text);
-            /*try {
-                WindowManager.getDatabase().updateUserDiseases(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }*/
     }
 
     /**
@@ -713,6 +701,7 @@ public class UserDiseasesController extends UserTabController implements Initial
         newDiseaseTextField.setVisible(shown);
         deleteDiseaseButton.setVisible(shown);
         isCuredCheckBox.setVisible(shown);
+        todayButton.setVisible(shown);
         currentDiseaseTableView.setDisable(!shown);
         curedDiseaseTableView.setDisable(!shown);
     }

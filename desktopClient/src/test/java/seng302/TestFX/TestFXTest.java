@@ -8,12 +8,14 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -49,8 +51,12 @@ abstract class TestFXTest extends ApplicationTest {
         DataManager.users.clear();
         DataManager.clinicians.clear();
         DataManager.admins.clear();
-        WindowManager.getDatabase().resetDatabase();
-        WindowManager.getDatabase().loadSampleData();
+        try {
+            WindowManager.getDatabase().resetDatabase();
+            WindowManager.getDatabase().loadSampleData();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset and resample database.");
+        }
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -77,7 +83,11 @@ abstract class TestFXTest extends ApplicationTest {
             "bflame",
             "flameman@hotmail.com",
             "password123");
-        WindowManager.getDatabase().insertUser(testUser);
+        try {
+            WindowManager.getDatabase().insertUser(testUser);
+        } catch (HttpResponseException e) {
+            Debugger.log("Failed to insert new user.");
+        }
         return testUser;
     }
 

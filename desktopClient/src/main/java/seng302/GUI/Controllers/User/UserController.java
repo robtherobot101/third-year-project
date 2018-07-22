@@ -1,44 +1,36 @@
 package seng302.GUI.Controllers.User;
 
-import static seng302.Generic.IO.streamOut;
-import static seng302.Generic.WindowManager.setButtonSelected;
-
-import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.DataManager;
+import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
-import seng302.User.History;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
+
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import static seng302.Generic.WindowManager.setButtonSelected;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -152,6 +144,41 @@ public class UserController implements Initializable {
      */
     public void updateDiseases() {
         diseasesController.updateDiseases();
+    }
+
+    /**
+     * Updates the current user with the most recent server version
+     */
+    public void refresh() {
+        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
+                "Refreshing will overwrite your all unsaved changes.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+            Gson gson = new Gson();
+            APIResponse response = WindowManager.getDatabase().loginUser(currentUser.getUsername(), currentUser.getPassword());
+            System.out.println(response.getAsString());
+            if (response.isValidJson()) {
+                attributesController.undoStack.clear();
+                attributesController.redoStack.clear();
+                medicationsController.undoStack.clear();
+                medicationsController.redoStack.clear();
+                proceduresController.undoStack.clear();
+                proceduresController.redoStack.clear();
+                diseasesController.undoStack.clear();
+                diseasesController.redoStack.clear();
+                waitingListController.undoStack.clear();
+                waitingListController.redoStack.clear();
+                setUndoRedoButtonsDisabled(true, true);
+                JsonObject serverResponse = response.getAsJsonObject();
+                setCurrentUser(gson.fromJson(serverResponse, User.class));
+                alert.close();
+            } else {
+                alert.close();
+                alert = WindowManager.createAlert(AlertType.ERROR, "Refresh Failed", "Refresh failed",
+                        "User data could not be refreshed because there was an error contacting the server.");
+                alert.showAndWait();
+            }
+        }
     }
 
     /**
@@ -346,25 +373,24 @@ public class UserController implements Initializable {
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
-
-            //TODO Update history with new database calls
-//            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-//            History.printToFile(streamOut, text);
-
             medicationsController.updateUser();
             diseasesController.updateUser();
             proceduresController.updateUser();
             attributesController.populateUserFields();
             historyController.populateTable();
-            WindowManager.getDatabase().updateUser(currentUser);
-            WindowManager.getDatabase().updateUserOrgans(currentUser);
-            WindowManager.getDatabase().updateUserProcedures(currentUser);
-            WindowManager.getDatabase().updateUserDiseases(currentUser);
-            WindowManager.getDatabase().updateWaitingListItems(currentUser);
+            try {
+                WindowManager.getDatabase().updateUser(currentUser);
+                WindowManager.getDatabase().updateUserOrgans(currentUser);
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+                WindowManager.getDatabase().updateWaitingListItems(currentUser);
+
+            } catch (HttpResponseException e ){
+                Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
+            }
 
 
-            String text = History.prepareFileStringGUI(currentUser.getId(), "update");
-            History.printToFile(streamOut, text);
+            currentUser.addHistoryEntry("Updated", "Changes were saved to the server.");
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
@@ -408,8 +434,7 @@ public class UserController implements Initializable {
             diseasesController.undo();
             setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), false);
         }
-        String text = History.prepareFileStringGUI(currentUser.getId(), "undo");
-        History.printToFile(streamOut, text);
+        currentUser.addHistoryEntry("Action undone", "An action was undone.");
         historyController.populateTable();
         statusIndicator.setStatus("Undid last action", false);
         titleBar.saved(false);
@@ -437,8 +462,7 @@ public class UserController implements Initializable {
             diseasesController.redo();
             setUndoRedoButtonsDisabled(false, diseasesController.redoEmpty());
         }
-        String text = History.prepareFileStringGUI(currentUser.getId(), "redo");
-        History.printToFile(streamOut, text);
+        currentUser.addHistoryEntry("Action redone", "An action was redone.");
         historyController.populateTable();
         statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
@@ -488,8 +512,6 @@ public class UserController implements Initializable {
                 "without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            String text = History.prepareFileStringGUI(currentUser.getId(), "logout");
-            History.printToFile(streamOut, text);
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.userWindow);
         } else {
@@ -507,9 +529,6 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             Debugger.log("Exiting GUI");
-            String text = History.prepareFileStringGUI(currentUser.getId(), "quit");
-            History.printToFile(streamOut, text);
-
             Stage stage = (Stage) welcomePane.getScene().getWindow();
             stage.close();
         } else {

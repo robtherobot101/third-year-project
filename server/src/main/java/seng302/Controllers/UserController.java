@@ -1,21 +1,18 @@
 package seng302.Controllers;
 
-import static java.lang.Integer.max;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
+
+import java.sql.SQLException;
+import java.util.*;
+
+import static java.lang.Integer.max;
 
 public class UserController {
     private GeneralUser model;

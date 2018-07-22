@@ -99,6 +99,15 @@ public class WaitingListItem {
         }
     }
 
+    public void setReceiverName(String name) {
+        this.receiverName = name;
+    }
+
+
+    public void setReceiverRegion(String region) {
+        this.receiverRegion = region;
+    }
+
     public Organ getOrganType() {
         return organType;
     }
@@ -107,7 +116,7 @@ public class WaitingListItem {
         return organRegisteredDate;
     }
 
-    public LocalDate organDeregisteredDate() {
+    public LocalDate getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
 

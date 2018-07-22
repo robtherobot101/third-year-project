@@ -7,7 +7,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.User.History;
+import org.apache.http.client.HttpResponseException;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
 
@@ -15,8 +16,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * Class to handle all the logic for the Account Settings window.
@@ -66,8 +65,8 @@ public class UserSettingsController implements Initializable {
                 return;
             }
             userId = WindowManager.getDatabase().getUserId(currentUser.getUsername());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e){
+            Debugger.error("Failed to uniqueness of user with id: " + currentUser.getId());
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
@@ -79,8 +78,7 @@ public class UserSettingsController implements Initializable {
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
 
-            String text = History.prepareFileStringGUI(currentUser.getId(), "updateAccountSettings");
-            History.printToFile(streamOut, text);
+            currentUser.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
             WindowManager.setCurrentUser(currentUser);
