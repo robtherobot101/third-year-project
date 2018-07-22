@@ -44,6 +44,17 @@ public class GeneralClinician {
         }
     }
 
+    public int getClinicianIdFromUsername(String username) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT staff_id FROM CLINICIAN WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt("staff_id");
+        }
+    }
+
     public void insertClinician(Clinician clinician) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region) " +
