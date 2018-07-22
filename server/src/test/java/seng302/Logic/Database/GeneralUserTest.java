@@ -5,7 +5,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
+import seng302.Model.Attribute.Organ;
+import seng302.Model.Disease;
 import seng302.Model.Medication.Medication;
+import seng302.Model.Procedure;
 import seng302.Model.User;
 
 import java.sql.Date;
@@ -13,6 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -34,24 +38,49 @@ public class GeneralUserTest {
     public void patchEntireUser() {
     }
 
+//    @Test
+//    public void updateAllMedications() throws SQLException {
+//        String[] middle = {"Middle"};
+//        String[] ingredients = {"water", "Air"};
+//        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username1", "email@domain.com", "password");
+//        generalUser.insertUser(user);
+//        int id = generalUser.getIdFromUser(user.getUsername());
+//        List<Medication> medications = Arrays.asList(new Medication("paracetamol", ingredients), new Medication("placebo", ingredients));
+//        generalUser.updateAllMedications(medications, id);
+//        assertEquals(user.getCurrentMedications(), generalUser.getUserFromId(id).getCurrentMedications());
+//    }
+
     @Test
-    public void updateAllMedications() throws SQLException {
+    public void updateAllProcedures() throws SQLException {
         String[] middle = {"Middle"};
-        String[] ingredients = {"water", "Air"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username1", "email@domain.com", "password");
+        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username5", "email5@domain.com", "password");
         generalUser.insertUser(user);
-        int id = generalUser.getIdFromUser(user.getUsername());
-        List<Medication> medications = Arrays.asList(new Medication("paracetamol", ingredients), new Medication("placebo", ingredients));
-        generalUser.updateAllMedications(medications, id);
-        assertEquals(user.getCurrentMedications(), generalUser.getUserFromId(id).getCurrentMedications());
+        long id = generalUser.getIdFromUser(user.getUsername());
+        user.setId(id);
+        ArrayList<Organ> organs = new ArrayList<Organ>();
+        organs.add(Organ.LUNG);
+        ArrayList<Procedure> procedures = new ArrayList<>();
+        procedures.add(new Procedure("Trachiotomy", "Removed oesophagus entirely", LocalDate.now(), organs, 1));
+        generalUser.updateAllProcedures(procedures, (int) id);
+        User user2 = generalUser.getUserFromId((int) id);
+        assertEquals(procedures, user2.getPreviousProcedures());
     }
 
     @Test
-    public void updateAllProcedures() {
-    }
+    public void updateAllDiseases() throws SQLException {
+        String[] middle = {"Middle"};
+        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username6", "email6@domain.com", "password");
+        generalUser.insertUser(user);
+        long id = generalUser.getIdFromUser(user.getUsername());
+        user.setId(id);
 
-    @Test
-    public void updateAllDiseases() {
+        ArrayList<Disease> diseases = new ArrayList<>();
+        diseases.add(new Disease("Bronchitis", LocalDate.now(), false, false, 1));
+        generalUser.updateAllDiseases(diseases, (int) id);
+
+        User user2 = generalUser.getUserFromId((int) id);
+        assertEquals(diseases, user2.getCurrentDiseases());
+
     }
 
     @Test
@@ -67,41 +96,13 @@ public class GeneralUserTest {
     }
 
     @Test
-    public void nameFilter() {
-    }
-
-    @Test
-    public void matchFilter() {
-    }
-
-    @Test
-    public void ageFilter() {
-    }
-
-    @Test
-    public void organFilter() {
-    }
-
-    @Test
-    public void userTypeFilter() {
-    }
-
-    @Test
-    public void isDonorFilter() {
-    }
-
-    @Test
-    public void isReceiverFilter() {
-    }
-
-    @Test
     public void getUserFromId() {
     }
 
     @Test
     public void insertUser() throws SQLException {
         String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username2", "email@domain.com", "password");
+        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username2", "email2@domain.com", "password");
         generalUser.insertUser(user);
         long id = generalUser.getIdFromUser(user.getUsername());
         user.setId(id);
@@ -152,7 +153,19 @@ public class GeneralUserTest {
     }
 
     @Test
-    public void removeUser() {
+    public void removeUser() throws SQLException {
+        String[] middle = {"Middle"};
+        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username4", "email4@domain.com", "password");
+        generalUser.insertUser(user);
+        long id = generalUser.getIdFromUser(user.getUsername());
+        user.setId(id);
+
+        int numBefore = generalUser.getUsers(new HashMap<>()).size();
+        generalUser.removeUser(user);
+        int numAfter = generalUser.getUsers(new HashMap<>()).size();
+
+        assertEquals(numBefore - 1, numAfter);
+        assertFalse(generalUser.getUsers(new HashMap<>()).contains(user));
 
     }
 }
