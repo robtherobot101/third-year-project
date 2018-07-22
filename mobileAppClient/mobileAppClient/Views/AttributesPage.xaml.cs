@@ -47,14 +47,14 @@ namespace mobileAppClient
             BloodPressureInput.Text = loggedInUser.bloodPressure;
 
             BloodTypeInput.SelectedItem = BloodTypeExtensions.ToPickerString(loggedInUser.bloodType);
-            //SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
-            //AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
+            SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
+            AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
 
         private string FirstCharToUpper(string input)
         {
             if (String.IsNullOrEmpty(input))
-                throw new ArgumentException("Incorrect string argument provided");
+                return "";
             input = input.ToLower();
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
@@ -100,9 +100,9 @@ namespace mobileAppClient
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
             }
 
-            loggedInUser.Name[0] = FirstNameInput.Text;
-            loggedInUser.Name[1] = MiddleNameInput.Text;
-            loggedInUser.Name[2] = LastNameInput.Text;
+            loggedInUser.name[0] = FirstNameInput.Text;
+            loggedInUser.name[1] = MiddleNameInput.Text;
+            loggedInUser.name[2] = LastNameInput.Text;
 
             loggedInUser.preferredName[0] = PrefFirstNameInput.Text;
             loggedInUser.preferredName[1] =
