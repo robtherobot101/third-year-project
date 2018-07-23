@@ -1,6 +1,5 @@
 package seng302.GUI.Controllers.User;
 
-import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +14,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class UserAttributesController extends UserTabController implements Initializable {
@@ -75,14 +75,14 @@ public class UserAttributesController extends UserTabController implements Initi
         if (dodeathPick == null) {
             LocalDate today = LocalDate.now();
             double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays() / 365.00;
-            if (years < 0) {
+            if (years <= 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years");
             }
         } else {
             double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays() / 365.00;
-            if (years < 0) {
+            if (years <= 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years (At Death)");
@@ -100,14 +100,13 @@ public class UserAttributesController extends UserTabController implements Initi
                 double height = Double.parseDouble(heightField.getText());
                 double weight = Double.parseDouble(weightField.getText());
                 double BMI = (weight / Math.pow(height, 2)) * 10000;
-                if (Double.isNaN(BMI)) {
+                if (!Double.isNaN(BMI)) {
                     bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
                 }
             } catch (NumberFormatException e) {
             }
         }
     }
-
 
     /**
      * /**
@@ -207,6 +206,7 @@ public class UserAttributesController extends UserTabController implements Initi
             return false;
         }
 
+        userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
         //Commit changes
         currentUser.setNameArray(name);
         currentUser.setPreferredNameArray(preferredName);

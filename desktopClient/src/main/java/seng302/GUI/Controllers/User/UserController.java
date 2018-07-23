@@ -1,7 +1,5 @@
 package seng302.GUI.Controllers.User;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,14 +17,11 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
-import seng302.User.WaitingListItem;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
