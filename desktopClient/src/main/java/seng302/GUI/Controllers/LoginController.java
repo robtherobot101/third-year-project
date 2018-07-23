@@ -1,7 +1,6 @@
 package seng302.GUI.Controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -10,14 +9,14 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
-import sun.security.ssl.Debug;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -106,7 +105,7 @@ public class LoginController implements Initializable {
         UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         if (urlValidator.isValid(url)) {
             APIServer server = new APIServer(url);
-            System.out.println("URL is valid");
+            Debugger.log("URL is valid");
             server.testConnection();
             return true;
         }

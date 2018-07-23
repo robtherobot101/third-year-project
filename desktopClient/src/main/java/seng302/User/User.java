@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -467,9 +467,9 @@ public class User {
     public void setOrgan(Organ organ) {
         if (!organs.contains(organ)) {
             this.organs.add(organ);
-            System.out.println("Organ added.");
+            Debugger.log("Organ added.");
         } else {
-            System.out.println("Organ already being donated.");
+            Debugger.log("Organ already being donated.");
         }
         setLastModified();
     }
@@ -477,9 +477,9 @@ public class User {
     public void removeOrgan(Organ organ) {
         if (organs.contains(organ)) {
             this.organs.remove(organ);
-            System.out.println("Organ removed.");
+            Debugger.log("Organ removed.");
         } else {
-            System.out.println("Organ not in list.");
+            Debugger.log("Organ not in list.");
         }
         setLastModified();
     }
