@@ -24,9 +24,28 @@ namespace mobileAppClient
             foreach (string item in medication.History)
             {
                 TextCell cell = new TextCell();
-                cell.Text = item;
-                cell.TextColor = Color.Gray;
-                historyTableSection.Add(cell);
+                //ViewCell cell = new ViewCell();
+                StackLayout tmpLayout = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    Padding = new Thickness(15, 0, 0, 0),
+                    Children = {
+                    new Label
+                        {
+                            Text = item,
+                            TextColor = Color.Gray,
+                            FontSize = 15
+                        }
+                    }
+                };
+
+                ViewCell viewCell = new ViewCell
+                {
+                    View = tmpLayout
+                };
+                historyTableSection.Add(viewCell);
+
+                
             }
         }
 

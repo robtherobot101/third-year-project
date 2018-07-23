@@ -24,20 +24,19 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout
-                            Orientation="Vertical">
-                                <StackLayout Orientation="Vertical" Padding="20, 0, 0, 0">
-                                    <Label Text="{Binding Name}"
-                                    TextColor="Blue"
-                                    FontSize="Default"
-                                           />
-                                    
-                                    <Label Text="{Binding DetailString}"
-                                    HorizontalOptions="EndAndExpand"
-                                    TextColor="Gray"
-                                    FontSize="Small"/>
-                                </StackLayout>
+
+                            <StackLayout Orientation="Vertical" Padding="15, 0, 0, 0">
+                                <Label Text="{Binding Name}"
+                                TextColor="Blue"
+                                FontSize="Default"
+                                       />
+                                
+                                <Label Text="{Binding DetailString}"
+                                HorizontalOptions="StartAndExpand"
+                                TextColor="Gray"
+                                FontSize="Micro"/>
                             </StackLayout>
+                            
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
