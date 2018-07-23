@@ -5,6 +5,7 @@ import seng302.Logic.Database.GeneralClinician;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.Admin;
 import seng302.Model.Clinician;
+import seng302.Model.Disease;
 import seng302.Model.Medication.Medication;
 import seng302.Model.User;
 
@@ -58,6 +59,10 @@ public abstract class HelperMethods {
         return Clinician;
     }
 
+    /**
+     * Create a list of medications with semi-random names and ingredients
+     * @return A list of medication objects
+     */
     public static List<Medication> makeMedications(){
         List<Medication> medications = new ArrayList<>();
         for(int i = 0; i < 10; i++){
@@ -68,5 +73,18 @@ public abstract class HelperMethods {
             medications.add(m);
         }
         return medications;
+    }
+
+    /**
+     * Create a list of diseases with semi-random names and ingredients
+     * @return A list of disease objects
+     */
+    public static ArrayList<Disease> makeDiseases(boolean cured) {
+        ArrayList<Disease> diseases = new ArrayList<>();
+        for(int i = 0; i < 10; i++) {
+            Disease d = new Disease("Disease" + i, LocalDate.of(1985 + i, 3, 14), (i % 2) == 1, cured && (i % 4) == 0, i);
+            diseases.add(d);
+        }
+        return diseases;
     }
 }
