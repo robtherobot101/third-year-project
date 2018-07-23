@@ -32,6 +32,8 @@ import seng302.GUI.Controllers.LoginController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.User.UserController;
 import seng302.GUI.Controllers.User.UserSettingsController;
+import seng302.GUI.CommandLineInterface;
+import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -41,6 +43,7 @@ import seng302.User.WaitingListItem;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
