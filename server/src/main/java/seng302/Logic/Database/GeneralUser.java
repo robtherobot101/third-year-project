@@ -726,27 +726,6 @@ public class GeneralUser {
             statement.setString(21, user.getPassword());
             statement.setInt(22, userId);
             System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
-
-
-/*        int userId = getUserId(user.getUsername());
-
-        //Organ Updates
-        //First get rid of all the users organs in the table
-        String deleteOrgansQuery = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement deleteOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(deleteOrgansQuery);
-        deleteOrgansStatement.setInt(1, userId);
-        System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated organs
-        for (Organ organ: user.getOrgans()) {
-            String insertOrgansQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
-            PreparedStatement insertOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertOrgansQuery);
-            insertOrgansStatement.setString(1, organ.toString());
-            insertOrgansStatement.setInt(2, userId);
-            totalAdded += insertOrgansStatement.executeUpdate();
-        }
-        System.out.println("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);*/
         }
     }
 

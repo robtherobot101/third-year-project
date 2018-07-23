@@ -2,9 +2,7 @@ package seng302.Data.Local;
 
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
-import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
-import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -61,17 +59,13 @@ public class UsersM implements UsersDAO {
      * @return A sorted list of results
      */
     private ArrayList<User> getUsersByNameAlternative(String term) {
-        System.out.println("search: " + "'" + term + "'");
         if (term.equals("")) {
-            System.out.println("Empty");
             ArrayList<User> sorted = new ArrayList<>(users);
             sorted.sort(Comparator.comparing(User::getName));
             return sorted;
         }
         String[] t = term.split(" ", -1);
         ArrayList<String> tokens = new ArrayList<>(Arrays.asList(t));
-        System.out.println("token 1: " + "'" + tokens.get(0) + "'");
-        //System.out.println("token 2: " + "'"+tokens.get(1)+"'");
         if (tokens.contains("")) {
             tokens.remove("");
         }

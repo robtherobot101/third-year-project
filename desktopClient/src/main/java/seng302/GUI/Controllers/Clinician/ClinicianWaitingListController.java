@@ -73,7 +73,6 @@ public class ClinicianWaitingListController implements Initializable {
             User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue());
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
-            System.out.println("item user Region: " + user.getRegion());
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
         } catch (NullPointerException e) {
@@ -127,7 +126,6 @@ public class ClinicianWaitingListController implements Initializable {
             WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
             User user = WindowManager.getDataManager().getUsers().getUser(selectedItem.getUserId().intValue());
             showDeregisterDialog(selectedItem, user);
-            System.out.println("----------PUSHING WAITINGLIST ITEM UPDATE TO THE API SERVER---------");
             WindowManager.getDataManager().getUsers().updateUser(user);
         } catch (HttpResponseException e) {
             Debugger.error("Could not update waiting list item.");
@@ -225,7 +223,6 @@ public class ClinicianWaitingListController implements Initializable {
             if(i.getStillWaitingOn() && i.getOrganType().equals(item.getOrganType())) {
                 i.deregisterOrgan(code);
                 item.deregisterOrgan(code);
-                System.out.println("De-registered: " + i.getOrganType());
                 for (UserController userController: WindowManager.getCliniciansUserWindows().values()) {
                     if (userController.getCurrentUser().equals(user)) {
                         userController.addHistoryEntry("Waiting list item deregistered", "A waiting list item (" + item.getOrganType() + ") was deregistered.");
@@ -476,18 +473,11 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            try {
-                                System.out.println(WindowManager.getDataManager().getUsers().getUser(3));
-                                System.out.println(item.getUserId());
-                                System.out.println(item.getOrganType());
-                                if(item.isConflicting()) {
-                                    setTooltip(new Tooltip("User is currently donating this organ"));
-                                    if (!getStyleClass().contains("highlighted-row")) {
-                                        getStyleClass().add("highlighted-row");
-                                    }
+                            if(item.isConflicting()) {
+                                setTooltip(new Tooltip("User is currently donating this organ"));
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
                                 }
-                            } catch (HttpResponseException e) {
-                                Debugger.error("Could not properly render waiting list table. Failed to fetch user with id: " + item.getUserId());
                             }
                         }
                     }

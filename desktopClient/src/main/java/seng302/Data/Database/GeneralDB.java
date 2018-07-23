@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
-import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
@@ -29,7 +28,7 @@ public class GeneralDB implements GeneralDAO {
 
     public Object loginUser(String usernameEmail, String password) {
 
-        System.out.println("Logging in with server.");
+        Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<String, String>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);

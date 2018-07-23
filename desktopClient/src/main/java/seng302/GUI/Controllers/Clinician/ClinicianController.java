@@ -1,8 +1,6 @@
 package seng302.GUI.Controllers.Clinician;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,17 +26,13 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.APIResponse;
-import seng302.Generic.DataManager;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
-import sun.security.jgss.HttpCaller;
 
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 
@@ -319,7 +313,6 @@ public class ClinicianController implements Initializable {
 
         Optional<ArrayList<String>> result = dialog.showAndWait();
         result.ifPresent(newClinicianDetails -> {
-            System.out.println("is result");
             Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
                     .get(2));
             clinician.setName(newClinicianDetails.get(0));

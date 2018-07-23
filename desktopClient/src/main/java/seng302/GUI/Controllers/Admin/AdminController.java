@@ -1,8 +1,6 @@
 package seng302.GUI.Controllers.Admin;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,11 +24,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
-import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
+import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.Cache;
+import seng302.Generic.Debugger;
+import seng302.Generic.IO;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
@@ -41,9 +42,7 @@ import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.IO.getJarPath;
@@ -907,7 +906,7 @@ public class AdminController implements Initializable {
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
+            Debugger.error("Unable to load fxml or save file.");
             e.printStackTrace();
             Platform.exit();
         }
@@ -945,7 +944,7 @@ public class AdminController implements Initializable {
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
+            Debugger.error("Unable to load fxml or save file.");
             e.printStackTrace();
             Platform.exit();
         }
@@ -1002,7 +1001,7 @@ public class AdminController implements Initializable {
         activeIngredientsCache.save();
 
         InteractionApi.getInstance();
-        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         cache.clear();
         cache.save();
         InteractionApi.setCache(cache);

@@ -4,12 +4,11 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.http.HttpException;
 import org.apache.http.client.HttpResponseException;
-import seng302.User.Importers.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
+import seng302.User.Importers.*;
 import seng302.User.User;
 
 import java.io.*;
@@ -215,6 +214,16 @@ public class IO {
      */
     public static Cache importCache(String path){
         File inputFile = new File(path);
+        try {
+            if (!inputFile.exists()) {
+                if (!inputFile.createNewFile()) {
+                    throw new IOException();
+                }
+            }
+        } catch (IOException e) {
+            Debugger.error("Failed to create file: " + path);
+            return null;
+        }
         Path filePath;
         try {
             filePath = inputFile.toPath();
@@ -230,10 +239,11 @@ public class IO {
             return importedCache;
         } catch (IOException e) {
             Debugger.error("IOException on " + path + ": Check your inputs and permissions!");
+            e.printStackTrace();
         } catch (JsonSyntaxException | DateTimeException e1) {
             Debugger.error("Invalid syntax in input file.");
         } catch (NullPointerException e2) {
-            Debugger.error("Input file was empty.");
+            Debugger.log("Input file was empty.");
         }
         return new Cache(path);
     }

@@ -40,6 +40,7 @@ import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -441,7 +442,7 @@ public class WindowManager extends Application {
     }
 
     public void setupDrugInteractionCache(){
-        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
 
