@@ -8,8 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -67,21 +65,15 @@ public class UserWaitingListController extends UserTabController implements Init
             //ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected, currentUser.getWaitingListItems().size(), currentUser.getId());
             //Check if already in list and act accordingly
             for (WaitingListItem item : currentUser.getWaitingListItems()){
-                if (Objects.equals(item.getOrganType(), temp.getOrganType())){
+                if (Objects.equals(item.getOrganType(), newWaitingListItem.getOrganType())){
                     // update the local view to avoid duplicates
                     currentUser.getWaitingListItems().remove(item);
                     break;
                 }
             }
             currentUser.getWaitingListItems().add(newWaitingListItem);
-            try {
-                WindowManager.getDatabase().insertWaitingListItem(currentUser, temp);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
             populateWaitingList();
-            statusIndicator.setStatus("Registered " + temp.getOrganType(), false);
-
+            statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
         }
         populateOrgansComboBox();
         userController.populateUserAttributes();

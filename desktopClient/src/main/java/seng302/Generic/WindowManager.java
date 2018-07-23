@@ -31,9 +31,6 @@ import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.LoginController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.User.UserController;
-import seng302.GUI.Controllers.User.UserSettingsController;
-import seng302.GUI.CommandLineInterface;
-import seng302.GUI.Controllers.*;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -43,7 +40,6 @@ import seng302.User.WaitingListItem;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +66,6 @@ public class WindowManager extends Application {
     private static AdminController adminController;
     private static UserController userController;
 
-    private static UserSettingsController userSettingsController;
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
 
@@ -243,10 +238,6 @@ public class WindowManager extends Application {
 
     public static void setCreateUserController(CreateUserController createUserController) {
         WindowManager.createUserController = createUserController;
-    }
-
-    public static void setUserSettingsController(UserSettingsController userSettingsController) {
-        WindowManager.userSettingsController = userSettingsController;
     }
 
     public static void setClincianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
