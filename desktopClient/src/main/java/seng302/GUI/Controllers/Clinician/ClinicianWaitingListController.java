@@ -473,15 +473,11 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            try {
-                                if(item.isConflicting()) {
-                                    setTooltip(new Tooltip("User is currently donating this organ"));
-                                    if (!getStyleClass().contains("highlighted-row")) {
-                                        getStyleClass().add("highlighted-row");
-                                    }
+                            if(item.isConflicting()) {
+                                setTooltip(new Tooltip("User is currently donating this organ"));
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
                                 }
-                            } catch (HttpResponseException e) {
-                                Debugger.error("Could not properly render waiting list table. Failed to fetch user with id: " + item.getUserId());
                             }
                         }
                     }
