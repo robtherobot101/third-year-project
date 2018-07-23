@@ -56,13 +56,10 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
-            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
-            for (User user : users) {
-                for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (item.getStillWaitingOn()) {
-                        addUserInfo(item);
-                        transplantList.add(item);
-                    }
+            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems()) {
+                if (item.getStillWaitingOn()) {
+                    addUserInfo(item);
+                    transplantList.add(item);
                 }
             }
             deregisterReceiverButton.setDisable(true);
@@ -477,7 +474,7 @@ public class ClinicianWaitingListController implements Initializable {
                         setTooltip(null);
                         if (item != null && !empty) {
                             try {
-                                if (WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue()).getOrgans().contains(item.getOrganType())) {
+                                if(item.isConflicting()) {
                                     setTooltip(new Tooltip("User is currently donating this organ"));
                                     if (!getStyleClass().contains("highlighted-row")) {
                                         getStyleClass().add("highlighted-row");

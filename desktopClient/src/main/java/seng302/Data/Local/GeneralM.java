@@ -10,8 +10,10 @@ import seng302.Generic.APIResponse;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GeneralM implements GeneralDAO {
 
@@ -133,5 +135,9 @@ public class GeneralM implements GeneralDAO {
             }
         }
         return true;
+    }
+
+    public List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException {
+        return null;
     }
 }

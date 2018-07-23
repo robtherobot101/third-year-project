@@ -21,6 +21,8 @@ public class WaitingListItem {
     private String receiverName;
     private String receiverRegion;
 
+    private boolean isConflicting;
+
     /**
      * Constructor of the object. Used when registering a new organ
      *
@@ -137,5 +139,9 @@ public class WaitingListItem {
 
     public boolean getStillWaitingOn(){
         return organDeregisteredDate == null;
+    }
+
+    public boolean isConflicting() {
+        return isConflicting;
     }
 }

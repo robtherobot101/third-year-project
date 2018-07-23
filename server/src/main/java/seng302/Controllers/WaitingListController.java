@@ -40,7 +40,6 @@ public class WaitingListController {
     }
 
     public String getAllUserWaitingListItems(Request request, Response response) {
-
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
         ArrayList<WaitingListItem> queriedUserWaitingListItems;

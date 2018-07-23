@@ -361,7 +361,7 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1");
+        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://localhost:7015/api/v1");
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -418,7 +418,6 @@ public class WindowManager extends Application {
             stop();
         }
 
-
         getScene(TFScene.clinician).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
                 updateTransplantWaitingList();
@@ -434,8 +433,6 @@ public class WindowManager extends Application {
 
             }
         });
-
-
 
         getScene(TFScene.userWindow).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
