@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
@@ -25,6 +26,7 @@ import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -376,18 +378,17 @@ public class UserController implements Initializable {
             proceduresController.updateUser();
             attributesController.populateUserFields();
             historyController.populateTable();
-            WindowManager.getDatabase().updateUser(currentUser);
-            WindowManager.getDatabase().updateUserOrgans(currentUser);
-            WindowManager.getDatabase().updateUserProcedures(currentUser);
-            WindowManager.getDatabase().updateUserDiseases(currentUser);
+            try {
+                WindowManager.getDatabase().updateUser(currentUser);
+                WindowManager.getDatabase().updateUserOrgans(currentUser);
+                WindowManager.getDatabase().updateUserProcedures(currentUser);
+                WindowManager.getDatabase().updateUserDiseases(currentUser);
+                WindowManager.getDatabase().updateWaitingListItems(currentUser);
 
-            System.out.println("Attempting to save waitingListItems");
-            System.out.println("CurrentState: ");
-            for(WaitingListItem i:currentUser.getWaitingListItems()){
-                System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
+            } catch (HttpResponseException e ){
+                Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }
 
-            WindowManager.getDatabase().updateWaitingListItems(currentUser);
 
             currentUser.addHistoryEntry("Updated", "Changes were saved to the server.");
             titleBar.saved(true);

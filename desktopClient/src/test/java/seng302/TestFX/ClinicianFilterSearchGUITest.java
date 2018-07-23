@@ -2,12 +2,15 @@ package seng302.TestFX;
 
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.DataManager;
 import seng302.Generic.Database;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
@@ -41,7 +44,11 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
      */
     @Before
     public void setUp() throws SQLException {
-        WindowManager.getDatabase().resetDatabase();
+        try {
+            WindowManager.getDatabase().resetDatabase();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset the database.");
+        }
         testUserBobby = new User(
             "Bobby", new String[]{"Dong"}, "Flame",
             LocalDate.of(1969, 8, 4),
@@ -72,15 +79,19 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");
 
-        WindowManager.getDatabase().insertUser(testUserBobby);
-        WindowManager.getDatabase().updateUser(testUserBobby);
-        WindowManager.getDatabase().updateUserOrgans(testUserBobby);
-        WindowManager.getDatabase().insertUser(testUserAndy);
-        WindowManager.getDatabase().updateUser(testUserAndy);
-        WindowManager.getDatabase().updateUserOrgans(testUserAndy);
-        WindowManager.getDatabase().insertUser(testUserTest);
-        WindowManager.getDatabase().updateUser(testUserTest);
-        WindowManager.getDatabase().updateUserOrgans(testUserTest);
+        try {
+            WindowManager.getDatabase().insertUser(testUserBobby);
+            WindowManager.getDatabase().updateUser(testUserBobby);
+            WindowManager.getDatabase().updateUserOrgans(testUserBobby);
+            WindowManager.getDatabase().insertUser(testUserAndy);
+            WindowManager.getDatabase().updateUser(testUserAndy);
+            WindowManager.getDatabase().updateUserOrgans(testUserAndy);
+            WindowManager.getDatabase().insertUser(testUserTest);
+            WindowManager.getDatabase().updateUser(testUserTest);
+            WindowManager.getDatabase().updateUserOrgans(testUserTest);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to post user to the server.");
+        }
 
 
     }

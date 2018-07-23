@@ -10,10 +10,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.w3c.dom.html.HTMLTableCaptionElement;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -31,7 +34,11 @@ public class ReceiverGUITest extends TestFXTest {
 
     @Before
     public void setUp() throws SQLException {
-        WindowManager.getDatabase().resetDatabase();
+        try {
+            WindowManager.getDatabase().resetDatabase();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset the database.");
+        }
         testUser = addTestUser();
     }
 

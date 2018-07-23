@@ -8,11 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
 import seng302.Generic.*;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
+import sun.security.ssl.Debug;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -91,8 +93,8 @@ public class LoginController implements Initializable {
             DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
             DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
             DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
-        } catch(SQLException e) {
-            e.printStackTrace();
+        } catch(HttpResponseException e) {
+            Debugger.error("Failed to add all users, clinicians and admins.");
         }
         WindowManager.setAdmin(admin);
         WindowManager.setScene(TFScene.admin);

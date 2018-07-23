@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.Admin.AdminController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
@@ -28,6 +29,20 @@ import seng302.User.Medication.InteractionApi;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static seng302.Generic.IO.getJarPath;
+import static seng302.Generic.IO.streamOut;
+import seng302.GUI.Controllers.Clinician.ClinicianController;
+import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
+import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
+import seng302.GUI.Controllers.LoginController;
+import seng302.GUI.Controllers.User.CreateUserController;
+import seng302.GUI.Controllers.User.UserSettingsController;
+import seng302.User.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -359,7 +374,6 @@ public class WindowManager extends Application {
         database = new Database();
         database.connectToDatabase();
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
-
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding(closeAllWindows -> {
@@ -398,6 +412,7 @@ public class WindowManager extends Application {
             e.printStackTrace();
             stop();
         }
+
         getScene(TFScene.clinician).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
                 Debugger.log("Refreshing...");
@@ -405,8 +420,8 @@ public class WindowManager extends Application {
                 try {
                     DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to refresh all user waiting lists.");
                 }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
@@ -421,8 +436,8 @@ public class WindowManager extends Application {
                     DataManager.addAllUsers(getDatabase().getAllUsers());
 
                     getDatabase().refreshUserWaitinglists();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to refresh all user waiting lists.");
                 }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
@@ -430,14 +445,16 @@ public class WindowManager extends Application {
             }
         });
 
+
+
         getScene(TFScene.userWindow).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
                 DataManager.users.clear();
                 try {
                     DataManager.addAllUsers(getDatabase().getAllUsers());
                     getDatabase().refreshUserWaitinglists();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to refresh all user waiting lists.");
                 }
                 refreshUser();
 

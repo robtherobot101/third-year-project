@@ -1,5 +1,8 @@
 package seng302.GUI.Controllers.Admin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +24,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
@@ -37,6 +41,7 @@ import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
@@ -96,7 +101,7 @@ public class AdminController implements Initializable {
     private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-    private ArrayList<User> usersFound;
+    private ArrayList<User> usersFound = new ArrayList<>();
     private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
@@ -112,6 +117,7 @@ public class AdminController implements Initializable {
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
 
+    private Gson gson = new Gson();
 
     /**
      * Sets the current currentAdmin
@@ -259,8 +265,8 @@ public class AdminController implements Initializable {
         if (result.get() == ButtonType.OK) {
             try {
                 WindowManager.getDatabase().updateAdminDetails(currentAdmin);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
 
             //TODO PUT in save to Database for Users and Clinicians
@@ -438,8 +444,8 @@ public class AdminController implements Initializable {
         // TODO implement undo
         try {
             WindowManager.getDatabase().resetDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset the database.");
         }
     }
 
@@ -477,66 +483,66 @@ public class AdminController implements Initializable {
      * Updates the list of users found from the search
      */
     public void updateFoundUsers() {
-        usersFound = SearchUtils.getUsersByNameAlternative(searchNameTerm);
+        profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
+        Map<String, String> searchMap = new HashMap<>();
+
+        if (!searchNameTerm.equals("")){
+            searchMap.put("name", searchNameTerm);
+        }
 
         //Add in check for region
 
         if (!searchRegionTerm.equals("")) {
-            ArrayList<User> newUsersFound = SearchUtils.getUsersByRegionAlternative(searchRegionTerm);
-            usersFound.retainAll(newUsersFound);
-
+            searchMap.put("region", searchRegionTerm);
         }
 
         //Add in check for age
 
         if (!searchAgeTerm.equals("")) {
-            ArrayList<User> newUsersFound = SearchUtils.getUsersByAgeAlternative(searchAgeTerm);
-            usersFound.retainAll(newUsersFound);
+            searchMap.put("age", searchAgeTerm);
         }
 
         //Add in check for gender
 
         if (searchGenderTerm != null) {
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if ((user.getGender() != null) && (searchGenderTerm.equals(user.getGender().toString()))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("gender", searchGenderTerm);
         }
 
         //Add in check for organ
 
         if (searchOrganTerm != null) {
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if ((user.getOrgans().size() != 0) && (user.getOrgans().contains(Organ.parse(searchOrganTerm)))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("organ", searchOrganTerm);
         }
 
         //Add in check for user type
 
         if (searchUserTypeTerm != null) {
-            if (searchUserTypeTerm.equals("Neither")) {
+            if (searchUserTypeTerm.equals("neither")) {
+                searchMap.put("userType", "");
                 searchUserTypeTerm = "";
             }
-            ArrayList<User> newUsersFound = new ArrayList<>();
-            for (User user : usersFound) {
-                if (user.getType().equals("Donor/Receiver") && (!searchUserTypeTerm.equals(""))) {
-                    newUsersFound.add(user);
-                } else if ((searchUserTypeTerm.equals(user.getType()))) {
-                    newUsersFound.add(user);
-                }
-            }
-            usersFound = newUsersFound;
+            searchMap.put("userType", searchUserTypeTerm);
         }
 
-        currentUsers = FXCollections.observableArrayList(usersFound);
-        userTableView.setItems(currentUsers);
+        try {
+            APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+
+            if(response.isValidJson()){
+                JsonArray searchResults = response.getAsJsonArray();
+
+                Type type = new TypeToken<ArrayList<User>>() {
+                }.getType();
+
+                usersFound = gson.fromJson(searchResults, type);
+
+            }
+
+            currentUsers = FXCollections.observableArrayList(usersFound);
+            userTableView.setItems(currentUsers);
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to perform user search on the server.");
+        }
     }
 
 
@@ -611,8 +617,8 @@ public class AdminController implements Initializable {
                     DataManager.users.remove(selectedUser);
                     try {
                         WindowManager.getDatabase().removeUser(selectedUser);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to remove user with id: " + selectedUser.getId());
                     }
                     //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
@@ -623,8 +629,8 @@ public class AdminController implements Initializable {
                     DataManager.clinicians.remove(selectedClinician);
                     try {
                         WindowManager.getDatabase().removeClinician(selectedClinician);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
                     }
                     //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
@@ -635,8 +641,8 @@ public class AdminController implements Initializable {
                     DataManager.admins.remove(selectedAdmin);
                     try{
                         WindowManager.getDatabase().removeAdmin(selectedAdmin);
-                    } catch(SQLException e) {
-                        e.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
                     }
                     //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
 
@@ -851,8 +857,8 @@ public class AdminController implements Initializable {
                 WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed reset the database.");
             }
 
         }
@@ -870,8 +876,8 @@ public class AdminController implements Initializable {
             try {
                 WindowManager.getDatabase().loadSampleData();
                 DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to resample the database.");
             }
         }
 
@@ -901,8 +907,8 @@ public class AdminController implements Initializable {
                     DataManager.admins.add(newAdmin);
                 try {
                     WindowManager.getDatabase().insertAdmin(newAdmin);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to post admin to the server.");
                 }
                 //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
@@ -939,8 +945,8 @@ public class AdminController implements Initializable {
                 DataManager.clinicians.add(newClinician);
                 try {
                     WindowManager.getDatabase().insertClinician(newClinician);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to insert post clinician to the server.");
                 }
                 //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
@@ -977,8 +983,8 @@ public class AdminController implements Initializable {
                 DataManager.users.add(user);
                 try{
                     WindowManager.getDatabase().insertUser(user);
-                } catch(SQLException e) {
-                    e.printStackTrace();
+                } catch(HttpResponseException e) {
+                    Debugger.error("Failed to insert new user.");
                 }
                 //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
