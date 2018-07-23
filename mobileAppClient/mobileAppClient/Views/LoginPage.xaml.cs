@@ -14,9 +14,12 @@ namespace mobileAppClient
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class LoginPage : ContentPage
 	{
+        private bool loginClicked;
+
 		public LoginPage ()
 		{
 			InitializeComponent ();
+            loginClicked = false;
 		}
 
         async void SignUpButtonClicked(Object sender, EventArgs args)
@@ -27,6 +30,15 @@ namespace mobileAppClient
 
         async void LoginButtonClicked(object sender, EventArgs args)
         {
+            // Stops crashing when the login button is double clicked
+            if (loginClicked)
+            {
+                return;
+            } else
+            {
+                loginClicked = true;
+            }
+
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
 

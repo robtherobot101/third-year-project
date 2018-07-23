@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace mobileAppClient.odmsAPI
@@ -10,6 +11,8 @@ namespace mobileAppClient.odmsAPI
         public List<String> ageInteractions { get; set; }
         public List<String> durationInteractions { get; set; }
         public List<String> genderInteractions { get; set; }
+        public bool gotInteractions { get; set; }
+        public HttpStatusCode resultStatusCode { get; set; }
 
         public DrugInteractionResult(String jsonString, int age, Gender gender)
         {
@@ -61,7 +64,35 @@ namespace mobileAppClient.odmsAPI
                 genderInteractions = getEntries(genderInteractionsRaw, "female");
             }
 
-            // TODO get duration interactions
+            durationInteractions.Add("1 - 2 years");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "1 - 2 years"));
+
+            durationInteractions.Add("1 - 6 months");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "1 - 6 months"));
+
+            durationInteractions.Add("10+ years");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "10+ years"));
+
+            durationInteractions.Add("2 - 5 years");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "2 - 5 years"));
+
+            durationInteractions.Add("5 - 10 years");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "5 - 10 years"));
+
+            durationInteractions.Add("6 - 12 months");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "6 - 12 months"));
+
+            durationInteractions.Add("< 1 month");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "< 1 month"));
+
+            durationInteractions.Add("not specified");
+            durationInteractions.AddRange(getEntries(durationInteractionsRaw, "not specified"));
+        }
+
+        public DrugInteractionResult(bool gotInteractions, HttpStatusCode statusCode)
+        {
+            this.gotInteractions = gotInteractions;
+            this.resultStatusCode = statusCode;
         }
 
         private List<String> getEntries(JObject jObject, string fieldName)

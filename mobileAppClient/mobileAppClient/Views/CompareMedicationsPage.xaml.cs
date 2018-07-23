@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using mobileAppClient.odmsAPI;
 
 using Xamarin.Forms;
@@ -51,12 +52,32 @@ namespace mobileAppClient
         {
             Console.WriteLine("Compare pressed!");
             DrugInteractionAPI drugInteractionAPI = new DrugInteractionAPI();
+            User loggedInUser = UserController.Instance.LoggedInUser;
+
             DrugInteractionResult retrievedDrugInteractions = await drugInteractionAPI.RetrieveDrugInteractions(selectedItem1.Text, selectedItem2.Text);
-            await DisplayAlert("", 
-                               string.Join(", ", retrievedDrugInteractions.genderInteractions),
+            if (!retrievedDrugInteractions.gotInteractions)
+            {
+                switch (retrievedDrugInteractions.resultStatusCode)
+                {
+                    case HttpStatusCode.Accepted:
+                        await DisplayAlert("Failed to get Interactions",
+                        "Interactions yet to be researched",
+                        "OK");
+                        return;
+                    case HttpStatusCode.NotFound:
+                        await DisplayAlert("Failed to get Interactions",
+                        "One or both of the drugs are invalid",
+                        "OK");
+                        return;
+                }
+            }
+
+            string interactionsBody = String.Format("{0}y/o {1}\n\n{2}{3}{4}", 18, "Male", string.Join("\r\n", retrievedDrugInteractions.genderInteractions),
+                string.Join("\r\n", retrievedDrugInteractions.ageInteractions, retrievedDrugInteractions.durationInteractions));
+
+            await DisplayAlert(String.Format("Interactions between {0} and {1}", selectedItem1.Text, selectedItem2.Text),
+                                interactionsBody,
                                 "OK");
-
-
         }
 
         void Handle_Clear1Pressed(object sender, System.EventArgs e)
