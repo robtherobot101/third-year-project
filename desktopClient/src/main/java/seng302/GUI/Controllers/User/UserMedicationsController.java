@@ -204,6 +204,7 @@ public class UserMedicationsController extends UserTabController implements Init
                             Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
                             newMedication.startedTaking();
                             currentItems.add(newMedication);
+                            userController.addHistoryEntry("Medication added", "A new medication (" + newMedication.getName() + ") was added.");
                             // NOTE: I have created another constructor in the Medications class for a medication with a name and
                             // active ingredients also.
 
@@ -236,10 +237,12 @@ public class UserMedicationsController extends UserTabController implements Init
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
                 Medication m = currentListView.getSelectionModel().getSelectedItem();
                 currentItems.remove(m);
+                userController.addHistoryEntry("Medication removed", "A medication (" + m.getName() + ") was removed.");
                 statusIndicator.setStatus("Deleted " + m + " from current medications", false);
             } else if (historyListView.getSelectionModel().getSelectedItem() != null) {
                 Medication m = historyListView.getSelectionModel().getSelectedItem();
                 historicItems.remove(historyListView.getSelectionModel().getSelectedItem());
+                userController.addHistoryEntry("Medication removed", "A historic medication (" + m.getName() + ") was removed.");
                 statusIndicator.setStatus("Deleted " + m + " from historic medications", false);
             }
             titleBar.saved(false);
@@ -255,6 +258,7 @@ public class UserMedicationsController extends UserTabController implements Init
     public void moveMedicationToHistory() {
         Medication m = moveMedication(historicItems, currentListView);
         m.stoppedTaking();
+        userController.addHistoryEntry("Medication marked as historic", "A medication (" + m.getName() + ") was marked as historic.");
         statusIndicator.setStatus("Moved " + m + " to history", false);
         titleBar.saved(false);
     }
@@ -265,6 +269,7 @@ public class UserMedicationsController extends UserTabController implements Init
     public void moveMedicationToCurrent() {
         Medication m = moveMedication(currentItems, historyListView);
         m.startedTaking();
+        userController.addHistoryEntry("Medication marked as current", "A medication (" + m.getName() + ") was marked as current.");
         statusIndicator.setStatus("Moved " + m + " to current", false);
         titleBar.saved(false);
     }

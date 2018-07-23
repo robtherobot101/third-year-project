@@ -13,10 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.http.client.HttpResponseException;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
-import seng302.Data.Database.GeneralDB;
 import seng302.Data.Database.UsersDB;
 import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Data.Interfaces.CliniciansDAO;
@@ -35,10 +33,12 @@ import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.User.UserController;
 import seng302.GUI.Controllers.User.UserSettingsController;
 import seng302.GUI.TFScene;
-import seng302.User.*;
+import seng302.User.Admin;
+import seng302.User.Clinician;
 import seng302.User.Medication.InteractionApi;
+import seng302.User.User;
+import seng302.User.WaitingListItem;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -171,19 +171,6 @@ public class WindowManager extends Application {
      */
     public static void setAdmin(Admin admin) {
         adminController.setAdmin(admin);
-    }
-
-    /**
-     * sets the current user
-     *
-     * @param currentUser the current user
-     */
-    public static void setNewUser(User currentUser) {
-        userController.setCurrentUser(currentUser);
-        userController.setControlsShown(false);
-
-        userController.addHistoryEntry("Created", "This profile was created.");
-        userController.addHistoryEntry("Logged in", "This profile was logged in to.");
     }
 
     /**
