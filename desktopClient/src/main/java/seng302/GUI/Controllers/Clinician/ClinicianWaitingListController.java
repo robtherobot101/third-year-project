@@ -1,35 +1,12 @@
 package seng302.GUI.Controllers.Clinician;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
@@ -42,6 +19,11 @@ import seng302.User.Attribute.Organ;
 import seng302.User.Disease;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
@@ -176,9 +158,7 @@ public class ClinicianWaitingListController implements Initializable {
 
         //Get Input Code
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(s -> {
-            processDeregister(s, selectedItem, user);
-        });
+        result.ifPresent(s -> processDeregister(s, selectedItem, user));
     }
 
     /**
@@ -245,11 +225,15 @@ public class ClinicianWaitingListController implements Initializable {
 
     public void deregisterWaitingListItem(WaitingListItem item, User user, int code) {
         for(WaitingListItem i : user.getWaitingListItems()) {
-            if(i.getStillWaitingOn() &&
-                    i.getOrganType().equals(item.getOrganType())) {
+            if(i.getStillWaitingOn() && i.getOrganType().equals(item.getOrganType())) {
                 i.deregisterOrgan(code);
                 item.deregisterOrgan(code);
                 System.out.println("De-registered: " + i.getOrganType());
+                for (UserController userController: WindowManager.getCliniciansUserWindows().values()) {
+                    if (userController.getCurrentUser().equals(user)) {
+                        userController.addHistoryEntry("Waiting list item deregistered", "A waiting list item (" + item.getOrganType() + ") was deregistered.");
+                    }
+                }
             }
         }
     }
