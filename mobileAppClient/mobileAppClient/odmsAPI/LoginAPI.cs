@@ -21,7 +21,7 @@ namespace mobileAppClient.odmsAPI
         {
             DrugInteractionAPI drugInteractionAPI = new DrugInteractionAPI();
             await drugInteractionAPI.RetrieveDrugInteractions("mesalamine", "ibuprofen");
-            return HttpStatusCode.ServiceUnavailable;
+            //return HttpStatusCode.ServiceUnavailable;
 
             if (! await ServerConfig.Instance.IsConnectedToInternet())
             {
