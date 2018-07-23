@@ -9,6 +9,7 @@ namespace mobileAppClient
         public bool IsCured { get; set; }
         public int Id { get; set; }
         public string DiagnosisDateString { get; set; }
+        public Xamarin.Forms.Color CellColour { get; set; }
 
         public Disease(string name, int id)
         {

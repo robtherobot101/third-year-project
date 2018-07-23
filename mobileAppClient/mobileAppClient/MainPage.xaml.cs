@@ -71,8 +71,8 @@ namespace mobileAppClient
         {
             this.BindingContext = new
             {
-                Header = "SENG302 - Team300 - ODMS",
-                Image = "https://5.imimg.com/data5/JP/RF/MY-23184303/doctor-stethoscope-500x500.jpg",
+                Header = "SENG302 - Team300",
+                Image = "",
                 Footer = "Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
         }
