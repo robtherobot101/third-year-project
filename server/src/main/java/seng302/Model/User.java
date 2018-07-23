@@ -50,6 +50,13 @@ public class User {
         /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
     }
 
+    public User(String name, LocalDate dateOfBirth) {
+        this.name = name.split(",");
+        this.preferredName = this.name;
+        this.dateOfBirth = dateOfBirth;
+        this.creationTime = LocalDateTime.now();
+    }
+
 
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
