@@ -32,17 +32,7 @@ namespace mobileAppClient.odmsAPI
 
         public async Task<bool> IsConnectedToInternet()
         {
-            Ping p = new Ping();
-            PingReply reply = await p.SendPingAsync("1.1.1.1");
-
-            if (reply.Status == IPStatus.Success)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
     }
 }

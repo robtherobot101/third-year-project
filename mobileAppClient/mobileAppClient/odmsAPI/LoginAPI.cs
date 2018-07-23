@@ -64,7 +64,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<HttpStatusCode> RegisterUser(String firstName, String lastName, String email,
             String username, String password, DateTime dateOfBirthRaw)
         {
-            if (! await ServerConfig.Instance.IsConnectedToInternet())
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }

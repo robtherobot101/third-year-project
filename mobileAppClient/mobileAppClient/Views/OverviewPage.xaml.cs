@@ -44,7 +44,7 @@ namespace mobileAppClient
             }
             string attributesString = "Name: " + String.Join(" ", currentUser.name) + "\nAge: " + String.Format("{0:0.00}", age) + " years old";
             if (currentUser.currentAddress != null) attributesString += "\nCurrent Address: " + currentUser.currentAddress;
-            if (currentUser.gender.ToString() != "") attributesString += "\nBirth Gender: " + currentUser.gender.ToPickerString();
+            if (currentUser.gender.ToString() != "") attributesString += "\nBirth Gender: " + currentUser.gender.ToString();
             AttributesLabel.Text = attributesString;
 
             //Organs Pane 
