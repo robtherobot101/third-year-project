@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import seng302.HelperMethods;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
@@ -53,51 +54,39 @@ public class GeneralUserTest {
 
     @Test
     public void updateAllProcedures() throws SQLException {
-        String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username5", "email5@domain.com", "password");
-        generalUser.insertUser(user);
-        long id = generalUser.getIdFromUser(user.getUsername());
-        user.setId(id);
+        User user = HelperMethods.insertUser(generalUser);
         ArrayList<Organ> organs = new ArrayList<Organ>();
         organs.add(Organ.LUNG);
         ArrayList<Procedure> procedures = new ArrayList<>();
         procedures.add(new Procedure("Trachiotomy", "Removed oesophagus entirely", LocalDate.now(), organs, 1));
-        generalUser.updateAllProcedures(procedures, (int) id);
-        User user2 = generalUser.getUserFromId((int) id);
+        generalUser.updateAllProcedures(procedures, (int) user.getId());
+        User user2 = generalUser.getUserFromId((int) user.getId());
         assertEquals(procedures, user2.getPreviousProcedures());
     }
 
     @Test
     public void updateAllDiseases() throws SQLException {
-        String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username6", "email6@domain.com", "password");
-        generalUser.insertUser(user);
-        long id = generalUser.getIdFromUser(user.getUsername());
-        user.setId(id);
+        User user = HelperMethods.insertUser(generalUser);
 
         ArrayList<Disease> diseases = new ArrayList<>();
         diseases.add(new Disease("Bronchitis", LocalDate.now(), false, false, 1));
-        generalUser.updateAllDiseases(diseases, (int) id);
+        generalUser.updateAllDiseases(diseases, (int) user.getId());
 
-        User user2 = generalUser.getUserFromId((int) id);
+        User user2 = generalUser.getUserFromId((int) user.getId());
         assertEquals(diseases, user2.getCurrentDiseases());
 
     }
 
     @Test
     public void updateWaitingListItems() throws SQLException {
-        String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username7", "email7@domain.com", "password");
-        generalUser.insertUser(user);
-        long id = generalUser.getIdFromUser(user.getUsername());
-        user.setId(id);
+        User user = HelperMethods.insertUser(generalUser);
 
         ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
-        WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) id, null, 0);
+        WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) user.getId(), null, 0);
 
-        generalUser.updateWaitingListItems(waitingListItems, (int) id);
+        generalUser.updateWaitingListItems(waitingListItems, (int) user.getId());
 
-        User user2 = generalUser.getUserFromId((int) id);
+        User user2 = generalUser.getUserFromId((int) user.getId());
         assertEquals(waitingListItems, user2.getWaitingListItems());
     }
 
@@ -115,12 +104,8 @@ public class GeneralUserTest {
 
     @Test
     public void insertUser() throws SQLException {
-        String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username2", "email2@domain.com", "password");
-        generalUser.insertUser(user);
-        long id = generalUser.getIdFromUser(user.getUsername());
-        user.setId(id);
-        User user2 = generalUser.getUserFromId((int) id);
+        User user = HelperMethods.insertUser(generalUser);
+        User user2 = generalUser.getUserFromId((int) user.getId());
         assertEquals(user, user2);
     }
 
@@ -134,11 +119,7 @@ public class GeneralUserTest {
 
     @Test
     public void updateUserAttributes() throws SQLException {
-        String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username3", "email3@domain.com", "password");
-        generalUser.insertUser(user);
-        long id = generalUser.getIdFromUser(user.getUsername());
-        user.setId(id);
+        User user = HelperMethods.insertUser(generalUser);
 
         user.setCurrentAddress("221b Baker Stret");
         user.setRegion("Here");
@@ -153,7 +134,7 @@ public class GeneralUserTest {
 
         generalUser.updateUserAttributes(user, (int) user.getId());
 
-        User user2 = generalUser.getUserFromId((int) id);
+        User user2 = generalUser.getUserFromId((int) user.getId());
         assertEquals(user.getCurrentAddress(), user2.getCurrentAddress());
         assertEquals(user.getRegion(), user2.getRegion());
         assertEquals(user.getDateOfBirth(), user2.getDateOfBirth());
@@ -168,11 +149,7 @@ public class GeneralUserTest {
 
     @Test
     public void removeUser() throws SQLException {
-        String[] middle = {"Middle"};
-        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username4", "email4@domain.com", "password");
-        generalUser.insertUser(user);
-        long id = generalUser.getIdFromUser(user.getUsername());
-        user.setId(id);
+        User user = HelperMethods.insertUser(generalUser);
 
         int numBefore = generalUser.getUsers(new HashMap<>()).size();
         generalUser.removeUser(user);

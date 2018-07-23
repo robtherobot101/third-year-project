@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Config.DatabaseConfiguration;
+import seng302.HelperMethods;
 import seng302.Model.Admin;
 import seng302.Model.Clinician;
 
@@ -38,9 +39,8 @@ public class GeneralClinicianTest {
      */
     @Test
     public void insertClinician() throws SQLException {
-        Clinician clinician = new Clinician("username", "password", "Full Name");
-        generalClinician.insertClinician(clinician);
-        assertEquals(clinician, generalClinician.getClinicianFromId(generalClinician.getClinicianIdFromUsername("username")));
+        Clinician clinician = HelperMethods.insertClinician(generalClinician);
+        assertEquals(clinician, generalClinician.getClinicianFromId(generalClinician.getClinicianIdFromUsername(clinician.getUsername())));
     }
 
     /**
@@ -50,8 +50,7 @@ public class GeneralClinicianTest {
     @Test(expected = SQLIntegrityConstraintViolationException.class)
     public void insertDuplicateClinician() throws SQLException {
         int cliniciansBefore = generalClinician.getAllClinicians().size();
-        Clinician clinician = new Clinician("username2", "password2", "Full Name2");
-        generalClinician.insertClinician(clinician);
+        Clinician clinician = HelperMethods.insertClinician(generalClinician);
         generalClinician.insertClinician(clinician);
         assertEquals(cliniciansBefore + 1, generalClinician.getAllClinicians().size());
     }
@@ -113,8 +112,7 @@ public class GeneralClinicianTest {
     @Test
     public void getAllClinicians() throws SQLException {
         List<Clinician> cliniciansBefore = generalClinician.getAllClinicians();
-        Clinician clinician = new Clinician("username4", "password", "Full Name");
-        generalClinician.insertClinician(clinician);
+        HelperMethods.insertClinician(generalClinician);
         List<Clinician> cliniciansAfter = generalClinician.getAllClinicians();
         assertTrue(cliniciansAfter.containsAll(cliniciansBefore));
         assertEquals(cliniciansBefore.size() + 1, cliniciansAfter.size());
@@ -122,8 +120,7 @@ public class GeneralClinicianTest {
 
     @Test
     public void removeClinician() throws SQLException {
-        Clinician clinician = new Clinician("username6", "password", "Full Name");
-        generalClinician.insertClinician(clinician);
+        Clinician clinician = HelperMethods.insertClinician(generalClinician);
         assertTrue(generalClinician.getAllClinicians().contains(clinician));
         generalClinician.removeClinician(clinician);
         assertFalse(generalClinician.getAllClinicians().contains(clinician));
@@ -131,15 +128,12 @@ public class GeneralClinicianTest {
 
     @Test
     public void updateClinicianDetails() throws SQLException {
-        Clinician clinician = new Clinician("username5", "password", "Full Name");
-        generalClinician.insertClinician(clinician);
-        clinician.setStaffID(generalClinician.getClinicianIdFromUsername("username5"));
+        Clinician clinician = HelperMethods.insertClinician(generalClinician);
         clinician.setRegion("The Moon");
         clinician.setName("Linus Torvalds");
         clinician.setWorkAddress("140 Maidstone Rd");
         generalClinician.updateClinicianDetails(clinician, (int) clinician.getStaffID());
-        Clinician clinician2 = generalClinician.getClinicianFromId(generalClinician.getClinicianIdFromUsername("username5"));
-        System.out.println(clinician2.getRegion());
+        Clinician clinician2 = generalClinician.getClinicianFromId((int) clinician.getStaffID());
         assertEquals(clinician, clinician2);
     }
 }
