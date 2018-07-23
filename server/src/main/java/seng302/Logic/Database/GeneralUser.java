@@ -274,20 +274,9 @@ public class GeneralUser {
                 users.add(getUserFromResultSet(resultSet));
             }
 
-            int startIndex = 0;
-            if (params.containsKey("startIndex")) {
-                startIndex = Integer.parseInt(params.get("startIndex"));
-            }
+            System.out.println("thing size: " + users.size());
 
-            int count = 100;
-            if (params.containsKey("count")) {
-                count = Integer.parseInt(params.get("count"));
-            }
-            int toIndex = Math.min(startIndex + count, users.size());
-            if (startIndex > toIndex) {
-                return new ArrayList<User>();
-            }
-            return users.subList(startIndex, Math.min(startIndex + count, users.size()));
+            return users;
         }
     }
 
@@ -299,37 +288,44 @@ public class GeneralUser {
                 hasWhereClause = true;
             }
         }
-        if(!hasWhereClause) {
-            return "SELECT * FROM USER";
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT * FROM USER");
+        if (hasWhereClause) {
+            queryBuilder.append(" WHERE ");
+
+            String nameFilter = nameFilter(params);
+            String passwordFilter = matchFilter(params, "password", true);
+            String userTypeFilter = userTypeFilter(params);
+            String ageFilter = ageFilter(params);
+            String genderFilter = matchFilter(params, "gender", false);
+            String regionFilter = matchFilter(params, "region", false);
+            String organFilter = organFilter(params);
+
+            List<String> filters = new ArrayList<String>();
+            filters.addAll(Arrays.asList(
+                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
+            ));
+
+            filters.removeIf((String filter) -> filter.equals(""));
+
+            queryBuilder.append(String.join(" AND ",filters));
         }
 
-        StringBuilder queryBuilder = new StringBuilder();
+        int startIndex = 0;
+        if (params.containsKey("startIndex")) {
+            startIndex = Integer.parseInt(params.get("startIndex"));
+        }
 
-        queryBuilder.append("SELECT * FROM USER WHERE ");
+        int count = 100;
+        if (params.containsKey("count")) {
+            count = Integer.parseInt(params.get("count"));
+        }
 
+        queryBuilder.append(" LIMIT ");
+        queryBuilder.append(startIndex);
+        queryBuilder.append(",");
+        queryBuilder.append(startIndex+count);
 
-        String nameFilter = nameFilter(params);
-        String passwordFilter = matchFilter(params, "password", true);
-
-        String userTypeFilter = userTypeFilter(params);
-
-        String ageFilter = ageFilter(params);
-
-        String genderFilter = matchFilter(params, "gender", false);
-
-        String regionFilter = matchFilter(params, "region", false);
-
-        String organFilter = organFilter(params);
-
-        List<String> filters = new ArrayList<String>();
-        filters.addAll(Arrays.asList(
-                nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
-
-        ));
-
-        filters.removeIf((String filter) -> filter.equals(""));
-
-        queryBuilder.append(String.join(" AND ",filters));
         return queryBuilder.toString();
     }
 
@@ -529,7 +525,7 @@ public class GeneralUser {
             ResultSet organsResultSet = organsStatement.executeQuery();
 
             while (organsResultSet.next()) {
-                user.getOrgans().add(Organ.valueOf(organsResultSet.getString("name")));
+                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
             }
 
             //Get all the medications for the given user

@@ -16,6 +16,7 @@ public class WaitingListItem {
     private int userId;
     private LocalDate organDeregisteredDate;
     private int organDeregisteredCode;
+    private boolean isConflicting = false;
 
     public WaitingListItem(Organ organType, LocalDate organRegisteredDate, int id, int userId, LocalDate organDeregisteredDate, int organDeregisteredCode) {
         this.organType = organType;
@@ -25,6 +26,17 @@ public class WaitingListItem {
         this.organDeregisteredDate = organDeregisteredDate;
         this.organDeregisteredCode = organDeregisteredCode;
     }
+
+    public WaitingListItem(Organ organType, LocalDate organRegisteredDate, int id, int userId, LocalDate organDeregisteredDate, int organDeregisteredCode, boolean isConflicting) {
+        this.organType = organType;
+        this.organRegisteredDate = organRegisteredDate;
+        this.id = id;
+        this.userId = userId;
+        this.organDeregisteredDate = organDeregisteredDate;
+        this.organDeregisteredCode = organDeregisteredCode;
+        this.isConflicting = isConflicting;
+    }
+
 
     public Organ getOrganType() {
         return organType;

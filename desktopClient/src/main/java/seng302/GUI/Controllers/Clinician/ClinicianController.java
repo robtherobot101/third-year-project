@@ -48,7 +48,6 @@ import static seng302.Generic.WindowManager.setButtonSelected;
  * Class to control all the logic for the clinician interactions with the application.
  */
 public class ClinicianController implements Initializable {
-
     @FXML
     private TableColumn profileName, profileUserType, profileAge, profileGender, profileRegion;
     @FXML

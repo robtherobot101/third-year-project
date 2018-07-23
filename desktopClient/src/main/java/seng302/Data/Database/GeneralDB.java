@@ -2,6 +2,7 @@ package seng302.Data.Database;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Data.Interfaces.GeneralDAO;
@@ -11,9 +12,12 @@ import seng302.Generic.Debugger;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GeneralDB implements GeneralDAO {
@@ -73,5 +77,19 @@ public class GeneralDB implements GeneralDAO {
     public boolean isUniqueIdentifier(String username, long userId) throws HttpResponseException {
         // TODO - Implement this to check for the same username/email over all profile types
         return true;
+    }
+
+    @Override
+    public List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), "waitingListItems");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<WaitingListItem>>() {
+            }.getType());
+        } else {
+            return new ArrayList<WaitingListItem>();
+        }
     }
 }
