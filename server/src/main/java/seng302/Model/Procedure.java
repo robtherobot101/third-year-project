@@ -135,8 +135,7 @@ public class Procedure {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Procedure procedure = (Procedure) o;
-        return id == procedure.id &&
-                Objects.equals(summary, procedure.summary) &&
+        return  Objects.equals(summary, procedure.summary) &&
                 Objects.equals(description, procedure.description) &&
                 Objects.equals(date, procedure.date) &&
                 Objects.equals(organsAffected, procedure.organsAffected);
@@ -145,6 +144,6 @@ public class Procedure {
     @Override
     public int hashCode() {
 
-        return Objects.hash(summary, description, date, organsAffected, id);
+        return Objects.hash(summary, description, date, organsAffected);
     }
 }

@@ -3,16 +3,15 @@ package seng302;
 import seng302.Logic.Database.GeneralAdmin;
 import seng302.Logic.Database.GeneralClinician;
 import seng302.Logic.Database.GeneralUser;
-import seng302.Model.Admin;
-import seng302.Model.Clinician;
-import seng302.Model.Disease;
+import seng302.Model.*;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.Medication.Medication;
-import seng302.Model.User;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 
 public abstract class HelperMethods {
@@ -26,8 +25,8 @@ public abstract class HelperMethods {
      * @throws SQLException
      */
     public static User insertUser(GeneralUser generalUser) throws SQLException {
-        String[] middle = {"Middle" + r.nextInt(1000)};
-        User user = new User("First" + r.nextInt(1000), middle, "Last" + r.nextInt(1000), LocalDate.of(1900 + r.nextInt(1000), 8, 4), "username5" + r.nextInt(1000), "email5@domain.com" + r.nextInt(1000), "password");
+        String[] middle = {"Middle" + r.nextInt(1000000)};
+        User user = new User("First" + r.nextInt(1000000), middle, "Last" + r.nextInt(1000000), LocalDate.of(1900 + r.nextInt(100), 8, 4), "username5" + r.nextInt(1000000), "email5@domain.com" + r.nextInt(1000000), "password");
         generalUser.insertUser(user);
         user.setId(generalUser.getIdFromUser(user.getUsername()));
         return user;
@@ -40,7 +39,7 @@ public abstract class HelperMethods {
      * @throws SQLException
      */
     public static Admin insertAdmin(GeneralAdmin generalAdmin)  throws SQLException {
-        Admin admin = new Admin("username" + r.nextInt(1000), "password" + r.nextInt(1000), "Full Name" + r.nextInt(1000));
+        Admin admin = new Admin("username" + r.nextInt(1000000), "password" + r.nextInt(1000000), "Full Name" + r.nextInt(1000000));
         generalAdmin.insertAdmin(admin);
         admin.setStaffID(generalAdmin.getAdminIdFromUsername(admin.getUsername()));
         return admin;
@@ -53,7 +52,7 @@ public abstract class HelperMethods {
      * @throws SQLException
      */
     public static Clinician insertClinician(GeneralClinician generalClinician) throws SQLException {
-        Clinician Clinician = new Clinician("username" + r.nextInt(1000), "password" + r.nextInt(1000), "Full Name" + r.nextInt(1000));
+        Clinician Clinician = new Clinician("username" + r.nextInt(1000000), "password" + r.nextInt(1000000), "Full Name" + r.nextInt(1000000));
         generalClinician.insertClinician(Clinician);
         Clinician.setStaffID(generalClinician.getClinicianIdFromUsername(Clinician.getUsername()));
         return Clinician;
@@ -63,8 +62,8 @@ public abstract class HelperMethods {
      * Create a list of medications with semi-random names and ingredients
      * @return A list of medication objects
      */
-    public static List<Medication> makeMedications(){
-        List<Medication> medications = new ArrayList<>();
+    public static ArrayList<Medication> makeMedications(){
+        ArrayList<Medication> medications = new ArrayList<>();
         for(int i = 0; i < 10; i++){
             ArrayList<String> history = new ArrayList<>();
             String[] ingredients = {"Ingredient1", "Ingredient2", "Ingredient3", "Ingredient4"};
@@ -86,5 +85,15 @@ public abstract class HelperMethods {
             diseases.add(d);
         }
         return diseases;
+    }
+
+    public static ArrayList<Procedure> makeProcedures() {
+        ArrayList<Procedure> procedures = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ArrayList<Organ> organs = new ArrayList<>(Arrays.asList(Organ.BONE, Organ.CORNEA, Organ.PANCREAS));
+            Procedure p = new Procedure("Summary" + r.nextInt(1000000), "description" + r.nextInt(1000000), LocalDate.of(2013 + r.nextInt(10), 3, 14), organs, i);
+            procedures.add(p);
+        }
+        return procedures;
     }
 }

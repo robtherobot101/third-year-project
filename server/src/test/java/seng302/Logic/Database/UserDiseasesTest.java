@@ -22,7 +22,7 @@ public class UserDiseasesTest {
      */
     @Test
     public void getAllDiseases() throws SQLException {
-        User user1 = HelperMethods.insertUser(generalUser);
+        User user = HelperMethods.insertUser(generalUser);
 
         ArrayList<Disease> diseases1 = HelperMethods.makeDiseases(true);
         ArrayList<Disease> diseases2 = HelperMethods.makeDiseases(false);
@@ -30,12 +30,12 @@ public class UserDiseasesTest {
         allDiseases.addAll(diseases1);
         allDiseases.addAll(diseases2);
 
-        user1.setCuredDiseases(diseases1);
-        user1.setCurrentDiseases(diseases2);
+        user.setCuredDiseases(diseases1);
+        user.setCurrentDiseases(diseases2);
 
-        generalUser.updateAllDiseases(allDiseases, (int) user1.getId());
+        generalUser.updateAllDiseases(allDiseases, (int) user.getId());
 
-        assertEquals(allDiseases, userDiseases.getAllDiseases((int) user1.getId()));
+        assertEquals(allDiseases, userDiseases.getAllDiseases((int) user.getId()));
 
     }
 
