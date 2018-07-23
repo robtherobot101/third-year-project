@@ -649,7 +649,7 @@ public class GeneralUser {
                 int deregisteredCode = waitingListResultSet.getInt("deregistered_code");
                 int waitingListId = waitingListResultSet.getInt("id");
 
-                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, waitingListId));
+                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, deregisteredCode));
             }
             return user;
         }
