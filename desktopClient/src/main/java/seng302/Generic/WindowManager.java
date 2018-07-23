@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
+import seng302.Data.Database.GeneralDB;
 import seng302.Data.Database.UsersDB;
 import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Data.Interfaces.CliniciansDAO;
