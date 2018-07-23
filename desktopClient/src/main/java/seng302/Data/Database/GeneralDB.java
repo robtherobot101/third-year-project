@@ -74,6 +74,4 @@ public class GeneralDB implements GeneralDAO {
         // TODO - Implement this to check for the same username/email over all profile types
         return true;
     }
-
-
 }
