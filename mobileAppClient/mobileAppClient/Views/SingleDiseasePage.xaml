@@ -15,7 +15,7 @@
                 <TableRoot>
                     <TableSection Title="Disease Details">
                         <EntryCell Label="Name" x:Name="NameEntry" IsEnabled="false"/>
-                        <EntryCell Label="Date" x:Name="DateEntry" IsEnabled="false"/>
+                        <EntryCell Label="Diagnosis Date" x:Name="DateEntry" IsEnabled="false"/>
                         <EntryCell Label="Chronic?" x:Name="ChronicEntry" IsEnabled="false"/>
                         <EntryCell Label="Cured?" x:Name="CuredEntry" IsEnabled="false"/>
                         <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>

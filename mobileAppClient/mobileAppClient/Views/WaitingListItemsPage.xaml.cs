@@ -54,13 +54,13 @@ namespace mobileAppClient
 
                     AscendingDescendingPicker.IsVisible = true;
                     break;
-                case "Register Date":
+                case "Reg. Date":
                     SortedList = currentList.OrderBy(o => o.OrganRegisteredDate.ToDateTime()).ToList();
                     WaitingListItemsList.ItemsSource = SortedList;
 
                     AscendingDescendingPicker.IsVisible = true;
                     break;
-                case "Deregister Date":
+                case "Dereg. Date":
 
                     List<WaitingListItem> finalList = new List<WaitingListItem>();
                     List<WaitingListItem> deregisteredList = new List<WaitingListItem>();
@@ -93,7 +93,7 @@ namespace mobileAppClient
 
                     AscendingDescendingPicker.IsVisible = true;
                     break;
-                case "Deregister Code":
+                case "Dereg. Code":
                     SortedList = currentList.OrderBy(o => o.OrganDeregisteredCode).ToList();
                     WaitingListItemsList.ItemsSource = SortedList;
 
@@ -131,7 +131,7 @@ namespace mobileAppClient
                             break;
                     }
                     break;
-                case "Register Date":
+                case "Reg. Date":
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":
@@ -149,7 +149,7 @@ namespace mobileAppClient
                             break;
                     }
                     break;
-                case "Deregister Date":
+                case "Dereg. Date":
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":
@@ -221,7 +221,7 @@ namespace mobileAppClient
                             break;
                     }
                     break;
-                case "Deregister Code":
+                case "Dereg. Code":
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":

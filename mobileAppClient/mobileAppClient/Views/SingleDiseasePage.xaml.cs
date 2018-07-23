@@ -13,7 +13,7 @@ namespace mobileAppClient
         {
             InitializeComponent();
             NameEntry.Text = disease.Name;
-            DateEntry.Text = disease.DiagnosisDateString;
+            DateEntry.Text = disease.DiagnosisDate.day + ", " + disease.DiagnosisDate.month + ", " + disease.DiagnosisDate.year;
 
             if(disease.IsChronic) {
                 ChronicEntry.Text = "Yes";

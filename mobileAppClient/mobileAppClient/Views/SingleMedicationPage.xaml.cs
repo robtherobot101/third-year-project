@@ -11,17 +11,13 @@ namespace mobileAppClient
         {
             InitializeComponent();
             NameEntry.Text = medication.Name;
-
-            //ActiveIngredientsTable. = medication.ActiveIngredients;
-
-            //ActiveIngredientsEntry.Text = String.Join(", ", medication.ActiveIngredients);
-            //HistoryEntry.Text = String.Join(", ", medication.History);
             IDEntry.Text = medication.Id.ToString();
+
             foreach(string item in medication.ActiveIngredients) 
             {
                 TextCell cell = new TextCell();
                 cell.Text = item;
-                cell.TextColor = Color.Black;
+                cell.TextColor = Color.Gray;
                 activeIngredientsTableSection.Add(cell);
             }
 
@@ -29,7 +25,7 @@ namespace mobileAppClient
             {
                 TextCell cell = new TextCell();
                 cell.Text = item;
-                cell.TextColor = Color.Black;
+                cell.TextColor = Color.Gray;
                 historyTableSection.Add(cell);
             }
         }

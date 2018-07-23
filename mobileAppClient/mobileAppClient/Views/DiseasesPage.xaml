@@ -54,7 +54,7 @@
                       ItemTapped="Handle_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Name}"
+                        <TextCell Text="{Binding CellText}"
                          Detail="{Binding DiagnosisDateString}"
                          TextColor="{Binding CellColour}"/>
                     </DataTemplate>

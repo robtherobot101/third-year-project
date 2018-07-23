@@ -17,8 +17,10 @@
                         <EntryCell Label="Summary" x:Name="SummaryEntry" IsEnabled="false"/>
                         <EntryCell Label="Description" x:Name="DescriptionEntry" IsEnabled="false"/>
                         <EntryCell Label="Date Due" x:Name="DateDueEntry" IsEnabled="false"/>
-                        <EntryCell Label="Organs Affected" x:Name="OrgansAffectedEntry" IsEnabled="false"/>
                         <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
+                    </TableSection>
+                    <TableSection Title="Organs Affected" x:Name="OrgansAffectedSection">
+                        
                     </TableSection>
                 </TableRoot>
             </TableView>

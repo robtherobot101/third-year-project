@@ -5,10 +5,10 @@
              xmlns:local="clr-namespace:mobileAppClient"
              Title="Waiting List" NavigationPage.HasNavigationBar="True">
     <ContentPage.Content>
-         <StackLayout Orientation="Vertical" Spacing="-6">
+         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Horizontal">
-                <Picker Title ="Sort by" 
+                <Picker Title ="Sort by          " 
                         x:Name="SortingInput" 
                         SelectedIndexChanged="Handle_SelectedIndexChanged" 
                         HorizontalOptions="Center"
@@ -16,9 +16,9 @@
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
                             <x:String>Organ</x:String>
-                            <x:String>Register Date</x:String>
-                            <x:String>Deregister Date</x:String>
-                            <x:String>Deregister Code</x:String>
+                            <x:String>Reg. Date</x:String>
+                            <x:String>Dereg. Date</x:String>
+                            <x:String>Dereg. Code</x:String>
                             <x:String>Clear</x:String>
                         </x:Array>
                     </Picker.ItemsSource>

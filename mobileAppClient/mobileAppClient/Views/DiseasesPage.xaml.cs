@@ -87,7 +87,7 @@ namespace mobileAppClient
 
             foreach(Disease item in UserController.Instance.LoggedInUser.currentDiseases) {
                 if(item.IsChronic) {
-                    item.Name += " (CHRONIC)";
+                    item.CellText = item.Name + " (CHRONIC)";
                     item.CellColour = Color.Red;
                 } else {
                     item.CellColour = Color.Blue;
