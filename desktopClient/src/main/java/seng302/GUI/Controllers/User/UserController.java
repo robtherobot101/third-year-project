@@ -63,15 +63,22 @@ public class UserController implements Initializable {
 
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
-
     private User currentUser;
 
-
+    /**
+     * Sets up a new title bar for this controller.
+     */
     public UserController() {
         this.titleBar = new TitleBar();
         titleBar.setStage(WindowManager.getStage());
     }
 
+    /**
+     * Adds a new user history entry and refreshes the history table to display it.
+     *
+     * @param action The action to add
+     * @param description A description of the action added
+     */
     public void addHistoryEntry(String action, String description) {
         currentUser.addHistoryEntry(action, description);
         historyController.populateTable();
@@ -90,6 +97,11 @@ public class UserController implements Initializable {
         return currentUser;
     }
 
+    /**
+     * Sets the user displayed by this controller, and initializes the GUI to display the user's data.
+     *
+     * @param currentUser The user to display
+     */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         if (currentUser.getPreferredName() != null) {
@@ -108,6 +120,11 @@ public class UserController implements Initializable {
         setUndoRedoButtonsDisabled(true, true);
     }
 
+    /**
+     * Set the text on the welcome user banner.
+     *
+     * @param text The new banner text
+     */
     public void setWelcomeText(String text) {
         userDisplayText.setText(text);
     }
@@ -126,12 +143,6 @@ public class UserController implements Initializable {
     public void populateWaitingList() {
         waitingListController.populateWaitingList();
         attributesController.highlightOrganCheckBoxes();
-    }
-    /**
-     * Refresh the current user waiting list and correctly set highlights for organs that are being donated and received.
-     */
-    public void populateHistoryTable() {
-        historyController.populateTable();
     }
 
     /**

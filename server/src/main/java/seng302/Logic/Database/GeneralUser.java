@@ -242,6 +242,13 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Updates a user's history on the database to a new history list.
+     *
+     * @param newHistory The list of history to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is issues connecting to the database
+     */
     public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
         UserHistory userHistory = new UserHistory();
         List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
