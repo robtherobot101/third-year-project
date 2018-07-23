@@ -13,6 +13,20 @@ namespace mobileAppClient
             switch (e.NewValue)
             {
                 case 0:
+                    if (UserController.Instance.LoggedInUser.pendingProcedures.Count == 0)
+                    {
+                        NoDataLabel.IsVisible = true;
+                        ProceduresList.IsVisible = false;
+                        SortingInput.IsVisible = false;
+
+                    }
+                    else
+                    {
+                        NoDataLabel.IsVisible = false;
+                        ProceduresList.IsVisible = true;
+                        SortingInput.IsVisible = true;
+
+                    }
                     ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
                     SortingInput.SelectedIndex = -1;
                     AscendingDescendingPicker.SelectedIndex = -1;
@@ -20,6 +34,18 @@ namespace mobileAppClient
 
                     break;
                 case 1:
+                    if (UserController.Instance.LoggedInUser.previousProcedures.Count == 0)
+                    {
+                        NoDataLabel.IsVisible = true;
+                        ProceduresList.IsVisible = false;
+                        SortingInput.IsVisible = false;
+                    }
+                    else
+                    {
+                        NoDataLabel.IsVisible = false;
+                        ProceduresList.IsVisible = true;
+                        SortingInput.IsVisible = true;
+                    }
                     ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.previousProcedures;
                     SortingInput.SelectedIndex = -1;
                     AscendingDescendingPicker.SelectedIndex = -1;
@@ -42,6 +68,13 @@ namespace mobileAppClient
             foreach (Procedure item in UserController.Instance.LoggedInUser.previousProcedures)
             {
                 item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
+            }
+
+            if (UserController.Instance.LoggedInUser.pendingProcedures.Count == 0)
+            {
+                NoDataLabel.IsVisible = true;
+                ProceduresList.IsVisible = false;
+                SortingInput.IsVisible = false;
             }
 
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
