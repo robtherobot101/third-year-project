@@ -5,7 +5,40 @@
              xmlns:local="clr-namespace:mobileAppClient"
              Title="Waiting List" NavigationPage.HasNavigationBar="True">
     <ContentPage.Content>
-         <StackLayout Orientation="Vertical">
+         <StackLayout Orientation="Vertical" Spacing="-6">
+
+            <StackLayout Orientation="Horizontal">
+                <Picker Title ="Sort by" 
+                        x:Name="SortingInput" 
+                        SelectedIndexChanged="Handle_SelectedIndexChanged" 
+                        HorizontalOptions="Center"
+                        >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Organ</x:String>
+                            <x:String>Register Date</x:String>
+                            <x:String>Deregister Date</x:String>
+                            <x:String>Deregister Code</x:String>
+                            <x:String>Clear</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <Picker Title ="⬆/⬇ (Up or Down)" 
+                        x:Name="AscendingDescendingPicker" 
+                        SelectedIndexChanged="Handle_UpDownChanged" 
+                        HorizontalOptions="Center"
+                        IsVisible="false"
+                        >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>⬆ (Descending)</x:String>
+                            <x:String>⬇ (Ascending)</x:String>
+                            <x:String>Clear</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </StackLayout>
 
             <ListView x:Name="WaitingListItemsList"
                       ItemTapped="Handle_WaitingListItemTapped">
@@ -16,6 +49,9 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
