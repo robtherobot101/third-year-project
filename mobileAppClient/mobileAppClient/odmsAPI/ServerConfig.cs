@@ -26,10 +26,13 @@ namespace mobileAppClient.odmsAPI
         {
             client = new HttpClient();
 
-            // Sets default addr -> needed for register pane
+            // Sets default address
             serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
         }
 
+        /*
+         * Verifies the device is connected to the internet
+         */ 
         public async Task<bool> IsConnectedToInternet()
         {
             return true;

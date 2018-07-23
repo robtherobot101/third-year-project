@@ -6,6 +6,9 @@ using System.Text;
 
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Stores + parses details from results from the eHealth Drug Interaction API
+     */
     public class DrugInteractionResult
     {
         public List<String> ageInteractions { get; set; }
@@ -91,12 +94,18 @@ namespace mobileAppClient.odmsAPI
             durationInteractions.AddRange(getEntries(durationInteractionsRaw, "not specified"));
         }
 
+        /*
+         * Constructor used when the API fails in returning drug interactions
+         */
         public DrugInteractionResult(bool gotInteractions, HttpStatusCode statusCode)
         {
             this.gotInteractions = gotInteractions;
             this.resultStatusCode = statusCode;
         }
 
+        /*
+         * Returns the string entries as a list from a certain root-level field from a given JObject
+         */
         private List<String> getEntries(JObject jObject, string fieldName)
         {
             JArray interactions = (JArray)jObject[fieldName];
@@ -114,6 +123,9 @@ namespace mobileAppClient.odmsAPI
             return entries;
         }
 
+        /*
+         * Returns the string s with an uppercase first char
+         */
         private string UppercaseFirst(string s)
         {
             if (string.IsNullOrEmpty(s))

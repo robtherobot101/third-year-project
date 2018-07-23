@@ -12,6 +12,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Holds methods that interface to the /login and registration endpoints in the ODMS API
+     */
     class LoginAPI
     {
         /*
@@ -61,6 +64,9 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
+        /*
+         * Returns response status code of the attempted user registration
+         */
         public async Task<HttpStatusCode> RegisterUser(String firstName, String lastName, String email,
             String username, String password, DateTime dateOfBirthRaw)
         {

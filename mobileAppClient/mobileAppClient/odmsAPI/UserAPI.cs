@@ -13,8 +13,14 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Holds methods that interface to the /user endpoint in the ODMS API
+     */
     class UserAPI
     {
+        /*
+         * Returns the status of updating a user object to the server
+         */
         public async Task<HttpStatusCode> UpdateUser()
         {
             // Fetch the url and client from the server config class
