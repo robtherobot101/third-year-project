@@ -26,9 +26,10 @@ namespace mobileAppClient.odmsAPI
             var response = await client.GetAsync(apiEndpoint + query);
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine(responseContent);
+            DrugInteractionResult drugInteractionResult = new DrugInteractionResult(responseContent, 18, Gender.MALE);
 
-            return responseContent;
+            // TODO return correct string or even obj??
+            return drugInteractionResult.ageInteractions.ToString();
             
         }
 

@@ -36,15 +36,15 @@ namespace mobileAppClient
             } else {
                 Console.WriteLine(i);
                 i++;
-                if(i % 2 == 0) {
+                if (i % 2 == 0)
+                {
                     selectedItem1.Text = selectedMedication.Name;
-                } else {
+                }
+                else
+                {
                     selectedItem2.Text = selectedMedication.Name;
                 }
-
             }
-
-
         }
 
         async void Handle_ComparePressed(object sender, System.EventArgs e)

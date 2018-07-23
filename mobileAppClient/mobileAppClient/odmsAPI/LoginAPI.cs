@@ -19,6 +19,10 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
+            DrugInteractionAPI drugInteractionAPI = new DrugInteractionAPI();
+            await drugInteractionAPI.RetrieveDrugInteractions("mesalamine", "ibuprofen");
+            return HttpStatusCode.ServiceUnavailable;
+
             if (! await ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
