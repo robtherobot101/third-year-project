@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Xamarin.Forms;
 
@@ -13,9 +14,17 @@ namespace mobileAppClient
             {
                 case 0:
                     ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
+                    SortingInput.SelectedIndex = -1;
+                    AscendingDescendingPicker.SelectedIndex = -1;
+                    AscendingDescendingPicker.IsVisible = false;
+
                     break;
                 case 1:
                     ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.previousProcedures;
+                    SortingInput.SelectedIndex = -1;
+                    AscendingDescendingPicker.SelectedIndex = -1;
+                    AscendingDescendingPicker.IsVisible = false;
+
                     break;
             }
         }
@@ -36,6 +45,8 @@ namespace mobileAppClient
             }
 
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
+
+
         }
 
         async void Handle_ProcedureTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
@@ -46,6 +57,92 @@ namespace mobileAppClient
             }
             var singleProcedurePage = new SingleProcedurePage((Procedure)ProceduresList.SelectedItem);
             await Navigation.PushModalAsync(singleProcedurePage);
+        }
+
+        void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            switch (SortingInput.SelectedItem)
+            {                 case "Date":                     if (SegControl.SelectedSegment == 0)
+                    {
+                        List<Procedure> mylist = UserController.Instance.LoggedInUser.pendingProcedures;
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.Date.ToDateTime()).ToList();
+                        ProceduresList.ItemsSource = SortedList;
+                    }
+                    else
+                    {
+                        List<Procedure> mylist = UserController.Instance.LoggedInUser.previousProcedures;
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.Date.ToDateTime()).ToList();
+                        ProceduresList.ItemsSource = SortedList;
+                    }
+                    AscendingDescendingPicker.IsVisible = true;                     break;                 case "Name":
+                    if (SegControl.SelectedSegment == 0)
+                    {
+                        List<Procedure> mylist = UserController.Instance.LoggedInUser.pendingProcedures;
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.Summary).ToList();
+                        ProceduresList.ItemsSource = SortedList;
+                    }
+                    else
+                    {
+                        List<Procedure> mylist = UserController.Instance.LoggedInUser.previousProcedures; 
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.Summary).ToList();
+                        ProceduresList.ItemsSource = SortedList;
+                    }
+                    AscendingDescendingPicker.IsVisible = true;                     break;                 case "Clear":
+                    if (SegControl.SelectedSegment == 0)
+                    {
+                        ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
+                        SortingInput.SelectedIndex = -1;
+                    }
+                    else
+                    {
+                        ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.previousProcedures;
+                        SortingInput.SelectedIndex = -1;
+                    }
+                    AscendingDescendingPicker.IsVisible = false;
+                    break;             } 
+
+
+        }
+
+        void Handle_UpDownChanged(object sender, System.EventArgs e)
+        {
+            List<Procedure> currentList = (System.Collections.Generic.List<Procedure>)ProceduresList.ItemsSource;
+            switch (SortingInput.SelectedItem)
+            {
+                case "Date":
+                    switch(AscendingDescendingPicker.SelectedItem) {
+                        case "⬆ (Descending)":
+                            List<Procedure> SortedList = currentList.OrderByDescending(o => o.Date.ToDateTime()).ToList();
+                            ProceduresList.ItemsSource = SortedList;
+                            break;
+                        case "⬇ (Ascending)":
+                            SortedList = currentList.OrderBy(o => o.Date.ToDateTime()).ToList();
+                            ProceduresList.ItemsSource = SortedList;
+                            break;
+                        case "Clear":
+                            ProceduresList.ItemsSource = currentList;
+                            AscendingDescendingPicker.SelectedIndex = -1;
+                            break;
+                    }
+                    break;
+                case "Name":
+                    switch (AscendingDescendingPicker.SelectedItem)
+                    {
+                        case "⬆ (Descending)":
+                            List<Procedure> SortedList = currentList.OrderByDescending(o => o.Summary).ToList();
+                            ProceduresList.ItemsSource = SortedList;
+                            break;
+                        case "⬇ (Ascending)":
+                            SortedList = currentList.OrderBy(o => o.Summary).ToList();
+                            ProceduresList.ItemsSource = SortedList;
+                            break;
+                        case "Clear":
+                            ProceduresList.ItemsSource = currentList;
+                            AscendingDescendingPicker.SelectedIndex = -1;
+                            break;
+                    }
+                    break;
+            }
         }
     }
 }
