@@ -19,6 +19,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<DrugInteractionResult> RetrieveDrugInteractions(string drugA, string drugB)
         {
             HttpClient client = ServerConfig.Instance.client;
+            User loggedInUser = UserController.Instance.LoggedInUser;
 
             string query = String.Format("{0}/{1}/", drugA, drugB);
             string reversedQuery = String.Format("{0}/{1}/", drugB, drugA);
@@ -37,7 +38,7 @@ namespace mobileAppClient.odmsAPI
             }
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            DrugInteractionResult drugInteractionResult = new DrugInteractionResult(responseContent, 18, Gender.MALE);
+            DrugInteractionResult drugInteractionResult = new DrugInteractionResult(responseContent, Convert.ToInt32(loggedInUser.getAge()), loggedInUser.gender);
             return drugInteractionResult;
         }
     }

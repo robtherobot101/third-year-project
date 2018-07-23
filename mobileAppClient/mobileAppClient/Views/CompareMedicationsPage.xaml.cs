@@ -72,8 +72,12 @@ namespace mobileAppClient
                 }
             }
 
-            string interactionsBody = String.Format("{0}y/o {1}\n\n{2}{3}{4}", 18, "Male", string.Join("\r\n", retrievedDrugInteractions.genderInteractions),
-                string.Join("\r\n", retrievedDrugInteractions.ageInteractions, retrievedDrugInteractions.durationInteractions));
+            string interactionsBody = String.Format("{0}y/o {1}\n\n{2}\n\n{3}\n\n{4}", 
+                Convert.ToInt32(loggedInUser.getAge()), 
+                GenderExtensions.ToString(loggedInUser.gender), 
+                string.Join("\r\n", retrievedDrugInteractions.genderInteractions),
+                string.Join("\r\n", retrievedDrugInteractions.ageInteractions), 
+                string.Join("\r\n", retrievedDrugInteractions.durationInteractions));
 
             await DisplayAlert(String.Format("Interactions between {0} and {1}", selectedItem1.Text, selectedItem2.Text),
                                 interactionsBody,

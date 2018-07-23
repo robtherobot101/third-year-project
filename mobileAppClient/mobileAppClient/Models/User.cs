@@ -59,6 +59,21 @@ namespace mobileAppClient
             this.email = email;
         }
 
+        public double getAge()
+        {
+            double age;
+            if (this.dateOfDeath == null)
+            {
+                age = (DateTime.Now - this.dateOfBirth.ToDateTime()).Days / 365.00;
+            }
+            else
+            {
+                age = (this.dateOfDeath.ToDateTime() - this.dateOfBirth.ToDateTime()).Days / 365.00;
+            }
+            return age;
+
+        }
+
 
     }
 }
