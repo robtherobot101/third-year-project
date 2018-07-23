@@ -5,13 +5,16 @@ import seng302.Logic.Database.GeneralClinician;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.Admin;
 import seng302.Model.Clinician;
+import seng302.Model.Medication.Medication;
 import seng302.Model.User;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class HelperMethods {
+public abstract class HelperMethods {
     
     private static Random r = new Random();
 
@@ -53,5 +56,17 @@ public class HelperMethods {
         generalClinician.insertClinician(Clinician);
         Clinician.setStaffID(generalClinician.getClinicianIdFromUsername(Clinician.getUsername()));
         return Clinician;
+    }
+
+    public static List<Medication> makeMedications(){
+        List<Medication> medications = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            ArrayList<String> history = new ArrayList<>();
+            String[] ingredients = {"Ingredient1", "Ingredient2", "Ingredient3", "Ingredient4"};
+            Medication m = new Medication("medication" + i, ingredients, history, i);
+            m.startedTaking();
+            medications.add(m);
+        }
+        return medications;
     }
 }

@@ -40,17 +40,14 @@ public class GeneralUserTest {
     public void patchEntireUser() {
     }
 
-//    @Test
-//    public void updateAllMedications() throws SQLException {
-//        String[] middle = {"Middle"};
-//        String[] ingredients = {"water", "Air"};
-//        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username1", "email@domain.com", "password");
-//        generalUser.insertUser(user);
-//        int id = generalUser.getIdFromUser(user.getUsername());
-//        List<Medication> medications = Arrays.asList(new Medication("paracetamol", ingredients), new Medication("placebo", ingredients));
-//        generalUser.updateAllMedications(medications, id);
-//        assertEquals(user.getCurrentMedications(), generalUser.getUserFromId(id).getCurrentMedications());
-//    }
+    @Test
+    public void updateAllMedications() throws SQLException {
+        String[] ingredients = {"water", "Air"};
+        User user = HelperMethods.insertUser(generalUser);
+        List<Medication> medications = HelperMethods.makeMedications();
+        generalUser.updateAllMedications(medications, (int) user.getId());
+        assertEquals(medications, generalUser.getUserFromId((int) user.getId()).getCurrentMedications());
+    }
 
     @Test
     public void updateAllProcedures() throws SQLException {
@@ -83,6 +80,7 @@ public class GeneralUserTest {
 
         ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
         WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) user.getId(), null, 0);
+        waitingListItems.add(waitingListItem);
 
         generalUser.updateWaitingListItems(waitingListItems, (int) user.getId());
 

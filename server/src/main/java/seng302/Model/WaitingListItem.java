@@ -70,4 +70,16 @@ public class WaitingListItem {
 
         return Objects.hash(organType, organRegisteredDate, id, userId, organDeregisteredDate, organDeregisteredCode);
     }
+
+    @Override
+    public String toString() {
+        return "WaitingListItem{" +
+                "organType=" + organType +
+                ", organRegisteredDate=" + organRegisteredDate +
+                ", id=" + id +
+                ", userId=" + userId +
+                ", organDeregisteredDate=" + organDeregisteredDate +
+                ", organDeregisteredCode=" + organDeregisteredCode +
+                '}';
+    }
 }
