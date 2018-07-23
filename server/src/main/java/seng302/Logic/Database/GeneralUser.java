@@ -1,27 +1,17 @@
 package seng302.Logic.Database;
 
+import seng302.Config.DatabaseConfiguration;
+import seng302.Model.*;
+import seng302.Model.Attribute.*;
+import seng302.Model.Medication.Medication;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import seng302.Config.DatabaseConfiguration;
-import seng302.Model.Attribute.AlcoholConsumption;
-import seng302.Model.Attribute.BloodType;
-import seng302.Model.Attribute.Gender;
-import seng302.Model.Attribute.Organ;
-import seng302.Model.Attribute.SmokerStatus;
-import seng302.Model.Disease;
-import seng302.Model.Medication.Medication;
-import seng302.Model.Procedure;
-import seng302.Model.User;
-import seng302.Model.WaitingListItem;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class GeneralUser {
 
@@ -61,8 +51,9 @@ public class GeneralUser {
         updateWaitingListItems(newWaitingListItems, userId);
 
         UserHistory userHistory = new UserHistory();
-        int currentLength = userHistory.getAllHistoryItems(userId).size();
-        //TODO add history
+        List<HistoryItem> newHistory = user.getUserHistory();
+        List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
+
     }
 
     /**
@@ -453,6 +444,7 @@ public class GeneralUser {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
             User user = new User(
+                    resultSet.getInt("id"),
                     resultSet.getString("first_name"),
                     resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
                     resultSet.getString("last_name"),
@@ -469,6 +461,8 @@ public class GeneralUser {
                     resultSet.getString("password"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
+
+            int userId = (int)user.getId();
 
 
             String preferredNameString = "";
@@ -504,9 +498,6 @@ public class GeneralUser {
             }
 
             //Get all the organs for the given user
-
-            int userId = getIdFromUser(resultSet.getString("username"));
-            user.setId(userId);
 
             String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
             PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
@@ -651,6 +642,24 @@ public class GeneralUser {
 
                 user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, deregisteredCode));
             }
+
+
+            //Get all waiting list items from database
+            String historyQuery = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
+            PreparedStatement historyStatement = connection.prepareStatement(historyQuery);
+            historyStatement.setInt(1, userId);
+            ResultSet historyResultSet = historyStatement.executeQuery();
+
+
+            while (historyResultSet.next()) {
+                LocalDateTime actionDateTime = historyResultSet.getTimestamp("dateTime").toLocalDateTime();
+                String action = historyResultSet.getString("action");
+                String description = historyResultSet.getString("description");
+                int id = historyResultSet.getInt("id");
+
+                user.getUserHistory().add(new HistoryItem(actionDateTime, action, description, id));
+            }
+
             return user;
         }
     }

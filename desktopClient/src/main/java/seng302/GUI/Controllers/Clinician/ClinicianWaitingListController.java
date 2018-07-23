@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
 import seng302.Generic.*;
 import seng302.User.Attribute.Organ;
@@ -80,11 +82,23 @@ public class ClinicianWaitingListController implements Initializable {
             for (WaitingListItem item : user.getWaitingListItems()) {
                 List<Integer> codes = Arrays.asList(1, 2, 3, 4);
                 if (!(item.getOrganRegisteredDate() == null) && !(codes.contains(item.getOrganDeregisteredCode()))) {
+                    addUserInfo(item);
                     transplantList.add(item);
                 }
             }
         }
         deregisterReceiverButton.setDisable(true);
+    }
+
+    public void addUserInfo(WaitingListItem item) {
+        try{
+            User user = WindowManager.getDatabase().getUserFromId(item.getUserId().intValue());
+            item.setReceiverName(user.getName());
+            item.setReceiverRegion(user.getRegion());
+            System.out.println("item user Region: " + user.getRegion());
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
+        }
     }
 
     /**
@@ -128,7 +142,11 @@ public class ClinicianWaitingListController implements Initializable {
     public void showDeregisterDialogFromClinicianList() {
         WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
         showDeregisterDialog(selectedItem);
-        getDatabase().updateWaitingListItems(SearchUtils.getUserById(selectedItem.getUserId()));
+        try {
+            getDatabase().updateWaitingListItems(SearchUtils.getUserById(selectedItem.getUserId()));
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to update waiting list items for user with id: " + selectedItem.getUserId());
+        }
     }
 
     /**
@@ -385,6 +403,12 @@ public class ClinicianWaitingListController implements Initializable {
 
         selectedUser.setDateOfDeath(deathDateInput);
 
+        try {
+            WindowManager.getDatabase().updateUser(selectedUser);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to update the user with id:" + selectedUser.getId());
+        }
+
         for (UserController userController : WindowManager.getCliniciansUserWindows().values()) {
             if (userController.getCurrentUser() == selectedUser) {
                 userController.populateUserAttributes();
@@ -401,9 +425,9 @@ public class ClinicianWaitingListController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
 
         //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -443,6 +467,7 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
+                            System.out.println("tableItem: " +item.getUserId());
                             if (SearchUtils.getUserById(item.getUserId()).getOrgans().contains(item.getOrganType())) {
                                 setTooltip(new Tooltip("User is currently donating this organ"));
                                 if (!getStyleClass().contains("highlighted-row")) {

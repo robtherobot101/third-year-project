@@ -32,7 +32,7 @@ public class DataManager {
         users.add(user);
     }
 
-    public static void addAllUsers(List<User> newUsers){
+    public static void addAllUsers(List<User> newUsers) {
         users.addAll(newUsers);
     }
 

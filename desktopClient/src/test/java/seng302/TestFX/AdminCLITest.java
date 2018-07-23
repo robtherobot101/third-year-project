@@ -3,12 +3,14 @@ package seng302.TestFX;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.nio.client.HttpAsyncClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.GUI.CommandLineInterface;
 import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
 
@@ -28,7 +30,11 @@ public class AdminCLITest extends TestFXTest {
 
     @Before
     public void setupTest() throws SQLException {
-        WindowManager.getDatabase().resetDatabase();
+        try {
+            WindowManager.getDatabase().resetDatabase();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset database.");
+        }
         loginAsDefaultAdmin();
         sleep(800);
         clickOn("#cliTabButton");
@@ -150,12 +156,6 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
         sleep(200);
         assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
-    }
-
-    @Test
-    public void testStringSplitter() {
-        CommandLineInterface commandLineInterface = new CommandLineInterface();
-        assertEquals(5, commandLineInterface.splitByQuotationThenSpace("add \"A new user\" -a -b \"afgafdg\"").length);
     }
 
     @Test

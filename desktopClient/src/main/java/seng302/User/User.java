@@ -15,7 +15,6 @@ import java.util.*;
  * This class contains information about organ users.
  */
 public class User {
-
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath = null;
@@ -33,6 +32,7 @@ public class User {
     private ArrayList<Disease> currentDiseases = new ArrayList<>(), curedDiseases = new ArrayList<>();
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+    private ArrayList<HistoryItem> userHistory = new ArrayList<>();
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -118,7 +118,6 @@ public class User {
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
-        System.out.println(isLastName);
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
         this.name[0] = firstName;
@@ -484,6 +483,10 @@ public class User {
         setLastModified();
     }
 
+    public void sortHistory() {
+        userHistory.sort(Comparator.comparing(HistoryItem::getDateTime));
+    }
+
     public void setLastModified() {
         lastModified = LocalDateTime.now();
     }
@@ -532,6 +535,9 @@ public class User {
         return previousProcedures;
     }
 
+    public ArrayList<HistoryItem> getUserHistory() {
+        return userHistory;
+    }
 
     /**
      * Get a string containing key information about the user.
@@ -659,5 +665,13 @@ public class User {
                 break;
             }
         }
+    }
+
+    public void addHistoryItem(HistoryItem historyItem) {
+        userHistory.add(historyItem);
+    }
+
+    public void addHistoryEntry(String action, String description) {
+        userHistory.add(new HistoryItem(action, description));
     }
 }
