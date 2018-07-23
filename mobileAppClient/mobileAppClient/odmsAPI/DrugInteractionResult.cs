@@ -5,7 +5,7 @@ using System.Text;
 
 namespace mobileAppClient.odmsAPI
 {
-    class DrugInteractionResult
+    public class DrugInteractionResult
     {
         public List<String> ageInteractions { get; set; }
         public List<String> durationInteractions { get; set; }

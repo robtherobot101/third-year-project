@@ -51,9 +51,9 @@ namespace mobileAppClient
         {
             Console.WriteLine("Compare pressed!");
             DrugInteractionAPI drugInteractionAPI = new DrugInteractionAPI();
-            string retrievedDrugInteractions = await drugInteractionAPI.RetrieveDrugInteractions(selectedItem1.Text, selectedItem2.Text);
+            DrugInteractionResult retrievedDrugInteractions = await drugInteractionAPI.RetrieveDrugInteractions(selectedItem1.Text, selectedItem2.Text);
             await DisplayAlert("", 
-                               retrievedDrugInteractions,
+                               string.Join(", ", retrievedDrugInteractions.genderInteractions),
                                 "OK");
 
 

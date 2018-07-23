@@ -16,7 +16,7 @@ namespace mobileAppClient.odmsAPI
     {
         private string apiEndpoint = "https://www.ehealthme.com/api/v1/drug-interaction/";
 
-        public async Task<string> RetrieveDrugInteractions(string drugA, string drugB)
+        public async Task<DrugInteractionResult> RetrieveDrugInteractions(string drugA, string drugB)
         {
             HttpClient client = ServerConfig.Instance.client;
 
@@ -27,11 +27,7 @@ namespace mobileAppClient.odmsAPI
             var responseContent = await response.Content.ReadAsStringAsync();
 
             DrugInteractionResult drugInteractionResult = new DrugInteractionResult(responseContent, 18, Gender.MALE);
-
-            // TODO return correct string or even obj??
-            return drugInteractionResult.ageInteractions.ToString();
-            
+            return drugInteractionResult;
         }
-
     }
 }
