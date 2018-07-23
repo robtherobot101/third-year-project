@@ -98,7 +98,7 @@ public class AdminCliController implements Initializable {
         if (!commandInputField.getText().equals("TF > ")) {
             capturedOutput.add(commandInputField.getText());
 
-            String response = WindowManager.getDatabase().sendCommand(commandInputField.getText().substring(5));
+            String response = WindowManager.getDataManager().getGeneral().sendCommand(commandInputField.getText().substring(5));
             if(isInstruction(response)) {
                 executeInstruction(response);
             }else{

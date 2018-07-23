@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpResponseException;
 import seng302.User.Importers.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
@@ -25,7 +27,6 @@ import java.util.List;
 public class IO {
 
     private static String jarPath, userPath, clinicianPath, adminPath;
-    public static PrintStream streamOut;
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
@@ -74,48 +75,12 @@ public class IO {
     }
 
     /**
-     * get path to the user json file
-     *
-     * @return path to the user json file
-     */
-    public static String getUserPath() {
-        return userPath;
-    }
-
-    /**
      * get the path to the jar file
      *
      * @return path to the jar file
      */
     public static String getJarPath() {
         return jarPath;
-    }
-
-    /**
-     * get path to the clinician json file
-     *
-     * @return path to the clinician json file
-     */
-    public static String getClinicianPath() {
-        return clinicianPath;
-    }
-
-    /**
-     * get path to the admin json file
-     *
-     * @return path to the admin json file
-     */
-    public static String getAdminPath() {
-        return adminPath;
-    }
-
-    /**
-     * set the path to the jar file
-     *
-     * @param jarPath path to the jar file
-     */
-    public static void setJarPath(String jarPath) {
-        IO.jarPath = jarPath;
     }
 
 
@@ -135,13 +100,13 @@ public class IO {
             outputStream = new PrintStream(new FileOutputStream(outputFile));
             switch (loginType) {
                 case USER:
-                    gson.toJson(DataManager.users, outputStream);
+                    gson.toJson(WindowManager.getDataManager().getUsers().getAllUsers(), outputStream);
                     break;
                 case CLINICIAN:
-                    gson.toJson(DataManager.clinicians, outputStream);
+                    gson.toJson(WindowManager.getDataManager().getClinicians().getAllClinicians(), outputStream);
                     break;
                 case ADMIN:
-                    gson.toJson(DataManager.admins, outputStream);
+                    gson.toJson(WindowManager.getDataManager().getAdmins().getAllAdmins(), outputStream);
                     break;
             }
             success = true;
@@ -181,38 +146,65 @@ public class IO {
         Debugger.log("importProfile called with profile type: " + profileType);
         switch (profileType) {
             case USER:
-                ProfileReader<User> userReader = new UserReaderJSON();
-                List<User> readUsers = userReader.getProfiles(path);
-                if (readUsers != null) {
-                    DataManager.addAllUsers(readUsers);
+                try {
+                    ProfileReader<User> userReader = new UserReaderJSON();
+                    List<User> readUsers = userReader.getProfiles(path);
+                    if (readUsers != null) {
+                        for(User u : readUsers) {
+                            WindowManager.getDataManager().getUsers().insertUser(u);
+                        }
+                    }
+                    return true;
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to import users from Json.");
                 }
-                return true;
             case CLINICIAN:
-                ProfileReader<Clinician> clinicianReader = new ClinicianReaderJSON();
-                List<Clinician> readClinicians = clinicianReader.getProfiles(path);
-                if (readClinicians != null) {
-                    DataManager.clinicians.addAll(readClinicians);
+                try {
+                    ProfileReader<Clinician> clinicianReader = new ClinicianReaderJSON();
+                    List<Clinician> readClinicians = clinicianReader.getProfiles(path);
+                    if (readClinicians != null) {
+                        for(Clinician c : readClinicians) {
+                            WindowManager.getDataManager().getClinicians().insertClinician(c);
+                        }
+                    }
+                    return true;
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to import clinicians from Json.");
                 }
-                return true;
             case ADMIN:
-                ProfileReader<Admin> adminReader = new AdminReaderJSON();
-                List<Admin> readAdmins = adminReader.getProfiles(path);
-                if (readAdmins != null) {
-                    DataManager.admins.addAll(readAdmins);
+                try {
+                    ProfileReader<Admin> adminReader = new AdminReaderJSON();
+                    List<Admin> readAdmins = adminReader.getProfiles(path);
+                    if (readAdmins != null) {
+                        for(Admin a : readAdmins) {
+                            WindowManager.getDataManager().getAdmins().insertAdmin(a);
+                        }
+                    }
+                    return true;
+
+                } catch (HttpResponseException e) {
+                    Debugger.error("Failed to import admins from Json.");
                 }
-                return true;
         }
         return false;
     }
 
     public static boolean importUserCSV(String path) {
-        Debugger.log("importUserCSV called");
-        ProfileReader<User> userReader = new UserReaderCSV();
-        List<User> readUsers = userReader.getProfiles(path);
-        if (readUsers != null) {
-            DataManager.addAllUsers(readUsers);
+        try {
+            Debugger.log("importUserCSV called");
+            ProfileReader<User> userReader = new UserReaderCSV();
+            List<User> readUsers = userReader.getProfiles(path);
+            if (readUsers != null) {
+                for(User u : readUsers) {
+                    WindowManager.getDataManager().getUsers().insertUser(u);
+                }
+            }
+            return true;
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to import users from CSV.");
+            return false;
         }
-        return true;
     }
 
     /**

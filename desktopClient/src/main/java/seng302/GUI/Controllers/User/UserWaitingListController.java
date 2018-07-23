@@ -47,6 +47,7 @@ public class UserWaitingListController extends UserTabController implements Init
      */
     public void setCurrentUser(User user) {
         this.currentUser = user;
+        populateWaitingList();
         transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
@@ -80,22 +81,12 @@ public class UserWaitingListController extends UserTabController implements Init
         WaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             userController.addCurrentUserToUndoStack();
-            WindowManager.showDeregisterDialog(waitingListItemSelected);
+            WindowManager.showDeregisterDialog(waitingListItemSelected, currentUser);
             statusIndicator.setStatus("De-registered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }
         populateOrgansComboBox();
         userController.populateUserAttributes();
-    }
-
-
-    public void setStatusIndicator(StatusIndicator statusIndicator) {
-        this.statusIndicator = statusIndicator;
-    }
-
-
-    public void setTitleBar(TitleBar titleBar) {
-        this.titleBar = titleBar;
     }
 
     @Override
@@ -143,12 +134,7 @@ public class UserWaitingListController extends UserTabController implements Init
      * Refreshes the list waiting list TableView
      */
     public void populateWaitingList() {
-        //TODO
-        //currentUser is null when an item is deregistered via the clinicians transplant waiting list
-        // and the clinician hasn't yet viewed any user windows.
-
-        //This should be fixed with Andrew's changes to dealing with multiple clinician
-        if(currentUser != null){
+        if (currentUser != null){
             waitingListItems.clear();
             waitingListItems.addAll(currentUser.getWaitingListItems());
         }

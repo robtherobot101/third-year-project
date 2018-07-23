@@ -87,7 +87,7 @@ public class ClinicianController implements Initializable {
     private int numberXofResults;
 
     private int page = 1;
-    private ArrayList<User> usersFound = new ArrayList<>();
+    private List<User> usersFound = new ArrayList<>();
 
     private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
@@ -341,9 +341,9 @@ public class ClinicianController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                WindowManager.getDatabase().updateClinician(clinician);
-            } catch (Exception e) {
-                e.printStackTrace();
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician);
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }
 
             //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
@@ -432,7 +432,11 @@ public class ClinicianController implements Initializable {
      * Updates the list of users found from the search
      */
     public void updateFoundUsers() {
-        profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
+        try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to fetch all users.");
+        }
         Map<String, String> searchMap = new HashMap<>();
 
         if (!searchNameTerm.equals("")){
@@ -473,16 +477,7 @@ public class ClinicianController implements Initializable {
             searchMap.put("userType", searchUserTypeTerm);
         }
         try {
-            APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
-            if(response.isValidJson()){
-                JsonArray searchResults = response.getAsJsonArray();
-
-                Type type = new TypeToken<ArrayList<User>>() {
-                }.getType();
-
-                usersFound = gson.fromJson(searchResults, type);
-
-            }
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
 
             users = FXCollections.observableArrayList(usersFound);
             populateNResultsComboBox(usersFound.size());
@@ -533,7 +528,11 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
+        try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to fetch all users.");
+        }
 
         clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));

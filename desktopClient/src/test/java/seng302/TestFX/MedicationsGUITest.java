@@ -17,8 +17,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
 import junit.framework.TestCase;
+import org.apache.http.client.HttpResponseException;
 import org.junit.*;
 import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
@@ -177,7 +180,11 @@ public class MedicationsGUITest extends TestFXTest {
         clickOn("OK");
         clickOn("Exit");
 
-        openClinicianWindow(DataManager.clinicians.get(0));
+        try{
+            openClinicianWindow(WindowManager.getDataManager().getClinicians().getClinician(1));
+        } catch (HttpResponseException e) {
+            Debugger.error("Testing should use not use the server where possible. Failed to fetch clinician with id: 1");
+        }
 
         //Check if medication added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();

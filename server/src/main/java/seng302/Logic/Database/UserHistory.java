@@ -41,6 +41,16 @@ public class UserHistory {
         }
     }
 
+    public void removeHistoryItem(int userId, int historyItemId) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "DELETE FROM HISTORY_ITEM WHERE id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
+            statement.setInt(1, historyItemId);
+            statement.setInt(2, userId);
+            System.out.println("Deletion of History Item - ID: " + historyItemId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
+
     public HistoryItem getHistoryItemFromResultSet(ResultSet historyItemsResultSet) throws SQLException {
 
         return new HistoryItem(
