@@ -23,7 +23,7 @@
 
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Admin.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Admin.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -114,7 +114,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <TableView fx:id="userTableView" prefHeight="300.0" prefWidth="571.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+                                    <TableView fx:id="userTableView" prefWidth="571.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                        </columnResizePolicy>
@@ -126,15 +126,17 @@
                                           <TableColumn fx:id="userRegionTableColumn" prefWidth="163.0" text="Region" />
                                        </columns>
                                     </TableView>
-                                          <TextField fx:id="adminRegionField" layoutX="577.0" layoutY="16.0" prefHeight="27.0" prefWidth="130.0" promptText="Region" />
-                                          <ComboBox fx:id="adminGenderComboBox" layoutX="440.0" layoutY="16.0" prefHeight="27.0" prefWidth="126.0" promptText="Gender" />
-                                          <ComboBox fx:id="adminUserTypeComboBox" layoutX="184.0" layoutY="16.0" prefWidth="150.0" promptText="User Type" />
-                                          <TextField fx:id="adminAgeField" layoutX="344.0" layoutY="16.0" prefHeight="27.0" prefWidth="89.0" promptText="Age" />
-                                          <TextField fx:id="profileSearchTextField" layoutX="14.0" layoutY="17.0" prefHeight="26.0" prefWidth="150.0" promptText="Name" />
-                                          <Button layoutX="852.0" layoutY="14.0" mnemonicParsing="false" onAction="#clearFilter" prefHeight="31.0" prefWidth="90.0" text="Clear Filter" />
-                                          <Label layoutX="14.0" layoutY="-1.0" text="Profile Search" />
-                                    <Label layoutX="184.0" layoutY="-1.0" text="Profile Filters" />
-                                    <ComboBox fx:id="adminOrganComboBox" layoutX="715.0" layoutY="16.0" prefHeight="27.0" prefWidth="125.0" promptText="Organ" />
+                                          <TextField fx:id="adminRegionField" layoutX="483.0" layoutY="17.0" prefHeight="27.0" prefWidth="119.0" promptText="Region" />
+                                          <ComboBox fx:id="adminGenderComboBox" layoutX="363.0" layoutY="17.0" prefHeight="27.0" prefWidth="118.0" promptText="Gender" />
+                                          <ComboBox fx:id="adminUserTypeComboBox" layoutX="152.0" layoutY="17.0" prefWidth="150.0" promptText="User Type" />
+                                          <TextField fx:id="adminAgeField" layoutX="304.0" layoutY="17.0" prefHeight="27.0" prefWidth="57.0" promptText="Age" />
+                                          <TextField fx:id="profileSearchTextField" layoutY="17.0" prefHeight="26.0" prefWidth="150.0" promptText="Name" />
+                                          <Button layoutX="715.0" layoutY="15.0" mnemonicParsing="false" onAction="#clearFilter" prefHeight="31.0" prefWidth="90.0" text="Clear Filter" />
+                                          <Label text="Profile Search" />
+                                    <Label layoutX="152.0" text="Profile Filters" />
+                                    <ComboBox fx:id="adminOrganComboBox" layoutX="604.0" layoutY="17.0" prefHeight="27.0" prefWidth="109.0" promptText="Organ" />
+                                    <ComboBox fx:id="numberOfResultsToDisplay" layoutX="820.0" layoutY="18.0" prefWidth="150.0" />
+                                    <Label layoutX="820.0" layoutY="1.0" text="Display" />
                                  </children>
                               </AnchorPane>
                         </content>
@@ -278,10 +280,10 @@
                     </children>
                 </AnchorPane>
 							<AnchorPane fx:id="cliPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-								<fx:include source="adminCli.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+								<fx:include fx:id="cli" source="adminCli.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</AnchorPane>
 							<AnchorPane fx:id="transplantListPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-								<fx:include source="../clinician/clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+								<fx:include fx:id="waitingList" source="../clinician/clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</AnchorPane>
             </children>
         </AnchorPane>

@@ -4,17 +4,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import org.apache.http.client.HttpResponseException;
-import org.apache.http.nio.client.HttpAsyncClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.DataManager;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -146,7 +143,7 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         try {
-            assertEquals(1, WindowManager.getDataManager().getUsers().getAllUsers().size());
+            assertEquals(1, WindowManager.getDataManager().getUsers().getAllUsers(null).size());
         } catch (HttpResponseException e) {
             Debugger.error("Should avoid using DB for testing where possible. Failed to fecth all users.");
         }

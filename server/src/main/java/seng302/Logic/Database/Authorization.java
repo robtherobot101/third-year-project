@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class Authorization {
 
@@ -80,7 +81,31 @@ public class Authorization {
 
     }
 
-    public void logout() {
+    /**
+     * Adds a token to the database for a new user login.
+     *
+     * @param id The id of the user/admin/clinician that is logging in
+     * @param accessLevel The access level of the user
+     * @return The token
+     * @throws SQLException If there is an error communicating with the database
+     */
+    public String generateToken(int id, int accessLevel) throws SQLException {
+        String token = UUID.randomUUID().toString();
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO TOKEN VALUES (?, ?, ?)");
+            statement.setInt(1, id);
+            statement.setString(2, token);
+            statement.setInt(3, accessLevel);
+            statement.execute();
+        }
+        return token;
+    }
 
+    public void logout(String token) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM TOKEN WHERE token = ?");
+            statement.setString(1, token);
+            statement.execute();
+        }
     }
 }

@@ -64,6 +64,7 @@ public class UserController implements Initializable {
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
     private User currentUser;
+    private String token;
 
     /**
      * Sets up a new title bar for this controller.
@@ -102,7 +103,8 @@ public class UserController implements Initializable {
      *
      * @param currentUser The user to display
      */
-    public void setCurrentUser(User currentUser) {
+    public void setCurrentUser(User currentUser, String token) {
+        this.token = token;
         this.currentUser = currentUser;
         if (currentUser.getPreferredName() != null) {
             setWelcomeText("Welcome, " + currentUser.getPreferredName());
@@ -161,7 +163,7 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
             try {
-                User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId());
+                User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId(), token);
                 attributesController.undoStack.clear();
                 attributesController.redoStack.clear();
                 medicationsController.undoStack.clear();
@@ -173,7 +175,7 @@ public class UserController implements Initializable {
                 waitingListController.undoStack.clear();
                 waitingListController.redoStack.clear();
                 setUndoRedoButtonsDisabled(true, true);
-                setCurrentUser(latest);
+                setCurrentUser(latest, token);
                 addHistoryEntry("Refreshed", "User data was refreshed from the server.");
                 alert.close();
 
@@ -384,7 +386,7 @@ public class UserController implements Initializable {
             proceduresController.updateUser();
             historyController.populateTable();
             try {
-                WindowManager.getDataManager().getUsers().updateUser(currentUser);
+                WindowManager.getDataManager().getUsers().updateUser(currentUser, token);
             } catch (HttpResponseException e ){
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }
@@ -394,7 +396,7 @@ public class UserController implements Initializable {
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
 
-            WindowManager.getClinicianController().updateFoundUsers();
+            WindowManager.updateFoundClinicianUsers();
             WindowManager.updateTransplantWaitingList();
         }
         alert.close();

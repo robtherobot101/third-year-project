@@ -14,7 +14,6 @@ import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.awt.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -44,8 +43,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     public void setUp() throws SQLException {
         useLocalStorage();
         try{
-            WindowManager.getDataManager().getGeneral().reset();
-            WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default","default","default"));
+            WindowManager.getDataManager().getGeneral().reset(null);
+            WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default","default","default"), null);
         }catch (HttpResponseException e) {
 
         }

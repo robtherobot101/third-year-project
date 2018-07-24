@@ -17,6 +17,7 @@ import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -41,17 +42,19 @@ public class LoginController implements Initializable {
 
     public void login(){
         try {
-            Object response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
-            if (response != null) {
-                if (response instanceof User) {
+            Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
+            Object user = response.keySet().iterator().next();
+            String token = response.values().iterator().next();
+            if (user != null) {
+                if (user instanceof User) {
                     Debugger.log("LoginController: Logging in as user...");
-                    loadUser((User)response);
-                } else if (response instanceof Admin) {
+                    loadUser((User)user, token);
+                } else if (user instanceof Admin) {
                     Debugger.log("LoginController: Logging in as admin...");
-                    loadAdmin((Admin)response);
-                } else if (response instanceof Clinician) {
+                    loadAdmin((Admin)user, token);
+                } else if (user instanceof Clinician) {
                     Debugger.log("LoginController: Logging in as clinician...");
-                    loadClinician((Clinician)response);
+                    loadClinician((Clinician)user, token);
                 }  else {
                     errorMessage.setText("Username/email and password combination not recognized.");
                     errorMessage.setVisible(true);
@@ -66,20 +69,20 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void loadUser(User user) {
-        WindowManager.setCurrentUser(user);
+    private void loadUser(User user, String token) {
+        WindowManager.setCurrentUser(user, token);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();
     }
 
-    private void loadClinician(Clinician clinician) {
-        WindowManager.setClinician(clinician);
+    private void loadClinician(Clinician clinician, String token) {
+        WindowManager.setCurrentClinician(clinician, token);
         WindowManager.setScene(TFScene.clinician);
         resetScene();
     }
 
-    private void loadAdmin(Admin admin) {
-        WindowManager.setAdmin(admin);
+    private void loadAdmin(Admin admin, String token) {
+        WindowManager.setCurrentAdmin(admin, token);
         WindowManager.setScene(TFScene.admin);
         resetScene();
     }

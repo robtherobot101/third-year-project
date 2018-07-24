@@ -20,84 +20,80 @@ public class AuthorizationController {
 
         String usernameEmail = request.queryParams("usernameEmail");
         String password = request.queryParams("password");
-        System.out.println(usernameEmail);
-        System.out.println(password);
         if(usernameEmail == null || password == null) {
             response.status(400);
             return "Missing Parameters";
         }
 
-        boolean identificationMatched = false;
         ProfileType typeMatched = null;
+        String loginToken = null;
+
+        User currentUser = null;
+        Clinician currentClinician = null;
+        Admin currentAdmin = null;
 
         // Check for a user match
-        User currentUser = null;
         try {
             currentUser = model.loginUser(usernameEmail, password);
+            if (currentUser != null) {
+                loginToken = model.generateToken((int) currentUser.getId(), 0);
+                typeMatched = ProfileType.USER;
+                System.out.println("LoginController: Logging in as user...");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        if(currentUser != null) {
-            typeMatched = ProfileType.USER;
-            identificationMatched = true;
-            System.out.println("LoginController: Logging in as user...");
+        if (loginToken == null) { //if user login was unsuccessful
+            // Check for a clinician match
+            try {
+                currentClinician = model.loginClinician(usernameEmail, password);
+                if (currentClinician != null) {
+                    loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
+                    typeMatched = ProfileType.CLINICIAN;
+                    System.out.println("LoginController: Logging in as clinician...");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-
-        // Check for a clinician match
-        Clinician currentClinician = null;
-        try {
-            currentClinician = model.loginClinician(usernameEmail, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (loginToken == null) { //if user login and clinician login was unsuccessful
+            // Check for an admin match
+            try {
+                currentAdmin = model.loginAdmin(usernameEmail, password);
+                if (currentAdmin != null) {
+                    loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
+                    typeMatched = ProfileType.ADMIN;
+                    System.out.println("LoginController: Logging in as admin...");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        if(currentClinician != null) {
-            typeMatched = ProfileType.CLINICIAN;
-            identificationMatched = true;
-            System.out.println("LoginController: Logging in as clinician...");
-        }
-
-        // Check for an admin match
-        Admin currentAdmin = null;
-        try {
-            currentAdmin = model.loginAdmin(usernameEmail, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        //Do a db search here
-        if(currentAdmin != null) {
-            typeMatched = ProfileType.ADMIN;
-            identificationMatched = true;
-            System.out.println("LoginController: Logging in as admin...");
-        }
-
-
-        if (identificationMatched) {
-
+        if (typeMatched != null) {
             switch (typeMatched) {
                 case ADMIN:
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     String serialQueriedAdmin = gson.toJson(currentAdmin);
                     response.type("application/json");
                     response.status(200);
-                    response.header("token", "HARRO");
+                    response.header("token", loginToken);
                     return serialQueriedAdmin;
                 case CLINICIAN:
                     gson = new GsonBuilder().setPrettyPrinting().create();
                     String serialQueriedClinician = gson.toJson(currentClinician);
                     response.type("application/json");
                     response.status(200);
-                    response.header("token", "HARRO");
+                    response.header("token", loginToken);
                     return serialQueriedClinician;
                 case USER:
                     gson = new GsonBuilder().setPrettyPrinting().create();
                     String serialQueriedUser = gson.toJson(currentUser);
                     response.type("application/json");
                     response.status(200);
-                    response.header("token", "HARRO");
+                    response.header("token", loginToken);
                     return serialQueriedUser;
             }
 
@@ -107,10 +103,25 @@ public class AuthorizationController {
         }
         response.status(500);
         return "Server Failure";
+    }
 
-   }
 
     public String logout(Request request, Response response) {
-        return "Hello";
+        try {
+            String token = request.headers("token");
+            if (token == null) {
+                response.status(400);
+                System.out.println("Received logout with no token");
+                return "Invalid: logout with no token";
+            } else {
+                model.logout(token);
+                response.status(200);
+                return "Logged out successfully";
+            }
+        } catch (SQLException e) {
+            response.status(400);
+            System.out.println("Received logout with no token");
+            return "Invalid: logout with no token";
+        }
     }
 }

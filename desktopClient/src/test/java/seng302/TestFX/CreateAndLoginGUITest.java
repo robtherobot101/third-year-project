@@ -1,12 +1,5 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.sql.SQLException;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -16,9 +9,14 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
+
+import java.sql.SQLException;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateAndLoginGUITest extends TestFXTest {
 
@@ -29,7 +27,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
     @Before
     public void setup() throws HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset();
+        WindowManager.getDataManager().getGeneral().reset(null);
         WindowManager.resetScene(TFScene.createAccount);
         //DataManager.users.clear();
     }

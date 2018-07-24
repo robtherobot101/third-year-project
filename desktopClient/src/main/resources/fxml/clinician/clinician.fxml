@@ -100,7 +100,7 @@
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Button>
-                  <ComboBox fx:id="numberOfResutsToDisplay" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <ComboBox fx:id="numberOfResultsToDisplay" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets left="5.0" top="10.0" />
                      </GridPane.margin></ComboBox>
@@ -238,7 +238,7 @@
                 </AnchorPane>
             <AnchorPane fx:id="transplantListPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<children>
-								<fx:include source="clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+								<fx:include fx:id="waitingList" source="clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</children>
 						</AnchorPane>
             </children>
