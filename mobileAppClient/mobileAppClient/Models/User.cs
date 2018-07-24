@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 namespace mobileAppClient
 {
+    /*
+     * Stores details regarding a user for JSON (de)serialisation and storage
+     */
     public class User
     {
         public List<string> name { get; set; }
@@ -58,7 +61,9 @@ namespace mobileAppClient
         public User(string email) {
             this.email = email;
         }
-
+        /*
+         * Simply calculates the user's age
+         */ 
         public double getAge()
         {
             double age;
@@ -71,9 +76,6 @@ namespace mobileAppClient
                 age = (this.dateOfDeath.ToDateTime() - this.dateOfBirth.ToDateTime()).Days / 365.00;
             }
             return age;
-
         }
-
-
     }
 }

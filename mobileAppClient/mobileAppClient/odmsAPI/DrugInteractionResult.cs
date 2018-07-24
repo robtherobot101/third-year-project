@@ -17,6 +17,9 @@ namespace mobileAppClient.odmsAPI
         public bool gotInteractions { get; set; }
         public HttpStatusCode resultStatusCode { get; set; }
 
+        /*
+         * Main constructor that parses the JSON returned from the API
+         */
         public DrugInteractionResult(String jsonString, int age, Gender gender)
         {
             ageInteractions = new List<string>();

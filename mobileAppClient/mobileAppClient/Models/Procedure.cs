@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace mobileAppClient
 {
+    /*
+     * Stores details regarding a user for JSON (de)serialisation
+     */
     public class Procedure
     {
         public string Summary { get; set; }
@@ -11,11 +14,5 @@ namespace mobileAppClient
         public List<String> OrgansAffected { get; set; }
         public int Id { get; set; }
         public string DetailString { get; set; }
-
-
-
-        public Procedure()
-        {
-        }
     }
 }

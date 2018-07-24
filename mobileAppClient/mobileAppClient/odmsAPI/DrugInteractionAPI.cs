@@ -4,10 +4,16 @@ using System.Net.Http;
 using System.Threading.Tasks;
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Handles communication with the eHealth drug interaction API
+     */
     public class DrugInteractionAPI
     {
         private string apiEndpoint = "https://www.ehealthme.com/api/v1/drug-interaction/";
 
+        /*
+         * Returns a DrugInteractionResult based on two drug names
+         */
         public async Task<DrugInteractionResult> RetrieveDrugInteractions(string drugA, string drugB)
         {
             HttpClient client = ServerConfig.Instance.client;

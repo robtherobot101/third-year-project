@@ -1,6 +1,9 @@
 ﻿using System;
 namespace mobileAppClient
 {
+    /*
+     * Stores details regarding a user's waiting list position for JSON (de)serialisation
+     */
     public class WaitingListItem
     {
         public string OrganType { get; set; }
