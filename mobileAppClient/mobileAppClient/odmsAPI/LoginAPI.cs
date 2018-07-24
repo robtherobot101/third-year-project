@@ -15,7 +15,7 @@ namespace mobileAppClient.odmsAPI
     /*
      * Holds methods that interface to the /login and registration endpoints in the ODMS API
      */
-    class LoginAPI
+    public class LoginAPI
     {
         /*
          * Returns response status code of the attempted login 

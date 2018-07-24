@@ -31,11 +31,18 @@ namespace mobileAppClient.odmsAPI
         }
 
         /*
-         * Verifies the device is connected to the internet
+         * Verifies the device is able to make queries to the ODMS API
          */ 
         public async Task<bool> IsConnectedToInternet()
         {
-            return true;
+            var response = await client.GetAsync(serverAddress + "/hello");
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
         }
     }
 }
