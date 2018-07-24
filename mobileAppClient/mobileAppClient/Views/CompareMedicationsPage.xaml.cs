@@ -7,10 +7,18 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the comparing of medications page for 
+     * comparing two individual medications of a user.
+     */ 
     public partial class CompareMedicationsPage : ContentPage
     {
         int i = 1;
 
+        /*
+         * Constructor which initialises the listview to contain all past and current
+         * medications of the user.
+         */
         public CompareMedicationsPage()
         {
             InitializeComponent();
@@ -26,6 +34,10 @@ namespace mobileAppClient
             MedicationsList.ItemsSource = medicationItems;
         }
 
+        /*
+         * Event Handler to handle the selection of a single medication
+         * to populate the correct selected medication field.
+         */ 
         void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             Medication selectedMedication = (Medication)MedicationsList.SelectedItem;
@@ -48,6 +60,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Event handler to handle when a user selects medications and 
+         * wishes to compare them, sending a call off to the interactions API.
+         */ 
         async void Handle_ComparePressed(object sender, System.EventArgs e)
         {
             Console.WriteLine("Compare pressed!");
@@ -84,16 +100,25 @@ namespace mobileAppClient
                                 "OK");
         }
 
+        /*
+         * Resets the selected item 1 field to be blank.
+         */ 
         void Handle_Clear1Pressed(object sender, System.EventArgs e)
         {
             selectedItem1.Text = "";
         }
 
+        /*
+         * Resets the selected item 2 field to be blank.
+         */ 
         void Handle_Clear2Pressed(object sender, System.EventArgs e)
         {
             selectedItem2.Text = "";
         }
 
+        /*
+         * Handles when the back button is clicked, sending the user back to the medications page.
+         */ 
         async void BackButtonClicked(object sender, EventArgs args)
         {
             await Navigation.PopModalAsync();

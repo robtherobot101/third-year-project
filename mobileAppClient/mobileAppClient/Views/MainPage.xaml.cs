@@ -10,12 +10,19 @@ using Xamarin.Forms.Xaml;
 namespace mobileAppClient
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
+    /*
+     * Class to handle all functionality regarding the main menu slider for 
+     * displaying all user navigation options.
+     */ 
     public partial class MainPage : MasterDetailPage, UserObserver
     {
 
         public List<MasterPageItem> menuList { get; set; }
 
-
+        /*
+         * Constructor which adds all of the menu items with given icons and titles.
+         * Also sets the landing page to be the overview page.
+         */ 
         public MainPage()
         {
             OpenLogin();
@@ -57,6 +64,9 @@ namespace mobileAppClient
             
         }
 
+        /*
+         * Method which is used when a user logs out, opening the login page again.
+         */ 
         private async void OpenLogin()
         {
             // Logout any currently stored user
@@ -67,6 +77,10 @@ namespace mobileAppClient
             await Navigation.PushModalAsync(loginPage);
         }
 
+        /*
+         * Observer class method to handle when a user is updated, 
+         * in this case updating the Details of the Menu Slider.
+         */ 
         public void updateUser()
         {
             this.BindingContext = new
@@ -76,7 +90,9 @@ namespace mobileAppClient
             };
         }
 
-
+        /*
+         * Handles when a given page is selected in the menu slider and sends the user to that page.
+         */ 
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = (MasterPageItem)e.SelectedItem;

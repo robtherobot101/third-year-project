@@ -5,8 +5,15 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the single waiting list item page for 
+     * showing the details of a single waiting list item of a user.
+     */ 
     public partial class SingleWaitingListItemPage : ContentPage
     {
+        /*
+         * Constructor which initialises the entries of the waiting list items listview.
+         */ 
         public SingleWaitingListItemPage(WaitingListItem waitingListItem)
         {
             InitializeComponent();
@@ -22,6 +29,10 @@ namespace mobileAppClient
             IDEntry.Text = waitingListItem.Id.ToString();
         }
 
+        /*
+         * Handles the back button being clicked, returning the user to 
+         * the waiting list items page.
+         */ 
         async void BackButtonClicked(object sender, EventArgs args)
         {
             await Navigation.PopModalAsync();

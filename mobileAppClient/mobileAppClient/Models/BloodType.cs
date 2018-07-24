@@ -1,6 +1,9 @@
 ﻿using System;
 namespace mobileAppClient
 {
+    /*
+     * Enum to handle all different Blood Types of a user.
+     */ 
     public enum BloodType
     {
         A_NEG,
@@ -13,6 +16,10 @@ namespace mobileAppClient
         O_POS
     }
 
+    /*
+     * Class to handle the conversion of BloodType Enum values to usable strings as 
+     * well as inverse of this (from string to BloodType)
+     */ 
     public static class BloodTypeExtensions
     {
         /*
@@ -43,6 +50,10 @@ namespace mobileAppClient
                     return null;
             }
         }
+
+        /*
+         * Converts a given string into a BloodType Enum used for when the user object is sent to the server.
+         */ 
         public static BloodType ToBloodType(this string value)
         {
             switch (value)

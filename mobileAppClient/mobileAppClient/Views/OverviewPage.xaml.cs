@@ -8,6 +8,10 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the overview page for 
+     * showing an overview of all of a user's details in the application.
+     */ 
     public partial class OverviewPage : ContentPage, UserObserver
     {
         public OverviewPage()
@@ -21,11 +25,19 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * Observer pattern used to refill all of the user fields 
+         * when there is an update elsewhere.
+         */ 
         public void updateUser()
         {
             fillFields();
         }
 
+        /*
+         * Function which fill all in the table with all of the user's details
+         * summarised from the other places in the application.
+         */ 
         public void fillFields() {
             
             User currentUser = UserController.Instance.LoggedInUser;

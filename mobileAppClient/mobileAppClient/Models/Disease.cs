@@ -1,6 +1,9 @@
 ﻿using System;
 namespace mobileAppClient
 {
+    /*
+     * Class to handle Disease objects coming from the server with all relevant attributes. 
+     */ 
     public class Disease
     {
         public string Name { get; set; }

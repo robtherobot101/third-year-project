@@ -9,9 +9,16 @@ using System.Net;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the organs page for 
+     * showing all of a users donated organs. 
+     */ 
     public partial class OrgansPage : ContentPage 
     {
-
+        /*
+         * Constructor which sets all of the organ cells to be on or off
+         * depending on which organs a user has donated.
+         */ 
         public OrgansPage()
         {
             InitializeComponent();
@@ -57,7 +64,10 @@ namespace mobileAppClient
 
         }
 
-
+        /*
+         * Handles when a user presses the donate all button
+         * to set all organs to be donated.
+         */ 
         void Handle_DonateAllPressed(object sender, System.EventArgs e)
         {
             LiverCell.On = true;
@@ -74,7 +84,10 @@ namespace mobileAppClient
             
         }
 
-
+        /*
+         * Handles when a user presses the save button, sending an 
+         * API call to update a user's donated organs.
+         */ 
         async void Handle_SavePressed(object sender, System.EventArgs e)
         {
             UserController.Instance.LoggedInUser.organs.Clear();

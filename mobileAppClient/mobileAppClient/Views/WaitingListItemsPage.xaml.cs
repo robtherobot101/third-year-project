@@ -6,8 +6,16 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the waitingListItems page for 
+     * showing all of a users waiting list items.
+     */ 
     public partial class WaitingListItemsPage : ContentPage
     {
+        /*
+         * Constructor which sets the detail strings for each text cell 
+         * and also sets the visibility of the no data label and sorting picker.
+         */ 
         public WaitingListItemsPage()
         {
             InitializeComponent();
@@ -32,6 +40,10 @@ namespace mobileAppClient
             WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
         }
 
+        /*
+         * Handles when a single waiting list item is tapped, sending a user to the single waiting list item page 
+         * of that given waiting list item.
+         */ 
         async void Handle_WaitingListItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)
@@ -42,6 +54,10 @@ namespace mobileAppClient
             await Navigation.PushModalAsync(singleWaitingListItemPage);
         }
 
+        /*
+         * Handles when a user selects a given attribute of the sorting dropdown 
+         * to sort by, sorting the given items in the list view.
+         */ 
         void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             List<WaitingListItem> currentList = (System.Collections.Generic.List<WaitingListItem>)WaitingListItemsList.ItemsSource;
@@ -109,6 +125,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Handles when a user changes the orientation of the sorting to be either ascending or 
+         * descending, changing the order in which items are sorted in the list view.
+         */ 
         void Handle_UpDownChanged(object sender, System.EventArgs e)
         {
             List<WaitingListItem> currentList = (System.Collections.Generic.List<WaitingListItem>)WaitingListItemsList.ItemsSource;

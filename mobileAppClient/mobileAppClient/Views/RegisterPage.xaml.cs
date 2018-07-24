@@ -12,6 +12,10 @@ using Xamarin.Forms.Xaml;
 namespace mobileAppClient
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
+    /*
+     * Class to handle all functionality regarding the register page for 
+     * registering a new user with the application.
+     */ 
     public partial class RegisterPage : ContentPage
     {
         // Tracks the login page that called this register page, used for closing the login modal after a successful registration
@@ -93,6 +97,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Function which sends an API call with the inputted username/email and password 
+         * to return a user object from the login call.
+         */ 
         private async Task LoginRegisteredUser(string givenUsername, string givenEmail, string givenPassword)
         {
             LoginAPI loginAPI = new LoginAPI();

@@ -1,6 +1,9 @@
 ﻿using System;
 namespace mobileAppClient
 {
+    /*
+     * Class to handle any time objects received from the server user object.
+     */ 
     public class CustomTime
     {
         public int hour { get; set; }

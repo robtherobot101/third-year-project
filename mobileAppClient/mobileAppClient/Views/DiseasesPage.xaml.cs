@@ -6,8 +6,16 @@ using System.Linq;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the diseases page for 
+     * showing all of a users current and cured diseases.
+     */ 
     public partial class DiseasesPage : ContentPage
     {
+        /*
+         * Event handler to handle when a user switches between current and cured diseases
+         * resetting the sorting and changing the listview items.
+         */ 
         void Handle_ValueChanged(object sender, SegmentedControl.FormsPlugin.Abstractions.ValueChangedEventArgs e)
         {
             switch (e.NewValue)
@@ -51,6 +59,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Function to return all of the users current diseases with the chronic 
+         * diseases at the top of the list, unsorted.
+         */ 
         public List<Disease> returnCurrentDiseasesWithChronicAtTop() {
             List<Disease> finalList = new List<Disease>();
             List<Disease> chronicList = new List<Disease>();
@@ -79,6 +91,10 @@ namespace mobileAppClient
             return finalList;
         }
 
+        /*
+         * Constructor which sets the chronic items to have red text and also sets the 
+         * detail strings for each text cell.
+         */ 
         public DiseasesPage()
         {
             InitializeComponent();
@@ -115,7 +131,10 @@ namespace mobileAppClient
 
         }
 
-
+        /*
+         * Handles when a single disease it tapped, sending a user to the single disease page 
+         * of that given disease.
+         */ 
         async void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)
@@ -126,7 +145,10 @@ namespace mobileAppClient
             await Navigation.PushModalAsync(singleDiseasePage);
         }
 
-
+        /*
+         * Handles when a user selects a given attribute of the sorting dropdown 
+         * to sort by, sorting the given items in the list view.
+         */ 
         void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             switch (SortingInput.SelectedItem)
@@ -229,6 +251,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Handles when a user changes the orientation of the sorting to be either ascending or 
+         * descending, changing the order in which items are sorted in the list view.
+         */ 
         void Handle_UpDownChanged(object sender, System.EventArgs e)
         {
             List<Disease> currentList = (System.Collections.Generic.List<Disease>)DiseasesList.ItemsSource;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +6,10 @@ using System.Text.RegularExpressions;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all validation of input methods used 
+     * widely across the application.
+     */ 
     public static class InputValidation
     {
         /*
@@ -38,7 +42,15 @@ namespace mobileAppClient
             }
         }
 
+<<<<<<< HEAD
         public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit, bool emptyAllowed)
+=======
+        /*
+         * Method to check if a given input is within a lower bound and an upper bound 
+         * returning a boolean determining if it is valid or not.
+         */ 
+        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit)
+>>>>>>> 77ee599... Clarified all documentation in the application and ensured documentation was to a high standard. #document
         {
             // Check if empty
             if (string.IsNullOrEmpty(input) && emptyAllowed)
@@ -65,6 +77,10 @@ namespace mobileAppClient
             return true;
         }
 
+        /*
+         * Method to check if the input into the blood pressure field is a 
+         * valid blood pressure input.
+         */ 
         public static bool IsValidBloodPressure(string input)
         {
             // Check if empty and allow it otherwise check the format

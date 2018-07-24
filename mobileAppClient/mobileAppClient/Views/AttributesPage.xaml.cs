@@ -10,6 +10,10 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the attributes page for 
+     * user details being shown.
+     */
     public partial class AttributesPage : ContentPage
     {
         // Whether the date of death input is visible

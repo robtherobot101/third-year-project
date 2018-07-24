@@ -1,6 +1,10 @@
 ﻿using System;
 namespace mobileAppClient
 {
+    /*
+     * Enum to handle all different genders of a user for both 
+     * birth gender and gender identity
+     */ 
     public enum Gender
     {
         MALE,
@@ -8,6 +12,10 @@ namespace mobileAppClient
         NONBINARY
     }
 
+    /*
+     * Class to handle the conversion of Gender Enum values to usable strings as 
+     * well as inverse of this (from string to BloodType)
+     */ 
     public static class GenderExtensions
     {
        /*

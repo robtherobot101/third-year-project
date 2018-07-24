@@ -12,6 +12,10 @@ using Xamarin.Forms.Xaml;
 namespace mobileAppClient
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
+    /*
+     * Class to handle all functionality regarding the login page for 
+     * logging in as an existing user or wishing to register.
+     */ 
 	public partial class LoginPage : ContentPage
 	{
         private bool loginClicked;
@@ -87,9 +91,13 @@ namespace mobileAppClient
             loginClicked = false;
         }
 
+        /*
+         * Function used to Stops the back button from working and 
+         * opening the main view without a logged in user
+         */ 
         protected override bool OnBackButtonPressed()
         {
-            // Stops the back button from working and opening the main view without a logged in user
+            
             return true;
         }
     }

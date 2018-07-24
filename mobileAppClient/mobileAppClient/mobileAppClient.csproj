@@ -9,6 +9,7 @@
     <EmbeddedResource Remove="NewFolder1\**" />
     <None Remove="NewFolder1\**" />
     <Compile Remove="Views\Diseases\DiseasesPage.xaml.cs" />
+    <Compile Remove="RequestTester.cs" />
   </ItemGroup>
 
   <ItemGroup>

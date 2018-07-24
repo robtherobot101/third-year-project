@@ -17,8 +17,6 @@ namespace mobileAppClient
         public string smokerStatus { get; set; }
         public string alcoholConsumption { get; set; }
 
-        //Use their own custom objects as the JSON deserializer cannot deserialize the incoming
-        // Objects as C# DateTime objects
         public CustomDate dateOfBirth { get; set; }
         public CustomDate dateOfDeath { get; set; }
         public CustomDateTime creationTime { get; set; }

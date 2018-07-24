@@ -5,8 +5,16 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the medications page for 
+     * showing all of a users current and historic medications. 
+     */ 
     public partial class MedicationsPage : ContentPage
     {
+        /*
+         * Event handler to handle when a user switches between current and historic medications
+         * resetting the sorting and changing the listview items.
+         */ 
         void Handle_MedicationChanged(object sender, SegmentedControl.FormsPlugin.Abstractions.ValueChangedEventArgs e)
         {
             switch (e.NewValue)
@@ -40,6 +48,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Constructor which sets the detail strings for each medication and also sets
+         * the visibility of the no data label and compare medications button.
+         */ 
         public MedicationsPage()
         {
             InitializeComponent();
@@ -68,6 +80,10 @@ namespace mobileAppClient
             MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
         }
 
+        /*
+         * Handles when a single medication it tapped, sending a user to the single medication page 
+         * of that given medication.
+         */ 
         async void Handle_MedicationTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)
@@ -78,6 +94,9 @@ namespace mobileAppClient
             await Navigation.PushModalAsync(singleMedicationPage);
         }
 
+        /*
+         * Handles the compare button being pressed, opening up the compare medications page.
+         */ 
         async void Handle_CompareButtonPressed(object sender, System.EventArgs e)
         {
             if (e == null)

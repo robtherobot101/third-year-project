@@ -3,6 +3,10 @@ using System.Globalization;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle any date objects received from the server user object
+     * Is able to be converted to a standard DateTime for ease of use.
+     */ 
     public class CustomDate
     {
         public int year { get; set; }
@@ -16,6 +20,10 @@ namespace mobileAppClient
             this.year = Convert.ToInt32(dateToParse.ToString("yyyy"));
         }
 
+        /*
+         * Method to convert a CustomDate to a C# DateTime variable with the 
+         * given day, month and year.
+         */
         public DateTime ToDateTime()
         {
 

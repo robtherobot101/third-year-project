@@ -5,8 +5,15 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the single medication page for 
+     * showing the details of a single medication of a user.
+     */ 
     public partial class SingleMedicationPage : ContentPage
     {
+        /*
+         * Constructor which initialises the entries of the medications listview.
+         */ 
         public SingleMedicationPage(Medication medication)
         {
             InitializeComponent();
@@ -49,6 +56,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Handles the back button being clicked, returning the user to 
+         * the medications page.
+         */ 
         async void BackButtonClicked(object sender, EventArgs args)
         {
             await Navigation.PopModalAsync();

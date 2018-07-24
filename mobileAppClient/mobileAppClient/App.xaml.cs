@@ -9,16 +9,21 @@ using mobileAppClient.odmsAPI;
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
 {
+    /*
+     * Class which acts as the main entry point of the application.
+     */ 
     public partial class App : Application
     {
+        /*
+         * Open the app to have a the main page xaml as the bottom of 
+         * the stack of views.
+         */ 
         public App()
         {
             InitializeComponent();
             // Ensure config is set
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
-            //RequestTester request = new RequestTester();
-            //User user = request.LiveGetRequestTest();
 
             MainPage = new MainPage();
         }

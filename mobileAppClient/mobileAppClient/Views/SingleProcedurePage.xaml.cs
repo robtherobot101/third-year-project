@@ -5,8 +5,15 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the single procedure page for 
+     * showing the details of a single procedure of a user.
+     */ 
     public partial class SingleProcedurePage : ContentPage
     {
+        /*
+         * Constructor which initialises the entries of the procedures listview.
+         */ 
         public SingleProcedurePage(Procedure procedure)
         {
             InitializeComponent();
@@ -24,6 +31,10 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * Handles the back button being clicked, returning the user to 
+         * the procedures page.
+         */ 
         async void BackButtonClicked(object sender, EventArgs args)
         {
             await Navigation.PopModalAsync();

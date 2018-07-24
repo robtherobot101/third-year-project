@@ -6,8 +6,16 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle all functionality regarding the procedures page for 
+     * showing all of a users pending and previous procedures.
+     */ 
     public partial class ProceduresPage : ContentPage
     {
+        /*
+         * Event handler to handle when a user switches between pending and previous procedures
+         * resetting the sorting and changing the listview items.
+         */ 
         void Handle_ProcedureChanged(object sender, SegmentedControl.FormsPlugin.Abstractions.ValueChangedEventArgs e)
         {
             switch (e.NewValue)
@@ -55,6 +63,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Constructor which sets the detail strings for each text cell 
+         * and also sets the visibility of the no data label and sorting picker.
+         */ 
         public ProceduresPage()
         {
             InitializeComponent();
@@ -82,6 +94,10 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * Handles when a single procedure is tapped, sending a user to the single procedure page 
+         * of that given procedure.
+         */ 
         async void Handle_ProcedureTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)
@@ -92,6 +108,10 @@ namespace mobileAppClient
             await Navigation.PushModalAsync(singleProcedurePage);
         }
 
+        /*
+         * Handles when a user selects a given attribute of the sorting dropdown 
+         * to sort by, sorting the given items in the list view.
+         */ 
         void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             switch (SortingInput.SelectedItem)
@@ -137,6 +157,10 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * Handles when a user changes the orientation of the sorting to be either ascending or 
+         * descending, changing the order in which items are sorted in the list view.
+         */ 
         void Handle_UpDownChanged(object sender, System.EventArgs e)
         {
             List<Procedure> currentList = (System.Collections.Generic.List<Procedure>)ProceduresList.ItemsSource;
