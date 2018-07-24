@@ -23,9 +23,9 @@ namespace mobileAppClient
 
         public RegisterPage(LoginPage loginPage)
         {
-            parentLoginPage = loginPage;
-            dobInput.MaximumDate = DateTime.Now;
             InitializeComponent();
+            parentLoginPage = loginPage;
+            dobInput.MaximumDate = DateTime.Today;
         }
 
         /*

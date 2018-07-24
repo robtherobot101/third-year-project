@@ -115,7 +115,9 @@ namespace mobileAppClient
         void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             switch (SortingInput.SelectedItem)
-            {                 case "Date":                     if (SegControl.SelectedSegment == 0)
+            {
+                case "Date":
+                    if (SegControl.SelectedSegment == 0)
                     {
                         List<Procedure> mylist = UserController.Instance.LoggedInUser.pendingProcedures;
                         List<Procedure> SortedList = mylist.OrderBy(o => o.Date.ToDateTime()).ToList();
@@ -127,7 +129,9 @@ namespace mobileAppClient
                         List<Procedure> SortedList = mylist.OrderBy(o => o.Date.ToDateTime()).ToList();
                         ProceduresList.ItemsSource = SortedList;
                     }
-                    AscendingDescendingPicker.IsVisible = true;                     break;                 case "Name":
+                    AscendingDescendingPicker.IsVisible = true;
+                    break;
+                case "Name":
                     if (SegControl.SelectedSegment == 0)
                     {
                         List<Procedure> mylist = UserController.Instance.LoggedInUser.pendingProcedures;
@@ -140,7 +144,9 @@ namespace mobileAppClient
                         List<Procedure> SortedList = mylist.OrderBy(o => o.Summary).ToList();
                         ProceduresList.ItemsSource = SortedList;
                     }
-                    AscendingDescendingPicker.IsVisible = true;                     break;                 case "Clear":
+                    AscendingDescendingPicker.IsVisible = true;
+                    break;
+                case "Clear":
                     if (SegControl.SelectedSegment == 0)
                     {
                         ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
@@ -152,7 +158,9 @@ namespace mobileAppClient
                         SortingInput.SelectedIndex = -1;
                     }
                     AscendingDescendingPicker.IsVisible = false;
-                    break;             } 
+                    break;
+            }
+
 
 
         }
