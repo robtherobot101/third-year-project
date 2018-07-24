@@ -71,9 +71,8 @@ namespace mobileAppClient
         {
             this.BindingContext = new
             {
-                Header = "SENG302 - Team300",
-                Image = "",
-                Footer = "Logged in as " + UserController.Instance.LoggedInUser.name[0]
+                Header = "  SENG302 - Team300",
+                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
         }
 

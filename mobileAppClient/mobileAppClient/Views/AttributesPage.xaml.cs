@@ -12,11 +12,17 @@ namespace mobileAppClient
 {
     public partial class AttributesPage : ContentPage
     {
+        private bool dateOfDeathShowing = false;
 
         public AttributesPage()
         {
             InitializeComponent();
+
+            dobInput.MaximumDate = DateTime.Today;
+            dodInput.MaximumDate = DateTime.Today;
+
             FillFields();
+
         }
 
         /*
@@ -43,6 +49,7 @@ namespace mobileAppClient
             // Check if the user is dead
             if (loggedInUser.dateOfDeath != null)
             {
+                hasDiedSwitch.On = true;
                 dodInput.Date = loggedInUser.dateOfDeath.ToDateTime();
             }
 
@@ -91,56 +98,56 @@ namespace mobileAppClient
             string givenBloodPressure = InputValidation.Trim(BloodPressureInput.Text);
 
             // Birth names
-            if (!InputValidation.IsValidTextInput(givenFirstName, false)) {
+            if (!InputValidation.IsValidTextInput(givenFirstName, false, false)) {
                 await DisplayAlert("", "Please enter a valid first name", "OK");
                 return;
             } 
 
-            if (!InputValidation.IsValidTextInput(givenMiddleName, false)) {
+            if (!InputValidation.IsValidTextInput(givenMiddleName, false, true)) {
                 await DisplayAlert("", "Please enter a valid middle name", "OK");
                 return;
             }
 
-            if (!InputValidation.IsValidTextInput(givenLastName, false))
+            if (!InputValidation.IsValidTextInput(givenLastName, false, false))
             {
                 await DisplayAlert("", "Please enter a valid last name", "OK");
                 return;
             }
 
             // Preferred names
-            if (!InputValidation.IsValidTextInput(givenPrefFirstName, false))
+            if (!InputValidation.IsValidTextInput(givenPrefFirstName, false, true))
             {
                 await DisplayAlert("", "Please enter a valid preferred first name", "OK");
                 return;
             }
 
-            if (!InputValidation.IsValidTextInput(givenPrefMiddleName, false))
+            if (!InputValidation.IsValidTextInput(givenPrefMiddleName, false, true))
             {
                 await DisplayAlert("", "Please enter a valid preferred middle name", "OK");
                 return;
             }
 
-            if (!InputValidation.IsValidTextInput(givenPrefLastName, false))
+            if (!InputValidation.IsValidTextInput(givenPrefLastName, false, true))
             {
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
                 return;
             }
 
             // Address
-            if (!InputValidation.IsValidTextInput(givenAddress, true))
+            if (!InputValidation.IsValidTextInput(givenAddress, true, true))
             {
                 await DisplayAlert("", "Please enter a valid address", "OK");
                 return;
             }
 
             // Physical attributes
-            if (!InputValidation.IsValidNumericInput(givenWeight, 1, 500))
+            if (!InputValidation.IsValidNumericInput(givenWeight, 0, 500, true))
             {
                 await DisplayAlert("", "Please enter a valid weight in kg", "OK");
                 return;
             }
 
-            if (!InputValidation.IsValidNumericInput(givenHeight, 1, 300))
+            if (!InputValidation.IsValidNumericInput(givenHeight, 0, 300, true))
             {
                 await DisplayAlert("", "Please enter a valid height in cm", "OK");
                 return;
@@ -149,6 +156,14 @@ namespace mobileAppClient
             if (!InputValidation.IsValidBloodPressure(givenBloodPressure))
             {
                 await DisplayAlert("", "Please enter a valid blood pressure eg. 120/80", "OK");
+                return;
+            }
+
+            if (loggedInUser.dateOfDeath.ToDateTime() < loggedInUser.dateOfBirth.ToDateTime())
+            {
+                await DisplayAlert("",
+                "Please enter a valid date of death",
+                "OK");
                 return;
             }
 
@@ -167,9 +182,15 @@ namespace mobileAppClient
             loggedInUser.currentAddress = givenAddress;
             loggedInUser.region = givenRegion;
 
-            // TODO check date of death if not changed
             loggedInUser.dateOfBirth = new CustomDate(dobInput.Date);
-            loggedInUser.dateOfDeath = new CustomDate(dodInput.Date);
+
+            if (hasDiedSwitch.On)
+            {
+                loggedInUser.dateOfDeath = new CustomDate(dodInput.Date);
+            } else
+            {
+                loggedInUser.dateOfDeath = null;
+            }
 
             // Don't worry about conversion exceptions -> this was checked with InputValidation
             loggedInUser.height = Convert.ToDouble(givenHeight);
@@ -206,6 +227,13 @@ namespace mobileAppClient
                     "OK");
                     break;
             }
+        }
+
+        private void SwitchCell_OnChanged(object sender, ToggledEventArgs e)
+        {
+            dateOfDeathShowing = !dateOfDeathShowing;
+            dateOfDeathCombo.IsVisible = dateOfDeathShowing;
+            dateOfDeathCombo.ForceLayout();
         }
     }
 }

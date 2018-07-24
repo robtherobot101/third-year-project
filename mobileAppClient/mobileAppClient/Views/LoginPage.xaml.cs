@@ -48,7 +48,7 @@ namespace mobileAppClient
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
 
-            if (!InputValidation.IsValidTextInput(givenUsernameEmail, true) || !InputValidation.IsValidTextInput(givenPassword, true))
+            if (!InputValidation.IsValidTextInput(givenUsernameEmail, true, false) || !InputValidation.IsValidTextInput(givenPassword, true, false))
             {
                 await DisplayAlert("",
                     "Please enter a valid username/email and password",
@@ -84,6 +84,7 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+            loginClicked = false;
         }
 
         protected override bool OnBackButtonPressed()

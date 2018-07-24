@@ -11,12 +11,17 @@ namespace mobileAppClient
         /*
          * Returns true if the given input string is valid (non-null/empty, alpha chars)
          */
-        public static bool IsValidTextInput(string input, bool numbersAllowed)
+        public static bool IsValidTextInput(string input, bool numbersAllowed, bool emptyAllowed)
         {
             // Check if empty
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input) && emptyAllowed)
+            {
+                return true;
+            } else if (string.IsNullOrEmpty(input))
+            {
                 return false;
-
+            }
+                
             if (input.Length > 40)
             {
                 return false;
@@ -33,10 +38,17 @@ namespace mobileAppClient
             }
         }
 
-        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit)
+        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit, bool emptyAllowed)
         {
-            if (string.IsNullOrEmpty(input))
+            // Check if empty
+            if (string.IsNullOrEmpty(input) && emptyAllowed)
+            {
+                return true;
+            }
+            else if (string.IsNullOrEmpty(input))
+            {
                 return false;
+            }
 
             try
             {
@@ -55,6 +67,12 @@ namespace mobileAppClient
 
         public static bool IsValidBloodPressure(string input)
         {
+            // Check if empty and allow it otherwise check the format
+            if (string.IsNullOrEmpty(input))
+            {
+                return true;
+            }
+
             Regex bloodPressureRegex = new Regex(@"^\d{1,3}\/\d{1,3}$");
             if (!bloodPressureRegex.Match(input).Success)
             {

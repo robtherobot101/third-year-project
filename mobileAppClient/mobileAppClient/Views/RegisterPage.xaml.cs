@@ -35,21 +35,21 @@ namespace mobileAppClient
             string givenUsername = InputValidation.Trim(usernameInput.Text);
 
             // Check for valid inputs
-            if (!InputValidation.IsValidTextInput(givenFirstName, false))
+            if (!InputValidation.IsValidTextInput(givenFirstName, false, false))
             {
                 await DisplayAlert("",
                     "Please enter a valid first name",
                     "OK");
                 return;
             }
-            else if (!InputValidation.IsValidTextInput(givenLastName, false))
+            else if (!InputValidation.IsValidTextInput(givenLastName, false, false))
             {
                 await DisplayAlert("",
                     "Please enter a valid last name",
                     "OK");
                 return;
             }
-            else if (!InputValidation.IsValidTextInput(givenPassword, false))
+            else if (!InputValidation.IsValidTextInput(givenPassword, false, false))
             {
                 await DisplayAlert("",
                     "Please enter a password",
@@ -58,7 +58,7 @@ namespace mobileAppClient
             }
 
             // Check if a username and valid email is entered
-            else if (!InputValidation.IsValidEmail(givenEmail) || !InputValidation.IsValidTextInput(givenUsername, true))
+            else if (!InputValidation.IsValidEmail(givenEmail) || !InputValidation.IsValidTextInput(givenUsername, true, false))
             {
                 await DisplayAlert("",
                     "Password and email is required",

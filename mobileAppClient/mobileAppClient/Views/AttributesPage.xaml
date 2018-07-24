@@ -58,20 +58,19 @@
                             <DatePicker x:Name="dobInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
-                                MaximumDate="12/31/2018"
                              />
                         </StackLayout>
                     </ViewCell>
+                    <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="SwitchCell_OnChanged"/>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" IsVisible="False">
                             <Label Text="Date of Death"/>
                             <DatePicker x:Name="dodInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
-                                MaximumDate="12/31/2018"
                              />
                         </StackLayout>
-                    </ViewCell>
+                        </ViewCell>
                 </TableSection>
                 <TableSection Title="Physical Attributes">
                     <EntryCell Label="Height (cm)" x:Name="HeightInput"/>
