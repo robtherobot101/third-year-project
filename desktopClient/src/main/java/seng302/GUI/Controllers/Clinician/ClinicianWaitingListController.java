@@ -43,11 +43,26 @@ public class ClinicianWaitingListController implements Initializable {
 
     private ObservableList<WaitingListItem> transplantList = FXCollections.observableArrayList();
 
+    private String token;
+
     /**
      * Closes the application
      */
     public void close() {
         Platform.exit();
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * Checks whether this waiting list has an API token.
+     *
+     * @return Whether this waiting list has an API token
+     */
+    public boolean hasToken() {
+        return token != null;
     }
 
     /**
@@ -56,7 +71,8 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
-            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems()) {
+            System.out.println("tried to update trans list with token " + token);
+            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token)) {
                 if (item.getStillWaitingOn()) {
                     addUserInfo(item);
                     transplantList.add(item);
@@ -70,7 +86,7 @@ public class ClinicianWaitingListController implements Initializable {
 
     public void addUserInfo(WaitingListItem item) {
         try{
-            User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue());
+            User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue(), token);
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
         } catch (HttpResponseException e) {
@@ -89,7 +105,7 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         try {
             transplantList.clear();
-            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
+            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers(token);
             for (User user : users) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
                     if (!(item.getOrganRegisteredDate() == null)) {
@@ -124,9 +140,9 @@ public class ClinicianWaitingListController implements Initializable {
     public void showDeregisterDialogFromClinicianList() {
         try {
             WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
-            User user = WindowManager.getDataManager().getUsers().getUser(selectedItem.getUserId().intValue());
+            User user = WindowManager.getDataManager().getUsers().getUser(selectedItem.getUserId().intValue(), token);
             showDeregisterDialog(selectedItem, user);
-            WindowManager.getDataManager().getUsers().updateUser(user);
+            WindowManager.getDataManager().getUsers().updateUser(user, token);
         } catch (HttpResponseException e) {
             Debugger.error("Could not update waiting list item.");
         }
@@ -442,7 +458,7 @@ public class ClinicianWaitingListController implements Initializable {
         WindowManager.setTransplantWaitingListController(this);
 
         transplantTable.setItems(transplantList);
-        updateFoundUsersWithFiltering("", "None");
+        //updateFoundUsersWithFiltering("", "None");
         transplantTable.setItems(transplantList);
 
         //add options to organ filter combobox
@@ -486,7 +502,7 @@ public class ClinicianWaitingListController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         try {
-                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue()));
+                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
                         } catch (HttpResponseException e) {
                             Debugger.error("COuld not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
                         }

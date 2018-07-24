@@ -32,7 +32,6 @@ import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.LoginController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.User.UserController;
-import seng302.GUI.Controllers.User.UserSettingsController;
 import seng302.GUI.TFScene;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -69,7 +68,6 @@ public class WindowManager extends Application {
     private static AdminController adminController;
     private static UserController userController;
 
-    private static UserSettingsController userSettingsController;
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
 
@@ -105,7 +103,7 @@ public class WindowManager extends Application {
      * Creates a new user window from a clinician's view.
      * @param user The user to create the window for
      */
-    public static void newCliniciansUserWindow(User user){
+    public static void newCliniciansUserWindow(User user, String token){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
         stage.setMinHeight(WindowManager.mainWindowMinHeight);
@@ -121,7 +119,7 @@ public class WindowManager extends Application {
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
 
-            newUserController.setCurrentUser(user);
+            newUserController.setCurrentUser(user, token);
             newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
@@ -143,8 +141,8 @@ public class WindowManager extends Application {
      *
      * @param clinician the logged clinician
      */
-    public static void setClinician(Clinician clinician) {
-        clinicianController.setClinician(clinician);
+    public static void setClinician(Clinician clinician, String token) {
+        clinicianController.setClinician(clinician, token);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
         updateTransplantWaitingList();
@@ -171,8 +169,8 @@ public class WindowManager extends Application {
      *
      * @param admin the logged admin
      */
-    public static void setAdmin(Admin admin) {
-        adminController.setAdmin(admin);
+    public static void setAdmin(Admin admin, String token) {
+        adminController.setAdmin(admin, token);
     }
 
     /**
@@ -180,8 +178,9 @@ public class WindowManager extends Application {
      *
      * @param currentUser the current user
      */
-    public static void setCurrentUser(User currentUser) {
-        userController.setCurrentUser(currentUser);
+    public static void setCurrentUser(User currentUser, String token) {
+        userController.setCurrentUser(currentUser, token);
+        System.out.println(token);
         userController.setControlsShown(false);
     }
 
@@ -209,13 +208,13 @@ public class WindowManager extends Application {
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
-        clinicianClinicianWaitingListController.updateTransplantList();
-        adminClinicianWaitingListController.updateTransplantList();
+        if (clinicianClinicianWaitingListController.hasToken()) {
+            clinicianClinicianWaitingListController.updateTransplantList();
+        }
+        if (adminClinicianWaitingListController.hasToken()) {
+            adminClinicianWaitingListController.updateTransplantList();
+        }
 
-    }
-
-    public void refreshUser() {
-        userController.setCurrentUser(userController.getCurrentUser());
     }
 
     /**
@@ -244,12 +243,12 @@ public class WindowManager extends Application {
         WindowManager.createUserController = createUserController;
     }
 
-    public static void setUserSettingsController(UserSettingsController userSettingsController) {
-        WindowManager.userSettingsController = userSettingsController;
-    }
-
     public static void setClincianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
         WindowManager.clinicianSettingsController = clinicianSettingsController;
+    }
+
+    public static void setClincianAccountSettingsToken(String token) {
+        //clinicianSettingsController.setToken(token);
     }
 
     public static void setTransplantWaitingListController(ClinicianWaitingListController clinicianWaitingListController) {
@@ -269,8 +268,13 @@ public class WindowManager extends Application {
         WindowManager.adminController = adminController;
     }
 
-    public static ClinicianController getClinicianController() {
-        return WindowManager.clinicianController;
+    public static void updateFoundClinicianUsers() {
+        if (clinicianController.hasToken()) {
+            clinicianController.updateFoundUsers();
+        }
+        if (adminController.hasToken()) {
+            adminController.updateFoundUsers();
+        }
     }
 
     public static void refreshAdmin() {
@@ -361,7 +365,7 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://csse-s302g3.canterbury.ac.nz:80/api/v1");
+        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://localhost:7015/api/v1");
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -434,11 +438,11 @@ public class WindowManager extends Application {
             }
         });
 
-        getScene(TFScene.userWindow).setOnKeyReleased(event -> {
+        /*getScene(TFScene.userWindow).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
                 refreshUser();
             }
-        });
+        });*/
     }
 
     public void setupDrugInteractionCache(){

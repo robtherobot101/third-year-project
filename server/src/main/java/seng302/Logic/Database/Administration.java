@@ -45,6 +45,10 @@ public class Administration {
             PreparedStatement statement = connection.prepareStatement(update);
             System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
+            update = "DELETE FROM TOKEN";
+            statement = connection.prepareStatement(update);
+            System.out.println("Reset of database (TOKEN): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
             update = "DELETE FROM PROCEDURES";
             statement = connection.prepareStatement(update);
             System.out.println("Reset of database (PROCEDURE): -> Successful -> Rows Removed: " + statement.executeUpdate());

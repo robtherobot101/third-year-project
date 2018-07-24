@@ -66,6 +66,8 @@ public class ClinicianController implements Initializable {
     private AnchorPane transplantListPane;
     @FXML
     private StatusBar statusBar;
+    @FXML
+    private ClinicianWaitingListController waitingListController;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
@@ -93,6 +95,7 @@ public class ClinicianController implements Initializable {
     private String searchAgeTerm = "";
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
+    private String token;
 
     private Gson gson = new Gson();
 
@@ -119,13 +122,27 @@ public class ClinicianController implements Initializable {
         titleBar.setTitle(clinician.getName(), "Clinician", null);
     }
 
+
+    /**
+     * Checks whether this waiting list has an API token.
+     *
+     * @return Whether this waiting list has an API token
+     */
+    public boolean hasToken() {
+        return token != null;
+    }
+
     /**
      * Sets the current clinician
      *
      * @param clinician The clinician to se as the current
+     * @param token The login token of this clinician
      */
-    public void setClinician(Clinician clinician) {
+    public void setClinician(Clinician clinician, String token) {
         this.clinician = clinician;
+        this.token = token;
+        waitingListController.setToken(token);
+        WindowManager.setClincianAccountSettingsToken(token);
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
         }
@@ -333,7 +350,7 @@ public class ClinicianController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                WindowManager.getDataManager().getClinicians().updateClinician(clinician);
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }
@@ -425,7 +442,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers() {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers(token).size() + " users");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -469,7 +486,7 @@ public class ClinicianController implements Initializable {
             searchMap.put("userType", searchUserTypeTerm);
         }
         try {
-            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
 
             users = FXCollections.observableArrayList(usersFound);
             populateNResultsComboBox(usersFound.size());
@@ -520,11 +537,11 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+        /*try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers(token).size() + " users");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
-        }
+        }*/
 
         clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
@@ -617,26 +634,6 @@ public class ClinicianController implements Initializable {
 
         WindowManager.setClinicianController(this);
 
-        updateFoundUsers();
-
-//        if (TFScene.clinician != null) {
-//            WindowManager.getScene(TFScene.clinician).setOnKeyReleased(event -> {
-//                if (event.getCode() == KeyCode.F5) {
-//                    DataManager.users.clear();
-//                    try {
-//                        Datamanager.addUsers(WindowManager.getDatabase().getAllUsers());
-//                        WindowManager.getDatabase().refreshUserWaitinglists();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                    WindowManager.updateTransplantWaitingList();
-//                    updateFoundUsers();
-//                    profileTable.setItems(currentPage);
-//                    profileTable.refresh();
-//                }
-//            });
-//        }
-
         profileTable.setItems(currentPage);
 
         /*
@@ -670,7 +667,7 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem());
+                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
                     }
                 });
                 return row;

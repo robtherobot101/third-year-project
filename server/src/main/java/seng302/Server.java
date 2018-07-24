@@ -50,9 +50,6 @@ public class Server {
             post( "/resample",      databaseController::resample);
             post("/sql",            sqlController::executeQuery);
 
-            // TODO discuss where cache is stored
-            /*post( "/clearCache",   Server::stubMethod);*/
-
             // Path to check connection/version matches client
             get("/hello", (Request request, Response response) -> {
                 response.type("application/json");
@@ -61,6 +58,7 @@ public class Server {
             });
 
             path("/admins", () -> {
+                before("",          profileUtils::hasAdminAccess);
                 get("",             adminController::getAllAdmins);
                 post( "",           adminController::addAdmin);
                 before("/:id",      profileUtils::checkId);
@@ -70,24 +68,43 @@ public class Server {
             });
 
             path("/clinicians", () -> {
-                get("",             clinicianController::getAllClinicians);
-                post( "",           clinicianController::addClinician);
-                before("/:id",      profileUtils::checkId);
+                get("", (request, response) -> {
+                    if (profileUtils.hasAdminAccess(request, response)) {
+                        return clinicianController.getAllClinicians(request, response);
+                    } else {
+                        return response.body();
+                    }
+                });
+                post( "", (request, response) -> {
+                    if (profileUtils.hasAdminAccess(request, response)) {
+                        return clinicianController.addClinician(request, response);
+                    } else {
+                        return response.body();
+                    }
+                });
+                before("/:id",      profileUtils::hasClinicianLevelAccess);
                 get( "/:id",        clinicianController::getClinician);
                 delete( "/:id",     clinicianController::deleteClinician);
                 patch( "/:id",      clinicianController::editClinician);
             });
 
             path("/users", () -> {
-                get("",            userController::getUsers);
+                get("", (request, response) -> {
+                    System.out.println("attmepted get all users");
+                    if (profileUtils.hasAccessToAllUsers(request, response)) {
+                        return userController.getUsers(request, response);
+                    } else {
+                        return response.body();
+                    }
+                });
                 post( "",          userController::addUser);
-                before("/:id",     profileUtils::checkId);
+                before("/:id",     profileUtils::hasUserLevelAccess);
                 get( "/:id",       userController::getUser);
                 patch( "/:id",     userController::editUser);
                 delete( "/:id",    userController::deleteUser);
 
                 path("/:id/medications", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     medicationsController::getAllMedications);
                     post("",                    medicationsController::addMedication);
                     get("/:medicationId",       medicationsController::getSingleMedication);
@@ -96,7 +113,7 @@ public class Server {
                 });
 
                 path("/:id/diseases", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     diseasesController::getAllDiseases);
                     post("",                    diseasesController::addDisease);
                     get("/:diseaseId",          diseasesController::getSingleDisease);
@@ -105,7 +122,7 @@ public class Server {
                 });
 
                 path("/:id/procedures", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     proceduresController::getAllProcedures);
                     post("",                    proceduresController::addProcedure);
                     get("/:procedureId",        proceduresController::getSingleProcedure);
@@ -114,13 +131,13 @@ public class Server {
                 });
 
                 path("/:id/history", () -> {
-                   before("",                   profileUtils::checkId);
+                   before("",                   profileUtils::hasUserLevelAccess);
                    get("",                      historyController::getUserHistoryItems);
                    post("",                     historyController::addUserHistoryItem);
                 });
 
                 path("/:id/donations", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     donationsController::getAllUserDonations);
                     post("",                    donationsController::addDonation);
                     delete("",                  donationsController::deleteAllUserDonations);
@@ -129,7 +146,7 @@ public class Server {
                 });
 
                 path("/:id/waitingListItems", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     waitingListController::getAllUserWaitingListItems);
                     post("",                    waitingListController::addNewUserWaitingListItem);
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
@@ -139,10 +156,12 @@ public class Server {
             });
 
             path("/donations", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
                 get("",  donationsController::getAllDonations);
             });
 
             path("/waitingListItems", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
                 get("",  waitingListController::getAllWaitingListItems);
             });
         });

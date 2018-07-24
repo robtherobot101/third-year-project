@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
+import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.StatusIndicator;
@@ -98,6 +99,10 @@ public class AdminController implements Initializable {
     private StatusBar statusBar;
     @FXML
     private AnchorPane cliPane, transplantListPane;
+    @FXML
+    private AdminCliController cliController;
+    @FXML
+    private ClinicianWaitingListController waitingListController;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
@@ -117,14 +122,18 @@ public class AdminController implements Initializable {
     private String searchUserTypeTerm = null;
 
     private Gson gson = new Gson();
+    private String token;
 
     /**
      * Sets the current currentAdmin
      *
      * @param currentAdmin The currentAdmin to se as the current
      */
-    public void setAdmin(Admin currentAdmin) {
+    public void setAdmin(Admin currentAdmin, String token) {
         this.currentAdmin = currentAdmin;
+        this.token = token;
+        cliController.setToken(token);
+        waitingListController.setToken(token);
         updateDisplay();
         refreshLatestProfiles();
     }
@@ -145,9 +154,9 @@ public class AdminController implements Initializable {
      */
     public void refreshLatestProfiles() {
         try {
-            currentUsers.setAll(WindowManager.getDataManager().getUsers().getAllUsers());
-            currentClinicians.setAll(WindowManager.getDataManager().getClinicians().getAllClinicians());
-            currentAdmins.setAll(WindowManager.getDataManager().getAdmins().getAllAdmins());
+            currentUsers.setAll(WindowManager.getDataManager().getUsers().getAllUsers(token));
+            currentClinicians.setAll(WindowManager.getDataManager().getClinicians().getAllClinicians(token));
+            currentAdmins.setAll(WindowManager.getDataManager().getAdmins().getAllAdmins(token));
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users, clinicians, and admins.");
         }
@@ -265,7 +274,7 @@ public class AdminController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                WindowManager.getDataManager().getAdmins().updateAdminDetails(currentAdmin);
+                WindowManager.getDataManager().getAdmins().updateAdminDetails(currentAdmin, token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
@@ -319,9 +328,9 @@ public class AdminController implements Initializable {
                             extension = fileToLoadPath.substring(i+1);
                         }
                         if (extension.equals("csv")) {
-                            loadSuccessful = IO.importUserCSV(fileToLoadPath);
+                            loadSuccessful = IO.importUserCSV(fileToLoadPath, token);
                         } else if (extension.equals("json")) {
-                            loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER);
+                            loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
                         } else {
                             loadSuccessful = false;
                         }
@@ -333,7 +342,7 @@ public class AdminController implements Initializable {
                 case "Clinicians":
                     fileToLoadPath = getSelectedFilePath(ProfileType.CLINICIAN);
                     if (fileToLoadPath != null) {
-                        loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.CLINICIAN);
+                        loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.CLINICIAN, token);
                     } else {
                         loadAborted = true;
                     }
@@ -341,7 +350,7 @@ public class AdminController implements Initializable {
                 case "Admins":
                     String fileToLoad = getSelectedFilePath(ProfileType.ADMIN);
                     if (fileToLoad != null) {
-                        loadSuccessful = IO.importProfiles(fileToLoad, ProfileType.ADMIN);
+                        loadSuccessful = IO.importProfiles(fileToLoad, ProfileType.ADMIN, token);
                     } else {
                         loadAborted = true;
                     }
@@ -444,7 +453,7 @@ public class AdminController implements Initializable {
     public void undo() {
         // TODO implement undo
         try {
-            WindowManager.getDataManager().getGeneral().reset();
+            WindowManager.getDataManager().getGeneral().reset(token);
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }
@@ -485,7 +494,7 @@ public class AdminController implements Initializable {
      */
     public void updateFoundUsers() {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers(token).size() + " users");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -530,7 +539,7 @@ public class AdminController implements Initializable {
         }
 
         try {
-            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
 
             currentUsers = FXCollections.observableArrayList(usersFound);
             userTableView.setItems(currentUsers);
@@ -541,12 +550,18 @@ public class AdminController implements Initializable {
     }
 
 
+    /**
+     * Checks whether this waiting list has an API token.
+     *
+     * @return Whether this waiting list has an API token
+     */
+    public boolean hasToken() {
+        return token != null;
+    }
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        refreshLatestProfiles();
-
         // Set the items of the TableView to populate objects
         userTableView.setItems(currentUsers);
         clinicianTableView.setItems(currentClinicians);
@@ -610,7 +625,7 @@ public class AdminController implements Initializable {
                     // A user has been selected for deletion
                     Debugger.log("Deleting User: " + selectedUser);
                     try {
-                        WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId());
+                        WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove user with id: " + selectedUser.getId());
@@ -623,7 +638,7 @@ public class AdminController implements Initializable {
                     Debugger.log("Deleting Clinician: " + selectedClinician);
 
                     try {
-                        WindowManager.getDataManager().getClinicians().removeClinician(selectedClinician.getStaffID());
+                        WindowManager.getDataManager().getClinicians().removeClinician(selectedClinician.getStaffID(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
@@ -635,7 +650,7 @@ public class AdminController implements Initializable {
                     // An admin has been selected for deletion
                     Debugger.log("Deleting Admin: " + selectedAdmin);
                     try{
-                        WindowManager.getDataManager().getAdmins().removeAdmin(selectedAdmin.getStaffID());
+                        WindowManager.getDataManager().getAdmins().removeAdmin(selectedAdmin.getStaffID(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
@@ -773,7 +788,7 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem());
+                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
                     }
                 });
                 return row;
@@ -847,7 +862,7 @@ public class AdminController implements Initializable {
 
             Debugger.log("DB reset called");
             try {
-                WindowManager.getDataManager().getGeneral().reset();
+                WindowManager.getDataManager().getGeneral().reset(token);
                 WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
@@ -868,7 +883,7 @@ public class AdminController implements Initializable {
         if (result.orElse(null) == ButtonType.OK) {
             Debugger.log("DB resample called");
             try {
-                WindowManager.getDataManager().getGeneral().resample();
+                WindowManager.getDataManager().getGeneral().resample(token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to resample the database.");
             }
@@ -897,7 +912,7 @@ public class AdminController implements Initializable {
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
                 try {
-                    WindowManager.getDataManager().getAdmins().insertAdmin(newAdmin);
+                    WindowManager.getDataManager().getAdmins().insertAdmin(newAdmin, token);
                     refreshLatestProfiles();
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to post admin to the server.");
@@ -935,7 +950,7 @@ public class AdminController implements Initializable {
             Clinician newClinician = createClinicianController.showAndWait(stage);
             if (newClinician != null) {
                 try {
-                    WindowManager.getDataManager().getClinicians().insertClinician(newClinician);
+                    WindowManager.getDataManager().getClinicians().insertClinician(newClinician, token);
                     refreshLatestProfiles();
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to insert new clinician.");

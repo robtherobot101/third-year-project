@@ -20,7 +20,7 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public int getUserId(String username) {
+    public int getUserId(String username, String token) {
         return 0;
     }
 
@@ -37,8 +37,8 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public void updateUser(User User) {
-        removeUser(User.getId());
+    public void updateUser(User User, String token) {
+        removeUser(User.getId(), null);
         users.add(User);
     }
 
@@ -238,7 +238,7 @@ public class UsersM implements UsersDAO {
 
 
     @Override
-    public List<User> queryUsers(Map<String, String> searchMap) throws HttpResponseException {
+    public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
         List<User> queriedUsers = new ArrayList<>();
         queriedUsers.addAll(users);
 
@@ -338,12 +338,12 @@ public class UsersM implements UsersDAO {
 
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(String token) {
         return users;
     }
 
     @Override
-    public User getUser(long id) {
+    public User getUser(long id, String token) {
         for(User a : users) {
             if(a.getId() == id) {
                 return a;
@@ -354,7 +354,7 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public void removeUser(long id) {
+    public void removeUser(long id, String token) {
         for(User u : users) {
             if(u.getId() == id) {
                 users.remove(u);

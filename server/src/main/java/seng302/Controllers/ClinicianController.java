@@ -83,7 +83,6 @@ public class ClinicianController {
             response.status(400);
             return "Missing Clinician Body";
         } else {
-            //TODO make model.insertClinician return token
             try {
                 model.insertClinician(receivedClinician);
                 response.status(201);
