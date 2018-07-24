@@ -100,7 +100,7 @@
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Button>
-                  <ComboBox fx:id="numberOfResutsToDisplay" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <ComboBox fx:id="numberOfResultsToDisplay" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets left="5.0" top="10.0" />
                      </GridPane.margin></ComboBox>

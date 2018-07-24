@@ -98,4 +98,12 @@ public class UsersDB implements UsersDAO {
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
+
+    @Override
+    public int count() throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), "countusers");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        return Integer.parseInt(response.getAsString());
+    }
 }

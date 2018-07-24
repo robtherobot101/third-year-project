@@ -666,7 +666,7 @@ public class GeneralUser {
                 int deregisteredCode = waitingListResultSet.getInt("deregistered_code");
                 int waitingListId = waitingListResultSet.getInt("id");
 
-                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, waitingListId));
+                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, deregisteredCode));
             }
 
 
@@ -735,6 +735,16 @@ public class GeneralUser {
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getUsername());
             System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
+
+    public int countUsers() throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "SELECT count(*) AS count FROM USER";
+            PreparedStatement statement = connection.prepareStatement(update);
+            ResultSet noUsers = statement.executeQuery();
+            noUsers.next();
+            return noUsers.getInt("count");
         }
     }
 }

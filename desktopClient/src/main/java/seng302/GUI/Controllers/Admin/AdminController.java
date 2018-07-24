@@ -96,6 +96,9 @@ public class AdminController implements Initializable {
     private ComboBox<String> adminUserTypeComboBox;
 
     @FXML
+    private ComboBox numberOfResultsToDisplay;
+
+    @FXML
     private StatusBar statusBar;
     @FXML
     private AnchorPane cliPane, transplantListPane;
@@ -121,6 +124,9 @@ public class AdminController implements Initializable {
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
 
+    private int resultsPerPage;
+    private int numberXofResults;
+
     private Gson gson = new Gson();
     private String token;
 
@@ -136,6 +142,10 @@ public class AdminController implements Initializable {
         waitingListController.setToken(token);
         updateDisplay();
         refreshLatestProfiles();
+    }
+
+    public Admin getAdmin() {
+        return this.currentAdmin;
     }
 
     /**
@@ -367,6 +377,8 @@ public class AdminController implements Initializable {
                     "",
                     "All profiles successfully loaded.");
             successAlert.showAndWait();
+            refreshLatestProfiles();
+            updateFoundUsers();
         } else if (loadAborted) {
             Alert abortAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load cancelled",
                     "",
@@ -421,7 +433,6 @@ public class AdminController implements Initializable {
             return null;
         }
     }
-
 
     /**
      * Closes the application
@@ -489,12 +500,16 @@ public class AdminController implements Initializable {
         adminUserTypeComboBox.setValue(null);
     }
 
+    public void updateFoundUsers() {
+        updateFoundUsers(resultsPerPage,false);
+    }
+
     /**
      * Updates the list of users found from the search
      */
-    public void updateFoundUsers() {
+    public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers(token).size() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -539,11 +554,17 @@ public class AdminController implements Initializable {
         }
 
         try {
-            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count()));
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap).size();
+            searchMap.put("count", String.valueOf(count));
 
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
             currentUsers = FXCollections.observableArrayList(usersFound);
             userTableView.setItems(currentUsers);
 
+            if(!onlyChangingPage) {
+                populateNResultsComboBox(totalNumberOfResults);
+            }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to perform user search on the server.");
         }
@@ -559,9 +580,33 @@ public class AdminController implements Initializable {
         return token != null;
     }
 
+    /**
+     * Function which populates the combo box for displaying a certain number of results based on the search fields.
+     *
+     * @param numberOfSearchResults the number of results of the users found
+     */
+    public void populateNResultsComboBox(int numberOfSearchResults) {
+        numberOfResultsToDisplay.getItems().clear();
+        String firstPage = "First page";
+        numberOfResultsToDisplay.setDisable(true);
+        numberOfResultsToDisplay.getItems().add(firstPage);
+        numberOfResultsToDisplay.getSelectionModel().select(firstPage);
+        if (numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults) {
+            numberOfResultsToDisplay.setDisable(false);
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+        } else if (numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults) {
+            numberOfResultsToDisplay.setDisable(false);
+            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + " results");
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        resultsPerPage = 15;
+        numberXofResults = 200;
+
         // Set the items of the TableView to populate objects
         userTableView.setItems(currentUsers);
         clinicianTableView.setItems(currentClinicians);
@@ -712,6 +757,31 @@ public class AdminController implements Initializable {
         adminGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         adminUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
         adminOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+
+
+        numberOfResultsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.equals("First page")) {
+                    updateFoundUsers(resultsPerPage,true);
+                } else if (((String) newValue).contains("Top")) {
+                    updateFoundUsers(numberXofResults,true);
+                } else if (((String) newValue).contains("All")) {
+                    try{
+                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(),true);
+                    } catch (HttpResponseException e) {
+                        Debugger.log("Could not update table. Failed to retrieve the total number of users.");
+                    }
+                }
+            }
+        });
+
+        updateFoundUsers(resultsPerPage, false);
+
+        try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users");
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not set name search textfield placeholder. Failed to retrieve the number of users.");
+        }
 
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchNameTerm = newValue;

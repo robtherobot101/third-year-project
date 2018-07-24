@@ -23,12 +23,12 @@ public class AdminCLITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        defaultTestSetup();
+        //defaultTestSetup();
     }
 
     @Before
     public void setupTest() throws SQLException {
-        //useLocalStorage();
+        useLocalStorage();
         loginAsDefaultAdmin();
         sleep(800);
         clickOn("#cliTabButton");

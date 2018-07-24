@@ -6,6 +6,9 @@ import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Data.ResampleData;
+import seng302.Generic.APIResponse;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -32,12 +35,14 @@ public class GeneralM implements GeneralDAO {
     }
 
     @Override
-    public Map<Object, String> loginUser(String usernameEmail, String password) throws HttpResponseException {
-        Map<Object, String> response = new HashMap<>();
-        for(User u : users.getAllUsers(null)) {
-            if(u.getEmail().equals(usernameEmail) && u.getPassword().equals(password) || u.getUsername().equals(usernameEmail) && u.getPassword().equals(password)) {
-                response.put(u, null);
-                return response;
+    public Object loginUser(String usernameEmail, String password) throws HttpResponseException {
+        for(User u : users.getAllUsers()) {
+            try {
+                if(u.getEmail().equals(usernameEmail) && u.getPassword().equals(password) || u.getUsername().equals(usernameEmail) && u.getPassword().equals(password)) {
+                    return u;
+                }
+            } catch (NullPointerException e) {
+                Debugger.error("NullPointerException while trying to login with user: " + u);
             }
         }
 
@@ -142,7 +147,18 @@ public class GeneralM implements GeneralDAO {
         return true;
     }
 
-    public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
-        return null;
+    public List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException {
+        List<WaitingListItem> items = new ArrayList<>();
+        for(User u : users.getAllUsers()) {
+            for(WaitingListItem i : u.getWaitingListItems()) {
+                items.add(i);
+            }
+        }
+        return items;
+    }
+
+    @Override
+    public boolean status() throws HttpResponseException {
+        return true;
     }
 }
