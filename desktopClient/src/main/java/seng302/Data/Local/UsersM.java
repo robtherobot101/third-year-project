@@ -80,7 +80,7 @@ public class UsersM implements UsersDAO {
             Integer o1Score = scoreUserOnSearch(o1, tokens);
             Integer o2Score = scoreUserOnSearch(o2, tokens);
 
-            int scoreComparison = o2Score.compareTo(o1Score);
+            int scoreComparison = o1Score.compareTo(o2Score);
             if (scoreComparison == 0) {
                 return o1.getName().compareTo(o2.getName());
             }
@@ -238,7 +238,7 @@ public class UsersM implements UsersDAO {
 
 
     @Override
-    public List<User> queryUsers(Map<String, String> searchMap) throws HttpResponseException {
+    public List<User> queryUsers(Map<String, String> searchMap) {
         List<User> queriedUsers = new ArrayList<>();
         queriedUsers.addAll(users);
 
@@ -364,7 +364,7 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public int count() throws HttpResponseException {
+    public int count(){
         return users.size();
     }
 }

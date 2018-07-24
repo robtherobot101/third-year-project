@@ -78,10 +78,10 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
     protected void useLocalStorage() {
-        UsersDAO users = new UsersM();
-        CliniciansDAO clinicians = new CliniciansM();
-        AdminsDAO admins = new AdminsM();
-        GeneralDAO general = new GeneralM(users,clinicians,admins);
+        UsersM users = new UsersM();
+        CliniciansM clinicians = new CliniciansM();
+        AdminsM admins = new AdminsM();
+        GeneralM general = new GeneralM(users,clinicians,admins);
         WindowManager.setDataManager(new DataManager(users,clinicians,admins,general));
     }
 

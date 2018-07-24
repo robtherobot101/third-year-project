@@ -36,18 +36,4 @@ public class CLIController {
             }
         }
     }
-
-
-/*    public String resample(Request request, Response response) {
-        try {
-            model.resample();
-            return "RESAMPLE SUCCESS";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.status(500);
-            return "RESAMPLE FAILURE";
-        }
-
-
-    }*/
 }
