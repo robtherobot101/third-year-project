@@ -19,8 +19,8 @@
                 </TableSection>
                 <TableSection Title="Gender">
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Birth Gender"/>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="15,0,0,0">
+                            <Label Text="Birth Gender" VerticalOptions="Center"/>
                             <Picker Title ="Birth Gender" x:Name="BirthGenderInput">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
@@ -33,8 +33,8 @@
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Gender Identity"/>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="15,0,0,0">
+                            <Label Text="Gender Identity"  VerticalOptions="Center"/>
                             <Picker Title ="Gender Identity" x:Name="GenderIdentityInput">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
@@ -53,18 +53,18 @@
                 </TableSection>
                 <TableSection Title="Age">
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Date of Birth"/>
+                        <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                            <Label Text="Date of Birth" VerticalOptions="Center"/>
                             <DatePicker x:Name="dobInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
                              />
                         </StackLayout>
                     </ViewCell>
-                    <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="SwitchCell_OnChanged"/>
+                    <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="dateOfDeathSwitchChanged"/>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" IsVisible="False">
-                            <Label Text="Date of Death"/>
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" IsVisible="False" Padding="15,0,0,0">
+                            <Label Text="Date of Death" VerticalOptions="Center"/>
                             <DatePicker x:Name="dodInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
@@ -79,8 +79,8 @@
                 </TableSection>
                 <TableSection Title="Other Attributes">
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Blood Type"/>
+                        <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                            <Label Text="Blood Type" VerticalOptions="Center"/>
                             <Picker Title ="Blood Type" x:Name="BloodTypeInput">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
@@ -98,8 +98,8 @@
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Smoker Status"/>
+                        <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                            <Label Text="Smoker Status" VerticalOptions="Center"/>
                             <Picker Title ="Smoker Status" x:Name="SmokerStatusInput">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
@@ -112,8 +112,8 @@
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Alcohol Consumption"/>
+                        <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                            <Label Text="Alcohol Consumption" VerticalOptions="Center"/>
                             <Picker Title ="Alcohol Consumption" x:Name="AlcoholConsumptionInput">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">

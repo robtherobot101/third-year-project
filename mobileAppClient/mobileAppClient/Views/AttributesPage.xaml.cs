@@ -12,17 +12,18 @@ namespace mobileAppClient
 {
     public partial class AttributesPage : ContentPage
     {
-        private bool dateOfDeathShowing = false;
+        // Whether the date of death input is visible
+        private bool dateOfDeathShowing;
 
         public AttributesPage()
         {
             InitializeComponent();
 
+            dateOfDeathShowing = false;
             dobInput.MaximumDate = DateTime.Today;
             dodInput.MaximumDate = DateTime.Today;
 
             FillFields();
-
         }
 
         /*
@@ -229,7 +230,7 @@ namespace mobileAppClient
             }
         }
 
-        private void SwitchCell_OnChanged(object sender, ToggledEventArgs e)
+        private void dateOfDeathSwitchChanged(object sender, ToggledEventArgs e)
         {
             dateOfDeathShowing = !dateOfDeathShowing;
             dateOfDeathCombo.IsVisible = dateOfDeathShowing;
