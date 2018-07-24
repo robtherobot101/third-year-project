@@ -23,7 +23,7 @@ public class AdminCLITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before
@@ -126,6 +126,8 @@ public class AdminCLITest extends TestFXTest {
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         assertEquals(2, lookup("#commandOutputView").queryListView().getItems().size());
+//        TextField commandField = lookup("#commandInputField").query();
+//        commandField.setText("clear");
         clickOn("#commandInputField").write("clear");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
