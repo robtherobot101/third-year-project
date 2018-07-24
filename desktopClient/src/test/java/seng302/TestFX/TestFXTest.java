@@ -59,6 +59,7 @@ abstract class TestFXTest extends ApplicationTest {
                 WindowManager.getDataManager().getGeneral().reset();
                 WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"));
                 WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"));
+
             } catch (HttpResponseException e) {
 
             }

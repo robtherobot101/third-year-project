@@ -33,7 +33,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
 
     }
 
@@ -145,6 +145,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     /**
      * Checks if the users shown in the table view are correct based on different inputs in the age field.
      */
+    @Ignore
     @Test
     public void searchFilterByAge() {
         loginAsDefaultClinician();
@@ -187,6 +188,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     /**
      * Checks if the users shown in the table view are correct based on different inputs in the organ combo box.
      */
+    @Ignore
     @Test
     public void searchFilterByOrgan() {
         loginAsDefaultClinician();

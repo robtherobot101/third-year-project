@@ -40,7 +40,7 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before
