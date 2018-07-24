@@ -33,7 +33,7 @@
             <Insets left="25.0" right="25.0" />
          </GridPane.margin>
          <columns>
-            <TreeTableColumn fx:id="dateTimeColumn" editable="false" prefWidth="236.0" sortable="false" text="Date/Time" />
+            <TreeTableColumn fx:id="dateColumn" editable="false" prefWidth="236.0" sortable="false" text="Date/Time" />
             <TreeTableColumn fx:id="actionColumn" editable="false" prefWidth="387.5" sortable="false" text="Action" />
          </columns>
       </TreeTableView>

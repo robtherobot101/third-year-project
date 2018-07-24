@@ -13,18 +13,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import seng302.Generic.Debugger;
-import seng302.User.History;
-import seng302.User.Procedure;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
+import seng302.User.Procedure;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * Class which handles all the logic for the Medical History (Procedures) Window.
@@ -131,8 +127,10 @@ public class UserProceduresController extends UserTabController implements Initi
                     dateOfProcedureInput.getValue(), organsAffected);
             if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
+                userController.addHistoryEntry("Previous procedure added", "A previous procedure (" + procedureToAdd.getSummary() + ") was added.");
             } else {
                 pendingProcedureItems.add(procedureToAdd);
+                userController.addHistoryEntry("Pending procedure added", "A pending procedure (" + procedureToAdd.getSummary() + ") was added.");
             }
             saveToUndoStack();
             summaryInput.clear();
@@ -159,6 +157,7 @@ public class UserProceduresController extends UserTabController implements Initi
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 pendingProcedureItems.remove(chosenProcedure);
+                userController.addHistoryEntry("Pending procedure removed", "A pending procedure (" + chosenProcedure.getSummary() + ") was removed.");
                 statusIndicator.setStatus("Deleted " + chosenProcedure, false);
                 titleBar.saved(false);
             }
@@ -171,6 +170,7 @@ public class UserProceduresController extends UserTabController implements Initi
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 previousProcedureItems.remove(chosenProcedure);
+                userController.addHistoryEntry("Previous procedure removed", "A previous procedure (" + chosenProcedure.getSummary() + ") was removed.");
                 statusIndicator.setStatus("Deleted " + chosenProcedure, false);
                 titleBar.saved(false);
                 saveToUndoStack();
@@ -190,14 +190,6 @@ public class UserProceduresController extends UserTabController implements Initi
 
         currentUser.getPreviousProcedures().clear();
         currentUser.getPreviousProcedures().addAll(previousProcedureItems);
-
-        String text = History.prepareFileStringGUI(currentUser.getId(), "procedures");
-        History.printToFile(streamOut, text);
-            /*try {
-                WindowManager.getDatabase().updateUserProcedures(currentUser);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }*/
     }
 
     /**
@@ -461,6 +453,7 @@ public class UserProceduresController extends UserTabController implements Initi
             LocalDate newDateFormat = LocalDate.parse(newProcedureDetails.get(2));
             selectedProcedure.setDate(newDateFormat);
             selectedProcedure.setOrgansAffected(organsUpdatedAffected);
+            userController.addHistoryEntry("Procedure updated", "A procedure (" + selectedProcedure.getSummary() + ") was updated.");
             if (pending) {
                 if (newDateFormat.isAfter(LocalDate.now())) {
                     pendingProcedureItems.remove(selectedProcedure);
@@ -650,7 +643,7 @@ public class UserProceduresController extends UserTabController implements Initi
         pendingProcedureTableView.setDisable(!shown);
         previousProcedureTableView.setDisable(!shown);
         deleteProcedureButton.setVisible(shown);
-        //isOrganAffectingCheckBox.setVisible(shown);
+        organAffectChoiceBox.setVisible(shown);
     }
 
 

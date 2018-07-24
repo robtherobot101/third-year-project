@@ -7,12 +7,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -31,6 +31,11 @@ public class ClinicianSettingsController implements Initializable {
     private AnchorPane background;
 
     private Clinician clinician;
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public void setCurrentClinician(Clinician clinician) {
         this.clinician = clinician;
@@ -65,17 +70,15 @@ public class ClinicianSettingsController implements Initializable {
 //                }
 //            }
 //        }
-        int clinicianId = 0;
         try {
             // Display an error if the username is taken and the input has not been changed (The username can be taken by the clinician being modified).
-            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
             }
-            clinicianId = WindowManager.getDatabase().getClinicianId(clinician.getUsername());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to check uniqueness of clinician with id: " + clinician.getStaffID());
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
@@ -90,13 +93,12 @@ public class ClinicianSettingsController implements Initializable {
 
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setClinician(clinician);
+            WindowManager.setCurrentClinician(clinician, token);
             try {
-                WindowManager.getDatabase().updateClinician(clinician);
-            } catch (Exception e) {
-                e.printStackTrace();
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }
-            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         } else {
             alert.close();
         }

@@ -2,11 +2,8 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import seng302.Logic.Database.GeneralUser;
 import seng302.Logic.Database.UserMedications;
-import seng302.Model.Clinician;
 import seng302.Model.Medication.Medication;
-import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
 import spark.Response;

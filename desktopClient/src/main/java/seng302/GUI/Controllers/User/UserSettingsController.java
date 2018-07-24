@@ -7,16 +7,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.User.History;
+import org.apache.http.client.HttpResponseException;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * Class to handle all the logic for the Account Settings window.
@@ -34,9 +32,20 @@ public class UserSettingsController implements Initializable {
 
     private User currentUser;
 
+    private UserController userController;
+
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         userNameLabel.setText("user: " + currentUser.getName());
+    }
+
+    /**
+     * Set the parent user controller that spawned this window.
+     *
+     * @param userController The parent user controller
+     */
+    public void setParent(UserController userController) {
+        this.userController = userController;
     }
 
     /**
@@ -54,42 +63,31 @@ public class UserSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        int userId = 0;
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText(), currentUser.getId())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDatabase().isUniqueUser(emailField.getText())) {
+            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText(), currentUser.getId())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
             }
-            userId = WindowManager.getDatabase().getUserId(currentUser.getUsername());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e){
+            Debugger.error("Failed to uniqueness of user with id: " + currentUser.getId());
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
-                "The changes made will take place instantly.");
+                "The changes made will not be saved to the server until you save.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
 
-            String text = History.prepareFileStringGUI(currentUser.getId(), "updateAccountSettings");
-            History.printToFile(streamOut, text);
+            userController.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setCurrentUser(currentUser);
-            try{
-                WindowManager.getDatabase().updateUser(currentUser);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();
         }
@@ -124,7 +122,6 @@ public class UserSettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setUserSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));

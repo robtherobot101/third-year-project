@@ -1,8 +1,8 @@
-package seng302.Generic;
+package seng302.Logic;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import seng302.Config.DatabaseConfiguration;
+
+import java.sql.*;
 
 public class SqlSanitation {
 
@@ -71,12 +71,13 @@ public class SqlSanitation {
      * @param query The query to execute.
      * @return Returns a string table of the results.
      */
-    public String executeQuery(String query) {
-        try {
-            return  WindowManager.getDatabase().adminQuery(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public CommandLineResponse executeQuery(String query) {
+            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                return new CommandLineResponse(true, createTable(resultSet));
+            } catch (SQLException e) {
+                return new CommandLineResponse(false, e.getMessage());
+            }
     }
 }

@@ -3,24 +3,27 @@ package seng302.Generic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.MalformedJsonException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
-import java.io.StringReader;
 
 public class APIResponse{
     private JsonParser jp;
     private String body;
+    private String token = null;
     private int status;
+
     public APIResponse(Response response){
         jp = new JsonParser();
         this.body = response.readEntity(String.class);
         this.status = response.getStatus();
+        try {
+            this.token = (String) response.getHeaders().get("token").get(0);
+        } catch (NullPointerException e) {
+            this.token = null;
+        }
     }
 
     public APIResponse(int status) {
@@ -39,6 +42,10 @@ public class APIResponse{
             }
         }
         return true;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public JsonObject getAsJsonObject(){

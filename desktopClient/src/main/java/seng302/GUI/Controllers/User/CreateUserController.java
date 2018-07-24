@@ -6,18 +6,16 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
-import seng302.User.History;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 /**
  * A controller class for the create account screen.
@@ -73,19 +71,18 @@ public class CreateUserController implements Initializable {
      * @return The created user
      */
     public User createAccount() {
-
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if(!WindowManager.getDatabase().isUniqueUser(emailInput.getText())) {
+            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to check uniqueness of new user.");
         }
         if (!passwordInput.getText().equals(passwordConfirmInput.getText())) {
             errorText.setText("Passwords do not match");
@@ -102,32 +99,25 @@ public class CreateUserController implements Initializable {
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
+            user.addHistoryEntry("Created", "This profile was created.");
+            user.addHistoryEntry("Logged in", "This profile was logged in to.");
+
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
-                //Got rid of the Local Data management of users
-                DataManager.users.add(user);
-                //
-                History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "create"));
-                History.printToFile(streamOut, History.prepareFileStringGUI(user.getId(), "login"));
-                WindowManager.setCurrentUser(user);
-
-
                 try {
-                    WindowManager.getDatabase().insertUser(user);
-                } catch(SQLException e) {
-                    e.printStackTrace();
+                    WindowManager.getDataManager().getUsers().insertUser(user);
+                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getUsername(), user.getPassword());
+                    User fromResponse = (User)response.keySet().iterator().next();
+                    String token = response.values().iterator().next();
+
+                    WindowManager.setCurrentUser(fromResponse, token);
+                    WindowManager.setScene(TFScene.userWindow);
+                    WindowManager.resetScene(TFScene.createAccount);
+                    return null;
+                } catch(HttpResponseException e) {
+                    Debugger.error("Failed to insert new user and log in.");
                 }
-
-                //Got rid of the users being saved to a json file
-                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
-                //
-
-
-                WindowManager.setScene(TFScene.userWindow);
-                WindowManager.resetScene(TFScene.createAccount);
-                return null;
             }
-
         }
         stage.close();
         return user;

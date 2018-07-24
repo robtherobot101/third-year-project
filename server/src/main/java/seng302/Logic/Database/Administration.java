@@ -2,16 +2,25 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.User;
-import seng302.Server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Administration {
+
+
+    public void status() throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT staff_id FROM ADMIN WHERE staff_id = 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+            result.next();
+        }
+    }
 
 
     public void resample() throws SQLException{
@@ -46,6 +55,10 @@ public class Administration {
             String update = "DELETE FROM WAITING_LIST_ITEM";
             PreparedStatement statement = connection.prepareStatement(update);
             System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+            update = "DELETE FROM TOKEN";
+            statement = connection.prepareStatement(update);
+            System.out.println("Reset of database (TOKEN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
             update = "DELETE FROM PROCEDURES";
             statement = connection.prepareStatement(update);

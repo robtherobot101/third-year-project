@@ -18,6 +18,12 @@ public class HistoryItem {
         this.id = id;
     }
 
+    public HistoryItem(LocalDateTime dateTime, String action, String description) {
+        this.dateTime = dateTime;
+        this.action = action;
+        this.description = description;;
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -28,6 +34,16 @@ public class HistoryItem {
 
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Determines whether the information in this HistoryItem is the same as another (checks all fields apart from ID).
+     *
+     * @param other The object to compare to
+     * @return Whether the information is equal
+     */
+    public boolean informationEqual(HistoryItem other) {
+        return (this.action.equals(other.action) && this.description.equals(other.description) && this.dateTime.equals(other.dateTime));
     }
 
     public int getId() {

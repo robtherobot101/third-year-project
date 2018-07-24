@@ -8,6 +8,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 
@@ -65,7 +67,7 @@ public class CreateAdminController implements Initializable {
      */
     public void createAccount() {
         try{
-            if (!WindowManager.getDatabase().isUniqueUser(usernameInput.getText())) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
             }
@@ -80,8 +82,8 @@ public class CreateAdminController implements Initializable {
                 admin = new Admin(username, password, name);
                 stage.close();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to check uniqueness of new admin.");
         }
 
     }

@@ -1,6 +1,5 @@
 package seng302.User;
 
-import seng302.Generic.SearchUtils;
 import seng302.User.Attribute.Organ;
 
 import java.time.LocalDate;
@@ -17,10 +16,12 @@ public class WaitingListItem {
 
     protected Organ organType;
     protected LocalDate organRegisteredDate;
-    protected Long receiverId;
+    protected Long userId;
 
     private String receiverName;
     private String receiverRegion;
+
+    private boolean isConflicting;
 
     /**
      * Constructor of the object. Used when registering a new organ
@@ -28,12 +29,12 @@ public class WaitingListItem {
      * @param receiverName          The name of the receiver.
      * @param receiverRegion        The region of the receiver.
      * @param organ         The organ that the receiver needs.
-     * @param receiverId            The id of the receiver.
+     * @param userId            The id of the receiver.
      */
-    public WaitingListItem(String receiverName, String receiverRegion, long receiverId, Organ organ) {
+    public WaitingListItem(String receiverName, String receiverRegion, long userId, Organ organ) {
         this.receiverName = receiverName;
         this.receiverRegion = receiverRegion;
-        this.receiverId = receiverId;
+        this.userId = userId;
 
         this.organType = organ;
 
@@ -49,12 +50,12 @@ public class WaitingListItem {
      * @param deregisteredDate          The date that the organ was de-registered.
      * @param organDeregisteredCode          The code used to de-register the organ
      * @param organ         The organ that the receiver needs.
-     * @param receiverId            The id of the receiver.
+     * @param userId            The id of the receiver.
      */
-    public WaitingListItem(String receiverName, String receiverRegion, long receiverId, LocalDate registeredDate, LocalDate deregisteredDate, int organDeregisteredCode, Organ organ) {
+    public WaitingListItem(String receiverName, String receiverRegion, long userId, LocalDate registeredDate, LocalDate deregisteredDate, int organDeregisteredCode, Organ organ) {
         this.receiverName = receiverName;
         this.receiverRegion = receiverRegion;
-        this.receiverId = receiverId;
+        this.userId = userId;
 
         this.organRegisteredDate = registeredDate;
         this.organDeregisteredDate = deregisteredDate;
@@ -99,6 +100,15 @@ public class WaitingListItem {
         }
     }
 
+    public void setReceiverName(String name) {
+        this.receiverName = name;
+    }
+
+
+    public void setReceiverRegion(String region) {
+        this.receiverRegion = region;
+    }
+
     public Organ getOrganType() {
         return organType;
     }
@@ -107,7 +117,7 @@ public class WaitingListItem {
         return organRegisteredDate;
     }
 
-    public LocalDate organDeregisteredDate() {
+    public LocalDate getOrganDeregisteredDate() {
         return organDeregisteredDate;
     }
 
@@ -116,7 +126,7 @@ public class WaitingListItem {
     }
 
     public Long getUserId() {
-        return receiverId;
+        return userId;
     }
 
     public String getReceiverRegion() {
@@ -129,5 +139,9 @@ public class WaitingListItem {
 
     public boolean getStillWaitingOn(){
         return organDeregisteredDate == null;
+    }
+
+    public boolean isConflicting() {
+        return isConflicting;
     }
 }

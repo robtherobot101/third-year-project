@@ -2,7 +2,7 @@ package seng302;
 
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Generic.SqlSanitation;
+import seng302.Logic.SqlSanitation;
 
 import static org.junit.Assert.assertEquals;
 

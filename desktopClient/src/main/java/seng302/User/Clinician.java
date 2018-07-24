@@ -19,7 +19,8 @@ public class Clinician {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
+        // TODO Add functionality to DAOs for getting next id.
+        this.staffID = 1;
         this.region = null;
         this.workAddress = null;
         this.accountType = ProfileType.CLINICIAN;
@@ -56,7 +57,8 @@ public class Clinician {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
+        // TODO Add functionality to DAOs for getting next id.
+        this.staffID = 1;
         this.region = null;
         this.workAddress = null;
         this.accountType = accountType;

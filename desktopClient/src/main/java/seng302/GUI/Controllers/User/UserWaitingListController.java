@@ -8,10 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
-import seng302.Generic.SearchUtils;
-import seng302.User.History;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -21,8 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-
-import static seng302.Generic.IO.streamOut;
 
 
 /**
@@ -51,6 +45,7 @@ public class UserWaitingListController extends UserTabController implements Init
      */
     public void setCurrentUser(User user) {
         this.currentUser = user;
+        populateWaitingList();
         transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
@@ -59,8 +54,6 @@ public class UserWaitingListController extends UserTabController implements Init
      * is added to the user's profile.
      */
     public void registerOrgan() {
-        String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
-        History.printToFile(streamOut, text);
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
             userController.addCurrentUserToUndoStack();
@@ -68,6 +61,7 @@ public class UserWaitingListController extends UserTabController implements Init
             WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
 
             currentUser.getWaitingListItems().add(newWaitingListItem);
+            userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
             populateWaitingList();
             statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
 
@@ -83,33 +77,15 @@ public class UserWaitingListController extends UserTabController implements Init
      * the waiting TableView
      */
     public void deregisterOrgan() {
-        String text = History.prepareFileStringGUI(currentUser.getId(), "waitinglist");
-        History.printToFile(streamOut, text);
         WaitingListItem waitingListItemSelected = waitingListTableView.getSelectionModel().getSelectedItem();
         if (waitingListItemSelected != null) {
             userController.addCurrentUserToUndoStack();
-            WindowManager.showDeregisterDialog(waitingListItemSelected);
-            System.out.println(currentUser.hashCode());
-            System.out.println(SearchUtils.getUserById(currentUser.getId()).hashCode());
-            System.out.println(currentUser.equals(SearchUtils.getUserById(currentUser.getId())));
-            for(WaitingListItem i: SearchUtils.getUserById(currentUser.getId()).getWaitingListItems()){
-                i.deregisterOrgan(3);
-            }
-            statusIndicator.setStatus("Deregistered " + waitingListItemSelected.getOrganType(), false);
+            WindowManager.showDeregisterDialog(waitingListItemSelected, currentUser);
+            statusIndicator.setStatus("De-registered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }
         populateOrgansComboBox();
         userController.populateUserAttributes();
-    }
-
-
-    public void setStatusIndicator(StatusIndicator statusIndicator) {
-        this.statusIndicator = statusIndicator;
-    }
-
-
-    public void setTitleBar(TitleBar titleBar) {
-        this.titleBar = titleBar;
     }
 
     @Override
@@ -157,12 +133,7 @@ public class UserWaitingListController extends UserTabController implements Init
      * Refreshes the list waiting list TableView
      */
     public void populateWaitingList() {
-        //TODO
-        //currentUser is null when an item is deregistered via the clinicians transplant waiting list
-        // and the clinician hasn't yet viewed any user windows.
-
-        //This should be fixed with Andrew's changes to dealing with multiple clinician
-        if(currentUser != null){
+        if (currentUser != null){
             waitingListItems.clear();
             waitingListItems.addAll(currentUser.getWaitingListItems());
         }
@@ -203,10 +174,12 @@ public class UserWaitingListController extends UserTabController implements Init
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            if(currentUser.conflictingOrgans().contains(item.getOrganType())) {
-                                setTooltip(new Tooltip("User is currently donating this organ"));
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
+                            for(Organ o:currentUser.getOrgans()){
+                                if(o.equals(item.getOrganType()) && item.getStillWaitingOn()){
+                                    setTooltip(new Tooltip("User is currently donating this organ"));
+                                    if (!getStyleClass().contains("highlighted-row")) {
+                                        getStyleClass().add("highlighted-row");
+                                    }
                                 }
                             }
                         }

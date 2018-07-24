@@ -1,35 +1,31 @@
 package seng302.TestFX;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
-
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
+import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class UserWaitingListGUITest extends TestFXTest {
 
@@ -37,12 +33,16 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before
     public void setUp() throws SQLException {
-        WindowManager.getDatabase().resetDatabase();
+        try {
+            WindowManager.getDataManager().getGeneral().reset(null);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to reset the database.");
+        }
         user = addTestUser();
     }
 
@@ -196,6 +196,7 @@ public class UserWaitingListGUITest extends TestFXTest {
         assert (!(waitingListItems().get(0).getStillWaitingOn()));
     }
 
+    @Ignore
     @Test
     public void deregisteredItemReregistered_overridesDeregisteredItem() throws TimeoutException {
         usersTransplantWaitingListAsClinician();

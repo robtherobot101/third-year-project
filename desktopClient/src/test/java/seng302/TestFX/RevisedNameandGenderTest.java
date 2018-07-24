@@ -20,6 +20,7 @@ import seng302.User.User;
 
 public class RevisedNameandGenderTest extends TestFXTest {
 
+/*
     private User user;
 
     @BeforeClass
@@ -458,6 +459,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         Assert.assertEquals(DataManager.users.get(0).getEmail(), "new.email@test.com");
         Assert.assertEquals(DataManager.users.get(0).getPassword(), "newPassword");
     }
+*/
 
 
 }

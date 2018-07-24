@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -15,7 +15,6 @@ import java.util.*;
  * This class contains information about organ users.
  */
 public class User {
-
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     private String[] name, preferredName;
     private LocalDate dateOfBirth, dateOfDeath = null;
@@ -33,13 +32,15 @@ public class User {
     private ArrayList<Disease> currentDiseases = new ArrayList<>(), curedDiseases = new ArrayList<>();
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+    private ArrayList<HistoryItem> userHistory = new ArrayList<>();
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -56,7 +57,8 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -73,7 +75,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     // Used by CSV import to form profiles
@@ -111,14 +114,14 @@ public class User {
 
         this.email = email;
         this.password = "password";
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
-        System.out.println(isLastName);
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
         this.name[0] = firstName;
@@ -142,7 +145,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -210,10 +214,6 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
-        this.waitingListItems.clear();
-        this.waitingListItems.addAll(user.getWaitingListItems());
-
-
     }
 
     public void copyProceduresListsFrom(User user) {
@@ -467,9 +467,9 @@ public class User {
     public void setOrgan(Organ organ) {
         if (!organs.contains(organ)) {
             this.organs.add(organ);
-            System.out.println("Organ added.");
+            Debugger.log("Organ added.");
         } else {
-            System.out.println("Organ already being donated.");
+            Debugger.log("Organ already being donated.");
         }
         setLastModified();
     }
@@ -477,19 +477,19 @@ public class User {
     public void removeOrgan(Organ organ) {
         if (organs.contains(organ)) {
             this.organs.remove(organ);
-            System.out.println("Organ removed.");
+            Debugger.log("Organ removed.");
         } else {
-            System.out.println("Organ not in list.");
+            Debugger.log("Organ not in list.");
         }
         setLastModified();
     }
 
-    public void setLastModified() {
-        lastModified = LocalDateTime.now();
+    public void sortHistory() {
+        userHistory.sort(Comparator.comparing(HistoryItem::getDateTime));
     }
 
-    public void setLastModifiedForDatabase(LocalDateTime time) {
-        lastModified = time;
+    public void setLastModified() {
+        lastModified = LocalDateTime.now();
     }
 
     public String getBloodPressure() {
@@ -532,6 +532,9 @@ public class User {
         return previousProcedures;
     }
 
+    public ArrayList<HistoryItem> getUserHistory() {
+        return userHistory;
+    }
 
     /**
      * Get a string containing key information about the user.
@@ -610,13 +613,12 @@ public class User {
     public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
     public boolean isReceiver() {
-        boolean receiver = false;
         for (WaitingListItem item : waitingListItems) {
             if (item.getStillWaitingOn()) {
-                receiver = true;
+                return true;
             }
         }
-        return receiver;
+        return false;
     }
 
     /**
@@ -659,5 +661,9 @@ public class User {
                 break;
             }
         }
+    }
+
+    public void addHistoryEntry(String action, String description) {
+        userHistory.add(new HistoryItem(action, description));
     }
 }
