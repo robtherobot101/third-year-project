@@ -61,6 +61,15 @@ public class GeneralDB implements GeneralDAO {
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
+    public boolean status() throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), "status");
+        if (response.getAsString().equals("DATABASE ONLINE")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public String sendCommand(String command) {
         JsonObject commandObject = new JsonObject();
         commandObject.addProperty("command", command);

@@ -140,4 +140,9 @@ public class GeneralM implements GeneralDAO {
     public List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException {
         return null;
     }
+
+    @Override
+    public boolean status() throws HttpResponseException {
+        return true;
+    }
 }

@@ -5,6 +5,7 @@ import seng302.Generic.APIResponse;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
+import java.net.ConnectException;
 import java.util.List;
 
 public interface GeneralDAO {
@@ -22,4 +23,6 @@ public interface GeneralDAO {
     boolean isUniqueIdentifier(String username, long userId) throws HttpResponseException;
 
     List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException;
+
+    boolean status() throws HttpResponseException, ConnectException;
 }
