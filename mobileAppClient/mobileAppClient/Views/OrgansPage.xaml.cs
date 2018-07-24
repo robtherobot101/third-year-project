@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using mobileAppClient.odmsAPI;
-
+using System.Net;
 
 namespace mobileAppClient
 {
@@ -126,17 +126,32 @@ namespace mobileAppClient
             }
 
             UserAPI userAPI = new UserAPI();
-            bool successfullyUpdatedUserOrgans = await userAPI.UpdateUserOrgans();
-            if(successfullyUpdatedUserOrgans) {
-                await DisplayAlert("",
+            HttpStatusCode userUpdated = await userAPI.UpdateUser();
+
+            switch(userUpdated)
+            {
+                case HttpStatusCode.Created:
+                    await DisplayAlert("",
                     "User Organs Successfully updated",
                     "OK");
-            } else {
-                await DisplayAlert("",
-                    "User Organs Update Failed",
+                    break;
+                case HttpStatusCode.BadRequest:
+                    await DisplayAlert("",
+                    "User Organs Update Failed (400)",
                     "OK");
-            }
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error, please try again",
+                    "OK");
+                    break;
 
+            }
         }
     }
 }

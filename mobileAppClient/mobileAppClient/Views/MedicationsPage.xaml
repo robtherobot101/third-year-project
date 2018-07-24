@@ -23,13 +23,28 @@
                       ItemTapped="Handle_MedicationTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Name}"
-                         Detail="{Binding DetailString}" />
+                        <ViewCell>
+
+                            <StackLayout Orientation="Vertical" Padding="15, 0, 0, 0">
+                                <Label Text="{Binding Name}"
+                                TextColor="Blue"
+                                FontSize="Default"
+                                       />
+                                
+                                <Label Text="{Binding DetailString}"
+                                HorizontalOptions="StartAndExpand"
+                                TextColor="Gray"
+                                FontSize="Micro"/>
+                            </StackLayout>
+                            
+                        </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Button x:Name="PressMeButton"
+            <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
+
+            <Button x:Name="CompareButton"
             Text="COMPARE"
             Pressed="Handle_CompareButtonPressed"
             />

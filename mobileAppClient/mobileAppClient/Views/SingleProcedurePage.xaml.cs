@@ -12,9 +12,15 @@ namespace mobileAppClient
             InitializeComponent();
             SummaryEntry.Text = procedure.Summary;
             DescriptionEntry.Text = procedure.Description;
-            DateDueEntry.Text = "Due on " + procedure.Date.day + ", " + procedure.Date.month + ", " + procedure.Date.year;
-            OrgansAffectedEntry.Text = String.Join(", ", procedure.OrgansAffected);
+            DateDueEntry.Text = procedure.Date.day + ", " + procedure.Date.month + ", " + procedure.Date.year;
             IDEntry.Text = procedure.Id.ToString();
+            foreach (string item in procedure.OrgansAffected)
+            {
+                TextCell cell = new TextCell();
+                cell.Text = item;
+                cell.TextColor = Color.Gray;
+                OrgansAffectedSection.Add(cell);
+            }
 
         }
 

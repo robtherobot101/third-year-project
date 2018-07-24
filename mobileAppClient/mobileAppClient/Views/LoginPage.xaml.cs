@@ -14,19 +14,37 @@ namespace mobileAppClient
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class LoginPage : ContentPage
 	{
+        private bool loginClicked;
+
 		public LoginPage ()
 		{
 			InitializeComponent ();
+            loginClicked = false;
 		}
 
+        /*
+         * Called when the Sign Up button is pressed
+         */
         async void SignUpButtonClicked(Object sender, EventArgs args)
         {
             var registerPage = new NavigationPage(new RegisterPage(this));
             await Navigation.PushModalAsync(registerPage);
         }
 
+        /*
+         * Called when the Login button is pressed
+         */
         async void LoginButtonClicked(object sender, EventArgs args)
         {
+            // Prevents multiple presses of the login button
+            if (loginClicked)
+            {
+                return;
+            } else
+            {
+                loginClicked = true;
+            }
+
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
 
@@ -70,7 +88,7 @@ namespace mobileAppClient
 
         protected override bool OnBackButtonPressed()
         {
-            // Stops the back button from working
+            // Stops the back button from working and opening the main view without a logged in user
             return true;
         }
     }

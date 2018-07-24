@@ -12,9 +12,29 @@ namespace mobileAppClient
             switch (e.NewValue)
             {
                 case 0:
+                    if (UserController.Instance.LoggedInUser.currentMedications.Count == 0)
+                    {
+                        NoDataLabel.IsVisible = true;
+                        MedicationsList.IsVisible = false;
+                    }
+                    else
+                    {
+                        NoDataLabel.IsVisible = false;
+                        MedicationsList.IsVisible = true;
+                    }
                     MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
                     break;
                 case 1:
+                    if (UserController.Instance.LoggedInUser.historicMedications.Count == 0)
+                    {
+                        NoDataLabel.IsVisible = true;
+                        MedicationsList.IsVisible = false;
+                    }
+                    else
+                    {
+                        NoDataLabel.IsVisible = false;
+                        MedicationsList.IsVisible = true;
+                    }
                     MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.historicMedications;
                     break;
             }
@@ -33,6 +53,16 @@ namespace mobileAppClient
             foreach (Medication item in UserController.Instance.LoggedInUser.historicMedications)
             {
                 item.DetailString = item.History[item.History.Count - 1];            
+            }
+
+            if (UserController.Instance.LoggedInUser.currentMedications.Count == 0)
+            {
+                NoDataLabel.IsVisible = true;
+                MedicationsList.IsVisible = false;
+            }
+
+            if(UserController.Instance.LoggedInUser.currentMedications.Count + UserController.Instance.LoggedInUser.historicMedications.Count < 2) {
+                CompareButton.IsVisible = false;
             }
 
             MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;

@@ -6,7 +6,7 @@
              Title="Diseases" NavigationPage.HasNavigationBar="True"
              xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
+        <StackLayout Orientation="Vertical" Spacing="-6">
 
             <controls:SegmentedControl x:Name="SegControl" 
                                        TintColor="#007AFF" 
@@ -19,16 +19,53 @@
               </controls:SegmentedControl.Children>
             </controls:SegmentedControl>
 
+            <StackLayout Orientation="Horizontal">
+                <Picker Title ="Sort by" 
+                        x:Name="SortingInput" 
+                        SelectedIndexChanged="Handle_SelectedIndexChanged" 
+                        HorizontalOptions="Center"
+                        >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Name</x:String>
+                            <x:String>Date</x:String>
+                            <x:String>Clear</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <Picker Title ="⬆/⬇ (Up or Down)" 
+                        x:Name="AscendingDescendingPicker" 
+                        SelectedIndexChanged="Handle_UpDownChanged" 
+                        HorizontalOptions="Center"
+                        IsVisible="false"
+                        >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>⬆ (Descending)</x:String>
+                            <x:String>⬇ (Ascending)</x:String>
+                            <x:String>Clear</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </StackLayout>
+
             <ListView x:Name="DiseasesList"
                       ItemTapped="Handle_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Name}"
-                         Detail="{Binding DiagnosisDateString}" />
+                        <TextCell Text="{Binding CellText}"
+                         Detail="{Binding DiagnosisDateString}"
+                         TextColor="{Binding CellColour}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
+            
         </StackLayout>
+
+
 
     </ContentPage.Content>
 </ContentPage>

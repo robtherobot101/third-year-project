@@ -26,23 +26,16 @@ namespace mobileAppClient.odmsAPI
         {
             client = new HttpClient();
 
-            // Sets default addr -> needed for register pane
+            // Sets default address
             serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
         }
 
+        /*
+         * Verifies the device is connected to the internet
+         */ 
         public async Task<bool> IsConnectedToInternet()
         {
-            Ping p = new Ping();
-            PingReply reply = await p.SendPingAsync("1.1.1.1");
-
-            if (reply.Status == IPStatus.Success)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
     }
 }

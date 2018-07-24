@@ -17,6 +17,11 @@ namespace mobileAppClient
             if (string.IsNullOrEmpty(input))
                 return false;
 
+            if (input.Length > 40)
+            {
+                return false;
+            }
+
             // Check for numbers
             if (!numbersAllowed && (input.Any(char.IsDigit) || input.Any(char.IsSymbol)))
             {
@@ -32,12 +37,6 @@ namespace mobileAppClient
         {
             if (string.IsNullOrEmpty(input))
                 return false;
-
-            Regex decimalRegex = new Regex(@"^[0 - 9]([.][0 - 9]{ 1, 3 })?$");
-            if (!decimalRegex.Match(input).Success)
-            {
-                return false;
-            }
 
             try
             {

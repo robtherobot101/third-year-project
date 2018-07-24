@@ -1,6 +1,8 @@
-﻿using System;
+﻿using mobileAppClient.odmsAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -178,7 +180,32 @@ namespace mobileAppClient
             loggedInUser.smokerStatus = SmokerStatusInput.SelectedItem.ToString().ToUpper();
             loggedInUser.alcoholConsumption = AlcoholConsumptionInput.SelectedItem.ToString().ToUpper();
 
-            // TODO wire up api to send the user
+            UserAPI userAPI = new UserAPI();
+            HttpStatusCode userUpdated = await userAPI.UpdateUser();
+
+            switch (userUpdated)
+            {
+                case HttpStatusCode.Created:
+                    await DisplayAlert("",
+                    "User details successfully updated",
+                    "OK");
+                    break;
+                case HttpStatusCode.BadRequest:
+                    await DisplayAlert("",
+                    "User details update failed (400)",
+                    "OK");
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error, please try again (500)",
+                    "OK");
+                    break;
+            }
         }
     }
 }

@@ -11,10 +11,10 @@ namespace mobileAppClient
         {
             InitializeComponent();
             OrganTypeEntry.Text = waitingListItem.OrganType;
-            RegisteredDateEntry.Text = "Registered on " + waitingListItem.OrganRegisteredDate.day + ", " + waitingListItem.OrganRegisteredDate.month + ", " + waitingListItem.OrganRegisteredDate.year;
+            RegisteredDateEntry.Text = waitingListItem.OrganRegisteredDate.day + ", " + waitingListItem.OrganRegisteredDate.month + ", " + waitingListItem.OrganRegisteredDate.year;
             DeregisteredDateEntry.Text =
                 waitingListItem.OrganDeregisteredDate != null ? 
-                                     "Deregistered on " + waitingListItem.OrganDeregisteredDate.day + ", " + waitingListItem.OrganDeregisteredDate.month + ", " + waitingListItem.OrganDeregisteredDate.year
+                                     waitingListItem.OrganDeregisteredDate.day + ", " + waitingListItem.OrganDeregisteredDate.month + ", " + waitingListItem.OrganDeregisteredDate.year
                                      : "N/A";
             DeregisterCodeEntry.Text =
                 waitingListItem.OrganDeregisteredCode != 0 ? waitingListItem.OrganDeregisteredCode.ToString() : "N/A";

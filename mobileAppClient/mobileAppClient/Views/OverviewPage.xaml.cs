@@ -33,18 +33,11 @@ namespace mobileAppClient
 
             //Attributes Pane 
             //---------------------------------------------------------------------------
-            double age;
-            if (currentUser.dateOfDeath == null)
-            {
-                age = (DateTime.Now - currentUser.dateOfBirth.ToDateTime()).Days / 365.00;
-            }
-            else
-            {
-                age = (currentUser.dateOfDeath.ToDateTime() - currentUser.dateOfBirth.ToDateTime()).Days / 365.00;
-            }
+            double age = currentUser.getAge();
+
             string attributesString = "Name: " + String.Join(" ", currentUser.name) + "\nAge: " + String.Format("{0:0.00}", age) + " years old";
             if (currentUser.currentAddress != null) attributesString += "\nCurrent Address: " + currentUser.currentAddress;
-            if (currentUser.gender.ToString() != "") attributesString += "\nBirth Gender: " + currentUser.gender.ToPickerString();
+            if (currentUser.gender.ToString() != "") attributesString += "\nBirth Gender: " + currentUser.gender.ToString();
             AttributesLabel.Text = attributesString;
 
             //Organs Pane 
