@@ -709,6 +709,15 @@ public class AdminController implements Initializable {
         });
         profileMenu.getItems().add(deleteProfile);
 
+        //Add in a edit clinician option on the clinicians view.
+        MenuItem editClinician = new MenuItem();
+        editClinician.setOnAction(event -> {
+            Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
+            updateClinicianPopUp(selectedClinician);
+        });
+        editClinician.setVisible(false);
+        profileMenu.getItems().add(editClinician);
+
         userTableView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 User selectedUser = userTableView.getSelectionModel().getSelectedItem();
@@ -731,6 +740,8 @@ public class AdminController implements Initializable {
                     } else {
                         deleteProfile.setDisable(false);
                         deleteProfile.setText("Delete " + selectedClinician.getName());
+                        editClinician.setVisible(true);
+                        editClinician.setText("Edit " + selectedClinician.getName());
                     }
                     profileMenu.show(clinicianTableView, event.getScreenX(), event.getScreenY());
                 }
@@ -866,6 +877,112 @@ public class AdminController implements Initializable {
         });
         statusIndicator.setStatusBar(statusBar);
         userTableView.refresh();
+    }
+
+    /**
+     * Updates the current clinicians attributes to
+     * reflect those of the values in the displayed TextFields
+     */
+    public void updateClinicianPopUp(Clinician clinician) {
+        //adminUndoStack.add(new Clinician(clinician));
+        //undoWelcomeButton.setDisable(false);
+        Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
+
+        // Create the custom dialog.
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Update Clinician");
+        dialog.setHeaderText("Update Clinician Details");
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
+
+        // Set the button types.
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        dialog.getDialogPane().lookupButton(updateButtonType).setId("clinicianSettingsPopupUpdateButton");
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 10, 10));
+
+        TextField clinicianName = new TextField();
+        clinicianName.setPromptText(clinician.getName());
+        clinicianName.setId("clinicianName");
+        TextField clinicianAddress = new TextField();
+        clinicianAddress.setId("clinicianAddress");
+        clinicianAddress.setPromptText(clinician.getWorkAddress());
+        TextField clinicianRegion = new TextField();
+        clinicianRegion.setId("clinicianRegion");
+        clinicianRegion.setPromptText(clinician.getRegion());
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(clinicianName, 1, 0);
+        grid.add(new Label("Address:"), 0, 1);
+        grid.add(clinicianAddress, 1, 1);
+        grid.add(new Label("Region:"), 0, 2);
+        grid.add(clinicianRegion, 1, 2);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+        updateButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        clinicianName.textProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.trim().isEmpty()));
+
+        // Do some validation (using the Java 8 lambda syntax).
+        clinicianAddress.textProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.trim().isEmpty()));
+
+        clinicianRegion.textProperty().addListener((observable, oldValue, newValue) -> updateButton.setDisable(newValue.trim().isEmpty()));
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(clinicianName::requestFocus);
+
+        dialog.setResultConverter(dialogButton -> {
+            String newName = "";
+            String newAddress = "";
+            String newRegion = "";
+            if (dialogButton == updateButtonType) {
+
+                if (clinicianName.getText().equals("")) {
+                    newName = clinician.getName();
+                } else {
+                    newName = clinicianName.getText();
+                }
+
+                if (clinicianAddress.getText().equals("")) {
+                    newAddress = clinician.getWorkAddress();
+                } else {
+                    newAddress = clinicianAddress.getText();
+                }
+
+                if (clinicianRegion.getText().equals("")) {
+                    newRegion = clinician.getRegion();
+                } else {
+                    newRegion = clinicianRegion.getText();
+                }
+            }
+            return new ArrayList<>(Arrays.asList(newName, newAddress, newRegion));
+        });
+
+        Optional<ArrayList<String>> result = dialog.showAndWait();
+        result.ifPresent(newClinicianDetails -> {
+            Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
+                    .get(2));
+            clinician.setName(newClinicianDetails.get(0));
+            clinician.setWorkAddress(newClinicianDetails.get(1));
+            clinician.setRegion(newClinicianDetails.get(2));
+            try {
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
+                refreshLatestProfiles();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
+            }
+
+
+        });
     }
 
 
