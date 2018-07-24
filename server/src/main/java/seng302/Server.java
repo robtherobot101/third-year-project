@@ -26,6 +26,7 @@ public class Server {
     private DonationsController donationsController;
     private WaitingListController waitingListController;
     private SQLController sqlController;
+    private CountriesController countriesController;
     private int port = 7015;
 
     private ProfileUtils profileUtils;
@@ -145,6 +146,10 @@ public class Server {
             path("/waitingListItems", () -> {
                 get("",  waitingListController::getAllWaitingListItems);
             });
+
+            path("/countries", () -> {
+                get("", countriesController::getCountries);
+            });
         });
     }
 
@@ -183,5 +188,6 @@ public class Server {
         waitingListController = new WaitingListController();
         profileUtils = new ProfileUtils();
         sqlController = new SQLController();
+        countriesController = new CountriesController();
     }
 }
