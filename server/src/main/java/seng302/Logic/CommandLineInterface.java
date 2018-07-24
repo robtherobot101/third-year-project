@@ -1,20 +1,16 @@
 package seng302.Logic;
 
-import seng302.Logic.Database.GeneralClinician;
-import seng302.Logic.Database.GeneralUser;
-import seng302.Logic.Database.UserDonations;
-import seng302.Logic.Database.UserWaitingList;
+import seng302.Controllers.HistoryController;
+import seng302.Logic.Database.*;
+import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.Clinician;
-import seng302.Model.Command;
-import seng302.Model.User;
-import seng302.Model.WaitingListItem;
 
 import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -131,6 +127,13 @@ public class CommandLineInterface {
             switch (nextCommand[0].toLowerCase()) {
                 case "adduser":
                     response = addUser(nextCommand);
+                    if (response.isSuccess()) {
+                        try {
+                            new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Created", "This profile was created"), Math.toIntExact(response.getUserId()));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                 case "addclinician":
                     response = addClinician(nextCommand);
@@ -138,10 +141,24 @@ public class CommandLineInterface {
 
                 case "adddonationorgan":
                     response = addDonationOrgan(nextCommand);
+                    if (response.isSuccess()) {
+                        try {
+                            new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
 
                 case "addwaitinglistorgan":
                     response = addWaitingListOrgan(nextCommand);
+                    if (response.isSuccess()) {
+                        try{
+                            new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                 case "deleteuser":
                     response = deleteUser(nextCommand);
@@ -151,12 +168,33 @@ public class CommandLineInterface {
                     break;
                 case "removewaitinglistorgan":
                     response = removeWaitingListOrgan(nextCommand);
+                    if (response.isSuccess()) {
+                        try{
+                            new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                 case "removedonationorgan":
                     response = removeDonationOrgan(nextCommand);
+                    if (response.isSuccess()) {
+                        try{
+                            new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                 case "updateuser":
                     response = updateUser(nextCommand);
+                    if (response.isSuccess()) {
+                        try{
+                            new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                 case "updateclinician":
                     response = updateClinician(nextCommand);
@@ -281,7 +319,7 @@ public class CommandLineInterface {
                 insertUser.setUsername(nextCommand[1]);
                 insertUser.setPassword(nextCommand[2]);
                 new GeneralUser().insertUser(insertUser);
-                return new CommandLineResponse(true, "New user created.");
+                return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(),insertUser.getPassword()).getId());
             } catch (DateTimeException e) {
                 return new CommandLineResponse(false,"Please enter a valid date of birth in the format dd/mm/yyyy.");
             } catch (SQLException e) {
@@ -336,7 +374,7 @@ public class CommandLineInterface {
         }
         try {
             new UserDonations().insertDonation(Organ.parse(nextCommand[2]), (int)toSet.getId());
-            return new CommandLineResponse(true,"Successful update of Organs");
+            return new CommandLineResponse(true,"Successful update of Organs", toSet.getId());
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false,"Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
@@ -372,7 +410,7 @@ public class CommandLineInterface {
             WaitingListItem item = new WaitingListItem(Organ.parse(nextCommand[2]),LocalDate.now(), -1, (int)toSet.getId(), null, 0);
             new UserWaitingList().insertWaitingListItem(item, (int)toSet.getId());
             toSet.getWaitingListItems().add(item);
-            return new CommandLineResponse(true, "Successful update of Waiting List Items");
+            return new CommandLineResponse(true, "Successful update of Waiting List Items", toSet.getId());
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false,"Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
                     "cornea, middle-ear, skin, bone-marrow, connective-tissue");
@@ -504,7 +542,7 @@ public class CommandLineInterface {
         }
         try {
             new UserDonations().removeDonationListItem((int)toSet.getId(), nextCommand[2]);
-            return new CommandLineResponse(true, "Item removed successfully.");
+            return new CommandLineResponse(true, "Item removed successfully.", toSet.getId());
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false,"Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
@@ -538,7 +576,7 @@ public class CommandLineInterface {
         }
         try {
             new UserWaitingList().removeWaitingListItem((int)toSet.getId(), Organ.parse(nextCommand[2]));
-            return new CommandLineResponse(true, "Waiting list item was de-registered.");
+            return new CommandLineResponse(true, "Waiting list item was de-registered.", toSet.getId());
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false,"Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
@@ -692,7 +730,7 @@ public class CommandLineInterface {
         }
 
 
-        return new CommandLineResponse(wasSuccessful, outputString);
+        return new CommandLineResponse(wasSuccessful, outputString, toSet.getId());
     }
 
 
