@@ -5,11 +5,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -35,6 +40,8 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox,
         middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
+    @FXML
+    private ImageView profileImage;
 
     private Map<Organ, CheckBox> organTickBoxes;
 
@@ -405,7 +412,19 @@ public class UserAttributesController extends UserTabController implements Initi
 
         //Add listeners to correctly update BMI and blood pressure based on user input
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
-        weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
+        weightField.textProperty().addListener((observable, oldVaqlue, newValue) -> updateBMI());
+
+        //set profile image
+        Image profilePhoto = null;
+
+        // TODO change this so that it fetches a ref from the server, and not locally.
+        System.out.println(IO.getJarPath());
+        try {
+            profilePhoto = new Image(new FileInputStream(IO.getJarPath() + "\\classes\\icon.png\\"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        profileImage.setImage(profilePhoto);
     }
 
     public void undo(){

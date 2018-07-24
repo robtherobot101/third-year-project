@@ -334,4 +334,17 @@ public class UserController {
             return "Internal Server Error";
         }
     }
+
+    public Object getUserPhoto(Request request, Response response) {
+        User queriedUser = queryUser(request, response);
+
+        if (queriedUser == null){
+            return response.body();
+        }
+
+
+        // File file = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+        return "SUCCESS";
+    }
+
 }
