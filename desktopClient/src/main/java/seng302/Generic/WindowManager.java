@@ -276,6 +276,7 @@ public class WindowManager extends Application {
 
     }
 
+
     public static void setClinicianController(ClinicianController clinicianController) {
         WindowManager.clinicianController = clinicianController;
     }
