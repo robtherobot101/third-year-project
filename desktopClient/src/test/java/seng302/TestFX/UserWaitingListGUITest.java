@@ -196,6 +196,7 @@ public class UserWaitingListGUITest extends TestFXTest {
         assert (!(waitingListItems().get(0).getStillWaitingOn()));
     }
 
+    @Ignore
     @Test
     public void deregisteredItemReregistered_overridesDeregisteredItem() throws TimeoutException {
         usersTransplantWaitingListAsClinician();
