@@ -100,8 +100,8 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
-    public int count() throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), "countusers");
+    public int count(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "countusers");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         return Integer.parseInt(response.getAsString());

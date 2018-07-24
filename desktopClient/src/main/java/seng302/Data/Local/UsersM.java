@@ -375,7 +375,7 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public int count(){
+    public int count(String token){
         return users.size();
     }
 }

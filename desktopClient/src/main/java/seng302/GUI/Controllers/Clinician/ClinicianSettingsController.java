@@ -93,7 +93,7 @@ public class ClinicianSettingsController implements Initializable {
 
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setCurrentClinician(clinician);
+            WindowManager.setCurrentClinician(clinician, token);
             try {
                 WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
             } catch (HttpResponseException e) {

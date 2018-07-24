@@ -156,7 +156,7 @@ abstract class TestFXTest extends ApplicationTest {
 
     public void openClinicianWindow(Clinician testClinician){
         Platform.runLater(() ->{
-            WindowManager.setClinician(testClinician, null);
+            WindowManager.setCurrentClinician(testClinician, null);
             WindowManager.setScene(TFScene.clinician);
         });
         waitForFxEvents();

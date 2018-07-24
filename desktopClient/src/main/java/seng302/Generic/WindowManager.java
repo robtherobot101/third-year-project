@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
@@ -44,7 +43,6 @@ import seng302.User.WaitingListItem;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -284,6 +282,10 @@ public class WindowManager extends Application {
         WindowManager.adminController = adminController;
     }
 
+    public static ClinicianController getClinicianController() {
+        return clinicianController;
+    }
+
     public static void updateFoundClinicianUsers() {
         if (clinicianController.hasToken()) {
             clinicianController.updateFoundUsers();
@@ -381,7 +383,9 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://localhost:7015/api/v1");
+        String localServer = "http://localhost:7015/api/v1";
+        String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
+        APIServer server = new APIServer(properServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);

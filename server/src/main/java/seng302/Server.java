@@ -168,6 +168,7 @@ public class Server {
             });
 
             path("/countusers", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
                 get("",      userController::countUsers);
             });
         });

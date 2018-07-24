@@ -13,14 +13,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
-import org.junit.*;
-import seng302.Generic.DataManager;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,11 +30,9 @@ import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 
-public class ClinicianWindowGUITest extends  TestFXTest {
+public class ClinicianWindowGUITest extends TestFXTest {
     int resultsPerPage;
     int numberXOfResults;
     Clinician testClinician;
@@ -77,8 +76,8 @@ public class ClinicianWindowGUITest extends  TestFXTest {
     }
     
     public void removeAllUsers() throws HttpResponseException {
-        for(User u : new ArrayList<>(WindowManager.getDataManager().getUsers().getAllUsers())) {
-            WindowManager.getDataManager().getUsers().removeUser(u.getId());
+        for(User u : new ArrayList<>(WindowManager.getDataManager().getUsers().getAllUsers(null))) {
+            WindowManager.getDataManager().getUsers().removeUser(u.getId(), null);
         }
     }
 

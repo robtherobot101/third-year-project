@@ -23,5 +23,5 @@ public interface UsersDAO {
 
     void removeUser(long id, String token) throws HttpResponseException;
 
-    int count() throws HttpResponseException;
+    int count(String token) throws HttpResponseException;
 }

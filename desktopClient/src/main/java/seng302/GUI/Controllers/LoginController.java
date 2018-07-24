@@ -76,13 +76,13 @@ public class LoginController implements Initializable {
     }
 
     private void loadClinician(Clinician clinician, String token) {
-        WindowManager.setClinician(clinician, token);
+        WindowManager.setCurrentClinician(clinician, token);
         WindowManager.setScene(TFScene.clinician);
         resetScene();
     }
 
     private void loadAdmin(Admin admin, String token) {
-        WindowManager.setAdmin(admin, token);
+        WindowManager.setCurrentAdmin(admin, token);
         WindowManager.setScene(TFScene.admin);
         resetScene();
     }

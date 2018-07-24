@@ -509,7 +509,7 @@ public class AdminController implements Initializable {
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -554,11 +554,11 @@ public class AdminController implements Initializable {
         }
 
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count()));
-            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap).size();
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
             searchMap.put("count", String.valueOf(count));
 
-            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
             currentUsers = FXCollections.observableArrayList(usersFound);
             userTableView.setItems(currentUsers);
 
@@ -767,7 +767,7 @@ public class AdminController implements Initializable {
                     updateFoundUsers(numberXofResults,true);
                 } else if (((String) newValue).contains("All")) {
                     try{
-                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(),true);
+                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(token),true);
                     } catch (HttpResponseException e) {
                         Debugger.log("Could not update table. Failed to retrieve the total number of users.");
                     }
@@ -778,7 +778,7 @@ public class AdminController implements Initializable {
         updateFoundUsers(resultsPerPage, false);
 
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users");
         } catch (HttpResponseException e) {
             Debugger.error("Could not set name search textfield placeholder. Failed to retrieve the number of users.");
         }

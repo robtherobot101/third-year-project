@@ -412,7 +412,7 @@ public class ClinicianController implements Initializable {
     }
 
     public void updateFoundUsers(){
-        updateFoundUsers(resultsPerPage,false);
+        updateFoundUsers(resultsPerPage, false);
     }
 
 
@@ -421,7 +421,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users int total");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users int total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -466,11 +466,11 @@ public class ClinicianController implements Initializable {
         }
 
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count()));
-            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap).size();
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
             searchMap.put("count", String.valueOf(count));
 
-            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
             currentUsers = FXCollections.observableArrayList(usersFound);
             profileTable.setItems(currentUsers);
 
@@ -505,7 +505,7 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
+        /*try {
             profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users in total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
@@ -521,7 +521,7 @@ public class ClinicianController implements Initializable {
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchNameTerm = newValue;
-            updateFoundUsers(resultsPerPage,false);
+            updateFoundUsers(resultsPerPage, false);
         });
 
         clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -585,7 +585,7 @@ public class ClinicianController implements Initializable {
                     updateFoundUsers(numberXofResults,true);
                 } else if (((String) newValue).contains("All")) {
                     try{
-                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(),true);
+                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(token),true);
                     } catch (HttpResponseException e) {
                         Debugger.log("Could not update table. Failed to retrieve the total number of users.");
                     }
