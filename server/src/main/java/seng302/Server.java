@@ -25,7 +25,7 @@ public class Server {
     private HistoryController historyController;
     private DonationsController donationsController;
     private WaitingListController waitingListController;
-    private SQLController sqlController;
+    private CLIController CLIController;
     private int port = 7015;
 
     private ProfileUtils profileUtils;
@@ -48,7 +48,7 @@ public class Server {
             post( "/logout",        authorizationController::logout);
             post( "/reset",         databaseController::reset);
             post( "/resample",      databaseController::resample);
-            post("/sql",            sqlController::executeQuery);
+            post( "/cli",           CLIController::executeQuery);
 
             // TODO discuss where cache is stored
             /*post( "/clearCache",   Server::stubMethod);*/
@@ -147,6 +147,10 @@ public class Server {
             path("/waitingListItems", () -> {
                 get("",  waitingListController::getAllWaitingListItems);
             });
+
+            path("/countusers", () -> {
+                get("",      userController::countUsers);
+            });
         });
     }
 
@@ -184,6 +188,6 @@ public class Server {
         historyController = new HistoryController();
         waitingListController = new WaitingListController();
         profileUtils = new ProfileUtils();
-        sqlController = new SQLController();
+        CLIController = new CLIController();
     }
 }

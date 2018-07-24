@@ -67,6 +67,25 @@ public class UserController {
         return serialQueriedUsers;
     }
 
+
+    /**
+     * Returns the number of entries in the USERS table.
+     */
+    public String countUsers(Request request, Response response) {
+        Integer count;
+        try {
+            count = model.countUsers();
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            response.body("Internal server error");
+            return null;
+        }
+
+        response.status(200);
+        return count.toString();
+    }
+
     /**
      * Returns a score for a user based on how well their name matches the given search tokens.
      * Every token needs to entirely match all or some of one of the user's names starting at the beginning of each, otherwise
@@ -334,4 +353,7 @@ public class UserController {
             return "Internal Server Error";
         }
     }
+
+
+
 }

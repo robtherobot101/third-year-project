@@ -59,7 +59,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private MenuItem accountSettingsMenuItem;
     @FXML
-    private ComboBox clinicianGenderComboBox, clinicianUserTypeComboBox, clinicianOrganComboBox, numberOfResutsToDisplay;
+    private ComboBox clinicianGenderComboBox, clinicianUserTypeComboBox, clinicianOrganComboBox, numberOfResultsToDisplay;
     @FXML
     private TextField clinicianAgeField;
     @FXML
@@ -84,7 +84,7 @@ public class ClinicianController implements Initializable {
 
     private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
-    private ObservableList<User> currentPage = FXCollections.observableArrayList();
+    private ObservableList<User> currentUsers = FXCollections.observableArrayList();
     private ObservableList<Object> users;
 
     private String searchNameTerm = "";
@@ -102,21 +102,8 @@ public class ClinicianController implements Initializable {
 
     }
 
-    public int getResultsPerPage() {
-        return resultsPerPage;
-    }
-
-    public int getNumberXofResults() {
-        return numberXofResults;
-    }
-
     public Clinician getClinician() {
         return clinician;
-    }
-
-
-    public void setTitle() {
-        titleBar.setTitle(clinician.getName(), "Clinician", null);
     }
 
     /**
@@ -157,16 +144,6 @@ public class ClinicianController implements Initializable {
     private void edited() {
         titleBar.saved(false);
     }
-
-//    /**
-//     * Refreshes the results in the user profile table to match the values
-//     * in the user ArrayList in WindowManager
-//     */
-//    public void updateUserTable(){
-//        updatePageButtons();
-//        displayCurrentPage();
-//        updateResultsSummary();
-//    }
 
     /**
      * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
@@ -399,16 +376,6 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * Updates the ObservableList for the profile table
-     *
-     * @param pageSize sets the page size for the page
-     */
-    public void displayPage(int pageSize) {
-        currentPage.clear();
-        currentPage.addAll(getPage(pageSize));
-    }
-
-    /**
      * Clears the filter fields of the advanced filters
      */
     public void clearFilter() {
@@ -417,15 +384,19 @@ public class ClinicianController implements Initializable {
         clinicianGenderComboBox.setValue(null);
         clinicianOrganComboBox.setValue(null);
         clinicianUserTypeComboBox.setValue(null);
-
     }
+
+    public void updateFoundUsers(){
+        updateFoundUsers(resultsPerPage,false);
+    }
+
 
     /**
      * Updates the list of users found from the search
      */
-    public void updateFoundUsers() {
+    public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users int total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -468,16 +439,22 @@ public class ClinicianController implements Initializable {
             }
             searchMap.put("userType", searchUserTypeTerm);
         }
+
         try {
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count()));
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap).size();
+            searchMap.put("count", String.valueOf(count));
+
             usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
+            currentUsers = FXCollections.observableArrayList(usersFound);
+            profileTable.setItems(currentUsers);
 
-            users = FXCollections.observableArrayList(usersFound);
-            populateNResultsComboBox(usersFound.size());
-
+            if(!onlyChangingPage) {
+                populateNResultsComboBox(totalNumberOfResults);
+            }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to perform user search on the server.");
         }
-
     }
 
     /**
@@ -486,42 +463,25 @@ public class ClinicianController implements Initializable {
      * @param numberOfSearchResults the number of results of the users found
      */
     public void populateNResultsComboBox(int numberOfSearchResults) {
-        numberOfResutsToDisplay.getItems().clear();
+        numberOfResultsToDisplay.getItems().clear();
         String firstPage = "First page";
-        numberOfResutsToDisplay.setDisable(true);
-        numberOfResutsToDisplay.getItems().add(firstPage);
-        numberOfResutsToDisplay.getSelectionModel().select(firstPage);
+        numberOfResultsToDisplay.setDisable(true);
+        numberOfResultsToDisplay.getItems().add(firstPage);
+        numberOfResultsToDisplay.getSelectionModel().select(firstPage);
         if (numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults) {
-            numberOfResutsToDisplay.setDisable(false);
-            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+            numberOfResultsToDisplay.setDisable(false);
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
         } else if (numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults) {
-            numberOfResutsToDisplay.setDisable(false);
-            numberOfResutsToDisplay.getItems().add("Top " + numberXofResults + " results");
-            numberOfResutsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+            numberOfResultsToDisplay.setDisable(false);
+            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + " results");
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
         }
-    }
-
-
-    /**
-     * Splits the sorted list of found users and returns a page worth
-     *
-     * @param pageSize The size of each page
-     * @return The sorted page of results
-     */
-    public ObservableList<User> getPage(int pageSize) {
-        int firstIndex = Math.max((page - 1), 0) * pageSize;
-        int lastIndex = Math.min(users.size(), page * pageSize);
-        if (lastIndex < firstIndex) {
-            Debugger.error(firstIndex + " to " + lastIndex + " is an illegal page");
-            return FXCollections.observableArrayList(new ArrayList<User>());
-        }
-        return FXCollections.observableArrayList(new ArrayList(users.subList(firstIndex, lastIndex)));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().getAllUsers().size() + " users");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users in total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -536,19 +496,19 @@ public class ClinicianController implements Initializable {
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchNameTerm = newValue;
-            updateFoundUsers();
+            updateFoundUsers(resultsPerPage,false);
         });
 
         clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchRegionTerm = newValue;
-            updateFoundUsers();
+            updateFoundUsers(resultsPerPage,false);
         });
 
         clinicianAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
             page = 1;
             searchAgeTerm = newValue;
-            updateFoundUsers();
+            updateFoundUsers(resultsPerPage,false);
         });
 
         clinicianGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -559,8 +519,7 @@ public class ClinicianController implements Initializable {
             } else {
                 searchGenderTerm = newValue.toString();
             }
-            updateFoundUsers();
-
+            updateFoundUsers(resultsPerPage,false);
         });
 
         clinicianUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -571,7 +530,7 @@ public class ClinicianController implements Initializable {
             } else {
                 searchUserTypeTerm = newValue.toString();
             }
-            updateFoundUsers();
+            updateFoundUsers(resultsPerPage,false);
 
         });
 
@@ -583,11 +542,9 @@ public class ClinicianController implements Initializable {
             } else {
                 searchOrganTerm = newValue.toString();
             }
-            updateFoundUsers();
+            updateFoundUsers(resultsPerPage,false);
 
         });
-
-
 
         profileName.setCellValueFactory(new PropertyValueFactory<>("name"));
         profileUserType.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -595,14 +552,18 @@ public class ClinicianController implements Initializable {
         profileGender.setCellValueFactory(new PropertyValueFactory<>("gender"));
         profileRegion.setCellValueFactory(new PropertyValueFactory<>("region"));
 
-        numberOfResutsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
+        numberOfResultsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.equals("First page")) {
-                    displayPage(resultsPerPage);
+                    updateFoundUsers(resultsPerPage,true);
                 } else if (((String) newValue).contains("Top")) {
-                    displayPage(numberXofResults);
+                    updateFoundUsers(numberXofResults,true);
                 } else if (((String) newValue).contains("All")) {
-                    displayPage(usersFound.size());
+                    try{
+                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(),true);
+                    } catch (HttpResponseException e) {
+                        Debugger.log("Could not update table. Failed to retrieve the total number of users.");
+                    }
                 }
             }
         });
@@ -613,31 +574,13 @@ public class ClinicianController implements Initializable {
         fadeIn.setCycleCount(0);
         fadeIn.setAutoReverse(false);
 
-        profileTable.setItems(currentPage);
+        profileTable.setItems(currentUsers);
 
         WindowManager.setClinicianController(this);
 
-        updateFoundUsers();
+        updateFoundUsers(resultsPerPage,false);
 
-//        if (TFScene.clinician != null) {
-//            WindowManager.getScene(TFScene.clinician).setOnKeyReleased(event -> {
-//                if (event.getCode() == KeyCode.F5) {
-//                    DataManager.users.clear();
-//                    try {
-//                        Datamanager.addUsers(WindowManager.getDatabase().getAllUsers());
-//                        WindowManager.getDatabase().refreshUserWaitinglists();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                    WindowManager.updateTransplantWaitingList();
-//                    updateFoundUsers();
-//                    profileTable.setItems(currentPage);
-//                    profileTable.refresh();
-//                }
-//            });
-//        }
-
-        profileTable.setItems(currentPage);
+        profileTable.setItems(currentUsers);
 
         /*
          * RowFactory for the profileTable.

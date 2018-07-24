@@ -284,8 +284,6 @@ public class WindowManager extends Application {
         WindowManager.adminController = adminController;
     }
 
-
-
     public static ClinicianController getClinicianController() {
         return WindowManager.clinicianController;
     }
@@ -378,7 +376,7 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://localhost:7015/api/v1");
+        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1"/*"http://localhost:7015/api/v1"*/);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);

@@ -362,4 +362,9 @@ public class UsersM implements UsersDAO {
             }
         }
     }
+
+    @Override
+    public int count() throws HttpResponseException {
+        return users.size();
+    }
 }
