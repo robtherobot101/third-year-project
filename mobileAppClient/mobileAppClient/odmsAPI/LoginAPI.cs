@@ -22,7 +22,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
-            if (! await ServerConfig.Instance.IsConnectedToInternet())
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }

@@ -27,17 +27,20 @@
                 VerticalOptions="CenterAndExpand" 
                 />
 
-            <DatePicker x:Name="dobInput"
+            <StackLayout Orientation="Horizontal">
+                <Label Text="DOB"/>
+                <DatePicker x:Name="dobInput"
                 Format="D"
                 MinimumDate="01/01/1900"
                 MaximumDate="12/31/2018"
                 />
+            </StackLayout>
+
 
             <Button Text="Sign Up"
                 HorizontalOptions="Center"
                 VerticalOptions="CenterAndExpand"
                 Clicked="SignUpButtonClicked" />
-            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

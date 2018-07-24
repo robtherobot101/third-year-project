@@ -35,7 +35,15 @@ namespace mobileAppClient.odmsAPI
          */ 
         public async Task<bool> IsConnectedToInternet()
         {
-            var response = await client.GetAsync(serverAddress + "/hello");
+            HttpResponseMessage response;
+            try {
+                response = await client.GetAsync(serverAddress + "/hello");
+            } catch (WebException e)
+            {
+                // Thrown by invalid URL or connection timeout
+                return false;
+            }
+            
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return false;

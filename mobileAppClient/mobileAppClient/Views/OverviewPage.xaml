@@ -53,8 +53,6 @@
                             </StackLayout>
                         </ViewCell>
 
-                      
-
                     </TableSection>
                 </TableRoot>
             </TableView>

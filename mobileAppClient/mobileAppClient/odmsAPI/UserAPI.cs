@@ -23,6 +23,10 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> UpdateUser()
         {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
             // Fetch the url and client from the server config class
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
