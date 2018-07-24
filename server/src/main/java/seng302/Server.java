@@ -145,6 +145,10 @@ public class Server {
             path("/waitingListItems", () -> {
                 get("",  waitingListController::getAllWaitingListItems);
             });
+
+            path("/countusers", () -> {
+                get("",      userController::countUsers);
+            });
         });
     }
 

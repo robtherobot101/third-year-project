@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
 import seng302.Data.Database.GeneralDB;
@@ -144,10 +145,10 @@ public class WindowManager extends Application {
      * @param clinician the logged clinician
      */
     public static void setClinician(Clinician clinician) {
-        clinicianController.setClinician(clinician);
-        clinicianController.updateDisplay();
-        clinicianController.updateFoundUsers();
-        updateTransplantWaitingList();
+            clinicianController.setClinician(clinician);
+            clinicianController.updateDisplay();
+            clinicianController.updateFoundUsers();
+            updateTransplantWaitingList();
     }
 
     /**
@@ -361,7 +362,7 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://csse-s302g3.canterbury.ac.nz:80/api/v1");
+        APIServer server = new APIServer(/*"http://csse-s302g3.canterbury.ac.nz:80/api/v1"*/"http://localhost:7015/api/v1");
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -376,8 +377,8 @@ public class WindowManager extends Application {
      */
     @Override
     public void start(Stage stage) {
-        dataManager = createDatabaseDataManager();
-        //dataManager = createLocalDataManager();
+        //dataManager = createDatabaseDataManager();
+        dataManager = createLocalDataManager();
 
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;

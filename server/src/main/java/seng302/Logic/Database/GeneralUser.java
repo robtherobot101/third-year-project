@@ -737,4 +737,14 @@ public class GeneralUser {
             System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
+
+    public int countUsers() throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "SELECT count(*) AS count FROM USER";
+            PreparedStatement statement = connection.prepareStatement(update);
+            ResultSet noUsers = statement.executeQuery();
+            noUsers.next();
+            return noUsers.getInt("count");
+        }
+    }
 }
