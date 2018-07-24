@@ -32,4 +32,15 @@ public class DatabaseController {
 
 
     }
+
+    public String status(Request request, Response response) {
+        try {
+            model.status();
+            return "DATABASE ONLINE";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.status(500);
+            return "DATABASE OFFLINE";
+        }
+    }
 }

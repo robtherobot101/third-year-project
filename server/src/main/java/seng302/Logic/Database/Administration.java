@@ -5,11 +5,22 @@ import seng302.Model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Administration {
+
+
+    public void status() throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT staff_id FROM ADMIN WHERE staff_id = 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+            result.next();
+        }
+    }
 
 
     public void resample() throws SQLException{

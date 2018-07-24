@@ -13,6 +13,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
+import seng302.GUI.TFScene;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
@@ -441,8 +442,9 @@ public class ClinicianWaitingListController implements Initializable {
 
         WindowManager.setTransplantWaitingListController(this);
 
-        transplantTable.setItems(transplantList);
+
         updateFoundUsersWithFiltering("", "None");
+
         transplantTable.setItems(transplantList);
 
         //add options to organ filter combobox

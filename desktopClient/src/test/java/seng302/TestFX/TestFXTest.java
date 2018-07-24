@@ -1,9 +1,6 @@
 package seng302.TestFX;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -13,9 +10,6 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Data.Database.AdminsDB;
-import seng302.Data.Database.CliniciansDB;
-import seng302.Data.Database.UsersDB;
 import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Data.Interfaces.GeneralDAO;
@@ -25,7 +19,6 @@ import seng302.Data.Local.CliniciansM;
 import seng302.Data.Local.GeneralM;
 import seng302.Data.Local.UsersM;
 import seng302.GUI.TFScene;
-import seng302.Generic.APIServer;
 import seng302.Generic.DataManager;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
@@ -163,7 +156,7 @@ abstract class TestFXTest extends ApplicationTest {
 
     public void openClinicianWindow(Clinician testClinician){
         Platform.runLater(() ->{
-            WindowManager.setClinician(testClinician);
+            WindowManager.setCurrentClinician(testClinician);
             WindowManager.setScene(TFScene.clinician);
         });
         waitForFxEvents();

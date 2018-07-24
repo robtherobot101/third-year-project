@@ -13,7 +13,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -90,7 +89,7 @@ public class ClinicianSettingsController implements Initializable {
 
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setClinician(clinician);
+            WindowManager.setCurrentClinician(clinician);
             try {
                 WindowManager.getDataManager().getClinicians().updateClinician(clinician);
             } catch (HttpResponseException e) {

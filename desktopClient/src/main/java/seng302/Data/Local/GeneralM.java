@@ -152,4 +152,9 @@ public class GeneralM implements GeneralDAO {
         }
         return items;
     }
+
+    @Override
+    public boolean status() throws HttpResponseException {
+        return true;
+    }
 }

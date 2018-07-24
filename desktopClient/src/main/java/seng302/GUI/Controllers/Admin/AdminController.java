@@ -135,6 +135,10 @@ public class AdminController implements Initializable {
         refreshLatestProfiles();
     }
 
+    public Admin getAdmin() {
+        return this.currentAdmin;
+    }
+
     /**
      * Updates all the displayed TextFields to the values
      * from the current currentAdmin

@@ -60,6 +60,8 @@ public class Server {
                 return "{\"version\": \"1\"}";
             });
 
+            get("/status", databaseController::status);
+
             path("/admins", () -> {
                 get("",             adminController::getAllAdmins);
                 post( "",           adminController::addAdmin);
