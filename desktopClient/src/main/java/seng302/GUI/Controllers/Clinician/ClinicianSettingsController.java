@@ -69,7 +69,7 @@ public class ClinicianSettingsController implements Initializable {
         int clinicianId = 0;
         try {
             // Display an error if the username is taken and the input has not been changed (The username can be taken by the clinician being modified).
-            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
+            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
@@ -92,11 +92,10 @@ public class ClinicianSettingsController implements Initializable {
             stage.close();
             WindowManager.setClinician(clinician);
             try {
-                WindowManager.getDatabase().updateClinician(clinician);
-            } catch (Exception e) {
-                e.printStackTrace();
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician);
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }
-            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         } else {
             alert.close();
         }

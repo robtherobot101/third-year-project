@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -35,7 +36,7 @@ public class ReceiverGUITest extends TestFXTest {
     @Before
     public void setUp() throws SQLException {
         try {
-            WindowManager.getDatabase().resetDatabase();
+            WindowManager.getDataManager().getGeneral().reset();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }

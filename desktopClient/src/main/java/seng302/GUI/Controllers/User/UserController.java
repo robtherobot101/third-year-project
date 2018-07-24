@@ -1,7 +1,5 @@
 package seng302.GUI.Controllers.User;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,14 +17,11 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
-import seng302.User.WaitingListItem;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -68,13 +63,25 @@ public class UserController implements Initializable {
 
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
-
     private User currentUser;
 
-
+    /**
+     * Sets up a new title bar for this controller.
+     */
     public UserController() {
         this.titleBar = new TitleBar();
         titleBar.setStage(WindowManager.getStage());
+    }
+
+    /**
+     * Adds a new user history entry and refreshes the history table to display it.
+     *
+     * @param action The action to add
+     * @param description A description of the action added
+     */
+    public void addHistoryEntry(String action, String description) {
+        currentUser.addHistoryEntry(action, description);
+        historyController.populateTable();
     }
 
     /**
@@ -90,6 +97,11 @@ public class UserController implements Initializable {
         return currentUser;
     }
 
+    /**
+     * Sets the user displayed by this controller, and initializes the GUI to display the user's data.
+     *
+     * @param currentUser The user to display
+     */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         if (currentUser.getPreferredName() != null) {
@@ -97,22 +109,22 @@ public class UserController implements Initializable {
         } else {
             setWelcomeText("Welcome, " + currentUser.getName());
         }
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
 
         diseasesController.setCurrentUser(currentUser);
         proceduresController.setCurrentUser(currentUser);
         waitingListController.setCurrentUser(currentUser);
-        waitingListController.populateWaitingList();
         medicationsController.setCurrentUser(currentUser);
         attributesController.setCurrentUser(currentUser);
-        attributesController.populateUserFields();
         historyController.setCurrentUser(currentUser);
-        historyController.populateTable();
-
         setUndoRedoButtonsDisabled(true, true);
-
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
     }
 
+    /**
+     * Set the text on the welcome user banner.
+     *
+     * @param text The new banner text
+     */
     public void setWelcomeText(String text) {
         userDisplayText.setText(text);
     }
@@ -132,12 +144,6 @@ public class UserController implements Initializable {
         waitingListController.populateWaitingList();
         attributesController.highlightOrganCheckBoxes();
     }
-    /**
-     * Refresh the current user waiting list and correctly set highlights for organs that are being donated and received.
-     */
-    public void populateHistoryTable() {
-        historyController.populateTable();
-    }
 
     /**
      * Updates the list of diseases on the disease tab to the list stored in the current user.
@@ -154,10 +160,8 @@ public class UserController implements Initializable {
                 "Refreshing will overwrite your all unsaved changes.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK && attributesController.updateUser()) {
-            Gson gson = new Gson();
-            APIResponse response = WindowManager.getDatabase().loginUser(currentUser.getUsername(), currentUser.getPassword());
-            System.out.println(response.getAsString());
-            if (response.isValidJson()) {
+            try {
+                User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId());
                 attributesController.undoStack.clear();
                 attributesController.redoStack.clear();
                 medicationsController.undoStack.clear();
@@ -169,10 +173,12 @@ public class UserController implements Initializable {
                 waitingListController.undoStack.clear();
                 waitingListController.redoStack.clear();
                 setUndoRedoButtonsDisabled(true, true);
-                JsonObject serverResponse = response.getAsJsonObject();
-                setCurrentUser(gson.fromJson(serverResponse, User.class));
+                setCurrentUser(latest);
+                addHistoryEntry("Refreshed", "User data was refreshed from the server.");
                 alert.close();
-            } else {
+
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to fetch user with id: " + currentUser.getId());
                 alert.close();
                 alert = WindowManager.createAlert(AlertType.ERROR, "Refresh Failed", "Refresh failed",
                         "User data could not be refreshed because there was an error contacting the server.");
@@ -376,37 +382,20 @@ public class UserController implements Initializable {
             medicationsController.updateUser();
             diseasesController.updateUser();
             proceduresController.updateUser();
-            attributesController.populateUserFields();
             historyController.populateTable();
             try {
-                WindowManager.getDatabase().updateUser(currentUser);
-                WindowManager.getDatabase().updateUserOrgans(currentUser);
-                WindowManager.getDatabase().updateUserProcedures(currentUser);
-                WindowManager.getDatabase().updateUserDiseases(currentUser);
-                WindowManager.getDatabase().updateWaitingListItems(currentUser);
-
+                WindowManager.getDataManager().getUsers().updateUser(currentUser);
             } catch (HttpResponseException e ){
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }
 
-
-            currentUser.addHistoryEntry("Updated", "Changes were saved to the server.");
+            addHistoryEntry("Updated", "Changes were saved to the server.");
             titleBar.saved(true);
             titleBar.setTitle(currentUser.getPreferredName(), "User");
             statusIndicator.setStatus("Saved", false);
 
             WindowManager.getClinicianController().updateFoundUsers();
             WindowManager.updateTransplantWaitingList();
-
-
-            /*int index = 0;
-            for(User user: DataManager.users) {
-                if(user.getUsername().equals(currentUser.getUsername())) {
-                    break;
-                }
-                index++;
-            }
-            DataManager.users.set(index, currentUser);*/
         }
         alert.close();
     }
@@ -434,7 +423,7 @@ public class UserController implements Initializable {
             diseasesController.undo();
             setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), false);
         }
-        currentUser.addHistoryEntry("Action undone", "An action was undone.");
+        addHistoryEntry("Action undone", "An action was undone.");
         historyController.populateTable();
         statusIndicator.setStatus("Undid last action", false);
         titleBar.saved(false);
@@ -462,7 +451,7 @@ public class UserController implements Initializable {
             diseasesController.redo();
             setUndoRedoButtonsDisabled(false, diseasesController.redoEmpty());
         }
-        currentUser.addHistoryEntry("Action redone", "An action was redone.");
+        addHistoryEntry("Action redone", "An action was redone.");
         historyController.populateTable();
         statusIndicator.setStatus("Redid last action", false);
         titleBar.saved(false);
@@ -484,16 +473,21 @@ public class UserController implements Initializable {
         if (password.isPresent()) { //Ok was pressed, Else cancel
             if (password.get().equals(currentUser.getPassword())) {
                 try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
+                    Parent root = fxmlLoader.load();
                     Stage stage = new Stage();
                     stage.getIcons().add(WindowManager.getIcon());
                     stage.setResizable(false);
                     stage.setTitle("Account Settings");
                     stage.setScene(new Scene(root, 270, 330));
                     stage.initModality(Modality.APPLICATION_MODAL);
-                    WindowManager.setCurrentUserForAccountSettings(currentUser);
-                    WindowManager.setAccountSettingsEnterEvent();
+                    UserSettingsController userSettingsController = fxmlLoader.getController();
+                    userSettingsController.setCurrentUser(currentUser);
+                    userSettingsController.setParent(this);
+                    userSettingsController.populateAccountDetails();
+                    userSettingsController.setEnterEvent();
                     stage.showAndWait();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

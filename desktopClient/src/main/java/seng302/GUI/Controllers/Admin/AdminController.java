@@ -1,8 +1,6 @@
 package seng302.GUI.Controllers.Admin;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,11 +24,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
-import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
+import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.Cache;
+import seng302.Generic.Debugger;
+import seng302.Generic.IO;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
@@ -41,9 +42,7 @@ import seng302.User.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
 import static seng302.Generic.IO.getJarPath;
@@ -96,19 +95,22 @@ public class AdminController implements Initializable {
     private ComboBox<String> adminUserTypeComboBox;
 
     @FXML
+    private ComboBox numberOfResultsToDisplay;
+
+    @FXML
     private StatusBar statusBar;
     @FXML
     private AnchorPane cliPane, transplantListPane;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
-    private ArrayList<User> usersFound = new ArrayList<>();
+    private List<User> usersFound = new ArrayList<>();
     private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
 
-    private ObservableList<User> currentUsers;
-    private ObservableList<Clinician> currentClinicians;
-    private ObservableList<Admin> currentAdmins;
+    private ObservableList<User> currentUsers = FXCollections.observableArrayList();
+    private ObservableList<Clinician> currentClinicians = FXCollections.observableArrayList();
+    private ObservableList<Admin> currentAdmins = FXCollections.observableArrayList();
 
     private String searchNameTerm = "";
     private String searchRegionTerm = "";
@@ -116,6 +118,9 @@ public class AdminController implements Initializable {
     private String searchAgeTerm = "";
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
+
+    private int resultsPerPage;
+    private int numberXofResults;
 
     private Gson gson = new Gson();
 
@@ -145,10 +150,13 @@ public class AdminController implements Initializable {
      * Refreshes the profiles from WindowManager and loads them into local lists
      */
     public void refreshLatestProfiles() {
-        // Initialise lists that correlate to the three TableViews
-        currentUsers = DataManager.users;
-        currentClinicians = DataManager.clinicians;
-        currentAdmins = DataManager.admins;
+        try {
+            currentUsers.setAll(WindowManager.getDataManager().getUsers().getAllUsers());
+            currentClinicians.setAll(WindowManager.getDataManager().getClinicians().getAllClinicians());
+            currentAdmins.setAll(WindowManager.getDataManager().getAdmins().getAllAdmins());
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve all users, clinicians, and admins.");
+        }
     }
 
     /**
@@ -249,7 +257,6 @@ public class AdminController implements Initializable {
             currentAdmin.setWorkAddress(newAdminDetails.get(1));
             save();
             updateDisplay();
-
         });
     }
 
@@ -264,7 +271,7 @@ public class AdminController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                WindowManager.getDatabase().updateAdminDetails(currentAdmin);
+                WindowManager.getDataManager().getAdmins().updateAdminDetails(currentAdmin);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
@@ -357,6 +364,8 @@ public class AdminController implements Initializable {
                     "",
                     "All profiles successfully loaded.");
             successAlert.showAndWait();
+            refreshLatestProfiles();
+            updateFoundUsers();
         } else if (loadAborted) {
             Alert abortAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load cancelled",
                     "",
@@ -412,7 +421,6 @@ public class AdminController implements Initializable {
         }
     }
 
-
     /**
      * Closes the application
      */
@@ -443,7 +451,7 @@ public class AdminController implements Initializable {
     public void undo() {
         // TODO implement undo
         try {
-            WindowManager.getDatabase().resetDatabase();
+            WindowManager.getDataManager().getGeneral().reset();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }
@@ -479,11 +487,19 @@ public class AdminController implements Initializable {
         adminUserTypeComboBox.setValue(null);
     }
 
+    public void updateFoundUsers() {
+        updateFoundUsers(resultsPerPage,false);
+    }
+
     /**
      * Updates the list of users found from the search
      */
-    public void updateFoundUsers() {
-        profileSearchTextField.setPromptText("There are " + DataManager.users.size() + " users");
+    public void updateFoundUsers(int count, boolean onlyChangingPage) {
+        try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users");
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to fetch all users.");
+        }
         Map<String, String> searchMap = new HashMap<>();
 
         if (!searchNameTerm.equals("")){
@@ -525,31 +541,49 @@ public class AdminController implements Initializable {
         }
 
         try {
-            APIResponse response = WindowManager.getDatabase().getUsers(searchMap);
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count()));
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap).size();
+            searchMap.put("count", String.valueOf(count));
 
-            if(response.isValidJson()){
-                JsonArray searchResults = response.getAsJsonArray();
-
-                Type type = new TypeToken<ArrayList<User>>() {
-                }.getType();
-
-                usersFound = gson.fromJson(searchResults, type);
-
-            }
-
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
             currentUsers = FXCollections.observableArrayList(usersFound);
             userTableView.setItems(currentUsers);
 
+            if(!onlyChangingPage) {
+                populateNResultsComboBox(totalNumberOfResults);
+            }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to perform user search on the server.");
         }
     }
 
-
-
+    /**
+     * Function which populates the combo box for displaying a certain number of results based on the search fields.
+     *
+     * @param numberOfSearchResults the number of results of the users found
+     */
+    public void populateNResultsComboBox(int numberOfSearchResults) {
+        numberOfResultsToDisplay.getItems().clear();
+        String firstPage = "First page";
+        numberOfResultsToDisplay.setDisable(true);
+        numberOfResultsToDisplay.getItems().add(firstPage);
+        numberOfResultsToDisplay.getSelectionModel().select(firstPage);
+        if (numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults) {
+            numberOfResultsToDisplay.setDisable(false);
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+        } else if (numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults) {
+            numberOfResultsToDisplay.setDisable(false);
+            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + " results");
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        resultsPerPage = 15;
+        numberXofResults = 200;
+
         refreshLatestProfiles();
 
         // Set the items of the TableView to populate objects
@@ -614,9 +648,9 @@ public class AdminController implements Initializable {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
                     Debugger.log("Deleting User: " + selectedUser);
-                    DataManager.users.remove(selectedUser);
                     try {
-                        WindowManager.getDatabase().removeUser(selectedUser);
+                        WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId());
+                        refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove user with id: " + selectedUser.getId());
                     }
@@ -626,9 +660,10 @@ public class AdminController implements Initializable {
                 } else if (selectedClinician != null) {
                     // A clinician has been selected for deletion
                     Debugger.log("Deleting Clinician: " + selectedClinician);
-                    DataManager.clinicians.remove(selectedClinician);
+
                     try {
-                        WindowManager.getDatabase().removeClinician(selectedClinician);
+                        WindowManager.getDataManager().getClinicians().removeClinician(selectedClinician.getStaffID());
+                        refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
                     }
@@ -638,9 +673,9 @@ public class AdminController implements Initializable {
                 } else if (selectedAdmin != null) {
                     // An admin has been selected for deletion
                     Debugger.log("Deleting Admin: " + selectedAdmin);
-                    DataManager.admins.remove(selectedAdmin);
                     try{
-                        WindowManager.getDatabase().removeAdmin(selectedAdmin);
+                        WindowManager.getDataManager().getAdmins().removeAdmin(selectedAdmin.getStaffID());
+                        refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
                     }
@@ -701,6 +736,31 @@ public class AdminController implements Initializable {
         adminGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         adminUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
         adminOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));
+
+
+        numberOfResultsToDisplay.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.equals("First page")) {
+                    updateFoundUsers(resultsPerPage,true);
+                } else if (((String) newValue).contains("Top")) {
+                    updateFoundUsers(numberXofResults,true);
+                } else if (((String) newValue).contains("All")) {
+                    try{
+                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(),true);
+                    } catch (HttpResponseException e) {
+                        Debugger.log("Could not update table. Failed to retrieve the total number of users.");
+                    }
+                }
+            }
+        });
+
+        updateFoundUsers(resultsPerPage, false);
+
+        try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users");
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not set name search textfield placeholder. Failed to retrieve the number of users.");
+        }
 
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchNameTerm = newValue;
@@ -851,14 +911,12 @@ public class AdminController implements Initializable {
 
             Debugger.log("DB reset called");
             try {
-                WindowManager.getDatabase().resetDatabase();
-                DataManager.users.clear();
-                DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
+                WindowManager.getDataManager().getGeneral().reset();
                 WindowManager.closeAllChildren();
                 WindowManager.setScene(TFScene.login);
                 WindowManager.resetScene(TFScene.admin);
             } catch (HttpResponseException e) {
-                Debugger.error("Failed reset the database.");
+                Debugger.error("Failed to reset the database.");
             }
 
         }
@@ -874,13 +932,11 @@ public class AdminController implements Initializable {
         if (result.orElse(null) == ButtonType.OK) {
             Debugger.log("DB resample called");
             try {
-                WindowManager.getDatabase().loadSampleData();
-                DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
+                WindowManager.getDataManager().getGeneral().resample();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to resample the database.");
             }
         }
-
     }
 
     /**
@@ -904,9 +960,9 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Admin newAdmin = createAdminController.showAndWait(stage);
             if (newAdmin != null) {
-                    DataManager.admins.add(newAdmin);
                 try {
-                    WindowManager.getDatabase().insertAdmin(newAdmin);
+                    WindowManager.getDataManager().getAdmins().insertAdmin(newAdmin);
+                    refreshLatestProfiles();
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to post admin to the server.");
                 }
@@ -914,7 +970,7 @@ public class AdminController implements Initializable {
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
+            Debugger.error("Unable to load fxml or save file.");
             e.printStackTrace();
             Platform.exit();
         }
@@ -942,17 +998,17 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             Clinician newClinician = createClinicianController.showAndWait(stage);
             if (newClinician != null) {
-                DataManager.clinicians.add(newClinician);
                 try {
-                    WindowManager.getDatabase().insertClinician(newClinician);
+                    WindowManager.getDataManager().getClinicians().insertClinician(newClinician);
+                    refreshLatestProfiles();
                 } catch (HttpResponseException e) {
-                    Debugger.error("Failed to insert post clinician to the server.");
+                    Debugger.error("Failed to insert new clinician.");
                 }
                 //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
+            Debugger.error("Unable to load fxml or save file.");
             e.printStackTrace();
             Platform.exit();
         }
@@ -980,9 +1036,9 @@ public class AdminController implements Initializable {
             stage.setScene(newScene);
             User user = createUserController.showAndWait(stage);
             if (user != null) {
-                DataManager.users.add(user);
                 try{
-                    WindowManager.getDatabase().insertUser(user);
+                    WindowManager.getDataManager().getUsers().insertUser(user);
+                    refreshLatestProfiles();
                 } catch(HttpResponseException e) {
                     Debugger.error("Failed to insert new user.");
                 }
@@ -1009,7 +1065,7 @@ public class AdminController implements Initializable {
         activeIngredientsCache.save();
 
         InteractionApi.getInstance();
-        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         cache.clear();
         cache.save();
         InteractionApi.setCache(cache);

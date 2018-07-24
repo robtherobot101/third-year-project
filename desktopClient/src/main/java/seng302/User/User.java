@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -39,7 +39,8 @@ public class User {
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -56,7 +57,8 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -73,7 +75,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     // Used by CSV import to form profiles
@@ -111,7 +114,8 @@ public class User {
 
         this.email = email;
         this.password = "password";
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
 
@@ -141,7 +145,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -209,10 +214,6 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
-        this.waitingListItems.clear();
-        this.waitingListItems.addAll(user.getWaitingListItems());
-
-
     }
 
     public void copyProceduresListsFrom(User user) {
@@ -466,9 +467,9 @@ public class User {
     public void setOrgan(Organ organ) {
         if (!organs.contains(organ)) {
             this.organs.add(organ);
-            System.out.println("Organ added.");
+            Debugger.log("Organ added.");
         } else {
-            System.out.println("Organ already being donated.");
+            Debugger.log("Organ already being donated.");
         }
         setLastModified();
     }
@@ -476,9 +477,9 @@ public class User {
     public void removeOrgan(Organ organ) {
         if (organs.contains(organ)) {
             this.organs.remove(organ);
-            System.out.println("Organ removed.");
+            Debugger.log("Organ removed.");
         } else {
-            System.out.println("Organ not in list.");
+            Debugger.log("Organ not in list.");
         }
         setLastModified();
     }
@@ -489,10 +490,6 @@ public class User {
 
     public void setLastModified() {
         lastModified = LocalDateTime.now();
-    }
-
-    public void setLastModifiedForDatabase(LocalDateTime time) {
-        lastModified = time;
     }
 
     public String getBloodPressure() {
@@ -616,13 +613,12 @@ public class User {
     public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
     public boolean isReceiver() {
-        boolean receiver = false;
         for (WaitingListItem item : waitingListItems) {
             if (item.getStillWaitingOn()) {
-                receiver = true;
+                return true;
             }
         }
-        return receiver;
+        return false;
     }
 
     /**
@@ -665,10 +661,6 @@ public class User {
                 break;
             }
         }
-    }
-
-    public void addHistoryItem(HistoryItem historyItem) {
-        userHistory.add(historyItem);
     }
 
     public void addHistoryEntry(String action, String description) {

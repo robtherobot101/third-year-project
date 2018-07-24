@@ -6,15 +6,18 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import org.apache.http.client.HttpResponseException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -43,7 +46,7 @@ public class TransplantWaitingListTest extends TestFXTest {
      * helper function to create two new users. One a receiver and one a dummy.
      */
     private void createAccounts() {
-        DataManager.users.clear();
+        //DataManager.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -380,14 +383,22 @@ public class TransplantWaitingListTest extends TestFXTest {
                 "flameman@hotmail.com",
                 "password123");
         testUser.setRegion("Canterbury");
-        DataManager.users.add(testUser);
+        try{
+            WindowManager.getDataManager().getUsers().insertUser(testUser);
+        }catch (HttpResponseException e) {
+            Debugger.error("Should avoid using using DB for testing when possilbe. Failed to insert new user.");
+        }
         testUser = new User(
                 "Bob", new String[]{}, "Ross",
                 LocalDate.of(1957, 12, 12),
                 "bobr",
                 "bob@live.com",
                 "password");
-        DataManager.users.add(testUser);
+        try{
+            WindowManager.getDataManager().getUsers().insertUser(testUser);
+        } catch (HttpResponseException e) {
+            Debugger.error("Should avoid using DB for testing where possible. Failed to insert new user.");
+        }
 
         WindowManager.resetScene(TFScene.userWindow);
         //createAccounts();

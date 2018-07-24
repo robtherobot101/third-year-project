@@ -50,10 +50,8 @@ public class GeneralUser {
         List<WaitingListItem> newWaitingListItems = new ArrayList<>(user.getWaitingListItems());
         updateWaitingListItems(newWaitingListItems, userId);
 
-        UserHistory userHistory = new UserHistory();
         List<HistoryItem> newHistory = user.getUserHistory();
-        List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
-
+        updateHistory(newHistory, userId);
     }
 
     /**
@@ -244,6 +242,32 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Updates a user's history on the database to a new history list.
+     *
+     * @param newHistory The list of history to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is issues connecting to the database
+     */
+    public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
+        UserHistory userHistory = new UserHistory();
+        List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
+        int sameUntil = 0;
+        while (sameUntil < newHistory.size() && sameUntil < oldHistory.size() && newHistory.get(sameUntil).informationEqual(oldHistory.get(sameUntil))) {
+            sameUntil++;
+        }
+
+        newHistory = newHistory.subList(sameUntil, newHistory.size());
+        oldHistory = oldHistory.subList(sameUntil, oldHistory.size());
+
+        for (HistoryItem oldItem: oldHistory) {
+            userHistory.removeHistoryItem(userId, oldItem.getId());
+        }
+        for (HistoryItem newItem: newHistory) {
+            userHistory.insertHistoryItem(newItem, userId);
+        }
+    }
+
     public List<User> getUsers(Map<String,String> params) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // TODO Sort the users before taking the sublist
@@ -257,20 +281,9 @@ public class GeneralUser {
                 users.add(getUserFromResultSet(resultSet));
             }
 
-            int startIndex = 0;
-            if (params.containsKey("startIndex")) {
-                startIndex = Integer.parseInt(params.get("startIndex"));
-            }
+            System.out.println("thing size: " + users.size());
 
-            int count = 100;
-            if (params.containsKey("count")) {
-                count = Integer.parseInt(params.get("count"));
-            }
-            int toIndex = Math.min(startIndex + count, users.size());
-            if (startIndex > toIndex) {
-                return new ArrayList<User>();
-            }
-            return users.subList(startIndex, Math.min(startIndex + count, users.size()));
+            return users;
         }
     }
 
@@ -282,31 +295,44 @@ public class GeneralUser {
                 hasWhereClause = true;
             }
         }
-        if(!hasWhereClause) {
-            return "SELECT * FROM USER";
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT * FROM USER");
+        if (hasWhereClause) {
+            queryBuilder.append(" WHERE ");
+
+            String nameFilter = nameFilter(params);
+            String passwordFilter = matchFilter(params, "password", true);
+            String userTypeFilter = userTypeFilter(params);
+            String ageFilter = ageFilter(params);
+            String genderFilter = matchFilter(params, "gender", false);
+            String regionFilter = matchFilter(params, "region", false);
+            String organFilter = organFilter(params);
+
+            List<String> filters = new ArrayList<String>();
+            filters.addAll(Arrays.asList(
+                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
+            ));
+
+            filters.removeIf((String filter) -> filter.equals(""));
+
+            queryBuilder.append(String.join(" AND ",filters));
         }
 
-        StringBuilder queryBuilder = new StringBuilder();
+        int startIndex = 0;
+        if (params.containsKey("startIndex")) {
+            startIndex = Integer.parseInt(params.get("startIndex"));
+        }
 
-        queryBuilder.append("SELECT * FROM USER WHERE ");
+        int count = 100;
+        if (params.containsKey("count")) {
+            count = Integer.parseInt(params.get("count"));
+        }
 
-        String nameFilter = nameFilter(params);
-        String passwordFilter = matchFilter(params, "password", true);
-        String userTypeFilter = userTypeFilter(params);
-        String ageFilter = ageFilter(params);
-        String genderFilter = matchFilter(params, "gender", false);
-        String regionFilter = matchFilter(params, "region", false);
-        String organFilter = organFilter(params);
+        queryBuilder.append(" LIMIT ");
+        queryBuilder.append(startIndex);
+        queryBuilder.append(",");
+        queryBuilder.append(startIndex+count);
 
-        List<String> filters = new ArrayList<String>();
-        filters.addAll(Arrays.asList(
-                nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
-
-        ));
-
-        filters.removeIf((String filter) -> filter.equals(""));
-
-        queryBuilder.append(String.join(" AND ",filters));
         return queryBuilder.toString();
     }
 
@@ -506,7 +532,7 @@ public class GeneralUser {
             ResultSet organsResultSet = organsStatement.executeQuery();
 
             while (organsResultSet.next()) {
-                user.getOrgans().add(Organ.valueOf(organsResultSet.getString("name")));
+                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
             }
 
             //Get all the medications for the given user
@@ -700,27 +726,6 @@ public class GeneralUser {
             statement.setString(21, user.getPassword());
             statement.setInt(22, userId);
             System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
-
-
-/*        int userId = getUserId(user.getUsername());
-
-        //Organ Updates
-        //First get rid of all the users organs in the table
-        String deleteOrgansQuery = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement deleteOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(deleteOrgansQuery);
-        deleteOrgansStatement.setInt(1, userId);
-        System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated organs
-        for (Organ organ: user.getOrgans()) {
-            String insertOrgansQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
-            PreparedStatement insertOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertOrgansQuery);
-            insertOrgansStatement.setString(1, organ.toString());
-            insertOrgansStatement.setInt(2, userId);
-            totalAdded += insertOrgansStatement.executeUpdate();
-        }
-        System.out.println("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);*/
         }
     }
 
@@ -730,6 +735,16 @@ public class GeneralUser {
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getUsername());
             System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
+
+    public int countUsers() throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "SELECT count(*) AS count FROM USER";
+            PreparedStatement statement = connection.prepareStatement(update);
+            ResultSet noUsers = statement.executeQuery();
+            noUsers.next();
+            return noUsers.getInt("count");
         }
     }
 }

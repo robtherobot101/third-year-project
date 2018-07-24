@@ -14,6 +14,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class UserAttributesController extends UserTabController implements Initializable {
@@ -35,7 +36,14 @@ public class UserAttributesController extends UserTabController implements Initi
     private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox,
         middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
 
-    private HashMap<Organ, CheckBox> organTickBoxes;
+    private Map<Organ, CheckBox> organTickBoxes;
+
+    public void setCurrentUser(User user) {
+        currentUser = user;
+        populateUserFields();
+        updateBMI();
+        updateAge();
+    }
 
     /**
      * Highlights the checkboxes in red if the user is also waiting to receive an organ of that type.
@@ -67,14 +75,14 @@ public class UserAttributesController extends UserTabController implements Initi
         if (dodeathPick == null) {
             LocalDate today = LocalDate.now();
             double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays() / 365.00;
-            if (years < 0) {
+            if (years <= 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years");
             }
         } else {
             double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays() / 365.00;
-            if (years < 0) {
+            if (years <= 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years (At Death)");
@@ -86,20 +94,19 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the BMI label for the user based on the height and weight fields inputted.
      */
     private void updateBMI() {
+        bmiLabel.setText("");
         if (!heightField.getText().isEmpty() && !weightField.getText().isEmpty()) {
             try {
                 double height = Double.parseDouble(heightField.getText());
                 double weight = Double.parseDouble(weightField.getText());
                 double BMI = (weight / Math.pow(height, 2)) * 10000;
-                bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
+                if (!Double.isNaN(BMI)) {
+                    bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
+                }
             } catch (NumberFormatException e) {
-                bmiLabel.setText("");
             }
-        } else {
-            bmiLabel.setText("");
         }
     }
-
 
     /**
      * /**
@@ -199,6 +206,7 @@ public class UserAttributesController extends UserTabController implements Initi
             return false;
         }
 
+        userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
         //Commit changes
         currentUser.setNameArray(name);
         currentUser.setPreferredNameArray(preferredName);

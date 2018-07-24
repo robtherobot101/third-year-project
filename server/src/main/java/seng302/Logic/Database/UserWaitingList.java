@@ -11,18 +11,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserWaitingList {
 
     public ArrayList<WaitingListItem> getAllWaitingListItems() throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<WaitingListItem> allWaitingListItems = new ArrayList<>();
-            String query = "SELECT * FROM WAITING_LIST_ITEM";
+            String query =
+                    "SELECT * FROM WAITING_LIST_ITEM " +
+                            "LEFT JOIN (SELECT 'conflicting' AS is_conflicting, WL.id " +
+                                "FROM WAITING_LIST_ITEM AS WL JOIN DONATION_LIST_ITEM AS DL " +
+                                    "ON (WL.user_id = DL.user_id AND WL.organ_type = DL.name)) AS CONFLICTING " +
+                            "ON WAITING_LIST_ITEM.id = CONFLICTING.id";
+
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
             }
+
             return allWaitingListItems;
         }
     }
@@ -31,6 +39,7 @@ public class UserWaitingList {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<WaitingListItem> allWaitingListItems = new ArrayList<>();
             String query = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
@@ -52,12 +61,11 @@ public class UserWaitingList {
                 waitingListItemResultSet.getInt("id"),
                 waitingListItemResultSet.getInt("user_id"),
                 deregisteredDate,
-                waitingListItemResultSet.getInt("deregistered_code")
-
+                waitingListItemResultSet.getInt("deregistered_code"),
+                waitingListItemResultSet.getString("is_conflicting") != null
         );
-
-
     }
+
 
     public WaitingListItem getWaitingListItemFromId(int waitingListItemId, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {

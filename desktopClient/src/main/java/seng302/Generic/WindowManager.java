@@ -14,6 +14,18 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
+import seng302.Data.Database.AdminsDB;
+import seng302.Data.Database.CliniciansDB;
+import seng302.Data.Database.GeneralDB;
+import seng302.Data.Database.UsersDB;
+import seng302.Data.Interfaces.AdminsDAO;
+import seng302.Data.Interfaces.CliniciansDAO;
+import seng302.Data.Interfaces.GeneralDAO;
+import seng302.Data.Interfaces.UsersDAO;
+import seng302.Data.Local.AdminsM;
+import seng302.Data.Local.CliniciansM;
+import seng302.Data.Local.GeneralM;
+import seng302.Data.Local.UsersM;
 import seng302.GUI.Controllers.Admin.AdminController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
@@ -23,24 +35,13 @@ import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.Controllers.User.UserController;
 import seng302.GUI.Controllers.User.UserSettingsController;
 import seng302.GUI.TFScene;
-import seng302.User.*;
+import seng302.User.Admin;
+import seng302.User.Clinician;
 import seng302.User.Medication.InteractionApi;
+import seng302.User.User;
+import seng302.User.WaitingListItem;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static seng302.Generic.IO.getJarPath;
-import static seng302.Generic.IO.streamOut;
-import seng302.GUI.Controllers.Clinician.ClinicianController;
-import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
-import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
-import seng302.GUI.Controllers.LoginController;
-import seng302.GUI.Controllers.User.CreateUserController;
-import seng302.GUI.Controllers.User.UserSettingsController;
-import seng302.User.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -73,15 +74,14 @@ public class WindowManager extends Application {
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
 
-    private static Database database;
+    private static DataManager dataManager;
 
-
-    public static Database getDatabase() {
-        return database;
+    public static DataManager getDataManager() {
+        return dataManager;
     }
 
-    public static void setDatabase(Database database) {
-        WindowManager.database = database;
+    public static void setDataManager(DataManager dataManager) {
+        WindowManager.dataManager = dataManager;
     }
 
     /**
@@ -121,14 +121,9 @@ public class WindowManager extends Application {
             Parent root = loader.load();
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
-            user.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setCurrentUser(user);
-            System.out.println("Opening window for user");
-            System.out.println("CurrentState: ");
-            for(WaitingListItem i:user.getWaitingListItems()){
-                System.out.println(i.getOrganType() + "," + i.getStillWaitingOn());
-            }
+            newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
             cliniciansUserWindows.put(stage, newUserController);
@@ -150,10 +145,10 @@ public class WindowManager extends Application {
      * @param clinician the logged clinician
      */
     public static void setClinician(Clinician clinician) {
-        clinicianController.setClinician(clinician);
-        clinicianController.updateDisplay();
-        clinicianController.updateFoundUsers();
-        updateTransplantWaitingList();
+            clinicianController.setClinician(clinician);
+            clinicianController.updateDisplay();
+            clinicianController.updateFoundUsers();
+            updateTransplantWaitingList();
     }
 
     /**
@@ -220,16 +215,6 @@ public class WindowManager extends Application {
 
     }
 
-    /**
-     * sets the current user for the account settings controller
-     *
-     * @param currentUser the current user
-     */
-    public static void setCurrentUserForAccountSettings(User currentUser) {
-        userSettingsController.setCurrentUser(currentUser);
-        userSettingsController.populateAccountDetails();
-    }
-
     public void refreshUser() {
         userController.setCurrentUser(userController.getCurrentUser());
     }
@@ -294,8 +279,8 @@ public class WindowManager extends Application {
         adminController.updateFoundUsers();
     }
 
-    public static void showDeregisterDialog(WaitingListItem waitingListItem) {
-        clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem);
+    public static void showDeregisterDialog(WaitingListItem waitingListItem, User user) {
+        clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem, user);
     }
 
     public static Map<Stage, UserController> getCliniciansUserWindows() {
@@ -311,10 +296,6 @@ public class WindowManager extends Application {
 
     public static void setUserController(UserController userController) {
         WindowManager.userController = userController;
-    }
-
-    public static void setAccountSettingsEnterEvent() {
-        userSettingsController.setEnterEvent();
     }
 
     public static void setClinicianAccountSettingsEnterEvent() {
@@ -363,6 +344,32 @@ public class WindowManager extends Application {
         }
     }
 
+
+    /**
+     * Creates an internal, non-persistant DataManager (For testing and debugging)
+     * @return A new DataManager instance
+     */
+    public DataManager createLocalDataManager() {
+        UsersDAO users = new UsersM();
+        CliniciansDAO clinicians = new CliniciansM();
+        AdminsDAO admins = new AdminsM();
+        GeneralDAO general = new GeneralM(users,clinicians,admins);
+        return new DataManager(users,clinicians,admins,general);
+    }
+
+    /**
+     * Creates a standard DataManager which manipulates the database via the API server.
+     * @return A new DataManager instance
+     */
+    public DataManager createDatabaseDataManager() {
+        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz:80/api/v1"/*"http://localhost:7015/api/v1"*/);
+        UsersDAO users = new UsersDB(server);
+        CliniciansDAO clinicians = new CliniciansDB(server);
+        AdminsDAO admins = new AdminsDB(server);
+        GeneralDAO general = new GeneralDB(server);
+        return new DataManager(users,clinicians,admins,general);
+    }
+
     /**
      * Load in saved users and clinicians, and initialise the GUI.
      *
@@ -370,9 +377,9 @@ public class WindowManager extends Application {
      */
     @Override
     public void start(Stage stage) {
-        // This fixes errors which occur in different threads in TestFX
-        database = new Database();
-        database.connectToDatabase();
+        dataManager = createDatabaseDataManager();
+        //dataManager = createLocalDataManager();
+
         Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
@@ -391,7 +398,6 @@ public class WindowManager extends Application {
         try {
             IO.setPaths();
             setupDrugInteractionCache();
-            IO.streamOut = History.init();
             for (TFScene scene : TFScene.values()) {
                 scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
             }
@@ -415,14 +421,6 @@ public class WindowManager extends Application {
 
         getScene(TFScene.clinician).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                Debugger.log("Refreshing...");
-                DataManager.users.clear();
-                try {
-                    DataManager.addAllUsers(getDatabase().getAllUsers());
-                    getDatabase().refreshUserWaitinglists();
-                } catch (HttpResponseException e) {
-                    Debugger.error("Failed to refresh all user waiting lists.");
-                }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
                 refreshAdmin();
@@ -431,39 +429,21 @@ public class WindowManager extends Application {
 
         getScene(TFScene.admin).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                DataManager.users.clear();
-                try {
-                    DataManager.addAllUsers(getDatabase().getAllUsers());
-
-                    getDatabase().refreshUserWaitinglists();
-                } catch (HttpResponseException e) {
-                    Debugger.error("Failed to refresh all user waiting lists.");
-                }
                 updateTransplantWaitingList();
                 updateUserWaitingLists();
 
             }
         });
 
-
-
         getScene(TFScene.userWindow).setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.F5) {
-                DataManager.users.clear();
-                try {
-                    DataManager.addAllUsers(getDatabase().getAllUsers());
-                    getDatabase().refreshUserWaitinglists();
-                } catch (HttpResponseException e) {
-                    Debugger.error("Failed to refresh all user waiting lists.");
-                }
                 refreshUser();
-
             }
         });
     }
 
     public void setupDrugInteractionCache(){
-        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
 
