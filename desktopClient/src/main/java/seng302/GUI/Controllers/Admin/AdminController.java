@@ -1006,4 +1006,13 @@ public class AdminController implements Initializable {
         cache.save();
         InteractionApi.setCache(cache);
     }
+
+    public void setCountries(){
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Update Countries");
+        dialog.setHeaderText("Update Countries");
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        dialog.showAndWait();
+    }
 }
