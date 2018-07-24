@@ -42,15 +42,11 @@ namespace mobileAppClient
             }
         }
 
-<<<<<<< HEAD
-        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit, bool emptyAllowed)
-=======
         /*
          * Method to check if a given input is within a lower bound and an upper bound 
          * returning a boolean determining if it is valid or not.
          */ 
-        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit)
->>>>>>> 77ee599... Clarified all documentation in the application and ensured documentation was to a high standard. #document
+        public static bool IsValidNumericInput(string input, double lowerLimit, double upperLimit, bool emptyAllowed)
         {
             // Check if empty
             if (string.IsNullOrEmpty(input) && emptyAllowed)

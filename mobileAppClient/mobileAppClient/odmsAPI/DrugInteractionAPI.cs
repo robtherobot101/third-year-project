@@ -1,11 +1,8 @@
 using System;
-<<<<<<< HEAD
-=======
 using mobileAppClient.odmsAPI.RequestFormat;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
->>>>>>> 77ee599... Clarified all documentation in the application and ensured documentation was to a high standard. #document
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;

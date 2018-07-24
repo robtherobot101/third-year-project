@@ -4,6 +4,10 @@ using System.Text;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle the logged in user of the application.
+     * Accessible using a singleton framework with a given instance.
+     */ 
     sealed class UserController
     {
         public User LoggedInUser { get; set; }
@@ -16,12 +20,18 @@ namespace mobileAppClient
 
         public static UserController Instance { get { return lazy.Value; } }
 
+        /*
+         * Logs out a given user, setting the logged in user to null.
+         */ 
         public void Logout()
         {
             this.LoggedInUser = null;
             this.AuthToken = null;
         }
 
+        /*
+         * Logs in a given user, updating all of its observers.
+         */ 
         public void Login()
         {
             foreach (UserObserver userObserver in userObservers)
@@ -30,6 +40,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Adds a given observer to the user.
+         */ 
         public void addUserObserver(UserObserver newUserObserver)
         {
             userObservers.Add(newUserObserver);
@@ -37,7 +50,6 @@ namespace mobileAppClient
 
         private UserController()
         {
-            
             userObservers = new List<UserObserver>();
         }
     }
