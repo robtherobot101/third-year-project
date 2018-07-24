@@ -183,7 +183,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         clickOn("#clinicianAddress").write("default");
         clickOn("#clinicianRegion").write("default");
 
-        Clinician clinician = WindowManager.getClinicianController().getCurrentClinician();
+        Clinician clinician = WindowManager.getCurrentClinician();
         clickOn("Update");
 
         pressDialogOKButtons();
@@ -199,7 +199,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         clickOn("#clinicianAddress").write("newTestAddress");
         clickOn("#clinicianRegion").write("newTestRegion");
 
-        Clinician clinician = WindowManager.getClinicianController().getCurrentClinician();
+        Clinician clinician = WindowManager.getCurrentClinician();
         clickOn("#clinicianSettingsPopupUpdateButton");
         pressDialogOKButtons();
         assertEquals("Name: newTestName", lookup("#nameLabel").queryLabeled().getText());
