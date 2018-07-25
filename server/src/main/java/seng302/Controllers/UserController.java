@@ -346,7 +346,7 @@ public class UserController {
     //TODO Finish this method.
     public String getUserPhoto(Request request, Response response) {
         User queriedUser = queryUser(request, response);
-
+        System.out.println("Querying server...");
         if (queriedUser == null){
             return response.body();
         }
@@ -356,10 +356,12 @@ public class UserController {
             String fileType = queriedUser.getProfileImageType();
             //Find filepath
             String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + fileType;
+            System.out.println(filepath);
 
             //Get file
             File file = new File(filepath);
             if (!file.isFile()){
+                System.out.println("lol if you can see this you guessed right");
                 return "Photo does not exist.";
             }
 
@@ -385,9 +387,7 @@ public class UserController {
 
     //TODO finish this method. I spaced it out quite a bit so I could get my head around it but this won't be final. Jono
     public String editUserPhoto(Request request, Response response){
-        System.out.println("lol");
-        System.out.println(response.body());
-        System.out.println(request.body());
+
         User queriedUser = queryUser(request, response);
         if (queriedUser == null){
             return response.body();

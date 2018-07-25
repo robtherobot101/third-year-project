@@ -86,6 +86,7 @@ public class UsersDB implements UsersDAO {
     public Image getUserPhoto(long id) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), "users", String.valueOf(id),"photo");
         //TODO add check here to check if it is a valid base64 string
+
         Gson gson = new Gson();
         Photo returnedImage = gson.fromJson(response.toString(), Photo.class);
 

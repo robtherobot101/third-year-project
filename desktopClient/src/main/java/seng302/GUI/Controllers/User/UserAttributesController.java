@@ -311,6 +311,19 @@ public class UserAttributesController extends UserTabController implements Initi
 
         updateBMI();
         highlightOrganCheckBoxes();
+
+
+        System.out.println("Attempting to get photo");
+        Image image = null;
+        try {
+            image = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
+        } catch (HttpResponseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("It got past the the attempt");
+        profileImage.setImage(image);
+
+
     }
 
     /**
@@ -493,7 +506,9 @@ public class UserAttributesController extends UserTabController implements Initi
         //set profile image
         Image profilePhoto = null;
         try {
+            System.out.println("Attempting to get photo");
             Image image = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
+            System.out.println("It got past the the attempt");
             profileImage.setImage(image);
         } catch (HttpResponseException e) {
             e.printStackTrace();
