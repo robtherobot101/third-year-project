@@ -623,6 +623,11 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * starts up the admin controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

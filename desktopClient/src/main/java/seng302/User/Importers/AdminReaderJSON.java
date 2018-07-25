@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminReaderJSON implements ProfileReader<Admin> {
+
+    /**
+     * gets admin profiles from a json file
+     * @param path the path to the json file
+     * @return returns the imported profiles
+     */
     public List<Admin> getProfiles(String path) {
         File inputFile = new File(path);
 

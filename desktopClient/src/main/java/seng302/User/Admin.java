@@ -60,6 +60,10 @@ public class Admin extends Clinician {
         super.setPassword(password);
     }
 
+    /**
+     * overrides the toString function
+     * @return returns the admins info
+     */
     @Override
     public String toString() {
         return "Admin{" +

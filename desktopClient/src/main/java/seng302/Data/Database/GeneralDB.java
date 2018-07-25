@@ -25,6 +25,12 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
+    /**
+     * login the user into the program
+     * @param usernameEmail the username/email of the user
+     * @param password the users password
+     * @return returns the response from the server
+     */
     public Map<Object, String> loginUser(String usernameEmail, String password) {
         Map<Object, String> responseMap = new HashMap<>();
 
@@ -54,23 +60,43 @@ public class GeneralDB implements GeneralDAO {
         }
     }
 
+    /**
+     * logs out the user
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public void logoutUser(String token) throws HttpResponseException {
         server.postRequest(new JsonObject(), new HashMap<>(), token, "logout");
     }
 
+    /**
+     * calls the server to reset the database
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     public void reset(String token) throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(), new HashMap<>(), token, "reset");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
+    /**
+     * calls the server to resample the database
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     public void resample(String token) throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(), new HashMap<>(), token, "resample");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
+    /**
+     * pings the server to check if reachable
+     * @return returns true if the server can be reached
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     public boolean status() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), null,"status");
         if (response.getAsString().equals("DATABASE ONLINE")) {
@@ -80,6 +106,12 @@ public class GeneralDB implements GeneralDAO {
         }
     }
 
+    /**
+     * sends a command to the sever
+     * @param command the command to be sent
+     * @param token the users token
+     * @return return the response from the server
+     */
     public String sendCommand(String command, String token) {
         JsonObject commandObject = new JsonObject();
         commandObject.addProperty("command", command);
@@ -87,6 +119,12 @@ public class GeneralDB implements GeneralDAO {
         return response.getAsString();
     }
 
+    /**
+     * checks if the username or email is unique
+     * @param identifier the string to check
+     * @return returns true if unique, otherwise false
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     public boolean isUniqueIdentifier(String identifier) throws HttpResponseException {
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", identifier);
@@ -95,6 +133,12 @@ public class GeneralDB implements GeneralDAO {
         return response.getAsString().equalsIgnoreCase("true");
     }
 
+    /**
+     * get all the waiting list items from the server
+     * @param token the users token
+     * @return all the waiting list items
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "waitingListItems");
@@ -109,6 +153,12 @@ public class GeneralDB implements GeneralDAO {
         }
     }
 
+    /**
+     * gets all the countries from the server
+     * @param token the users token
+     * @return returns all the countries
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public List<Country> getAllCountries(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), token,"countries");
@@ -122,6 +172,12 @@ public class GeneralDB implements GeneralDAO {
         }
     }
 
+    /**
+     * updates all the countries in the server
+     * @param countries the list of countries to update to
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public void updateCountries(List<Country> countries, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();

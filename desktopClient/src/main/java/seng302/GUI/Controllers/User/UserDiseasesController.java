@@ -739,6 +739,9 @@ public class UserDiseasesController extends UserTabController implements Initial
         Debugger.log("Setting donor of Medical History pane...");
     }
 
+    /**
+     * undos the last change
+     */
     @Override
     public void undo() {
         updateUser();
@@ -752,6 +755,9 @@ public class UserDiseasesController extends UserTabController implements Initial
 
     }
 
+    /**
+     * redos the last undo
+     */
     @Override
     public void redo() {
         updateUser();

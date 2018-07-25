@@ -40,6 +40,9 @@ public class LoginController implements Initializable {
 
     private Gson gson;
 
+    /**
+     * logs in a user
+     */
     public void login(){
         try {
             Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
@@ -69,24 +72,42 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * loads a specific user
+     * @param user the user to load
+     * @param token the users token
+     */
     private void loadUser(User user, String token) {
         WindowManager.setCurrentUser(user, token);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();
     }
 
+    /**
+     * loads a specific clinician
+     * @param clinician the clinician to load
+     * @param token the users token
+     */
     private void loadClinician(Clinician clinician, String token) {
         WindowManager.setCurrentClinician(clinician, token);
         WindowManager.setScene(TFScene.clinician);
         resetScene();
     }
 
+    /**
+     * loads a specific admin
+     * @param admin the admin to load
+     * @param token the users token
+     */
     private void loadAdmin(Admin admin, String token) {
         WindowManager.setCurrentAdmin(admin, token);
         WindowManager.setScene(TFScene.admin);
         resetScene();
     }
 
+    /**
+     * resets the current scene
+     */
     private void resetScene(){
         identificationInput.setText("");
         passwordInput.setText("");
@@ -94,6 +115,9 @@ public class LoginController implements Initializable {
         errorMessage.setVisible(false);
     }
 
+    /**
+     * tests the connection to the server
+     */
     public void testConnection(){
         APIServer server = new APIServer("http://" + serverInput.getText());
         if(server.testConnection().equals("1")){
@@ -104,6 +128,11 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * connects to a server with a given url
+     * @param url the url of the server
+     * @return returns true if connected
+     */
     private boolean connectServer(String url){
         UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         if (urlValidator.isValid(url)) {

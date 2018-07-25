@@ -118,10 +118,16 @@ public class ClinicianSettingsController implements Initializable {
         stage.close();
     }
 
+    /**
+     * updates the state of the update button
+     */
     private void updateUpdateButtonState() {
         updateButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty());
     }
 
+    /**
+     * checks if enter was pressed and if it was it updates the account details
+     */
     public void setEnterEvent() {
         updateButton.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !updateButton.isDisable()) {
@@ -130,9 +136,14 @@ public class ClinicianSettingsController implements Initializable {
         });
     }
 
+    /**
+     * starts up the clinician setting controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setClincianAccountSettingsController(this);
+        WindowManager.setClinicianAccountSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
     }

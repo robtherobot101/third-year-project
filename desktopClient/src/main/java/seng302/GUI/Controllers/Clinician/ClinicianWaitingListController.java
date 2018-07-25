@@ -88,6 +88,10 @@ public class ClinicianWaitingListController implements Initializable {
         }
     }
 
+    /**
+     * adds the user info to a waiting list item
+     * @param item the waiting list item to update
+     */
     public void addUserInfo(WaitingListItem item) {
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue(), token);
@@ -145,6 +149,9 @@ public class ClinicianWaitingListController implements Initializable {
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
     }
 
+    /**
+     * shows th ederegister dialog for a waiting list item
+     */
     public void showDeregisterDialogFromClinicianList() {
         try {
             WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
@@ -244,6 +251,12 @@ public class ClinicianWaitingListController implements Initializable {
         }
     }
 
+    /**
+     * deregisters a waiting list item
+     * @param item the waiting list item to deregister
+     * @param user the user to remove the waiting list item from
+     * @param code the code for why it was deregistered
+     */
     public void deregisterWaitingListItem(WaitingListItem item, User user, int code) {
         for(WaitingListItem i : user.getWaitingListItems()) {
             if(i.getStillWaitingOn() && i.getOrganType().equals(item.getOrganType())) {
