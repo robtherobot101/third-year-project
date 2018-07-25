@@ -1,10 +1,14 @@
 package seng302.GUI.Controllers.User;
 
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import impl.org.controlsfx.autocompletion.SuggestionProvider;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
+import org.controlsfx.control.textfield.TextFields;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
@@ -15,9 +19,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
@@ -47,6 +49,11 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
         updateBMI();
         updateAge();
+        if(user.getCurrentAddress() == null) {
+            setupLocationCompletetion(false);
+        } else {
+            setupLocationCompletetion(user.getCurrentAddress().equals("New Zealand"));
+        }
     }
 
     /**
@@ -120,6 +127,12 @@ public class UserAttributesController extends UserTabController implements Initi
      * @return returns boolean of it working or not
      */
     public boolean updateUser() {
+        if(currentUser.getCurrentAddress() == null) {
+            setupLocationCompletetion(false);
+        } else {
+            setupLocationCompletetion(currentUser.getCurrentAddress().equals("New Zealand"));
+        }
+
         //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
@@ -315,6 +328,15 @@ public class UserAttributesController extends UserTabController implements Initi
         }
     }
 
+    public void setupLocationCompletetion(boolean inNewZealand) {
+        SuggestionProvider employeesProvider = SuggestionProvider.create(Arrays.asList(NZRegion.values()));
+        if(inNewZealand) {
+            TextFields.bindAutoCompletion(regionField, employeesProvider).setVisibleRowCount(10);
+        } else {
+            TextFields.bindAutoCompletion(regionField, employeesProvider).dispose();
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
@@ -385,6 +407,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 attributeFieldUnfocused();
             }
         });
+
         dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 attributeFieldUnfocused();

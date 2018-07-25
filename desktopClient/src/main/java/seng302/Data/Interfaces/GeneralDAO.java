@@ -1,6 +1,9 @@
 package seng302.Data.Interfaces;
 
 import org.apache.http.client.HttpResponseException;
+import seng302.Generic.APIResponse;
+import seng302.Generic.Country;
+import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.ConnectException;
@@ -24,4 +27,8 @@ public interface GeneralDAO {
     List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException;
 
     boolean status() throws HttpResponseException, ConnectException;
+
+    List<Country> getAllCountries(String token) throws HttpResponseException;
+
+    void updateCountries(List<Country> countries, String token) throws HttpResponseException;
 }

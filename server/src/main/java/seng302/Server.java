@@ -29,6 +29,8 @@ public class Server {
     private DonationsController donationsController;
     private WaitingListController waitingListController;
     private CLIController CLIController;
+    private CountriesController countriesController;
+
     private int port = 7015;
     private boolean testing = false;
 
@@ -179,6 +181,12 @@ public class Server {
                 get("",      userController::countUsers);
             });
 
+            path("/countries", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
+                get("", countriesController::getCountries);
+                patch("", countriesController::patchCountries);
+            });
+
             path("/unique", () -> {
                 get("",    profileUtils::isUniqueIdentifier);
             });
@@ -232,5 +240,6 @@ public class Server {
         waitingListController = new WaitingListController();
         profileUtils = new ProfileUtils();
         CLIController = new CLIController();
+        countriesController = new CountriesController();
     }
 }

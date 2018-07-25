@@ -38,7 +38,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
     Clinician testClinician;
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before

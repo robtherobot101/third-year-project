@@ -16,6 +16,13 @@ public class AuthorizationController {
 
     Authorization model = new Authorization();
 
+
+    /**
+     * method to handle the login requests
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the information of the user logging in or a message saying why it failed, very nice
+     */
     public String login(Request request, Response response) {
 
         String usernameEmail = request.queryParams("usernameEmail");
@@ -105,7 +112,12 @@ public class AuthorizationController {
         return "Server Failure";
     }
 
-
+    /**
+     * method to handle logging out a user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String containing information whether the logout was successful
+     */
     public String logout(Request request, Response response) {
         try {
             String token = request.headers("token");

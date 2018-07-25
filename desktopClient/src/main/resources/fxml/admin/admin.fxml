@@ -48,6 +48,7 @@
                         <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
                     </items>
                   </Menu>
+                  <MenuItem fx:id="SetCountriesMenuItem" mnemonicParsing="false" onAction="#setCountries" text="Set Countries"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>

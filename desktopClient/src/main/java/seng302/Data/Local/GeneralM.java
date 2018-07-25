@@ -7,6 +7,7 @@ import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Data.ResampleData;
 import seng302.Generic.Debugger;
+import seng302.Generic.Country;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -144,4 +145,10 @@ public class GeneralM implements GeneralDAO {
     public boolean status() throws HttpResponseException {
         return true;
     }
+
+    public List<Country> getAllCountries(String token) throws HttpResponseException {
+        return null;
+    }
+
+    public void updateCountries(List<Country> countries, String token) throws HttpResponseException{}
 }

@@ -1,12 +1,12 @@
 package seng302.Data.Database;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.Generic.Country;
 import seng302.Generic.Debugger;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -107,5 +107,25 @@ public class GeneralDB implements GeneralDAO {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<Country> getAllCountries(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), token,"countries");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Country>>(){}.getType());
+        } else {
+            return new ArrayList<Country>();
+        }
+    }
+
+    @Override
+    public void updateCountries(List<Country> countries, String token) throws HttpResponseException {
+        JsonParser jp = new JsonParser();
+        JsonArray userJson = jp.parse(new Gson().toJson(countries)).getAsJsonArray();
+        APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),token,"countries");
     }
 }
