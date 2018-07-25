@@ -1,12 +1,3 @@
-
-INSERT INTO `ADMIN` (`username`, `password`, `name`, `work_address`, `region`, `staff_id`) VALUES
-('admin', 'default', 'default', 'default', 'default', 1);
-
-
-INSERT INTO `CLINICIAN` (`username`, `password`, `name`, `work_address`, `region`, `staff_id`) VALUES
-('default', 'default', 'default', 'default', 'default', 1);
-
-
 INSERT INTO `USER` (`first_name`, `middle_names`, `last_name`, `preferred_name`, `preferred_middle_names`, `preferred_last_name`, `creation_time`, `last_modified`, `gender`, `gender_identity`, `height`, `weight`, `blood_type`, `id`, `current_address`, `region`, `username`, `email`, `password`, `blood_pressure`, `smoker_status`, `alcohol_consumption`, `date_of_birth`, `date_of_death`) VALUES
 ('Andy', 'Robert', 'French', 'Andy', 'Robert', 'French', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, 'andy', 'andy@andy.com', 'andrew', NULL, NULL, NULL, '2018-07-19', NULL),
 ('Buzz', 'Buzzy', 'Knight', 'Buzz', 'Buzzy', 'Knight', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, 'buzz', 'buzz@buzz.com', 'drowssap', NULL, NULL, NULL, '2018-07-19', NULL),
@@ -16,5 +7,3 @@ INSERT INTO `USER` (`first_name`, `middle_names`, `last_name`, `preferred_name`,
 ('Nicky', 'The Dark Horse', 'Zohrab-Henricks', 'Nicky', 'The Dark Horse', 'Zohrab-Henricks', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 6, NULL, NULL, 'nicky', 'nicky@nicky.com', 'nicky', NULL, NULL, NULL, '2018-07-19', NULL),
 ('Kyran', 'Playing Fortnite', 'Stagg', 'Kyran', 'Playing Fortnite', 'Stagg', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, 'kyran', 'kyran@kyran.com', 'fortnite', NULL, NULL, NULL, '2018-07-19', NULL),
 ('Andrew', 'Daveo', 'Davidson', 'Andrew', 'Daveo', 'Davidson', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, 'andrew', 'andrew@andrew.com', 'andrew', NULL, NULL, NULL, '2018-07-19', NULL);
-
--- --------------------------------------------------------

@@ -16,6 +16,7 @@ import seng302.Model.WaitingListItem;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -122,13 +123,13 @@ public class GeneralUserTest {
         user.setCurrentAddress("221b Baker Stret");
         user.setRegion("Here");
         user.setDateOfBirth(LocalDate.of(1987, 8, 4));
-        user.setDateOfDeath(LocalDate.now());
+        user.setDateOfDeath(LocalDateTime.now());
         user.setHeight(100);
         user.setWeight(200);
         user.setBloodPressure("High");
         user.setGender(Gender.NONBINARY);
         user.setBloodType(BloodType.AB_POS);
-        user.setEmail("newemail@newdomain.newtld");
+        //user.setEmail("newemail@newdomain.newtld");
 
         generalUser.updateUserAttributes(user, (int) user.getId());
 

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: csse-mysql2
--- Generation Time: Jul 19, 2018 at 01:24 PM
+-- Generation Time: Jul 25, 2018 at 12:21 PM
 -- Server version: 5.6.40
 -- PHP Version: 5.4.16
 
@@ -16,26 +16,13 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Database: `seng302-2018-team300-test`
---
-
 -- --------------------------------------------------------
-
-DROP TABLE IF EXISTS `ADMIN`;
-DROP TABLE IF EXISTS `CLINICIAN`;
-DROP TABLE IF EXISTS `DISEASE`;
-DROP TABLE IF EXISTS `DONATIION_LIST_ITEM`;
-DROP TABLE IF EXISTS `HISTORY_ITEM`;
-DROP TABLE IF EXISTS `MEDICATION`;
-DROP TABLE IF EXISTS `PROCEDURE`;
-DROP TABLE IF EXISTS `USER`;
-DROP TABLE IF EXISTS `WAITING_LIST_ITEM`;
 
 --
 -- Table structure for table `ADMIN`
 --
 
+DROP TABLE IF EXISTS `ADMIN`;
 CREATE TABLE IF NOT EXISTS `ADMIN` (
   `username` varchar(255) NOT NULL,
   `password` text NOT NULL,
@@ -43,14 +30,7 @@ CREATE TABLE IF NOT EXISTS `ADMIN` (
   `work_address` text,
   `region` text,
   `staff_id` bigint(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `ADMIN`
---
-
-INSERT INTO `ADMIN` (`username`, `password`, `name`, `work_address`, `region`, `staff_id`) VALUES
-('admin', 'default', 'default', 'default', 'default', 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -58,6 +38,7 @@ INSERT INTO `ADMIN` (`username`, `password`, `name`, `work_address`, `region`, `
 -- Table structure for table `CLINICIAN`
 --
 
+DROP TABLE IF EXISTS `CLINICIAN`;
 CREATE TABLE IF NOT EXISTS `CLINICIAN` (
   `username` varchar(255) NOT NULL,
   `password` text NOT NULL,
@@ -65,14 +46,31 @@ CREATE TABLE IF NOT EXISTS `CLINICIAN` (
   `work_address` text,
   `region` text,
   `staff_id` bigint(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `CLINICIAN`
+-- Table structure for table `COUNTRIES`
 --
 
-INSERT INTO `CLINICIAN` (`username`, `password`, `name`, `work_address`, `region`, `staff_id`) VALUES
-('default', 'default', 'default', 'default', 'default', 1);
+DROP TABLE IF EXISTS `COUNTRIES`;
+CREATE TABLE IF NOT EXISTS `COUNTRIES` (
+  `country` text NOT NULL,
+  `valid` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `NZREGIONS`
+--
+
+DROP TABLE IF EXISTS `NZREGIONS`;
+CREATE TABLE IF NOT EXISTS `NZREGIONS` (
+  `name` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -80,6 +78,7 @@ INSERT INTO `CLINICIAN` (`username`, `password`, `name`, `work_address`, `region
 -- Table structure for table `DISEASE`
 --
 
+DROP TABLE IF EXISTS `DISEASE`;
 CREATE TABLE IF NOT EXISTS `DISEASE` (
   `name` text NOT NULL,
   `diagnosis_date` date NOT NULL,
@@ -95,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `DISEASE` (
 -- Table structure for table `DONATION_LIST_ITEM`
 --
 
+DROP TABLE IF EXISTS `DONATION_LIST_ITEM`;
 CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `name` text NOT NULL,
   `id` int(11) NOT NULL,
@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
 -- Table structure for table `HISTORY_ITEM`
 --
 
+DROP TABLE IF EXISTS `HISTORY_ITEM`;
 CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
   `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `action` text NOT NULL,
@@ -121,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
 -- Table structure for table `MEDICATION`
 --
 
+DROP TABLE IF EXISTS `MEDICATION`;
 CREATE TABLE IF NOT EXISTS `MEDICATION` (
   `name` text NOT NULL,
   `active_ingredients` text NOT NULL,
@@ -135,6 +137,7 @@ CREATE TABLE IF NOT EXISTS `MEDICATION` (
 -- Table structure for table `PROCEDURES`
 --
 
+DROP TABLE IF EXISTS `PROCEDURES`;
 CREATE TABLE IF NOT EXISTS `PROCEDURES` (
   `summary` text NOT NULL,
   `description` text NOT NULL,
@@ -147,9 +150,39 @@ CREATE TABLE IF NOT EXISTS `PROCEDURES` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `TOKEN`
+--
+
+DROP TABLE IF EXISTS `TOKEN`;
+CREATE TABLE IF NOT EXISTS `TOKEN` (
+  `id` int(11) NOT NULL,
+  `token` text NOT NULL,
+  `access_level` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `WAITING_LIST_ITEM`
+--
+
+DROP TABLE IF EXISTS `WAITING_LIST_ITEM`;
+CREATE TABLE IF NOT EXISTS `WAITING_LIST_ITEM` (
+  `organ_type` text NOT NULL,
+  `organ_registered_date` date NOT NULL,
+  `organ_deregistered_date` date DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `user_id` bigint(11) NOT NULL,
+  `deregistered_code` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `USER`
 --
 
+DROP TABLE IF EXISTS `USER`;
 CREATE TABLE IF NOT EXISTS `USER` (
   `first_name` text NOT NULL,
   `middle_names` text,
@@ -174,36 +207,12 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `smoker_status` text,
   `alcohol_consumption` text,
   `date_of_birth` date NOT NULL,
-  `date_of_death` date DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `USER`
---
-
-INSERT INTO `USER` (`first_name`, `middle_names`, `last_name`, `preferred_name`, `preferred_middle_names`, `preferred_last_name`, `creation_time`, `last_modified`, `gender`, `gender_identity`, `height`, `weight`, `blood_type`, `id`, `current_address`, `region`, `username`, `email`, `password`, `blood_pressure`, `smoker_status`, `alcohol_consumption`, `date_of_birth`, `date_of_death`) VALUES
-('Andy', 'Robert', 'French', 'Andy', 'Robert', 'French', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, 'andy', 'andy@andy.com', 'andrew', NULL, NULL, NULL, '2018-07-19', NULL),
-('Buzz', 'Buzzy', 'Knight', 'Buzz', 'Buzzy', 'Knight', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, 'buzz', 'buzz@buzz.com', 'drowssap', NULL, NULL, NULL, '2018-07-19', NULL),
-('James', 'Mozza', 'Morritt', 'James', 'Mozza', 'Morritt', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, 'mozza', 'mozza@mozza.com', 'mozza', NULL, NULL, NULL, '2018-07-19', NULL),
-('Jono', 'Zilla', 'Hills', 'Jono', 'Zilla', 'Hills', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 4, NULL, NULL, 'jonozilla', 'zilla@zilla.com', 'zilla', NULL, NULL, NULL, '2018-07-19', NULL),
-('James', 'Mackas', 'Mackay', 'James', 'Mackas', 'Mackay', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 5, NULL, NULL, 'mackas', 'mackas@mackas.com', 'mackas', NULL, NULL, NULL, '2018-07-19', NULL),
-('Nicky', 'The Dark Horse', 'Zohrab-Henricks', 'Nicky', 'The Dark Horse', 'Zohrab-Henricks', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 6, NULL, NULL, 'nicky', 'nicky@nicky.com', 'nicky', NULL, NULL, NULL, '2018-07-19', NULL),
-('Kyran', 'Playing Fortnite', 'Stagg', 'Kyran', 'Playing Fortnite', 'Stagg', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, 'kyran', 'kyran@kyran.com', 'fortnite', NULL, NULL, NULL, '2018-07-19', NULL),
-('Andrew', 'Daveo', 'Davidson', 'Andrew', 'Daveo', 'Davidson', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, 'andrew', 'andrew@andrew.com', 'andrew', NULL, NULL, NULL, '2018-07-19', NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `WAITING_LIST_ITEM`
---
-
-CREATE TABLE IF NOT EXISTS `WAITING_LIST_ITEM` (
-  `organ_type` text NOT NULL,
-  `organ_registered_date` date NOT NULL,
-  `organ_deregistered_date` date DEFAULT NULL,
-  `id` int(11) NOT NULL,
-  `user_id` bigint(11) NOT NULL,
-  `deregistered_code` int(11) DEFAULT NULL
+  `date_of_death` timestamp NULL DEFAULT NULL,
+  `cityOfDeath` text,
+  `regionOfDeath` text,
+  `countryOfDeath` text,
+  `country` text,
+  `profile_image_type` varchar(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -282,12 +291,12 @@ ALTER TABLE `WAITING_LIST_ITEM`
 -- AUTO_INCREMENT for table `ADMIN`
 --
 ALTER TABLE `ADMIN`
-  MODIFY `staff_id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `staff_id` bigint(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `CLINICIAN`
 --
 ALTER TABLE `CLINICIAN`
-  MODIFY `staff_id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `staff_id` bigint(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `DISEASE`
 --
@@ -317,7 +326,7 @@ ALTER TABLE `PROCEDURES`
 -- AUTO_INCREMENT for table `USER`
 --
 ALTER TABLE `USER`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `WAITING_LIST_ITEM`
 --
@@ -362,6 +371,23 @@ ALTER TABLE `PROCEDURES`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+
+--
+-- Create default clinician and admin
+--
+
+INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', 'default', 'default', 'default', 'default', 'default');
+
+INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', 'default', 'default', 'default', 'default', 'default');
+
+
+--
+-- Populate country and region tables
+--
+
+INSERT INTO `COUNTRIES`(`country`) VALUES ('Afghanistan'), ('Albania'), ('Algeria'), ('Andorra'), ('Angola'), ('Antigua & Deps'), ('Argentina'), ('Armenia'), ('Australia'), ('Austria'), ('Azerbaijan'), ('Bahamas'), ('Bahrain'), ('Bangladesh'), ('Barbados'), ('Belarus'), ('Belgium'), ('Belize'), ('Benin'), ('Bhutan'), ('Bolivia'), ('Bosnia Herzegovina'), ('Botswana'), ('Brazil'), ('Brunei'), ('Bulgaria'), ('Burkina'), ('Burundi'), ('Cambodia'), ('Cameroon'), ('Canada'), ('Cape Verde'), ('Central African Rep'), ('Chad'), ('Chile'), ('China'), ('Colombia'), ('Comoros'), ('Congo'), ('Congo {Democratic Rep}'), ('Costa Rica'), ('Croatia'), ('Cuba'), ('Cyprus'), ('Czech Republic'), ('Denmark'), ('Djibouti'), ('Dominica'), ('Dominican Republic'), ('East Timor'), ('Ecuador'), ('Egypt'), ('El Salvador'), ('Equatorial Guinea'), ('Eritrea'), ('Estonia'), ('Ethiopia'), ('Fiji'), ('Finland'), ('France'), ('Gabon'), ('Gambia'), ('Georgia'), ('Germany'), ('Ghana'), ('Greece'), ('Grenada'), ('Guatemala'), ('Guinea'), ('Guinea-Bissau'), ('Guyana'), ('Haiti'), ('Honduras'), ('Hungary'), ('Iceland'), ('India'), ('Indonesia'), ('Iran'), ('Iraq'), ('Ireland {Republic}'), ('Israel'), ('Italy'), ('Ivory Coast'), ('Jamaica'), ('Japan'), ('Jordan'), ('Kazakhstan'), ('Kenya'), ('Kiribati'), ('Korea North'), ('Korea South'), ('Kosovo'), ('Kuwait'), ('Kyrgyzstan'), ('Laos'), ('Latvia'), ('Lebanon'), ('Lesotho'), ('Liberia'), ('Libya'), ('Liechtenstein'), ('Lithuania'), ('Luxembourg'), ('Macedonia'), ('Madagascar'), ('Malawi'), ('Malaysia'), ('Maldives'), ('Mali'), ('Malta'), ('Marshall Islands'), ('Mauritania'), ('Mauritius'), ('Mexico'), ('Micronesia'), ('Moldova'), ('Monaco'), ('Mongolia'), ('Montenegro'), ('Morocco'), ('Mozambique'), ('Myanmar'), ('Namibia'), ('Nauru'), ('Nepal'), ('Netherlands'), ('New Zealand'), ('Nicaragua'), ('Niger'), ('Nigeria'), ('Norway'), ('Oman'), ('Pakistan'), ('Palau'), ('Panama'), ('Papua New Guinea'), ('Paraguay'), ('Peru'), ('Philippines'), ('Poland'), ('Portugal'), ('Qatar'), ('Romania'), ('Russia'), ('Rwanda'), ('St Kitts & Nevis'), ('St Lucia'), ('Saint Vincent & the Grenadines'), ('Samoa'), ('San Marino'), ('Sao Tome & Principe'), ('Saudi Arabia'), ('Senegal'), ('Serbia'), ('Seychelles'), ('Sierra Leone'), ('Singapore'), ('Slovakia'), ('Slovenia'), ('Solomon Islands'), ('Somalia'), ('South Africa'), ('South Sudan'), ('Spain'), ('Sri Lanka'), ('Sudan'), ('Suriname'), ('Swaziland'), ('Sweden'), ('Switzerland'), ('Syria'), ('Taiwan'), ('Tajikistan'), ('Tanzania'), ('Thailand'), ('Togo'), ('Tonga'), ('Trinidad & Tobago'), ('Tunisia'), ('Turkey'), ('Turkmenistan'), ('Tuvalu'), ('Uganda'), ('Ukraine'), ('United Arab Emirates'), ('United Kingdom'), ('United States'), ('Uruguay'), ('Uzbekistan'), ('Vanuatu'), ('Vatican City'), ('Venezuela'), ('Vietnam'), ('Yemen'), ('Zambia'), ('Zimbabwe');
+
+INSERT INTO `NZREGIONS`(`NAME`) VALUES ('Northland'),('Auckland'),('Waikato'),('Bay of Plenty'),('Gisborne'),('Hawke''s Bay'),('Taranaki'),('Manawatu-Wanganui'),('Wellington'),('Tasman'),('Nelson'),('Marlborough'),('West Coast'),('Canterbury'),('Otago'),('Southland');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

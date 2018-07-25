@@ -31,7 +31,7 @@ public class UserDiseasesTest {
         allDiseases.addAll(diseases2);
 
         user.setCuredDiseases(diseases1);
-        user.setCurrentDiseases(diseases2);
+        user.getCurrentDiseases().addAll(diseases2);
 
         generalUser.updateAllDiseases(allDiseases, (int) user.getId());
 
