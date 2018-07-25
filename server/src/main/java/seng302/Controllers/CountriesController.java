@@ -15,6 +15,9 @@ public class CountriesController {
 
     private GeneralCountries model;
 
+    /**
+     * Constructs a new CountriesController
+     */
     public CountriesController() {
         model = new GeneralCountries();
     }

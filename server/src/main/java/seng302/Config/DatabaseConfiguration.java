@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 public class DatabaseConfiguration {
 
+
     private static final DatabaseConfiguration INSTANCE = new DatabaseConfiguration();
 
     private ComboPooledDataSource cpds = new ComboPooledDataSource();

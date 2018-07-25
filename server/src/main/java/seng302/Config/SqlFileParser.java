@@ -10,6 +10,15 @@ import java.sql.Statement;
 
 public abstract class SqlFileParser {
 
+    /**
+     * Returns an sql Statement for a batch of sql statements defined in the filed given by the file input stream.
+     *
+     * @param connection The connection to the SQL database.
+     * @param file The InputStream to the file containing sql statements
+     * @return The statement which can be executed.
+     * @throws SQLException If an error occurs while defining the statement
+     * @throws IOException If there is a problem reading the file.
+     */
     public static Statement parse(Connection connection, InputStream file) throws SQLException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(file));
         Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -37,5 +46,4 @@ public abstract class SqlFileParser {
         br.close();
         return statement;
     }
-
 }
