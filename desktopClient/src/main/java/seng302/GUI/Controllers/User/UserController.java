@@ -546,5 +546,6 @@ public class UserController implements Initializable {
         logoutMenuItem.setDisable(shown);
         logoutButton.setDisable(shown);
         waitingListButton.setVisible((currentUser != null && currentUser.isReceiver()) || shown);
+        attributesController.setDeathControlsShown(shown);
     }
 }
