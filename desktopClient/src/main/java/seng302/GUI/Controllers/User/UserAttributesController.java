@@ -317,7 +317,6 @@ public class UserAttributesController extends UserTabController implements Initi
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         genderIdentityComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         bloodTypeComboBox.setItems(FXCollections.observableArrayList(BloodType.values()));

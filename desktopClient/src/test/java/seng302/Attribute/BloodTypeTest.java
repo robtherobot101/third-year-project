@@ -1,18 +1,34 @@
-package seng302;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+package seng302.Attribute;
 
 import org.junit.Test;
 import seng302.User.Attribute.BloodType;
 
+import static junit.framework.TestCase.*;
+
 public class BloodTypeTest {
 
     @Test
-    public void testValidParse() {
+    public void testValidLowerCaseParse() {
         assertEquals(BloodType.parse("a+"), BloodType.A_POS);
-        assertEquals(BloodType.parse("o-"), BloodType.O_NEG);
+    }
+
+    @Test
+    public void testValidMixedCaseParse() {
+        assertEquals(BloodType.parse("aB-"), BloodType.AB_NEG);
+    }
+
+    @Test
+    public void testAllCapsParse() {
         assertEquals(BloodType.parse("O-"), BloodType.O_NEG);
+    }
+
+    @Test
+    public void testCanParseEnumOutput() {
+        try {
+            BloodType.parse(BloodType.A_POS.toString());
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
     }
 
     @Test

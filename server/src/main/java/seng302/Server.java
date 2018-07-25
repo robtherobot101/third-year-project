@@ -50,8 +50,11 @@ public class Server {
 
             post( "/login",         authorizationController::login);
             post( "/logout",        authorizationController::logout);
+            before("/reset",        profileUtils::hasAdminAccess);
             post( "/reset",         databaseController::reset);
+            before("/resample",     profileUtils::hasAdminAccess);
             post( "/resample",      databaseController::resample);
+            before("/cli",          profileUtils::hasAdminAccess);
             post( "/cli",           CLIController::executeQuery);
 
             // Path to check connection/version matches client
@@ -96,7 +99,6 @@ public class Server {
 
             path("/users", () -> {
                 get("", (request, response) -> {
-                    System.out.println("attmepted get all users");
                     if (profileUtils.hasAccessToAllUsers(request, response)) {
                         return userController.getUsers(request, response);
                     } else {
@@ -104,6 +106,7 @@ public class Server {
                     }
                 });
                 post( "",          userController::addUser);
+
                 before("/:id",     profileUtils::hasUserLevelAccess);
                 get( "/:id",       userController::getUser);
                 patch( "/:id",     userController::editUser);
@@ -171,9 +174,13 @@ public class Server {
                 get("",  waitingListController::getAllWaitingListItems);
             });
 
-            path("/countusers", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
+            path("/usercount", () -> {
+                before("",   profileUtils::hasAccessToAllUsers);
                 get("",      userController::countUsers);
+            });
+
+            path("/unique", () -> {
+                get("",    profileUtils::isUniqueIdentifier);
             });
         });
     }
