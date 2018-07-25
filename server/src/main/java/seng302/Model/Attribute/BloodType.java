@@ -8,13 +8,14 @@ public enum BloodType {
 
     private String type;
 
-    BloodType(String type) {
-        this.type = type;
-    }
+    /**
+     * constructor method to create a new blood type attribute
+     * input can be of type: A-, A+, B-, B+, AB-, AB+, O-, or O+
+     * @param type String the type of blood a user has
+     */
+    BloodType(String type) { this.type = type; }
 
-    public String toString() {
-        return type;
-    }
+    public String toString() { return type; }
 
     /**
      * Converts a string to its corresponding BloodType enum value. Throws an IllegalArgumentException if the string does not match any BloodType.
