@@ -72,7 +72,7 @@ public class GeneralDB implements GeneralDAO {
     }
 
     public boolean status() throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<String, String>(), "status");
+        APIResponse response = server.getRequest(new HashMap<>(), null,"status");
         if (response.getAsString().equals("DATABASE ONLINE")) {
             return true;
         } else {
@@ -87,14 +87,12 @@ public class GeneralDB implements GeneralDAO {
         return response.getAsString();
     }
 
-    public boolean isUniqueIdentifier(String username) throws HttpResponseException {
-        // TODO - Implement this to check for the same username/email over all profile types
-        return true;
-    }
-
-    public boolean isUniqueIdentifier(String username, long userId) throws HttpResponseException {
-        // TODO - Implement this to check for the same username/email over all profile types
-        return true;
+    public boolean isUniqueIdentifier(String identifier) throws HttpResponseException {
+        Map<String, String> queryParameters = new HashMap<>();
+        queryParameters.put("usernameEmail", identifier);
+        APIResponse response = server.getRequest(queryParameters, null, "unique");
+        System.out.println(response.getAsString());
+        return response.getAsString().equalsIgnoreCase("true");
     }
 
     @Override

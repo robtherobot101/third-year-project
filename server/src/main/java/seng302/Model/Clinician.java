@@ -2,6 +2,8 @@ package seng302.Model;
 
 import seng302.Model.Attribute.ProfileType;
 
+import java.util.Objects;
+
 /**
  * This class contains information about clinicians.
  */
@@ -27,6 +29,25 @@ public class Clinician {
         this.region = null;
         this.workAddress = null;
         this.accountType = ProfileType.CLINICIAN;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Clinician clinician = (Clinician) o;
+        return Objects.equals(name, clinician.name) &&
+                Objects.equals(workAddress, clinician.workAddress) &&
+                Objects.equals(region, clinician.region) &&
+                Objects.equals(username, clinician.username) &&
+                Objects.equals(password, clinician.password) &&
+                accountType == clinician.accountType;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, workAddress, region, username, password, accountType);
     }
 
     /**

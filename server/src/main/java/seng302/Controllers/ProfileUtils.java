@@ -238,4 +238,52 @@ public class ProfileUtils {
             return id;
         }
     }
+
+    /**
+     * Checks whether the query param identifier is unique against all users, clinicians, and admins.
+     *
+     * @param request Spark HTTP request obj
+     * @param response Spark HTTP response obj
+     * @return Whether the identifier is unique
+     */
+    public boolean isUniqueIdentifier(Request request, Response response) {
+        String usernameEmail = request.queryParams("usernameEmail");
+        if (usernameEmail == null || usernameEmail.isEmpty()) {
+            Server.getInstance().log.warn("Received unique identifier request that did not contain an identifier to check.");
+            halt(400, "Bad Request");
+            return false;
+        }
+
+        try {
+            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ?");
+                statement.setString(1, usernameEmail);
+                statement.setString(2, usernameEmail);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    response.status(200);
+                    return false;
+                }
+                statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
+                statement.setString(1, usernameEmail);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    response.status(200);
+                    return false;
+                }
+                statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
+                statement.setString(1, usernameEmail);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    response.status(200);
+                    return false;
+                }
+                response.status(200);
+                return true;
+            }
+        } catch (SQLException e) {
+            halt(500, "Internal server error");
+            return false;
+        }
+    }
 }

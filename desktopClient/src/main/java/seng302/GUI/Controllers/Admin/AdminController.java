@@ -132,8 +132,8 @@ public class AdminController implements Initializable {
 
     /**
      * Sets the current currentAdmin
-     *
      * @param currentAdmin The currentAdmin to se as the current
+     * @param token the token used to communicate with the admin cli
      */
     public void setAdmin(Admin currentAdmin, String token) {
         this.currentAdmin = currentAdmin;
@@ -144,6 +144,10 @@ public class AdminController implements Initializable {
         refreshLatestProfiles();
     }
 
+    /**
+     * method to get the current admin
+     * @return Admin the current admin
+     */
     public Admin getAdmin() {
         return this.currentAdmin;
     }
@@ -513,12 +517,17 @@ public class AdminController implements Initializable {
         adminUserTypeComboBox.setValue(null);
     }
 
+    /**
+     * refreshes the list of users with a max ammount
+     */
     public void updateFoundUsers() {
         updateFoundUsers(resultsPerPage,false);
     }
 
     /**
      * Updates the list of users found from the search
+     * @param count int the max ammount of users to display
+     * @param onlyChangingPage boolean if there is only 1 page in the admin view
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
@@ -895,6 +904,7 @@ public class AdminController implements Initializable {
     /**
      * Updates the current clinicians attributes to
      * reflect those of the values in the displayed TextFields
+     * @param clinician Clinician the clincian to use to display its info
      */
     public void updateClinicianPopUp(Clinician clinician) {
         //adminUndoStack.add(new Clinician(clinician));
@@ -1205,6 +1215,9 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * clears the local api cache files
+     */
     public void clearCache (){
         Cache autocompleteCache = IO.importCache(IO.getJarPath() + "/autocomplete.json");
         Cache activeIngredientsCache = IO.importCache(IO.getJarPath() + "/activeIngredients.json");
@@ -1222,6 +1235,9 @@ public class AdminController implements Initializable {
         InteractionApi.setCache(cache);
     }
 
+    /**
+     * sets the valid countries for users to choose from
+     */
     public void setCountries(){
         try {
             Dialog<ArrayList<String>> dialog = new Dialog<>();
@@ -1278,6 +1294,9 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * method to show an error message when there is an error with the database connection
+     */
     private void databaseError(){
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Error");

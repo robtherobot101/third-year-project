@@ -74,31 +74,32 @@ public class ClinicianSettingsController implements Initializable {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
+            } else {
+                errorLabel.setVisible(false);
+                Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
+                        "The changes made will take place instantly.");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setId("accountSettingsConfirmationOKButton");
+
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    clinician.setUsername(usernameField.getText());
+                    clinician.setPassword(passwordField.getText());
+
+                    Stage stage = (Stage) updateButton.getScene().getWindow();
+                    stage.close();
+                    WindowManager.setCurrentClinician(clinician, token);
+                    try {
+                        WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
+                    }
+                } else {
+                    alert.close();
+                }
             }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to check uniqueness of clinician with id: " + clinician.getStaffID());
-        }
-        errorLabel.setVisible(false);
-        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
-                "The changes made will take place instantly.");
-        alert.getDialogPane().lookupButton(ButtonType.OK).setId("accountSettingsConfirmationOKButton");
-
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            clinician.setUsername(usernameField.getText());
-            clinician.setPassword(passwordField.getText());
-
-            Stage stage = (Stage) updateButton.getScene().getWindow();
-            stage.close();
-            WindowManager.setCurrentClinician(clinician, token);
-            try {
-                WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
-            } catch (HttpResponseException e) {
-                Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
-            }
-        } else {
-            alert.close();
         }
     }
 

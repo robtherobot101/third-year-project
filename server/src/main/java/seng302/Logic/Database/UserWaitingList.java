@@ -54,7 +54,7 @@ public class UserWaitingList {
 
         LocalDate deregisteredDate = waitingListItemResultSet.getDate("organ_deregistered_date") != null ?
                 waitingListItemResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
-
+        
         return new WaitingListItem(
                 Organ.parse(waitingListItemResultSet.getString("organ_type")),
                 waitingListItemResultSet.getDate("organ_registered_date").toLocalDate(),

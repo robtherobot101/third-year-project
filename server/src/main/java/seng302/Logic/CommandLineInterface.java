@@ -1,11 +1,13 @@
 package seng302.Logic;
 
-import seng302.Controllers.HistoryController;
 import seng302.Logic.Database.*;
-import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
+import seng302.Model.Clinician;
+import seng302.Model.HistoryItem;
+import seng302.Model.User;
+import seng302.Model.WaitingListItem;
 
 import java.sql.SQLException;
 import java.time.DateTimeException;
@@ -1003,7 +1005,8 @@ public class CommandLineInterface {
                     + "\n\t-updateUser <id> <attribute> <value>"
                     + "\n\t-import <profiletype> <filename>"
                     + "\n\t-clear"
-                    + "\n\t-help [<command>]");
+                    + "\n\t-help [<command>]"
+                    + "\n\t-sql <command>");
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
                 case "adduser":

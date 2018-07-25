@@ -95,13 +95,13 @@ public class GeneralAdmin {
 
     public void updateAdminDetails(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "UPDATE ADMIN SET name = ?, work_address = ? WHERE username = ?";
+            String update = "UPDATE ADMIN SET name = ?, work_address = ?, region = ? WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(update);
 
             statement.setString(1, admin.getName());
             statement.setString(2, admin.getWorkAddress());
-            // statement.setString(3, admin.getegion()); -- No Region for an Admin!
-            statement.setString(3, admin.getUsername());
+            statement.setString(3, admin.getRegion());
+            statement.setString(4, admin.getUsername());
             System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
 

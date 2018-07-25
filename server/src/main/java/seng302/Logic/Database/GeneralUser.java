@@ -570,7 +570,7 @@ public class GeneralUser {
                 }
 
 
-                if (historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
+                if (historyList.size() > 0 && historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
                     user.getHistoricMedications().add(new Medication(
                             medicationsResultSet.getString("name"),
                             activeIngredients,

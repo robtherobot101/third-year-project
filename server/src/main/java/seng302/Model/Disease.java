@@ -2,6 +2,7 @@ package seng302.Model;
 
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Class contains all the information for a given disease used in the Medical History section.
@@ -199,4 +200,21 @@ public class Disease {
             }
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Disease disease = (Disease) o;
+        return isChronic == disease.isChronic &&
+                isCured == disease.isCured &&
+                Objects.equals(name, disease.name) &&
+                Objects.equals(diagnosisDate, disease.diagnosisDate);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, diagnosisDate, isChronic, isCured);
+    }
 }

@@ -18,14 +18,20 @@ public class APIServer {
     private Client client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
     private JsonParser jp = new JsonParser();
 
+    /**
+     * constructor method to create a new apiserver object
+     * object contains the information needed to connect to the api server specified
+     * @param url String the url of the api server to be used
+     */
     public APIServer(String url){
         this.url = url;
     }
 
-    /**r66
+    /**
      * Perform a get request to the given endpoint and return the results as a JsonObject
      * @param path The endpoint to query
      * @param queryParams The query parameters
+     * @param token the token used to secure the payload
      * @return The result as a response object
      */
     public APIResponse getRequest(Map<String, String> queryParams, String token, String... path) {
@@ -51,6 +57,7 @@ public class APIServer {
      * @param path The endopint to query
      * @param queryParams The query parameters
      * @param body The body of the request as a JsonObject
+     * @param token the token used to secure the payload
      * @return The result as a response object
      */
     public APIResponse postRequest(JsonObject body, Map<String, String> queryParams, String token, String... path){
@@ -78,6 +85,7 @@ public class APIServer {
      * @param path The endopint to query
      * @param queryParams The query parameters
      * @param body The body of the request as a JsonObject
+     * @param token the token used to secure the payload
      * @return The result as a response object
      */
     public APIResponse patchRequest(JsonElement body, Map<String, String> queryParams, String token, String... path){
@@ -99,6 +107,13 @@ public class APIServer {
                 .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
     }
 
+    /**
+     * perform a delete request on a given endpoint and return a response as a json object
+     * @param queryParams The query parameters
+     * @param token the token used to secure the payload
+     * @param path The endopint to query
+     * @return The result as a response object
+     */
     public APIResponse deleteRequest(Map<String, String> queryParams, String token, String... path) {
         // Creates a pointer to the api
         WebTarget target = client.target(url);
