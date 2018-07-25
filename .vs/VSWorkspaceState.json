@@ -1,9 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\desktopClient",
-    "\\server"
+    "\\mobileAppClient",
+    "\\mobileAppClient\\mobileAppClient",
+    "\\mobileAppClient\\mobileAppClient\\Models",
+    "\\mobileAppClient\\mobileAppClient\\odmsAPI"
   ],
-  "SelectedNode": "\\server",
+  "SelectedNode": "\\mobileAppClient\\mobileAppClient\\odmsAPI\\LoginAPI.cs",
   "PreviewInSolutionExplorer": false
 }
