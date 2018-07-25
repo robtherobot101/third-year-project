@@ -381,7 +381,6 @@ public class UserController {
         } catch (IOException e) {
             return "Internal Server Error";
         }
-
     }
 
     //TODO finish this method. I spaced it out quite a bit so I could get my head around it but this won't be final. Jono
@@ -418,7 +417,16 @@ public class UserController {
                 File outputfile = new File(filepath);
                 ImageIO.write(image, fileType, outputfile);
 
-                //TODO Do DB updates
+                queriedUser.setProfileImageType(fileType);
+
+                try {
+                    model.updateUserAttributes(queriedUser, (int) queriedUser.getId());
+                } catch (SQLException sqle) {
+                    Server.getInstance().log.error(sqle.getMessage());
+                    response.status(500);
+                    response.body("Internal server error");
+                    return null;
+                }
 
                 return "PHOTO SUCCESSFULLY SAVED";
             }  catch (IOException e) {

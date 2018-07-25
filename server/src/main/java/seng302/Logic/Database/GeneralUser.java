@@ -481,7 +481,8 @@ public class GeneralUser {
                     resultSet.getString("current_address"),
                     resultSet.getString("username"),
                     resultSet.getString("email"),
-                    resultSet.getString("password"));
+                    resultSet.getString("password"),
+                    resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
 

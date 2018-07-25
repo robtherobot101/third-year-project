@@ -47,12 +47,13 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.profileImageType = null;
         /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
     }
 
 
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String profileImageType) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -85,6 +86,7 @@ public class User {
         this.curedDiseases = new ArrayList<>();
         this.pendingProcedures = new ArrayList<>();
         this.previousProcedures = new ArrayList<>();
+        this.profileImageType = profileImageType;
     }
 
     /**
@@ -557,4 +559,13 @@ public class User {
     public String getProfileImageType() {
         return this.profileImageType;
     }
+
+    public void setProfileImageType(String profileImageType) {
+        if (profileImageType.length() != 3) {
+            // Not a photo extension
+            throw new IllegalArgumentException();
+        }
+        this.profileImageType = profileImageType;
+    }
+
 }
