@@ -18,6 +18,10 @@ import java.util.List;
 public class AdminsDB implements AdminsDAO {
     private final APIServer server;
 
+    /**
+     * constructor method to create a adminsDB object
+     * @param server the api server object used to communicate with
+     */
     public AdminsDB(APIServer server) {
         this.server = server;
     }
