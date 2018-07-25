@@ -23,7 +23,7 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField;
     @FXML
     private DatePicker dateOfBirthPicker;
     @FXML
@@ -77,16 +77,16 @@ public class UserAttributesController extends UserTabController implements Initi
         LocalDateTime dodeathPick = dateOfDeathPicker.getDateTimeValue();
 
         if (dodeathPick == null) {
-            LocalDate today = LocalDate.now();
-            double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays() / 365.00;
-            if (years <= 0) {
+            LocalDateTime today = LocalDateTime.now();
+            double years = Duration.between(dobirthPick.atStartOfDay(), today).toDays() / 365.00;
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years");
             }
         } else {
             double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick).toDays() / 365.00;
-            if (years <= 0) {
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years (At Death)");
@@ -433,5 +433,10 @@ public class UserAttributesController extends UserTabController implements Initi
         //Remove the top element of the redo stack
         redoStack.removeLast();
         populateUserFields();
+    }
+
+    public void setDeathControlsShown(boolean shown) {
+        dateOfDeathPicker.setDisable(!shown);
+        deathCityField.setDisable(!shown);
     }
 }

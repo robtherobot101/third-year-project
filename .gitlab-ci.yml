@@ -18,7 +18,7 @@ recent-artifacts:
     - mvn -B -DskipTests clean site package
   artifacts:
     paths:
-      - target/*.jar
+      - desktopClient/target/*.jar
     expire_in: 1 week
   except:
     - tags
@@ -45,7 +45,7 @@ release-artifacts:
     - mvn -B clean site package
   artifacts:
     paths:
-    - target/*.jar
-    - target/site/jacoco/*
+    - desktopClient/target/*.jar
+    - desktopClient/target/site/jacoco/*
   only:
     - tags

@@ -234,7 +234,7 @@
             <Insets bottom="40.0" left="25.0" />
          </GridPane.margin>
       </Label>
-      <Label text="Date of Death" GridPane.rowIndex="7">
+      <Label text="Date and Time of Death" GridPane.rowIndex="7">
          <font>
             <Font name="System Bold" size="10.0" />
          </font>
@@ -365,6 +365,22 @@
             <Insets bottom="40.0" left="20.0" />
          </GridPane.margin>
       </Label>
-      <DateTimePicker fx:id="dateOfDeathPicker" onAction="#updateAge" prefHeight="26.0" prefWidth="171.0" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+      <DateTimePicker fx:id="dateOfDeathPicker" maxWidth="1.7976931348623157E308" onAction="#updateAge" GridPane.rowIndex="7">
+         <GridPane.margin>
+            <Insets left="25.0" right="20.0" />
+         </GridPane.margin></DateTimePicker>
+      <TextField fx:id="deathCityField" layoutX="254.0" layoutY="177.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="8">
+         <GridPane.margin>
+            <Insets left="20.0" right="20.0" />
+         </GridPane.margin>
+      </TextField>
+      <Label layoutX="254.0" layoutY="163.0" text="City" GridPane.columnIndex="2" GridPane.rowIndex="8">
+         <font>
+            <Font name="System Bold" size="10.0" />
+         </font>
+         <GridPane.margin>
+            <Insets bottom="40.0" left="20.0" />
+         </GridPane.margin>
+      </Label>
    </children>
 </GridPane>
