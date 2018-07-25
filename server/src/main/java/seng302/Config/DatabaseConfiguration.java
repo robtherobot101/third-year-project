@@ -23,6 +23,9 @@ public class DatabaseConfiguration {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
 
     private DatabaseConfiguration() {
+        if(Server.getInstance().isTesting()){
+            connectDatabase = "seng302-2018-team300-test";
+        }
         try {
             cpds.setDriverClass(jdbcDriver);
         } catch (PropertyVetoException e) {

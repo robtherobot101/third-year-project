@@ -13,7 +13,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -32,15 +31,18 @@ public class ClinicianSettingsController implements Initializable {
     private AnchorPane background;
 
     private Clinician clinician;
+    private String token;
 
-    public void setCurrentClinician(Clinician clinician) {
+    public void setCurrentClinician(Clinician clinician, String token) {
         this.clinician = clinician;
+        this.token = token;
         if (clinician.getName() == null) {
             clinician.setName("Name not set");
         }
         Debugger.log(clinician);
         Debugger.log(clinician.getName());
         userNameLabel.setText("clinician: " + clinician.getName());
+        populateAccountDetails();
     }
 
     /**
@@ -66,7 +68,6 @@ public class ClinicianSettingsController implements Initializable {
 //                }
 //            }
 //        }
-        int clinicianId = 0;
         try {
             // Display an error if the username is taken and the input has not been changed (The username can be taken by the clinician being modified).
             if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
@@ -90,9 +91,9 @@ public class ClinicianSettingsController implements Initializable {
 
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setClinician(clinician);
+            WindowManager.setCurrentClinician(clinician, token);
             try {
-                WindowManager.getDataManager().getClinicians().updateClinician(clinician);
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }

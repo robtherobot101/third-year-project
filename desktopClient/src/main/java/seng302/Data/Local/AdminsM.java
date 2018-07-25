@@ -1,14 +1,10 @@
 package seng302.Data.Local;
 
-import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Generic.Debugger;
 import seng302.User.Admin;
-import seng302.User.Clinician;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class AdminsM implements AdminsDAO {
@@ -24,7 +20,7 @@ public class AdminsM implements AdminsDAO {
      * @param admin The admin which will be added
      */
     @Override
-    public void insertAdmin(Admin admin) {
+    public void insertAdmin(Admin admin, String token) {
         long nextAdminId = 0;
         for (Admin a : admins) {
             if (a.getStaffID() > nextAdminId) {
@@ -40,8 +36,8 @@ public class AdminsM implements AdminsDAO {
      * @param admin The admin which will replace the one with a matching ID
      */
     @Override
-    public void updateAdminDetails(Admin admin) {
-        removeAdmin(admin.getStaffID());
+    public void updateAdminDetails(Admin admin, String token) {
+        removeAdmin(admin.getStaffID(), null);
         admins.add(admin);
     }
 
@@ -50,7 +46,7 @@ public class AdminsM implements AdminsDAO {
      * @return A List of all the admins
      */
     @Override
-    public List<Admin> getAllAdmins() {
+    public List<Admin> getAllAdmins(String token) {
         return admins;
     }
 
@@ -62,7 +58,7 @@ public class AdminsM implements AdminsDAO {
      * @return The admin which has the same ID
      */
     @Override
-    public Admin getAdmin(long id) {
+    public Admin getAdmin(long id, String token) {
         for(Admin a : admins) {
             if(a.getStaffID() == id) {
                 return a;
@@ -79,7 +75,7 @@ public class AdminsM implements AdminsDAO {
      * @param id The id of the admin which will be removed.
      */
     @Override
-    public void removeAdmin(long id) {
+    public void removeAdmin(long id, String token) {
         for(Admin a : admins) {
             if(a.getStaffID() == id) {
                 admins.remove(a);

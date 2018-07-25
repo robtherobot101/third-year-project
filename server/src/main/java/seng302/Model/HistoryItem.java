@@ -18,6 +18,12 @@ public class HistoryItem {
         this.id = id;
     }
 
+    public HistoryItem(LocalDateTime dateTime, String action, String description) {
+        this.dateTime = dateTime;
+        this.action = action;
+        this.description = description;;
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }

@@ -17,11 +17,20 @@ import static java.lang.Integer.max;
 public class UserController {
     private GeneralUser model;
 
+    /**
+     * Class to handle all user processing eg. adding and editing users
+     */
     public UserController() {
         model = new GeneralUser();
     }
 
 
+    /**
+     * method to get all users
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing all users and their information
+     */
     public String getUsers(Request request, Response response) {
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
@@ -65,6 +74,28 @@ public class UserController {
         response.type("application/json");
         response.status(200);
         return serialQueriedUsers;
+    }
+
+
+    /**
+     * Returns the number of entries in the USERS table.
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String the number of users currently registered
+     */
+    public String countUsers(Request request, Response response) {
+        Integer count;
+        try {
+            count = model.countUsers();
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            response.body("Internal server error");
+            return null;
+        }
+
+        response.status(200);
+        return count.toString();
     }
 
     /**
@@ -243,6 +274,12 @@ public class UserController {
         return queriedUser;
     }
 
+    /**
+     * method to process the add user request. parses the input to be in a better format
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was successful or not
+     */
     public String addUser(Request request, Response response) {
         Gson gson = new Gson();
         User receivedUser;
@@ -275,6 +312,12 @@ public class UserController {
         }
     }
 
+    /**
+     * method to handle the getting of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the requested user information
+     */
     public String getUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -290,6 +333,12 @@ public class UserController {
         return serialQueriedUser;
     }
 
+    /**
+     * method to process the editing of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the editing of the user was successful or not
+     */
     public String editUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -317,6 +366,12 @@ public class UserController {
         }
     }
 
+    /**
+     * method to handle the deletion of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether or not the user was deleted successfully
+     */
     public String deleteUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -334,4 +389,7 @@ public class UserController {
             return "Internal Server Error";
         }
     }
+
+
+
 }

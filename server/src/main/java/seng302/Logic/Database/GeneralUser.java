@@ -475,7 +475,7 @@ public class GeneralUser {
                     resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
                     resultSet.getString("last_name"),
                     resultSet.getDate("date_of_birth").toLocalDate(),
-                    resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
+                    resultSet.getTimestamp("date_of_death") != null ? resultSet.getTimestamp("date_of_death").toLocalDateTime() : null,
                     resultSet.getString("gender") != null ? Gender.parse(resultSet.getString("gender")) : null,
                     resultSet.getDouble("height"),
                     resultSet.getDouble("weight"),
@@ -666,7 +666,7 @@ public class GeneralUser {
                 int deregisteredCode = waitingListResultSet.getInt("deregistered_code");
                 int waitingListId = waitingListResultSet.getInt("id");
 
-                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, waitingListId));
+                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, deregisteredCode));
             }
 
 
@@ -712,7 +712,7 @@ public class GeneralUser {
             statement.setString(7, user.getCurrentAddress());
             statement.setString(8, user.getRegion());
             statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
-            statement.setDate(10, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
+            statement.setTimestamp(10, user.getDateOfDeath() != null ? java.sql.Timestamp.valueOf(user.getDateOfDeath()) : null);
             statement.setDouble(11, user.getHeight());
             statement.setDouble(12, user.getWeight());
             statement.setString(13, user.getBloodPressure());
@@ -735,6 +735,16 @@ public class GeneralUser {
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getUsername());
             System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
+
+    public int countUsers() throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "SELECT count(*) AS count FROM USER";
+            PreparedStatement statement = connection.prepareStatement(update);
+            ResultSet noUsers = statement.executeQuery();
+            noUsers.next();
+            return noUsers.getInt("count");
         }
     }
 }

@@ -82,43 +82,6 @@ public class IO {
         return jarPath;
     }
 
-
-    /**
-     * Save the user or clinician list to a json file.
-     *
-     * @param path      The path of the file to save to
-     * @param loginType the type of user being saved
-     * @return Whether the save completed successfully
-     */
-    public static boolean saveUsers(String path, ProfileType loginType) {
-        PrintStream outputStream = null;
-        File outputFile;
-        boolean success;
-        try {
-            outputFile = new File(path);
-            outputStream = new PrintStream(new FileOutputStream(outputFile));
-            switch (loginType) {
-                case USER:
-                    gson.toJson(WindowManager.getDataManager().getUsers().getAllUsers(), outputStream);
-                    break;
-                case CLINICIAN:
-                    gson.toJson(WindowManager.getDataManager().getClinicians().getAllClinicians(), outputStream);
-                    break;
-                case ADMIN:
-                    gson.toJson(WindowManager.getDataManager().getAdmins().getAllAdmins(), outputStream);
-                    break;
-            }
-            success = true;
-        } catch (IOException e) {
-            success = false;
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
-        }
-        return success;
-    }
-
     /**
      * Saves a Cache object to the file path inside the Cache Object.
      *
@@ -141,7 +104,7 @@ public class IO {
      * @param profileType the account type of the users
      * @return Whether the command executed successfully
      */
-    public static boolean importProfiles(String path, ProfileType profileType) {
+    public static boolean importProfiles(String path, ProfileType profileType, String token) {
         Debugger.log("importProfile called with profile type: " + profileType);
         switch (profileType) {
             case USER:
@@ -163,7 +126,7 @@ public class IO {
                     List<Clinician> readClinicians = clinicianReader.getProfiles(path);
                     if (readClinicians != null) {
                         for(Clinician c : readClinicians) {
-                            WindowManager.getDataManager().getClinicians().insertClinician(c);
+                            WindowManager.getDataManager().getClinicians().insertClinician(c, token);
                         }
                     }
                     return true;
@@ -176,7 +139,7 @@ public class IO {
                     List<Admin> readAdmins = adminReader.getProfiles(path);
                     if (readAdmins != null) {
                         for(Admin a : readAdmins) {
-                            WindowManager.getDataManager().getAdmins().insertAdmin(a);
+                            WindowManager.getDataManager().getAdmins().insertAdmin(a, token);
                         }
                     }
                     return true;
@@ -188,7 +151,7 @@ public class IO {
         return false;
     }
 
-    public static boolean importUserCSV(String path) {
+    public static boolean importUserCSV(String path, String token) {
         try {
             Debugger.log("importUserCSV called");
             ProfileReader<User> userReader = new UserReaderCSV();

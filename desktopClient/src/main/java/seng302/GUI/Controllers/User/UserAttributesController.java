@@ -9,10 +9,12 @@ import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+import tornadofx.control.DateTimePicker;
 
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -21,9 +23,11 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField;
     @FXML
-    private DatePicker dateOfBirthPicker, dateOfDeathPicker;
+    private DatePicker dateOfBirthPicker;
+    @FXML
+    private DateTimePicker dateOfDeathPicker;
     @FXML
     private ComboBox<Gender> genderComboBox, genderIdentityComboBox;
     @FXML
@@ -70,19 +74,19 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void updateAge() {
         LocalDate dobirthPick = dateOfBirthPicker.getValue();
-        LocalDate dodeathPick = dateOfDeathPicker.getValue();
+        LocalDateTime dodeathPick = dateOfDeathPicker.getDateTimeValue();
 
         if (dodeathPick == null) {
-            LocalDate today = LocalDate.now();
-            double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays() / 365.00;
-            if (years <= 0) {
+            LocalDateTime today = LocalDateTime.now();
+            double years = Duration.between(dobirthPick.atStartOfDay(), today).toDays() / 365.00;
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years");
             }
         } else {
-            double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays() / 365.00;
-            if (years <= 0) {
+            double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick).toDays() / 365.00;
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years (At Death)");
@@ -214,7 +218,7 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
-        currentUser.setDateOfDeath(dateOfDeathPicker.getValue());
+        currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
         currentUser.setGender(genderComboBox.getValue());
         currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
         currentUser.setBloodType(bloodTypeComboBox.getValue());
@@ -276,7 +280,7 @@ public class UserAttributesController extends UserTabController implements Initi
         regionField.setText(currentUser.getRegion());
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
-        dateOfDeathPicker.setValue(currentUser.getDateOfDeath());
+        dateOfDeathPicker.setDateTimeValue(currentUser.getDateOfDeath());
         updateAge();
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
@@ -429,5 +433,10 @@ public class UserAttributesController extends UserTabController implements Initi
         //Remove the top element of the redo stack
         redoStack.removeLast();
         populateUserFields();
+    }
+
+    public void setDeathControlsShown(boolean shown) {
+        dateOfDeathPicker.setDisable(!shown);
+        deathCityField.setDisable(!shown);
     }
 }

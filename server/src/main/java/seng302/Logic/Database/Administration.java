@@ -5,11 +5,22 @@ import seng302.Model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Administration {
+
+
+    public void status() throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT staff_id FROM ADMIN WHERE staff_id = 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+            result.next();
+        }
+    }
 
 
     public void resample() throws SQLException{
@@ -51,6 +62,10 @@ public class Administration {
             update = "DELETE FROM WAITING_LIST_ITEM";
             statement = connection.prepareStatement(update);
             System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+            update = "DELETE FROM TOKEN";
+            statement = connection.prepareStatement(update);
+            System.out.println("Reset of database (TOKEN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
             update = "DELETE FROM PROCEDURES";
             statement = connection.prepareStatement(update);

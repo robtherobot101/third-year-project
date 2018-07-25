@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -77,10 +78,11 @@ public class UserReaderCSV implements ProfileReader<User> {
                 String homePhone = nextLine[17];
                 String mobilePhone = nextLine[18];
                 String email = nextLine[19];
+                String password = "password";
 
                 // Convert raw dates to LocalDates
                 LocalDate dateOfBirth = null;
-                LocalDate dateOfDeath = null;
+                LocalDateTime dateOfDeath = null;
 
                 // Form a list of possible formats to iterate through
                 List<DateTimeFormatter> dateFormats = new ArrayList<>();
@@ -99,7 +101,7 @@ public class UserReaderCSV implements ProfileReader<User> {
                 if (!rawDateOfDeath.isEmpty()) {
                     for (DateTimeFormatter df : dateFormats) {
                         try {
-                            dateOfDeath = LocalDate.parse(rawDateOfDeath, df);
+                            dateOfDeath = LocalDateTime.parse(rawDateOfDeath, df);
                         } catch (DateTimeParseException e) {
                             // Do nothing, try another date formatter
                             e.getMessage();

@@ -48,8 +48,6 @@ public class AdminController {
     }
 
     public String getAllAdmins(Request request, Response response) {
-
-
         ArrayList<Admin> queriedAdmins;
         try {
             queriedAdmins = model.getAllAdmins();
