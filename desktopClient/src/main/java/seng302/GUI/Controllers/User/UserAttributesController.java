@@ -28,12 +28,12 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField, regionOfDeathField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField, regionOfDeathField, regionField;
     @FXML
     private DatePicker dateOfBirthPicker;
 
     @FXML
-    private ComboBox countryOfDeathComboBox;
+    private ComboBox countryOfDeathComboBox, countryComboBox;
 
     @FXML
     private ComboBox<NZRegion> regionComboBox, regionOfDeathComboBox;
@@ -56,6 +56,7 @@ public class UserAttributesController extends UserTabController implements Initi
     private Map<Organ, CheckBox> organTickBoxes;
 
     boolean deathInNewZealand = false;
+    boolean inNewZealand = false;
 
     public void setCurrentUser(User user) {
         currentUser = user;
@@ -69,6 +70,15 @@ public class UserAttributesController extends UserTabController implements Initi
             deathInNewZealand = countryOfDeathComboBox.getValue().toString().equals("New Zealand");
             regionOfDeathComboBox.setVisible(deathInNewZealand);
             regionOfDeathField.setVisible(deathInNewZealand == false);
+        }
+        attributeFieldUnfocused();
+    }
+
+    public void countryChanged() {
+        if(countryComboBox.getValue() != null) {
+            inNewZealand = countryComboBox.getValue().toString().equals("New Zealand");
+            regionComboBox.setVisible(inNewZealand);
+            regionField.setVisible(inNewZealand == false);
         }
         attributeFieldUnfocused();
     }
@@ -268,6 +278,14 @@ public class UserAttributesController extends UserTabController implements Initi
             currentUser.setRegionOfDeath(regionOfDeathField.getText());
         }
 
+        if(inNewZealand) {
+            if(regionComboBox.getValue() != null) {
+                currentUser.setRegion(regionComboBox.getValue().toString());
+            }
+        } else {
+            currentUser.setRegion(regionField.getText());
+        }
+
 
         for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
@@ -327,11 +345,18 @@ public class UserAttributesController extends UserTabController implements Initi
         if(currentUser.getRegionOfDeath() != null) {
             regionOfDeathComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegionOfDeath()));
         }
-
-        System.out.println("df:"+regionOfDeathField);
         regionOfDeathField.setText(currentUser.getRegionOfDeath());
 
-        regionComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
+        if(currentUser.getRegion() != null) {
+            regionComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegion()));
+        }
+        regionField.setText(currentUser.getRegion());
+
+        //if(currentUser.)
+
+
+
+
         deathCityField.setText(currentUser.getCityOfDeath());
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
@@ -364,6 +389,7 @@ public class UserAttributesController extends UserTabController implements Initi
                     validCountries.add(c.getCountryName());
             }
             countryOfDeathComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
         } catch (HttpResponseException e) {
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
         }
