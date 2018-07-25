@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 using Xamarin.Forms;
 
@@ -12,6 +13,7 @@ namespace mobileAppClient
      */ 
     public partial class ProceduresPage : ContentPage
     {
+        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         /*
          * Event handler to handle when a user switches between pending and previous procedures
          * resetting the sorting and changing the listview items.
@@ -75,11 +77,11 @@ namespace mobileAppClient
 
             foreach (Procedure item in UserController.Instance.LoggedInUser.pendingProcedures)
             {
-                item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
+                item.DetailString = item.Description + ", due on " + item.Date.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.Date.month) + ", " + item.Date.year;
             }
             foreach (Procedure item in UserController.Instance.LoggedInUser.previousProcedures)
             {
-                item.DetailString = item.Description + ", due on " + item.Date.day + ", " + item.Date.month + ", " + item.Date.year;
+                item.DetailString = item.Description + ", due on " + item.Date.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.Date.month) + ", " + item.Date.year;
             }
 
             if (UserController.Instance.LoggedInUser.pendingProcedures.Count == 0)

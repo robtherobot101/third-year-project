@@ -8,7 +8,7 @@
 
     <ContentPage.Content>
 
-        <StackLayout Orientation="Vertical" Spacing="-6">
+        <StackLayout Orientation="Vertical">
 
             <controls:SegmentedControl x:Name="SegControl" 
                                        TintColor="#007AFF" 

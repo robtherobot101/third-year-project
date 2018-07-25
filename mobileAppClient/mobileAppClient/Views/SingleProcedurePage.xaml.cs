@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Xamarin.Forms;
 
@@ -11,6 +12,7 @@ namespace mobileAppClient
      */ 
     public partial class SingleProcedurePage : ContentPage
     {
+        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         /*
          * Constructor which initialises the entries of the procedures listview.
          */ 
@@ -19,7 +21,7 @@ namespace mobileAppClient
             InitializeComponent();
             SummaryEntry.Text = procedure.Summary;
             DescriptionEntry.Text = procedure.Description;
-            DateDueEntry.Text = procedure.Date.day + ", " + procedure.Date.month + ", " + procedure.Date.year;
+            DateDueEntry.Text = procedure.Date.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(procedure.Date.month) + ", " + procedure.Date.year;
             IDEntry.Text = procedure.Id.ToString();
             foreach (string item in procedure.OrgansAffected)
             {

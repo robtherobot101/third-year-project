@@ -8,7 +8,7 @@
         <ContentPage Title="Menu"
                  BackgroundColor="#e8e8e8">
 
-            <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Vertical" Padding="0, 20, 0, 0">
 
                 <!-- 
              This StackLayout you can use for other

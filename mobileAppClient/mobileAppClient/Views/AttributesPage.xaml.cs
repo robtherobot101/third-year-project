@@ -44,8 +44,8 @@ namespace mobileAppClient
             PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
             PrefLastNameInput.Text = loggedInUser.preferredName[2];
 
-            BirthGenderInput.SelectedItem = GenderExtensions.ToString(loggedInUser.gender);
-            GenderIdentityInput.SelectedItem = GenderExtensions.ToString(loggedInUser.genderIdentity);
+            BirthGenderInput.SelectedItem = FirstCharToUpper(loggedInUser.gender);
+            GenderIdentityInput.SelectedItem = FirstCharToUpper(loggedInUser.genderIdentity);
 
             AddressInput.Text = loggedInUser.currentAddress;
             RegionInput.Text = loggedInUser.region;
@@ -63,7 +63,7 @@ namespace mobileAppClient
 
             BloodPressureInput.Text = loggedInUser.bloodPressure;
 
-            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToString(loggedInUser.bloodType);
+            BloodTypeInput.SelectedItem = FirstCharToUpper(loggedInUser.bloodType);
             SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
@@ -164,13 +164,13 @@ namespace mobileAppClient
                 return;
             }
 
-            if (loggedInUser.dateOfDeath.ToDateTime() < loggedInUser.dateOfBirth.ToDateTime())
-            {
-                await DisplayAlert("",
-                "Please enter a valid date of death",
-                "OK");
-                return;
-            }
+            //if (loggedInUser.dateOfDeath.ToDateTime() < loggedInUser.dateOfBirth.ToDateTime())
+            //{
+            //    await DisplayAlert("",
+            //    "Please enter a valid date of death",
+            //    "OK");
+            //    return;
+            //}
 
             // Set user attributes to the new fields
             loggedInUser.name[0] = givenFirstName;
@@ -181,8 +181,8 @@ namespace mobileAppClient
             loggedInUser.preferredName[1] = givenPrefMiddleName;
             loggedInUser.preferredName[2] = givenPrefLastName;
 
-            loggedInUser.gender = GenderExtensions.ToGender(BirthGenderInput.SelectedItem.ToString());
-            loggedInUser.genderIdentity = GenderExtensions.ToGender(GenderIdentityInput.SelectedItem.ToString());
+            loggedInUser.gender = BirthGenderInput.SelectedItem.ToString().ToUpper();
+            loggedInUser.genderIdentity = GenderIdentityInput.SelectedItem.ToString().ToUpper();
 
             loggedInUser.currentAddress = givenAddress;
             loggedInUser.region = givenRegion;
@@ -202,7 +202,7 @@ namespace mobileAppClient
             loggedInUser.weight = Convert.ToDouble(givenWeight);
             loggedInUser.bloodPressure = givenBloodPressure;
 
-            loggedInUser.bloodType = BloodTypeExtensions.ToBloodType(BloodTypeInput.SelectedItem.ToString());
+            loggedInUser.bloodType = BloodTypeInput.SelectedItem.ToString().ToUpper();
             loggedInUser.smokerStatus = SmokerStatusInput.SelectedItem.ToString().ToUpper();
             loggedInUser.alcoholConsumption = AlcoholConsumptionInput.SelectedItem.ToString().ToUpper();
 

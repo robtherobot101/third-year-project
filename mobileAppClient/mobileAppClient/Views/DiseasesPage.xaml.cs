@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using System.Linq;
+using System.Globalization;
 
 namespace mobileAppClient
 {
@@ -12,6 +13,7 @@ namespace mobileAppClient
      */ 
     public partial class DiseasesPage : ContentPage
     {
+        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         /*
          * Event handler to handle when a user switches between current and cured diseases
          * resetting the sorting and changing the listview items.
@@ -108,14 +110,15 @@ namespace mobileAppClient
                 } else {
                     item.CellColour = Color.Blue;
                 }
-                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + ", " + item.DiagnosisDate.month + ", " + item.DiagnosisDate.year;
+                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.DiagnosisDate.month) + ", " + item.DiagnosisDate.year;
 
 
 
             }
             foreach (Disease item in UserController.Instance.LoggedInUser.curedDiseases)
             {
-                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + ", " + item.DiagnosisDate.month + ", " + item.DiagnosisDate.year;
+                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.DiagnosisDate.month) + ", " + item.DiagnosisDate.year;
+                item.CellText = item.Name;
                 item.CellColour = Color.Blue;
             }
 

@@ -20,7 +20,7 @@ namespace mobileAppClient.odmsAPI
         /*
          * Main constructor that parses the JSON returned from the API
          */
-        public DrugInteractionResult(String jsonString, int age, Gender gender)
+        public DrugInteractionResult(String jsonString, int age, string gender)
         {
             ageInteractions = new List<string>();
             durationInteractions = new List<string>();
@@ -64,10 +64,10 @@ namespace mobileAppClient.odmsAPI
                     break;
             }
 
-            if (gender == Gender.MALE)
+            if (gender.Equals("Male"))
             {
                 genderInteractions.AddRange(getEntries(genderInteractionsRaw, "male"));
-            } else if (gender == Gender.FEMALE)
+            } else if (gender.Equals("Female"))
             {
                 genderInteractions.AddRange(getEntries(genderInteractionsRaw, "female"));
             }

@@ -6,7 +6,7 @@
              Title="Diseases" NavigationPage.HasNavigationBar="True"
              xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Spacing="-6">
+        <StackLayout Orientation="Vertical">
 
             <controls:SegmentedControl x:Name="SegControl" 
                                        TintColor="#007AFF" 

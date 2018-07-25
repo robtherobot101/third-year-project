@@ -31,6 +31,9 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
+            //User History Items are not currently configured thus must send as an empty list.
+            UserController.Instance.LoggedInUser.userHistory = new List<HistoryItem>();
+
             String registerUserRequestBody = JsonConvert.SerializeObject(UserController.Instance.LoggedInUser);
             HttpContent body = new StringContent(registerUserRequestBody);
 

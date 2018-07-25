@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using System.Globalization;
 
 namespace mobileAppClient
 {
@@ -11,6 +12,7 @@ namespace mobileAppClient
      */ 
     public partial class SingleDiseasePage : ContentPage
     {
+        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         /*
          * Constructor which initialises the entries of the diseases listview.
          */ 
@@ -18,7 +20,7 @@ namespace mobileAppClient
         {
             InitializeComponent();
             NameEntry.Text = disease.Name;
-            DateEntry.Text = disease.DiagnosisDate.day + ", " + disease.DiagnosisDate.month + ", " + disease.DiagnosisDate.year;
+            DateEntry.Text = disease.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(disease.DiagnosisDate.month) + ", " + disease.DiagnosisDate.year;
 
             if(disease.IsChronic) {
                 ChronicEntry.Text = "Yes";

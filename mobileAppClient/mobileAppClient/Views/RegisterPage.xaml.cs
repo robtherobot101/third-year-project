@@ -91,7 +91,7 @@ namespace mobileAppClient
                 case HttpStatusCode.InternalServerError:
                     await DisplayAlert(
                         "Failed to Register",
-                        "Server error",
+                        "Username/Email may be taken",
                         "OK");
                     break;
             }
@@ -151,6 +151,11 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+        }
+
+        async void Handle_BackClicked(object sender, System.EventArgs e)
+        {
+            await Navigation.PopModalAsync();
         }
     }
 }

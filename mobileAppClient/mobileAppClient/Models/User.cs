@@ -10,9 +10,9 @@ namespace mobileAppClient
         public List<string> name { get; set; }
         public List<string> preferredName { get; set; }
 
-        public Gender gender { get; set; }
-        public Gender genderIdentity { get; set; }
-        public BloodType bloodType { get; set; }
+        public string gender { get; set; }
+        public string genderIdentity { get; set; }
+        public string bloodType { get; set; }
         //Could change to Enums however C# doesnt allow for string value Enums. Thoughts??
         public string smokerStatus { get; set; }
         public string alcoholConsumption { get; set; }
@@ -53,8 +53,7 @@ namespace mobileAppClient
 
         public List<WaitingListItem> waitingListItems { get; set; }
 
-        //TO BE TESTED
-        public List<HistoryItem> historyItems { get; set; }
+        public List<HistoryItem> userHistory { get; set; }
 
         public User(string email) {
             this.email = email;

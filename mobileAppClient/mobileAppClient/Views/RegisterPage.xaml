@@ -1,45 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:mobileAppClient"
              x:Class="mobileAppClient.RegisterPage"
              Title = "Sign Up">
     <ContentPage.Content>
-        <StackLayout>
-            <Entry x:Name="firstNameInput" Placeholder="First Name"
-                VerticalOptions="CenterAndExpand" 
-                />
+        <ScrollView>
+            <StackLayout>
+                <Entry x:Name="firstNameInput" Placeholder="First Name"
+                    VerticalOptions="CenterAndExpand" 
+                    />
 
-            <Entry x:Name="lastNameInput" Placeholder="Last Name"
-                VerticalOptions="CenterAndExpand" 
-                />
+                <Entry x:Name="lastNameInput" Placeholder="Last Name"
+                    VerticalOptions="CenterAndExpand" 
+                    />
 
-            <Entry x:Name="emailInput" Placeholder="Email"
-                VerticalOptions="CenterAndExpand" 
-                />
+                <Entry x:Name="emailInput" Placeholder="Email"
+                    VerticalOptions="CenterAndExpand" 
+                    />
 
-            <Entry x:Name="usernameInput" Placeholder="Username"
-                VerticalOptions="CenterAndExpand" 
-                />
+                <Entry x:Name="usernameInput" Placeholder="Username"
+                    VerticalOptions="CenterAndExpand" 
+                    />
 
-            <Entry x:Name="passwordInput" Placeholder="Password"
-                IsPassword="true"
-                VerticalOptions="CenterAndExpand" 
-                />
+                <Entry x:Name="passwordInput" Placeholder="Password"
+                    IsPassword="true"
+                    VerticalOptions="CenterAndExpand" 
+                    />
 
-            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                <Label Text="Date of Birth" VerticalOptions="Center"/>
-                <DatePicker x:Name="dobInput"
-                Format="D"
-                MinimumDate="01/01/1900"
-                />
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Label Text="Date of Birth" VerticalOptions="Center"/>
+                    <DatePicker x:Name="dobInput"
+                    Format="D"
+                    MinimumDate="01/01/1900"
+                    />
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Button Text="Sign Up"
+                    HorizontalOptions="Center"
+                    VerticalOptions="CenterAndExpand"
+                    Clicked="SignUpButtonClicked" />
+                    <Button Text="Back"
+                    HorizontalOptions="Center"
+                    VerticalOptions="CenterAndExpand"
+                    Clicked="Handle_BackClicked" />
+                </StackLayout>
+
             </StackLayout>
-
-
-            <Button Text="Sign Up"
-                HorizontalOptions="Center"
-                VerticalOptions="CenterAndExpand"
-                Clicked="SignUpButtonClicked" />
-        </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

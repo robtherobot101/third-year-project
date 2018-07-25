@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Xamarin.Forms;
+using System.Globalization;
 
 namespace mobileAppClient
 {
@@ -12,6 +13,7 @@ namespace mobileAppClient
      */ 
     public partial class WaitingListItemsPage : ContentPage
     {
+        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         /*
          * Constructor which sets the detail strings for each text cell 
          * and also sets the visibility of the no data label and sorting picker.
@@ -24,9 +26,9 @@ namespace mobileAppClient
 
             foreach (WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
             {
-                item.DetailString = "Registered on " + item.OrganRegisteredDate.day + ", " + item.OrganRegisteredDate.month + ", " + item.OrganRegisteredDate.year;
+                item.DetailString = "Registered on " + item.OrganRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.OrganRegisteredDate.month) + ", " + item.OrganRegisteredDate.year;
                 if(item.OrganDeregisteredDate != null) {
-                    item.DetailString = "Deregistered on " + item.OrganRegisteredDate.day + ", " + item.OrganDeregisteredDate.month + ", " + item.OrganDeregisteredDate.year;
+                    item.DetailString = "Deregistered on " + item.OrganDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.OrganDeregisteredDate.month) + ", " + item.OrganDeregisteredDate.year;
                 } 
             }
 

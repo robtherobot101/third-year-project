@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using System.Globalization;
 
 namespace mobileAppClient
 {
@@ -11,6 +12,7 @@ namespace mobileAppClient
      */ 
     public partial class SingleWaitingListItemPage : ContentPage
     {
+        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         /*
          * Constructor which initialises the entries of the waiting list items listview.
          */ 
@@ -18,13 +20,14 @@ namespace mobileAppClient
         {
             InitializeComponent();
             OrganTypeEntry.Text = waitingListItem.OrganType;
-            RegisteredDateEntry.Text = waitingListItem.OrganRegisteredDate.day + ", " + waitingListItem.OrganRegisteredDate.month + ", " + waitingListItem.OrganRegisteredDate.year;
+            RegisteredDateEntry.Text = waitingListItem.OrganRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.OrganRegisteredDate.month) + ", " + waitingListItem.OrganRegisteredDate.year;
             DeregisteredDateEntry.Text =
                 waitingListItem.OrganDeregisteredDate != null ? 
-                                     waitingListItem.OrganDeregisteredDate.day + ", " + waitingListItem.OrganDeregisteredDate.month + ", " + waitingListItem.OrganDeregisteredDate.year
+                                     waitingListItem.OrganDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.OrganDeregisteredDate.month) + ", " + waitingListItem.OrganDeregisteredDate.year
                                      : "N/A";
-            DeregisterCodeEntry.Text =
-                waitingListItem.OrganDeregisteredCode != 0 ? waitingListItem.OrganDeregisteredCode.ToString() : "N/A";
+            //DeregisterCodeEntry.Text =
+                //waitingListItem.OrganDeregisteredCode != 0 ? waitingListItem.OrganDeregisteredCode.ToString() : "N/A";
+            
 
             IDEntry.Text = waitingListItem.Id.ToString();
         }

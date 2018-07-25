@@ -4,39 +4,41 @@
              xmlns:local="clr-namespace:mobileAppClient"
              x:Class="mobileAppClient.LoginPage">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
-            
-            <Label Text="Welcome to Transcend"
-                   HorizontalOptions="Center"
-                   />
+        <ScrollView>
+            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
+                
+                <Label Text="Welcome to Transcend"
+                       HorizontalOptions="Center"
+                       />
 
-            <Label Text="Your Ultimate Donating App"
-                   HorizontalOptions="Center"
-                   />
+                <Label Text="Your Ultimate Donating App"
+                       HorizontalOptions="Center"
+                       />
 
-            <Image Source="donationIcon.png" 
-                   WidthRequest="120"
-                   HeightRequest="120"
-                   />
+                <Image Source="donationIcon.png" 
+                       WidthRequest="120"
+                       HeightRequest="120"
+                       />
 
-            <Entry x:Name="usernameEmailInput" Placeholder="Username/Email"                
-                />
+                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email"                
+                    />
 
-            <Entry x:Name="passwordInput" Placeholder="Password"
-                IsPassword="true"                
-                />
-            
-            <StackLayout Orientation="Horizontal">
-                <Button Text="Login"
-                HorizontalOptions="Center"
-                VerticalOptions="StartAndExpand"
-                Clicked="LoginButtonClicked" />
+                <Entry x:Name="passwordInput" Placeholder="Password"
+                    IsPassword="true"                
+                    />
+                
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Login"
+                    HorizontalOptions="Center"
+                    VerticalOptions="StartAndExpand"
+                    Clicked="LoginButtonClicked" />
 
-                <Button Text="Sign Up"
-                HorizontalOptions="EndAndExpand"
-                VerticalOptions="CenterAndExpand"
-                Clicked="SignUpButtonClicked" />
+                    <Button Text="Sign Up"
+                    HorizontalOptions="EndAndExpand"
+                    VerticalOptions="CenterAndExpand"
+                    Clicked="SignUpButtonClicked" />
+                </StackLayout>
             </StackLayout>
-        </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
