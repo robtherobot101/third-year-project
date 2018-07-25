@@ -30,6 +30,7 @@ public class Server {
     private WaitingListController waitingListController;
     private CLIController CLIController;
     private CountriesController countriesController;
+
     private int port = 7015;
     private boolean testing = false;
 

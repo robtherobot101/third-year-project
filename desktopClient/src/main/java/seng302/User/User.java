@@ -33,6 +33,8 @@ public class User {
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
     private ArrayList<HistoryItem> userHistory = new ArrayList<>();
+    private String cityOfDeath = "test";
+    private String regionOfDeath = "test";
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -120,7 +122,7 @@ public class User {
 
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String cityOfDeath, String regionOfDeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -145,7 +147,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        // TODO Add functionality to DAOs for getting next id.
+        this.cityOfDeath = cityOfDeath;
+        this.regionOfDeath = regionOfDeath;
         this.id = 1;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();

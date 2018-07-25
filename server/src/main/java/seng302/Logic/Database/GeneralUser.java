@@ -484,7 +484,10 @@ public class GeneralUser {
                     resultSet.getString("current_address"),
                     resultSet.getString("username"),
                     resultSet.getString("email"),
-                    resultSet.getString("password"));
+                    resultSet.getString("password"),
+                    resultSet.getString("cityOfDeath"),
+                    resultSet.getString("regionOfDeath"));
+
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
 
@@ -696,7 +699,7 @@ public class GeneralUser {
             String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
-                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? " +
+                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? , cityOfDeath = ?, regionOfDeath = ?" +
                     "WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
@@ -724,7 +727,9 @@ public class GeneralUser {
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
             statement.setString(21, user.getPassword());
-            statement.setInt(22, userId);
+            statement.setString(22, user.getCityOfDeath());
+            statement.setString(23, user.getRegionOfDeath());
+            statement.setInt(24, userId);
             System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }

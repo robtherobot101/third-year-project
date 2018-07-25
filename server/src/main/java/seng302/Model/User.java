@@ -33,6 +33,11 @@ public class User {
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
     private ArrayList<HistoryItem> userHistory = new ArrayList<>();
 
+
+
+    private String cityOfDeath = "";
+    private String regionOfDeath = "";
+
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
@@ -59,7 +64,7 @@ public class User {
 
 
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String cityOfDeath, String regionOfDeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -85,6 +90,8 @@ public class User {
         this.email = email;
         this.password = password;
         this.id = id;
+        this.cityOfDeath = cityOfDeath;
+        this.regionOfDeath = regionOfDeath;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -559,5 +566,13 @@ public class User {
 
     public void addHistoryItem(HistoryItem historyItem) {
         userHistory.add(historyItem);
+    }
+
+    public String getCityOfDeath() {
+        return cityOfDeath;
+    }
+
+    public String getRegionOfDeath() {
+        return regionOfDeath;
     }
 }
