@@ -11,38 +11,44 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UserHistory {
-    private Connection connection;
-    private String currentDatabase;
-
-    public UserHistory() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
 
     public ArrayList<HistoryItem> getAllHistoryItems(int userId) throws SQLException {
-        ArrayList<HistoryItem> allHistoryItems = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".HISTORY_ITEM WHERE user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, userId);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allHistoryItems.add(getHistoryItemFromResultSet(resultSet));
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            ArrayList<HistoryItem> allHistoryItems = new ArrayList<>();
+            String query = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allHistoryItems.add(getHistoryItemFromResultSet(resultSet));
+            }
+            return allHistoryItems;
         }
-        return allHistoryItems;
     }
 
     public void insertHistoryItem(HistoryItem historyItem, int userId) throws SQLException {
-        String insertHistoryItemQuery = "INSERT INTO " + currentDatabase + ".HISTORY_ITEM (dateTime, action, description, user_id) " +
-                "VALUES (?, ?, ?, ?)";
-        PreparedStatement insertHistoryItemStatement = connection.prepareStatement(insertHistoryItemQuery);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String insertHistoryItemQuery = "INSERT INTO HISTORY_ITEM (dateTime, action, description, user_id) " +
+                    "VALUES (?, ?, ?, ?)";
+            PreparedStatement insertHistoryItemStatement = connection.prepareStatement(insertHistoryItemQuery);
 
-        insertHistoryItemStatement.setTimestamp(1, java.sql.Timestamp.valueOf(historyItem.getDateTime()));
-        insertHistoryItemStatement.setString(2, historyItem.getAction());
-        insertHistoryItemStatement.setString(3, historyItem.getDescription());
-        insertHistoryItemStatement.setInt(4, userId);
+            insertHistoryItemStatement.setTimestamp(1, java.sql.Timestamp.valueOf(historyItem.getDateTime()));
+            insertHistoryItemStatement.setString(2, historyItem.getAction());
+            insertHistoryItemStatement.setString(3, historyItem.getDescription());
+            insertHistoryItemStatement.setInt(4, userId);
 
-        System.out.println("Inserting new history item -> Successful -> Rows Added: " + insertHistoryItemStatement.executeUpdate());
+            System.out.println("Inserting new history item -> Successful -> Rows Added: " + insertHistoryItemStatement.executeUpdate());
+        }
+    }
+
+    public void removeHistoryItem(int userId, int historyItemId) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "DELETE FROM HISTORY_ITEM WHERE id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
+            statement.setInt(1, historyItemId);
+            statement.setInt(2, userId);
+            System.out.println("Deletion of History Item - ID: " + historyItemId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
     }
 
     public HistoryItem getHistoryItemFromResultSet(ResultSet historyItemsResultSet) throws SQLException {

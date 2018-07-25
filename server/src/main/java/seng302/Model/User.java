@@ -3,7 +3,6 @@ package seng302.Model;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
-import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,8 +16,8 @@ public class User {
 
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     private String[] name, preferredName;
-    private LocalDate dateOfBirth, dateOfDeath = null;
-    private LocalDateTime creationTime, lastModified = null;
+    private LocalDate dateOfBirth = null;
+    private LocalDateTime dateOfDeath, creationTime, lastModified = null;
     private Gender gender = null, genderIdentity = null;
     private double height = -1, weight = -1;
     private BloodType bloodType = null;
@@ -32,32 +31,21 @@ public class User {
     private ArrayList<Disease> currentDiseases = new ArrayList<>(), curedDiseases = new ArrayList<>();
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+    private ArrayList<HistoryItem> userHistory = new ArrayList<>();
+    private String cityOfDeath = "";
+    private String regionOfDeath = "";
+    private String countryOfDeath;
 
-    public User(String name, LocalDate dateOfBirth) {
-        this.name = name.split(",");
-        this.preferredName = this.name;
-        this.dateOfBirth = dateOfBirth;
-        this.creationTime = LocalDateTime.now();
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
-    }
-
-    public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
-                String currentAddress) throws DateTimeException, IllegalArgumentException {
-        this.name = name.split(",");
-        this.preferredName = this.name;
-        this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
-        this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
-        this.gender = Gender.parse(gender);
-        this.genderIdentity = this.gender;
-        this.height = height;
-        this.weight = weight;
-        this.bloodType = BloodType.parse(bloodType);
-        this.region = region;
-        this.currentAddress = currentAddress;
-        this.creationTime = LocalDateTime.now();
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
-    }
-
+    /**
+     * constructor method to create a new User object
+     * @param firstName String the user first name
+     * @param middleNames String[] the middle names of the user
+     * @param lastName String the last name of the user
+     * @param dateOfBirth LocalDate the date of birth of the user
+     * @param username String the username of the user
+     * @param email String the email of the user
+     * @param password String the password of the user
+     */
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
@@ -72,52 +60,42 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
     }
 
-    // Used by CSV import to form profiles
-    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender,
-                Gender genderIdentity, BloodType bloodType, int height, int weight, String address, String region,
-                String city, int zipCode, String country, String homePhone, String mobilePhone, String email) {
-        int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
-        this.name = new String[1 + isLastName];
-        this.name[0] = firstName;
-        if (isLastName == 1) {
-            this.name[this.name.length - 1] = lastNames;
-        }
-
+    /**
+     * constructor method to create a new user object with the bare minimum attributes
+     * used with the cli
+     * @param name the full name of the user
+     * @param dateOfBirth the date of birth of the user
+     */
+    public User(String name, LocalDate dateOfBirth) {
+        this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
-        this.dateOfDeath = dateOfDeath;
-
         this.creationTime = LocalDateTime.now();
-        this.gender = gender;
-        this.genderIdentity = genderIdentity;
-        this.bloodType = bloodType;
-
-        // Uses Java automatic type recognition to convert int -> double
-        this.height = 1.0 * height;
-        this.weight = 1.0 * weight;
-
-        this.currentAddress = address;
-        this.region = region;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.country = country;
-
-        this.homePhone = homePhone;
-        this.mobilePhone = mobilePhone;
-
-        this.email = email;
-        this.password = "password";
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
     }
 
-
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+    /**
+     * constructor method to create a user object from the database
+     * @param id int the id of the user
+     * @param firstName String the user first name
+     * @param middleNames String[] the middle names of the user
+     * @param lastName String the last name of the user
+     * @param dateOfBirth LocalDate the date of birth of the userh
+     * @param dateOfDeath LocalDate the date of death of the user
+     * @param gender String the gender of the user
+     * @param height double the height of the user
+     * @param weight double the weight of the user
+     * @param bloodType String the blood type of the user
+     * @param region String the region of the user
+     * @param currentAddress String the current address of the user
+     * @param username String the username of the user
+     * @param email String the email of the user
+     * @param password String the password of the user
+     */
+    public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfDeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
-        System.out.println(isLastName);
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
         this.name[0] = firstName;
@@ -141,7 +119,11 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
+        this.country = country;
+        this.id = id;
+        this.cityOfDeath = cityOfDeath;
+        this.regionOfDeath = regionOfDeath;
+        this.countryOfDeath = countryOfDeath;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -151,141 +133,11 @@ public class User {
         this.previousProcedures = new ArrayList<>();
     }
 
-
-
-    /**
-     * Used to create a deep copy of the object. Does not copy username, password, or email.
-     *
-     * @param user The user to make a copy of
-     */
-    public User(User user) {
-        this.name = user.name;
-        this.preferredName = user.preferredName;
-        this.dateOfBirth = user.dateOfBirth;
-        this.dateOfDeath = user.dateOfDeath;
-        this.gender = user.gender;
-        this.genderIdentity = user.genderIdentity;
-        this.height = user.height;
-        this.weight = user.weight;
-        this.bloodType = user.bloodType;
-        this.region = user.region;
-        this.currentAddress = user.currentAddress;
-        this.creationTime = user.creationTime;
-        this.id = user.id;
-        this.smokerStatus = user.smokerStatus;
-        this.bloodPressure = user.bloodPressure;
-        this.alcoholConsumption = user.alcoholConsumption;
-        this.organs.addAll(user.organs);
-        this.currentMedications.addAll(user.currentMedications);
-        this.historicMedications.addAll(user.historicMedications);
-        this.waitingListItems.addAll(user.waitingListItems);
-        this.currentDiseases.addAll(user.getCurrentDiseases());
-        this.curedDiseases.addAll(user.getCuredDiseases());
-        this.pendingProcedures.addAll(user.getPendingProcedures());
-        this.previousProcedures.addAll(user.getPreviousProcedures());
-    }
-
-    public void copyFieldsFrom(User user) {
-        name = user.getNameArray();
-        preferredName = user.getPreferredNameArray();
-        dateOfBirth = user.getDateOfBirth();
-        dateOfDeath = user.getDateOfDeath();
-        gender = user.getGender();
-        genderIdentity = user.getGenderIdentity();
-        bloodType = user.getBloodType();
-        height = user.getHeight();
-        weight = user.getWeight();
-        region = user.getRegion();
-        currentAddress = user.getCurrentAddress();
-        smokerStatus = user.getSmokerStatus();
-        bloodPressure = user.getBloodPressure();
-        alcoholConsumption = user.getAlcoholConsumption();
-        organs.clear();
-        organs.addAll(user.getOrgans());
-    }
-
-    public void copyMedicationListsFrom(User user) {
-        currentMedications.clear();
-        currentMedications.addAll(user.getCurrentMedications());
-        historicMedications.clear();
-        historicMedications.addAll(user.getHistoricMedications());
-        this.waitingListItems.clear();
-        this.waitingListItems.addAll(user.getWaitingListItems());
-
-
-    }
-
-    public void copyProceduresListsFrom(User user) {
-        pendingProcedures.clear();
-        pendingProcedures.addAll(user.getPendingProcedures());
-
-        previousProcedures.clear();
-        previousProcedures.addAll(user.getPreviousProcedures());
-    }
-
-    public void copyDiseaseListsFrom(User user) {
-        currentDiseases.clear();
-        currentDiseases.addAll(user.getCurrentDiseases());
-
-        curedDiseases.clear();
-        curedDiseases.addAll(user.getCuredDiseases());
-    }
-
-    /**
-     * Copies all items in the given users waiting list and adds them to the current user.
-     *
-     * @param user the user being copied.
-     */
-    public void copyWaitingListsFrom(User user) {
-        waitingListItems.clear();
-        waitingListItems.addAll(user.getWaitingListItems());
-    }
-
-    /**
-     * Checks whether there is any difference between the attributes of this user and a given user. Does NOT compare username, password, email, or any lists.
-     *
-     * @param user The user to compare to
-     * @return Whether they are equal
-     */
-    public boolean attributeFieldsEqual(User user) {
-        return (Arrays.equals(name, user.getNameArray()) &&
-                Arrays.equals(preferredName, user.getPreferredNameArray()) &&
-                dateOfBirth == user.getDateOfBirth() &&
-                dateOfDeath == user.getDateOfDeath() &&
-                gender == user.getGender() &&
-                genderIdentity == user.genderIdentity &&
-                bloodType == user.getBloodType() &&
-                height == user.getHeight() &&
-                weight == user.getWeight() &&
-                stringEqual(region, user.getRegion()) &&
-                stringEqual(currentAddress, user.getCurrentAddress()) &&
-                smokerStatus == user.getSmokerStatus() &&
-                stringEqual(bloodPressure, user.getBloodPressure()) &&
-                alcoholConsumption == user.getAlcoholConsumption() &&
-                organs.equals(user.getOrgans())
-        );
-    }
-
-    /**
-     * A null safe String.equals equivalent. Strings are considered equal if both are null.
-     *
-     * @param s1 The first string to compare
-     * @param s2 The second string to compare
-     * @return Whether the strings are equal
-     */
-    private boolean stringEqual(String s1, String s2) {
-        if (s1 == null) {
-            return s2 == null;
-        } else {
-            return s1.equals(s2);
-        }
-    }
-
     public String getName() {
         return String.join(" ", name);
     }
 
-    public String getPreferredName() {
+    private String getPreferredName() {
         String val;
         if (preferredName == null || preferredName.length == 0) {
             val = "";
@@ -298,10 +150,6 @@ public class User {
     public void setName(String name) {
         this.name = name.split(",");
         setLastModified();
-    }
-
-    public void setNameArray(String[] name) {
-        this.name = name;
     }
 
     public void setPreferredName(String name) {
@@ -319,10 +167,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setPassword(String password) {
@@ -393,7 +237,7 @@ public class User {
         return dateOfBirth;
     }
 
-    public LocalDate getDateOfDeath() {
+    public LocalDateTime getDateOfDeath() {
         return dateOfDeath;
     }
 
@@ -401,25 +245,12 @@ public class User {
         return waitingListItems;
     }
 
-
-    public String getAgeString() {
-        String age = String.format("%.1f", getAgeDouble());
-        return age + " years";
-    }
-
-    public double getAgeDouble() {
-        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
-        return days / 365.00;
-
-    }
-
-
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         setLastModified();
     }
 
-    public void setDateOfDeath(LocalDate dateOfDeath) {
+    public void setDateOfDeath(LocalDateTime dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
         setLastModified();
     }
@@ -473,17 +304,7 @@ public class User {
         setLastModified();
     }
 
-    public void removeOrgan(Organ organ) {
-        if (organs.contains(organ)) {
-            this.organs.remove(organ);
-            System.out.println("Organ removed.");
-        } else {
-            System.out.println("Organ not in list.");
-        }
-        setLastModified();
-    }
-
-    public void setLastModified() {
+    private void setLastModified() {
         lastModified = LocalDateTime.now();
     }
 
@@ -531,6 +352,9 @@ public class User {
         return previousProcedures;
     }
 
+    public ArrayList<HistoryItem> getUserHistory() {
+        return userHistory;
+    }
 
     /**
      * Get a string containing key information about the user.
@@ -559,7 +383,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("Model (ID %d) created at %s "
+        return String.format("User (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"
@@ -584,9 +408,6 @@ public class User {
         return currentDiseases;
     }
 
-    public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
-        this.currentDiseases = currentDiseases;
-    }
 
     public ArrayList<Disease> getCuredDiseases() {
         return curedDiseases;
@@ -608,55 +429,33 @@ public class User {
 
     public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
-    public boolean isReceiver() {
-        boolean receiver = false;
-        for (WaitingListItem item : waitingListItems) {
-            if (item.getOrganDeregisteredDate() == null) {
-                receiver = true;
-            }
-        }
-        return receiver;
+
+    public void addHistoryItem(HistoryItem historyItem) {
+        userHistory.add(historyItem);
     }
 
-    /**
-     * Returns the intersection of the organs which are being donated and organs that the
-     * user is currently waiting to receive
-     * @return The organs which are being donated and the user is currently waiting on
-     */
-    public Set<Organ> conflictingOrgans(){
-        Set<Organ> conflicting = new HashSet<>();
-        for(WaitingListItem item: waitingListItems) {
-            if(item.getOrganDeregisteredDate() == null){
-                if(organs.contains(item.getOrganType())){
-                    conflicting.add(item.getOrganType());
-                }
-            }
-        }
-        return conflicting;
+    public String getCityOfDeath() {
+        return cityOfDeath;
     }
 
-    public String getType() {
-        if (isDonor() && isReceiver()) {
-            return "Donor/Receiver";
-        } else if (isDonor() && !isReceiver()) {
-            return "Donor";
-        } else if (!isDonor() && isReceiver()) {
-            return "Receiver";
-        } else {
-            return "";
-        }
+    public String getRegionOfDeath() {
+        return regionOfDeath;
     }
 
-//    /**
-//     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
-//     * @param toRemove The organ being removed from the waiting list.
-//     */
-//    public void removeWaitingListItem(Organ toRemove) {
-//        for (ReceiverWaitingListItem item : waitingListItems){
-//            if (item.getOrganType() == toRemove) {
-//                item.deregisterOrgan(5);
-//                break;
-//            }
-//        }
-//    }
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCountryOfDeath() {
+        return countryOfDeath;
+    }
+
+    public void setCountryOfDeath(String countryOfDeath) {
+        this.countryOfDeath = countryOfDeath;
+    }
+
 }

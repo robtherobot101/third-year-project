@@ -6,25 +6,27 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
-import org.junit.Before;
+import org.apache.http.client.HttpResponseException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TFScene;
 import seng302.Generic.DataManager;
-import seng302.Generic.TransplantWaitingListItem;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 public class TransplantWaitingListTest extends TestFXTest {
 
-    private TableView<TransplantWaitingListItem> transplantTable;
-    private TransplantWaitingListItem transplantRow;
+    private TableView<WaitingListItem> transplantTable;
+    private WaitingListItem transplantRow;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
@@ -44,7 +46,7 @@ public class TransplantWaitingListTest extends TestFXTest {
      * helper function to create two new users. One a receiver and one a dummy.
      */
     private void createAccounts() {
-        DataManager.users.clear();
+        //DataManager.users.clear();
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
@@ -151,7 +153,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         transplantRow = transplantTable.getItems().get(0);
 
         assertEquals(Organ.HEART, transplantRow.getOrganType());
-        assertEquals("Bob Ross", transplantRow.getName());
+        assertEquals("Bob Ross", transplantRow.getReceiverName());
     }
 
     /**
@@ -381,14 +383,22 @@ public class TransplantWaitingListTest extends TestFXTest {
                 "flameman@hotmail.com",
                 "password123");
         testUser.setRegion("Canterbury");
-        DataManager.users.add(testUser);
+        try{
+            WindowManager.getDataManager().getUsers().insertUser(testUser);
+        }catch (HttpResponseException e) {
+            Debugger.error("Should avoid using using DB for testing when possilbe. Failed to insert new user.");
+        }
         testUser = new User(
                 "Bob", new String[]{}, "Ross",
                 LocalDate.of(1957, 12, 12),
                 "bobr",
                 "bob@live.com",
                 "password");
-        DataManager.users.add(testUser);
+        try{
+            WindowManager.getDataManager().getUsers().insertUser(testUser);
+        } catch (HttpResponseException e) {
+            Debugger.error("Should avoid using DB for testing where possible. Failed to insert new user.");
+        }
 
         WindowManager.resetScene(TFScene.userWindow);
         //createAccounts();
@@ -428,7 +438,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
         assertEquals(Organ.LIVER, transplantRow.getOrganType());
-        assertEquals("Bobby Dong Flame", transplantRow.getName());
+        assertEquals("Bobby Dong Flame", transplantRow.getReceiverName());
         assertEquals(transplantTable.getItems().size(), 1);
     }
 
@@ -478,7 +488,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         transplantTable = lookup("#transplantTable").queryTableView();
         transplantRow = transplantTable.getItems().get(0);
         assertEquals(Organ.HEART, transplantRow.getOrganType());
-        assertEquals("Bob Ross", transplantRow.getName());
+        assertEquals("Bob Ross", transplantRow.getReceiverName());
         assertEquals(transplantTable.getItems().size(), 1);
     }
 }

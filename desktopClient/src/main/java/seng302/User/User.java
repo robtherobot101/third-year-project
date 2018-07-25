@@ -1,9 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
-import seng302.Generic.Disease;
-import seng302.Generic.Procedure;
-import seng302.Generic.ReceiverWaitingListItem;
+import seng302.Generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -18,31 +15,45 @@ import java.util.*;
  * This class contains information about organ users.
  */
 public class User {
-
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     private String[] name, preferredName;
-    private LocalDate dateOfBirth, dateOfDeath = null;
-    private LocalDateTime creationTime, lastModified = null;
+    private LocalDate dateOfBirth = null;
+    private LocalDateTime dateOfDeath, creationTime, lastModified = null;
     private Gender gender = null, genderIdentity = null;
     private double height = -1, weight = -1;
     private BloodType bloodType = null;
     private long id;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "";
+    private String currentAddress = "";
+    private String region = "";
+    private String city="";
+    private String country="";
+    private String homePhone="";
+    private String mobilePhone="";
+    private String username;
+    private String email;
+    private String password;
+    private String bloodPressure = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
     private ArrayList<Disease> currentDiseases = new ArrayList<>(), curedDiseases = new ArrayList<>();
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
-    private ArrayList<ReceiverWaitingListItem> waitingListItems = new ArrayList<>();
+    private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+    private ArrayList<HistoryItem> userHistory = new ArrayList<>();
+
+    private String cityOfDeath = "";
+    private String regionOfDeath = "";
+    private String countryOfDeath = "";
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
@@ -50,7 +61,7 @@ public class User {
         this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
-        this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
+        this.dateOfDeath = LocalDateTime.parse(dateOfDeath, dateFormat);
         this.gender = Gender.parse(gender);
         this.genderIdentity = this.gender;
         this.height = height;
@@ -59,7 +70,8 @@ public class User {
         this.region = region;
         this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
@@ -76,11 +88,12 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
     // Used by CSV import to form profiles
-    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender,
+    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender,
                 Gender genderIdentity, BloodType bloodType, int height, int weight, String address, String region,
                 String city, int zipCode, String country, String homePhone, String mobilePhone, String email) {
         int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
@@ -114,14 +127,14 @@ public class User {
 
         this.email = email;
         this.password = "password";
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        // TODO Add functionality to DAOs for getting next id.
+        this.id = 1;
     }
 
 
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
-        System.out.println(isLastName);
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
         this.name[0] = firstName;
@@ -145,7 +158,11 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.id = DataManager.getNextId(true, ProfileType.USER);
+        this.country = country;
+        this.cityOfDeath = cityOfDeath;
+        this.regionOfDeath = regionOfDeath;
+        this.countryOfDeath = countryOfdeath;
+        this.id = 1;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
         this.waitingListItems = new ArrayList<>();
@@ -213,10 +230,6 @@ public class User {
         currentMedications.addAll(user.getCurrentMedications());
         historicMedications.clear();
         historicMedications.addAll(user.getHistoricMedications());
-        this.waitingListItems.clear();
-        this.waitingListItems.addAll(user.getWaitingListItems());
-
-
     }
 
     public void copyProceduresListsFrom(User user) {
@@ -397,11 +410,11 @@ public class User {
         return dateOfBirth;
     }
 
-    public LocalDate getDateOfDeath() {
+    public LocalDateTime getDateOfDeath() {
         return dateOfDeath;
     }
 
-    public ArrayList<ReceiverWaitingListItem> getWaitingListItems() {
+    public ArrayList<WaitingListItem> getWaitingListItems() {
         return waitingListItems;
     }
 
@@ -423,7 +436,7 @@ public class User {
         setLastModified();
     }
 
-    public void setDateOfDeath(LocalDate dateOfDeath) {
+    public void setDateOfDeath(LocalDateTime dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
         setLastModified();
     }
@@ -470,9 +483,9 @@ public class User {
     public void setOrgan(Organ organ) {
         if (!organs.contains(organ)) {
             this.organs.add(organ);
-            System.out.println("Organ added.");
+            Debugger.log("Organ added.");
         } else {
-            System.out.println("Organ already being donated.");
+            Debugger.log("Organ already being donated.");
         }
         setLastModified();
     }
@@ -480,19 +493,19 @@ public class User {
     public void removeOrgan(Organ organ) {
         if (organs.contains(organ)) {
             this.organs.remove(organ);
-            System.out.println("Organ removed.");
+            Debugger.log("Organ removed.");
         } else {
-            System.out.println("Organ not in list.");
+            Debugger.log("Organ not in list.");
         }
         setLastModified();
     }
 
-    public void setLastModified() {
-        lastModified = LocalDateTime.now();
+    public void sortHistory() {
+        userHistory.sort(Comparator.comparing(HistoryItem::getDateTime));
     }
 
-    public void setLastModifiedForDatabase(LocalDateTime time) {
-        lastModified = time;
+    public void setLastModified() {
+        lastModified = LocalDateTime.now();
     }
 
     public String getBloodPressure() {
@@ -535,6 +548,9 @@ public class User {
         return previousProcedures;
     }
 
+    public ArrayList<HistoryItem> getUserHistory() {
+        return userHistory;
+    }
 
     /**
      * Get a string containing key information about the user.
@@ -613,13 +629,12 @@ public class User {
     public void setCurrentMedications(ArrayList<Medication> item) { this.currentMedications = item; }
 
     public boolean isReceiver() {
-        boolean receiver = false;
-        for (ReceiverWaitingListItem item : waitingListItems) {
-            if (item.getOrganDeregisteredDate() == null) {
-                receiver = true;
+        for (WaitingListItem item : waitingListItems) {
+            if (item.getStillWaitingOn()) {
+                return true;
             }
         }
-        return receiver;
+        return false;
     }
 
     /**
@@ -629,7 +644,7 @@ public class User {
      */
     public Set<Organ> conflictingOrgans(){
         Set<Organ> conflicting = new HashSet<>();
-        for(ReceiverWaitingListItem item: waitingListItems) {
+        for(WaitingListItem item: waitingListItems) {
             if(item.getStillWaitingOn()){
                 if(organs.contains(item.getOrganType())){
                     conflicting.add(item.getOrganType());
@@ -656,11 +671,50 @@ public class User {
      * @param toRemove The organ being removed from the waiting list.
      */
     public void removeWaitingListItem(Organ toRemove) {
-        for (ReceiverWaitingListItem item : waitingListItems){
+        for (WaitingListItem item : waitingListItems){
             if (item.getOrganType() == toRemove) {
                 item.deregisterOrgan(5);
                 break;
             }
         }
     }
+
+    public void addHistoryEntry(String action, String description) {
+        userHistory.add(new HistoryItem(action, description));
+    }
+    public String getCityOfDeath() {
+        return cityOfDeath;
+    }
+
+    public String getRegionOfDeath() {
+        return regionOfDeath;
+    }
+
+    public void setCityOfDeath(String cityOfDeath) {
+        this.cityOfDeath = cityOfDeath;
+    }
+
+    public void setRegionOfDeath(String regionOfDeath) {
+        this.regionOfDeath = regionOfDeath;
+    }
+
+    public String getCountryOfDeath() {
+        return countryOfDeath;
+    }
+
+    public void setCountryOfDeath(String countryOfDeath) {
+        this.countryOfDeath = countryOfDeath;
+    }
+
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+
+
 }

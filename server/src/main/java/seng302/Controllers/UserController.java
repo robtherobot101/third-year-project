@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
-import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
@@ -18,11 +17,20 @@ import static java.lang.Integer.max;
 public class UserController {
     private GeneralUser model;
 
+    /**
+     * Class to handle all user processing eg. adding and editing users
+     */
     public UserController() {
         model = new GeneralUser();
     }
 
 
+    /**
+     * method to get all users
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing all users and their information
+     */
     public String getUsers(Request request, Response response) {
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
@@ -66,6 +74,28 @@ public class UserController {
         response.type("application/json");
         response.status(200);
         return serialQueriedUsers;
+    }
+
+
+    /**
+     * Returns the number of entries in the USERS table.
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String the number of users currently registered
+     */
+    public String countUsers(Request request, Response response) {
+        Integer count;
+        try {
+            count = model.countUsers();
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            response.body("Internal server error");
+            return null;
+        }
+
+        response.status(200);
+        return count.toString();
     }
 
     /**
@@ -244,6 +274,12 @@ public class UserController {
         return queriedUser;
     }
 
+    /**
+     * method to process the add user request. parses the input to be in a better format
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was successful or not
+     */
     public String addUser(Request request, Response response) {
         Gson gson = new Gson();
         User receivedUser;
@@ -276,6 +312,12 @@ public class UserController {
         }
     }
 
+    /**
+     * method to handle the getting of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the requested user information
+     */
     public String getUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -291,6 +333,12 @@ public class UserController {
         return serialQueriedUser;
     }
 
+    /**
+     * method to process the editing of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the editing of the user was successful or not
+     */
     public String editUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -301,15 +349,18 @@ public class UserController {
         Gson gson = new Gson();
 
         User receivedUser = gson.fromJson(request.body(), User.class);
+        System.out.println(receivedUser.getCityOfDeath());
         if (receivedUser == null) {
             response.status(400);
             return "Missing User Body";
         } else {
             try {
-                model.updateUserAttributes(receivedUser, Integer.parseInt(request.params(":id")));
+                //model.updateUserAttributes(receivedUser, Integer.parseInt(request.params(":id")));
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id"))); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
+                e.printStackTrace();
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
@@ -317,6 +368,12 @@ public class UserController {
         }
     }
 
+    /**
+     * method to handle the deletion of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether or not the user was deleted successfully
+     */
     public String deleteUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -334,4 +391,7 @@ public class UserController {
             return "Internal Server Error";
         }
     }
+
+
+
 }

@@ -3,10 +3,12 @@ package seng302.TestFX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,6 +26,12 @@ public class AdminWindowGUITest extends TestFXTest {
     public static void setupClass() throws TimeoutException {
         defaultTestSetup();
     }
+
+    @Before
+    public void setupTest() throws SQLException {
+        useLocalStorage();
+    }
+
 
     /**
      * Refreshes the currently selected profile from the three profile tabs
@@ -59,7 +67,7 @@ public class AdminWindowGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addUser() {
+    public void addThenDeleteUser() {
         loginAsDefaultAdmin();
         clickOn("#fileMenu");
         moveTo("#createMenu");
@@ -69,9 +77,9 @@ public class AdminWindowGUITest extends TestFXTest {
 
         // Create a user
         clickOn("#usernameInput");
-        write("buzz");
+        write("testing buzz");
         clickOn("#emailInput");
-        write("mkn29@uclive.ac.nz");
+        write("testing mkn29@uclive.ac.nz");
         clickOn("#passwordInput");
         write("password123");
         clickOn("#passwordConfirmInput");
@@ -105,7 +113,7 @@ public class AdminWindowGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addAdmin() {
+    public void addThenDeleteAdmin() {
         loginAsDefaultAdmin();;
         clickOn("#fileMenu");
         moveTo("#createMenu");
@@ -113,7 +121,7 @@ public class AdminWindowGUITest extends TestFXTest {
 
         // Create an admin
         clickOn("#usernameInput");
-        write("buzz");
+        write("testing buzz");
         clickOn("#passwordInput");
         write("password123");
         clickOn("#passwordConfirmInput");
@@ -134,9 +142,9 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("Matthew Pieter Knight");
         refreshTableSelections();
         // Check this is the user:
-        assertEquals("buzz", currentSelectedAdmin.getUsername());
+        assertEquals("testing buzz", currentSelectedAdmin.getUsername());
 
-        rightClickOn("buzz");
+        rightClickOn("testing buzz");
         clickOn("Delete Matthew Pieter Knight");
         clickOn("OK");
     }
@@ -157,7 +165,7 @@ public class AdminWindowGUITest extends TestFXTest {
 
         // Create a clinician
         clickOn("#usernameInput");
-        write("buzz");
+        write("testing buzz");
         clickOn("#passwordInput");
         write("password123");
         clickOn("#passwordConfirmInput");
@@ -178,7 +186,7 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("Matthew Pieter Knight");
         refreshTableSelections();
         // Check this is the user:
-        assertEquals("buzz", currentSelectedClinician.getUsername());
+        assertEquals("testing buzz", currentSelectedClinician.getUsername());
 
         rightClickOn("Matthew Pieter Knight");
         clickOn("Delete Matthew Pieter Knight");
@@ -186,26 +194,20 @@ public class AdminWindowGUITest extends TestFXTest {
     }
 
     @Test
-    public void deleteProfiles() {
-
-    }
-
-
-    @Test
     public void checkExistenceDefaultClinician() {
         loginAsDefaultAdmin();
         clickOn("#cliniciansTab");
-        clickOn("default");
+        clickOn("default clinician");
         refreshTableSelections();
-        assertEquals("default", currentSelectedClinician.getName());
+        assertEquals("default clinician", currentSelectedClinician.getName());
     }
 
     @Test
     public void checkExistenceDefaultAdmin() {
         loginAsDefaultAdmin();
         clickOn("#administratorsTab");
-        clickOn("default");
+        clickOn("default admin");
         refreshTableSelections();
-        assertEquals("default", currentSelectedAdmin.getName());
+        assertEquals("default admin", currentSelectedAdmin.getName());
     }
 }

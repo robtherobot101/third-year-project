@@ -16,10 +16,19 @@ import java.util.ArrayList;
 public class ProceduresController {
     private UserProcedures model;
 
+    /**
+     * Class to handle all the procedure related requests
+     */
     public ProceduresController() {
         model = new UserProcedures();
     }
 
+    /**
+     * method to get all the procedures of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the procedure information for the given user
+     */
     public String getAllProcedures(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
@@ -40,6 +49,12 @@ public class ProceduresController {
         return serialQueriedProcedures;
     }
 
+    /**
+     * method to get the details of a single specific procedure
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the procedure information
+     */
     public String getSingleProcedure(Request request, Response response) {
 
         Procedure queriedProcedure = queryProcedure(request, response);
@@ -56,6 +71,12 @@ public class ProceduresController {
         return serialQueriedProcedure;
     }
 
+    /**
+     * method to handle the adding of a new procedure
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or failed
+     */
     public String addProcedure(Request request, Response response) {
 
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -79,6 +100,12 @@ public class ProceduresController {
         }
     }
 
+    /**
+     * method to handle the editing of a procedures information
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or not
+     */
     public String editProcedure(Request request, Response response) {
         int requestedProcedureId = Integer.parseInt(request.params(":procedureId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -108,6 +135,12 @@ public class ProceduresController {
         }
     }
 
+    /**
+     * method to handle the deletion of a specific procedure
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return whether the operation was completed successfully
+     */
     public String deleteProcedure(Request request, Response response) {
         int requestedProcedureId = Integer.parseInt(request.params(":procedureId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));

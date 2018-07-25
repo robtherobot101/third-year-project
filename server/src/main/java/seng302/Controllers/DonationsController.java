@@ -21,8 +21,17 @@ public class DonationsController {
 
     private UserDonations model;
 
+    /**
+     * Class builder to create a new donations controller aaaaaaaaa
+     */
     public DonationsController() {model = new UserDonations();}
 
+    /**
+     * method to process the request for getting all of one users donations
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the user donation details, or an error message
+     */
     public String getAllUserDonations(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
@@ -43,6 +52,12 @@ public class DonationsController {
         return serialQueriedDonations;
     }
 
+    /**
+     * method to handle the adding of a new organ donation
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String response if the operation was successful
+     */
     public String addDonation(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
@@ -64,6 +79,12 @@ public class DonationsController {
 
     }
 
+    /**
+     * method to handle the request to get all donations
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all donations and their details
+     */
     public String getAllDonations(Request request, Response response) {
 
         Set<Organ> queriedDonations;
@@ -83,6 +104,12 @@ public class DonationsController {
         return serialQueriedDonations;
     }
 
+    /**
+     * method to handle getting a single donation from one user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing the donation information
+     */
     public String getSingleUserDonationItem(Request request, Response response) {
         Organ queriedDonationListItem = queryDonationListItem(request, response);
 
@@ -98,6 +125,12 @@ public class DonationsController {
         return serialQueriedWaitingListItem;
     }
 
+    /**
+     * method to handle the deletion of a donation request
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String Whether the operation was successful or not
+     */
     public String deleteUserDonationItem(Request request, Response response) {
         String requestedDonationItemName = request.params(":donationListItemName");
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -112,6 +145,25 @@ public class DonationsController {
             model.removeDonationListItem(requestedUserId, requestedDonationItemName);
             response.status(201);
             return "DONATION LIST ITEM WITH NAME: "+ requestedDonationItemName +" FOR USER ID: "+ requestedUserId +" DELETED";
+        } catch (SQLException e) {
+            response.status(500);
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * method to handle the deletion of all user donations (only when a death occurs)
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was successful or not
+     */
+    public String deleteAllUserDonations(Request request, Response response) {
+        int requestedUserId = Integer.parseInt(request.params(":id"));
+
+        try {
+            model.removeAllUserDonations(requestedUserId);
+            response.status(201);
+            return "ALL DONATION LIST ITEMS FOR USER ID: "+ requestedUserId +" DELETED";
         } catch (SQLException e) {
             response.status(500);
             return e.getMessage();

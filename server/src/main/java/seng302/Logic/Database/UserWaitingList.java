@@ -11,39 +11,43 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserWaitingList {
 
-    private Connection connection;
-    private String currentDatabase;
-
-    public UserWaitingList() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
-
     public ArrayList<WaitingListItem> getAllWaitingListItems() throws SQLException {
-        ArrayList<WaitingListItem> allWaitingListItems = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM";
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            ArrayList<WaitingListItem> allWaitingListItems = new ArrayList<>();
+            String query =
+                    "SELECT * FROM WAITING_LIST_ITEM " +
+                            "LEFT JOIN (SELECT 'conflicting' AS is_conflicting, WL.id " +
+                                "FROM WAITING_LIST_ITEM AS WL JOIN DONATION_LIST_ITEM AS DL " +
+                                    "ON (WL.user_id = DL.user_id AND WL.organ_type = DL.name)) AS CONFLICTING " +
+                            "ON WAITING_LIST_ITEM.id = CONFLICTING.id";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
+            }
+
+            return allWaitingListItems;
         }
-        return allWaitingListItems;
     }
 
     public ArrayList<WaitingListItem> getAllUserWaitingListItems(int userId) throws SQLException {
-        ArrayList<WaitingListItem> allWaitingListItems = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, userId);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            ArrayList<WaitingListItem> allWaitingListItems = new ArrayList<>();
+            String query = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
+            }
+            return allWaitingListItems;
         }
-        return allWaitingListItems;
     }
 
     public WaitingListItem getWaitingListItemFromResultSet(ResultSet waitingListItemResultSet) throws SQLException {
@@ -57,61 +61,83 @@ public class UserWaitingList {
                 waitingListItemResultSet.getInt("id"),
                 waitingListItemResultSet.getInt("user_id"),
                 deregisteredDate,
-                waitingListItemResultSet.getInt("deregistered_code")
-
+                waitingListItemResultSet.getInt("deregistered_code"),
+                waitingListItemResultSet.getString("is_conflicting") != null
         );
-
-
     }
 
+
     public WaitingListItem getWaitingListItemFromId(int waitingListItemId, int userId) throws SQLException {
-        // SELECT * FROM WAITING_LIST_ITEM id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            // SELECT * FROM WAITING_LIST_ITEM id = id;
+            String query = "SELECT * FROM WAITING_LIST_ITEM WHERE id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1, waitingListItemId);
-        statement.setInt(2, userId);
-        ResultSet resultSet = statement.executeQuery();
+            statement.setInt(1, waitingListItemId);
+            statement.setInt(2, userId);
+            ResultSet resultSet = statement.executeQuery();
 
-        //If response is empty then return null
-        if (!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a indication that fields arent empty
-            return getWaitingListItemFromResultSet(resultSet);
+            //If response is empty then return null
+            if (!resultSet.next()) {
+                return null;
+            } else {
+                //If response is not empty then return a indication that fields arent empty
+                return getWaitingListItemFromResultSet(resultSet);
+            }
         }
-
     }
 
     public void insertWaitingListItem(WaitingListItem waitingListItem, int userId) throws SQLException{
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String insert = "INSERT INTO WAITING_LIST_ITEM (organ_type, organ_registered_date, organ_deregistered_date, deregistered_code, user_id) VALUES  (?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(insert);
+            statement.setString(1, waitingListItem.getOrganType().toString());
+            statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
+            if(waitingListItem.getOrganDeregisteredDate() == null) {
+                statement.setNull(3, java.sql.Types.DATE);
+            }else{
+                statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+            }
+            statement.setInt(4, waitingListItem.getOrganDeregisteredCode());
+            statement.setInt(5, userId);
 
-        String insert = "INSERT INTO " + currentDatabase + ".WAITING_LIST_ITEM (organ_type, organ_registered_date, user_id ) VALUES  (?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
-        statement.setString(1, waitingListItem.getOrganType().toString());
-        statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
-        statement.setInt(3, userId);
-        System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
+            System.out.println("Inserting new waiting list item -> Successful -> Rows Added: " + statement.executeUpdate());
+        }
     }
 
-    public void updateWaitingListItem(WaitingListItem waitingListItem, int waitingListItemId, int userId) throws SQLException {
-        String insert = "UPDATE " + currentDatabase + ".WAITING_LIST_ITEM SET organ_type = ?, organ_registered_date = ?, organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND id = ?";
-        PreparedStatement statement = connection.prepareStatement(insert);
-        statement.setString(1, waitingListItem.getOrganType().toString());
-        statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
-        statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
-        statement.setInt(4, waitingListItem.getOrganDeregisteredCode());
-        statement.setInt(5, userId);
-        statement.setInt(6, waitingListItemId);
 
-        System.out.println("Update Waiting List Item - ID: " + waitingListItemId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
+    public void updateWaitingListItem(WaitingListItem waitingListItem, int waitingListItemId, int userId) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String insert = "UPDATE WAITING_LIST_ITEM SET organ_type = ?, organ_registered_date = ?, organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND id = ?";
+            PreparedStatement statement = connection.prepareStatement(insert);
+            statement.setString(1, waitingListItem.getOrganType().toString());
+            statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
+            statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+            statement.setInt(4, waitingListItem.getOrganDeregisteredCode());
+            statement.setInt(5, userId);
+            statement.setInt(6, waitingListItemId);
+
+            System.out.println("Update Waiting List Item - ID: " + waitingListItemId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
+        }
     }
 
     public void removeWaitingListItem(int userId, int waitingListItemId) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".WAITING_LIST_ITEM WHERE id = ? AND user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setInt(1, waitingListItemId);
-        statement.setInt(2, userId);
-        System.out.println("Deletion of Waiting List Item - ID: " + waitingListItemId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "DELETE FROM WAITING_LIST_ITEM WHERE id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
+            statement.setInt(1, waitingListItemId);
+            statement.setInt(2, userId);
+            System.out.println("Deletion of Waiting List Item - ID: " + waitingListItemId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
     }
 
+    public void removeWaitingListItem(int userId, Organ organ) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND organ_type = ? AND organ_deregistered_date = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setDate(1,java.sql.Date.valueOf(LocalDate.now()));
+            statement.setInt(2,5);
+            System.out.println("Deletion of Waiting List Item - Organ: " + organ.toString() + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
 }

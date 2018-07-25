@@ -1,23 +1,23 @@
 package seng302.GUI.Controllers;
 
+import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
  */
 public class LoginController implements Initializable {
 
+    @FXML
+    private TextField serverInput;
     @FXML
     private TextField identificationInput;
     @FXML
@@ -36,109 +38,84 @@ public class LoginController implements Initializable {
     @FXML
     private AnchorPane background;
 
-    /**
-     * Attempts to log in based on the information currently provided by the user. Provides appropriate feedback if log in fails.
-     */
-    public void login() {
-        boolean identificationMatched = false;
-        ProfileType typeMatched = null;
+    private Gson gson;
 
-        // Check for a user match
-        User currentUser = null;
+    public void login(){
         try {
-            currentUser = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-
-        //Do a db search here
-        if(currentUser != null) {
-            typeMatched = ProfileType.USER;
-            identificationMatched = true;
-            Debugger.log("LoginController: Logging in as user...");
-        }
-
-
-
-        // Check for a clinician match
-        Clinician currentClinician = null;
-        try {
-            currentClinician = WindowManager.getDatabase().loginClinician(identificationInput.getText(), passwordInput.getText());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        //Do a db search here
-        if(currentClinician != null) {
-            typeMatched = ProfileType.CLINICIAN;
-            identificationMatched = true;
-            Debugger.log("LoginController: Logging in as clinician...");
-        }
-
-        // Check for an admin match
-        Admin currentAdmin = null;
-        try {
-            currentAdmin = WindowManager.getDatabase().loginAdmin(identificationInput.getText(), passwordInput.getText());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        //Do a db search here
-        if(currentAdmin != null) {
-            typeMatched = ProfileType.ADMIN;
-            identificationMatched = true;
-            Debugger.log("LoginController: Logging in as admin...");
-        }
-
-
-
-        if (identificationMatched) {
-            //if (typeMatched != null) {
-                //Reset scene to original state
-                identificationInput.setText("");
-                passwordInput.setText("");
-                loginButton.setDisable(true);
-                errorMessage.setVisible(false);
-
-                switch (typeMatched) {
-                    case USER:
-                        WindowManager.setCurrentUser(currentUser);
-                        WindowManager.setScene(TFScene.userWindow);
-                        break;
-                    case CLINICIAN:
-                        //Add all users from Database
-                        DataManager.users.clear();
-                        try{
-                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                            WindowManager.getDatabase().refreshUserWaitinglists();
-                        } catch(SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        WindowManager.setClinician(currentClinician);
-                        WindowManager.setScene(TFScene.clinician);
-                        break;
-                    case ADMIN:
-                        DataManager.users.clear();
-                        DataManager.clinicians.clear();
-                        DataManager.admins.clear();
-                        try{
-                            DataManager.users.addAll(WindowManager.getDatabase().getAllUsers());
-                            DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
-                            DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
-                        } catch(SQLException e) {
-                            e.printStackTrace();
-                        }
-                        WindowManager.setAdmin(currentAdmin);
-                        WindowManager.setScene(TFScene.admin);
+            Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
+            Object user = response.keySet().iterator().next();
+            String token = response.values().iterator().next();
+            if (user != null) {
+                if (user instanceof User) {
+                    Debugger.log("LoginController: Logging in as user...");
+                    loadUser((User)user, token);
+                } else if (user instanceof Admin) {
+                    Debugger.log("LoginController: Logging in as admin...");
+                    loadAdmin((Admin)user, token);
+                } else if (user instanceof Clinician) {
+                    Debugger.log("LoginController: Logging in as clinician...");
+                    loadClinician((Clinician)user, token);
+                }  else {
+                    errorMessage.setText("Username/email and password combination not recognized.");
+                    errorMessage.setVisible(true);
                 }
-//            } else {
-//                errorMessage.setText("Incorrect password.");
-//                errorMessage.setVisible(true);
-//            }
-        } else {
-            errorMessage.setText("Username/email and password combination not recognized.");
+            } else {
+                errorMessage.setText("Username/email and password combination not recognized.");
+                errorMessage.setVisible(true);
+            }
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not login. ");
+        }
+    }
+
+    private void loadUser(User user, String token) {
+        WindowManager.setCurrentUser(user, token);
+        WindowManager.setScene(TFScene.userWindow);
+        resetScene();
+    }
+
+    private void loadClinician(Clinician clinician, String token) {
+        WindowManager.setCurrentClinician(clinician, token);
+        WindowManager.setScene(TFScene.clinician);
+        resetScene();
+    }
+
+    private void loadAdmin(Admin admin, String token) {
+        WindowManager.setCurrentAdmin(admin, token);
+        WindowManager.setScene(TFScene.admin);
+        resetScene();
+    }
+
+    private void resetScene(){
+        identificationInput.setText("");
+        passwordInput.setText("");
+        loginButton.setDisable(true);
+        errorMessage.setVisible(false);
+    }
+
+    public void testConnection(){
+        APIServer server = new APIServer("http://" + serverInput.getText());
+        if(server.testConnection().equals("1")){
+            WindowManager.createAlert(Alert.AlertType.INFORMATION, "Connection successful", "Success", "Successfully connected to the server").showAndWait();
+        }
+        else{
+            WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
+        }
+    }
+
+    private boolean connectServer(String url){
+        UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
+        if (urlValidator.isValid(url)) {
+            APIServer server = new APIServer(url);
+            Debugger.log("URL is valid");
+            server.testConnection();
+            return true;
+        }
+        else{
+            errorMessage.setText("Invalid URL given");
             errorMessage.setVisible(true);
+            return false;
         }
     }
 
@@ -175,6 +152,7 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        gson = new Gson();
         WindowManager.setLoginController(this);
         requestFocus();
         identificationInput.textProperty().addListener((observable, oldValue, newValue) ->

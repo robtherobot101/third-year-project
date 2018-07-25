@@ -11,15 +11,6 @@ import java.util.ArrayList;
 
 public class GeneralAdmin {
 
-    private Connection connection;
-    private String currentDatabase;
-
-    public GeneralAdmin() {
-        DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
-        connection = databaseConfiguration.getConnection();
-        currentDatabase = databaseConfiguration.getCurrentDatabase();
-    }
-
     public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException {
         Admin admin = new Admin(
                 resultSet.getString("username"),
@@ -34,74 +25,85 @@ public class GeneralAdmin {
     }
 
     public void insertAdmin(Admin admin) throws SQLException {
-        String insert = "INSERT INTO " + currentDatabase + ".ADMIN(username, password, name, work_address, region) " +
-                "VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(insert);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String insert = "INSERT INTO ADMIN(username, password, name, work_address, region) " +
+                    "VALUES(?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(insert);
 
-        statement.setString(1, admin.getUsername());
-        statement.setString(2, admin.getPassword());
-        statement.setString(3, admin.getName());
-        statement.setString(4, admin.getWorkAddress());
-        statement.setString(5, admin.getRegion());
-        System.out.println("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+            statement.setString(1, admin.getUsername());
+            statement.setString(2, admin.getPassword());
+            statement.setString(3, admin.getName());
+            statement.setString(4, admin.getWorkAddress());
+            statement.setString(5, admin.getRegion());
+            System.out.println("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+        }
 
     }
 
     public int getAdminIdFromUsername(String username) throws SQLException{
-        String query = "SELECT staff_id FROM " + currentDatabase + ".ADMIN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, username);
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        return resultSet.getInt("staff_id");
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT staff_id FROM ADMIN WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt("staff_id");
+        }
     }
 
     public Admin getAdminFromId(int id) throws SQLException {
-        // SELECT * FROM ADMIN id = id;
-        String query = "SELECT * FROM " + currentDatabase + ".ADMIN WHERE staff_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            // SELECT * FROM ADMIN id = id;
+            String query = "SELECT * FROM ADMIN WHERE staff_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1, id);
-        ResultSet resultSet = statement.executeQuery();
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
 
-        //If response is empty then return null
-        if(!resultSet.next()) {
-            return null;
-        } else {
-            //If response is not empty then return a new Clinician Object with the fields from the database
-            return getAdminFromResultSet(resultSet);
+            //If response is empty then return null
+            if (!resultSet.next()) {
+                return null;
+            } else {
+                //If response is not empty then return a new Clinician Object with the fields from the database
+                return getAdminFromResultSet(resultSet);
+            }
         }
-
     }
 
     public ArrayList<Admin> getAllAdmins() throws SQLException{
-        ArrayList<Admin> allAdmins = new ArrayList<>();
-        String query = "SELECT * FROM " + currentDatabase + ".ADMIN";
-        PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
-        while(resultSet.next()) {
-            allAdmins.add(getAdminFromResultSet(resultSet));
-        }
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            ArrayList<Admin> allAdmins = new ArrayList<>();
+            String query = "SELECT * FROM ADMIN";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allAdmins.add(getAdminFromResultSet(resultSet));
+            }
 
-        return allAdmins;
+            return allAdmins;
+        }
     }
 
     public void removeAdmin(Admin admin) throws SQLException {
-        String update = "DELETE FROM " + currentDatabase + ".ADMIN WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
-        statement.setString(1, admin.getUsername());
-        System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "DELETE FROM ADMIN WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
+            statement.setString(1, admin.getUsername());
+            System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
     }
 
     public void updateAdminDetails(Admin admin) throws SQLException {
-        String update = "UPDATE " + currentDatabase + ".ADMIN SET name = ?, work_address = ? WHERE username = ?";
-        PreparedStatement statement = connection.prepareStatement(update);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE ADMIN SET name = ?, work_address = ? WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(update);
 
-        statement.setString(1, admin.getName());
-        statement.setString(2, admin.getWorkAddress());
-        // statement.setString(3, admin.getegion()); -- No Region for an Admin!
-        statement.setString(3, admin.getUsername());
-        System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+            statement.setString(1, admin.getName());
+            statement.setString(2, admin.getWorkAddress());
+            // statement.setString(3, admin.getegion()); -- No Region for an Admin!
+            statement.setString(3, admin.getUsername());
+            System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        }
 
     }
 

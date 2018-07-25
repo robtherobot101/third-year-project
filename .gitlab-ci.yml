@@ -19,12 +19,19 @@ recent-artifacts:
     - mvn -B -DskipTests clean site package
   artifacts:
     paths:
-      - target/*.jar
+      - desktopClient/target/*.jar
     expire_in: 1 week
   except:
     - tags
     - server-deployment@seng302-2018/team-300
     - Story1M(MobileDevelopment-LoginCreation)@seng302-2018/team-300
+
+server-build-image:
+  stage: build
+  script:
+    - docker-compose build
+  only:
+    - server-deployment@seng302-2018/team-300
 
 server-deployment:
   stage: deploy
@@ -40,7 +47,7 @@ release-artifacts:
     - mvn -B clean site package
   artifacts:
     paths:
-    - target/*.jar
-    - target/site/jacoco/*
+    - desktopClient/target/*.jar
+    - desktopClient/target/site/jacoco/*
   only:
     - tags

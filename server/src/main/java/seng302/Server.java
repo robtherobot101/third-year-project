@@ -3,6 +3,11 @@ package seng302;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Controllers.*;
+import spark.Request;
+import spark.Response;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static spark.Spark.*;
 
@@ -23,7 +28,11 @@ public class Server {
     private HistoryController historyController;
     private DonationsController donationsController;
     private WaitingListController waitingListController;
+    private CLIController CLIController;
+    private CountriesController countriesController;
+
     private int port = 7015;
+    private boolean testing = false;
 
     private ProfileUtils profileUtils;
 
@@ -43,13 +52,24 @@ public class Server {
 
             post( "/login",         authorizationController::login);
             post( "/logout",        authorizationController::logout);
+            before("/reset",        profileUtils::hasAdminAccess);
             post( "/reset",         databaseController::reset);
+            before("/resample",     profileUtils::hasAdminAccess);
             post( "/resample",      databaseController::resample);
+            before("/cli",          profileUtils::hasAdminAccess);
+            post( "/cli",           CLIController::executeQuery);
 
-            // TODO discuss where cache is stored
-            /*post( "/clearCache",   Server::stubMethod);*/
+            // Path to check connection/version matches client
+            get("/hello", (Request request, Response response) -> {
+                response.type("application/json");
+                response.status(200);
+                return "{\"version\": \"1\"}";
+            });
+
+            get("/status", databaseController::status);
 
             path("/admins", () -> {
+                before("",          profileUtils::hasAdminAccess);
                 get("",             adminController::getAllAdmins);
                 post( "",           adminController::addAdmin);
                 before("/:id",      profileUtils::checkId);
@@ -59,24 +79,43 @@ public class Server {
             });
 
             path("/clinicians", () -> {
-                get("",             clinicianController::getAllClinicians);
-                post( "",           clinicianController::addClinician);
-                before("/:id",      profileUtils::checkId);
+                get("", (request, response) -> {
+                    if (profileUtils.hasAdminAccess(request, response)) {
+                        return clinicianController.getAllClinicians(request, response);
+                    } else {
+                        return response.body();
+                    }
+                });
+                post( "", (request, response) -> {
+                    if (profileUtils.hasAdminAccess(request, response)) {
+                        return clinicianController.addClinician(request, response);
+                    } else {
+                        return response.body();
+                    }
+                });
+                before("/:id",      profileUtils::hasClinicianLevelAccess);
                 get( "/:id",        clinicianController::getClinician);
                 delete( "/:id",     clinicianController::deleteClinician);
                 patch( "/:id",      clinicianController::editClinician);
             });
 
             path("/users", () -> {
-                get("",            userController::getUsers);
+                get("", (request, response) -> {
+                    if (profileUtils.hasAccessToAllUsers(request, response)) {
+                        return userController.getUsers(request, response);
+                    } else {
+                        return response.body();
+                    }
+                });
                 post( "",          userController::addUser);
-                before("/:id",     profileUtils::checkId);
+
+                before("/:id",     profileUtils::hasUserLevelAccess);
                 get( "/:id",       userController::getUser);
                 patch( "/:id",     userController::editUser);
                 delete( "/:id",    userController::deleteUser);
 
                 path("/:id/medications", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     medicationsController::getAllMedications);
                     post("",                    medicationsController::addMedication);
                     get("/:medicationId",       medicationsController::getSingleMedication);
@@ -85,7 +124,7 @@ public class Server {
                 });
 
                 path("/:id/diseases", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     diseasesController::getAllDiseases);
                     post("",                    diseasesController::addDisease);
                     get("/:diseaseId",          diseasesController::getSingleDisease);
@@ -94,7 +133,7 @@ public class Server {
                 });
 
                 path("/:id/procedures", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     proceduresController::getAllProcedures);
                     post("",                    proceduresController::addProcedure);
                     get("/:procedureId",        proceduresController::getSingleProcedure);
@@ -103,23 +142,22 @@ public class Server {
                 });
 
                 path("/:id/history", () -> {
-                   before("",                   profileUtils::checkId);
+                   before("",                   profileUtils::hasUserLevelAccess);
                    get("",                      historyController::getUserHistoryItems);
                    post("",                     historyController::addUserHistoryItem);
                 });
 
                 path("/:id/donations", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     donationsController::getAllUserDonations);
                     post("",                    donationsController::addDonation);
+                    delete("",                  donationsController::deleteAllUserDonations);
                     get("/:donationListItemName", donationsController::getSingleUserDonationItem);
                     delete("/:donationListItemName", donationsController::deleteUserDonationItem);
-
-
                 });
 
                 path("/:id/waitingListItems", () -> {
-                    before("",                  profileUtils::checkId);
+                    before("",                  profileUtils::hasUserLevelAccess);
                     get("",                     waitingListController::getAllUserWaitingListItems);
                     post("",                    waitingListController::addNewUserWaitingListItem);
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
@@ -129,11 +167,28 @@ public class Server {
             });
 
             path("/donations", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
                 get("",  donationsController::getAllDonations);
             });
 
             path("/waitingListItems", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
                 get("",  waitingListController::getAllWaitingListItems);
+            });
+
+            path("/usercount", () -> {
+                before("",   profileUtils::hasAccessToAllUsers);
+                get("",      userController::countUsers);
+            });
+
+            path("/countries", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
+                get("", countriesController::getCountries);
+                patch("", countriesController::patchCountries);
+            });
+
+            path("/unique", () -> {
+                get("",    profileUtils::isUniqueIdentifier);
             });
         });
     }
@@ -144,15 +199,27 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        if(args.length > 0){
+        List<String> argz = Arrays.asList(args);
+        if(argz.size() > 0){
             try{
-                INSTANCE.port = Integer.parseInt(args[0]);
+                if(argz.contains("-t")){
+                    INSTANCE.testing = true;
+                }
+                INSTANCE.port = Integer.parseInt(argz.get(0));
             }
             catch (Exception ignored){
 
             }
         }
         INSTANCE.start();
+    }
+
+    /**
+     * Returns whether or not the program is under test
+     * @return whether or not the program is under test
+     */
+    public boolean isTesting(){
+        return testing;
     }
 
     /**
@@ -172,5 +239,7 @@ public class Server {
         historyController = new HistoryController();
         waitingListController = new WaitingListController();
         profileUtils = new ProfileUtils();
+        CLIController = new CLIController();
+        countriesController = new CountriesController();
     }
 }
