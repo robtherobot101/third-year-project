@@ -60,7 +60,7 @@ public class GeneralAdminTest {
      */
     @Test(expected = Exception.class)
     public void insertAdminNoUsername() throws SQLException {
-        Admin admin = new Admin("", "password", "Full Name");
+        Admin admin = new Admin(null, "password", "Full Name");
         generalAdmin.insertAdmin(admin);
     }
 
@@ -98,7 +98,7 @@ public class GeneralAdminTest {
      * Test getting admin with id 9999
      * @throws SQLException
      */
-    @Test(expected = Exception.class)
+    @Test
     public void getAdminFromBadId() throws SQLException {
         Admin admin = generalAdmin.getAdminFromId(9999);
         assertNull(admin);

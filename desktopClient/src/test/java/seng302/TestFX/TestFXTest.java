@@ -49,9 +49,9 @@ abstract class TestFXTest extends ApplicationTest {
                 WindowManager mainGUI = new WindowManager();
                 mainGUI.start(stage);
 
-                WindowManager.getDataManager().getGeneral().reset(null);
-                WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"), null);
-                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"), null);
+                WindowManager.getDataManager().getGeneral().reset("masterToken");
+                WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"), "masterToken");
+                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"), "masterToken");
             } catch (HttpResponseException e) {
 
             }
@@ -62,8 +62,8 @@ abstract class TestFXTest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException, SQLException, HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset(null);
-        WindowManager.getDataManager().getGeneral().resample(null);
+        WindowManager.getDataManager().getGeneral().reset("masterToken");
+        WindowManager.getDataManager().getGeneral().resample("masterToken");
 
         FxToolkit.hideStage();
         release(new KeyCode[]{});

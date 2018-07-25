@@ -28,7 +28,7 @@ public class UserWaitingList {
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
+                allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet, true));
             }
 
             return allWaitingListItems;
@@ -44,26 +44,38 @@ public class UserWaitingList {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet));
+                allWaitingListItems.add(getWaitingListItemFromResultSet(resultSet, false));
             }
             return allWaitingListItems;
         }
     }
 
-    public WaitingListItem getWaitingListItemFromResultSet(ResultSet waitingListItemResultSet) throws SQLException {
+    public WaitingListItem getWaitingListItemFromResultSet(ResultSet waitingListItemResultSet, boolean allItems) throws SQLException {
 
         LocalDate deregisteredDate = waitingListItemResultSet.getDate("organ_deregistered_date") != null ?
                 waitingListItemResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
-        
-        return new WaitingListItem(
-                Organ.parse(waitingListItemResultSet.getString("organ_type")),
-                waitingListItemResultSet.getDate("organ_registered_date").toLocalDate(),
-                waitingListItemResultSet.getInt("id"),
-                waitingListItemResultSet.getInt("user_id"),
-                deregisteredDate,
-                waitingListItemResultSet.getInt("deregistered_code"),
-                waitingListItemResultSet.getString("is_conflicting") != null
-        );
+
+        if(allItems) {
+            return new WaitingListItem(
+                    Organ.parse(waitingListItemResultSet.getString("organ_type")),
+                    waitingListItemResultSet.getDate("organ_registered_date").toLocalDate(),
+                    waitingListItemResultSet.getInt("id"),
+                    waitingListItemResultSet.getInt("user_id"),
+                    deregisteredDate,
+                    waitingListItemResultSet.getInt("deregistered_code"),
+                    waitingListItemResultSet.getString("is_conflicting") != null
+            );
+        } else {
+            return new WaitingListItem(
+                    Organ.parse(waitingListItemResultSet.getString("organ_type")),
+                    waitingListItemResultSet.getDate("organ_registered_date").toLocalDate(),
+                    waitingListItemResultSet.getInt("id"),
+                    waitingListItemResultSet.getInt("user_id"),
+                    deregisteredDate,
+                    waitingListItemResultSet.getInt("deregistered_code"),
+                    false //Calculated on client side.
+            );
+        }
     }
 
 
@@ -82,7 +94,7 @@ public class UserWaitingList {
                 return null;
             } else {
                 //If response is not empty then return a indication that fields arent empty
-                return getWaitingListItemFromResultSet(resultSet);
+                return getWaitingListItemFromResultSet(resultSet, false);
             }
         }
     }
