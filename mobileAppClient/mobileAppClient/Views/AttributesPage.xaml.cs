@@ -226,6 +226,11 @@ namespace mobileAppClient
                     "Server unavailable, check connection",
                     "OK");
                     break;
+                case HttpStatusCode.Unauthorized:
+                    await DisplayAlert("",
+                    "Unauthorised to modify profile",
+                    "OK");
+                    break;
                 case HttpStatusCode.InternalServerError:
                     await DisplayAlert("",
                     "Server error, please try again (500)",

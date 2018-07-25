@@ -52,6 +52,7 @@ namespace mobileAppClient
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
 
+
             if (!InputValidation.IsValidTextInput(givenUsernameEmail, true, false) || !InputValidation.IsValidTextInput(givenPassword, true, false))
             {
                 await DisplayAlert("",
