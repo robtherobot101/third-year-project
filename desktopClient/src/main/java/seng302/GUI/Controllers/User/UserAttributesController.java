@@ -1,23 +1,27 @@
 package seng302.GUI.Controllers.User;
 
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import seng302.Generic.IO;
+import org.apache.http.client.HttpResponseException;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -416,15 +420,25 @@ public class UserAttributesController extends UserTabController implements Initi
 
         //set profile image
         Image profilePhoto = null;
-
-        // TODO change this so that it fetches a ref from the server, and not locally.
-        System.out.println(IO.getJarPath());
         try {
-            profilePhoto = new Image(new FileInputStream(IO.getJarPath() + "\\classes\\icon.png\\"));
-        } catch (FileNotFoundException e) {
+            String encodedImage = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
+            String base64Image = encodedImage.split(",")[1];
+            //Decode the string to a byte array
+            byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+
+            //Turn it into a buffered image
+            ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
+            BufferedImage bImage = ImageIO.read(byteInputStream);
+            byteInputStream.close();
+            Image image = SwingFXUtils.toFXImage(bImage, null);
+            profileImage.setImage(image);
+        } catch (HttpResponseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        profileImage.setImage(profilePhoto);
+
+
     }
 
     public void undo(){

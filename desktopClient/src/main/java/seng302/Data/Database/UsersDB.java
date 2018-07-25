@@ -1,20 +1,17 @@
 package seng302.Data.Database;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
-import seng302.Generic.DataManager;
-import seng302.User.Attribute.Organ;
-import seng302.User.Disease;
-import seng302.User.Procedure;
 import seng302.User.User;
-import seng302.User.WaitingListItem;
 
 import java.lang.reflect.Type;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +80,13 @@ public class UsersDB implements UsersDAO {
         }
         return null;
     }// Now uses API server!
+
+    @Override
+    public String getUserPhoto(long id) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), "users", String.valueOf(id),"photo");
+        //TODO add check here to check if it is a valid base64 string
+        return response.toString();
+    }
 
     @Override
     public List<User> getAllUsers() throws HttpResponseException {

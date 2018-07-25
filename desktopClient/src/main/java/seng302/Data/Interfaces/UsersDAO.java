@@ -1,7 +1,6 @@
 package seng302.Data.Interfaces;
 
 import org.apache.http.client.HttpResponseException;
-import seng302.Generic.APIResponse;
 import seng302.User.User;
 
 import java.util.Collection;
@@ -18,6 +17,8 @@ public interface UsersDAO {
     List<User> queryUsers(Map<String, String> searchMap) throws HttpResponseException;
 
     User getUser(long id) throws HttpResponseException;
+
+    String getUserPhoto(long id) throws HttpResponseException;
 
     // Now uses API server!
     Collection<User> getAllUsers() throws HttpResponseException;

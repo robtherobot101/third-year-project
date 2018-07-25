@@ -24,7 +24,7 @@ public class User {
     private long id;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "";
+    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "", profileImageType="";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -552,5 +552,9 @@ public class User {
 
     public void addHistoryItem(HistoryItem historyItem) {
         userHistory.add(historyItem);
+    }
+
+    public String getProfileImageType() {
+        return this.profileImageType;
     }
 }

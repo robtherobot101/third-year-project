@@ -11,8 +11,10 @@ import spark.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.URISyntaxException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -339,6 +341,7 @@ public class UserController {
         }
     }
 
+
     //TODO Finish this method.
     public String getUserPhoto(Request request, Response response) {
         User queriedUser = queryUser(request, response);
@@ -346,17 +349,18 @@ public class UserController {
         if (queriedUser == null){
             return response.body();
         }
-        String filepath;
-        try {
-            String fileType;
-            //Find filetype
 
+        try {
+            //Find filetype
+            String fileType = queriedUser.getProfileImageType();
             //Find filepath
-            filepath = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-            filepath += "\\images\\user";
+            String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + fileType;
 
             //Get file
-            File file = new File(new FileInputStream(filepath));
+            File file = new File(filepath);
+            if (!file.isFile()){
+                return "Photo does not exist.";
+            }
 
             //Turn the image file into a byte array
             BufferedImage bImage = ImageIO.read(file);
@@ -365,21 +369,20 @@ public class UserController {
             byte[] byteArrayImage = byteOutputStream.toByteArray();
 
             //Then turn it to a Base64 String to be sent away
-            String encodedImage = Base64.getEncoder().encodeToString(byteArrayImage);
+            return Base64.getEncoder().encodeToString(byteArrayImage);
 
-            return encodedImage;
-
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            return "Internal Server Error";
         }
 
-        return "l";
     }
 
-    //TODO finish this method. I spaceed it out quite a bit so I could get my head around it but this won't be final. Jono
+    //TODO finish this method. I spaced it out quite a bit so I could get my head around it but this won't be final. Jono
     public String editUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
-
+        if (queriedUser == null){
+            return response.body();
+        }
 
         String encodedImage = request.body();
         if (encodedImage == null) {
@@ -387,13 +390,13 @@ public class UserController {
             return "Missing Image";
         } else {
             try {
-
                 String base64Image = encodedImage.split(",")[1];
                 //Decode the string to a byte array
                 byte[] decodedImage = Base64.getDecoder().decode(base64Image);
 
                 //Find the filetype
-                String fileType = null;
+                String fileType = queriedUser.getProfileImageType();
+                String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + fileType;
 
                 //Turn it into a buffered image
                 ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
@@ -401,10 +404,10 @@ public class UserController {
                 byteInputStream.close();
 
                 // write the image to a file
-                File outputfile = new File("change me so I have proper id + type pls");
+                File outputfile = new File(filepath);
                 ImageIO.write(image, fileType, outputfile);
 
-                //Do DB updates
+                //TODO Do DB updates
 
                 return "PHOTO SUCCESSFULLY SAVED";
             }  catch (IOException e) {
@@ -418,21 +421,24 @@ public class UserController {
     public String deleteUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
 
-        try {
-            //Find filepath in DB
+        //Find filepath in DB
+        String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + queriedUser.getProfileImageType();
 
-            //Delete file from storage
-
-            //Update DB
-
-            return "Photo successfully deleted";
-        } catch (IOException e){
-            return "Internal Server Error";
+        //Delete file from storage
+        File file = new File(filepath);
+        boolean deleted = false;
+        if (file.isFile()){
+            deleted = file.delete();
         }
 
-
-
-
+        //Update DB
+        if (deleted){
+            //update
+            return "Photo successfully deleted";
+        } else {
+            //update
+            return "Internal server error";
+        }
     }
 
 }
