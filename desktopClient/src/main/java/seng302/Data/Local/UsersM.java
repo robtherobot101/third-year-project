@@ -2,9 +2,7 @@ package seng302.Data.Local;
 
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
-import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
-import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -357,6 +355,11 @@ public class UsersM implements UsersDAO {
         }
         Debugger.log("User with id: " + id + " not found. Returning null.");
         return null;
+    }
+
+    @Override
+    public String getUserPhoto(long id) {
+        return "String";
     }
 
     @Override

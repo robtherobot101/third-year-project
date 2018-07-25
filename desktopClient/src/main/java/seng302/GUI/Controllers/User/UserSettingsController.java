@@ -13,7 +13,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 

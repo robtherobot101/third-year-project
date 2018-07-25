@@ -1,6 +1,5 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -25,7 +24,7 @@ public class User {
     private long id;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "";
+    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "", profileImageType = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -665,5 +664,13 @@ public class User {
 
     public void addHistoryEntry(String action, String description) {
         userHistory.add(new HistoryItem(action, description));
+    }
+
+    public String getProfileImageType() {
+        return profileImageType;
+    }
+
+    public void setProfileImageType(String type) {
+        this.profileImageType = type;
     }
 }

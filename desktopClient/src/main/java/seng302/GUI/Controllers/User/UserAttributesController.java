@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.apache.http.client.HttpResponseException;
+import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
@@ -17,14 +18,13 @@ import seng302.User.WaitingListItem;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
@@ -46,6 +46,8 @@ public class UserAttributesController extends UserTabController implements Initi
         middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
     @FXML
     private ImageView profileImage;
+    @FXML
+    private Button changePhotoButton;
 
     private Map<Organ, CheckBox> organTickBoxes;
 
@@ -322,6 +324,44 @@ public class UserAttributesController extends UserTabController implements Initi
         }
     }
 
+
+    public void changeProfilePhoto() {
+
+            List<String> options = new ArrayList<>();
+            options.add("Upload a new profile photo");
+            if (currentUser.getProfileImageType() != null) {
+                options.add("Delete the current profile photo");
+            }
+
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Upload a new profile photo", options);
+            WindowManager.setIconAndStyle(dialog.getDialogPane());
+            dialog.setTitle("Change Profile Photo");
+            dialog.setHeaderText("Max image size is 5MB. Accepted image formats are BMP, PNG, JPEG.");
+            dialog.setContentText("Select an option:");
+
+            //Get Input Code
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(this::processPhoto);
+
+    }
+
+    private void processPhoto(String option) {
+        System.out.println("option");
+        if (Objects.equals(option, "Upload a new profile photo")){
+            uploadProfileImage();
+        } else {
+            deleteProfileImage();
+        }
+    }
+
+    private void deleteProfileImage() {
+        System.out.println("Deeleeeting..");
+    }
+
+    private void uploadProfileImage() {
+        System.out.println("Uploaaaading....");
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -436,6 +476,17 @@ public class UserAttributesController extends UserTabController implements Initi
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println(IO.getJarPath());
+            File imageFile = new File(IO.getJarPath() + "\\classes\\icon.png");
+            try {
+                String imageURL = imageFile.toURI().toURL().toString();
+                profilePhoto = new Image(imageURL);
+                profileImage.setImage(profilePhoto);
+            } catch (MalformedURLException e1) {
+               System.out.println("Default image missing. This should be icon.png and be in the classes folder.");
+            }
+
         }
 
 
