@@ -21,7 +21,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>11.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>mobileAppClient</string>
 	<key>CFBundleIdentifier</key>
@@ -34,5 +34,7 @@
 	<string>mobileAppClient</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 </dict>
 </plist>
