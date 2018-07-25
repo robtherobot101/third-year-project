@@ -168,9 +168,9 @@ public class GeneralM implements GeneralDAO {
         return true;
     }
 
-    public List<Country> getAllCountries() throws HttpResponseException {
+    public List<Country> getAllCountries(String token) throws HttpResponseException {
         return null;
     }
 
-    public void updateCountries(List<Country> countries) throws HttpResponseException{}
+    public void updateCountries(List<Country> countries, String token) throws HttpResponseException{}
 }

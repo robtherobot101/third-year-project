@@ -1239,7 +1239,7 @@ public class AdminController implements Initializable {
 
             final ObservableList<String> countries = FXCollections.observableArrayList();
             GeneralDAO generalDB = WindowManager.getDataManager().getGeneral();
-            List<Country> countryList = generalDB.getAllCountries();
+            List<Country> countryList = generalDB.getAllCountries(token);
             for(Country country : countryList) {
                 countries.add(country.getCountryName());
             }
@@ -1261,7 +1261,7 @@ public class AdminController implements Initializable {
                         for (Country country : countryList) {
                             country.setValid(countryCheckComboBox.getItemBooleanProperty(country.getCountryName()).getValue());
                         }
-                        generalDB.updateCountries(countryList);
+                        generalDB.updateCountries(countryList, token);
                         return null;
                     } catch (HttpResponseException e) {
                         databaseError();

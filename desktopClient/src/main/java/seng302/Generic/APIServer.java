@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
@@ -79,7 +80,7 @@ public class APIServer {
      * @param body The body of the request as a JsonObject
      * @return The result as a response object
      */
-    public APIResponse patchRequest(JsonObject body, Map<String, String> queryParams, String token, String... path){
+    public APIResponse patchRequest(JsonElement body, Map<String, String> queryParams, String token, String... path){
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
