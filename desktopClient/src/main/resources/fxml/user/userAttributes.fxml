@@ -396,7 +396,7 @@
             <Insets bottom="40.0" left="20.0" />
          </GridPane.margin>
       </Label>
-      <ComboBox fx:id="countryOfDeathComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="8">
+      <ComboBox fx:id="countryOfDeathComboBox" maxWidth="1.7976931348623157E308" onAction="#countryOfDeathChanged" prefHeight="27.0" prefWidth="175.0" GridPane.rowIndex="8">
          <GridPane.margin>
             <Insets left="20.0" right="20.0" />
          </GridPane.margin>
@@ -409,5 +409,10 @@
             <Insets bottom="40.0" left="20.0" />
          </GridPane.margin>
       </Label>
+      <TextField fx:id="regionOfDeathField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="8">
+         <GridPane.margin>
+            <Insets left="20.0" right="20.0" />
+         </GridPane.margin>
+      </TextField>
    </children>
 </GridPane>

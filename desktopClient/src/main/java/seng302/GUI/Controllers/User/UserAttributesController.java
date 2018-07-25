@@ -8,7 +8,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
+import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.textfield.TextFields;
+import seng302.Generic.Country;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
@@ -25,12 +28,15 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField, regionOfDeathField;
     @FXML
     private DatePicker dateOfBirthPicker;
 
     @FXML
-    private ComboBox<NZRegion> regionComboBox;
+    private ComboBox countryOfDeathComboBox;
+
+    @FXML
+    private ComboBox<NZRegion> regionComboBox, regionOfDeathComboBox;
 
     @FXML
     private DateTimePicker dateOfDeathPicker;
@@ -48,11 +54,22 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private Map<Organ, CheckBox> organTickBoxes;
 
+    boolean deathInNewZealand = false;
+
     public void setCurrentUser(User user) {
         currentUser = user;
         populateUserFields();
         updateBMI();
         updateAge();
+    }
+
+    public void countryOfDeathChanged() {
+        if(countryOfDeathComboBox.getValue() != null) {
+            deathInNewZealand = countryOfDeathComboBox.getValue().toString().equals("New Zealand");
+            regionOfDeathComboBox.setVisible(deathInNewZealand);
+            regionOfDeathField.setVisible(deathInNewZealand == false);
+        }
+        attributeFieldUnfocused();
     }
 
     /**
@@ -230,10 +247,24 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setBloodType(bloodTypeComboBox.getValue());
         currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
-        currentUser.setRegion(regionComboBox.getValue().toString());
+
+        if(regionComboBox.getValue() != null) {
+            currentUser.setRegion(regionComboBox.getValue().toString());
+
+        }
+
         currentUser.setCurrentAddress(addressField.getText());
         currentUser.setCityOfDeath(deathCityField.getText());
-        System.out.println(currentUser.getCityOfDeath());
+
+        if(deathInNewZealand) {
+            if(regionOfDeathComboBox.getValue() != null) {
+                currentUser.setRegionOfDeath(regionOfDeathComboBox.getValue().toString());
+            }
+        } else {
+            currentUser.setRegionOfDeath(regionOfDeathField.getText());
+        }
+
+
         for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
                 if (!organTickBoxes.get(key).isSelected()) {
@@ -288,6 +319,14 @@ public class UserAttributesController extends UserTabController implements Initi
         if(currentUser.getRegion() != null) {
             regionComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegion()));
         }
+
+        if(currentUser.getRegionOfDeath() != null) {
+            regionOfDeathComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegionOfDeath()));
+        }
+        System.out.println("df:"+regionOfDeathField);
+        regionOfDeathField.setText(currentUser.getRegionOfDeath());
+
+        regionComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
         deathCityField.setText(currentUser.getCityOfDeath());
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
@@ -311,6 +350,18 @@ public class UserAttributesController extends UserTabController implements Initi
 
         updateBMI();
         highlightOrganCheckBoxes();
+
+
+        try {
+            List<String> validCountries = new ArrayList<>();
+            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(userController.getToken())) {
+                if(c.getValid())
+                    validCountries.add(c.getCountryName());
+            }
+            countryOfDeathComboBox.setItems(FXCollections.observableArrayList(validCountries));
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
+        }
     }
 
     /**
@@ -331,7 +382,7 @@ public class UserAttributesController extends UserTabController implements Initi
     public void initialize(URL location, ResourceBundle resources) {
 
         regionComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
-
+        regionOfDeathComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         genderIdentityComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         bloodTypeComboBox.setItems(FXCollections.observableArrayList(BloodType.values()));
