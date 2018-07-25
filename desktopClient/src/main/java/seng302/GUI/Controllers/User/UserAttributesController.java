@@ -49,6 +49,7 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private ComboBox<AlcoholConsumption> alcoholConsumptionComboBox;
     @FXML
+
     private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox,
         middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
 
@@ -250,7 +251,10 @@ public class UserAttributesController extends UserTabController implements Initi
 
         if(regionComboBox.getValue() != null) {
             currentUser.setRegion(regionComboBox.getValue().toString());
+        }
 
+        if(countryOfDeathComboBox != null) {
+            currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
         }
 
         currentUser.setCurrentAddress(addressField.getText());
@@ -323,6 +327,7 @@ public class UserAttributesController extends UserTabController implements Initi
         if(currentUser.getRegionOfDeath() != null) {
             regionOfDeathComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegionOfDeath()));
         }
+
         System.out.println("df:"+regionOfDeathField);
         regionOfDeathField.setText(currentUser.getRegionOfDeath());
 
