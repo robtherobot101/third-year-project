@@ -25,21 +25,20 @@ public class GeneralCountries {
         }
     }
 
-    public void patchCounties(List<Country> Countries) throws SQLException {
+    public void patchCounties(List<Country> countries) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            ArrayList<Country> countries = new ArrayList<>();
             String query = "DELETE FROM COUNTRIES";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.executeQuery();
+            statement.executeUpdate();
             for (Country country : countries) {
-                query = "INSERT INTO `COUNTRIES`(`country`, `valid`) VALUES (" + country.getCountryName() + ",";
+                query = "INSERT INTO `COUNTRIES`(`country`, `valid`) VALUES ('" + country.getCountryName() + "',";
                 if (country.getValid()) {
                     query += "1)";
                 } else {
                     query += "0)";
                 }
                 PreparedStatement insertStatement = connection.prepareStatement(query);
-                insertStatement.executeQuery();
+                insertStatement.executeUpdate();
             }
         }
     }

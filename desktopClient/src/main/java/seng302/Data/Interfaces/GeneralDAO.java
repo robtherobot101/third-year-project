@@ -30,7 +30,7 @@ public interface GeneralDAO {
 
     boolean status() throws HttpResponseException, ConnectException;
 
-    List<Country> getAllCountries() throws HttpResponseException;
+    List<Country> getAllCountries(String token) throws HttpResponseException;
 
-    void updateCountries(List<Country> countries) throws HttpResponseException;
+    void updateCountries(List<Country> countries, String token) throws HttpResponseException;
 }

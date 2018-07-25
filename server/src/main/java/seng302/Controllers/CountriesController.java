@@ -50,10 +50,11 @@ public class CountriesController {
      */
     public String patchCountries(Request request, Response response){
         try{
+            System.out.println(request.body());
              model.patchCounties(new Gson().fromJson(request.body(), new TypeToken<List<Country>>(){}.getType()));
         } catch (SQLException e) {
             response.status(500);
-            return e.getMessage();
+            System.out.println(e.getMessage());
         }
 
         response.type("application/json");
