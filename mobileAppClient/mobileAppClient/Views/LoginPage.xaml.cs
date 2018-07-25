@@ -57,6 +57,7 @@ namespace mobileAppClient
                 await DisplayAlert("",
                     "Please enter a valid username/email and password",
                     "OK");
+                loginClicked = false;
                 return;
             }
 
@@ -72,7 +73,7 @@ namespace mobileAppClient
                 case HttpStatusCode.Unauthorized:
                     await DisplayAlert(
                         "Failed to Login",
-                        "Incorrent username/password",
+                        "Incorrect username/password",
                         "OK");
                     break;
                 case HttpStatusCode.ServiceUnavailable:
