@@ -33,8 +33,11 @@ public class User {
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
     private ArrayList<HistoryItem> userHistory = new ArrayList<>();
-    private String cityOfDeath = "test";
-    private String regionOfDeath = "test";
+
+
+
+    private String cityOfDeath = "";
+    private String regionOfDeath = "";
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -669,4 +672,20 @@ public class User {
     public void addHistoryEntry(String action, String description) {
         userHistory.add(new HistoryItem(action, description));
     }
+    public String getCityOfDeath() {
+        return cityOfDeath;
+    }
+
+    public String getRegionOfDeath() {
+        return regionOfDeath;
+    }
+
+    public void setCityOfDeath(String cityOfDeath) {
+        this.cityOfDeath = cityOfDeath;
+    }
+
+    public void setRegionOfDeath(String regionOfDeath) {
+        this.regionOfDeath = regionOfDeath;
+    }
+
 }

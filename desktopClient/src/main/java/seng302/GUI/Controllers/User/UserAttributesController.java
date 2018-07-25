@@ -25,9 +25,13 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField;
     @FXML
     private DatePicker dateOfBirthPicker;
+
+    @FXML
+    private ComboBox<NZRegion> regionComboBox;
+
     @FXML
     private DateTimePicker dateOfDeathPicker;
     @FXML
@@ -49,11 +53,6 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
         updateBMI();
         updateAge();
-        if(user.getCurrentAddress() == null) {
-            setupLocationCompletetion(false);
-        } else {
-            setupLocationCompletetion(user.getCurrentAddress().equals("New Zealand"));
-        }
     }
 
     /**
@@ -127,12 +126,6 @@ public class UserAttributesController extends UserTabController implements Initi
      * @return returns boolean of it working or not
      */
     public boolean updateUser() {
-        if(currentUser.getCurrentAddress() == null) {
-            setupLocationCompletetion(false);
-        } else {
-            setupLocationCompletetion(currentUser.getCurrentAddress().equals("New Zealand"));
-        }
-
         //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
@@ -237,8 +230,10 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setBloodType(bloodTypeComboBox.getValue());
         currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
-        currentUser.setRegion(regionField.getText());
+        currentUser.setRegion(regionComboBox.getValue().toString());
         currentUser.setCurrentAddress(addressField.getText());
+        currentUser.setCityOfDeath(deathCityField.getText());
+        System.out.println(currentUser.getCityOfDeath());
         for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
                 if (!organTickBoxes.get(key).isSelected()) {
@@ -290,7 +285,10 @@ public class UserAttributesController extends UserTabController implements Initi
             preferredLastNameField.setText("");
         }
         addressField.setText(currentUser.getCurrentAddress());
-        regionField.setText(currentUser.getRegion());
+        if(currentUser.getRegion() != null) {
+            regionComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegion()));
+        }
+        deathCityField.setText(currentUser.getCityOfDeath());
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
         dateOfDeathPicker.setDateTimeValue(currentUser.getDateOfDeath());
@@ -328,17 +326,11 @@ public class UserAttributesController extends UserTabController implements Initi
         }
     }
 
-    public void setupLocationCompletetion(boolean inNewZealand) {
-        SuggestionProvider employeesProvider = SuggestionProvider.create(Arrays.asList(NZRegion.values()));
-        if(inNewZealand) {
-            TextFields.bindAutoCompletion(regionField, employeesProvider).setVisibleRowCount(10);
-        } else {
-            TextFields.bindAutoCompletion(regionField, employeesProvider).dispose();
-        }
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        regionComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
 
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         genderIdentityComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
@@ -398,7 +390,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 attributeFieldUnfocused();
             }
         });
-        regionField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+        deathCityField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 attributeFieldUnfocused();
             }
@@ -408,7 +400,6 @@ public class UserAttributesController extends UserTabController implements Initi
                 attributeFieldUnfocused();
             }
         });
-        System.out.println(dateOfDeathPicker.getDateTimeValue().toString());
 
         dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {

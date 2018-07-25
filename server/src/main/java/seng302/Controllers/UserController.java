@@ -349,6 +349,7 @@ public class UserController {
         Gson gson = new Gson();
 
         User receivedUser = gson.fromJson(request.body(), User.class);
+        System.out.println(receivedUser.getCityOfDeath());
         if (receivedUser == null) {
             response.status(400);
             return "Missing User Body";
@@ -359,6 +360,7 @@ public class UserController {
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
+                e.printStackTrace();
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";

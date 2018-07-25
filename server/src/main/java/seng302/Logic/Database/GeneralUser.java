@@ -699,7 +699,7 @@ public class GeneralUser {
             String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
-                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? , cityOfDeath = ?, regionOfDeath = ?" +
+                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? , cityOfDeath = ?, regionOfDeath = ? " +
                     "WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
