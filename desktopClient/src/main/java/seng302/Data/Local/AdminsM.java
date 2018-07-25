@@ -11,6 +11,9 @@ public class AdminsM implements AdminsDAO {
 
     private List<Admin> admins;
 
+    /**
+     * constructor method to create a new adminsM object used for local storage
+     */
     public AdminsM() {
         this.admins = new ArrayList<>();
     }

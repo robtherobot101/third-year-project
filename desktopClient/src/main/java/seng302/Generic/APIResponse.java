@@ -15,6 +15,11 @@ public class APIResponse{
     private String token = null;
     private int status;
 
+    /**
+     * constructor method to create a new apiResponse object
+     * is used to parse the responses from the server that contain requested data
+     * @param response Response the response from the server
+     */
     public APIResponse(Response response){
         jp = new JsonParser();
         this.body = response.readEntity(String.class);
@@ -26,11 +31,10 @@ public class APIResponse{
         }
     }
 
-    public APIResponse(int status) {
-        this.body = "";
-        this.status = status;
-    }
-
+    /**
+     * method to check if the response is in a valid JSON format
+     * @return boolean if the apiResponse is JSON format
+     */
     public boolean isValidJson(){
         try{
             new JSONObject(body);
@@ -44,22 +48,42 @@ public class APIResponse{
         return true;
     }
 
+    /**
+     * gets the token attribute of the Response
+     * @return String the token used to secure the payload
+     */
     public String getToken() {
         return token;
     }
 
+    /**
+     * gets the response body as a JSON object
+     * @return JsonObject the response body formatted
+     */
     public JsonObject getAsJsonObject(){
         return jp.parse(body).getAsJsonObject();
     }
 
+    /**
+     * gets the response body as a JSON array
+     * @return JsonArray the response body formatted
+     */
     public JsonArray getAsJsonArray(){
         return jp.parse(body).getAsJsonArray();
     }
 
+    /**
+     * gets the response body as a string
+     * @return String the response body formatted
+     */
     public String getAsString(){
         return body;
     }
 
+    /**
+     * gets the response status code
+     * @return int the response status code
+     */
     public int getStatusCode() {
         return status;
     }

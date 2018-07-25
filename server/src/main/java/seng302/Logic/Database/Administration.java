@@ -13,7 +13,10 @@ import java.util.ArrayList;
 
 public class Administration {
 
-
+    /**
+     * method to call to the database to check if it is online
+     * @throws SQLException when the connection to te database has an error
+     */
     public void status() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT staff_id FROM ADMIN WHERE staff_id = 1";
@@ -24,6 +27,10 @@ public class Administration {
     }
 
 
+    /**
+     * method to resample the database with default entries
+     * @throws SQLException when the connection to te database has an error
+     */
     public void resample() throws SQLException{
         ArrayList<User> allUsers = new ArrayList<>();
         User user1 = new User("Andy", new String[]{"Robert"}, "French", LocalDate.now(), "andy", "andy@andy.com", "andrew");
@@ -57,6 +64,10 @@ public class Administration {
         }
     }
 
+    /**
+     * method to empty the database tables with no values
+     * @throws SQLException when the connection to te database has an error
+     */
     public void reset() throws SQLException {
 
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
