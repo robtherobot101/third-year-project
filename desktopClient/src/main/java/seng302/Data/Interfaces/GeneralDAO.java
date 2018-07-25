@@ -1,6 +1,9 @@
 package seng302.Data.Interfaces;
 
 import org.apache.http.client.HttpResponseException;
+import seng302.Generic.APIResponse;
+import seng302.Generic.Country;
+import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.ConnectException;
@@ -10,6 +13,8 @@ import java.util.Map;
 public interface GeneralDAO {
     // Now uses API server!
     Map<Object, String> loginUser(String usernameEmail, String password) throws HttpResponseException;
+
+    void logoutUser(String token) throws HttpResponseException;
 
     void reset(String token) throws HttpResponseException;
 
@@ -24,4 +29,8 @@ public interface GeneralDAO {
     List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException;
 
     boolean status() throws HttpResponseException, ConnectException;
+
+    List<Country> getAllCountries() throws HttpResponseException;
+
+    void updateCountries(List<Country> countries) throws HttpResponseException;
 }

@@ -38,7 +38,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
     Clinician testClinician;
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before
@@ -247,7 +247,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
                 stage.setScene(new Scene(root, 290, 280));
                 stage.initModality(Modality.APPLICATION_MODAL);
 
-                WindowManager.setCurrentClinicianForAccountSettings(testClinician);
+                WindowManager.setCurrentClinicianForAccountSettings(testClinician, null);
                 WindowManager.setClinicianAccountSettingsEnterEvent();
 
                 stage.showAndWait();

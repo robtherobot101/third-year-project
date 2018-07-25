@@ -1,12 +1,15 @@
 package seng302.Data.Database;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.Generic.Country;
 import seng302.Generic.Debugger;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -29,7 +32,7 @@ public class GeneralDB implements GeneralDAO {
         Map<Object, String> responseMap = new HashMap<>();
 
         Debugger.log("Logging in with server.");
-        Map<String, String> queryParameters = new HashMap<String, String>();
+        Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
@@ -52,6 +55,11 @@ public class GeneralDB implements GeneralDAO {
             responseMap.put(null, "Username/email and password combination not recognized.");
             return responseMap;
         }
+    }
+
+    @Override
+    public void logoutUser(String token) throws HttpResponseException {
+        server.postRequest(new JsonObject(), new HashMap<>(), token, "logout");
     }
 
     public void reset(String token) throws HttpResponseException {
@@ -104,5 +112,25 @@ public class GeneralDB implements GeneralDAO {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<Country> getAllCountries() throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), "countries");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Country>>(){}.getType());
+        } else {
+            return new ArrayList<Country>();
+        }
+    }
+
+    @Override
+    public void updateCountries(List<Country> countries) throws HttpResponseException {
+        JsonParser jp = new JsonParser();
+        JsonObject userJson = jp.parse(new Gson().toJson(countries)).getAsJsonObject();
+        APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),"countries");
     }
 }

@@ -23,16 +23,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
+import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
+import seng302.Data.Database.GeneralDB;
+import seng302.Data.Interfaces.GeneralDAO;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
-import seng302.Generic.Cache;
-import seng302.Generic.Debugger;
-import seng302.Generic.IO;
-import seng302.Generic.WindowManager;
+import seng302.Generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
@@ -173,6 +173,18 @@ public class AdminController implements Initializable {
     }
 
     /**
+     * Logs out this admin on the server, removing its authorisation token.
+     */
+    public void serverLogout() {
+        try {
+            WindowManager.getDataManager().getGeneral().logoutUser(token);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to log out on server.");
+        }
+        this.token = null;
+    }
+
+    /**
      * Logs out the currentAdmin. The user is asked if they're sure they want to log out, if yes,
      * all open user windows spawned by the currentAdmin are closed and the main scene is returned to the logout screen.
      */
@@ -181,6 +193,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
+            serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.admin);
@@ -572,9 +585,9 @@ public class AdminController implements Initializable {
 
 
     /**
-     * Checks whether this waiting list has an API token.
+     * Checks whether this admin has an API token.
      *
-     * @return Whether this waiting list has an API token
+     * @return Whether this admin has an API token
      */
     public boolean hasToken() {
         return token != null;
@@ -1207,5 +1220,75 @@ public class AdminController implements Initializable {
         cache.clear();
         cache.save();
         InteractionApi.setCache(cache);
+    }
+
+    public void setCountries(){
+        try {
+            Dialog<ArrayList<String>> dialog = new Dialog<>();
+            dialog.setTitle("Update Countries");
+            dialog.setHeaderText("Update Countries");
+            WindowManager.setIconAndStyle(dialog.getDialogPane());
+            ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 10, 10, 10));
+
+            final ObservableList<String> countries = FXCollections.observableArrayList();
+            GeneralDAO generalDB = WindowManager.getDataManager().getGeneral();
+            List<Country> countryList = generalDB.getAllCountries();
+            for(Country country : countryList) {
+                countries.add(country.getCountryName());
+            }
+            CheckComboBox<String> countryCheckComboBox = new CheckComboBox<>(countries);
+            for (Country country : countryList) {
+                if (country.getValid()) {
+                    countryCheckComboBox.getItemBooleanProperty(country.getCountryName()).setValue(true);
+                }
+            }
+
+            grid.add(new Label("Countries:"), 0, 0);
+            grid.add(countryCheckComboBox, 1, 0);
+
+            dialog.getDialogPane().setContent(grid);
+
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == updateButtonType) {
+                    try {
+                        for (Country country : countryList) {
+                            country.setValid(countryCheckComboBox.getItemBooleanProperty(country.getCountryName()).getValue());
+                        }
+                        generalDB.updateCountries(countryList);
+                        return null;
+                    } catch (HttpResponseException e) {
+                        databaseError();
+                    }
+                }
+                return null;
+            });
+
+            dialog.showAndWait();
+
+
+        } catch (HttpResponseException e) {
+            databaseError();
+        }
+    }
+
+    private void databaseError(){
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Error");
+        dialog.setHeaderText("Error");
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+        Label label = new Label();
+        label.setText("Could not connect to the Sever");
+
+        dialog.getDialogPane().setContent(label);
+        dialog.showAndWait();
     }
 }
