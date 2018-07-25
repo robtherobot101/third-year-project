@@ -149,6 +149,7 @@ public class Server {
 
             path("/countries", () -> {
                 get("", countriesController::getCountries);
+                patch("", countriesController::patchCountries);
             });
         });
     }

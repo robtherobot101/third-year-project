@@ -7,6 +7,7 @@ import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Data.ResampleData;
 import seng302.Generic.APIResponse;
+import seng302.Generic.Country;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -138,6 +139,10 @@ public class GeneralM implements GeneralDAO {
     }
 
     public List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException {
+        return null;
+    }
+
+    public List<Country> getAllCountries() throws HttpResponseException {
         return null;
     }
 }

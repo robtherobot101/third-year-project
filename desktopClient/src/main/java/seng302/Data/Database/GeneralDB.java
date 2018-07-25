@@ -7,6 +7,7 @@ import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.Generic.Country;
 import seng302.Generic.Debugger;
 import seng302.User.Admin;
 import seng302.User.Clinician;
@@ -89,6 +90,19 @@ public class GeneralDB implements GeneralDAO {
             }.getType());
         } else {
             return new ArrayList<WaitingListItem>();
+        }
+    }
+
+    @Override
+    public List<Country> getAllCountries() throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), "countries");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Country>>(){}.getType());
+        } else {
+            return new ArrayList<Country>();
         }
     }
 }

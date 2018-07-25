@@ -17,6 +17,12 @@ public class CountriesController {
         model = new GeneralCountries();
     }
 
+    /**
+     * Returns all the countries and whether they are valid or not.
+     * @param request the request body
+     * @param response the response body
+     * @return A json string of all the countries and if they are valid or not
+     */
     public String getCountries(Request request, Response response){
         ArrayList<Country> queriedCountries;
         try {
@@ -32,5 +38,18 @@ public class CountriesController {
         response.type("application/json");
         response.status(200);
         return serialQueriedCountries;
+    }
+
+    /**
+     * Updates the countries which are valid or not.
+     * @param request the request body
+     * @param response the response body
+     * @return
+     */
+    public String patchCountries(Request request, Response response){
+        //Todo
+        response.type("application/json");
+        response.status(200);
+        return "Todo";
     }
 }

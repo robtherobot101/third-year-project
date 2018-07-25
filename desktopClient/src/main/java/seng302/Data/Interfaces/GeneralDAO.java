@@ -2,6 +2,7 @@ package seng302.Data.Interfaces;
 
 import org.apache.http.client.HttpResponseException;
 import seng302.Generic.APIResponse;
+import seng302.Generic.Country;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
@@ -22,4 +23,6 @@ public interface GeneralDAO {
     boolean isUniqueIdentifier(String username, long userId) throws HttpResponseException;
 
     List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException;
+
+    public List<Country> getAllCountries() throws HttpResponseException;
 }
