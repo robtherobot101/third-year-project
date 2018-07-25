@@ -6,6 +6,7 @@ import seng302.User.Admin;
 import java.util.Collection;
 
 public interface AdminsDAO {
+
     void insertAdmin(Admin admin, String token) throws HttpResponseException;
 
     void updateAdminDetails(Admin admin, String token) throws HttpResponseException;

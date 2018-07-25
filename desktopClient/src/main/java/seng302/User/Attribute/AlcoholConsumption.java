@@ -8,6 +8,11 @@ public enum AlcoholConsumption {
 
     private String type;
 
+    /**
+     * constructor method to create the Alcohol consumption attribute
+     * can be of type: None, Low, Average, High, Very High, or Alcoholic
+     * @param type String the type of alcoholic consumption
+     */
     AlcoholConsumption(String type) {
         this.type = type;
     }

@@ -5,6 +5,7 @@ import seng302.Model.Attribute.Organ;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Class contains all the information for a given procedure used in the Medical History (Procedures) section.
@@ -130,4 +131,20 @@ public class Procedure {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Procedure procedure = (Procedure) o;
+        return  Objects.equals(summary, procedure.summary) &&
+                Objects.equals(description, procedure.description) &&
+                Objects.equals(date, procedure.date) &&
+                Objects.equals(organsAffected, procedure.organsAffected);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(summary, description, date, organsAffected);
+    }
 }

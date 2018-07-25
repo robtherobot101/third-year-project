@@ -458,4 +458,27 @@ public class User {
         this.countryOfDeath = countryOfDeath;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Arrays.equals(name, user.name) &&
+                Arrays.equals(preferredName, user.preferredName) &&
+                Objects.equals(dateOfBirth, user.dateOfBirth) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = Objects.hash(dateOfBirth, id, username, email, password);
+        result = 31 * result + Arrays.hashCode(name);
+        result = 31 * result + Arrays.hashCode(preferredName);
+        return result;
+    }
 }
