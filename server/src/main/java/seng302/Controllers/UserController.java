@@ -9,6 +9,10 @@ import seng302.Server;
 import spark.Request;
 import spark.Response;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -335,16 +339,100 @@ public class UserController {
         }
     }
 
-    public Object getUserPhoto(Request request, Response response) {
+    //TODO Finish this method.
+    public String getUserPhoto(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){
             return response.body();
         }
+        String filepath;
+        try {
+            String fileType;
+            //Find filetype
+
+            //Find filepath
+            filepath = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+            filepath += "\\images\\user";
+
+            //Get file
+            File file = new File(new FileInputStream(filepath));
+
+            //Turn the image file into a byte array
+            BufferedImage bImage = ImageIO.read(file);
+            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bImage, fileType, byteOutputStream);
+            byte[] byteArrayImage = byteOutputStream.toByteArray();
+
+            //Then turn it to a Base64 String to be sent away
+            String encodedImage = Base64.getEncoder().encodeToString(byteArrayImage);
+
+            return encodedImage;
+
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return "l";
+    }
+
+    //TODO finish this method. I spaceed it out quite a bit so I could get my head around it but this won't be final. Jono
+    public String editUserPhoto(Request request, Response response){
+        User queriedUser = queryUser(request, response);
 
 
-        // File file = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-        return "SUCCESS";
+        String encodedImage = request.body();
+        if (encodedImage == null) {
+            response.status(400);
+            return "Missing Image";
+        } else {
+            try {
+
+                String base64Image = encodedImage.split(",")[1];
+                //Decode the string to a byte array
+                byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+
+                //Find the filetype
+                String fileType = null;
+
+                //Turn it into a buffered image
+                ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
+                BufferedImage image = ImageIO.read(byteInputStream);
+                byteInputStream.close();
+
+                // write the image to a file
+                File outputfile = new File("change me so I have proper id + type pls");
+                ImageIO.write(image, fileType, outputfile);
+
+                //Do DB updates
+
+                return "PHOTO SUCCESSFULLY SAVED";
+            }  catch (IOException e) {
+
+                return "Internal Server Error";
+            }
+        }
+    }
+
+    //TODO Finish this method
+    public String deleteUserPhoto(Request request, Response response){
+        User queriedUser = queryUser(request, response);
+
+        try {
+            //Find filepath in DB
+
+            //Delete file from storage
+
+            //Update DB
+
+            return "Photo successfully deleted";
+        } catch (IOException e){
+            return "Internal Server Error";
+        }
+
+
+
+
     }
 
 }
