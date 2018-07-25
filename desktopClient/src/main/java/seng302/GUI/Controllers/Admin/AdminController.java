@@ -173,6 +173,18 @@ public class AdminController implements Initializable {
     }
 
     /**
+     * Logs out this admin on the server, removing its authorisation token.
+     */
+    public void serverLogout() {
+        try {
+            WindowManager.getDataManager().getGeneral().logoutUser(token);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to log out on server.");
+        }
+        this.token = null;
+    }
+
+    /**
      * Logs out the currentAdmin. The user is asked if they're sure they want to log out, if yes,
      * all open user windows spawned by the currentAdmin are closed and the main scene is returned to the logout screen.
      */
@@ -181,6 +193,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
+            serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.admin);
@@ -572,9 +585,9 @@ public class AdminController implements Initializable {
 
 
     /**
-     * Checks whether this waiting list has an API token.
+     * Checks whether this admin has an API token.
      *
-     * @return Whether this waiting list has an API token
+     * @return Whether this admin has an API token
      */
     public boolean hasToken() {
         return token != null;

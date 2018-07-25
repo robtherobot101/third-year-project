@@ -11,6 +11,8 @@ public interface GeneralDAO {
     // Now uses API server!
     Map<Object, String> loginUser(String usernameEmail, String password) throws HttpResponseException;
 
+    void logoutUser(String token) throws HttpResponseException;
+
     void reset(String token) throws HttpResponseException;
 
     void resample(String token) throws HttpResponseException;

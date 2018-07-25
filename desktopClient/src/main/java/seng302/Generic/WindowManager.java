@@ -235,12 +235,9 @@ public class WindowManager extends Application {
      *
      * @param currentClinician the current clinician
      */
-    public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
-        clinicianSettingsController.setCurrentClinician(currentClinician);
-        clinicianSettingsController.populateAccountDetails();
+    public static void setCurrentClinicianForAccountSettings(Clinician currentClinician, String token) {
+        clinicianSettingsController.setCurrentClinician(currentClinician, token);
     }
-
-
 
     /**
      * sets the login controller
@@ -258,10 +255,6 @@ public class WindowManager extends Application {
 
     public static void setClincianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
         WindowManager.clinicianSettingsController = clinicianSettingsController;
-    }
-
-    public static void setClincianAccountSettingsToken(String token) {
-        //clinicianSettingsController.setToken(token);
     }
 
     public static void setTransplantWaitingListController(ClinicianWaitingListController clinicianWaitingListController) {
@@ -385,7 +378,7 @@ public class WindowManager extends Application {
     public DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        APIServer server = new APIServer(localServer);
+        APIServer server = new APIServer(properServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -579,11 +572,20 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Writes quit history before exiting the GUI.
+     * Logs out from the server before exiting the GUI.
      */
     @Override
     public void stop() {
         Debugger.log("Exiting GUI");
+        if (userController != null && userController.hasToken()) {
+            userController.serverLogout();
+        }
+        if (clinicianController != null && clinicianController.hasToken()) {
+            clinicianController.serverLogout();
+        }
+        if (adminController != null && adminController.hasToken()) {
+            adminController.serverLogout();
+        }
         Platform.exit();
     }
 }

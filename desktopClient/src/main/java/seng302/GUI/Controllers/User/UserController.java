@@ -501,6 +501,27 @@ public class UserController implements Initializable {
     }
 
     /**
+     * Checks whether this user has an API token.
+     *
+     * @return Whether this user has an API token
+     */
+    public boolean hasToken() {
+        return token != null;
+    }
+
+    /**
+     * Logs out this user on the server, removing its authorisation token.
+     */
+    public void serverLogout() {
+        try {
+            WindowManager.getDataManager().getGeneral().logoutUser(token);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to log out on server.");
+        }
+        this.token = null;
+    }
+
+    /**
      * Function which is called when the user wants to logout of the application and log into a new user
      */
     public void logout() {
@@ -508,6 +529,7 @@ public class UserController implements Initializable {
                 "without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            serverLogout();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.userWindow);
         } else {

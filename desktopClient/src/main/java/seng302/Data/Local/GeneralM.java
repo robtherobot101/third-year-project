@@ -63,6 +63,11 @@ public class GeneralM implements GeneralDAO {
     }
 
     @Override
+    public void logoutUser(String token) throws HttpResponseException {
+        //No need to log out from local test version
+    }
+
+    @Override
     public void reset(String token) {
         try {
             for(User u : new ArrayList<>(users.getAllUsers(null))) {

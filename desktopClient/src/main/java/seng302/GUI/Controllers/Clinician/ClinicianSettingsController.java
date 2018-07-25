@@ -33,18 +33,16 @@ public class ClinicianSettingsController implements Initializable {
     private Clinician clinician;
     private String token;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public void setCurrentClinician(Clinician clinician) {
+    public void setCurrentClinician(Clinician clinician, String token) {
         this.clinician = clinician;
+        this.token = token;
         if (clinician.getName() == null) {
             clinician.setName("Name not set");
         }
         Debugger.log(clinician);
         Debugger.log(clinician.getName());
         userNameLabel.setText("clinician: " + clinician.getName());
+        populateAccountDetails();
     }
 
     /**

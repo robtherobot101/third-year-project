@@ -29,7 +29,7 @@ public class GeneralDB implements GeneralDAO {
         Map<Object, String> responseMap = new HashMap<>();
 
         Debugger.log("Logging in with server.");
-        Map<String, String> queryParameters = new HashMap<String, String>();
+        Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
@@ -52,6 +52,11 @@ public class GeneralDB implements GeneralDAO {
             responseMap.put(null, "Username/email and password combination not recognized.");
             return responseMap;
         }
+    }
+
+    @Override
+    public void logoutUser(String token) throws HttpResponseException {
+        server.postRequest(new JsonObject(), new HashMap<>(), token, "logout");
     }
 
     public void reset(String token) throws HttpResponseException {
