@@ -73,6 +73,9 @@ public class UserAttributesController extends UserTabController implements Initi
             deathInNewZealand = countryOfDeathComboBox.getValue().toString().equals("New Zealand");
             regionOfDeathComboBox.setVisible(deathInNewZealand);
             regionOfDeathField.setVisible(deathInNewZealand == false);
+            if(deathInNewZealand){
+                regionOfDeathField.setText("");
+            }
         }
     }
 
@@ -82,6 +85,9 @@ public class UserAttributesController extends UserTabController implements Initi
             regionComboBox.setVisible(inNewZealand);
             regionField.setVisible(inNewZealand == false);
             System.out.println(inNewZealand);
+            if(inNewZealand){
+                regionField.setText("");
+            }
         }
     }
 

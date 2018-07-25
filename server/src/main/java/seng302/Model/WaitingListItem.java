@@ -136,4 +136,5 @@ public class WaitingListItem {
                 ", organDeregisteredCode=" + organDeregisteredCode +
                 '}';
     }
+
 }

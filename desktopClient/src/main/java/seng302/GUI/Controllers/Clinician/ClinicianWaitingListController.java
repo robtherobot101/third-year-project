@@ -112,8 +112,12 @@ public class ClinicianWaitingListController implements Initializable {
             Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers(token);
             for (User user : users) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (!(item.getOrganRegisteredDate() == null)) {
+                    if (item.getStillWaitingOn()) {
                         if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
+                            if(user.getOrgans().contains(item.getOrganType())){
+                                item.setIsConflicting(true);
+                            }
+
                             if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
                                 addUserInfo(item);
                                 transplantList.add(item);
@@ -126,7 +130,7 @@ public class ClinicianWaitingListController implements Initializable {
                 }
             }
             deregisterReceiverButton.setDisable(true);
-            transplantTable.refresh();
+            //transplantTable.refresh();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and filter transplant waiting list.");
         }
@@ -147,6 +151,8 @@ public class ClinicianWaitingListController implements Initializable {
             User user = WindowManager.getDataManager().getUsers().getUser(selectedItem.getUserId().intValue(), token);
             showDeregisterDialog(selectedItem, user);
             WindowManager.getDataManager().getUsers().updateUser(user, token);
+
+            updateTransplantList();
         } catch (HttpResponseException e) {
             Debugger.error("Could not update waiting list item.");
         }
