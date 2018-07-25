@@ -363,6 +363,12 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
+    public void updateUserPhoto(long id, String image) {}
+
+    @Override
+    public void deleteUserPhoto(long id) {}
+
+    @Override
     public void removeUser(long id) {
         for(User u : users) {
             if(u.getId() == id) {

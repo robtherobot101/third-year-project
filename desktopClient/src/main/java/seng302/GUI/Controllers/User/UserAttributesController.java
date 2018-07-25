@@ -8,6 +8,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
@@ -18,10 +20,12 @@ import seng302.User.WaitingListItem;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -360,6 +364,36 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private void uploadProfileImage() {
         System.out.println("Uploaaaading....");
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter fileExtensions =
+                new FileChooser.ExtensionFilter(
+                        "JPEG, PNG, BITMAP", "*.png", "*.jpg", "*.bmp"
+                );
+        fileChooser.getExtensionFilters().add(fileExtensions);
+        try {
+            File file = fileChooser.showOpenDialog(stage);
+            System.out.println(file.length());
+            System.out.println(Files.probeContentType(file.toPath()).split("/")[1]);
+            String fileType = Files.probeContentType(file.toPath()).split("/")[1];
+            if (file.length() < 5000000){
+                if(fileType.equals("png") || fileType.equals("jpg") || fileType.equals("bmp")){
+                    currentUser.setProfileImageType(fileType);
+                    BufferedImage bImage = ImageIO.read(file);
+                    ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+                    ImageIO.write(bImage, fileType, byteOutputStream);
+                    byte[] byteArrayImage = byteOutputStream.toByteArray();
+
+                    String image = Base64.getEncoder().encodeToString(byteArrayImage);
+                    WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image);
+                }
+
+            }
+        } catch (NullPointerException e){
+            System.out.println("Error: NULL");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

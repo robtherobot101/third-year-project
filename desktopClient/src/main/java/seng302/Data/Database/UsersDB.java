@@ -89,6 +89,18 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
+    public void updateUserPhoto(long id, String image) throws HttpResponseException {
+        JsonParser jp = new JsonParser();
+        JsonObject imageJson = jp.parse(new Gson().toJson(image)).getAsJsonObject();
+        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+    }
+
+    @Override
+    public void deleteUserPhoto(long id) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photos");
+    }
+
+    @Override
     public List<User> getAllUsers() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), "users");
         if (response.isValidJson()) {
