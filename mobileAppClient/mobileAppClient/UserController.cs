@@ -11,7 +11,7 @@ namespace mobileAppClient
     sealed class UserController
     {
         public User LoggedInUser { get; set; }
-        private String AuthToken { get; set; }
+        public string AuthToken { get; set; }
 
         private List<UserObserver> userObservers;
 

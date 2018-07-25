@@ -54,6 +54,9 @@ namespace mobileAppClient.odmsAPI
                 var responseContent = await response.Content.ReadAsStringAsync();
                 User user = JsonConvert.DeserializeObject<User>(responseContent);
                 userController.LoggedInUser = user;
+                IEnumerable<string> headerValues = response.Headers.GetValues("token");
+                var token = headerValues.FirstOrDefault();
+                userController.AuthToken = token;
                 Console.WriteLine("Logged in as " + String.Join(String.Empty, userController.LoggedInUser.name));
                 return HttpStatusCode.OK;
             }

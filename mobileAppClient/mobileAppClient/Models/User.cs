@@ -31,7 +31,10 @@ namespace mobileAppClient
         public string currentAddress { get; set; }
         public string region { get; set; }
         //public string City { get; set; }
-        //public string Country { get; set; }
+        //public string country { get; set; }
+        public string cityOfDeath { get; set; }
+        //public string countryOfDeath { get; set; }
+        public string regionOfDeath { get; set; }
         //public string HomePhone { get; set; }
         //public string MobilePhone { get; set; }
         public string bloodPressure { get; set; }
