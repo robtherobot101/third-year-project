@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Model.Photo;
 import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
@@ -369,7 +370,13 @@ public class UserController {
             byte[] byteArrayImage = byteOutputStream.toByteArray();
 
             //Then turn it to a Base64 String to be sent away
-            return Base64.getEncoder().encodeToString(byteArrayImage);
+            String photoString = Base64.getEncoder().encodeToString(byteArrayImage);
+            Photo image = new Photo(photoString);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String photoGson = gson.toJson(image);
+            response.type("application/json");
+            response.status(200);
+            return photoGson;
 
         } catch (IOException e) {
             return "Internal Server Error";
@@ -387,13 +394,14 @@ public class UserController {
             return response.body();
         }
 
-        String encodedImage = request.body();
-        if (encodedImage == null) {
+        if (request.body() == null) {
             response.status(400);
             return "Missing Image";
         } else {
             try {
-                String base64Image = encodedImage.split(",")[1];
+                Gson gson = new Gson();
+                Photo sentPhoto = gson.fromJson(request.body(), Photo.class);
+                String base64Image = sentPhoto.getData();
                 //Decode the string to a byte array
                 byte[] decodedImage = Base64.getDecoder().decode(base64Image);
 

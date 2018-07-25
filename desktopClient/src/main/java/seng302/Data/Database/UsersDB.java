@@ -1,21 +1,22 @@
 package seng302.Data.Database;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.User.Photo;
 import seng302.User.User;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UsersDB implements UsersDAO {
     private final APIServer server;
@@ -82,16 +83,36 @@ public class UsersDB implements UsersDAO {
     }// Now uses API server!
 
     @Override
-    public String getUserPhoto(long id) throws HttpResponseException {
+    public Image getUserPhoto(long id) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), "users", String.valueOf(id),"photo");
         //TODO add check here to check if it is a valid base64 string
-        return response.toString();
+        Gson gson = new Gson();
+        Photo returnedImage = gson.fromJson(response.toString(), Photo.class);
+
+        //Decode the string to a byte array
+        byte[] decodedImage = Base64.getDecoder().decode(returnedImage.getData());
+
+        //Turn it into a buffered image
+        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
+        BufferedImage bImage = null;
+        try {
+            bImage = ImageIO.read(byteInputStream);
+            byteInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image image = SwingFXUtils.toFXImage(bImage, null);
+
+        return image;
     }
 
     @Override
     public void updateUserPhoto(long id, String image) throws HttpResponseException {
+        Photo photoToSend = new Photo(image);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String serialQueriedPhoto = gson.toJson(photoToSend);
         JsonParser jp = new JsonParser();
-        JsonObject imageJson = jp.parse(new Gson().toJson(image)).getAsJsonObject();
+        JsonObject imageJson = jp.parse(serialQueriedPhoto).getAsJsonObject();
         APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
     }
 

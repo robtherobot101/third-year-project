@@ -1,5 +1,6 @@
 package seng302.Data.Interfaces;
 
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.User.User;
 
@@ -18,7 +19,7 @@ public interface UsersDAO {
 
     User getUser(long id) throws HttpResponseException;
 
-    String getUserPhoto(long id) throws HttpResponseException;
+    Image getUserPhoto(long id) throws HttpResponseException;
 
     void updateUserPhoto(long id, String image) throws HttpResponseException;
 

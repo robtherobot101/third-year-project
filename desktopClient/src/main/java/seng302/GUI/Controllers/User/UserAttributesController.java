@@ -1,7 +1,6 @@
 package seng302.GUI.Controllers.User;
 
 import javafx.collections.FXCollections;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
@@ -19,7 +18,6 @@ import seng302.User.WaitingListItem;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -363,7 +361,6 @@ public class UserAttributesController extends UserTabController implements Initi
     }
 
     private void uploadProfileImage() {
-        System.out.println("Uploaaaading....");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter fileExtensions =
@@ -373,8 +370,6 @@ public class UserAttributesController extends UserTabController implements Initi
         fileChooser.getExtensionFilters().add(fileExtensions);
         try {
             File file = fileChooser.showOpenDialog(stage);
-            System.out.println(file.length());
-            System.out.println(Files.probeContentType(file.toPath()).split("/")[1]);
             String fileType = Files.probeContentType(file.toPath()).split("/")[1];
             if (file.length() < 5000000){
                 if(fileType.equals("png") || fileType.equals("jpg") || fileType.equals("bmp")){
@@ -386,6 +381,9 @@ public class UserAttributesController extends UserTabController implements Initi
 
                     String image = Base64.getEncoder().encodeToString(byteArrayImage);
                     WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image);
+                    String imageURL = file.toURI().toURL().toString();
+                    Image profilePhoto = new Image(imageURL);
+                    profileImage.setImage(profilePhoto);
                 }
 
             }
@@ -495,20 +493,9 @@ public class UserAttributesController extends UserTabController implements Initi
         //set profile image
         Image profilePhoto = null;
         try {
-            String encodedImage = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
-            String base64Image = encodedImage.split(",")[1];
-            //Decode the string to a byte array
-            byte[] decodedImage = Base64.getDecoder().decode(base64Image);
-
-            //Turn it into a buffered image
-            ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
-            BufferedImage bImage = ImageIO.read(byteInputStream);
-            byteInputStream.close();
-            Image image = SwingFXUtils.toFXImage(bImage, null);
+            Image image = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
             profileImage.setImage(image);
         } catch (HttpResponseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
             System.out.println(IO.getJarPath());
