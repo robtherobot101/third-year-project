@@ -54,7 +54,25 @@ namespace mobileAppClient
                     "OK");
                 return;
             }
-            else if (!InputValidation.IsValidTextInput(givenPassword, false, false))
+
+            // Check if a username and valid email is entered
+            else if (!InputValidation.IsValidEmail(givenEmail))
+            {
+                await DisplayAlert("",
+                    "Valid email is required",
+                    "OK");
+                return;
+            }
+
+            else if (!InputValidation.IsValidTextInput(givenUsername, true, false))
+            {
+                await DisplayAlert("",
+                    "Username is required",
+                    "OK");
+                return;
+            }
+
+            else if (!InputValidation.IsValidTextInput(givenPassword, true, false))
             {
                 await DisplayAlert("",
                     "Please enter a password",
@@ -62,14 +80,7 @@ namespace mobileAppClient
                 return;
             }
 
-            // Check if a username and valid email is entered
-            else if (!InputValidation.IsValidEmail(givenEmail) || !InputValidation.IsValidTextInput(givenUsername, true, false))
-            {
-                await DisplayAlert("",
-                    "Password and email is required",
-                    "OK");
-                return;
-            }
+
 
             // DOB validation is through constraints on the DatePicker in the XAML
 
