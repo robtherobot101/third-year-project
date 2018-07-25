@@ -408,7 +408,6 @@ public class UserAttributesController extends UserTabController implements Initi
                 attributeFieldUnfocused();
             }
         });
-        System.out.println(dateOfDeathPicker.getDateTimeValue().toString());
 
         dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
