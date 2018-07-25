@@ -2,12 +2,14 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import seng302.Logic.Database.GeneralCountries;
 import seng302.Model.Country;
 import spark.Request;
 import spark.Response;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CountriesController {
 
@@ -44,12 +46,18 @@ public class CountriesController {
      * Updates the countries which are valid or not.
      * @param request the request body
      * @param response the response body
-     * @return
+     * @return return if it worked or not
      */
     public String patchCountries(Request request, Response response){
-        //Todo
+        try{
+             model.patchCounties(new Gson().fromJson(request.body(), new TypeToken<List<Country>>(){}.getType()));
+        } catch (SQLException e) {
+            response.status(500);
+            return e.getMessage();
+        }
+
         response.type("application/json");
         response.status(200);
-        return "Todo";
+        return "Done";
     }
 }

@@ -1013,7 +1013,9 @@ public class AdminController implements Initializable {
             dialog.setTitle("Update Countries");
             dialog.setHeaderText("Update Countries");
             WindowManager.setIconAndStyle(dialog.getDialogPane());
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+            ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
 
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -1038,19 +1040,40 @@ public class AdminController implements Initializable {
 
             dialog.getDialogPane().setContent(grid);
 
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == updateButtonType) {
+                    try {
+                        for (Country country : countryList) {
+                            country.setValid(countryCheckComboBox.getItemBooleanProperty(country.getCountryName()).getValue());
+                        }
+                        generalDB.updateCountries(countryList);
+                        return null;
+                    } catch (HttpResponseException e) {
+                        databaseError();
+                    }
+                }
+                return null;
+            });
+
             dialog.showAndWait();
+
+
         } catch (HttpResponseException e) {
-            Dialog<ArrayList<String>> dialog = new Dialog<>();
-            dialog.setTitle("Error");
-            dialog.setHeaderText("Error");
-            WindowManager.setIconAndStyle(dialog.getDialogPane());
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-
-            Label label = new Label();
-            label.setText("Could not connect to the Sever");
-
-            dialog.getDialogPane().setContent(label);
-            dialog.showAndWait();
+            databaseError();
         }
+    }
+
+    private void databaseError(){
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Error");
+        dialog.setHeaderText("Error");
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+        Label label = new Label();
+        label.setText("Could not connect to the Sever");
+
+        dialog.getDialogPane().setContent(label);
+        dialog.showAndWait();
     }
 }

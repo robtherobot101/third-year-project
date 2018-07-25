@@ -24,5 +24,7 @@ public interface GeneralDAO {
 
     List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException;
 
-    public List<Country> getAllCountries() throws HttpResponseException;
+    List<Country> getAllCountries() throws HttpResponseException;
+
+    void updateCountries(List<Country> countries) throws HttpResponseException;
 }

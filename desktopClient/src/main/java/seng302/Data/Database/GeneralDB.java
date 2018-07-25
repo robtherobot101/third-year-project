@@ -1,7 +1,9 @@
 package seng302.Data.Database;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.GeneralDAO;
@@ -104,5 +106,12 @@ public class GeneralDB implements GeneralDAO {
         } else {
             return new ArrayList<Country>();
         }
+    }
+
+    @Override
+    public void updateCountries(List<Country> countries) throws HttpResponseException {
+        JsonParser jp = new JsonParser();
+        JsonObject userJson = jp.parse(new Gson().toJson(countries)).getAsJsonObject();
+        APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),"countries");
     }
 }
