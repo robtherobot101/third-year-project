@@ -25,8 +25,8 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
-    public int getUserId(String username) throws HttpResponseException {
-        for (User user : getAllUsers()) {
+    public int getUserId(String username, String token) throws HttpResponseException {
+        for (User user : getAllUsers(token)) {
             if (user.getUsername().equals(username)) {
                 return (int) user.getId();
             }
@@ -39,14 +39,14 @@ public class UsersDB implements UsersDAO {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         userJson.remove("id");
-        APIResponse response = server.postRequest(userJson, new HashMap<>(), "users");
+        APIResponse response = server.postRequest(userJson, new HashMap<>(), null, "users");
     }
 
     @Override
-    public void updateUser(User user) throws HttpResponseException {
+    public void updateUser(User user, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        APIResponse response = server.patchRequest(userJson, new HashMap<>(), "users", String.valueOf(user.getId()));
+        APIResponse response = server.patchRequest(userJson, new HashMap<>(), token, "users", String.valueOf(user.getId()));
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -59,8 +59,8 @@ public class UsersDB implements UsersDAO {
      * @return a JSON array of users.
      */
     @Override
-    public List<User> queryUsers(Map<String, String> searchMap) throws HttpResponseException {
-        APIResponse response =  server.getRequest(searchMap, "users");
+    public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
+        APIResponse response =  server.getRequest(searchMap, token, "users");
         if(response.isValidJson()){
             JsonArray searchResults = response.getAsJsonArray();
             Type type = new TypeToken<ArrayList<User>>() {
@@ -72,8 +72,8 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
-    public User getUser(long id) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id));
+    public User getUser(long id, String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id));
         if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
         }
@@ -81,8 +81,8 @@ public class UsersDB implements UsersDAO {
     }// Now uses API server!
 
     @Override
-    public List<User> getAllUsers() throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), "users");
+    public List<User> getAllUsers(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users");
         if (response.isValidJson()) {
             List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>() {
             }.getType());
@@ -93,15 +93,15 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
-    public void removeUser(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<>(), "users", String.valueOf(id));
+    public void removeUser(long id, String token) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<>(), token, "users", String.valueOf(id));
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     @Override
-    public int count() throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), "countusers");
+    public int count(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "countusers");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         return Integer.parseInt(response.getAsString());

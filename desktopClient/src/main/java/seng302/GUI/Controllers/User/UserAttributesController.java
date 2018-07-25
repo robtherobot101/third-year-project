@@ -1,29 +1,35 @@
 package seng302.GUI.Controllers.User;
 
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import impl.org.controlsfx.autocompletion.SuggestionProvider;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
+import org.controlsfx.control.textfield.TextFields;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+import tornadofx.control.DateTimePicker;
 
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField;
+    private TextField firstNameField, middleNameField, lastNameField, addressField, regionField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField;
     @FXML
-    private DatePicker dateOfBirthPicker, dateOfDeathPicker;
+    private DatePicker dateOfBirthPicker;
+    @FXML
+    private DateTimePicker dateOfDeathPicker;
     @FXML
     private ComboBox<Gender> genderComboBox, genderIdentityComboBox;
     @FXML
@@ -43,6 +49,11 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
         updateBMI();
         updateAge();
+        if(user.getCurrentAddress() == null) {
+            setupLocationCompletetion(false);
+        } else {
+            setupLocationCompletetion(user.getCurrentAddress().equals("New Zealand"));
+        }
     }
 
     /**
@@ -70,19 +81,19 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void updateAge() {
         LocalDate dobirthPick = dateOfBirthPicker.getValue();
-        LocalDate dodeathPick = dateOfDeathPicker.getValue();
+        LocalDateTime dodeathPick = dateOfDeathPicker.getDateTimeValue();
 
         if (dodeathPick == null) {
-            LocalDate today = LocalDate.now();
-            double years = Duration.between(dobirthPick.atStartOfDay(), today.atStartOfDay()).toDays() / 365.00;
-            if (years <= 0) {
+            LocalDateTime today = LocalDateTime.now();
+            double years = Duration.between(dobirthPick.atStartOfDay(), today).toDays() / 365.00;
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years");
             }
         } else {
-            double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick.atStartOfDay()).toDays() / 365.00;
-            if (years <= 0) {
+            double years = Duration.between(dobirthPick.atStartOfDay(), dodeathPick).toDays() / 365.00;
+            if (years < 0) {
                 ageLabel.setText("Age: Invalid Input.");
             } else {
                 ageLabel.setText("Age: " + String.format("%.1f", years) + " years (At Death)");
@@ -116,6 +127,12 @@ public class UserAttributesController extends UserTabController implements Initi
      * @return returns boolean of it working or not
      */
     public boolean updateUser() {
+        if(currentUser.getCurrentAddress() == null) {
+            setupLocationCompletetion(false);
+        } else {
+            setupLocationCompletetion(currentUser.getCurrentAddress().equals("New Zealand"));
+        }
+
         //Extract names from user
         String firstName = firstNameField.getText();
         String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
@@ -214,7 +231,7 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
-        currentUser.setDateOfDeath(dateOfDeathPicker.getValue());
+        currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
         currentUser.setGender(genderComboBox.getValue());
         currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
         currentUser.setBloodType(bloodTypeComboBox.getValue());
@@ -276,7 +293,7 @@ public class UserAttributesController extends UserTabController implements Initi
         regionField.setText(currentUser.getRegion());
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
-        dateOfDeathPicker.setValue(currentUser.getDateOfDeath());
+        dateOfDeathPicker.setDateTimeValue(currentUser.getDateOfDeath());
         updateAge();
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
@@ -308,6 +325,15 @@ public class UserAttributesController extends UserTabController implements Initi
             userController.setUndoRedoButtonsDisabled(false, true);
             titleBar.saved(false);
             statusIndicator.setStatus("Edited user details", false);
+        }
+    }
+
+    public void setupLocationCompletetion(boolean inNewZealand) {
+        SuggestionProvider employeesProvider = SuggestionProvider.create(Arrays.asList(NZRegion.values()));
+        if(inNewZealand) {
+            TextFields.bindAutoCompletion(regionField, employeesProvider).setVisibleRowCount(10);
+        } else {
+            TextFields.bindAutoCompletion(regionField, employeesProvider).dispose();
         }
     }
 
@@ -382,6 +408,8 @@ public class UserAttributesController extends UserTabController implements Initi
                 attributeFieldUnfocused();
             }
         });
+        System.out.println(dateOfDeathPicker.getDateTimeValue().toString());
+
         dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 attributeFieldUnfocused();
@@ -429,5 +457,10 @@ public class UserAttributesController extends UserTabController implements Initi
         //Remove the top element of the redo stack
         redoStack.removeLast();
         populateUserFields();
+    }
+
+    public void setDeathControlsShown(boolean shown) {
+        dateOfDeathPicker.setDisable(!shown);
+        deathCityField.setDisable(!shown);
     }
 }

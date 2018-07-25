@@ -13,14 +13,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
-import org.junit.*;
-import seng302.Generic.DataManager;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,22 +30,20 @@ import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 
-public class ClinicianWindowGUITest extends  TestFXTest {
+public class ClinicianWindowGUITest extends TestFXTest {
     int resultsPerPage;
     int numberXOfResults;
     Clinician testClinician;
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
     }
 
     @Before
     public void setUp () throws Exception {
-        //useLocalStorage();
+        useLocalStorage();
         testClinician = new Clinician("testUsername","testPassword","testName");
         openClinicianWindow(testClinician);
         numberXOfResults = WindowManager.getClinicianController().getNumberXofResults();
@@ -60,7 +59,6 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         });
 
     }
-
 
     public void changeNumberOfResultsToDisplay(String regex){
         ComboBox options = lookup("#numberOfResultsToDisplay").queryComboBox();
@@ -78,10 +76,9 @@ public class ClinicianWindowGUITest extends  TestFXTest {
     }
     
     public void removeAllUsers() throws HttpResponseException {
-        for(User u : new ArrayList<>(WindowManager.getDataManager().getUsers().getAllUsers())) {
-            WindowManager.getDataManager().getUsers().removeUser(u.getId());
+        for(User u : new ArrayList<>(WindowManager.getDataManager().getUsers().getAllUsers(null))) {
+            WindowManager.getDataManager().getUsers().removeUser(u.getId(), null);
         }
-
     }
 
     @Test
@@ -105,6 +102,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
             WindowManager.getDataManager().getUsers().insertUser(new User("A" + i, LocalDate.now()));
         clickOn("#profileSearchTextField").write("A");
         waitForNodeEnabled(10,"#profileTable");
+        sleep(500);
         ComboBox displayNCombobox = lookup("#numberOfResultsToDisplay").queryComboBox();
         assertEquals(2,displayNCombobox.getItems().size());
         assertTrue(((String)displayNCombobox.getItems().get(1)).matches("All [0-9]* results"));
@@ -124,21 +122,19 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         assertTrue(((String)displayNCombobox.getItems().get(2)).matches("All " + i + " results"));
     }
 
-    @Ignore
     @Test
     public void clickOnProfile_opensProfile() throws TimeoutException, HttpResponseException {
         removeAllUsers();
         User u1 = new User("Victor", LocalDate.now());
         WindowManager.getDataManager().getUsers().insertUser(u1);
         clickOn("#profileSearchTextField").write("victor");
-        waitForNodeEnabled(10,"#profileTable");
         TableView profileTable = lookup("#profileTable").queryTableView();
         doubleClickOn((Node)from(profileTable).lookup(u1.getName()).query());
         waitForEnabled(10,"#attributesGridPane");
     }
 
     @Test
-    public void searchForProfile_sortedResultsInTable() throws TimeoutException, HttpResponseException {
+    public void searchForProfile_resultsInTable() throws TimeoutException, HttpResponseException {
         User u1 = new User("Victor,Abby,West", LocalDate.now());
         User u2 = new User("Abby,Matthers,Black", LocalDate.now());
         User u3 = new User("Matthew,Warner,Hope", LocalDate.now());
@@ -152,11 +148,10 @@ public class ClinicianWindowGUITest extends  TestFXTest {
         clickOn("#profileSearchTextField").write("Abby");
         waitForNodeEnabled(10,"#profileTable");
         TableView profileTable = lookup("#profileTable").queryTableView();
-        sleep(2000);
         assertEquals(3,profileTable.getItems().size());
-        assertEquals(u5,profileTable.getItems().get(0));
-        assertEquals(u2,profileTable.getItems().get(1));
-        assertEquals(u1,profileTable.getItems().get(2));
+        assertTrue(profileTable.getItems().contains(u5));
+        assertTrue(profileTable.getItems().contains(u2));
+        assertTrue(profileTable.getItems().contains(u1));
     }
 
     @Test
@@ -252,7 +247,7 @@ public class ClinicianWindowGUITest extends  TestFXTest {
                 stage.setScene(new Scene(root, 290, 280));
                 stage.initModality(Modality.APPLICATION_MODAL);
 
-                WindowManager.setCurrentClinicianForAccountSettings(testClinician);
+                WindowManager.setCurrentClinicianForAccountSettings(testClinician, null);
                 WindowManager.setClinicianAccountSettingsEnterEvent();
 
                 stage.showAndWait();

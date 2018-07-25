@@ -1,6 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Controllers.CLIController;
 import seng302.Model.User;
 
 import java.sql.Connection;
@@ -46,15 +47,31 @@ public class Administration {
         for (User user: allUsers) {
             userDatabase.insertUser(user);
         }
+
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()){
+            PreparedStatement countryStatement = connection.prepareStatement("INSERT INTO `COUNTRIES`(`country`) VALUES ('Afghanistan'), ('Albania'), ('Algeria'), ('Andorra'), ('Angola'), ('Antigua & Deps'), ('Argentina'), ('Armenia'), ('Australia'), ('Austria'), ('Azerbaijan'), ('Bahamas'), ('Bahrain'), ('Bangladesh'), ('Barbados'), ('Belarus'), ('Belgium'), ('Belize'), ('Benin'), ('Bhutan'), ('Bolivia'), ('Bosnia Herzegovina'), ('Botswana'), ('Brazil'), ('Brunei'), ('Bulgaria'), ('Burkina'), ('Burundi'), ('Cambodia'), ('Cameroon'), ('Canada'), ('Cape Verde'), ('Central African Rep'), ('Chad'), ('Chile'), ('China'), ('Colombia'), ('Comoros'), ('Congo'), ('Congo {Democratic Rep}'), ('Costa Rica'), ('Croatia'), ('Cuba'), ('Cyprus'), ('Czech Republic'), ('Denmark'), ('Djibouti'), ('Dominica'), ('Dominican Republic'), ('East Timor'), ('Ecuador'), ('Egypt'), ('El Salvador'), ('Equatorial Guinea'), ('Eritrea'), ('Estonia'), ('Ethiopia'), ('Fiji'), ('Finland'), ('France'), ('Gabon'), ('Gambia'), ('Georgia'), ('Germany'), ('Ghana'), ('Greece'), ('Grenada'), ('Guatemala'), ('Guinea'), ('Guinea-Bissau'), ('Guyana'), ('Haiti'), ('Honduras'), ('Hungary'), ('Iceland'), ('India'), ('Indonesia'), ('Iran'), ('Iraq'), ('Ireland {Republic}'), ('Israel'), ('Italy'), ('Ivory Coast'), ('Jamaica'), ('Japan'), ('Jordan'), ('Kazakhstan'), ('Kenya'), ('Kiribati'), ('Korea North'), ('Korea South'), ('Kosovo'), ('Kuwait'), ('Kyrgyzstan'), ('Laos'), ('Latvia'), ('Lebanon'), ('Lesotho'), ('Liberia'), ('Libya'), ('Liechtenstein'), ('Lithuania'), ('Luxembourg'), ('Macedonia'), ('Madagascar'), ('Malawi'), ('Malaysia'), ('Maldives'), ('Mali'), ('Malta'), ('Marshall Islands'), ('Mauritania'), ('Mauritius'), ('Mexico'), ('Micronesia'), ('Moldova'), ('Monaco'), ('Mongolia'), ('Montenegro'), ('Morocco'), ('Mozambique'), ('Myanmar'), ('Namibia'), ('Nauru'), ('Nepal'), ('Netherlands'), ('New Zealand'), ('Nicaragua'), ('Niger'), ('Nigeria'), ('Norway'), ('Oman'), ('Pakistan'), ('Palau'), ('Panama'), ('Papua New Guinea'), ('Paraguay'), ('Peru'), ('Philippines'), ('Poland'), ('Portugal'), ('Qatar'), ('Romania'), ('Russia'), ('Rwanda'), ('St Kitts & Nevis'), ('St Lucia'), ('Saint Vincent & the Grenadines'), ('Samoa'), ('San Marino'), ('Sao Tome & Principe'), ('Saudi Arabia'), ('Senegal'), ('Serbia'), ('Seychelles'), ('Sierra Leone'), ('Singapore'), ('Slovakia'), ('Slovenia'), ('Solomon Islands'), ('Somalia'), ('South Africa'), ('South Sudan'), ('Spain'), ('Sri Lanka'), ('Sudan'), ('Suriname'), ('Swaziland'), ('Sweden'), ('Switzerland'), ('Syria'), ('Taiwan'), ('Tajikistan'), ('Tanzania'), ('Thailand'), ('Togo'), ('Tonga'), ('Trinidad & Tobago'), ('Tunisia'), ('Turkey'), ('Turkmenistan'), ('Tuvalu'), ('Uganda'), ('Ukraine'), ('United Arab Emirates'), ('United Kingdom'), ('United States'), ('Uruguay'), ('Uzbekistan'), ('Vanuatu'), ('Vatican City'), ('Venezuela'), ('Vietnam'), ('Yemen'), ('Zambia'), ('Zimbabwe');");
+            countryStatement.executeUpdate();
+
+            PreparedStatement regionStatement = connection.prepareStatement("INSERT INTO `NZREGIONS` (`NAME`) VALUES ('Northland'),('Auckland'),('Waikato'),('Bay of Plenty'),('Gisborne'),('Hawke''s Bay'),('Taranaki'),('Manawatu-Wanganui'),('Wellington'),('Tasman'),('Nelson'),('Marlborough'),('West Coast'),('Canterbury'),('Otago'),('Southland');");
+            regionStatement.executeUpdate();
+        }
     }
 
     public void reset() throws SQLException {
 
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
-            String update = "DELETE FROM WAITING_LIST_ITEM";
+            String update = "DELETE FROM COUNTRIES";
             PreparedStatement statement = connection.prepareStatement(update);
+            System.out.println("Reset of database (COUNTRIES): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+            update = "DELETE FROM WAITING_LIST_ITEM";
+            statement = connection.prepareStatement(update);
             System.out.println("Reset of database (WAITING_LIST_ITEM): -> Successful -> Rows Removed: " + statement.executeUpdate());
+
+            update = "DELETE FROM TOKEN";
+            statement = connection.prepareStatement(update);
+            System.out.println("Reset of database (TOKEN): -> Successful -> Rows Removed: " + statement.executeUpdate());
 
             update = "DELETE FROM PROCEDURES";
             statement = connection.prepareStatement(update);

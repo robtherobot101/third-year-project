@@ -22,7 +22,14 @@ public class DatabaseConfiguration {
     private String url = "jdbc:mysql://mysql2.csse.canterbury.ac.nz";
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
 
+    /**
+     * Constructor method to create a new database configuration object
+     * that contains all the required information to interact with the database
+     */
     private DatabaseConfiguration() {
+        if(Server.getInstance().isTesting()){
+            connectDatabase = "seng302-2018-team300-test";
+        }
         try {
             cpds.setDriverClass(jdbcDriver);
         } catch (PropertyVetoException e) {
@@ -35,6 +42,10 @@ public class DatabaseConfiguration {
         cpds.setMaxStatementsPerConnection(10);
     }
 
+    /**
+     * method to get the current database instance
+     * @return The current database configuration object
+     */
     public static DatabaseConfiguration getInstance() {
         return INSTANCE;
     }
@@ -57,6 +68,7 @@ public class DatabaseConfiguration {
      * Send an SQL query to the database and returns the set of results
      * @param sql The query to be executed
      * @return A ResultSet of the results
+     * @throws SQLException if an error occurred with communicating with the database
      */
     public ResultSet querySql(String sql) throws SQLException {
         Connection connection = cpds.getConnection();
@@ -66,12 +78,9 @@ public class DatabaseConfiguration {
     /**
      * Get a connection to the database from the pool
      * @return a connection to the database
+     * @throws SQLException if an error occurred with communicating with the database
      */
     public Connection getConnection() throws SQLException {
         return cpds.getConnection();
-    }
-
-    public String getCurrentDatabase() {
-        return "`" + this.connectDatabase + "`";
     }
 }

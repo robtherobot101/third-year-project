@@ -1,19 +1,18 @@
 package seng302.Data.Database;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.Generic.Country;
 import seng302.Generic.Debugger;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,37 +25,48 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
-    public Object loginUser(String usernameEmail, String password) {
+    public Map<Object, String> loginUser(String usernameEmail, String password) {
+        Map<Object, String> responseMap = new HashMap<>();
 
         Debugger.log("Logging in with server.");
-        Map<String, String> queryParameters = new HashMap<String, String>();
+        Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
-        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "login");
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
             if (serverResponse.get("accountType") == null) {
-                return new Gson().fromJson(serverResponse, User.class);
+                responseMap.put(new Gson().fromJson(serverResponse, User.class), response.getToken());
+                return responseMap;
             } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
-                return new Gson().fromJson(serverResponse, Clinician.class);
+                responseMap.put(new Gson().fromJson(serverResponse, Clinician.class), response.getToken());
+                return responseMap;
             } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
-                return new Gson().fromJson(serverResponse, Admin.class);
+                responseMap.put(new Gson().fromJson(serverResponse, Admin.class), response.getToken());
+                return responseMap;
             } else {
-                return "Username/email and password combination not recognized.";
+                responseMap.put(null, "Username/email and password combination not recognized.");
+                return responseMap;
             }
         } else {
-            return "Username/email and password combination not recognized.";
+            responseMap.put(null, "Username/email and password combination not recognized.");
+            return responseMap;
         }
     }
 
-    public void reset() throws HttpResponseException {
-        APIResponse response = server.postRequest(new JsonObject(), new HashMap<String, String>(), "reset");
+    @Override
+    public void logoutUser(String token) throws HttpResponseException {
+        server.postRequest(new JsonObject(), new HashMap<>(), token, "logout");
+    }
+
+    public void reset(String token) throws HttpResponseException {
+        APIResponse response = server.postRequest(new JsonObject(), new HashMap<>(), token, "reset");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
-    public void resample() throws HttpResponseException {
-        APIResponse response = server.postRequest(new JsonObject(), new HashMap<String, String>(), "resample");
+    public void resample(String token) throws HttpResponseException {
+        APIResponse response = server.postRequest(new JsonObject(), new HashMap<>(), token, "resample");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -70,10 +80,10 @@ public class GeneralDB implements GeneralDAO {
         }
     }
 
-    public String sendCommand(String command) {
+    public String sendCommand(String command, String token) {
         JsonObject commandObject = new JsonObject();
         commandObject.addProperty("command", command);
-        APIResponse response = server.postRequest(commandObject, new HashMap<String, String>(), "cli");
+        APIResponse response = server.postRequest(commandObject, new HashMap<>(), token, "cli");
         return response.getAsString();
     }
 
@@ -88,8 +98,8 @@ public class GeneralDB implements GeneralDAO {
     }
 
     @Override
-    public List<WaitingListItem> getAllWaitingListItems() throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<String, String>(), "waitingListItems");
+    public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "waitingListItems");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
 
@@ -97,7 +107,27 @@ public class GeneralDB implements GeneralDAO {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<WaitingListItem>>() {
             }.getType());
         } else {
-            return new ArrayList<WaitingListItem>();
+            return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<Country> getAllCountries(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<String, String>(), token,"countries");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Country>>(){}.getType());
+        } else {
+            return new ArrayList<Country>();
+        }
+    }
+
+    @Override
+    public void updateCountries(List<Country> countries, String token) throws HttpResponseException {
+        JsonParser jp = new JsonParser();
+        JsonArray userJson = jp.parse(new Gson().toJson(countries)).getAsJsonArray();
+        APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),token,"countries");
     }
 }

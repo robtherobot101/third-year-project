@@ -13,7 +13,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -123,7 +122,6 @@ public class UserSettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setUserSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));

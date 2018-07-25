@@ -48,6 +48,7 @@
                         <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
                     </items>
                   </Menu>
+                  <MenuItem fx:id="SetCountriesMenuItem" mnemonicParsing="false" onAction="#setCountries" text="Set Countries"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>
@@ -280,10 +281,10 @@
                     </children>
                 </AnchorPane>
 							<AnchorPane fx:id="cliPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-								<fx:include source="adminCli.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+								<fx:include fx:id="cli" source="adminCli.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</AnchorPane>
 							<AnchorPane fx:id="transplantListPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-								<fx:include source="../clinician/clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+								<fx:include fx:id="waitingList" source="../clinician/clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</AnchorPane>
             </children>
         </AnchorPane>

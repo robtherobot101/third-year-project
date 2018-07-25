@@ -49,9 +49,9 @@ abstract class TestFXTest extends ApplicationTest {
                 WindowManager mainGUI = new WindowManager();
                 mainGUI.start(stage);
 
-                WindowManager.getDataManager().getGeneral().reset();
-                WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"));
-                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"));
+                WindowManager.getDataManager().getGeneral().reset(null);
+                WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"), null);
+                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"), null);
             } catch (HttpResponseException e) {
 
             }
@@ -62,8 +62,8 @@ abstract class TestFXTest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException, SQLException, HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset();
-        WindowManager.getDataManager().getGeneral().resample();
+        WindowManager.getDataManager().getGeneral().reset(null);
+        WindowManager.getDataManager().getGeneral().resample(null);
 
         FxToolkit.hideStage();
         release(new KeyCode[]{});
@@ -71,10 +71,10 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
     protected void useLocalStorage() {
-        UsersM users = new UsersM();
-        CliniciansM clinicians = new CliniciansM();
-        AdminsM admins = new AdminsM();
-        GeneralM general = new GeneralM(users,clinicians,admins);
+        UsersDAO users = new UsersM();
+        CliniciansDAO clinicians = new CliniciansM();
+        AdminsDAO admins = new AdminsM();
+        GeneralDAO general = new GeneralM(users,clinicians,admins);
         WindowManager.setDataManager(new DataManager(users,clinicians,admins,general));
     }
 
@@ -114,7 +114,7 @@ abstract class TestFXTest extends ApplicationTest {
 
     protected void userWindow(User user) {
         Platform.runLater(() -> {
-            WindowManager.setCurrentUser(user);
+            WindowManager.setCurrentUser(user, null);
             WindowManager.setScene(TFScene.userWindow);
         });
         waitForFxEvents();
@@ -122,7 +122,7 @@ abstract class TestFXTest extends ApplicationTest {
 
     public void userWindowAsClinician(User user) {
         Platform.runLater(() -> {
-            WindowManager.newCliniciansUserWindow(user);
+            WindowManager.newCliniciansUserWindow(user, null);
         });
         waitForFxEvents();
     }
@@ -156,7 +156,7 @@ abstract class TestFXTest extends ApplicationTest {
 
     public void openClinicianWindow(Clinician testClinician){
         Platform.runLater(() ->{
-            WindowManager.setCurrentClinician(testClinician);
+            WindowManager.setCurrentClinician(testClinician, null);
             WindowManager.setScene(TFScene.clinician);
         });
         waitForFxEvents();

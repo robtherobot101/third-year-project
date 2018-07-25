@@ -1,6 +1,5 @@
 package seng302.GUI.Controllers.Clinician;
 
-import com.google.gson.Gson;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -66,6 +65,8 @@ public class ClinicianController implements Initializable {
     private AnchorPane transplantListPane;
     @FXML
     private StatusBar statusBar;
+    @FXML
+    private ClinicianWaitingListController waitingListController;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
@@ -79,13 +80,11 @@ public class ClinicianController implements Initializable {
     private int resultsPerPage;
     private int numberXofResults;
 
-    private int page = 1;
     private List<User> usersFound = new ArrayList<>();
 
     private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
     private ObservableList<User> currentUsers = FXCollections.observableArrayList();
-    private ObservableList<Object> users;
 
     private String searchNameTerm = "";
     private String searchRegionTerm = "";
@@ -93,8 +92,7 @@ public class ClinicianController implements Initializable {
     private String searchAgeTerm = "";
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
-
-    private Gson gson = new Gson();
+    private String token;
 
     public ClinicianController() {
         this.titleBar = new TitleBar();
@@ -106,13 +104,26 @@ public class ClinicianController implements Initializable {
         return clinician;
     }
 
+
+    /**
+     * Checks whether this clinician has an API token.
+     *
+     * @return Whether this clinician has an API token
+     */
+    public boolean hasToken() {
+        return token != null;
+    }
+
     /**
      * Sets the current clinician
      *
      * @param clinician The clinician to se as the current
+     * @param token The login token of this clinician
      */
-    public void setClinician(Clinician clinician) {
+    public void setClinician(Clinician clinician, String token) {
         this.clinician = clinician;
+        this.token = token;
+        waitingListController.setToken(token);
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
         }
@@ -154,6 +165,18 @@ public class ClinicianController implements Initializable {
     }
 
     /**
+     * Logs out this clinician on the server, removing its authorisation token.
+     */
+    public void serverLogout() {
+        try {
+            WindowManager.getDataManager().getGeneral().logoutUser(token);
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to log out on server.");
+        }
+        this.token = null;
+    }
+
+    /**
      * Logs out the clinician. The user is asked if they're sure they want to log out, if yes,
      * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
      */
@@ -162,6 +185,7 @@ public class ClinicianController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.clinician);
@@ -193,7 +217,7 @@ public class ClinicianController implements Initializable {
                     stage.setScene(new Scene(root, 290, 280));
                     stage.initModality(Modality.APPLICATION_MODAL);
 
-                    WindowManager.setCurrentClinicianForAccountSettings(clinician);
+                    WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
                     WindowManager.setClinicianAccountSettingsEnterEvent();
 
                     stage.showAndWait();
@@ -318,7 +342,7 @@ public class ClinicianController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                WindowManager.getDataManager().getClinicians().updateClinician(clinician);
+                WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }
@@ -395,7 +419,7 @@ public class ClinicianController implements Initializable {
     }
 
     public void updateFoundUsers(){
-        updateFoundUsers(resultsPerPage,false);
+        updateFoundUsers(resultsPerPage, false);
     }
 
 
@@ -404,7 +428,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users int total");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users int total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -449,11 +473,11 @@ public class ClinicianController implements Initializable {
         }
 
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count()));
-            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap).size();
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
             searchMap.put("count", String.valueOf(count));
 
-            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap);
+            usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
             currentUsers = FXCollections.observableArrayList(usersFound);
             profileTable.setItems(currentUsers);
 
@@ -488,11 +512,11 @@ public class ClinicianController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
+        /*try {
             profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users in total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
-        }
+        }*/
 
         clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
@@ -502,25 +526,21 @@ public class ClinicianController implements Initializable {
         numberXofResults = 200;
 
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
             searchNameTerm = newValue;
-            updateFoundUsers(resultsPerPage,false);
+            updateFoundUsers(resultsPerPage, false);
         });
 
         clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
             searchRegionTerm = newValue;
             updateFoundUsers(resultsPerPage,false);
         });
 
         clinicianAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
             searchAgeTerm = newValue;
             updateFoundUsers(resultsPerPage,false);
         });
 
         clinicianGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
             if (newValue == null) {
                 searchGenderTerm = null;
 
@@ -531,7 +551,6 @@ public class ClinicianController implements Initializable {
         });
 
         clinicianUserTypeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
             if (newValue == null) {
                 searchUserTypeTerm = null;
 
@@ -543,7 +562,6 @@ public class ClinicianController implements Initializable {
         });
 
         clinicianOrganComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            page = 1;
             if (newValue == null) {
                 searchOrganTerm = null;
 
@@ -568,7 +586,7 @@ public class ClinicianController implements Initializable {
                     updateFoundUsers(numberXofResults,true);
                 } else if (((String) newValue).contains("All")) {
                     try{
-                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(),true);
+                        updateFoundUsers(WindowManager.getDataManager().getUsers().count(token),true);
                     } catch (HttpResponseException e) {
                         Debugger.log("Could not update table. Failed to retrieve the total number of users.");
                     }
@@ -585,8 +603,6 @@ public class ClinicianController implements Initializable {
         profileTable.setItems(currentUsers);
 
         WindowManager.setClinicianController(this);
-
-        updateFoundUsers(resultsPerPage,false);
 
         profileTable.setItems(currentUsers);
 
@@ -621,7 +637,7 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem());
+                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
                     }
                 });
                 return row;

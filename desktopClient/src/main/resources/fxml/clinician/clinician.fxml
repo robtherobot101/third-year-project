@@ -238,7 +238,7 @@
                 </AnchorPane>
             <AnchorPane fx:id="transplantListPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<children>
-								<fx:include source="clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+								<fx:include fx:id="waitingList" source="clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</children>
 						</AnchorPane>
             </children>
