@@ -388,9 +388,7 @@ public class WindowManager extends Application {
 
     public boolean checkConnection() {
         try {
-            System.out.println(dataManager.getGeneral().status());
-            System.out.println(dataManager.getUsers());
-            System.out.println(dataManager);
+
             if (dataManager.getGeneral().status() == true) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
