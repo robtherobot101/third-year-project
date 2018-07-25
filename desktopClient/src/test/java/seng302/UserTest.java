@@ -6,24 +6,27 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Generic.DataManager;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class UserTest {
-
+/*
     @Before
     public void setup() {
-        DataManager.users = FXCollections.observableArrayList();
-        DataManager.users.add(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
+
+        WindowManager.getDataManager().getUsers().insertUser(new User("Andrew,Neil,Davidson", "01/02/1998", "01/11/4000", "male", 12.1, 50.45, "o+", "Canterbury", "1235 abc Street"));
     }
 
     @Test
@@ -106,5 +109,5 @@ public class UserTest {
     @After
     public void tearDown() {
         DataManager.users = FXCollections.observableArrayList();
-    }
+    }*/
 }

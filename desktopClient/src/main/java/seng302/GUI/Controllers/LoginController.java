@@ -1,7 +1,6 @@
 package seng302.GUI.Controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -10,14 +9,15 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
-import sun.security.ssl.Debug;
 
 import java.net.URL;
-import java.sql.SQLException;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -41,62 +41,48 @@ public class LoginController implements Initializable {
     private Gson gson;
 
     public void login(){
-        APIResponse response = WindowManager.getDatabase().loginUser(identificationInput.getText(), passwordInput.getText());
-        if (response.isValidJson()) {
-            JsonObject serverResponse = response.getAsJsonObject();
-            if (serverResponse.get("accountType") == null) {
-                Debugger.log("LoginController: Logging in as user...");
-                loadUser(gson.fromJson(serverResponse, User.class));
-            } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
-                Debugger.log("LoginController: Logging in as clinician...");
-                loadClinician(gson.fromJson(serverResponse, Clinician.class));
-            } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
-                Debugger.log("LoginController: Logging in as admin...");
-                loadAdmin(gson.fromJson(serverResponse, Admin.class));
+        try {
+            Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
+            Object user = response.keySet().iterator().next();
+            String token = response.values().iterator().next();
+            if (user != null) {
+                if (user instanceof User) {
+                    Debugger.log("LoginController: Logging in as user...");
+                    loadUser((User)user, token);
+                } else if (user instanceof Admin) {
+                    Debugger.log("LoginController: Logging in as admin...");
+                    loadAdmin((Admin)user, token);
+                } else if (user instanceof Clinician) {
+                    Debugger.log("LoginController: Logging in as clinician...");
+                    loadClinician((Clinician)user, token);
+                }  else {
+                    errorMessage.setText("Username/email and password combination not recognized.");
+                    errorMessage.setVisible(true);
+                }
             } else {
                 errorMessage.setText("Username/email and password combination not recognized.");
                 errorMessage.setVisible(true);
             }
-        } else {
-            errorMessage.setText("Username/email and password combination not recognized.");
-            errorMessage.setVisible(true);
+
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not login. ");
         }
     }
 
-    private void loadUser(User user) {
-        WindowManager.setCurrentUser(user);
+    private void loadUser(User user, String token) {
+        WindowManager.setCurrentUser(user, token);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();
     }
 
-    private void loadClinician(Clinician clinician) {
-        //Add all users from Database
-        DataManager.users.clear();
-        try{
-            DataManager.clearUsers();
-            DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
-            WindowManager.getDatabase().refreshUserWaitinglists();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        WindowManager.setClinician(clinician);
+    private void loadClinician(Clinician clinician, String token) {
+        WindowManager.setCurrentClinician(clinician, token);
         WindowManager.setScene(TFScene.clinician);
         resetScene();
     }
 
-    private void loadAdmin(Admin admin) {
-        DataManager.users.clear();
-        DataManager.clinicians.clear();
-        DataManager.admins.clear();
-        try{
-            DataManager.addAllUsers(WindowManager.getDatabase().getAllUsers());
-            DataManager.clinicians.addAll(WindowManager.getDatabase().getAllClinicians());
-            DataManager.admins.addAll(WindowManager.getDatabase().getAllAdmins());
-        } catch(HttpResponseException e) {
-            Debugger.error("Failed to add all users, clinicians and admins.");
-        }
-        WindowManager.setAdmin(admin);
+    private void loadAdmin(Admin admin, String token) {
+        WindowManager.setCurrentAdmin(admin, token);
         WindowManager.setScene(TFScene.admin);
         resetScene();
     }
@@ -122,7 +108,7 @@ public class LoginController implements Initializable {
         UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         if (urlValidator.isValid(url)) {
             APIServer server = new APIServer(url);
-            System.out.println("URL is valid");
+            Debugger.log("URL is valid");
             server.testConnection();
             return true;
         }

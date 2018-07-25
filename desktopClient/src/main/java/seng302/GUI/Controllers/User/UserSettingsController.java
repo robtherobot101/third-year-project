@@ -13,7 +13,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -33,9 +32,24 @@ public class UserSettingsController implements Initializable {
 
     private User currentUser;
 
+    private UserController userController;
+    private String oldUsername, oldEmail;
+
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+        oldUsername = currentUser.getUsername();
+        oldEmail = currentUser.getEmail();
         userNameLabel.setText("user: " + currentUser.getName());
+    }
+
+
+    /**
+     * Set the parent user controller that spawned this window.
+     *
+     * @param userController The parent user controller
+     */
+    public void setParent(UserController userController) {
+        this.userController = userController;
     }
 
     /**
@@ -53,41 +67,31 @@ public class UserSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-        int userId = 0;
         try {
-            if (!WindowManager.getDatabase().isUniqueUser(usernameField.getText())) {
+            if (!oldUsername.equals(usernameField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDatabase().isUniqueUser(emailField.getText())) {
+            } else if (!oldEmail.equals(emailField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
             }
-            userId = WindowManager.getDatabase().getUserId(currentUser.getUsername());
         } catch (HttpResponseException e){
             Debugger.error("Failed to uniqueness of user with id: " + currentUser.getId());
         }
         errorLabel.setVisible(false);
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
-                "The changes made will take place instantly.");
+                "The changes made will not be saved to the server until you save.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());
 
-            currentUser.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
+            userController.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
             Stage stage = (Stage) updateButton.getScene().getWindow();
             stage.close();
-            WindowManager.setCurrentUser(currentUser);
-            try{
-                WindowManager.getDatabase().updateUser(currentUser);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         } else {
             alert.close();
         }
@@ -122,7 +126,6 @@ public class UserSettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setUserSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));

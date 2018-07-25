@@ -27,14 +27,20 @@ public class UserHistoryController extends UserTabController implements Initiali
 
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+    /**
+     * Sets which user's history is to be displayed in this history table.
+     *
+     * @param user The user to display
+     */
     public void setCurrentUser(User user) {
         currentUser = user;
+        populateTable();
     }
 
     /**
      * Populates the history table based on the action history of the current user.
      * Gets the user history from the History.getUserHistory() function.
-     * Sorts these into tree nodes based on new sessions.
+     * Sorts these into tree nodes based on the day that the actions occured.
      */
     public void populateTable() {
         userHistoryLabel.setText("History of actions for " + currentUser.getPreferredName());
@@ -92,6 +98,12 @@ public class UserHistoryController extends UserTabController implements Initiali
 
     }
 
+    /**
+     * Sets the history table to not display the top level root node.
+     *
+     * @param location Not used
+     * @param resources Not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         historyTreeTableView.setShowRoot(false);

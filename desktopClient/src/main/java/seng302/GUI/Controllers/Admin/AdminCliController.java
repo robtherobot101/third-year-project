@@ -25,6 +25,11 @@ public class AdminCliController implements Initializable {
 
     private ArrayList<String> commandInputHistory;
     private int currentHistoryIndex;
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,7 +103,7 @@ public class AdminCliController implements Initializable {
         if (!commandInputField.getText().equals("TF > ")) {
             capturedOutput.add(commandInputField.getText());
 
-            String response = WindowManager.getDatabase().sendCommand(commandInputField.getText().substring(5));
+            String response = WindowManager.getDataManager().getGeneral().sendCommand(commandInputField.getText().substring(5), token);
             if(isInstruction(response)) {
                 executeInstruction(response);
             }else{

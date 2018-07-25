@@ -106,7 +106,6 @@ public class UserMedications {
                 historyItem = "";
                 counter++;
             }
-
         }
 
         return new Medication(
@@ -115,7 +114,5 @@ public class UserMedications {
                 historyList,
                 medicationsResultSet.getInt("id")
         );
-
     }
-
 }

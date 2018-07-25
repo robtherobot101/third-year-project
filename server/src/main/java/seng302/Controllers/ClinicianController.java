@@ -15,6 +15,9 @@ import java.util.ArrayList;
 public class ClinicianController {
     private GeneralClinician model;
 
+    /**
+     * method to handle the request processing related to clinicians
+     */
     public ClinicianController() {
         model = new GeneralClinician();
     }
@@ -47,6 +50,12 @@ public class ClinicianController {
         return queriedClinician;
     }
 
+    /**
+     * method to get all registered clinicans
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing all the clinicians and their information
+     */
     public String getAllClinicians(Request request, Response response) {
         ArrayList<Clinician> queriedClinicians;
         try {
@@ -65,6 +74,12 @@ public class ClinicianController {
         return serialQueriedClinicians;
     }
 
+    /**
+     * method to handle the request to create a new clinician
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was processed correctly or not
+     */
     public String addClinician(Request request, Response response) {
         Gson gson = new Gson();
         Clinician receivedClinician;
@@ -83,7 +98,6 @@ public class ClinicianController {
             response.status(400);
             return "Missing Clinician Body";
         } else {
-            //TODO make model.insertClinician return token
             try {
                 model.insertClinician(receivedClinician);
                 response.status(201);
@@ -97,6 +111,12 @@ public class ClinicianController {
         }
     }
 
+    /**
+     * method to get a specific clinician
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the requested clinicians information
+     */
     public String getClinician(Request request, Response response) {
         Clinician queriedClinician = queryClinician(request, response);
 
@@ -112,6 +132,12 @@ public class ClinicianController {
         return serialQueriedClinician;
     }
 
+    /**
+     * method to edit a clinicians details
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String containing whether the request was processed correctly or not
+     */
     public String editClinician(Request request, Response response) {
         Clinician queriedClinician = queryClinician(request, response);
 
@@ -138,6 +164,12 @@ public class ClinicianController {
         }
     }
 
+    /**
+     * method to process the deletion of a clinican
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether or not the clinician was deleted or not
+     */
     public String deleteClinician(Request request, Response response) {
         Clinician queriedClinician = queryClinician(request, response);
 
