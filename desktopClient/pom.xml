@@ -113,6 +113,11 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.26</version>
         </dependency>
+        <dependency>
+            <groupId>no.tornado</groupId>
+            <artifactId>tornadofx-controls</artifactId>
+            <version>1.0.6</version>
+        </dependency>
 
 
     </dependencies>

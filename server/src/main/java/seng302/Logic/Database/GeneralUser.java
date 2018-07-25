@@ -475,7 +475,7 @@ public class GeneralUser {
                     resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
                     resultSet.getString("last_name"),
                     resultSet.getDate("date_of_birth").toLocalDate(),
-                    resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
+                    resultSet.getTimestamp("date_of_death") != null ? resultSet.getTimestamp("date_of_death").toLocalDateTime() : null,
                     resultSet.getString("gender") != null ? Gender.parse(resultSet.getString("gender")) : null,
                     resultSet.getDouble("height"),
                     resultSet.getDouble("weight"),
@@ -712,7 +712,7 @@ public class GeneralUser {
             statement.setString(7, user.getCurrentAddress());
             statement.setString(8, user.getRegion());
             statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
-            statement.setDate(10, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
+            statement.setTimestamp(10, user.getDateOfDeath() != null ? java.sql.Timestamp.valueOf(user.getDateOfDeath()) : null);
             statement.setDouble(11, user.getHeight());
             statement.setDouble(12, user.getWeight());
             statement.setString(13, user.getBloodPressure());

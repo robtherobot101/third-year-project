@@ -17,8 +17,8 @@ import java.util.*;
 public class User {
     public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"), dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
     private String[] name, preferredName;
-    private LocalDate dateOfBirth, dateOfDeath = null;
-    private LocalDateTime creationTime, lastModified = null;
+    private LocalDate dateOfBirth = null;
+    private LocalDateTime dateOfDeath, creationTime, lastModified = null;
     private Gender gender = null, genderIdentity = null;
     private double height = -1, weight = -1;
     private BloodType bloodType = null;
@@ -48,7 +48,7 @@ public class User {
         this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
-        this.dateOfDeath = LocalDate.parse(dateOfDeath, dateFormat);
+        this.dateOfDeath = LocalDateTime.parse(dateOfDeath, dateFormat);
         this.gender = Gender.parse(gender);
         this.genderIdentity = this.gender;
         this.height = height;
@@ -80,7 +80,7 @@ public class User {
     }
 
     // Used by CSV import to form profiles
-    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender,
+    public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender,
                 Gender genderIdentity, BloodType bloodType, int height, int weight, String address, String region,
                 String city, int zipCode, String country, String homePhone, String mobilePhone, String email) {
         int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
@@ -119,7 +119,7 @@ public class User {
     }
 
 
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDate dateOfDeath, Gender gender, double height,
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
@@ -394,7 +394,7 @@ public class User {
         return dateOfBirth;
     }
 
-    public LocalDate getDateOfDeath() {
+    public LocalDateTime getDateOfDeath() {
         return dateOfDeath;
     }
 
@@ -420,7 +420,7 @@ public class User {
         setLastModified();
     }
 
-    public void setDateOfDeath(LocalDate dateOfDeath) {
+    public void setDateOfDeath(LocalDateTime dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
         setLastModified();
     }

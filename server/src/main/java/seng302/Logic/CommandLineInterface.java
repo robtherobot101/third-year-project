@@ -639,7 +639,7 @@ public class CommandLineInterface {
                     break;
                 case "dateofdeath":
                     try {
-                        toSet.setDateOfDeath(LocalDate.parse(value, User.dateFormat));
+                        toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateFormat));
 
                         outputString = ("New date of death set.");
                         wasSuccessful = true;

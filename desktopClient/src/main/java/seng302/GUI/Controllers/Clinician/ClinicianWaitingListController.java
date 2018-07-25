@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers.Clinician;
 
+import com.google.api.client.util.DateTime;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,9 +21,11 @@ import seng302.User.Attribute.Organ;
 import seng302.User.Disease;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+import tornadofx.control.DateTimePicker;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -349,7 +352,7 @@ public class ClinicianWaitingListController implements Initializable {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        DatePicker deathDatePicker = new DatePicker();
+        DateTimePicker deathDatePicker = new DateTimePicker();
         deathDatePicker.setConverter(new StringConverter<LocalDate>() {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -399,7 +402,7 @@ public class ClinicianWaitingListController implements Initializable {
                     }
                 } else {
                     try {
-                        deathDeregister(deathDatePicker.getValue(), selectedItem, user);
+                        deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to de-register waiting list item.");
                     }
@@ -422,7 +425,7 @@ public class ClinicianWaitingListController implements Initializable {
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
-    private void deathDeregister(LocalDate deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
+    private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
         deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
         if (selectedUser.getWaitingListItems() != null) {
             for (WaitingListItem item : selectedUser.getWaitingListItems()) {
