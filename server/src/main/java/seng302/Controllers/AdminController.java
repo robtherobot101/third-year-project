@@ -15,6 +15,10 @@ import java.util.ArrayList;
 public class AdminController {
     private GeneralAdmin model;
 
+    /**
+     * constructor method to create a new admin controller object
+     * that handles all admin related requests
+     */
     public AdminController() {
         model = new GeneralAdmin();
     }
@@ -47,6 +51,12 @@ public class AdminController {
         return queriedAdmin;
     }
 
+    /**
+     * method to handle the request to get all the admins from the database
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all admins and their information, or an error message
+     */
     public String getAllAdmins(Request request, Response response) {
         ArrayList<Admin> queriedAdmins;
         try {
@@ -64,6 +74,12 @@ public class AdminController {
         return serialQueriedAdmins;
     }
 
+    /**
+     * method to handle the request to create a new admin on the database
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully
+     */
     public String addAdmin(Request request, Response response) {
 
         Gson gson = new Gson();
@@ -96,6 +112,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * method to handle the request to get a specific admin and all its details
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the information of the requested admin
+     */
     public String getAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
 
@@ -111,6 +133,12 @@ public class AdminController {
         return serialQueriedAdmin;
     }
 
+    /**
+     * method to handle the request to edit an existing admin in the database
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully
+     */
     public String editAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
 
@@ -137,6 +165,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * method to handle the request to deleted an admin
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully
+     */
     public String deleteAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
 

@@ -14,10 +14,20 @@ import java.util.ArrayList;
 public class MedicationsController {
     private UserMedications model;
 
+    /**
+     * constructor method to handle the creation of a new medications controller
+     * to handle all medication related requests
+     */
     public MedicationsController() {
         model = new UserMedications();
     }
 
+    /**
+     * method handle the request to get all medications of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the medications of a user, or an error message
+     */
     public String getAllMedications(Request request, Response response) {
 
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -39,6 +49,12 @@ public class MedicationsController {
         return serialQueriedMedications;
     }
 
+    /**
+     * method to handle getting a single medication object from a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing the details of the requested medication, or an error message
+     */
     public String getSingleMedication(Request request, Response response) {
 
         Medication queriedMedication = queryMedication(request, response);
@@ -55,6 +71,12 @@ public class MedicationsController {
         return serialQueriedMedication;
     }
 
+    /**
+     * method to handle the request to add a new medication for a user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or not
+     */
     public String addMedication(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
@@ -77,6 +99,12 @@ public class MedicationsController {
         }
     }
 
+    /**
+     * method to handle the request to edit an existing medication for a user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or not
+     */
     public String editMedication(Request request, Response response) {
         int requestedMedicationId = Integer.parseInt(request.params(":medicationId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -105,6 +133,12 @@ public class MedicationsController {
         }
     }
 
+    /**
+     * method to handle the request to delete an existing medication
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or not
+     */
     public String deleteMedication(Request request, Response response) {
         int requestedMedicationId = Integer.parseInt(request.params(":medicationId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));
