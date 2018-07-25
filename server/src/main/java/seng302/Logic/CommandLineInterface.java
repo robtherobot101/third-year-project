@@ -1,13 +1,10 @@
 package seng302.Logic;
 
 import seng302.Logic.Database.*;
+import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.Clinician;
-import seng302.Model.HistoryItem;
-import seng302.Model.User;
-import seng302.Model.WaitingListItem;
 
 import java.sql.SQLException;
 import java.time.DateTimeException;
@@ -721,6 +718,22 @@ public class CommandLineInterface {
                     outputString = ("New address set.");
                     wasSuccessful = true;
                     break;
+                case "country":
+                    for(Country c : new GeneralCountries().getCountries()) {
+                        if(value.toLowerCase().equals(c.getCountryName().toLowerCase()) && c.getValid()) {
+                            value = c.getCountryName();
+                            toSet.setCountry(value);
+                            wasSuccessful = true;
+                            break;
+                        }
+                    }
+                    if(!wasSuccessful) {
+                        outputString = ("Country was not updated. Invalid country: " + value);
+                    } else {
+                        outputString = ("New country set.");
+                    }
+                    break;
+
                 default:
                     outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
                             "bloodType, region, or currentAddress.");
