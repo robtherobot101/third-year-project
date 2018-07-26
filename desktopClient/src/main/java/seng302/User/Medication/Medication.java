@@ -96,7 +96,7 @@ public class Medication {
 
     /**
      * sets the active ingredients of the medication
-     * @param activeIngredients
+     * @param activeIngredients active ingredients in the medication
      */
     public void setActiveIngredients(String[] activeIngredients) {
         this.activeIngredients = activeIngredients;

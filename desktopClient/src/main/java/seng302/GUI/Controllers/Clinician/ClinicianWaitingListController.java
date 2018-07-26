@@ -167,7 +167,7 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * Method to show de-registering reason code for a user to make a selection
-     * 
+     * @param user the user item for the deregister dialog
      * @param selectedItem The item being de registered.
      */
     public void showDeregisterDialog(WaitingListItem selectedItem, User user) {
