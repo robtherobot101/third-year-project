@@ -812,8 +812,7 @@ public class CommandLineInterface {
         }
         return new CommandLineResponse(wasSuccessful, outputString);
     }
-
-
+    
     /**
      * Searches for users and displays information about them.
      *
