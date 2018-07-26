@@ -126,6 +126,10 @@ public class Clinician {
         this.password = password;
     }
 
+    /**
+     * copies info from one clinician to another
+     * @param clinician the clinician to copy from
+     */
     public void copyFieldsFrom(Clinician clinician) {
         this.name = clinician.name;
         this.region = clinician.region;
@@ -151,7 +155,10 @@ public class Clinician {
     }
 
 
-
+    /**
+     * overrides the toString function
+     * @return returns the clinician info
+     */
     @Override
     public String toString() {
         return "Clinician{" +
