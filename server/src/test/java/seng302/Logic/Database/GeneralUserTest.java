@@ -142,7 +142,7 @@ public class GeneralUserTest {
         assertEquals(user.getCurrentAddress(), user2.getCurrentAddress());
         assertEquals(user.getRegion(), user2.getRegion());
         assertEquals(user.getDateOfBirth(), user2.getDateOfBirth());
-        //assertEquals(user.getDateOfDeath(), user2.getDateOfDeath());
+        assertEquals(user.getDateOfDeath(), user2.getDateOfDeath());
         assertEquals(user.getHeight(), user2.getHeight(), 0.01);
         assertEquals(user.getWeight(), user2.getWeight(), 0.01);
         assertEquals(user.getBloodPressure(), user2.getBloodPressure());
