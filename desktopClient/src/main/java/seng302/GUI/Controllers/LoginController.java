@@ -26,8 +26,6 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
 
     @FXML
-    private TextField serverInput;
-    @FXML
     private TextField identificationInput;
     @FXML
     private PasswordField passwordInput;
@@ -114,19 +112,7 @@ public class LoginController implements Initializable {
         loginButton.setDisable(true);
         errorMessage.setVisible(false);
     }
-
-    /**
-     * tests the connection to the server
-     */
-    public void testConnection(){
-        APIServer server = new APIServer("http://" + serverInput.getText());
-        if(server.testConnection().equals("1")){
-            WindowManager.createAlert(Alert.AlertType.INFORMATION, "Connection successful", "Success", "Successfully connected to the server").showAndWait();
-        }
-        else{
-            WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
-        }
-    }
+    
 
     /**
      * connects to a server with a given url
