@@ -4,15 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
 import seng302.Generic.Debugger;
-import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
 import seng302.User.User;
@@ -20,11 +19,9 @@ import seng302.User.WaitingListItem;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.time.Duration;
@@ -311,6 +308,7 @@ public class UserAttributesController extends UserTabController implements Initi
 
         weightField.setText(currentUser.getWeight() == -1 ? "" : Double.toString(currentUser.getWeight()));
         heightField.setText(currentUser.getHeight() == -1 ? "" : Double.toString(currentUser.getHeight()));
+        //set profile image
 
         Debugger.log("Attempting to update photo when populating attributes page");
         profileImage.setImage(WindowManager.getDataManager().getUsers().getUserPhoto((int) currentUser.getId()));
@@ -334,6 +332,9 @@ public class UserAttributesController extends UserTabController implements Initi
     }
 
 
+    /**
+     * Called when the upload photo button is pressed. Presents a dialog with a choice of deleting an uploaded photo, or uploading a new one.
+     */
     public void changeProfilePhoto() {
 
             List<String> options = new ArrayList<>();
@@ -341,6 +342,25 @@ public class UserAttributesController extends UserTabController implements Initi
             if (currentUser.getProfileImageType() != null) {
                 options.add("Delete the current profile photo");
             }
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Photo Options");
+        alert.setHeaderText("Maximum Image size is 5MB.");
+        alert.setContentText("Accepted file formats are JPG, PNG, and BMP. Images MUST be square.");
+
+        ButtonType upload_new_photo = new ButtonType("Upload new");
+        ButtonType use_default_photo = new ButtonType("Use default");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(upload_new_photo, use_default_photo, buttonTypeCancel);
+        WindowManager.setIconAndStyle(alert.getDialogPane());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == upload_new_photo){
+            uploadProfileImage();
+        } else if (result.get() == use_default_photo) {
+            deleteProfileImage();
+        } /*
 
             ChoiceDialog<String> dialog = new ChoiceDialog<>("Upload a new profile photo", options);
             WindowManager.setIconAndStyle(dialog.getDialogPane());
@@ -351,11 +371,11 @@ public class UserAttributesController extends UserTabController implements Initi
             //Get Input Code
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(this::processPhoto);
+            */
 
     }
 
     private void processPhoto(String option) {
-        System.out.println("option");
         if (Objects.equals(option, "Upload a new profile photo")){
             uploadProfileImage();
         } else {
@@ -363,12 +383,29 @@ public class UserAttributesController extends UserTabController implements Initi
         }
     }
 
+    /**
+     * Removes a profile photo from the server, if it exists. Then fetches the default photo with a seperate request.
+     * This maintains REST.
+     */
     private void deleteProfileImage() {
-        System.out.println("Deeleeeting..");
+        try {
+            WindowManager.getDataManager().getUsers().deleteUserPhoto(currentUser.getId());
+            //success catch, set to default photo
+            Image profilePhoto = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
+            profileImage.setImage(profilePhoto);
+            currentUser.setProfileImageType(null);
+
+        } catch (HttpResponseException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Uploads a new profile photo, and sends and stores it on the server by converting it to a base64 string.
+     * Images MUST be square, and bmp, png or jpg.
+     * The max file size is 5MB.
+     */
     private void uploadProfileImage() {
-        System.out.println("Uploaaaading....");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter fileExtensions =
@@ -378,8 +415,6 @@ public class UserAttributesController extends UserTabController implements Initi
         fileChooser.getExtensionFilters().add(fileExtensions);
         try {
             File file = fileChooser.showOpenDialog(stage);
-            System.out.println(file.length());
-            System.out.println(Files.probeContentType(file.toPath()).split("/")[1]);
             String fileType = Files.probeContentType(file.toPath()).split("/")[1];
             if (file.length() < 5000000){
                 if(fileType.equals("png") || fileType.equals("jpg") || fileType.equals("bmp")){
@@ -391,8 +426,27 @@ public class UserAttributesController extends UserTabController implements Initi
 
                     String image = Base64.getEncoder().encodeToString(byteArrayImage);
                     WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image);
+                    Image profileImg = SwingFXUtils.toFXImage(bImage, null);
+                    if (profileImg.getWidth() == profileImg.getHeight()) {
+                        profileImage.setImage(profileImg);
+                    } else {
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Image not square");
+                        alert.setContentText("Image file must have the same width and height.");
+                        WindowManager.setIconAndStyle(alert.getDialogPane());
+                        alert.showAndWait();
+                    }
+
                 }
 
+            } else {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("File Size Too Large");
+                alert.setContentText("File size must be below 5MB.");
+                WindowManager.setIconAndStyle(alert.getDialogPane());
+                alert.showAndWait();
             }
         } catch (NullPointerException e){
             System.out.println("Error: NULL");
@@ -400,6 +454,7 @@ public class UserAttributesController extends UserTabController implements Initi
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -496,8 +551,6 @@ public class UserAttributesController extends UserTabController implements Initi
         //Add listeners to correctly update BMI and blood pressure based on user input
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldVaqlue, newValue) -> updateBMI());
-
-        //set profile image
     }
 
     public void undo(){

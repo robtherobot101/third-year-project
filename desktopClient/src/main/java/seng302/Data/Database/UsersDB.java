@@ -9,15 +9,16 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
-import seng302.Generic.*;
+import seng302.Generic.APIResponse;
+import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
+import seng302.Generic.IO;
 import seng302.User.User;
-import sun.security.ssl.Debug;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -84,7 +85,7 @@ public class UsersDB implements UsersDAO {
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
         }
         return null;
-    }// Now uses API server!
+    }
 
     @Override
     public Image getUserPhoto(long id) {
@@ -95,13 +96,13 @@ public class UsersDB implements UsersDAO {
             Debugger.log("No profile photo loaded: setting default");
             return getDefaultProfilePhoto();
         }
-
         try {
             Debugger.log(response.getStatusCode());
-            String encodedImage = response.toString();
-            String base64Image = encodedImage.split(",")[1];
+            String encodedImage = response.getAsString();
+            System.out.println(encodedImage);
+            //String base64Image = encodedImage.split(",")[1];
             //Decode the string to a byte array
-            byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+            byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
 
             //Turn it into a buffered image
             ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
@@ -141,7 +142,7 @@ public class UsersDB implements UsersDAO {
 
     @Override
     public void deleteUserPhoto(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photos");
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photo");
     }
 
     @Override

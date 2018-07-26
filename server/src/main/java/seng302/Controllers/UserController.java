@@ -1,8 +1,6 @@
 package seng302.Controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
@@ -11,7 +9,6 @@ import spark.Request;
 import spark.Response;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,9 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.util.*;
-import java.util.List;
 
 import static java.lang.Integer.max;
 
@@ -348,7 +343,6 @@ public class UserController {
     }
 
 
-    //TODO Finish this method.
     public String getUserPhoto(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -356,35 +350,36 @@ public class UserController {
             return response.body();
         }
 
+        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+        File file = new File(filepath);
+        System.out.println(file.exists());
+
+        if (!file.isFile()){
+            response.status(404);
+            return "Photo does not exist.";
+        }
+
+
+        // BufferedImage has no type, we can choose what the file type is
         try {
-            //Find filetype
-            String fileType = queriedUser.getProfileImageType();
-            //Find filepath
-            String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + fileType;
-
-            //Get file
-            File file = new File(filepath);
-            if (!file.isFile()){
-                response.status(404);
-                return "Photo does not exist.";
-            }
-
-            //Turn the image file into a byte array
             BufferedImage bImage = ImageIO.read(file);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bImage, fileType, byteOutputStream);
+            ImageIO.write(bImage, "png", byteOutputStream);
             byte[] byteArrayImage = byteOutputStream.toByteArray();
-
-            //Then turn it to a Base64 String to be sent away
-            return Base64.getEncoder().encodeToString(byteArrayImage);
-
+            byteOutputStream.close();
+            String image = Base64.getEncoder().encodeToString(byteArrayImage);
+            response.status(200);
+            return image;
         } catch (IOException e) {
-            response.status(500);
             return "Internal Server Error";
         }
+
+
+
+
     }
 
-    //TODO finish this method. I spaced it out quite a bit so I could get my head around it but this won't be final. Jono
     public String editUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
 
@@ -438,14 +433,17 @@ public class UserController {
     //TODO Finish this method
     public String deleteUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
+        if (queriedUser == null){
+            return response.body();
+        }
 
         //Find filepath in DB
-        String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + queriedUser.getProfileImageType();
+        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
 
         //Delete file from storage
         File file = new File(filepath);
         boolean deleted = false;
-        if (file.isFile()){
+        if (file.exists()){
             deleted = file.delete();
         }
 
