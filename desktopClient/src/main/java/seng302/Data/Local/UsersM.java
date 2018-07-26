@@ -24,6 +24,10 @@ public class UsersM implements UsersDAO {
         return 0;
     }
 
+    /**
+     * inserts a new user
+     * @param user the user to insert
+     */
     @Override
     public void insertUser(User user) {
         long nextUserId = 0;
@@ -36,6 +40,11 @@ public class UsersM implements UsersDAO {
         users.add(user);
     }
 
+    /**
+     * updates a user
+     * @param User the user to update
+     * @param token the users token
+     */
     @Override
     public void updateUser(User User, String token) {
         removeUser(User.getId(), null);
@@ -248,6 +257,15 @@ public class UsersM implements UsersDAO {
     }
 
 
+    /**
+     * Used for searching, takes a hashmap of keyvalue pairs and searches the DB for them.
+     * eg. "age", "10" returns all users aged 10.
+     *
+     * @param searchMap The hashmap with associated key value pairs
+     * @param token the users token
+     * @return a JSON array of users.
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
         List<User> queriedUsers = new ArrayList<>();
@@ -353,6 +371,12 @@ public class UsersM implements UsersDAO {
         return users;
     }
 
+    /**
+     * gets a specific user
+     * @param id the users id
+     * @param token the users token
+     * @return the users profile
+     */
     @Override
     public User getUser(long id, String token) {
         for(User a : users) {
@@ -364,6 +388,11 @@ public class UsersM implements UsersDAO {
         return null;
     }
 
+    /**
+     * removes a specific user
+     * @param id the user id
+     * @param token the user token
+     */
     @Override
     public void removeUser(long id, String token) {
         for(User u : users) {

@@ -12,7 +12,12 @@ import java.util.List;
 
 public class GeneralCountries {
 
-    public ArrayList<Country> getCountries() throws SQLException {
+    /**
+     * Gets all the countries from the database and if they are valid or not
+     * @return returns a list of all the countries
+     * @throws SQLException Throws if the database cannot be reached
+     */
+    public List<Country> getCountries() throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Country> countries = new ArrayList<>();
             String query = "SELECT * FROM COUNTRIES";
@@ -25,6 +30,11 @@ public class GeneralCountries {
         }
     }
 
+    /**
+     * updates all the countries in the database
+     * @param countries the list of countries for the database to be updated to
+     * @throws SQLException throws if the database cannot be reached
+     */
     public void patchCounties(List<Country> countries) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "DELETE FROM COUNTRIES";

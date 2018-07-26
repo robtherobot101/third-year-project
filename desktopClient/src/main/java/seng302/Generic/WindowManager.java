@@ -248,15 +248,26 @@ public class WindowManager extends Application {
         WindowManager.loginController = loginController;
     }
 
-
+    /**
+     * sets the create user controller
+     * @param createUserController the current create user controller
+     */
     public static void setCreateUserController(CreateUserController createUserController) {
         WindowManager.createUserController = createUserController;
     }
 
-    public static void setClincianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
+    /**
+     * sets the clinician settings controller
+     * @param clinicianSettingsController the current clinician settings controller
+     */
+    public static void setClinicianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
         WindowManager.clinicianSettingsController = clinicianSettingsController;
     }
 
+    /**
+     * sets the clinician waiting list controller
+     * @param clinicianWaitingListController the current clinician waiting list controller
+     */
     public static void setTransplantWaitingListController(ClinicianWaitingListController clinicianWaitingListController) {
         if (scenes.get(TFScene.clinician) == null) {
             WindowManager.clinicianClinicianWaitingListController = clinicianWaitingListController;
@@ -266,11 +277,18 @@ public class WindowManager extends Application {
 
     }
 
-
+    /**
+     * sets the clinician controller
+     * @param clinicianController the current clinician controller
+     */
     public static void setClinicianController(ClinicianController clinicianController) {
         WindowManager.clinicianController = clinicianController;
     }
 
+    /**
+     * sets the admin controller
+     * @param adminController the current admin controller
+     */
     public static void setAdminController(AdminController adminController) {
         WindowManager.adminController = adminController;
     }
@@ -279,6 +297,9 @@ public class WindowManager extends Application {
         return clinicianController;
     }
 
+    /**
+     * updates the found users
+     */
     public static void updateFoundClinicianUsers() {
         if (clinicianController.hasToken()) {
             clinicianController.updateFoundUsers();
@@ -288,11 +309,19 @@ public class WindowManager extends Application {
         }
     }
 
+    /**
+     * refreshes the admin
+     */
     public static void refreshAdmin() {
         adminController.refreshLatestProfiles();
         adminController.updateFoundUsers();
     }
 
+    /**
+     * show the dialog for deregistering a waiting list item
+     * @param waitingListItem the waiting list item to deregister
+     * @param user the user
+     */
     public static void showDeregisterDialog(WaitingListItem waitingListItem, User user) {
         clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem, user);
     }
@@ -386,6 +415,10 @@ public class WindowManager extends Application {
         return new DataManager(users,clinicians,admins,general);
     }
 
+    /**
+     * checks the connection to the server.
+     * @return returns true if can connect to the server, otherwise false
+     */
     public boolean checkConnection() {
         try {
 
@@ -494,11 +527,18 @@ public class WindowManager extends Application {
 
     }
 
+    /**
+     * Sets up a drug interaction cache
+     */
     public void setupDrugInteractionCache(){
         Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
 
+    /**
+     * resets the scene
+     * @param scene the scene to reset
+     */
     public static void resetScene(TFScene scene) {
         try {
             scenes.remove(scene);

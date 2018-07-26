@@ -510,6 +510,11 @@ public class ClinicianController implements Initializable {
         }
     }
 
+    /**
+     * starts up the clinician controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         /*try {

@@ -33,6 +33,13 @@ public class GeneralM implements GeneralDAO {
         this.resample(null);
     }
 
+    /**
+     * logs a user in
+     * @param usernameEmail the username or email of the user
+     * @param password the users password
+     * @return the user profile
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public Map<Object, String> loginUser(String usernameEmail, String password) throws HttpResponseException {
         Map<Object, String> response = new HashMap<>();
@@ -68,6 +75,10 @@ public class GeneralM implements GeneralDAO {
         //No need to log out from local test version
     }
 
+    /**
+     * resets the local data
+     * @param token the users token
+     */
     @Override
     public void reset(String token) {
         try {
@@ -86,6 +97,10 @@ public class GeneralM implements GeneralDAO {
         }
     }
 
+    /**
+     * resamples the local data
+     * @param token
+     */
     @Override
     public void resample(String token) {
         try {
@@ -109,6 +124,12 @@ public class GeneralM implements GeneralDAO {
         return null;
     }
 
+    /**
+     * checks if the username or email is unique
+     * @param usernameEmail the username or email
+     * @return returns true if unique, otherwise false
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public boolean isUniqueIdentifier(String usernameEmail) throws HttpResponseException {
         for(User u : users.getAllUsers(null)) {
@@ -131,6 +152,12 @@ public class GeneralM implements GeneralDAO {
         return true;
     }
 
+    /**
+     * gets all the waiting list items
+     * @param token the users token
+     * @return returns all waiting list items
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
         List<WaitingListItem> items = new ArrayList<>();
         for(User u : users.getAllUsers(null)) {

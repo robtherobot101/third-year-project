@@ -1,6 +1,7 @@
 package seng302.TestFX;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import org.apache.http.client.HttpResponseException;
@@ -27,7 +28,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
     @Before
     public void setup() throws HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset(null);
+        WindowManager.getDataManager().getGeneral().reset("masterToken");
         WindowManager.resetScene(TFScene.createAccount);
         //DataManager.users.clear();
     }
@@ -81,7 +82,8 @@ public class CreateAndLoginGUITest extends TestFXTest {
             clickOn("#createAccountButton");
             sleep(500);
             //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
-            assertNull(lookup("#createAccountButton").query());
+            Button createAccountButton = lookup("#createAccountButton").query();
+            assertTrue(createAccountButton.isDisabled());
         }
     }
 
@@ -93,6 +95,8 @@ public class CreateAndLoginGUITest extends TestFXTest {
         write("buzz");
         clickOn("#firstNameInput");
         write("Matthew");
+        clickOn("#emailInput");
+        write("mkn29@uclive.ac.nz");
         clickOn("#dateOfBirthInput");
         write("12/06/1997");
         clickOn("#passwordInput");

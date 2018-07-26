@@ -15,6 +15,11 @@ public class CliniciansM implements CliniciansDAO {
         this.clinicians = new ArrayList<>();
     }
 
+    /**
+     * inserts a clinician
+     * @param clinician the clinician to insert
+     * @param token the users token
+     */
     @Override
     public void insertClinician(Clinician clinician, String token) {
         long nextClinicianId = 0;
@@ -27,17 +32,33 @@ public class CliniciansM implements CliniciansDAO {
         clinicians.add(clinician);
     }
 
+    /**
+     * updates a clinician
+     * @param Clinician the clinician to update
+     * @param token the users token
+     */
     @Override
     public void updateClinician(Clinician Clinician, String token) {
         removeClinician(Clinician.getStaffID(), null);
         clinicians.add(Clinician);
     }
 
+    /**
+     * gets all the clinicians
+     * @param token the users token
+     * @return returns a list of all the clinicians
+     */
     @Override
     public List<Clinician> getAllClinicians(String token) {
         return clinicians;
     }
 
+    /**
+     * gets a specific clinician
+     * @param id the clinicians id
+     * @param token the user token
+     * @return returns the clinician
+     */
     @Override
     public Clinician getClinician(long id, String token) {
         for(Clinician a : clinicians) {
@@ -49,6 +70,11 @@ public class CliniciansM implements CliniciansDAO {
         return null;
     }
 
+    /**
+     * removes a specific clinician
+     * @param id the id of the clinician
+     * @param token the users token
+     */
     @Override
     public void removeClinician(long id, String token) {
         for(Clinician c : clinicians) {
