@@ -1,14 +1,21 @@
 package seng302.Controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -391,4 +398,120 @@ public class UserController {
             return "Internal Server Error";
         }
     }
+
+
+    public String getUserPhoto(Request request, Response response) {
+        User queriedUser = queryUser(request, response);
+
+        if (queriedUser == null){
+            return response.body();
+        }
+
+        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+        File file = new File(filepath);
+        System.out.println(file.exists());
+
+        if (!file.isFile()){
+            response.status(404);
+            return "Photo does not exist.";
+        }
+
+
+        // BufferedImage has no type, we can choose what the file type is
+        try {
+            BufferedImage bImage = ImageIO.read(file);
+            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bImage, "png", byteOutputStream);
+            byte[] byteArrayImage = byteOutputStream.toByteArray();
+            byteOutputStream.close();
+            String image = Base64.getEncoder().encodeToString(byteArrayImage);
+            response.status(200);
+            return image;
+        } catch (IOException e) {
+            return "Internal Server Error";
+        }
+
+
+
+
+    }
+
+    public String editUserPhoto(Request request, Response response){
+        User queriedUser = queryUser(request, response);
+
+        if (queriedUser == null){
+            return response.body();
+        }
+
+        Gson gson = new Gson();
+        PhotoStruct receivedPhotoStruct;
+
+        // Attempt to parse received JSON into our simple photo structure
+        try {
+            receivedPhotoStruct = gson.fromJson(request.body(), PhotoStruct.class);
+        } catch (JsonSyntaxException jse) {
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+
+        // Process this base64 string into a photo
+        String encodedImage = receivedPhotoStruct.getData();
+        if (encodedImage == null) {
+            response.status(400);
+            return "Missing Image";
+        } else {
+            try {
+                //Decode the string to a byte array
+                byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(encodedImage);
+
+                // BufferedImage has no type, we can choose what the file type is
+                BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+
+                // Ensure directory exists
+                Files.createDirectories(Paths.get("home/serverImages/user/"));
+
+                // Set filepath
+                String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+                // Write the file
+                File outputfile = new File(filepath);
+                ImageIO.write(img, "png", outputfile);
+
+                return "PHOTO SUCCESSFULLY SAVED";
+            }  catch (IOException e) {
+                System.out.println(e);
+                return "Internal Server Error";
+            }
+        }
+    }
+
+
+    public String deleteUserPhoto(Request request, Response response){
+        User queriedUser = queryUser(request, response);
+        if (queriedUser == null){
+            return response.body();
+        }
+
+        //Find filepath in DB
+        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+        //Delete file from storage
+        File file = new File(filepath);
+        boolean deleted = false;
+        if (file.exists()){
+            deleted = file.delete();
+        }
+
+        //Update DB
+        if (deleted){
+            //update
+            return "Photo successfully deleted";
+        } else {
+            //update
+            return "Internal server error";
+        }
+    }
+
 }

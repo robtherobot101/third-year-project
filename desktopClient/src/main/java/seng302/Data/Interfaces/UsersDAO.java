@@ -1,5 +1,6 @@
 package seng302.Data.Interfaces;
 
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.User.User;
 
@@ -17,6 +18,12 @@ public interface UsersDAO {
     List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException;
 
     User getUser(long id, String token) throws HttpResponseException;
+
+    Image getUserPhoto(long id);
+
+    void updateUserPhoto(long id, String image) throws HttpResponseException;
+
+    void deleteUserPhoto(long id) throws HttpResponseException;
 
     // Now uses API server!
     Collection<User> getAllUsers(String token) throws HttpResponseException;

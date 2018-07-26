@@ -1,5 +1,6 @@
 package seng302.Data.Local;
 
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Generic.Debugger;
@@ -391,8 +392,18 @@ public class UsersM implements UsersDAO {
     /**
      * removes a specific user
      * @param id the user id
-     * @param token the user token
      */
+    @Override
+    public Image getUserPhoto(long id) {
+        return null;
+    }
+
+    @Override
+    public void updateUserPhoto(long id, String image) {}
+
+    @Override
+    public void deleteUserPhoto(long id) {}
+
     @Override
     public void removeUser(long id, String token) {
         for(User u : users) {
