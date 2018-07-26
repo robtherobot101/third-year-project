@@ -13,6 +13,13 @@ import java.util.UUID;
 
 public class Authorization {
 
+    /**
+     * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
+     * @param usernameEmail Either a username or an email address
+     * @param password A password
+     * @return The matched user
+     * @throws SQLException If there is an error working with the database
+     */
     public User loginUser(String usernameEmail, String password) throws SQLException{
 
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -38,6 +45,14 @@ public class Authorization {
 
     }
 
+
+    /**
+     * Returns the clinician with a matching username and password if such a clinician exists, otherwise returns null
+     * @param username A username
+     * @param password A password
+     * @return The matched clinician if it was found, otherwise null
+     * @throws SQLException If there is an error working with the database
+     */
     public Clinician loginClinician(String username, String password) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
@@ -59,13 +74,21 @@ public class Authorization {
 
     }
 
-    public Admin loginAdmin(String usernameEmail, String password) throws SQLException {
+
+    /**
+     * Returns the admin with a matching username and password if such a admin exists, otherwise returns null
+     * @param username A username
+     * @param password A password
+     * @return The matched admin if it was found, otherwise null
+     * @throws SQLException If there is an error working with the database
+     */
+    public Admin loginAdmin(String username, String password) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
             String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
-            statement.setString(1, usernameEmail);
+            statement.setString(1, username);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
 
@@ -78,7 +101,6 @@ public class Authorization {
                 return generalAdmin.getAdminFromResultSet(resultSet);
             }
         }
-
     }
 
     /**
@@ -101,6 +123,11 @@ public class Authorization {
         return token;
     }
 
+    /**
+     * Removes the row containing the given token from the TOKEN table
+     * @param token The token which will be discarded
+     * @throws SQLException If there is an error communicating with the database
+     */
     public void logout(String token) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM TOKEN WHERE token = ?");

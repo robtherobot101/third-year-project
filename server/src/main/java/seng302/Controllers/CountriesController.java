@@ -15,6 +15,9 @@ public class CountriesController {
 
     private GeneralCountries model;
 
+    /**
+     * Constructs a new CountriesController
+     */
     public CountriesController() {
         model = new GeneralCountries();
     }
@@ -26,7 +29,7 @@ public class CountriesController {
      * @return A json string of all the countries and if they are valid or not
      */
     public String getCountries(Request request, Response response){
-        ArrayList<Country> queriedCountries;
+        List<Country> queriedCountries;
         try {
             queriedCountries = model.getCountries();
         } catch (SQLException e) {

@@ -1,19 +1,47 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.IO;
 using Newtonsoft.Json;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace mobileAppClient
 {
     public class RequestTester
     {
-        public RequestTester()
+        private String url;
+        public RequestTester(String url)
         {
+            this.url = url;
         }
 
+        static HttpClient client = new HttpClient();
+
+        public String connect()
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url + "/hello");
+            try
+            {
+                WebResponse res = req.GetResponse();
+                StreamReader reader = new StreamReader(res.GetResponseStream());
+                JsonTextReader jreader = new JsonTextReader(reader);
+                if (!jreader.Read())
+                {
+                    return "0";
+                }
+                System.Diagnostics.Debug.WriteLine(jreader.TokenType);
+                String s = (String) jreader.Value;
+                return s;
+            }
+            catch (WebException e)
+            {
+                return "0";
+            }
+        }
         public User LiveGetRequestTest() {
-            HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create("http://csse-s302g3.canterbury.ac.nz:80/api/v1/users/1");
+            Console.WriteLine("--------------GET SINGLE USER REQUEST-----------------------");
+            HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create(url + "/users/1");
 
             // Get the response.  
             WebResponse response = null;
@@ -30,14 +58,13 @@ namespace mobileAppClient
                 // Read the content.  
                 string responseFromServer = reader.ReadToEnd();
 
-                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("--------------RESPONSE-----------------------");
                 // Display the content.  
                 Console.WriteLine(responseFromServer);
 
-                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("---------------END OF RESPONSE----------------------");
 
                 User user = JsonConvert.DeserializeObject<User>(responseFromServer);
-                Console.WriteLine(user.Email);
 
                 // Clean up the streams and the response.  
                 reader.Close();
@@ -52,12 +79,17 @@ namespace mobileAppClient
             }
         }
 
-        public User mockGetRequestTest() {
+        public void MockUserCreation() {
             Console.WriteLine("------------------CONNECTION TO MOCK SERVER SUCCESSFUL.-----------------------");
+            UserController uc = UserController.Instance;
             User mockUser = new User("abc@123.com");
-           
-            Console.WriteLine(" TO MOCK S");
-            return mockUser;
+            mockUser.email = "Andy's Mock User!";
+            uc.LoggedInUser = mockUser;
+
+            Console.WriteLine("Logged in as " + uc.LoggedInUser.email);
+          
         }
+
+
     }
 }

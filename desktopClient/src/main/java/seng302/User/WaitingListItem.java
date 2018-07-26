@@ -144,4 +144,9 @@ public class WaitingListItem {
     public boolean isConflicting() {
         return isConflicting;
     }
+
+    public void setIsConflicting(boolean isConflicting) {
+        this.isConflicting = isConflicting;
+    }
+
 }

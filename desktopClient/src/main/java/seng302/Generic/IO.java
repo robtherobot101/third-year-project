@@ -102,6 +102,7 @@ public class IO {
      *
      * @param path      path of the file.
      * @param profileType the account type of the users
+     * @param token the users token
      * @return Whether the command executed successfully
      */
     public static boolean importProfiles(String path, ProfileType profileType, String token) {
@@ -151,6 +152,12 @@ public class IO {
         return false;
     }
 
+    /**
+     * imports users from csv file
+     * @param path the path to the csv file
+     * @param token the users token
+     * @return returns true if completed otherwise false
+     */
     public static boolean importUserCSV(String path, String token) {
         try {
             Debugger.log("importUserCSV called");

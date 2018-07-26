@@ -35,6 +35,11 @@ public class AdminCliController implements Initializable {
         this.token = token;
     }
 
+    /**
+     * starts the admin cli controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Initialise output components

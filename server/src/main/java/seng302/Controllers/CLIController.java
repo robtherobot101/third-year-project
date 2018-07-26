@@ -15,10 +15,19 @@ public class CLIController {
 
     private CommandLineInterface model;
 
+    /**
+     * Constructs a new CLIController
+     */
     public CLIController() {
         model = new CommandLineInterface();
     }
 
+    /**
+     * Executes a query on the commandline and returns the result as a string
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return The output of the CLI
+     */
     public String executeQuery(Request request, Response response) {
         Command command = new Gson().fromJson(request.body(), Command.class);
         if (command == null) {

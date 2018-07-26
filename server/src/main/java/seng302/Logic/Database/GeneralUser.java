@@ -268,6 +268,13 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Returns a List of Users based on the params given. Check the endpoint definition on the wiki
+     * for an explanation of these
+     * @param params The given params
+     * @return The List of matched users
+     * @throws SQLException If there are issues working with the database
+     */
     public List<User> getUsers(Map<String,String> params) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // TODO Sort the users before taking the sublist
@@ -288,6 +295,11 @@ public class GeneralUser {
     }
 
 
+    /**
+     * Builds a query string by putting together filters
+     * @param params The query parameters which are defined on the wiki
+     * @return The query String
+     */
     public String buildUserQuery(Map<String,String> params){
         boolean hasWhereClause = false;
         for(String param:params.keySet()){
@@ -336,6 +348,11 @@ public class GeneralUser {
         return queryBuilder.toString();
     }
 
+    /**
+     * Constructs a portion of an SQL statement which finds users by name based off of the query params.
+     * @param params The query parameters
+     * @return A string containing part of the query string
+     */
     public String nameFilter(Map<String, String> params){
         List<String> tokenFilters = new ArrayList<>();
         if(params.containsKey("name")){
@@ -356,6 +373,15 @@ public class GeneralUser {
         tokenFilters.removeIf((String filter) -> filter.equals(""));
         return String.join(" AND ", tokenFilters);
     }
+
+    /**
+     * Constructs a portion of an SQL statement which finds users by matching the field defined by paramName.
+     * If caseSensitive is false the matches do not need to be of the same case.
+     * @param params The query params
+     * @param paramName The name of the field to match
+     * @param caseSensitive Whether or not to match case-sensitive
+     * @return A string containing part of the query string
+     */
     public String matchFilter(Map<String,String> params, String paramName, Boolean caseSensitive){
         StringBuilder sb = new StringBuilder();
         if(caseSensitive){
@@ -370,6 +396,11 @@ public class GeneralUser {
         return sb.toString();
     }
 
+    /**
+     * Constructs a portion of an SQL statement which matches users by age.
+     * @param params The query params
+     * @return A string containing part of the query string
+     */
     public String ageFilter(Map<String, String> params){
         StringBuilder sb = new StringBuilder();
         if(params.containsKey("age")){
@@ -378,6 +409,11 @@ public class GeneralUser {
         return sb.toString();
     }
 
+    /**
+     * Constructs a portion of an SQL statement which matches users by whether or not they are donating the Organ defined in the params.
+     * @param params The query params
+     * @return A string containing part of the query string
+     */
     public String organFilter(Map<String, String> params){
         StringBuilder sb = new StringBuilder();
         if(params.containsKey("organ")){
@@ -389,6 +425,11 @@ public class GeneralUser {
         return sb.toString();
     }
 
+    /**
+     * Constructs a portion of an SQL statement which matches users by which type of user they are ('neither', 'donor', 'receiver', or 'both').
+     * @param params The query params
+     * @return A string containing part of the query string
+     */
     public String userTypeFilter(Map<String, String> params){
         if(params.containsKey("userType")) {
             switch (params.get("userType").toLowerCase()){
@@ -401,17 +442,31 @@ public class GeneralUser {
         return "";
     }
 
+    /**
+     * Constructs part of an SQL statement which matches users by whether or not they are a 'donor'
+     * @return A string containing part of the query string
+     */
     public String isDonorFilter(){
         return "EXISTS (SELECT * FROM DONATION_LIST_ITEM" +
                 " WHERE DONATION_LIST_ITEM.user_id = USER.id)";
     }
 
+    /**
+     * Constructs part of an SQL statement which matches users by whether or not they are a 'receiver'
+     * @return A string containing part of the query string
+     */
     public String isReceiverFilter(){
         return "EXISTS (SELECT * FROM WAITING_LIST_ITEM" +
                 " WHERE WAITING_LIST_ITEM.user_id = USER.id)";
     }
 
 
+    /**
+     * Returns the user whose id matches the given id
+     * @param id The given id
+     * @return The matched user
+     * @throws SQLException If there is a problem working with the database.
+     */
     public User getUserFromId(int id) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM USER id = id;
@@ -431,6 +486,11 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Inserts the given user into the database.
+     * @param user The given user which will be inserted.
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void insertUser(User user) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
@@ -455,6 +515,12 @@ public class GeneralUser {
 
     }
 
+    /**
+     * Returns the id of the user whose username matches the one given.
+     * @param username The givcen username
+     * @return the id of the matched user.
+     * @throws SQLException If there is a problem working with the database.
+     */
     public int getIdFromUser(String username) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT id FROM USER WHERE username = ?";
@@ -466,6 +532,12 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Takes a resultSet, pulls out a User instance, and returns it.
+     * @param resultSet The given resultSet
+     * @return The User
+     * @throws SQLException If there is a problem working with the database.
+     */
     public User getUserFromResultSet(ResultSet resultSet) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
@@ -695,6 +767,12 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Updates the attributes of the user on the database whose id matches the one given with the attributes of the given user.
+     * @param user The given user
+     * @param userId The given id
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void updateUserAttributes(User user, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
@@ -742,6 +820,11 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * removes the User from the database whoe ID matches that of the User given
+     * @param user The given User
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void removeUser(User user) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM USER WHERE username = ?";
@@ -751,6 +834,11 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Returns the number of Users in the database.
+     * @return The number of Users in the database
+     * @throws SQLException If there is a problem working with the database.
+     */
     public int countUsers() throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "SELECT count(*) AS count FROM USER";

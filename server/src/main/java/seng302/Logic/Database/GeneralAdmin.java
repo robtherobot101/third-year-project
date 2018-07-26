@@ -11,6 +11,12 @@ import java.util.ArrayList;
 
 public class GeneralAdmin {
 
+    /**
+     * Takes a resultSet, pulls out an Admin instance, and returns it.
+     * @param resultSet The resultSet
+     * @return An Admin
+     * @throws SQLException If there is an error communicating with the database
+     */
     public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException {
         Admin admin = new Admin(
                 resultSet.getString("username"),
@@ -24,6 +30,11 @@ public class GeneralAdmin {
         return admin;
     }
 
+    /**
+     * Takes an Admin instance and inserts it into the admin table on the database.
+     * @param admin The admin which will be inserted into the database.
+     * @throws SQLException If there is an error working with the database
+     */
     public void insertAdmin(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "INSERT INTO ADMIN(username, password, name, work_address, region) " +
@@ -40,6 +51,12 @@ public class GeneralAdmin {
 
     }
 
+    /**
+     * Returns the if of the admin with the username which matches the one given.
+     * @param username The username to query
+     * @return The id of the matched admin
+     * @throws SQLException If there is a problem working with the database.
+     */
     public int getAdminIdFromUsername(String username) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT staff_id FROM ADMIN WHERE username = ?";
@@ -51,6 +68,13 @@ public class GeneralAdmin {
         }
     }
 
+    /**
+     * Returns the admin with the id which matches the one given. If no such admin is fond,
+     * null is returned.
+     * @param id The id which will be matched
+     * @return An admin instance.
+     * @throws SQLException If there is a problem working with the database.
+     */
     public Admin getAdminFromId(int id) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM ADMIN id = id;
@@ -70,6 +94,11 @@ public class GeneralAdmin {
         }
     }
 
+    /**
+     * Returns an ArrayList of Admins from the database.
+     * @return The ArrayList of Admins from the database
+     * @throws SQLException If there is a problem working with the database.
+     */
     public ArrayList<Admin> getAllAdmins() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Admin> allAdmins = new ArrayList<>();
@@ -84,6 +113,11 @@ public class GeneralAdmin {
         }
     }
 
+    /**
+     * Removes the given admin from the database by matching their ID's
+     * @param admin The admin which will be removed
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void removeAdmin(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM ADMIN WHERE username = ?";
@@ -93,6 +127,11 @@ public class GeneralAdmin {
         }
     }
 
+    /**
+     * Updates the admin on the database with the same ID as the one given with the fields of the given admin.
+     * @param admin The given admin
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void updateAdminDetails(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE ADMIN SET name = ?, work_address = ?, region = ? WHERE username = ?";

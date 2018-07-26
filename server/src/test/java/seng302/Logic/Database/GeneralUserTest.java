@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -123,7 +124,8 @@ public class GeneralUserTest {
         user.setCurrentAddress("221b Baker Stret");
         user.setRegion("Here");
         user.setDateOfBirth(LocalDate.of(1987, 8, 4));
-        user.setDateOfDeath(LocalDateTime.now());
+        LocalDateTime dateOfDeath = LocalDateTime.of(LocalDate.of(2017, 8, 4), LocalTime.of(13, 1, 1));
+        user.setDateOfDeath(dateOfDeath);
         user.setHeight(100);
         user.setWeight(200);
         user.setBloodPressure("High");
@@ -134,6 +136,9 @@ public class GeneralUserTest {
         generalUser.updateUserAttributes(user, (int) user.getId());
 
         User user2 = generalUser.getUserFromId((int) user.getId());
+        System.out.println(user2.getDateOfDeath().toString());
+        System.out.println(user.getDateOfDeath().toString());
+
         assertEquals(user.getCurrentAddress(), user2.getCurrentAddress());
         assertEquals(user.getRegion(), user2.getRegion());
         assertEquals(user.getDateOfBirth(), user2.getDateOfBirth());
