@@ -32,6 +32,7 @@ server-build-image:
     - docker-compose build
   only:
     - server-deployment@seng302-2018/team-300
+    - master@seng302-2018/team-300
 
 server-deployment:
   stage: deploy
@@ -40,6 +41,7 @@ server-deployment:
     - docker-compose up -d
   only:
     - server-deployment@seng302-2018/team-300
+    - master@seng302-2018/team-300
 
 release-artifacts:
   stage: deploy
