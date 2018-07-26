@@ -92,6 +92,10 @@ public class User {
      * @param username String the username of the user
      * @param email String the email of the user
      * @param password String the password of the user
+     * @param cityOfDeath String of the city of death
+     * @param country String of the country of residence
+     * @param countryOfDeath String of the country of death
+     * @param regionOfDeath String of the region of death
      */
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfDeath) {

@@ -39,7 +39,7 @@ public class HistoryItem {
 
     /**
      * method to get the date time of a history item object
-     * @return LocalDateTime the date & time of the history item
+     * @return LocalDateTime the date and time of the history item
      */
     public LocalDateTime getDateTime() {
         return dateTime;
