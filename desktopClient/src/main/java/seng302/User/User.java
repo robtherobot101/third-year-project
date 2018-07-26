@@ -187,6 +187,7 @@ public class User {
         this.curedDiseases.addAll(user.getCuredDiseases());
         this.pendingProcedures.addAll(user.getPendingProcedures());
         this.previousProcedures.addAll(user.getPreviousProcedures());
+        this.profileImageType = user.profileImageType;
     }
 
     public void copyFieldsFrom(User user) {
