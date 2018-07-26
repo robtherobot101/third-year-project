@@ -102,6 +102,7 @@ public class IO {
      *
      * @param path      path of the file.
      * @param profileType the account type of the users
+     * @param token the users token
      * @return Whether the command executed successfully
      */
     public static boolean importProfiles(String path, ProfileType profileType, String token) {

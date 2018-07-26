@@ -99,7 +99,7 @@ public class GeneralM implements GeneralDAO {
 
     /**
      * resamples the local data
-     * @param token
+     * @param token authentication token for the database
      */
     @Override
     public void resample(String token) {

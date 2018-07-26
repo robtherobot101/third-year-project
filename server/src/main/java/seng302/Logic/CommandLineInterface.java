@@ -109,6 +109,7 @@ public class CommandLineInterface {
      * is executed successfully, the action history file is updated. If the command
      * is not recognised, a message is printed to the console
      * @param command The given command
+     * @return returns the string response
      */
     public CommandLineResponse readCommand(String command) {
         // TODO make client ignore newline inputs

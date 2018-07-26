@@ -105,6 +105,7 @@ public class WindowManager extends Application {
     /**
      * Creates a new user window from a clinician's view.
      * @param user The user to create the window for
+     * @param token the users token
      */
     public static void newCliniciansUserWindow(User user, String token){
         Stage stage = new Stage();
@@ -143,6 +144,7 @@ public class WindowManager extends Application {
      * sets the current clinician
      *
      * @param clinician the logged clinician
+     * @param token the users token
      */
     public static void setCurrentClinician(Clinician clinician, String token) {
         clinicianController.setClinician(clinician, token);
@@ -175,6 +177,7 @@ public class WindowManager extends Application {
      * sets the current admin
      *
      * @param admin the logged admin
+     * @param token the users token
      */
     public static void setCurrentAdmin(Admin admin, String token) {
         adminController.setAdmin(admin, token);
@@ -186,6 +189,7 @@ public class WindowManager extends Application {
      * sets the current user
      *
      * @param currentUser the current user
+     * @param token the users token
      */
     public static void setCurrentUser(User currentUser, String token) {
         userController.setCurrentUser(currentUser, token);
@@ -234,6 +238,7 @@ public class WindowManager extends Application {
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician
+     * @param token the users token
      */
     public static void setCurrentClinicianForAccountSettings(Clinician currentClinician, String token) {
         clinicianSettingsController.setCurrentClinician(currentClinician, token);

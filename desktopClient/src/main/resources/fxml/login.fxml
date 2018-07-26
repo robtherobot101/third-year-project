@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -8,14 +13,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="295.0" maxWidth="623.0" minHeight="250.0" minWidth="400.0" onMousePressed="#requestFocus" prefHeight="276.0" prefWidth="623.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.LoginController">
+<AnchorPane fx:id="background" maxHeight="295.0" maxWidth="623.0" minHeight="250.0" minWidth="400.0" onMousePressed="#requestFocus" prefHeight="276.0" prefWidth="623.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.LoginController">
    <children>
-      <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="286.0" layoutY="43.0" text="Log in or" AnchorPane.leftAnchor="95.0" AnchorPane.topAnchor="25.0">
+      <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="160.0" layoutY="64.0" text="Log in or" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="64.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="createAccountButton" layoutX="245.0" layoutY="16.0" mnemonicParsing="false" onAction="#createAccount" stylesheets="@../css/smallbutton.css" text="create an account" AnchorPane.leftAnchor="176.0" AnchorPane.topAnchor="22.0">
+      <Button fx:id="createAccountButton" layoutX="273.0" layoutY="59.0" mnemonicParsing="false" onAction="#createAccount" stylesheets="@../css/smallbutton.css" text="create an account" AnchorPane.leftAnchor="273.0" AnchorPane.topAnchor="59.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -41,12 +46,5 @@
          </font>
       </Button>
       <Label fx:id="errorMessage" layoutX="76.0" layoutY="194.0" text="Username or email not recognised" textFill="RED" visible="false" AnchorPane.rightAnchor="141.0" />
-      <Label layoutX="62.0" layoutY="91.0" text="Server: http://">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <TextField fx:id="serverInput" layoutX="176.0" layoutY="88.0" prefHeight="26.0" prefWidth="287.0" text="csse-s302g3.canterbury.ac.nz:80/api/v1" />
-      <Button layoutX="474.0" layoutY="88.0" mnemonicParsing="false" onAction="#testConnection" text="Test Connection" />
    </children>
 </AnchorPane>
