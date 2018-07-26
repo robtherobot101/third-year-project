@@ -108,6 +108,7 @@ namespace mobileAppClient
                     item.CellText = item.Name + " (CHRONIC)";
                     item.CellColour = Color.Red;
                 } else {
+                    item.CellText = item.Name;
                     item.CellColour = Color.Blue;
                 }
                 item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.DiagnosisDate.month) + ", " + item.DiagnosisDate.year;

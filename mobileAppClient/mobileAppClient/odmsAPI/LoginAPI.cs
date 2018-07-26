@@ -52,7 +52,16 @@ namespace mobileAppClient.odmsAPI
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                User user = JsonConvert.DeserializeObject<User>(responseContent);
+
+                User user;
+                // If the profile received is not a user, return 401 to the Login screen
+                try {
+                     user = JsonConvert.DeserializeObject<User>(responseContent);
+                } catch (JsonSerializationException jse)
+                {
+                    return HttpStatusCode.Unauthorized;
+                }
+                
                 userController.LoggedInUser = user;
                 IEnumerable<string> headerValues = response.Headers.GetValues("token");
                 var token = headerValues.FirstOrDefault();
