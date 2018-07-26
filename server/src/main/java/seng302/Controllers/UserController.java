@@ -4,19 +4,25 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.*;
+import java.util.List;
 
 import static java.lang.Integer.max;
 
@@ -359,6 +365,7 @@ public class UserController {
             //Get file
             File file = new File(filepath);
             if (!file.isFile()){
+                response.status(404);
                 return "Photo does not exist.";
             }
 
@@ -372,57 +379,57 @@ public class UserController {
             return Base64.getEncoder().encodeToString(byteArrayImage);
 
         } catch (IOException e) {
+            response.status(500);
             return "Internal Server Error";
         }
     }
 
     //TODO finish this method. I spaced it out quite a bit so I could get my head around it but this won't be final. Jono
     public String editUserPhoto(Request request, Response response){
-        System.out.println("lol");
-        System.out.println(response.body());
-        System.out.println(request.body());
         User queriedUser = queryUser(request, response);
+
         if (queriedUser == null){
             return response.body();
         }
 
-        String encodedImage = request.body();
+        Gson gson = new Gson();
+        PhotoStruct receivedPhotoStruct;
+
+        // Attempt to parse received JSON into our simple photo structure
+        try {
+            receivedPhotoStruct = gson.fromJson(request.body(), PhotoStruct.class);
+        } catch (JsonSyntaxException jse) {
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+
+        // Process this base64 string into a photo
+        String encodedImage = receivedPhotoStruct.getData();
         if (encodedImage == null) {
             response.status(400);
             return "Missing Image";
         } else {
             try {
-                String base64Image = encodedImage.split(",")[1];
                 //Decode the string to a byte array
-                byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+                byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(encodedImage);
 
-                //Find the filetype
-                String fileType = queriedUser.getProfileImageType();
-                String filepath = "/home/serverImages/user/" + queriedUser.getId() + "." + fileType;
+                // BufferedImage has no type, we can choose what the file type is
+                BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
-                //Turn it into a buffered image
-                ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
-                BufferedImage image = ImageIO.read(byteInputStream);
-                byteInputStream.close();
+                // Ensure directory exists
+                Files.createDirectories(Paths.get("home/serverImages/user/"));
 
-                // write the image to a file
+                // Set filepath
+                String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+                // Write the file
                 File outputfile = new File(filepath);
-                ImageIO.write(image, fileType, outputfile);
-
-                queriedUser.setProfileImageType(fileType);
-
-                try {
-                    model.updateUserAttributes(queriedUser, (int) queriedUser.getId());
-                } catch (SQLException sqle) {
-                    Server.getInstance().log.error(sqle.getMessage());
-                    response.status(500);
-                    response.body("Internal server error");
-                    return null;
-                }
+                ImageIO.write(img, "png", outputfile);
 
                 return "PHOTO SUCCESSFULLY SAVED";
             }  catch (IOException e) {
-
+                System.out.println(e);
                 return "Internal Server Error";
             }
         }

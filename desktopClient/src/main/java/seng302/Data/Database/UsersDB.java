@@ -5,17 +5,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
-import seng302.Generic.APIResponse;
-import seng302.Generic.APIServer;
+import seng302.Generic.*;
 import seng302.User.User;
+import sun.security.ssl.Debug;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.util.*;
 
 public class UsersDB implements UsersDAO {
     private final APIServer server;
@@ -82,16 +87,55 @@ public class UsersDB implements UsersDAO {
     }// Now uses API server!
 
     @Override
-    public String getUserPhoto(long id) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<String, String>(), "users", String.valueOf(id),"photo");
-        //TODO add check here to check if it is a valid base64 string
-        return response.toString();
+    public Image getUserPhoto(long id) {
+        APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id), "photo");
+
+        if (response.getStatusCode() == 404) {
+            // No image uploaded, return default image
+            Debugger.log("No profile photo loaded: setting default");
+            return getDefaultProfilePhoto();
+        }
+
+        try {
+            Debugger.log(response.getStatusCode());
+            String encodedImage = response.toString();
+            String base64Image = encodedImage.split(",")[1];
+            //Decode the string to a byte array
+            byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+
+            //Turn it into a buffered image
+            ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
+            BufferedImage bImage = ImageIO.read(byteInputStream);
+            byteInputStream.close();
+            Image image = SwingFXUtils.toFXImage(bImage, null);
+            return image;
+        } catch (Exception e) {
+            Debugger.error(e);
+            System.out.println(IO.getJarPath());
+            return getDefaultProfilePhoto();
+        }
+    }
+
+    /**
+     * Helper function that returns a default placeholder image for the profile photo
+     * @return placeholder image
+     */
+    private Image getDefaultProfilePhoto() {
+        File imageFile = new File(IO.getJarPath() + "/classes/icon.png");
+        try {
+            String imageURL = imageFile.toURI().toURL().toString();
+            Image profilePhoto = new Image(imageURL);
+            return profilePhoto;
+        } catch (MalformedURLException e1) {
+            return null;
+        }
     }
 
     @Override
     public void updateUserPhoto(long id, String image) throws HttpResponseException {
         JsonParser jp = new JsonParser();
-        JsonObject imageJson = jp.parse(new Gson().toJson(image)).getAsJsonObject();
+        PhotoStruct photoStruct = new PhotoStruct(image);
+        JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
         APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
     }
 

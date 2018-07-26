@@ -1,5 +1,6 @@
 package seng302.Data.Local;
 
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Generic.Debugger;
@@ -358,8 +359,8 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public String getUserPhoto(long id) {
-        return "String";
+    public Image getUserPhoto(long id) {
+        return null;
     }
 
     @Override

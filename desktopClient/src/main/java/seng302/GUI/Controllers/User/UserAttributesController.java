@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
+import seng302.Generic.Debugger;
 import seng302.Generic.IO;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.*;
@@ -311,9 +312,13 @@ public class UserAttributesController extends UserTabController implements Initi
         weightField.setText(currentUser.getWeight() == -1 ? "" : Double.toString(currentUser.getWeight()));
         heightField.setText(currentUser.getHeight() == -1 ? "" : Double.toString(currentUser.getHeight()));
 
+        Debugger.log("Attempting to update photo when populating attributes page");
+        profileImage.setImage(WindowManager.getDataManager().getUsers().getUserPhoto((int) currentUser.getId()));
+
         updateBMI();
         highlightOrganCheckBoxes();
     }
+
 
     /**
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
@@ -493,37 +498,6 @@ public class UserAttributesController extends UserTabController implements Initi
         weightField.textProperty().addListener((observable, oldVaqlue, newValue) -> updateBMI());
 
         //set profile image
-        Image profilePhoto = null;
-        try {
-            String encodedImage = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
-            String base64Image = encodedImage.split(",")[1];
-            //Decode the string to a byte array
-            byte[] decodedImage = Base64.getDecoder().decode(base64Image);
-
-            //Turn it into a buffered image
-            ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
-            BufferedImage bImage = ImageIO.read(byteInputStream);
-            byteInputStream.close();
-            Image image = SwingFXUtils.toFXImage(bImage, null);
-            profileImage.setImage(image);
-        } catch (HttpResponseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            System.out.println(IO.getJarPath());
-            File imageFile = new File(IO.getJarPath() + "\\classes\\icon.png");
-            try {
-                String imageURL = imageFile.toURI().toURL().toString();
-                profilePhoto = new Image(imageURL);
-                profileImage.setImage(profilePhoto);
-            } catch (MalformedURLException e1) {
-               System.out.println("Default image missing. This should be icon.png and be in the classes folder.");
-            }
-
-        }
-
-
     }
 
     public void undo(){
