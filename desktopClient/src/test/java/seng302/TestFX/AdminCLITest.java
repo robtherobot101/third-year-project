@@ -41,6 +41,7 @@ public class AdminCLITest extends TestFXTest {
         assertTrue(!mainPane.isVisible()); //Ensure that the search tab is no longer open
     }
 
+    @Ignore
     @Test
     public void embeddedCliExists() {
         TextField textField = lookup("#commandInputField").query();
