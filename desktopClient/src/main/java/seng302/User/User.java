@@ -24,16 +24,7 @@ public class User {
     private long id;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "";
-    private String region = "";
-    private String city="";
-    private String country="";
-    private String homePhone="";
-    private String mobilePhone="";
-    private String username;
-    private String email;
-    private String password;
-    private String bloodPressure = "";
+    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "", profileImageType = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -185,6 +176,7 @@ public class User {
         this.curedDiseases.addAll(user.getCuredDiseases());
         this.pendingProcedures.addAll(user.getPendingProcedures());
         this.previousProcedures.addAll(user.getPreviousProcedures());
+        this.profileImageType = user.profileImageType;
     }
 
     public void copyFieldsFrom(User user) {
@@ -662,6 +654,14 @@ public class User {
 
     public void addHistoryEntry(String action, String description) {
         userHistory.add(new HistoryItem(action, description));
+    }
+
+    public String getProfileImageType() {
+        return profileImageType;
+    }
+
+    public void setProfileImageType(String type) {
+        this.profileImageType = type;
     }
     public String getCityOfDeath() {
         return cityOfDeath;
