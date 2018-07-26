@@ -64,6 +64,9 @@ public class UserController implements Initializable {
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
     private User currentUser;
+
+
+
     private String token;
 
     /**
@@ -96,6 +99,10 @@ public class UserController implements Initializable {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     /**
@@ -388,6 +395,7 @@ public class UserController implements Initializable {
             try {
                 WindowManager.getDataManager().getUsers().updateUser(currentUser, token);
             } catch (HttpResponseException e ){
+                e.printStackTrace();
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }
 

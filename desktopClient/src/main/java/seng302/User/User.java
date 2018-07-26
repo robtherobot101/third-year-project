@@ -33,8 +33,10 @@ public class User {
     private ArrayList<Procedure> pendingProcedures = new ArrayList<>(), previousProcedures = new ArrayList<>();
     private ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
     private ArrayList<HistoryItem> userHistory = new ArrayList<>();
-    private String cityOfDeath = "test";
-    private String regionOfDeath = "test";
+
+    private String cityOfDeath = "";
+    private String regionOfDeath = "";
+    private String countryOfDeath = "";
 
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -122,7 +124,7 @@ public class User {
 
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String cityOfDeath, String regionOfDeath) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -147,8 +149,10 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.country = country;
         this.cityOfDeath = cityOfDeath;
         this.regionOfDeath = regionOfDeath;
+        this.countryOfDeath = countryOfdeath;
         this.id = 1;
         this.currentMedications = new ArrayList<>();
         this.historicMedications = new ArrayList<>();
@@ -678,4 +682,39 @@ public class User {
     public void setProfileImageType(String type) {
         this.profileImageType = type;
     }
+    public String getCityOfDeath() {
+        return cityOfDeath;
+    }
+
+    public String getRegionOfDeath() {
+        return regionOfDeath;
+    }
+
+    public void setCityOfDeath(String cityOfDeath) {
+        this.cityOfDeath = cityOfDeath;
+    }
+
+    public void setRegionOfDeath(String regionOfDeath) {
+        this.regionOfDeath = regionOfDeath;
+    }
+
+    public String getCountryOfDeath() {
+        return countryOfDeath;
+    }
+
+    public void setCountryOfDeath(String countryOfDeath) {
+        this.countryOfDeath = countryOfDeath;
+    }
+
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+
+
 }

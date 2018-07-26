@@ -485,8 +485,10 @@ public class GeneralUser {
                     resultSet.getString("username"),
                     resultSet.getString("email"),
                     resultSet.getString("password"),
+                    resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
                     resultSet.getString("regionOfDeath"),
+                    resultSet.getString("countryOfDeath"),
                     resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
@@ -695,11 +697,15 @@ public class GeneralUser {
 
     public void updateUserAttributes(User user, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+
+            System.out.println("__________________________________________");
+            System.out.println(user.getCountryOfDeath());
             //Attributes update
             String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
-                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? , cityOfDeath = ?, regionOfDeath = ?" +
+                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, " +
+                    "email = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
                     "WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
@@ -727,9 +733,11 @@ public class GeneralUser {
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
             statement.setString(21, user.getPassword());
-            statement.setString(22, user.getCityOfDeath());
-            statement.setString(23, user.getRegionOfDeath());
-            statement.setInt(24, userId);
+            statement.setString(22, user.getCountry());
+            statement.setString(23, user.getCityOfDeath());
+            statement.setString(24, user.getRegionOfDeath());
+            statement.setString(25, user.getCountryOfDeath());
+            statement.setInt(26, userId);
             System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }
