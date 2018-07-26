@@ -412,7 +412,7 @@ public class WindowManager extends Application {
     public DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        APIServer server = new APIServer(properServer);
+        APIServer server = new APIServer(localServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -427,7 +427,7 @@ public class WindowManager extends Application {
     public boolean checkConnection() {
         try {
 
-            if (!dataManager.getGeneral().status()) {
+            if (dataManager.getGeneral().status() == false) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {

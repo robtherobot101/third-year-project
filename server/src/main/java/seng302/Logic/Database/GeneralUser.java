@@ -560,8 +560,8 @@ public class GeneralUser {
                     resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
                     resultSet.getString("regionOfDeath"),
-                    resultSet.getString("countryOfDeath"));
-
+                    resultSet.getString("countryOfDeath"),
+                    resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
 
