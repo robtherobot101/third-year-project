@@ -25,8 +25,9 @@ public class ProfileUtils {
      * @return The authorisation level of the token, or -1 if the token is not found or the database could not be contacted
      */
     public int checkToken(String token) {
-        if(token.equals("masterToken")) return 2;
+
         try {
+            if(token.equals("masterToken")) return 2;
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
                 PreparedStatement statement = connection.prepareStatement(
                         "SELECT access_level FROM TOKEN WHERE token = ?");
@@ -39,6 +40,8 @@ public class ProfileUtils {
                 }
             }
         } catch (SQLException e) {
+            return -1;
+        } catch (NullPointerException npe) {
             return -1;
         }
     }
