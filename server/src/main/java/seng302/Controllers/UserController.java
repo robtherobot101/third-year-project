@@ -487,7 +487,7 @@ public class UserController {
         }
     }
 
-    //TODO Finish this method
+
     public String deleteUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
         if (queriedUser == null){

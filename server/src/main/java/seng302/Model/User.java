@@ -3,11 +3,11 @@ package seng302.Model;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
 
 /**
  * This class contains information about organ users.
@@ -96,7 +96,8 @@ public class User {
      * @param password String the password of the user
      */
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfDeath) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath,
+                String regionOfDeath, String countryOfDeath, String profileImageType) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];

@@ -1,22 +1,16 @@
 package seng302.GUI.Controllers.User;
 
-import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import impl.org.controlsfx.autocompletion.SuggestionProvider;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import org.apache.http.client.HttpResponseException;
-import org.controlsfx.control.textfield.TextFields;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
-import seng302.Generic.Debugger;
 import seng302.Generic.Country;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
@@ -35,7 +29,6 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
 import java.util.*;
 
 public class UserAttributesController extends UserTabController implements Initializable {
