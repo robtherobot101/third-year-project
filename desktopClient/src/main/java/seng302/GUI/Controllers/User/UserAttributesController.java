@@ -604,6 +604,12 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void setDeathControlsShown(boolean shown) {
         dateOfDeathPicker.setDisable(!shown);
+
         deathCityField.setDisable(!shown);
+
+        regionOfDeathComboBox.setDisable(!shown);
+        regionOfDeathField.setDisable(!shown);
+
+        countryOfDeathComboBox.setDisable(!shown);
     }
 }
