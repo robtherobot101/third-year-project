@@ -20,6 +20,7 @@ recent-artifacts:
   artifacts:
     paths:
       - desktopClient/target/*.jar
+      - server/target/*.jar
     expire_in: 1 week
   except:
     - tags
