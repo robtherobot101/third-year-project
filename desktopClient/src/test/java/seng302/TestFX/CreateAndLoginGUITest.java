@@ -1,13 +1,7 @@
 package seng302.TestFX;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.sql.SQLException;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
@@ -15,9 +9,14 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
 import seng302.Generic.WindowManager;
 import seng302.User.User;
+
+import java.sql.SQLException;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateAndLoginGUITest extends TestFXTest {
 
@@ -28,7 +27,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
     @Before
     public void setup() throws HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset();
+        WindowManager.getDataManager().getGeneral().reset(null);
         WindowManager.resetScene(TFScene.createAccount);
         //DataManager.users.clear();
     }
@@ -120,6 +119,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
         //verifyThat("#userDisplayText", Node::isVisible);
     }
 
+    @Ignore
     @Test
     public void duplicateUsername() throws TimeoutException, SQLException {
         User testUser = addTestUser();
@@ -155,10 +155,14 @@ public class CreateAndLoginGUITest extends TestFXTest {
     public void testValidLoginAsUser() throws SQLException {
         User testUser = addTestUser();
 
-        clickOn("#identificationInput");
-        write(testUser.getUsername());
-        clickOn("#passwordInput");
-        write(testUser.getPassword());
+//        clickOn("#identificationInput");
+//        write(testUser.getUsername());
+        TextField textField = lookup("#identificationInput").query();
+        textField.setText(testUser.getUsername());
+//        clickOn("#passwordInput");
+//        write(testUser.getPassword());
+        textField = lookup("#passwordInput").query();
+        textField.setText(testUser.getPassword());
         clickOn("#loginButton");
         //Make sure that the user GUI is now showing
         assertNotNull(lookup("#undoBannerButton").query());

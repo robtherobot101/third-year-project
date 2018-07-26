@@ -5,12 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.client.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,13 +22,13 @@ public class APIServer {
         this.url = url;
     }
 
-    /**
+    /**r66
      * Perform a get request to the given endpoint and return the results as a JsonObject
      * @param path The endpoint to query
      * @param queryParams The query parameters
      * @return The result as a response object
      */
-    public APIResponse getRequest(Map<String, String> queryParams, String... path) {
+    public APIResponse getRequest(Map<String, String> queryParams, String token, String... path) {
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
@@ -43,8 +42,7 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
-                .get());
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token).get());
     }
 
 
@@ -55,7 +53,7 @@ public class APIServer {
      * @param body The body of the request as a JsonObject
      * @return The result as a response object
      */
-    public APIResponse postRequest(JsonObject body, Map<String, String> queryParams, String... path){
+    public APIResponse postRequest(JsonObject body, Map<String, String> queryParams, String token, String... path){
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
@@ -69,7 +67,7 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
                 // Send the data in the post request as JSON -
                 .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
     }
@@ -82,7 +80,7 @@ public class APIServer {
      * @param body The body of the request as a JsonObject
      * @return The result as a response object
      */
-    public APIResponse patchRequest(JsonObject body, Map<String, String> queryParams, String... path){
+    public APIResponse patchRequest(JsonElement body, Map<String, String> queryParams, String token, String... path){
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
@@ -96,12 +94,12 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
                 // Send the data in the patch request as JSON -
                 .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
     }
 
-    public APIResponse deleteRequest(Map<String, String> queryParams, String... path) {
+    public APIResponse deleteRequest(Map<String, String> queryParams, String token, String... path) {
         // Creates a pointer to the api
         WebTarget target = client.target(url);
 
@@ -115,7 +113,7 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON)
+        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
                 // Send the data in the post request as JSON -
                 .delete());
     }

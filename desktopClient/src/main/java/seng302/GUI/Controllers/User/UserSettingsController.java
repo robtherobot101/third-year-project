@@ -33,11 +33,15 @@ public class UserSettingsController implements Initializable {
     private User currentUser;
 
     private UserController userController;
+    private String oldUsername, oldEmail;
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+        oldUsername = currentUser.getUsername();
+        oldEmail = currentUser.getEmail();
         userNameLabel.setText("user: " + currentUser.getName());
     }
+
 
     /**
      * Set the parent user controller that spawned this window.
@@ -64,11 +68,11 @@ public class UserSettingsController implements Initializable {
      */
     public void updateAccountDetails() {
         try {
-            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText(), currentUser.getId())) {
+            if (!oldUsername.equals(usernameField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText(), currentUser.getId())) {
+            } else if (!oldEmail.equals(emailField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
@@ -122,7 +126,6 @@ public class UserSettingsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setUserSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         emailField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));

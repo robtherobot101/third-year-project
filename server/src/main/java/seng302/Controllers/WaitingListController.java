@@ -16,10 +16,20 @@ import java.util.ArrayList;
 public class WaitingListController {
     private UserWaitingList model;
 
+    /**
+     * constructor method to create a new waiting list controller object
+     * to handle all the waiting list operation requests
+     */
     public WaitingListController() {
         model = new UserWaitingList();
     }
 
+    /**
+     * method to get all waiting list items
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all waiting list items or a error message
+     */
     public String getAllWaitingListItems(Request request, Response response) {
 
         ArrayList<WaitingListItem> queriedWaitingListItems;
@@ -39,8 +49,13 @@ public class WaitingListController {
         return serialQueriedWaitingListItems;
     }
 
+    /**
+     * method to get all waiting list items of a single user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the waiting list items of a user or an error message
+     */
     public String getAllUserWaitingListItems(Request request, Response response) {
-
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
         ArrayList<WaitingListItem> queriedUserWaitingListItems;
@@ -60,6 +75,12 @@ public class WaitingListController {
         return serialQueriedUserWaitingListItems;
     }
 
+    /**
+     * method to handle getting a single waiting list object from a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing the waiting list item objects information, or an error message
+     */
     public String getSingleUserWaitingListItem(Request request, Response response) {
         WaitingListItem queriedWaitingListItem = queryWaitingListItem(request, response);
 
@@ -75,6 +96,12 @@ public class WaitingListController {
         return serialQueriedWaitingListItem;
     }
 
+    /**
+     * method to handle adding a new user waiting list item
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully
+     */
     public String addNewUserWaitingListItem(Request request, Response response) {
 
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -98,6 +125,12 @@ public class WaitingListController {
         }
     }
 
+    /**
+     * method to edit an existing waiting list item
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether he operation was completed successfully
+     */
     public String editWaitingListItem(Request request, Response response) {
         int requestedWaitingListItemId = Integer.parseInt(request.params(":waitingListItemId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -127,6 +160,12 @@ public class WaitingListController {
         }
     }
 
+    /**
+     * method to delete a specific waiting list item
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or not
+     */
     public String deleteWaitingListItem(Request request, Response response) {
         int requestedWaitingListItemId = Integer.parseInt(request.params(":waitingListItemId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));

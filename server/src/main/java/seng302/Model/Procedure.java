@@ -24,6 +24,7 @@ public class Procedure {
      * @param description      the given procedure description
      * @param date             the given procedure date
      * @param organsAffected   the given organs to be operated on in the procedure
+     * @param id               the given id of the procedure
      */
     public Procedure(String summary, String description, LocalDate date, ArrayList<Organ> organsAffected, int id) {
         this.summary = summary;

@@ -16,10 +16,20 @@ import java.util.ArrayList;
 public class HistoryController {
     private UserHistory model;
 
+    /**
+     * constructor method to create a new history controller object
+     * to handle all history related requests
+     */
     public HistoryController() {
         model = new UserHistory();
     }
 
+    /**
+     * method to handle getting a single users history items and their details
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the history of a single user, or an error message
+     */
     public String getUserHistoryItems(Request request, Response response) {
 
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -41,6 +51,12 @@ public class HistoryController {
         return serialQueriedHistoryItems;
     }
 
+    /**
+     * method to handle creating a new history object on the database
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the operation was completed successfully or not
+     */
     public String addUserHistoryItem(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 

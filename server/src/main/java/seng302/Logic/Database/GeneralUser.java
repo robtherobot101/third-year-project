@@ -242,6 +242,13 @@ public class GeneralUser {
         }
     }
 
+    /**
+     * Updates a user's history on the database to a new history list.
+     *
+     * @param newHistory The list of history to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is issues connecting to the database
+     */
     public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
         UserHistory userHistory = new UserHistory();
         List<HistoryItem> oldHistory = userHistory.getAllHistoryItems(userId);
@@ -274,20 +281,9 @@ public class GeneralUser {
                 users.add(getUserFromResultSet(resultSet));
             }
 
-            int startIndex = 0;
-            if (params.containsKey("startIndex")) {
-                startIndex = Integer.parseInt(params.get("startIndex"));
-            }
+            System.out.println("thing size: " + users.size());
 
-            int count = 100;
-            if (params.containsKey("count")) {
-                count = Integer.parseInt(params.get("count"));
-            }
-            int toIndex = Math.min(startIndex + count, users.size());
-            if (startIndex > toIndex) {
-                return new ArrayList<User>();
-            }
-            return users.subList(startIndex, Math.min(startIndex + count, users.size()));
+            return users;
         }
     }
 
@@ -299,37 +295,44 @@ public class GeneralUser {
                 hasWhereClause = true;
             }
         }
-        if(!hasWhereClause) {
-            return "SELECT * FROM USER";
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT * FROM USER");
+        if (hasWhereClause) {
+            queryBuilder.append(" WHERE ");
+
+            String nameFilter = nameFilter(params);
+            String passwordFilter = matchFilter(params, "password", true);
+            String userTypeFilter = userTypeFilter(params);
+            String ageFilter = ageFilter(params);
+            String genderFilter = matchFilter(params, "gender", false);
+            String regionFilter = matchFilter(params, "region", false);
+            String organFilter = organFilter(params);
+
+            List<String> filters = new ArrayList<String>();
+            filters.addAll(Arrays.asList(
+                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
+            ));
+
+            filters.removeIf((String filter) -> filter.equals(""));
+
+            queryBuilder.append(String.join(" AND ",filters));
         }
 
-        StringBuilder queryBuilder = new StringBuilder();
+        int startIndex = 0;
+        if (params.containsKey("startIndex")) {
+            startIndex = Integer.parseInt(params.get("startIndex"));
+        }
 
-        queryBuilder.append("SELECT * FROM USER WHERE ");
+        int count = 100;
+        if (params.containsKey("count")) {
+            count = Integer.parseInt(params.get("count"));
+        }
 
+        queryBuilder.append(" LIMIT ");
+        queryBuilder.append(startIndex);
+        queryBuilder.append(",");
+        queryBuilder.append(startIndex+count);
 
-        String nameFilter = nameFilter(params);
-        String passwordFilter = matchFilter(params, "password", true);
-
-        String userTypeFilter = userTypeFilter(params);
-
-        String ageFilter = ageFilter(params);
-
-        String genderFilter = matchFilter(params, "gender", false);
-
-        String regionFilter = matchFilter(params, "region", false);
-
-        String organFilter = organFilter(params);
-
-        List<String> filters = new ArrayList<String>();
-        filters.addAll(Arrays.asList(
-                nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
-
-        ));
-
-        filters.removeIf((String filter) -> filter.equals(""));
-
-        queryBuilder.append(String.join(" AND ",filters));
         return queryBuilder.toString();
     }
 
@@ -472,7 +475,7 @@ public class GeneralUser {
                     resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
                     resultSet.getString("last_name"),
                     resultSet.getDate("date_of_birth").toLocalDate(),
-                    resultSet.getDate("date_of_death") != null ? resultSet.getDate("date_of_death").toLocalDate() : null,
+                    resultSet.getTimestamp("date_of_death") != null ? resultSet.getTimestamp("date_of_death").toLocalDateTime() : null,
                     resultSet.getString("gender") != null ? Gender.parse(resultSet.getString("gender")) : null,
                     resultSet.getDouble("height"),
                     resultSet.getDouble("weight"),
@@ -482,6 +485,8 @@ public class GeneralUser {
                     resultSet.getString("username"),
                     resultSet.getString("email"),
                     resultSet.getString("password"),
+                    resultSet.getString("cityOfDeath"),
+                    resultSet.getString("regionOfDeath"),
                     resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
@@ -530,7 +535,7 @@ public class GeneralUser {
             ResultSet organsResultSet = organsStatement.executeQuery();
 
             while (organsResultSet.next()) {
-                user.getOrgans().add(Organ.valueOf(organsResultSet.getString("name")));
+                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
             }
 
             //Get all the medications for the given user
@@ -664,7 +669,7 @@ public class GeneralUser {
                 int deregisteredCode = waitingListResultSet.getInt("deregistered_code");
                 int waitingListId = waitingListResultSet.getInt("id");
 
-                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, waitingListId));
+                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, deregisteredCode));
             }
 
 
@@ -694,7 +699,7 @@ public class GeneralUser {
             String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
-                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? " +
+                    "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, email = ?, password = ? , cityOfDeath = ?, regionOfDeath = ?" +
                     "WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
@@ -710,7 +715,7 @@ public class GeneralUser {
             statement.setString(7, user.getCurrentAddress());
             statement.setString(8, user.getRegion());
             statement.setDate(9, java.sql.Date.valueOf(user.getDateOfBirth()));
-            statement.setDate(10, user.getDateOfDeath() != null ? java.sql.Date.valueOf(user.getDateOfDeath()) : null);
+            statement.setTimestamp(10, user.getDateOfDeath() != null ? java.sql.Timestamp.valueOf(user.getDateOfDeath()) : null);
             statement.setDouble(11, user.getHeight());
             statement.setDouble(12, user.getWeight());
             statement.setString(13, user.getBloodPressure());
@@ -722,29 +727,10 @@ public class GeneralUser {
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
             statement.setString(21, user.getPassword());
-            statement.setInt(22, userId);
+            statement.setString(22, user.getCityOfDeath());
+            statement.setString(23, user.getRegionOfDeath());
+            statement.setInt(24, userId);
             System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
-
-
-/*        int userId = getUserId(user.getUsername());
-
-        //Organ Updates
-        //First get rid of all the users organs in the table
-        String deleteOrgansQuery = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
-        PreparedStatement deleteOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(deleteOrgansQuery);
-        deleteOrgansStatement.setInt(1, userId);
-        System.out.println("Organ rows deleted: " + deleteOrgansStatement.executeUpdate());
-
-        int totalAdded = 0;
-        //Then repopulate it with the new updated organs
-        for (Organ organ: user.getOrgans()) {
-            String insertOrgansQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) VALUES (?, ?)";
-            PreparedStatement insertOrgansStatement = DatabaseConfiguration.getInstance().getConnection().prepareStatement(insertOrgansQuery);
-            insertOrgansStatement.setString(1, organ.toString());
-            insertOrgansStatement.setInt(2, userId);
-            totalAdded += insertOrgansStatement.executeUpdate();
-        }
-        System.out.println("Update User Organ Donations -> Successful -> Rows Updated: " + totalAdded);*/
         }
     }
 
@@ -754,6 +740,16 @@ public class GeneralUser {
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getUsername());
             System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
+
+    public int countUsers() throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "SELECT count(*) AS count FROM USER";
+            PreparedStatement statement = connection.prepareStatement(update);
+            ResultSet noUsers = statement.executeQuery();
+            noUsers.next();
+            return noUsers.getInt("count");
         }
     }
 }
