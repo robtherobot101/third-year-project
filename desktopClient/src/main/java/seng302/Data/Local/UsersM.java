@@ -392,7 +392,6 @@ public class UsersM implements UsersDAO {
     /**
      * removes a specific user
      * @param id the user id
-     * @param token the user token
      */
     @Override
     public Image getUserPhoto(long id) {
