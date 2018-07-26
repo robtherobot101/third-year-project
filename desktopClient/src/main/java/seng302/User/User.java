@@ -4,7 +4,6 @@ import seng302.Generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
-import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,24 +41,6 @@ public class User {
         this.name = name.split(",");
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
-        this.creationTime = LocalDateTime.now();
-        // TODO Add functionality to DAOs for getting next id.
-        this.id = 1;
-    }
-
-    public User(String name, String dateOfBirth, String dateOfDeath, String gender, double height, double weight, String bloodType, String region,
-                String currentAddress) throws DateTimeException, IllegalArgumentException {
-        this.name = name.split(",");
-        this.preferredName = this.name;
-        this.dateOfBirth = LocalDate.parse(dateOfBirth, dateFormat);
-        this.dateOfDeath = LocalDateTime.parse(dateOfDeath, dateFormat);
-        this.gender = Gender.parse(gender);
-        this.genderIdentity = this.gender;
-        this.height = height;
-        this.weight = weight;
-        this.bloodType = BloodType.parse(bloodType);
-        this.region = region;
-        this.currentAddress = currentAddress;
         this.creationTime = LocalDateTime.now();
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;

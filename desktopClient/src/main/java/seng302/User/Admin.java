@@ -1,6 +1,5 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
 import seng302.User.Attribute.ProfileType;
 
 import java.util.Random;
@@ -20,7 +19,6 @@ public class Admin extends Clinician {
      * @param name     the name of the admin
      */
     public Admin(String username, String password, String name) {
-        //TODO Implement functionality for getting actual id for all profiles
         super(username, password, name, ProfileType.ADMIN, 1);
         String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
         Random r = new Random();
