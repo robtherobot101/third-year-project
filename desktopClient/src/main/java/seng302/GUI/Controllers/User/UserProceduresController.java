@@ -127,8 +127,10 @@ public class UserProceduresController extends UserTabController implements Initi
                     dateOfProcedureInput.getValue(), organsAffected);
             if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
+                userController.addHistoryEntry("Previous procedure added", "A previous procedure (" + procedureToAdd.getSummary() + ") was added.");
             } else {
                 pendingProcedureItems.add(procedureToAdd);
+                userController.addHistoryEntry("Pending procedure added", "A pending procedure (" + procedureToAdd.getSummary() + ") was added.");
             }
             saveToUndoStack();
             summaryInput.clear();
@@ -155,6 +157,7 @@ public class UserProceduresController extends UserTabController implements Initi
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 pendingProcedureItems.remove(chosenProcedure);
+                userController.addHistoryEntry("Pending procedure removed", "A pending procedure (" + chosenProcedure.getSummary() + ") was removed.");
                 statusIndicator.setStatus("Deleted " + chosenProcedure, false);
                 titleBar.saved(false);
             }
@@ -167,6 +170,7 @@ public class UserProceduresController extends UserTabController implements Initi
             if (result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 previousProcedureItems.remove(chosenProcedure);
+                userController.addHistoryEntry("Previous procedure removed", "A previous procedure (" + chosenProcedure.getSummary() + ") was removed.");
                 statusIndicator.setStatus("Deleted " + chosenProcedure, false);
                 titleBar.saved(false);
                 saveToUndoStack();
@@ -449,6 +453,7 @@ public class UserProceduresController extends UserTabController implements Initi
             LocalDate newDateFormat = LocalDate.parse(newProcedureDetails.get(2));
             selectedProcedure.setDate(newDateFormat);
             selectedProcedure.setOrgansAffected(organsUpdatedAffected);
+            userController.addHistoryEntry("Procedure updated", "A procedure (" + selectedProcedure.getSummary() + ") was updated.");
             if (pending) {
                 if (newDateFormat.isAfter(LocalDate.now())) {
                     pendingProcedureItems.remove(selectedProcedure);

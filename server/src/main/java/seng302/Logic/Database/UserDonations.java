@@ -50,7 +50,7 @@ public class UserDonations {
                     "VALUES (?,?)";
             PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
 
-            insertDonationStatement.setString(1, organ.name());
+            insertDonationStatement.setString(1, organ.toString());
             insertDonationStatement.setInt(2, userId);
 
             System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());

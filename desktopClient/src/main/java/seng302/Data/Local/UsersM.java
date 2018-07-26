@@ -2,9 +2,7 @@ package seng302.Data.Local;
 
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
-import seng302.Generic.APIResponse;
 import seng302.Generic.Debugger;
-import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -22,7 +20,7 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public int getUserId(String username) {
+    public int getUserId(String username, String token) {
         return 0;
     }
 
@@ -39,8 +37,8 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public void updateUser(User User) {
-        removeUser(User.getId());
+    public void updateUser(User User, String token) {
+        removeUser(User.getId(), null);
         users.add(User);
     }
 
@@ -60,18 +58,14 @@ public class UsersM implements UsersDAO {
      * @param term The search term which will be broken into space separated tokens
      * @return A sorted list of results
      */
-    private ArrayList<User> getUsersByNameAlternative(String term) {
-        System.out.println("search: " + "'" + term + "'");
+    public ArrayList<User> getUsersByNameAlternative(String term) {
         if (term.equals("")) {
-            System.out.println("Empty");
             ArrayList<User> sorted = new ArrayList<>(users);
             sorted.sort(Comparator.comparing(User::getName));
             return sorted;
         }
         String[] t = term.split(" ", -1);
         ArrayList<String> tokens = new ArrayList<>(Arrays.asList(t));
-        System.out.println("token 1: " + "'" + tokens.get(0) + "'");
-        //System.out.println("token 2: " + "'"+tokens.get(1)+"'");
         if (tokens.contains("")) {
             tokens.remove("");
         }
@@ -86,12 +80,23 @@ public class UsersM implements UsersDAO {
             Integer o1Score = scoreUserOnSearch(o1, tokens);
             Integer o2Score = scoreUserOnSearch(o2, tokens);
 
-            int scoreComparison = o2Score.compareTo(o1Score);
+            int scoreComparison = o1Score.compareTo(o2Score);
             if (scoreComparison == 0) {
                 return o1.getName().compareTo(o2.getName());
             }
+
+            System.out.println("{");
+            System.out.println("Name:" + o1.getName() + ", score: " + o1Score);
+            System.out.println("Name:" + o2.getName() + ", score: " + o2Score);
+            System.out.println("Score comparison: " + scoreComparison);
+            System.out.println("}");
+
             return scoreComparison;
         });
+        System.out.println(matched.get(0).getName());
+
+        Collections.reverse(matched);
+        System.out.println(matched.get(0).getName());
         return matched;
     }
 
@@ -111,7 +116,7 @@ public class UsersM implements UsersDAO {
      * @param searchTokens The search tokens which will be compared with the given user's name
      * @return An integer score
      */
-    private int scoreUserOnSearch(User user, List<String> searchTokens) {
+    public int scoreUserOnSearch(User user, List<String> searchTokens) {
         List<String> tokens = new ArrayList<>(searchTokens);
 
         if (!allTokensMatched(user, tokens)) {
@@ -156,7 +161,7 @@ public class UsersM implements UsersDAO {
      * @param weight The weight which will be awarded for each matched name
      * @return An integer score
      */
-    private int scoreNames(String[] names, List<String> tokens, int from, int to, int weight) {
+    public int scoreNames(String[] names, List<String> tokens, int from, int to, int weight) {
         if (names.length >= to && to > from) {
             String[] middleNames = Arrays.copyOfRange(names, from, to);
             int score = 0;
@@ -181,7 +186,7 @@ public class UsersM implements UsersDAO {
      * @param tokens The list of tokens to try against the name
      * @return True if a match was found, otherwise false
      */
-    private boolean nameMatchesOneOf(String name, List<String> tokens) {
+    public boolean nameMatchesOneOf(String name, List<String> tokens) {
         for (String token : tokens) {
             if (lengthMatchedScore(name, token) > 0) {
                 return true;
@@ -199,7 +204,7 @@ public class UsersM implements UsersDAO {
      * @param searchTerm The term which is being looked for
      * @return The length of the longest substring if the searchTerm is matched entirely
      */
-    private int lengthMatchedScore(String string, String searchTerm) {
+    public int lengthMatchedScore(String string, String searchTerm) {
         string = string.toLowerCase();
         searchTerm = searchTerm.toLowerCase();
         int i;
@@ -222,7 +227,7 @@ public class UsersM implements UsersDAO {
      * @param searchTokens The tokens
      * @return True if all tokens match at least one name, otherwise false
      */
-    private boolean allTokensMatched(User user, List<String> searchTokens) {
+    public boolean allTokensMatched(User user, List<String> searchTokens) {
         List<String> tokens = new ArrayList<>(searchTokens);
         for (String name : user.getNameArray()) {
             for (String token : new ArrayList<>(tokens)) {
@@ -244,7 +249,7 @@ public class UsersM implements UsersDAO {
 
 
     @Override
-    public List<User> queryUsers(Map<String, String> searchMap) throws HttpResponseException {
+    public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
         List<User> queriedUsers = new ArrayList<>();
         queriedUsers.addAll(users);
 
@@ -344,12 +349,12 @@ public class UsersM implements UsersDAO {
 
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(String token) {
         return users;
     }
 
     @Override
-    public User getUser(long id) {
+    public User getUser(long id, String token) {
         for(User a : users) {
             if(a.getId() == id) {
                 return a;
@@ -360,12 +365,17 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public void removeUser(long id) {
+    public void removeUser(long id, String token) {
         for(User u : users) {
             if(u.getId() == id) {
                 users.remove(u);
                 break;
             }
         }
+    }
+
+    @Override
+    public int count(String token){
+        return users.size();
     }
 }

@@ -9,9 +9,12 @@ public enum Organ {
 
     private String organ;
 
-    Organ(String organ) {
-        this.organ = organ;
-    }
+    /**
+     * constructor method to create a new organ attribute for a user
+     * input can be of type: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, bone-marrow, or connective-tissue
+     * @param organ String the type of organ being added to a user donations or waiting list
+     */
+    Organ(String organ) { this.organ = organ; }
 
     public String toString() {
         return organ;

@@ -27,6 +27,7 @@ public class Disease {
      * @param diagnosisDate diagnosis date of disease
      * @param isChronic     if the disease is chronic
      * @param isCured       if the disease is cured
+     * @param id            the id of the disease
      */
     public Disease(String name, LocalDate diagnosisDate, boolean isChronic, boolean isCured, int id) {
         this.name = name;
@@ -207,7 +208,6 @@ public class Disease {
         Disease disease = (Disease) o;
         return isChronic == disease.isChronic &&
                 isCured == disease.isCured &&
-                id == disease.id &&
                 Objects.equals(name, disease.name) &&
                 Objects.equals(diagnosisDate, disease.diagnosisDate);
     }
@@ -215,6 +215,6 @@ public class Disease {
     @Override
     public int hashCode() {
 
-        return Objects.hash(name, diagnosisDate, isChronic, isCured, id);
+        return Objects.hash(name, diagnosisDate, isChronic, isCured);
     }
 }

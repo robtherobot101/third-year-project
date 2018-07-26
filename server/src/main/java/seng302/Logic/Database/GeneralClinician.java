@@ -2,7 +2,6 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Clinician;
-import seng302.Server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -16,6 +16,7 @@ import seng302.Model.WaitingListItem;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,17 +41,14 @@ public class GeneralUserTest {
     public void patchEntireUser() {
     }
 
-//    @Test
-//    public void updateAllMedications() throws SQLException {
-//        String[] middle = {"Middle"};
-//        String[] ingredients = {"water", "Air"};
-//        User user = new User("First", middle, "Last", LocalDate.of(1997, 8, 4), "username1", "email@domain.com", "password");
-//        generalUser.insertUser(user);
-//        int id = generalUser.getIdFromUser(user.getUsername());
-//        List<Medication> medications = Arrays.asList(new Medication("paracetamol", ingredients), new Medication("placebo", ingredients));
-//        generalUser.updateAllMedications(medications, id);
-//        assertEquals(user.getCurrentMedications(), generalUser.getUserFromId(id).getCurrentMedications());
-//    }
+    @Test
+    public void updateAllMedications() throws SQLException {
+        String[] ingredients = {"water", "Air"};
+        User user = HelperMethods.insertUser(generalUser);
+        List<Medication> medications = HelperMethods.makeMedications();
+        generalUser.updateAllMedications(medications, (int) user.getId());
+        assertEquals(medications, generalUser.getUserFromId((int) user.getId()).getCurrentMedications());
+    }
 
     @Test
     public void updateAllProcedures() throws SQLException {
@@ -83,6 +81,7 @@ public class GeneralUserTest {
 
         ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
         WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) user.getId(), null, 0);
+        waitingListItems.add(waitingListItem);
 
         generalUser.updateWaitingListItems(waitingListItems, (int) user.getId());
 
@@ -124,13 +123,13 @@ public class GeneralUserTest {
         user.setCurrentAddress("221b Baker Stret");
         user.setRegion("Here");
         user.setDateOfBirth(LocalDate.of(1987, 8, 4));
-        user.setDateOfDeath(LocalDate.now());
+        user.setDateOfDeath(LocalDateTime.now());
         user.setHeight(100);
         user.setWeight(200);
         user.setBloodPressure("High");
         user.setGender(Gender.NONBINARY);
         user.setBloodType(BloodType.AB_POS);
-        user.setEmail("newemail@newdomain.newtld");
+        //user.setEmail("newemail@newdomain.newtld");
 
         generalUser.updateUserAttributes(user, (int) user.getId());
 

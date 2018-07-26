@@ -25,6 +25,7 @@ public class Procedure {
      * @param description      the given procedure description
      * @param date             the given procedure date
      * @param organsAffected   the given organs to be operated on in the procedure
+     * @param id               the given id of the procedure
      */
     public Procedure(String summary, String description, LocalDate date, ArrayList<Organ> organsAffected, int id) {
         this.summary = summary;
@@ -135,8 +136,7 @@ public class Procedure {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Procedure procedure = (Procedure) o;
-        return id == procedure.id &&
-                Objects.equals(summary, procedure.summary) &&
+        return  Objects.equals(summary, procedure.summary) &&
                 Objects.equals(description, procedure.description) &&
                 Objects.equals(date, procedure.date) &&
                 Objects.equals(organsAffected, procedure.organsAffected);
@@ -145,6 +145,6 @@ public class Procedure {
     @Override
     public int hashCode() {
 
-        return Objects.hash(summary, description, date, organsAffected, id);
+        return Objects.hash(summary, description, date, organsAffected);
     }
 }
