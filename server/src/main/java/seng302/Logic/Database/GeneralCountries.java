@@ -3,10 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Country;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class GeneralCountries {
      * @return returns a list of all the countries
      * @throws SQLException Throws if the database cannot be reached
      */
-    public List<Country> getCountries() throws SQLException {
+    public ArrayList<Country> getCountries() throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Country> countries = new ArrayList<>();
             String query = "SELECT * FROM COUNTRIES";
