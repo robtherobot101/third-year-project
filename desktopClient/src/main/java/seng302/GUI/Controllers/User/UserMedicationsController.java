@@ -446,6 +446,11 @@ public class UserMedicationsController extends UserTabController implements Init
         }
     }
 
+    /**
+     * starts up the user medication controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -486,6 +491,9 @@ public class UserMedicationsController extends UserTabController implements Init
         });
     }
 
+    /**
+     * undos the last change
+     */
     @Override
     public void undo() {
         updateUser();
@@ -498,6 +506,9 @@ public class UserMedicationsController extends UserTabController implements Init
         updateMedications();
     }
 
+    /**
+     * redos the last undo
+     */
     @Override
     public void redo() {
         updateUser();

@@ -151,6 +151,12 @@ public class IO {
         return false;
     }
 
+    /**
+     * imports users from csv file
+     * @param path the path to the csv file
+     * @param token the users token
+     * @return returns true if completed otherwise false
+     */
     public static boolean importUserCSV(String path, String token) {
         try {
             Debugger.log("importUserCSV called");

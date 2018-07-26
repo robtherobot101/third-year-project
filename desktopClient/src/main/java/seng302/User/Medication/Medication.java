@@ -68,6 +68,11 @@ public class Medication {
         history.add("Stopped taking on " + User.dateTimeFormat.format(LocalDateTime.now()));
     }
 
+    /**
+     * overrides the equals function to work for medications
+     * @param o the object to compared with
+     * @return true if the a the same, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -80,15 +85,27 @@ public class Medication {
         return Objects.equals(name, that.name);
     }
 
+    /**
+     * overrides the hash code of the medication
+     * @return returns the hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
 
+    /**
+     * sets the active ingredients of the medication
+     * @param activeIngredients
+     */
     public void setActiveIngredients(String[] activeIngredients) {
         this.activeIngredients = activeIngredients;
     }
 
+    /**
+     * overrides the toString function
+     * @return the name of the medication
+     */
     @Override
     public String toString() {
         return name;

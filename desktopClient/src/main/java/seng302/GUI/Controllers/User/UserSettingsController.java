@@ -112,10 +112,16 @@ public class UserSettingsController implements Initializable {
         stage.close();
     }
 
+    /**
+     * updates the state of the update button
+     */
     private void updateUpdateButtonState() {
         updateButton.setDisable((usernameField.getText().isEmpty() && emailField.getText().isEmpty()) || passwordField.getText().isEmpty());
     }
 
+    /**
+     * updates the account details if enter is pressed
+     */
     public void setEnterEvent() {
         updateButton.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !updateButton.isDisable()) {
@@ -124,6 +130,11 @@ public class UserSettingsController implements Initializable {
         });
     }
 
+    /**
+     * starts up the user settings controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
