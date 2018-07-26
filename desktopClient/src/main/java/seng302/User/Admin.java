@@ -15,7 +15,7 @@ public class Admin extends Clinician {
     /**
      * Method to create a new admin instance
      *
-     * @param username the usernam of the admin
+     * @param username the username of the admin
      * @param password the password of the admin
      * @param name     the name of the admin
      */
@@ -60,6 +60,10 @@ public class Admin extends Clinician {
         super.setPassword(password);
     }
 
+    /**
+     * overrides the toString function
+     * @return returns the admins info
+     */
     @Override
     public String toString() {
         return "Admin{" +

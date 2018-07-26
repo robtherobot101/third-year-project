@@ -21,6 +21,11 @@ public class UserReaderCSV implements ProfileReader<User> {
     private CSVReader reader;
     private List<User> readUsers;
 
+    /**
+     * gets user profiles from a csv file
+     * @param path the path to the csv file
+     * @return returns the imported profiles
+     */
     public List<User> getProfiles(String path) {
         Debugger.log("getProfiles called");
 

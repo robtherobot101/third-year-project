@@ -61,7 +61,7 @@ public class GeneralClinicianTest {
      */
     @Test(expected = Exception.class)
     public void insertClinicianNoUsername() throws SQLException {
-        Clinician clinician = new Clinician("", "password", "Full Name");
+        Clinician clinician = new Clinician(null, "password", "Full Name");
         generalClinician.insertClinician(clinician);
     }
 
@@ -99,7 +99,7 @@ public class GeneralClinicianTest {
      * Test getting clinician with id 9999
      * @throws SQLException
      */
-    @Test(expected = Exception.class)
+    @Test
     public void getClinicianFromBadId() throws SQLException {
         Clinician clinician = generalClinician.getClinicianFromId(9999);
         assertNull(clinician);

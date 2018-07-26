@@ -425,6 +425,8 @@ public class ClinicianController implements Initializable {
 
     /**
      * Updates the list of users found from the search
+     * @param count The count of users in the application
+     * @param onlyChangingPage boolean to handle the changing page
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
@@ -510,6 +512,11 @@ public class ClinicianController implements Initializable {
         }
     }
 
+    /**
+     * starts up the clinician controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         /*try {

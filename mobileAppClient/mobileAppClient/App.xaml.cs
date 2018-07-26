@@ -1,19 +1,29 @@
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
+using mobileAppClient.odmsAPI;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
 {
+    /*
+     * Class which acts as the main entry point of the application.
+     */ 
     public partial class App : Application
     {
+        /*
+         * Open the app to have a the main page xaml as the bottom of 
+         * the stack of views.
+         */ 
         public App()
         {
             InitializeComponent();
-
-            RequestTester request = new RequestTester();
-            User user = request.LiveGetRequestTest();
-            Console.WriteLine(user.Email);
+            // Ensure config is set
+            ServerConfig serverConfig = ServerConfig.Instance;
+            UserController userController = UserController.Instance;
 
             MainPage = new MainPage();
         }

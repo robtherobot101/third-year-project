@@ -16,7 +16,7 @@ public class GenderTest {
 
     @Test
     public void testValidMixedCaseParse() {
-        assertEquals(Gender.parse("fEmaLE"), Gender.MALE);
+        assertEquals(Gender.parse("fEmaLE"), Gender.FEMALE);
     }
 
     @Test

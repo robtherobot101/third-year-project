@@ -13,6 +13,10 @@ import java.util.List;
 
 public class ResampleData {
 
+    /**
+     * the local data to resample
+     * @return returns all the users
+     */
     public static List<User> users() {
         List<User> allUsers = new ArrayList<>();
         User user1 = new User("Andy", new String[]{"Robert"}, "French", LocalDate.now(), "andy", "andy@andy.com", "andrew");
@@ -36,10 +40,19 @@ public class ResampleData {
         }
         return allUsers;
     }
+
+    /**
+     * adds the default clinician to the local data
+     * @return returns the clinicians
+     */
     public static List<Clinician> clinicians() {
         return Arrays.asList(new Clinician("default","default","default clinician",ProfileType.CLINICIAN,1));
     }
 
+    /**
+     * adds the default admin to the local data
+     * @return returns the admin
+     */
     public static List<Admin> admins() {
         Admin defaultAdmin = new Admin("admin","default","default admin");
         defaultAdmin.setStaffID(1);

@@ -107,7 +107,7 @@ public class UserController implements Initializable {
 
     /**
      * Sets the user displayed by this controller, and initializes the GUI to display the user's data.
-     *
+     * @param token authentication token for the database
      * @param currentUser The user to display
      */
     public void setCurrentUser(User currentUser, String token) {

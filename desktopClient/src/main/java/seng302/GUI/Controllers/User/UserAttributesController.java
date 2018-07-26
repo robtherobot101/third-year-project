@@ -58,6 +58,10 @@ public class UserAttributesController extends UserTabController implements Initi
     boolean deathInNewZealand = false;
     boolean inNewZealand = false;
 
+    /**
+     * sets the current user
+     * @param user the user to set as the current user
+     */
     public void setCurrentUser(User user) {
         currentUser = user;
         populateUserFields();
@@ -68,28 +72,46 @@ public class UserAttributesController extends UserTabController implements Initi
     }
 
 
+    /**
+     * sets the death of a user in New Zealand
+     */
     public void setDeathInNewZealand() {
         if(countryOfDeathComboBox.getValue() != null) {
             deathInNewZealand = countryOfDeathComboBox.getValue().toString().equals("New Zealand");
             regionOfDeathComboBox.setVisible(deathInNewZealand);
             regionOfDeathField.setVisible(deathInNewZealand == false);
+            if(deathInNewZealand){
+                regionOfDeathField.setText("");
+            }
         }
     }
 
+    /**
+     * sets the users address in New Zealand
+     */
     public void setInNewZealand() {
         if(countryComboBox.getValue() != null) {
             inNewZealand = countryComboBox.getValue().toString().equals("New Zealand");
             regionComboBox.setVisible(inNewZealand);
             regionField.setVisible(inNewZealand == false);
             System.out.println(inNewZealand);
+            if(inNewZealand){
+                regionField.setText("");
+            }
         }
     }
 
+    /**
+     * changes the country of death
+     */
     public void countryOfDeathChanged() {
         setDeathInNewZealand();
         attributeFieldUnfocused();
     }
 
+    /**
+     * changes the country of residence
+     */
     public void countryChanged() {
         setInNewZealand();
         attributeFieldUnfocused();
@@ -442,6 +464,11 @@ public class UserAttributesController extends UserTabController implements Initi
     }
 
 
+    /**
+     * starts the user attributes controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -542,6 +569,9 @@ public class UserAttributesController extends UserTabController implements Initi
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
     }
 
+    /**
+     * undos the last change
+     */
     public void undo(){
         attributeFieldUnfocused();
         //Add the current fields to the redo stack
@@ -553,6 +583,9 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
     }
 
+    /**
+     * redos the last undo
+     */
     @Override
     public void redo() {
         attributeFieldUnfocused();
@@ -565,6 +598,10 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
     }
 
+    /**
+     * set whether to show the date of daeth controls
+     * @param shown whaether to show or not
+     */
     public void setDeathControlsShown(boolean shown) {
         dateOfDeathPicker.setDisable(!shown);
         deathCityField.setDisable(!shown);

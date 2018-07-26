@@ -24,6 +24,13 @@ public class UsersDB implements UsersDAO {
         this.server = server;
     }
 
+    /**
+     * gets a users id from the username
+     * @param username the username of the user
+     * @param token the users token
+     * @return returns the id of the user
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public int getUserId(String username, String token) throws HttpResponseException {
         for (User user : getAllUsers(token)) {
@@ -34,6 +41,11 @@ public class UsersDB implements UsersDAO {
         return -1;
     }
 
+    /**
+     * inserts a new user into the server
+     * @param user the user to insert
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public void insertUser(User user) throws HttpResponseException {
         JsonParser jp = new JsonParser();
@@ -42,6 +54,12 @@ public class UsersDB implements UsersDAO {
         APIResponse response = server.postRequest(userJson, new HashMap<>(), null, "users");
     }
 
+    /**
+     * updates a user on the database
+     * @param user the user to update
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public void updateUser(User user, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
@@ -71,6 +89,13 @@ public class UsersDB implements UsersDAO {
         }
     }
 
+    /**
+     * gets a specific user from the server
+     * @param id the id of the user to get
+     * @param token the users token
+     * @return returns a user
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public User getUser(long id, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id));
@@ -80,6 +105,12 @@ public class UsersDB implements UsersDAO {
         return null;
     }// Now uses API server!
 
+    /**
+     * get all the users from the server
+     * @param token the users token
+     * @return returns a list of all users
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public List<User> getAllUsers(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users");
@@ -92,6 +123,12 @@ public class UsersDB implements UsersDAO {
         }
     }
 
+    /**
+     * removes a user from the server
+     * @param id the id of the users to remove
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public void removeUser(long id, String token) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), token, "users", String.valueOf(id));
@@ -99,6 +136,12 @@ public class UsersDB implements UsersDAO {
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
+    /**
+     * gets the total number of users
+     * @param token the users token
+     * @return returns the number of users
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public int count(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "usercount");
