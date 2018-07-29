@@ -378,6 +378,8 @@ ALTER TABLE `WAITING_LIST_ITEM`
 
 INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', 'default', 'default', 'default', 'default', 'default');
 
+INSERT INTO TOKEN(id, token, access_level) VALUES(0, 'masterToken', 2);
+
 INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', 'default', 'default', 'default', 'default', 'default');
 
 
