@@ -2,7 +2,6 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Clinician;
-import seng302.Server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +11,12 @@ import java.util.ArrayList;
 
 public class GeneralClinician {
 
+    /**
+     * Takes a resultsSet, pulls out a Clinician instance, and returns it.
+     * @param resultSet The given resultSet
+     * @return A Clinician instance
+     * @throws SQLException If there is a problem working with the database.
+     */
     public Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException {
         Clinician clinician = new Clinician(
                 resultSet.getString("username"),
@@ -25,6 +30,12 @@ public class GeneralClinician {
         return clinician;
     }
 
+    /**
+     * Returns the Clinician from the database whose ID matches the one given.
+     * @param id The given id
+     * @return A Clinician instance with the same ID as the one given.
+     * @throws SQLException If there is a problem working with the database.
+     */
     public Clinician getClinicianFromId(int id) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM CLINICIAN id = id;
@@ -44,6 +55,28 @@ public class GeneralClinician {
         }
     }
 
+    /**
+     * Returns the Clinician from the database from the database whose username matches the one given.
+     * @param username The given username.
+     * @return A Clinician instance.
+     * @throws SQLException If there is a problem working with the database.
+     */
+    public int getClinicianIdFromUsername(String username) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT staff_id FROM CLINICIAN WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt("staff_id");
+        }
+    }
+
+    /**
+     * Inserts the given Clinician into the database.
+     * @param clinician The given Clinician which will be inserted
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void insertClinician(Clinician clinician) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region) " +
@@ -60,6 +93,11 @@ public class GeneralClinician {
 
     }
 
+    /**
+     * Returns an ArrayList of all Clinicians in the database.
+     * @return An ArrayList of all Clinicians in the database
+     * @throws SQLException If there is a problem working with the database.
+     */
     public ArrayList<Clinician> getAllClinicians() throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Clinician> allClinicans = new ArrayList<>();
@@ -74,6 +112,11 @@ public class GeneralClinician {
         }
     }
 
+    /**
+     * Removes the Clinician from the database whose ID matches that of the Clinician given.
+     * @param clinician The given Clinician
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void removeClinician(Clinician clinician) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM CLINICIAN WHERE username = ?";
@@ -83,6 +126,12 @@ public class GeneralClinician {
         }
     }
 
+    /**
+     * Updates the Clincian in the database whose ID matches the one given with the fields of the Clinician given.
+      *@param clinician The given Clinician
+     * @param clinicianId The ID of the
+     * @throws SQLException If there is a problem working with the database.
+     */
     public void updateClinicianDetails(Clinician clinician, int clinicianId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE CLINICIAN SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = ?";

@@ -1,47 +1,33 @@
 package seng302.GUI.Controllers.Clinician;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import com.google.api.client.util.DateTime;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
+import seng302.GUI.TFScene;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Disease;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
+import tornadofx.control.DateTimePicker;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Class to handle the transplant waiting list window that displays all receivers waiting for an organ
@@ -61,11 +47,26 @@ public class ClinicianWaitingListController implements Initializable {
 
     private ObservableList<WaitingListItem> transplantList = FXCollections.observableArrayList();
 
+    private String token;
+
     /**
      * Closes the application
      */
     public void close() {
         Platform.exit();
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * Checks whether this waiting list has an API token.
+     *
+     * @return Whether this waiting list has an API token
+     */
+    public boolean hasToken() {
+        return token != null;
     }
 
     /**
@@ -74,13 +75,11 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
-            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
-            for (User user : users) {
-                for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (item.getStillWaitingOn()) {
-                        addUserInfo(item);
-                        transplantList.add(item);
-                    }
+            System.out.println("tried to update trans list with token " + token);
+            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token)) {
+                if (item.getStillWaitingOn()) {
+                    addUserInfo(item);
+                    transplantList.add(item);
                 }
             }
             deregisterReceiverButton.setDisable(true);
@@ -89,12 +88,15 @@ public class ClinicianWaitingListController implements Initializable {
         }
     }
 
+    /**
+     * adds the user info to a waiting list item
+     * @param item the waiting list item to update
+     */
     public void addUserInfo(WaitingListItem item) {
         try{
-            User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue());
+            User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue(), token);
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
-            System.out.println("item user Region: " + user.getRegion());
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
         } catch (NullPointerException e) {
@@ -111,11 +113,15 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         try {
             transplantList.clear();
-            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers();
+            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers(token);
             for (User user : users) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (!(item.getOrganRegisteredDate() == null)) {
+                    if (item.getStillWaitingOn()) {
                         if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
+                            if(user.getOrgans().contains(item.getOrganType())){
+                                item.setIsConflicting(true);
+                            }
+
                             if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
                                 addUserInfo(item);
                                 transplantList.add(item);
@@ -128,7 +134,7 @@ public class ClinicianWaitingListController implements Initializable {
                 }
             }
             deregisterReceiverButton.setDisable(true);
-            transplantTable.refresh();
+            //transplantTable.refresh();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and filter transplant waiting list.");
         }
@@ -143,13 +149,17 @@ public class ClinicianWaitingListController implements Initializable {
         updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
     }
 
+    /**
+     * shows th ederegister dialog for a waiting list item
+     */
     public void showDeregisterDialogFromClinicianList() {
         try {
             WaitingListItem selectedItem = (WaitingListItem) transplantTable.getSelectionModel().getSelectedItem();
-            User user = WindowManager.getDataManager().getUsers().getUser(selectedItem.getUserId().intValue());
+            User user = WindowManager.getDataManager().getUsers().getUser(selectedItem.getUserId().intValue(), token);
             showDeregisterDialog(selectedItem, user);
-            System.out.println("----------PUSHING WAITINGLIST ITEM UPDATE TO THE API SERVER---------");
-            WindowManager.getDataManager().getUsers().updateUser(user);
+            WindowManager.getDataManager().getUsers().updateUser(user, token);
+
+            updateTransplantList();
         } catch (HttpResponseException e) {
             Debugger.error("Could not update waiting list item.");
         }
@@ -157,7 +167,7 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * Method to show de-registering reason code for a user to make a selection
-     * 
+     * @param user the user item for the deregister dialog
      * @param selectedItem The item being de registered.
      */
     public void showDeregisterDialog(WaitingListItem selectedItem, User user) {
@@ -176,9 +186,7 @@ public class ClinicianWaitingListController implements Initializable {
 
         //Get Input Code
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(s -> {
-            processDeregister(s, selectedItem, user);
-        });
+        result.ifPresent(s -> processDeregister(s, selectedItem, user));
     }
 
     /**
@@ -243,13 +251,22 @@ public class ClinicianWaitingListController implements Initializable {
         }
     }
 
+    /**
+     * deregisters a waiting list item
+     * @param item the waiting list item to deregister
+     * @param user the user to remove the waiting list item from
+     * @param code the code for why it was deregistered
+     */
     public void deregisterWaitingListItem(WaitingListItem item, User user, int code) {
         for(WaitingListItem i : user.getWaitingListItems()) {
-            if(i.getStillWaitingOn() &&
-                    i.getOrganType().equals(item.getOrganType())) {
+            if(i.getStillWaitingOn() && i.getOrganType().equals(item.getOrganType())) {
                 i.deregisterOrgan(code);
                 item.deregisterOrgan(code);
-                System.out.println("De-registered: " + i.getOrganType());
+                for (UserController userController: WindowManager.getCliniciansUserWindows().values()) {
+                    if (userController.getCurrentUser().equals(user)) {
+                        userController.addHistoryEntry("Waiting list item deregistered", "A waiting list item (" + item.getOrganType() + ") was deregistered.");
+                    }
+                }
             }
         }
     }
@@ -354,7 +371,7 @@ public class ClinicianWaitingListController implements Initializable {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        DatePicker deathDatePicker = new DatePicker();
+        DateTimePicker deathDatePicker = new DateTimePicker();
         deathDatePicker.setConverter(new StringConverter<LocalDate>() {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -404,7 +421,7 @@ public class ClinicianWaitingListController implements Initializable {
                     }
                 } else {
                     try {
-                        deathDeregister(deathDatePicker.getValue(), selectedItem, user);
+                        deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to de-register waiting list item.");
                     }
@@ -427,7 +444,7 @@ public class ClinicianWaitingListController implements Initializable {
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
-    private void deathDeregister(LocalDate deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
+    private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
         deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
         if (selectedUser.getWaitingListItems() != null) {
             for (WaitingListItem item : selectedUser.getWaitingListItems()) {
@@ -463,8 +480,7 @@ public class ClinicianWaitingListController implements Initializable {
 
         WindowManager.setTransplantWaitingListController(this);
 
-        transplantTable.setItems(transplantList);
-        updateFoundUsersWithFiltering("", "None");
+
         transplantTable.setItems(transplantList);
 
         //add options to organ filter combobox
@@ -495,18 +511,11 @@ public class ClinicianWaitingListController implements Initializable {
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            try {
-                                System.out.println(WindowManager.getDataManager().getUsers().getUser(3));
-                                System.out.println(item.getUserId());
-                                System.out.println(item.getOrganType());
-                                if (WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue()).getOrgans().contains(item.getOrganType())) {
-                                    setTooltip(new Tooltip("User is currently donating this organ"));
-                                    if (!getStyleClass().contains("highlighted-row")) {
-                                        getStyleClass().add("highlighted-row");
-                                    }
+                            if(item.isConflicting()) {
+                                setTooltip(new Tooltip("User is currently donating this organ"));
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
                                 }
-                            } catch (HttpResponseException e) {
-                                Debugger.error("Could not properly render waiting list table. Failed to fetch user with id: " + item.getUserId());
                             }
                         }
                     }
@@ -515,7 +524,7 @@ public class ClinicianWaitingListController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         try {
-                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue()));
+                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
                         } catch (HttpResponseException e) {
                             Debugger.error("COuld not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
                         }

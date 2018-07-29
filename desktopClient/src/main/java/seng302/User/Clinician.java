@@ -1,6 +1,5 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
 import seng302.User.Attribute.ProfileType;
 
 /**
@@ -9,7 +8,6 @@ import seng302.User.Attribute.ProfileType;
 public class Clinician {
 
     private String name, workAddress, region, username, password;
-    public static final String tableHeader = "User ID  | Name    | Work address           | region        | Username   ";
 
 
     private long staffID;
@@ -57,7 +55,6 @@ public class Clinician {
         this.username = username;
         this.password = password;
         this.name = name;
-        // TODO Add functionality to DAOs for getting next id.
         this.staffID = 1;
         this.region = null;
         this.workAddress = null;
@@ -126,32 +123,20 @@ public class Clinician {
         this.password = password;
     }
 
+    /**
+     * copies info from one clinician to another
+     * @param clinician the clinician to copy from
+     */
     public void copyFieldsFrom(Clinician clinician) {
         this.name = clinician.name;
         this.region = clinician.region;
         this.workAddress = clinician.workAddress;
     }
 
-
     /**
-     * Get a string containing key information about the user. Can be formatted as a table row.
-     *
-     * @param table Whether to format the information as a table row
-     * @return The information string
+     * overrides the toString function
+     * @return returns the clinician info
      */
-    public String getString(boolean table) {
-
-        if (table) {
-            return String.format("%-8d | %s | %-22s | %10s    | %-10s    ", staffID,
-                    name, workAddress,region, username);
-        } else {
-                return String.format("Clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
-                        , name, workAddress, region, username);
-            }
-    }
-
-
-
     @Override
     public String toString() {
         return "Clinician{" +

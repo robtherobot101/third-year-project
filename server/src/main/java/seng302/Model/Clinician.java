@@ -2,6 +2,8 @@ package seng302.Model;
 
 import seng302.Model.Attribute.ProfileType;
 
+import java.util.Objects;
+
 /**
  * This class contains information about clinicians.
  */
@@ -14,14 +16,38 @@ public class Clinician {
     private long staffID;
     private ProfileType accountType;
 
+    /**
+     * constructor method to create a new clinician object with minimal objects
+     * @param username String the username of the clinician
+     * @param password String the password for the clinician
+     * @param name String the name of the clinician
+     */
     public Clinician(String username, String password, String name) {
         this.username = username;
         this.password = password;
         this.name = name;
-//        this.staffID = DataManager.getNextId(true, ProfileType.CLINICIAN);
         this.region = null;
         this.workAddress = null;
         this.accountType = ProfileType.CLINICIAN;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Clinician clinician = (Clinician) o;
+        return Objects.equals(name, clinician.name) &&
+                Objects.equals(workAddress, clinician.workAddress) &&
+                Objects.equals(region, clinician.region) &&
+                Objects.equals(username, clinician.username) &&
+                Objects.equals(password, clinician.password) &&
+                accountType == clinician.accountType;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, workAddress, region, username, password, accountType);
     }
 
     /**
@@ -75,60 +101,99 @@ public class Clinician {
         this.workAddress = clinician.workAddress;
     }
 
-    public void setStaffID(long staffID) {
-        this.staffID = staffID;
-    }
+    /**
+     * method to set the clinicians staffid
+     * @param staffID long the staff id of the clinician
+     */
+    public void setStaffID(long staffID) { this.staffID = staffID; }
 
+    /**
+     * method to get the name of the clinician
+     * @return String the name of the clinician
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * method to set the name of the clinician
+     * @param name String the name of the clinician
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * method to get the staff id of a clinician
+     * @return long the staff id
+     */
     public long getStaffID() {
         return staffID;
     }
 
+    /**
+     * method to get the work address of a clinician
+     * @return String the work address
+     */
     public String getWorkAddress() {
         return workAddress;
     }
 
+    /**
+     * method to set a clinicians work address
+     * @param workAddress String the work address
+     */
     public void setWorkAddress(String workAddress) {
         this.workAddress = workAddress;
     }
 
+    /**
+     * method to get the clinicians region
+     * @return String the region of the clinician
+     */
     public String getRegion() {
         return region;
     }
 
+    /**
+     * method to set the region of the clinician
+     * @param region String the region of the clinician
+     */
     public void setRegion(String region) {
         this.region = region;
     }
 
+    /**
+     * method to get the clinicians username
+     * @return String the username of the clinician
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * method to set the username of the clinician
+     * @param username String the user name of the clinician
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * method to get the password of the clinician
+     * @return String the password of the clinician
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * method to set the password of the clinician
+     * @param password String the password of the clinician
+     */
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public void copyFieldsFrom(Clinician clinician) {
-        this.name = clinician.name;
-        this.region = clinician.region;
-        this.workAddress = clinician.workAddress;
-    }
-
 
     /**
      * Get a string containing key information about the user. Can be formatted as a table row.

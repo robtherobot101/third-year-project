@@ -25,7 +25,21 @@ public class AdminCliController implements Initializable {
 
     private ArrayList<String> commandInputHistory;
     private int currentHistoryIndex;
+    private String token;
 
+    /**
+     * sets the token to be used by the cli controller
+     * @param token String the token to access and make changes to the database
+     */
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * starts the admin cli controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Initialise output components
@@ -98,7 +112,7 @@ public class AdminCliController implements Initializable {
         if (!commandInputField.getText().equals("TF > ")) {
             capturedOutput.add(commandInputField.getText());
 
-            String response = WindowManager.getDataManager().getGeneral().sendCommand(commandInputField.getText().substring(5));
+            String response = WindowManager.getDataManager().getGeneral().sendCommand(commandInputField.getText().substring(5), token);
             if(isInstruction(response)) {
                 executeInstruction(response);
             }else{
@@ -115,11 +129,19 @@ public class AdminCliController implements Initializable {
         }
     }
 
-
+    /**
+     * method to check if the given input is a valid command
+     * @param response String given instruction
+     * @return boolean if it is an instruction
+     */
     public boolean isInstruction(String response){
         return Arrays.asList("CLEAR").contains(response);
     }
 
+    /**
+     * method to execute the given instruction
+     * @param response the input command
+     */
     public void executeInstruction(String response){
         switch (response) {
             case "CLEAR": capturedOutput.clear();

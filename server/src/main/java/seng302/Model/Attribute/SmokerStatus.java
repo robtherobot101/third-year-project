@@ -8,13 +8,14 @@ public enum SmokerStatus {
 
     private String type;
 
-    SmokerStatus(String type) {
-        this.type = type;
-    }
+    /**
+     * method to create a new smoker status attribute
+     * input can be of type: Never, Current, or Past
+     * @param type String the type of smoker status
+     */
+    SmokerStatus(String type) { this.type = type; }
 
-    public String toString() {
-        return type;
-    }
+    public String toString() { return type; }
 
     /**
      * Converts a string to its corresponding smoker status enum value. Throws an IllegalArgumentException if the string does not match any smoker status.

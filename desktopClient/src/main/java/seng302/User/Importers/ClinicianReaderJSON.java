@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClinicianReaderJSON implements ProfileReader<Clinician> {
+
+    /**
+     * gets clinician profiles from a json file
+     * @param path the path to the json file
+     * @return returns the imported profiles
+     */
     public List<Clinician> getProfiles(String path) {
         File inputFile = new File(path);
 

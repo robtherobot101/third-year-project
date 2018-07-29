@@ -1,14 +1,21 @@
 package seng302.Controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -17,11 +24,20 @@ import static java.lang.Integer.max;
 public class UserController {
     private GeneralUser model;
 
+    /**
+     * Class to handle all user processing eg. adding and editing users
+     */
     public UserController() {
         model = new GeneralUser();
     }
 
 
+    /**
+     * method to get all users
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing all users and their information
+     */
     public String getUsers(Request request, Response response) {
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
@@ -65,6 +81,28 @@ public class UserController {
         response.type("application/json");
         response.status(200);
         return serialQueriedUsers;
+    }
+
+
+    /**
+     * Returns the number of entries in the USERS table.
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String the number of users currently registered
+     */
+    public String countUsers(Request request, Response response) {
+        Integer count;
+        try {
+            count = model.countUsers();
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            response.body("Internal server error");
+            return null;
+        }
+
+        response.status(200);
+        return count.toString();
     }
 
     /**
@@ -243,6 +281,12 @@ public class UserController {
         return queriedUser;
     }
 
+    /**
+     * method to process the add user request. parses the input to be in a better format
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was successful or not
+     */
     public String addUser(Request request, Response response) {
         Gson gson = new Gson();
         User receivedUser;
@@ -275,6 +319,12 @@ public class UserController {
         }
     }
 
+    /**
+     * method to handle the getting of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the requested user information
+     */
     public String getUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -290,6 +340,12 @@ public class UserController {
         return serialQueriedUser;
     }
 
+    /**
+     * method to process the editing of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the editing of the user was successful or not
+     */
     public String editUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -298,8 +354,8 @@ public class UserController {
         }
 
         Gson gson = new Gson();
-
         User receivedUser = gson.fromJson(request.body(), User.class);
+        System.out.println(receivedUser.getCityOfDeath());
         if (receivedUser == null) {
             response.status(400);
             return "Missing User Body";
@@ -310,6 +366,8 @@ public class UserController {
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
+
+                e.printStackTrace();
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
@@ -317,6 +375,12 @@ public class UserController {
         }
     }
 
+    /**
+     * method to handle the deletion of a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether or not the user was deleted successfully
+     */
     public String deleteUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
 
@@ -334,4 +398,120 @@ public class UserController {
             return "Internal Server Error";
         }
     }
+
+
+    public String getUserPhoto(Request request, Response response) {
+        User queriedUser = queryUser(request, response);
+
+        if (queriedUser == null){
+            return response.body();
+        }
+
+        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+        File file = new File(filepath);
+        System.out.println(file.exists());
+
+        if (!file.isFile()){
+            response.status(404);
+            return "Photo does not exist.";
+        }
+
+
+        // BufferedImage has no type, we can choose what the file type is
+        try {
+            BufferedImage bImage = ImageIO.read(file);
+            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bImage, "png", byteOutputStream);
+            byte[] byteArrayImage = byteOutputStream.toByteArray();
+            byteOutputStream.close();
+            String image = Base64.getEncoder().encodeToString(byteArrayImage);
+            response.status(200);
+            return image;
+        } catch (IOException e) {
+            return "Internal Server Error";
+        }
+
+
+
+
+    }
+
+    public String editUserPhoto(Request request, Response response){
+        User queriedUser = queryUser(request, response);
+
+        if (queriedUser == null){
+            return response.body();
+        }
+
+        Gson gson = new Gson();
+        PhotoStruct receivedPhotoStruct;
+
+        // Attempt to parse received JSON into our simple photo structure
+        try {
+            receivedPhotoStruct = gson.fromJson(request.body(), PhotoStruct.class);
+        } catch (JsonSyntaxException jse) {
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+
+        // Process this base64 string into a photo
+        String encodedImage = receivedPhotoStruct.getData();
+        if (encodedImage == null) {
+            response.status(400);
+            return "Missing Image";
+        } else {
+            try {
+                //Decode the string to a byte array
+                byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(encodedImage);
+
+                // BufferedImage has no type, we can choose what the file type is
+                BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+
+                // Ensure directory exists
+                Files.createDirectories(Paths.get("home/serverImages/user/"));
+
+                // Set filepath
+                String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+                // Write the file
+                File outputfile = new File(filepath);
+                ImageIO.write(img, "png", outputfile);
+
+                return "PHOTO SUCCESSFULLY SAVED";
+            }  catch (IOException e) {
+                System.out.println(e);
+                return "Internal Server Error";
+            }
+        }
+    }
+
+
+    public String deleteUserPhoto(Request request, Response response){
+        User queriedUser = queryUser(request, response);
+        if (queriedUser == null){
+            return response.body();
+        }
+
+        //Find filepath in DB
+        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+
+        //Delete file from storage
+        File file = new File(filepath);
+        boolean deleted = false;
+        if (file.exists()){
+            deleted = file.delete();
+        }
+
+        //Update DB
+        if (deleted){
+            //update
+            return "Photo successfully deleted";
+        } else {
+            //update
+            return "Internal server error";
+        }
+    }
+
 }

@@ -1,6 +1,5 @@
 package seng302.User;
 
-import seng302.Generic.DataManager;
 import seng302.User.Attribute.ProfileType;
 
 import java.util.Random;
@@ -15,12 +14,11 @@ public class Admin extends Clinician {
     /**
      * Method to create a new admin instance
      *
-     * @param username the usernam of the admin
+     * @param username the username of the admin
      * @param password the password of the admin
      * @param name     the name of the admin
      */
     public Admin(String username, String password, String name) {
-        //TODO Implement functionality for getting actual id for all profiles
         super(username, password, name, ProfileType.ADMIN, 1);
         String[] levels = {"CONFIDENTIAL", "SECRET", "TOP SECRET"};
         Random r = new Random();
@@ -60,6 +58,10 @@ public class Admin extends Clinician {
         super.setPassword(password);
     }
 
+    /**
+     * overrides the toString function
+     * @return returns the admins info
+     */
     @Override
     public String toString() {
         return "Admin{" +

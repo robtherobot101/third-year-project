@@ -8,13 +8,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
+import seng302.Data.Database.GeneralDB;
 import seng302.Data.Database.UsersDB;
 import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Data.Interfaces.CliniciansDAO;
@@ -38,10 +41,12 @@ import seng302.User.Medication.InteractionApi;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static seng302.Generic.IO.getJarPath;
 
@@ -100,8 +105,9 @@ public class WindowManager extends Application {
     /**
      * Creates a new user window from a clinician's view.
      * @param user The user to create the window for
+     * @param token the users token
      */
-    public static void newCliniciansUserWindow(User user){
+    public static void newCliniciansUserWindow(User user, String token){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
         stage.setMinHeight(WindowManager.mainWindowMinHeight);
@@ -117,7 +123,7 @@ public class WindowManager extends Application {
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
 
-            newUserController.setCurrentUser(user);
+            newUserController.setCurrentUser(user, token);
             newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
@@ -138,12 +144,17 @@ public class WindowManager extends Application {
      * sets the current clinician
      *
      * @param clinician the logged clinician
+     * @param token the users token
      */
-    public static void setClinician(Clinician clinician) {
-        clinicianController.setClinician(clinician);
+    public static void setCurrentClinician(Clinician clinician, String token) {
+        clinicianController.setClinician(clinician, token);
         clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
         updateTransplantWaitingList();
+    }
+
+    public static Clinician getCurrentClinician() {
+        return clinicianController.getClinician();
     }
 
     /**
@@ -166,19 +177,28 @@ public class WindowManager extends Application {
      * sets the current admin
      *
      * @param admin the logged admin
+     * @param token the users token
      */
-    public static void setAdmin(Admin admin) {
-        adminController.setAdmin(admin);
+    public static void setCurrentAdmin(Admin admin, String token) {
+        adminController.setAdmin(admin, token);
     }
+
+    public static Admin getCurrentAdmin() { return adminController.getAdmin(); }
 
     /**
      * sets the current user
      *
      * @param currentUser the current user
+     * @param token the users token
      */
-    public static void setCurrentUser(User currentUser) {
-        userController.setCurrentUser(currentUser);
+    public static void setCurrentUser(User currentUser, String token) {
+        userController.setCurrentUser(currentUser, token);
+        System.out.println(token);
         userController.setControlsShown(false);
+    }
+
+    public static User getCurrentUser() {
+        return userController.getCurrentUser();
     }
 
     /**
@@ -205,26 +225,24 @@ public class WindowManager extends Application {
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
-        clinicianClinicianWaitingListController.updateTransplantList();
-        adminClinicianWaitingListController.updateTransplantList();
+        if (clinicianClinicianWaitingListController.hasToken()) {
+            clinicianClinicianWaitingListController.updateTransplantList();
+        }
+        if (adminClinicianWaitingListController.hasToken()) {
+            adminClinicianWaitingListController.updateTransplantList();
+        }
 
-    }
-
-    public void refreshUser() {
-        userController.setCurrentUser(userController.getCurrentUser());
     }
 
     /**
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician
+     * @param token the users token
      */
-    public static void setCurrentClinicianForAccountSettings(Clinician currentClinician) {
-        clinicianSettingsController.setCurrentClinician(currentClinician);
-        clinicianSettingsController.populateAccountDetails();
+    public static void setCurrentClinicianForAccountSettings(Clinician currentClinician, String token) {
+        clinicianSettingsController.setCurrentClinician(currentClinician, token);
     }
-
-
 
     /**
      * sets the login controller
@@ -235,15 +253,26 @@ public class WindowManager extends Application {
         WindowManager.loginController = loginController;
     }
 
-
+    /**
+     * sets the create user controller
+     * @param createUserController the current create user controller
+     */
     public static void setCreateUserController(CreateUserController createUserController) {
         WindowManager.createUserController = createUserController;
     }
 
-    public static void setClincianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
+    /**
+     * sets the clinician settings controller
+     * @param clinicianSettingsController the current clinician settings controller
+     */
+    public static void setClinicianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
         WindowManager.clinicianSettingsController = clinicianSettingsController;
     }
 
+    /**
+     * sets the clinician waiting list controller
+     * @param clinicianWaitingListController the current clinician waiting list controller
+     */
     public static void setTransplantWaitingListController(ClinicianWaitingListController clinicianWaitingListController) {
         if (scenes.get(TFScene.clinician) == null) {
             WindowManager.clinicianClinicianWaitingListController = clinicianWaitingListController;
@@ -253,23 +282,51 @@ public class WindowManager extends Application {
 
     }
 
+    /**
+     * sets the clinician controller
+     * @param clinicianController the current clinician controller
+     */
     public static void setClinicianController(ClinicianController clinicianController) {
         WindowManager.clinicianController = clinicianController;
     }
 
+    /**
+     * sets the admin controller
+     * @param adminController the current admin controller
+     */
     public static void setAdminController(AdminController adminController) {
         WindowManager.adminController = adminController;
     }
 
     public static ClinicianController getClinicianController() {
-        return WindowManager.clinicianController;
+        return clinicianController;
     }
 
+    /**
+     * updates the found users
+     */
+    public static void updateFoundClinicianUsers() {
+        if (clinicianController.hasToken()) {
+            clinicianController.updateFoundUsers();
+        }
+        if (adminController.hasToken()) {
+            adminController.updateFoundUsers();
+        }
+    }
+
+    /**
+     * refreshes the admin
+     */
     public static void refreshAdmin() {
         adminController.refreshLatestProfiles();
         adminController.updateFoundUsers();
     }
 
+    /**
+     * show the dialog for deregistering a waiting list item
+     * @param waitingListItem the waiting list item to deregister
+     * @param user the user
+     */
     public static void showDeregisterDialog(WaitingListItem waitingListItem, User user) {
         clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem, user);
     }
@@ -353,12 +410,45 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        APIServer server = new APIServer("http://csse-s302g3.canterbury.ac.nz/api/v1");
+        String localServer = "http://localhost:7015/api/v1";
+        String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
+        APIServer server = new APIServer(properServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
-        GeneralDAO general = new GeneralM(users,clinicians,admins);
+        GeneralDAO general = new GeneralDB(server);
         return new DataManager(users,clinicians,admins,general);
+    }
+
+    /**
+     * checks the connection to the server.
+     * @return returns true if can connect to the server, otherwise false
+     */
+    public boolean checkConnection() {
+        try {
+
+            if (dataManager.getGeneral().status() == false) {
+                Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    return checkConnection();
+                } else {
+                    return false;
+                }
+            }
+
+        } catch (HttpResponseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                return checkConnection();
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -386,61 +476,74 @@ public class WindowManager extends Application {
         selectedMenuButtonStyle = WindowManager.class.getResource("/css/selectedmenubutton.css").toExternalForm();
         icon = new Image(getClass().getResourceAsStream("/icon.png"));
         stage.getIcons().add(icon);
-        try {
-            IO.setPaths();
-            setupDrugInteractionCache();
-            for (TFScene scene : TFScene.values()) {
-                scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
+
+
+        if (checkConnection()) {
+            try {
+                IO.setPaths();
+                setupDrugInteractionCache();
+                for (TFScene scene : TFScene.values()) {
+                    scenes.put(scene, new Scene(FXMLLoader.load(getClass().getResource(scene.getPath())), scene.getWidth(), scene.getHeight()));
+                }
+                loginController.setEnterEvent();
+                createUserController.setEnterEvent();
+
+                stage.setX(100);
+                stage.setY(80);
+                setScene(TFScene.login);
+                stage.show();
+
+            } catch (URISyntaxException e) {
+                System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
+                e.printStackTrace();
+                stop();
+            } catch (IOException e) {
+                System.err.println("Unable to load fxml or save file.");
+                e.printStackTrace();
+                stop();
             }
-            loginController.setEnterEvent();
-            createUserController.setEnterEvent();
 
-            stage.setX(100);
-            stage.setY(80);
-            setScene(TFScene.login);
-            stage.show();
+            getScene(TFScene.clinician).setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    updateTransplantWaitingList();
+                    updateUserWaitingLists();
+                    refreshAdmin();
+                }
+            });
 
-        } catch (URISyntaxException e) {
-            System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
-            e.printStackTrace();
-            stop();
-        } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
-            e.printStackTrace();
+            getScene(TFScene.admin).setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    updateTransplantWaitingList();
+                    updateUserWaitingLists();
+
+                }
+            });
+
+            /*getScene(TFScene.userWindow).setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    refreshUser();
+                }
+            });*/
+        } else {
             stop();
         }
 
 
-        getScene(TFScene.clinician).setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.F5) {
-                updateTransplantWaitingList();
-                updateUserWaitingLists();
-                refreshAdmin();
-            }
-        });
 
-        getScene(TFScene.admin).setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.F5) {
-                updateTransplantWaitingList();
-                updateUserWaitingLists();
-
-            }
-        });
-
-
-
-        getScene(TFScene.userWindow).setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.F5) {
-                refreshUser();
-            }
-        });
     }
 
+    /**
+     * Sets up a drug interaction cache
+     */
     public void setupDrugInteractionCache(){
-        Cache cache = IO.importCache(getJarPath() + "/interactions.json");
+        Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
 
+    /**
+     * resets the scene
+     * @param scene the scene to reset
+     */
     public static void resetScene(TFScene scene) {
         try {
             scenes.remove(scene);
@@ -512,11 +615,20 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Writes quit history before exiting the GUI.
+     * Logs out from the server before exiting the GUI.
      */
     @Override
     public void stop() {
         Debugger.log("Exiting GUI");
+        if (userController != null && userController.hasToken()) {
+            userController.serverLogout();
+        }
+        if (clinicianController != null && clinicianController.hasToken()) {
+            clinicianController.serverLogout();
+        }
+        if (adminController != null && adminController.hasToken()) {
+            adminController.serverLogout();
+        }
         Platform.exit();
     }
 }

@@ -1,28 +1,16 @@
 package seng302.TestFX;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.concurrent.TimeoutException;
-
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.w3c.dom.html.HTMLTableCaptionElement;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
-import seng302.User.Clinician;
 import seng302.User.User;
 
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+import java.sql.SQLException;
+import java.util.concurrent.TimeoutException;
 
 public class ReceiverGUITest extends TestFXTest {
 
@@ -36,7 +24,7 @@ public class ReceiverGUITest extends TestFXTest {
     @Before
     public void setUp() throws SQLException {
         try {
-            WindowManager.getDataManager().getGeneral().reset();
+            WindowManager.getDataManager().getGeneral().reset(null);
         } catch (HttpResponseException e) {
             Debugger.error("Failed to reset the database.");
         }

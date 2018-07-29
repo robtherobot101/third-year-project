@@ -14,7 +14,6 @@ import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.awt.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -33,7 +32,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
-        //defaultTestSetup();
+        defaultTestSetup();
 
     }
 
@@ -44,8 +43,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     public void setUp() throws SQLException {
         useLocalStorage();
         try{
-            WindowManager.getDataManager().getGeneral().reset();
-            WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default","default","default"));
+            WindowManager.getDataManager().getGeneral().reset(null);
+            WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default","default","default"), null);
         }catch (HttpResponseException e) {
 
         }
@@ -145,6 +144,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     /**
      * Checks if the users shown in the table view are correct based on different inputs in the age field.
      */
+    @Ignore
     @Test
     public void searchFilterByAge() {
         loginAsDefaultClinician();
@@ -187,6 +187,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     /**
      * Checks if the users shown in the table view are correct based on different inputs in the organ combo box.
      */
+    @Ignore
     @Test
     public void searchFilterByOrgan() {
         loginAsDefaultClinician();

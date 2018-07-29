@@ -17,10 +17,19 @@ import java.util.ArrayList;
 public class DiseasesController {
     private UserDiseases model;
 
+    /**
+     * Controller to handle processing of user diseases
+     */
     public DiseasesController() {
         model = new UserDiseases();
     }
 
+    /**
+     * method to get all diseases for a single user from the database
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the request users diseases
+     */
     public String getAllDiseases(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
@@ -41,6 +50,12 @@ public class DiseasesController {
         return serialQueriedDiseases;
     }
 
+    /**
+     * method to get a single specific disease
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return JSON object containing the disease information
+     */
     public String getSingleDisease(Request request, Response response) {
         Disease queriedDisease = queryDisease(request, response);
 
@@ -56,6 +71,12 @@ public class DiseasesController {
         return serialQueriedDisease;
     }
 
+    /**
+     * method to handle creation request for a new disease for a user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String information if the disease object was created correctly or not
+     */
     public String addDisease(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
@@ -78,6 +99,12 @@ public class DiseasesController {
         }
     }
 
+    /**
+     * method to handle editing a specific disease for a specific user.
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String information if the disease object was edited correctly or not
+     */
     public String editDisease(Request request, Response response) {
         int requestedDiseaseId = Integer.parseInt(request.params(":diseaseId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -107,6 +134,12 @@ public class DiseasesController {
         }
     }
 
+    /**
+     * method to handle the deletion of a disease object from a specific user
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String information if the disease object was edited correctly or not
+     */
     public String deleteDisease(Request request, Response response) {
         int requestedDiseaseId = Integer.parseInt(request.params(":diseaseId"));
         int requestedUserId = Integer.parseInt(request.params(":id"));

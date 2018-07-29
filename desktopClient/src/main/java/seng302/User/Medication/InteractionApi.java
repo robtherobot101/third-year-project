@@ -4,10 +4,10 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import seng302.Generic.Cache;
+import seng302.Generic.Debugger;
 
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -74,7 +74,7 @@ public class InteractionApi{
         DrugInteraction interactions = new DrugInteraction(apiResponse);
         if(!interactions.getError()){
             cache.put(query,apiResponse);
-            System.out.println(String.format("API response added to cache with key: %s/%s/",drugA,drugB));
+            Debugger.log(String.format("API response added to cache with key: %s/%s/",drugA,drugB));
             cache.save();
         }
         return interactions;
