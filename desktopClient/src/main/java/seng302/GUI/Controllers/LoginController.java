@@ -1,7 +1,6 @@
 package seng302.GUI.Controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -10,14 +9,15 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
-import sun.security.ssl.Debug;
 
 import java.net.URL;
-import java.sql.SQLException;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -25,8 +25,6 @@ import java.util.ResourceBundle;
  */
 public class LoginController implements Initializable {
 
-    @FXML
-    private TextField serverInput;
     @FXML
     private TextField identificationInput;
     @FXML
@@ -40,19 +38,24 @@ public class LoginController implements Initializable {
 
     private Gson gson;
 
+    /**
+     * logs in a user
+     */
     public void login(){
         try {
-            Object response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
-            if (response != null) {
-                if (response instanceof User) {
+            Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(identificationInput.getText(), passwordInput.getText());
+            Object user = response.keySet().iterator().next();
+            String token = response.values().iterator().next();
+            if (user != null) {
+                if (user instanceof User) {
                     Debugger.log("LoginController: Logging in as user...");
-                    loadUser((User)response);
-                } else if (response instanceof Admin) {
+                    loadUser((User)user, token);
+                } else if (user instanceof Admin) {
                     Debugger.log("LoginController: Logging in as admin...");
-                    loadAdmin((Admin)response);
-                } else if (response instanceof Clinician) {
+                    loadAdmin((Admin)user, token);
+                } else if (user instanceof Clinician) {
                     Debugger.log("LoginController: Logging in as clinician...");
-                    loadClinician((Clinician)response);
+                    loadClinician((Clinician)user, token);
                 }  else {
                     errorMessage.setText("Username/email and password combination not recognized.");
                     errorMessage.setVisible(true);
@@ -67,46 +70,60 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void loadUser(User user) {
-        WindowManager.setCurrentUser(user);
+    /**
+     * loads a specific user
+     * @param user the user to load
+     * @param token the users token
+     */
+    private void loadUser(User user, String token) {
+        WindowManager.setCurrentUser(user, token);
         WindowManager.setScene(TFScene.userWindow);
         resetScene();
     }
 
-    private void loadClinician(Clinician clinician) {
-        WindowManager.setClinician(clinician);
+    /**
+     * loads a specific clinician
+     * @param clinician the clinician to load
+     * @param token the users token
+     */
+    private void loadClinician(Clinician clinician, String token) {
+        WindowManager.setCurrentClinician(clinician, token);
         WindowManager.setScene(TFScene.clinician);
         resetScene();
     }
 
-    private void loadAdmin(Admin admin) {
-        WindowManager.setAdmin(admin);
+    /**
+     * loads a specific admin
+     * @param admin the admin to load
+     * @param token the users token
+     */
+    private void loadAdmin(Admin admin, String token) {
+        WindowManager.setCurrentAdmin(admin, token);
         WindowManager.setScene(TFScene.admin);
         resetScene();
     }
 
+    /**
+     * resets the current scene
+     */
     private void resetScene(){
         identificationInput.setText("");
         passwordInput.setText("");
         loginButton.setDisable(true);
         errorMessage.setVisible(false);
     }
+    
 
-    public void testConnection(){
-        APIServer server = new APIServer("http://" + serverInput.getText());
-        if(server.testConnection().equals("1")){
-            WindowManager.createAlert(Alert.AlertType.INFORMATION, "Connection successful", "Success", "Successfully connected to the server").showAndWait();
-        }
-        else{
-            WindowManager.createAlert(Alert.AlertType.WARNING, "Warning", "Connection failed", "Unable to establish connection to server").showAndWait();
-        }
-    }
-
+    /**
+     * connects to a server with a given url
+     * @param url the url of the server
+     * @return returns true if connected
+     */
     private boolean connectServer(String url){
         UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         if (urlValidator.isValid(url)) {
             APIServer server = new APIServer(url);
-            System.out.println("URL is valid");
+            Debugger.log("URL is valid");
             server.testConnection();
             return true;
         }

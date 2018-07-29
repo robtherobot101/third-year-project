@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.SingleWaitingListItemPage">
+    <ContentPage.Content>
+         <StackLayout Orientation="Vertical">
+            
+            <Button x:Name="PressMeButton"
+            Text="Back"
+            Pressed="BackButtonClicked"
+            />
+
+           <TableView Intent="Menu" >
+                <TableRoot>
+                    <TableSection Title="Waiting List Item Details">
+                        <EntryCell Label="Organ Type" x:Name="OrganTypeEntry" IsEnabled="false"/>
+                        <EntryCell Label="Registered Date" x:Name="RegisteredDateEntry" IsEnabled="false"/>
+                        <EntryCell Label="Deregistered Date" x:Name="DeregisteredDateEntry" IsEnabled="false"/>
+<!--                        <EntryCell Label="Deregister Code" x:Name="DeregisterCodeEntry" IsEnabled="false"/>-->
+                        <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+            
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

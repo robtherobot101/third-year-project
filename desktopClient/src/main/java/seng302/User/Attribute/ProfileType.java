@@ -20,4 +20,19 @@ public enum ProfileType {
     public String toString() {
         return type;
     }
+
+    /**
+     * Converts a string to its corresponding organ enum value. Throws an IllegalArgumentException if the string does not match any profile type.
+     *
+     * @param text The string to convert
+     * @return The profile type corresponding to the input string
+     */
+    public static ProfileType parse(String text) {
+        for (ProfileType profileType : ProfileType.values()) {
+            if (profileType.toString().equalsIgnoreCase(text)) {
+                return profileType;
+            }
+        }
+        throw new IllegalArgumentException("Profile type not recognised");
+    }
 }

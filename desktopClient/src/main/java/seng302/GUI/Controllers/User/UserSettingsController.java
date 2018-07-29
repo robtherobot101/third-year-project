@@ -33,11 +33,15 @@ public class UserSettingsController implements Initializable {
     private User currentUser;
 
     private UserController userController;
+    private String oldUsername, oldEmail;
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+        oldUsername = currentUser.getUsername();
+        oldEmail = currentUser.getEmail();
         userNameLabel.setText("user: " + currentUser.getName());
     }
+
 
     /**
      * Set the parent user controller that spawned this window.
@@ -64,11 +68,11 @@ public class UserSettingsController implements Initializable {
      */
     public void updateAccountDetails() {
         try {
-            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText(), currentUser.getId())) {
+            if (!oldUsername.equals(usernameField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
-            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText(), currentUser.getId())) {
+            } else if (!oldEmail.equals(emailField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
                 errorLabel.setText("There is already a user account with that email.");
                 errorLabel.setVisible(true);
                 return;
@@ -108,10 +112,16 @@ public class UserSettingsController implements Initializable {
         stage.close();
     }
 
+    /**
+     * updates the state of the update button
+     */
     private void updateUpdateButtonState() {
         updateButton.setDisable((usernameField.getText().isEmpty() && emailField.getText().isEmpty()) || passwordField.getText().isEmpty());
     }
 
+    /**
+     * updates the account details if enter is pressed
+     */
     public void setEnterEvent() {
         updateButton.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !updateButton.isDisable()) {
@@ -120,6 +130,11 @@ public class UserSettingsController implements Initializable {
         });
     }
 
+    /**
+     * starts up the user settings controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));

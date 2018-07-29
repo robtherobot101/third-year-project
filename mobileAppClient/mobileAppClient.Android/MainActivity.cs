@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using SegmentedControl;
 
 namespace mobileAppClient.Droid
 {
@@ -20,6 +21,8 @@ namespace mobileAppClient.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
+
             LoadApplication(new App());
         }
     }

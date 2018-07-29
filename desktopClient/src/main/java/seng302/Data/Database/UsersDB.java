@@ -1,20 +1,27 @@
 package seng302.Data.Database;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
-import seng302.Generic.DataManager;
-import seng302.User.Attribute.Organ;
-import seng302.User.Disease;
-import seng302.User.Procedure;
+import seng302.Generic.Debugger;
+import seng302.Generic.IO;
 import seng302.User.User;
-import seng302.User.WaitingListItem;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.lang.reflect.Type;
-import java.time.LocalDate;
+import java.net.MalformedURLException;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +34,16 @@ public class UsersDB implements UsersDAO {
         this.server = server;
     }
 
+    /**
+     * gets a users id from the username
+     * @param username the username of the user
+     * @param token the users token
+     * @return returns the id of the user
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
-    public int getUserId(String username) throws HttpResponseException {
-        for (User user : getAllUsers()) {
+    public int getUserId(String username, String token) throws HttpResponseException {
+        for (User user : getAllUsers(token)) {
             if (user.getUsername().equals(username)) {
                 return (int) user.getId();
             }
@@ -37,20 +51,30 @@ public class UsersDB implements UsersDAO {
         return -1;
     }
 
+    /**
+     * inserts a new user into the server
+     * @param user the user to insert
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
     public void insertUser(User user) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         userJson.remove("id");
-        APIResponse response = server.postRequest(userJson, new HashMap<String, String>(), "users");
+        APIResponse response = server.postRequest(userJson, new HashMap<>(), null, "users");
     }
 
+    /**
+     * updates a user on the database
+     * @param user the user to update
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
-    public void updateUser(User user) throws HttpResponseException {
+    public void updateUser(User user, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(), "users", String.valueOf(user.getId()));
-        System.out.println(response.getStatusCode());
+        APIResponse response = server.patchRequest(userJson, new HashMap<>(), token, "users", String.valueOf(user.getId()));
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -63,43 +87,134 @@ public class UsersDB implements UsersDAO {
      * @return a JSON array of users.
      */
     @Override
-    public List<User> queryUsers(Map<String, String> searchMap) throws HttpResponseException {
-        APIResponse response =  server.getRequest(searchMap, "users");
+    public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
+        APIResponse response =  server.getRequest(searchMap, token, "users");
         if(response.isValidJson()){
             JsonArray searchResults = response.getAsJsonArray();
             Type type = new TypeToken<ArrayList<User>>() {
             }.getType();
             return new Gson().fromJson(searchResults, type);
         } else {
-            return new ArrayList<User>();
+            return new ArrayList<>();
         }
     }
 
+    /**
+     * gets a specific user from the server
+     * @param id the id of the user to get
+     * @param token the users token
+     * @return returns a user
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
-    public User getUser(long id) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<String, String>(), "users", String.valueOf(id));
+    public User getUser(long id, String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id));
         if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
         }
         return null;
-    }// Now uses API server!
+    }
 
     @Override
-    public List<User> getAllUsers() throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<String, String>(), "users");
+    public Image getUserPhoto(long id) {
+        APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id), "photo");
+
+        if (response.getStatusCode() == 404) {
+            // No image uploaded, return default image
+            Debugger.log("No profile photo loaded: setting default");
+            return getDefaultProfilePhoto();
+        }
+        try {
+            Debugger.log(response.getStatusCode());
+            String encodedImage = response.getAsString();
+            System.out.println(encodedImage);
+            //String base64Image = encodedImage.split(",")[1];
+            //Decode the string to a byte array
+            byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
+
+            //Turn it into a buffered image
+            ByteArrayInputStream byteInputStream = new ByteArrayInputStream(decodedImage);
+            BufferedImage bImage = ImageIO.read(byteInputStream);
+            byteInputStream.close();
+            Image image = SwingFXUtils.toFXImage(bImage, null);
+            return image;
+        } catch (Exception e) {
+            Debugger.error(e);
+            System.out.println(IO.getJarPath());
+            return getDefaultProfilePhoto();
+        }
+    }
+
+    /**
+     * Helper function that returns a default placeholder image for the profile photo
+     * @return placeholder image
+     */
+    private Image getDefaultProfilePhoto() {
+        File imageFile = new File(IO.getJarPath() + "/classes/icon.png");
+        try {
+            String imageURL = imageFile.toURI().toURL().toString();
+            Image profilePhoto = new Image(imageURL);
+            return profilePhoto;
+        } catch (MalformedURLException e1) {
+            return null;
+        }
+    }
+
+    @Override
+    public void updateUserPhoto(long id, String image) throws HttpResponseException {
+        JsonParser jp = new JsonParser();
+        PhotoStruct photoStruct = new PhotoStruct(image);
+        JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
+        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+    }
+
+    @Override
+    public void deleteUserPhoto(long id) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+    }
+
+    /**
+     * get all the users from the server
+     * @param token the users token
+     * @return returns a list of all users
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
+    @Override
+    public List<User> getAllUsers(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users");
         if (response.isValidJson()) {
             List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>() {
             }.getType());
             return responses;
         } else {
-            return new ArrayList<User>();
+            return new ArrayList<>();
         }
     }
 
+    /**
+     * removes a user from the server
+     * @param id the id of the users to remove
+     * @param token the users token
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
     @Override
-    public void removeUser(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id));
+    public void removeUser(long id, String token) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<>(), token, "users", String.valueOf(id));
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+    }
+
+    /**
+     * gets the total number of users
+     * @param token the users token
+     * @return returns the number of users
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
+    @Override
+    public int count(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "usercount");
+        if (response.getStatusCode() != 200)
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        return Integer.parseInt(response.getAsString());
     }
 }

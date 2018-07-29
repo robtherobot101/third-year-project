@@ -72,6 +72,7 @@ public class UserWaitingListController extends UserTabController implements Init
                 }
             }
             currentUser.getWaitingListItems().add(newWaitingListItem);
+            userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
             populateWaitingList();
             statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
         }
@@ -97,6 +98,9 @@ public class UserWaitingListController extends UserTabController implements Init
         userController.populateUserAttributes();
     }
 
+    /**
+     * undos the last change
+     */
     @Override
     public void undo() {
         redoStack.add(new User(currentUser));
@@ -105,6 +109,9 @@ public class UserWaitingListController extends UserTabController implements Init
         populateWaitingList();
     }
 
+    /**
+     * redos the last undo
+     */
     @Override
     public void redo() {
         undoStack.add(new User(currentUser));
@@ -148,6 +155,11 @@ public class UserWaitingListController extends UserTabController implements Init
         }
     }
 
+    /**
+     * starts the user waiting ist controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         organTypeComboBox.setItems(organsInDropDown);

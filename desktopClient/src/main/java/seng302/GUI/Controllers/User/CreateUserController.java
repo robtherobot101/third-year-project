@@ -14,6 +14,7 @@ import seng302.User.User;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -100,20 +101,22 @@ public class CreateUserController implements Initializable {
                     dateOfBirthInput.getValue(), username, email, passwordInput.getText());
             user.addHistoryEntry("Created", "This profile was created.");
             user.addHistoryEntry("Logged in", "This profile was logged in to.");
+
             // If we are creating from the login screen
             if (background.getScene().getWindow() == WindowManager.getStage()) {
-                //Got rid of the Local Data management of users
-                WindowManager.setCurrentUser(user);
-
                 try {
                     WindowManager.getDataManager().getUsers().insertUser(user);
-                } catch(HttpResponseException e) {
-                    Debugger.error("Failed to insert new user.");
-                }
+                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getUsername(), user.getPassword());
+                    User fromResponse = (User)response.keySet().iterator().next();
+                    String token = response.values().iterator().next();
 
-                WindowManager.setScene(TFScene.userWindow);
-                WindowManager.resetScene(TFScene.createAccount);
-                return null;
+                    WindowManager.setCurrentUser(fromResponse, token);
+                    WindowManager.setScene(TFScene.userWindow);
+                    WindowManager.resetScene(TFScene.createAccount);
+                    return null;
+                } catch(HttpResponseException e) {
+                    Debugger.error("Failed to insert new user and log in.");
+                }
             }
         }
         stage.close();
@@ -124,7 +127,7 @@ public class CreateUserController implements Initializable {
      * Enable/disable the create account button based on whether the required information is present or not.
      */
     private void checkRequiredFields() {
-        createAccountButton.setDisable((usernameInput.getText().isEmpty() && emailInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
+        createAccountButton.setDisable((usernameInput.getText().isEmpty() || emailInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
                 passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null);
     }
 

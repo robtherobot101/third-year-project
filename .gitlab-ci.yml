@@ -11,6 +11,7 @@ junit:
     - mvn -B clean test
   except:
     - server-deployment@seng302-2018/team-300
+    - Story1M(MobileDevelopment-LoginCreation)@seng302-2018/team-300
 
 recent-artifacts:
   stage: deploy
@@ -18,11 +19,13 @@ recent-artifacts:
     - mvn -B -DskipTests clean site package
   artifacts:
     paths:
-      - target/*.jar
+      - desktopClient/target/*.jar
+      - server/target/*.jar
     expire_in: 1 week
   except:
     - tags
     - server-deployment@seng302-2018/team-300
+    - Story1M(MobileDevelopment-LoginCreation)@seng302-2018/team-300
 
 server-build-image:
   stage: build
@@ -30,6 +33,7 @@ server-build-image:
     - docker-compose build
   only:
     - server-deployment@seng302-2018/team-300
+    - master@seng302-2018/team-300
 
 server-deployment:
   stage: deploy
@@ -38,6 +42,7 @@ server-deployment:
     - docker-compose up -d
   only:
     - server-deployment@seng302-2018/team-300
+    - master@seng302-2018/team-300
 
 release-artifacts:
   stage: deploy
@@ -45,7 +50,7 @@ release-artifacts:
     - mvn -B clean site package
   artifacts:
     paths:
-    - target/*.jar
-    - target/site/jacoco/*
+    - desktopClient/target/*.jar
+    - desktopClient/target/site/jacoco/*
   only:
     - tags

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -94,12 +94,18 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\drawable\ic_local_shipping.png" />
-    <AndroidResource Include="Resources\drawable\ic_my_location.png" />
-    <AndroidResource Include="Resources\drawable\ic_home.png" />
+    <AndroidResource Include="Resources\drawable\donationIcon.png" />
+    <AndroidResource Include="Resources\drawable\overviewImage.jpg" />
+    <AndroidResource Include="Resources\drawable\home_icon.png" />
+    <AndroidResource Include="Resources\drawable\attributes_icon.png" />
+    <AndroidResource Include="Resources\drawable\organs_icon.png" />
+    <AndroidResource Include="Resources\drawable\logout_icon.png" />
+    <AndroidResource Include="Resources\drawable\medications_icon.png" />
+    <AndroidResource Include="Resources\drawable\diseases_icon.png" />
+    <AndroidResource Include="Resources\drawable\procedures_icon.png" />
+    <AndroidResource Include="Resources\drawable\waitinglist_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\drawable\" />
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
@@ -111,5 +117,8 @@
       <Name>mobileAppClient</Name>
     </ProjectReference>
   </ItemGroup>
- <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\splash_background.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

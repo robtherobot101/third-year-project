@@ -10,7 +10,7 @@ public enum ProfileType {
 
     /**
      * method to create a new enum for the currently logged user
-     *
+     * input can be of type: Model, Clinician, or Admin
      * @param type the type of user logged
      */
     ProfileType(String type) {

@@ -13,7 +13,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -32,15 +31,18 @@ public class ClinicianSettingsController implements Initializable {
     private AnchorPane background;
 
     private Clinician clinician;
+    private String token;
 
-    public void setCurrentClinician(Clinician clinician) {
+    public void setCurrentClinician(Clinician clinician, String token) {
         this.clinician = clinician;
+        this.token = token;
         if (clinician.getName() == null) {
             clinician.setName("Name not set");
         }
         Debugger.log(clinician);
         Debugger.log(clinician.getName());
         userNameLabel.setText("clinician: " + clinician.getName());
+        populateAccountDetails();
     }
 
     /**
@@ -66,38 +68,38 @@ public class ClinicianSettingsController implements Initializable {
 //                }
 //            }
 //        }
-        int clinicianId = 0;
         try {
             // Display an error if the username is taken and the input has not been changed (The username can be taken by the clinician being modified).
             if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
                 return;
+            } else {
+                errorLabel.setVisible(false);
+                Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
+                        "The changes made will take place instantly.");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setId("accountSettingsConfirmationOKButton");
+
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    clinician.setUsername(usernameField.getText());
+                    clinician.setPassword(passwordField.getText());
+
+                    Stage stage = (Stage) updateButton.getScene().getWindow();
+                    stage.close();
+                    WindowManager.setCurrentClinician(clinician, token);
+                    try {
+                        WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
+                    } catch (HttpResponseException e) {
+                        Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
+                    }
+                } else {
+                    alert.close();
+                }
             }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to check uniqueness of clinician with id: " + clinician.getStaffID());
-        }
-        errorLabel.setVisible(false);
-        Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
-                "The changes made will take place instantly.");
-        alert.getDialogPane().lookupButton(ButtonType.OK).setId("accountSettingsConfirmationOKButton");
-
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            clinician.setUsername(usernameField.getText());
-            clinician.setPassword(passwordField.getText());
-
-            Stage stage = (Stage) updateButton.getScene().getWindow();
-            stage.close();
-            WindowManager.setClinician(clinician);
-            try {
-                WindowManager.getDataManager().getClinicians().updateClinician(clinician);
-            } catch (HttpResponseException e) {
-                Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
-            }
-        } else {
-            alert.close();
         }
     }
 
@@ -116,10 +118,16 @@ public class ClinicianSettingsController implements Initializable {
         stage.close();
     }
 
+    /**
+     * updates the state of the update button
+     */
     private void updateUpdateButtonState() {
         updateButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty());
     }
 
+    /**
+     * checks if enter was pressed and if it was it updates the account details
+     */
     public void setEnterEvent() {
         updateButton.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER && !updateButton.isDisable()) {
@@ -128,9 +136,14 @@ public class ClinicianSettingsController implements Initializable {
         });
     }
 
+    /**
+     * starts up the clinician setting controller
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        WindowManager.setClincianAccountSettingsController(this);
+        WindowManager.setClinicianAccountSettingsController(this);
         usernameField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
         passwordField.textProperty().addListener(((observable, oldValue, newValue) -> updateUpdateButtonState()));
     }
