@@ -179,6 +179,18 @@ CREATE TABLE IF NOT EXISTS `WAITING_LIST_ITEM` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ORGANS`
+--
+DROP TABLE IF EXISTS `ORGANS`;
+CREATE TABLE IF NOT EXISTS `ORGANS` (
+  `organType` text NOT NULL,
+  `dateOfDeath` date NOT NULL,
+  `donor` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `USER`
 --
 
@@ -284,6 +296,12 @@ ALTER TABLE `WAITING_LIST_ITEM`
   ADD KEY `User_id_foreign_key5` (`user_id`);
 
 --
+-- Indexes for table `ORGANS`
+--
+ALTER TABLE `ORGANS`
+  ADD PRIMARY KEY (`donor`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -371,6 +389,12 @@ ALTER TABLE `PROCEDURES`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+
+--
+-- Constraints for table `ORGANS`
+--
+ALTER TABLE `ORGANS`
+  ADD CONSTRAINT `organDonorTest` FOREIGN KEY (`donor`) REFERENCES `USER` (`id`);
 
 --
 -- Create default clinician and admin
