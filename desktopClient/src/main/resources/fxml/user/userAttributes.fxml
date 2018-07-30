@@ -12,10 +12,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
 <?import tornadofx.control.DateTimePicker?>
 
-<GridPane fx:id="attributesGridPane" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="700.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.User.UserAttributesController">
+<GridPane fx:id="attributesGridPane" maxHeight="475.0" maxWidth="1000.0" prefHeight="475.0" prefWidth="700.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.User.UserAttributesController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.3" prefWidth="0.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.318359375" minWidth="10.0" percentWidth="33.3" prefWidth="100.0" />
@@ -48,11 +47,6 @@
          </GridPane.margin>
       </TextField>
       <TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="5">
-         <GridPane.margin>
-            <Insets left="20.0" right="20.0" />
-         </GridPane.margin>
-      </TextField>
-      <TextField fx:id="regionField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="20.0" right="20.0" />
          </GridPane.margin>
@@ -402,10 +396,6 @@
                   <Insets left="25.0" right="5.0" />
                </GridPane.margin>
             </DateTimePicker>
-            <ComboBox fx:id="regionOfDeathComboBox" onAction="#attributeFieldUnfocused" prefHeight="25.0" prefWidth="151.0" GridPane.columnIndex="2">
-               <GridPane.margin>
-                  <Insets left="5.0" right="5.0" />
-               </GridPane.margin></ComboBox>
             <Label text="Region of Death" GridPane.columnIndex="2">
                <GridPane.margin>
                   <Insets bottom="40.0" />
@@ -414,7 +404,7 @@
                   <Font name="System Bold" size="10.0" />
                </font>
             </Label>
-            <ComboBox fx:id="countryOfDeathComboBox" onAction="#countryOfDeathChanged" prefWidth="150.0" GridPane.columnIndex="1">
+            <ComboBox fx:id="countryOfDeathComboBox" maxWidth="1.7976931348623157E308" onAction="#countryOfDeathChanged" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin></ComboBox>
@@ -438,13 +428,18 @@
                <GridPane.margin>
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin></TextField>
-            <TextField fx:id="regionOfDeathField" prefHeight="25.0" prefWidth="127.0" GridPane.columnIndex="2">
+            <ComboBox fx:id="regionOfDeathComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </GridPane.margin>
+            </ComboBox>
+            <TextField fx:id="regionOfDeathField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2">
                <GridPane.margin>
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin></TextField>
          </children>
       </GridPane>
-      <ComboBox fx:id="countryComboBox" onAction="#countryChanged" prefHeight="25.0" prefWidth="184.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
+      <ComboBox fx:id="countryComboBox" maxWidth="1.7976931348623157E308" onAction="#countryChanged" GridPane.columnIndex="2" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="20.0" right="20.0" />
          </GridPane.margin>
@@ -457,10 +452,15 @@
             <Font name="System Bold" size="10.0" />
          </font>
       </Label>
-      <ComboBox fx:id="regionComboBox" onAction="#attributeFieldUnfocused" prefHeight="25.0" prefWidth="185.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+      <ComboBox fx:id="regionComboBox" maxWidth="1.7976931348623157E308" onAction="#attributeFieldUnfocused" GridPane.columnIndex="1" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="20.0" right="20.0" />
          </GridPane.margin>
       </ComboBox>
+      <TextField fx:id="regionField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="20.0" right="20.0" />
+         </GridPane.margin>
+      </TextField>
    </children>
 </GridPane>
