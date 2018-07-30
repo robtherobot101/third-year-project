@@ -16,6 +16,7 @@ import seng302.User.WaitingListItem;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -60,11 +61,20 @@ public class UserWaitingListController extends UserTabController implements Init
 
             WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
 
+            //userWindowController.addCurrentUserToUndoStack();
+            //ReceiverWaitingListItem temp = new ReceiverWaitingListItem(organTypeSelected, currentUser.getWaitingListItems().size(), currentUser.getId());
+            //Check if already in list and act accordingly
+            for (WaitingListItem item : currentUser.getWaitingListItems()){
+                if (Objects.equals(item.getOrganType(), newWaitingListItem.getOrganType())){
+                    // update the local view to avoid duplicates
+                    currentUser.getWaitingListItems().remove(item);
+                    break;
+                }
+            }
             currentUser.getWaitingListItems().add(newWaitingListItem);
             userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
             populateWaitingList();
             statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
-
         }
         populateOrgansComboBox();
         userController.populateUserAttributes();

@@ -30,6 +30,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
@@ -43,7 +44,7 @@ public class UserAttributesController extends UserTabController implements Initi
     private ComboBox countryOfDeathComboBox, countryComboBox;
 
     @FXML
-    private ComboBox<NZRegion> regionComboBox, regionOfDeathComboBox;
+    private ComboBox<String> regionComboBox, regionOfDeathComboBox;
 
     @FXML
     private DateTimePicker dateOfDeathPicker;
@@ -66,11 +67,8 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private Map<Organ, CheckBox> organTickBoxes;
 
-    boolean deathInNewZealand = false;
-    boolean inNewZealand = false;
-
     /**
-     * sets the current user
+     * Sets the current user and populates the fields
      * @param user the user to set as the current user
      */
     public void setCurrentUser(User user) {
@@ -78,53 +76,81 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
         updateBMI();
         updateAge();
-        setDeathInNewZealand();
-        setInNewZealand();
+        setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
+        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField);
+
     }
 
+    /**
+     * Gets the region from the regionComboBox or regionField. If New Zealand is the selected country in the
+     * given countryComboBox, then the value in the regionComboBox is returned, otherwise the value in
+     * the regionField is returned.
+     *
+     * @param countryComboBox The ComboBox of countries
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     * @return the value in the regionComboBox if New Zealand is the selected country, otherwise the value in the regionField.
+     */
+    public String getRegion(ComboBox<Country> countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean getFromComboBox = Objects.equals(countryComboBox.getValue(), "New Zealand");
+        if(getFromComboBox) {
+            return regionComboBox.getValue();
+        }
+        return regionField.getText();
+    }
 
     /**
-     * sets the death of a user in New Zealand
+     * Sets the current value of the given regionComboBox and regionField to the given value.
+     *
+     * @param value The value which the ComboBox and TextField will be set to
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
      */
-    public void setDeathInNewZealand() {
-        if(countryOfDeathComboBox.getValue() != null) {
-            deathInNewZealand = countryOfDeathComboBox.getValue().toString().equals("New Zealand");
-            regionOfDeathComboBox.setVisible(deathInNewZealand);
-            regionOfDeathField.setVisible(deathInNewZealand == false);
-            if(deathInNewZealand){
-                regionOfDeathField.setText("");
-            }
+    public void setRegion(String value, ComboBox<String> regionComboBox, TextField regionField) {
+        regionComboBox.setValue(value);
+        regionField.setText(value);
+    }
+
+    /**
+     * Sets the visibility of the given regionComboBox and regionField depending on the value of the given
+     * countryComboBox and userValue.
+     * If New Zealand is selected in the countryComboBox, the  regionComboBox is visible, otherwise the regionField is visible.
+     *
+     * @param userValue The region value of the user (Could be region, or regionOfDeath)
+     * @param countryComboBox The ComboBox of countries
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     */
+    public void setRegionControls(String userValue, ComboBox<Country> countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean useCombo = Objects.equals(countryComboBox.getValue(), "New Zealand");
+        regionComboBox.setVisible(useCombo);
+        regionField.setVisible(!useCombo);
+
+        boolean validNZRegion = Arrays.stream(NZRegion.values())
+                .map(NZRegion::toString)
+                .collect(Collectors.toList())
+                .contains(userValue);
+
+        if((useCombo && validNZRegion) || (!useCombo && !validNZRegion)) {
+            setRegion(userValue, regionComboBox, regionField);
+        } else {
+            setRegion("", regionComboBox, regionField);
         }
     }
 
     /**
-     * sets the users address in New Zealand
-     */
-    public void setInNewZealand() {
-        if(countryComboBox.getValue() != null) {
-            inNewZealand = countryComboBox.getValue().toString().equals("New Zealand");
-            regionComboBox.setVisible(inNewZealand);
-            regionField.setVisible(inNewZealand == false);
-            System.out.println(inNewZealand);
-            if(inNewZealand){
-                regionField.setText("");
-            }
-        }
-    }
-
-    /**
-     * changes the country of death
+     * Updates the visibility of the death region controls and updates the undo stack if changes were made
      */
     public void countryOfDeathChanged() {
-        setDeathInNewZealand();
+        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField);
         attributeFieldUnfocused();
     }
 
     /**
-     * changes the country of residence
+     * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setInNewZealand();
+        setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
         attributeFieldUnfocused();
     }
 
@@ -304,43 +330,26 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
         currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
 
-        if(regionComboBox.getValue() != null) {
-            currentUser.setRegion(regionComboBox.getValue().toString());
-        }
 
+        currentUser.setRegion(getRegion(
+                countryComboBox,regionComboBox,regionField
+        ));
 
-        if(countryOfDeathComboBox.getValue() != null) {
-            currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
-        }
+        currentUser.setRegionOfDeath(getRegion(
+                countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField
+        ));
+
 
         if(countryComboBox.getValue() != null) {
             currentUser.setCountry(countryComboBox.getValue().toString());
         }
 
+        if(countryOfDeathComboBox.getValue() != null) {
+            currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
+        }
+
         currentUser.setCurrentAddress(addressField.getText());
         currentUser.setCityOfDeath(deathCityField.getText());
-
-        if(deathInNewZealand) {
-            if(regionOfDeathComboBox.getValue() != null) {
-                currentUser.setRegionOfDeath(regionOfDeathComboBox.getValue().toString());
-            } else {
-                currentUser.setRegionOfDeath("");
-            }
-        } else {
-            currentUser.setRegionOfDeath(regionOfDeathField.getText());
-        }
-
-        if(inNewZealand) {
-            System.out.println("In nz");
-            if(regionComboBox.getValue() != null) {
-                currentUser.setRegion(regionComboBox.getValue().toString());
-                System.out.println("Regoin: " +currentUser.getRegion());
-            } else {
-                currentUser.setRegion("");
-            }
-        } else {
-            currentUser.setRegion(regionField.getText());
-        }
 
 
         for (Organ key : organTickBoxes.keySet()) {
@@ -406,25 +415,9 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         addressField.setText(currentUser.getCurrentAddress());
 
-        if(currentUser.getRegionOfDeath() != null) {
-            try{
-                regionOfDeathComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegionOfDeath()));
-            } catch (IllegalArgumentException e) {
-                regionOfDeathComboBox.getSelectionModel().select(null);
-            }
 
-        }
-        regionOfDeathField.setText(currentUser.getRegionOfDeath());
-
-
-        if(currentUser.getRegion() != null) {
-            try {
-                regionComboBox.getSelectionModel().select(NZRegion.parse(currentUser.getRegion()));
-            } catch (IllegalArgumentException e) {
-                regionComboBox.getSelectionModel().select(null);
-            }
-        }
-        regionField.setText(currentUser.getRegion());
+        setRegion(currentUser.getRegion(), regionComboBox, regionField);
+        setRegion(currentUser.getRegionOfDeath(), regionOfDeathComboBox, regionOfDeathField);
 
         deathCityField.setText(currentUser.getCityOfDeath());
 
@@ -595,9 +588,12 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        regionComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
-        regionOfDeathComboBox.setItems(FXCollections.observableArrayList(NZRegion.values()));
+        List<String> nzRegions = new ArrayList<String>();
+        for(NZRegion r : NZRegion.values()) {
+            nzRegions.add(r.toString());
+        }
+        regionComboBox.setItems(FXCollections.observableArrayList(nzRegions));
+        regionOfDeathComboBox.setItems(FXCollections.observableArrayList(nzRegions));
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         genderIdentityComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         bloodTypeComboBox.setItems(FXCollections.observableArrayList(BloodType.values()));
