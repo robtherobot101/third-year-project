@@ -38,7 +38,7 @@ namespace mobileAppClient.odmsAPI
             HttpResponseMessage response;
             try {
                 response = await client.GetAsync(serverAddress + "/hello");
-            } catch (WebException e)
+            } catch (System.Net.Http.HttpRequestException e)
             {
                 // Thrown by invalid URL or connection timeout
                 return false;
