@@ -160,8 +160,6 @@ CREATE TABLE IF NOT EXISTS `TOKEN` (
   `access_level` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `TOKEN`(`id`, `token`, `access_level`) VALUES (0, 'masterToken',2);
-
 -- --------------------------------------------------------
 
 --
