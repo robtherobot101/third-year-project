@@ -108,6 +108,7 @@ public class Server {
                     }
                 });
                 post( "",          userController::addUser);
+                post( "/import",          userController::importUsers);
 
                 before("/:id",     profileUtils::hasUserLevelAccess);
                 get( "/:id",       userController::getUser);

@@ -8,13 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.http.client.HttpResponseException;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
 import seng302.Data.Database.GeneralDB;
@@ -46,7 +44,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static seng302.Generic.IO.getJarPath;
 
@@ -412,7 +409,7 @@ public class WindowManager extends Application {
     public DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        APIServer server = new APIServer(properServer);
+        APIServer server = new APIServer(localServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -424,10 +421,11 @@ public class WindowManager extends Application {
      * checks the connection to the server.
      * @return returns true if can connect to the server, otherwise false
      */
-    public boolean checkConnection() {
-        try {
+    private boolean checkConnection() {
+        return true;
 
-            if (dataManager.getGeneral().status() == false) {
+        /*try {
+            if (!dataManager.getGeneral().status()) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
@@ -448,7 +446,7 @@ public class WindowManager extends Application {
                 return false;
             }
         }
-        return true;
+        return true;*/
     }
 
     /**

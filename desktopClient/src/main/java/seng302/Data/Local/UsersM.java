@@ -41,6 +41,11 @@ public class UsersM implements UsersDAO {
         users.add(user);
     }
 
+    @Override
+    public void exportUsers(List<User> userList) {
+        Debugger.error("Not implemented");
+    }
+
     /**
      * updates a user
      * @param User the user to update

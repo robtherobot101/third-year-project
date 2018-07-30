@@ -153,27 +153,43 @@ public class IO {
     }
 
     /**
-     * imports users from csv file
+     * Imports users from csv file
      * @param path the path to the csv file
      * @param token the users token
      * @return returns true if completed otherwise false
      */
     public static boolean importUserCSV(String path, String token) {
-        try {
-            Debugger.log("importUserCSV called");
-            ProfileReader<User> userReader = new UserReaderCSV();
-            List<User> readUsers = userReader.getProfiles(path);
-            if (readUsers != null) {
-                for(User u : readUsers) {
-                    WindowManager.getDataManager().getUsers().insertUser(u);
-                }
-            }
-            return true;
+        // Start the timer
+        long importTimeTaken = System.nanoTime();
+        double duration;
 
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to import users from CSV.");
+        Debugger.log("importUserCSV called");
+        ProfileReader<User> userReader = new UserReaderCSV();
+        List<User> readUsers = userReader.getProfiles(path);
+
+        // Get time taken to process on client side
+        duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+        Debugger.log("Time taken to process on clientside: " + duration + "s");
+
+        // Check if no users read
+        if (readUsers.isEmpty()) {
+            Debugger.log("CSV import, no entries read");
             return false;
         }
+
+        // Send POST request
+        try {
+            WindowManager.getDataManager().getUsers().exportUsers(readUsers);
+        } catch (Exception e) {
+            // TODO can someone fill in the more specific exception
+            Debugger.log(e);
+            return false;
+        }
+
+        // Get time taken in total (client + POST req)
+        duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+        Debugger.log(readUsers.size() + " entries imported in (total) " + duration + "s");
+        return true;
     }
 
     /**

@@ -1,6 +1,7 @@
 package seng302.Controllers;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
@@ -14,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -315,8 +317,31 @@ public class UserController {
                 response.status(500);
                 return "Internal Server Error";
             }
-
         }
+    }
+
+    /**
+     * method to process the add user request. parses the input to be in a better format
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was successful or not
+     */
+    public String importUsers(Request request, Response response) {
+        Gson gson = new Gson();
+        Type listOfUsers = new TypeToken<List<User>>(){}.getType();
+        List<User> receivedUsers;
+
+        // Attempt to parse received JSON
+        try {
+             receivedUsers = gson.fromJson(request.body(), listOfUsers);
+        } catch (JsonSyntaxException jse) {
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+        System.out.println("Got " + receivedUsers.size() + " entries");
+        response.status(200);
+        return "OK";
     }
 
     /**

@@ -48,7 +48,7 @@ public class UserReaderCSV implements ProfileReader<User> {
         }
         assert(extension.equals("csv"));
 
-        long startTime = System.nanoTime();
+
 
         int entryCount = 0;
         String[] nextLine;
@@ -130,10 +130,7 @@ public class UserReaderCSV implements ProfileReader<User> {
                         zipCode, country, homePhone, mobilePhone, email);
                 readUsers.add(readUser);
             }
-            long endTime = System.nanoTime();
 
-            double duration = (endTime - startTime) / 1000000000.0;
-            Debugger.log(entryCount + " entries imported in " + duration + "s");
         } catch (IOException ioe) {
             Debugger.error(ioe);
         }

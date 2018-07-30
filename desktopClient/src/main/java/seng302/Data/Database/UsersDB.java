@@ -22,10 +22,6 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class UsersDB implements UsersDAO {
     private final APIServer server;
@@ -62,6 +58,15 @@ public class UsersDB implements UsersDAO {
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         userJson.remove("id");
         APIResponse response = server.postRequest(userJson, new HashMap<>(), null, "users");
+    }
+
+    @Override
+    public void exportUsers(List<User> usersToSend) {
+        // Serialise read user list to JSON string
+        Type listOfUsers = new TypeToken<List<User>>(){}.getType();
+        JsonParser jp = new JsonParser();
+        JsonObject usersJson = jp.parse(new Gson().toJson(usersToSend, listOfUsers)).getAsJsonObject();
+        APIResponse response = server.postRequest(usersJson, new HashMap<>(), null, "users/import");
     }
 
     /**

@@ -13,6 +13,8 @@ public interface UsersDAO {
 
     void insertUser(User user) throws HttpResponseException;
 
+    void exportUsers(List<User> userList);
+
     void updateUser(User user, String token) throws HttpResponseException;
 
     List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException;
