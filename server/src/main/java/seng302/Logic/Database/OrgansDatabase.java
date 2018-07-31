@@ -8,8 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +95,7 @@ public class OrgansDatabase {
      */
     private DonatableOrgan getOrganFromResultSet(ResultSet organResultSet) throws SQLException{
         return new DonatableOrgan(
-                Instant.ofEpochMilli(organResultSet.getLong("timeOfExpiry")).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfExpiry"),0, ZoneOffset.ofHours(+12)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
                 organResultSet.getInt("id"));

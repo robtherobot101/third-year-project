@@ -34,12 +34,12 @@ public class OrgansDatabaseTest {
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry());
+        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry().minusNanos(donatableOrgan.getTimeOfExpiry().getNano()));
     }
 
     @Test
     public void updateOrganTest() throws SQLException{
-        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1);
+        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1,1);
         organsDatabase.insertOrgan(donatableOrgan);
 
         donatableOrgan.setTimeOfExpiry(LocalDateTime.now().plusHours(5));
@@ -48,20 +48,20 @@ public class OrgansDatabaseTest {
 
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry());
+        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry().minusNanos(donatableOrgan.getTimeOfExpiry().getNano()));
     }
 
     @Test
     public void removeOrganTest() throws SQLException{
-        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.SKIN, 1);
+        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.SKIN, 1, 1);
         organsDatabase.insertOrgan(donatableOrgan);
 
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry());
+        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry().minusNanos(donatableOrgan.getTimeOfExpiry().getNano()));
 
-        organsDatabase.removeOrgan(donatableOrgan);
+        organsDatabase.removeOrgan(organs.get(0));
         organs = organsDatabase.getAllDonatableOrgans();
 
         assertTrue(organs.isEmpty());
