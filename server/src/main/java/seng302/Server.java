@@ -30,6 +30,7 @@ public class Server {
     private WaitingListController waitingListController;
     private CLIController CLIController;
     private CountriesController countriesController;
+    private OrgansController organsController;
 
     private int port = 7015;
     private boolean testing = true;
@@ -193,6 +194,13 @@ public class Server {
             path("/unique", () -> {
                 get("",    profileUtils::isUniqueIdentifier);
             });
+
+            path("/organs", () -> {
+                get("",     organsController::getAllDonatableOrgans);
+                post("",    organsController::insertOrgan);
+                delete("",  organsController::removeOrgan);
+                patch("",   organsController::updateOrgan);
+            });
         });
     }
 
@@ -245,5 +253,6 @@ public class Server {
         profileUtils = new ProfileUtils();
         CLIController = new CLIController();
         countriesController = new CountriesController();
+        organsController = new OrgansController();
     }
 }
