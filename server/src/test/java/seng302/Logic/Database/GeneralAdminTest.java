@@ -15,18 +15,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class GeneralAdminTest {
+public class GeneralAdminTest extends GenericTest {
 
     private GeneralAdmin generalAdmin = new GeneralAdmin();
-
-
-    @BeforeClass
-    @AfterClass
-    public static void reset() throws SQLException {
-        Administration administration = new Administration();
-        administration.reset();
-        administration.resample();
-    }
 
     @Test
     public void getAdminFromResultSet() {

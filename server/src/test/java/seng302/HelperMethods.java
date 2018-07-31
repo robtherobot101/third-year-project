@@ -96,4 +96,13 @@ public abstract class HelperMethods {
         }
         return procedures;
     }
+
+    public static ArrayList<Country> makeCountries() {
+        ArrayList<Country> countries = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Country c = new Country("country" + r.nextInt(1000000), i & 4);
+            countries.add(c);
+        }
+        return countries;
+    }
 }
