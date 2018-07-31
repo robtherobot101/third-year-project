@@ -38,7 +38,8 @@ server-build-image:
 server-deployment:
   stage: deploy
   script:
-    - docker-compose down --remove-orphans
+    - docker container stop team300_app
+    - docker container prune -f
     - docker-compose up -d
   only:
     - server-deployment@seng302-2018/team-300
