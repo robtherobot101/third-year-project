@@ -100,6 +100,7 @@ public class Server {
             });
 
             path("/users", () -> {
+                post( "/import",          userController::importUsers);
                 get("", (request, response) -> {
                     if (profileUtils.hasAccessToAllUsers(request, response)) {
                         return userController.getUsers(request, response);
@@ -108,7 +109,6 @@ public class Server {
                     }
                 });
                 post( "",          userController::addUser);
-                post( "/import",          userController::importUsers);
 
                 before("/:id",     profileUtils::hasUserLevelAccess);
                 get( "/:id",       userController::getUser);

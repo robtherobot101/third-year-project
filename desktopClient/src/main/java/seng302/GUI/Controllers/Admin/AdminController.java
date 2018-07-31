@@ -25,7 +25,6 @@ import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
-import seng302.Data.Database.GeneralDB;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
@@ -355,7 +354,9 @@ public class AdminController implements Initializable {
                             extension = fileToLoadPath.substring(i+1);
                         }
                         if (extension.equals("csv")) {
-                            loadSuccessful = IO.importUserCSV(fileToLoadPath, token);
+                            IO.importUserCSV(fileToLoadPath, token);
+                            return;
+                            // TODO something
                         } else if (extension.equals("json")) {
                             loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
                         } else {

@@ -1,10 +1,12 @@
 package seng302.Controllers;
 
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
+import seng302.Model.UserCSVStorer;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -15,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -328,12 +329,11 @@ public class UserController {
      */
     public String importUsers(Request request, Response response) {
         Gson gson = new Gson();
-        Type listOfUsers = new TypeToken<List<User>>(){}.getType();
         List<User> receivedUsers;
-
+        System.out.println("IMPORTING USERS");
         // Attempt to parse received JSON
         try {
-             receivedUsers = gson.fromJson(request.body(), listOfUsers);
+             receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
         } catch (JsonSyntaxException jse) {
             Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);

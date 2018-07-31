@@ -14,6 +14,7 @@ import seng302.Generic.APIServer;
 import seng302.Generic.Debugger;
 import seng302.Generic.IO;
 import seng302.User.User;
+import seng302.User.UserCSVStorer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -63,10 +64,10 @@ public class UsersDB implements UsersDAO {
     @Override
     public void exportUsers(List<User> usersToSend) {
         // Serialise read user list to JSON string
-        Type listOfUsers = new TypeToken<List<User>>(){}.getType();
         JsonParser jp = new JsonParser();
-        JsonObject usersJson = jp.parse(new Gson().toJson(usersToSend, listOfUsers)).getAsJsonObject();
-        APIResponse response = server.postRequest(usersJson, new HashMap<>(), null, "users/import");
+        UserCSVStorer csvUsers = new UserCSVStorer(usersToSend);
+        JsonObject usersJson = jp.parse(new Gson().toJson(csvUsers)).getAsJsonObject();
+        APIResponse response = server.postRequest(usersJson, new HashMap<>(), "masterToken", "users/import");
     }
 
     /**

@@ -2,6 +2,8 @@ package seng302.Generic;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
@@ -158,38 +160,98 @@ public class IO {
      * @param token the users token
      * @return returns true if completed otherwise false
      */
-    public static boolean importUserCSV(String path, String token) {
-        // Start the timer
-        long importTimeTaken = System.nanoTime();
-        double duration;
+    public static void importUserCSV(String path, String token) {
+        Task taskToRun = runTestThread(path, token);
+        new Thread(taskToRun).start();
+    }
 
-        Debugger.log("importUserCSV called");
-        ProfileReader<User> userReader = new UserReaderCSV();
-        List<User> readUsers = userReader.getProfiles(path);
+    private static Task runTestThread(String path, String token) {
+        Task task = new Task<Void>() {
+            @Override
+            public Void call() {
+                final int max = 4;
 
-        // Get time taken to process on client side
-        duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
-        Debugger.log("Time taken to process on clientside: " + duration + "s");
+                // Start the timer
+                long importTimeTaken = System.nanoTime();
+                double duration;
 
-        // Check if no users read
-        if (readUsers.isEmpty()) {
-            Debugger.log("CSV import, no entries read");
-            return false;
-        }
+                Debugger.log("importUserCSV called");
+                ProfileReader<User> userReader = new UserReaderCSV();
+                List<User> readUsers = userReader.getProfiles(path);
+                updateProgress(1, max);
 
-        // Send POST request
-        try {
-            WindowManager.getDataManager().getUsers().exportUsers(readUsers);
-        } catch (Exception e) {
-            // TODO can someone fill in the more specific exception
-            Debugger.log(e);
-            return false;
-        }
+                // Get time taken to process on client side
+                duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+                Debugger.log("Time taken to process on clientside: " + duration + "s");
 
-        // Get time taken in total (client + POST req)
-        duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
-        Debugger.log(readUsers.size() + " entries imported in (total) " + duration + "s");
-        return true;
+                // Check if no users read
+                if (readUsers.isEmpty()) {
+                    Debugger.log("CSV import, no entries read");
+                    this.failed();
+                }
+                updateProgress(2, max);
+
+                // Send POST request
+                try {
+                    WindowManager.getDataManager().getUsers().exportUsers(readUsers);
+                } catch (IllegalStateException e) {
+                    Debugger.error(e.getStackTrace());
+                    this.failed();
+                }
+                updateProgress(3, max);
+
+                // Get time taken in total (client + POST req)
+                duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+                Debugger.log(readUsers.size() + " entries imported in (total) " + duration + "s");
+
+                updateProgress(4, max);
+                this.succeeded();
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(t -> WindowManager.createAlert(Alert.AlertType.INFORMATION,
+                "Import CSV", "Import successful", "").show());
+        task.setOnCancelled(t -> WindowManager.createAlert(Alert.AlertType.INFORMATION,
+                "Import CSV", "Import failure", "").show());
+        return task;
+    }
+
+    private static void runImportCSVThread(String path) {
+        Thread t = new Thread((Runnable) () -> {
+            // Start the timer
+            long importTimeTaken = System.nanoTime();
+            double duration;
+
+            Debugger.log("importUserCSV called");
+            ProfileReader<User> userReader = new UserReaderCSV();
+            List<User> readUsers = userReader.getProfiles(path);
+
+            // Get time taken to process on client side
+            duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+            Debugger.log("Time taken to process on clientside: " + duration + "s");
+
+            // Check if no users read
+            if (readUsers.isEmpty()) {
+                Debugger.log("CSV import, no entries read");
+                //return false;
+            }
+
+            // Send POST request
+            try {
+                WindowManager.getDataManager().getUsers().exportUsers(readUsers);
+            } catch (IllegalStateException e) {
+                // TODO can someone fill in the more specific exception
+                Debugger.error(e.getLocalizedMessage());
+                //return false;
+            }
+
+            // Get time taken in total (client + POST req)
+            duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+            Debugger.log(readUsers.size() + " entries imported in (total) " + duration + "s");
+        });
+
+        t.start();
     }
 
     /**
