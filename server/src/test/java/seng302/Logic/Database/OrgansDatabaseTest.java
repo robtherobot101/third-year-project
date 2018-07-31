@@ -20,7 +20,7 @@ public class OrgansDatabaseTest {
 
 
     @Before
-    public static void reset() throws SQLException {
+    public void reset() throws SQLException {
         Administration administration = new Administration();
         administration.reset();
         administration.resample();
