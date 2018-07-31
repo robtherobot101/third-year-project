@@ -23,7 +23,7 @@ public class OrgansDatabase {
     public List<DonatableOrgan> getAllDonatableOrgans() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
-            String query = "SELECT * FROM DONATION_lIST_ITEM WHERE timeOfExpiry IS NOT NULL";
+            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfExpiry IS NOT NULL";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
@@ -40,7 +40,7 @@ public class OrgansDatabase {
      */
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "INSERT INTO DONATION_lIST_ITEM (name, timeOfExpiry, user_id) VALUES (?, ?, ?)";
+            String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfExpiry, user_id) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, donatableOrgan.getOrganType().toString());
             statement.setLong(2, donatableOrgan.getTimeOfExpiry().atZone(ZoneId.systemDefault()).toEpochSecond());
@@ -57,7 +57,7 @@ public class OrgansDatabase {
      */
     public void removeOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "DELETE FROM DONATION_lIST_ITEM WHERE id = ?";
+            String query = "DELETE FROM DONATION_LIST_ITEM WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, donatableOrgan.getId());
 
@@ -75,7 +75,7 @@ public class OrgansDatabase {
      */
     public void updateOrgan(DonatableOrgan donatableOrgan) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "UPDATE DONATION_lIST_ITEM SET timeOfExpiry = ? WHERE id = ?";
+            String query = "UPDATE DONATION_LIST_ITEM SET timeOfExpiry = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, donatableOrgan.getTimeOfExpiry().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setInt(2, donatableOrgan.getId());
