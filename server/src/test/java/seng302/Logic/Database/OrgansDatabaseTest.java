@@ -1,6 +1,7 @@
 package seng302.Logic.Database;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Model.Attribute.Organ;
@@ -18,8 +19,7 @@ public class OrgansDatabaseTest {
     private OrgansDatabase organsDatabase = new OrgansDatabase();
 
 
-    @BeforeClass
-    @AfterClass
+    @Before
     public static void reset() throws SQLException {
         Administration administration = new Administration();
         administration.reset();
