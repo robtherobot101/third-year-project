@@ -73,8 +73,8 @@
                         </ViewCell>
                 </TableSection>
                 <TableSection Title="Physical Attributes">
-                    <EntryCell Label="Height (cm)" x:Name="HeightInput"/>
-                    <EntryCell Label="Weight (kg)" x:Name="WeightInput"/>
+                    <EntryCell Keyboard="Numeric" Label="Height (cm)" x:Name="HeightInput"/>
+                    <EntryCell Keyboard="Numeric" Label="Weight (kg)" x:Name="WeightInput"/>
                     <EntryCell Label="Blood Pressure" x:Name="BloodPressureInput"/>
                 </TableSection>
                 <TableSection Title="Other Attributes">
