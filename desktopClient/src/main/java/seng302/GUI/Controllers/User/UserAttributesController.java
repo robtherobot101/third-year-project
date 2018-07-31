@@ -719,7 +719,7 @@ public class UserAttributesController extends UserTabController implements Initi
     }
 
     /**
-     * set whether to show the date of daeth controls
+     * set whether to show the date of death controls
      * @param shown whaether to show or not
      */
     public void setDeathControlsShown(boolean shown) {

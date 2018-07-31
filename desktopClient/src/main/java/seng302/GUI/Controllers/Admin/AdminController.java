@@ -25,7 +25,6 @@ import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
-import seng302.Data.Database.GeneralDB;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
@@ -896,7 +895,7 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
+                        WindowManager.newAdminsUserWindow(row.getItem(), token);
                     }
                 });
                 return row;
