@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +20,10 @@ public class OrgansDatabase {
      * @return returns a list of all the organs in the database
      * @throws SQLException throws if cannot connect to the database
      */
-    public List<DonatableOrgan> getAllOrgans() throws SQLException{
+    public List<DonatableOrgan> getAllDonatableOrgans() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
-            String query = "SELECT * FROM ORGANS";
+            String query = "SELECT * FROM DONATION_lIST_ITEM WHERE timeOfDeath IS NOT NULL";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
@@ -41,7 +40,7 @@ public class OrgansDatabase {
      */
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "INSERT INTO ORGANS (organType, dateOfDeath, donor) VALUES (?, ?, ?)";
+            String query = "INSERT INTO DONATION_lIST_ITEM (name, timeOfDeath, user_id) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, donatableOrgan.getOrganType().toString());
             statement.setLong(2, donatableOrgan.getDateOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
@@ -58,10 +57,9 @@ public class OrgansDatabase {
      */
     public void removeOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "DELETE FROM ORGANS WHERE organType = ? AND donor = ?";
+            String query = "DELETE FROM DONATION_lIST_ITEM WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, donatableOrgan.getOrganType().toString());
-            statement.setLong(2, donatableOrgan.getDonorId());
+            statement.setInt(1, donatableOrgan.getId());
 
             System.out.println("Deletion of Organ - organType: "
                     + donatableOrgan.getOrganType().toString() +
@@ -77,11 +75,10 @@ public class OrgansDatabase {
      */
     public void updateOrgan(DonatableOrgan donatableOrgan) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "UPDATE ORGANS SET dateOfDeath = ? WHERE organType = ? AND donor = ?";
+            String query = "UPDATE DONATION_lIST_ITEM SET timeOfDeath = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, donatableOrgan.getDateOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
-            statement.setString(2, donatableOrgan.getOrganType().toString());
-            statement.setLong(3, donatableOrgan.getDonorId());
+            statement.setInt(2, donatableOrgan.getId());
 
             System.out.println("Update of Organ - organType: "
                     + donatableOrgan.getOrganType().toString() +
@@ -99,8 +96,9 @@ public class OrgansDatabase {
      */
     private DonatableOrgan getOrganFromResultSet(ResultSet organResultSet) throws SQLException{
         return new DonatableOrgan(
-                Instant.ofEpochMilli(organResultSet.getLong("dateOfDeath")).atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                Organ.parse(organResultSet.getString("organType")),
-                organResultSet.getLong("donor"));
+                Instant.ofEpochMilli(organResultSet.getLong("timeOfDeath")).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                Organ.parse(organResultSet.getString("name")),
+                organResultSet.getLong("user_id"),
+                organResultSet.getInt("id"));
     }
 }
