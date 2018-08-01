@@ -170,6 +170,7 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
+                attributesController.setOnRefresh(true);
                 User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId(), token);
                 attributesController.undoStack.clear();
                 attributesController.redoStack.clear();
@@ -184,6 +185,7 @@ public class UserController implements Initializable {
                 setUndoRedoButtonsDisabled(true, true);
                 setCurrentUser(latest, token);
                 addHistoryEntry("Refreshed", "User data was refreshed from the server.");
+                attributesController.setOnRefresh(false);
                 alert.close();
 
             } catch (HttpResponseException e) {

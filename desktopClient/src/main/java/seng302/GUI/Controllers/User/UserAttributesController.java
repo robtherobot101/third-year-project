@@ -67,6 +67,8 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private Map<Organ, CheckBox> organTickBoxes;
 
+    private Boolean onRefresh = false;
+
     /**
      * Sets the current user and populates the fields
      * @param user the user to set as the current user
@@ -145,17 +147,20 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the death region controls and updates the undo stack if changes were made
      */
     public void countryOfDeathChanged() {
-        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox.getValue().toString(), regionOfDeathComboBox, regionOfDeathField);
-        attributeFieldUnfocused();
+        if (!onRefresh) {
+            setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox.getValue().toString(), regionOfDeathComboBox, regionOfDeathField);
+            attributeFieldUnfocused();
+        }
     }
 
     /**
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        System.out.println(countryComboBox.getValue().toString());
-        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
-        attributeFieldUnfocused();
+        if (!onRefresh) {
+            setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
+            attributeFieldUnfocused();
+        }
     }
 
     /**
@@ -394,7 +399,7 @@ public class UserAttributesController extends UserTabController implements Initi
         if (splitNames.length > 2) {
             String[] middleName = new String[splitNames.length - 2];
             System.arraycopy(splitNames, 1, middleName, 0, splitNames.length - 2);
-            middleNameField.setText(String.join(",", middleName));
+            middleNameField.setText(String.join(" ", middleName));
             lastNameField.setText(splitNames[splitNames.length - 1]);
         } else if (splitNames.length == 2) {
             middleNameField.setText("");
@@ -408,7 +413,7 @@ public class UserAttributesController extends UserTabController implements Initi
         if (splitPreferredNames.length > 2) {
             String[] preferredMiddleName = new String[splitPreferredNames.length - 2];
             System.arraycopy(splitPreferredNames, 1, preferredMiddleName, 0, splitPreferredNames.length - 2);
-            preferredMiddleNamesField.setText(String.join(",", preferredMiddleName));
+            preferredMiddleNamesField.setText(String.join(" ", preferredMiddleName));
             preferredLastNameField.setText(splitPreferredNames[splitPreferredNames.length - 1]);
         } else if (splitPreferredNames.length == 2) {
             preferredMiddleNamesField.setText("");
@@ -734,5 +739,9 @@ public class UserAttributesController extends UserTabController implements Initi
         regionOfDeathField.setDisable(!shown);
 
         countryOfDeathComboBox.setDisable(!shown);
+    }
+
+    public void setOnRefresh(Boolean bool) {
+        onRefresh = bool;
     }
 }
