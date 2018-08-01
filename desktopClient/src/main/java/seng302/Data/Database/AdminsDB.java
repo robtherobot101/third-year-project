@@ -30,6 +30,7 @@ public class AdminsDB implements AdminsDAO {
         JsonParser jp = new JsonParser();
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
         APIResponse response = server.postRequest(adminJson, new HashMap<>(), token, "admins");
+        if(response == null) return;
         System.out.println(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
