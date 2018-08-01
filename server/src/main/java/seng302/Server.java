@@ -113,9 +113,13 @@ public class Server {
                 get( "/:id",       userController::getUser);
                 patch( "/:id",     userController::editUser);
                 delete( "/:id",    userController::deleteUser);
-                get("/:id/photo",  userController::getUserPhoto);
-                patch("/:id/photo",userController::editUserPhoto);
-                delete("/:id/photo",userController::deleteUserPhoto);
+
+                path("/:id/photo", () -> {
+                    before("",                  profileUtils::hasUserLevelAccess);
+                    get("",                     userController::getUserPhoto);
+                    patch("",                   userController::editUserPhoto);
+                    delete("",                  userController::deleteUserPhoto);
+                });
 
                 path("/:id/medications", () -> {
                     before("",                  profileUtils::hasUserLevelAccess);

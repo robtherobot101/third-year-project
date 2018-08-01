@@ -355,14 +355,15 @@ public class UserController {
 
         Gson gson = new Gson();
         User receivedUser = gson.fromJson(request.body(), User.class);
-        System.out.println(receivedUser.getCityOfDeath());
         if (receivedUser == null) {
             response.status(400);
             return "Missing User Body";
         } else {
             try {
-                //model.updateUserAttributes(receivedUser, Integer.parseInt(request.params(":id")));
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id"))); //this version patches all user information
+                String token = request.headers("token");
+                ProfileUtils profileUtils = new ProfileUtils();
+                int accessLevel = profileUtils.checkToken(token);
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel > 1); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
