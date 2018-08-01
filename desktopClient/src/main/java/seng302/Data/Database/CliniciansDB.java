@@ -59,6 +59,9 @@ public class CliniciansDB implements CliniciansDAO {
      */
     public ArrayList<Clinician> getAllClinicians(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "clinicians");
+        if(response == null){
+            return new ArrayList<Clinician>();
+        }
         if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Clinician>>() {
             }.getType());
@@ -88,6 +91,9 @@ public class CliniciansDB implements CliniciansDAO {
      */
     public Clinician getClinician(long id, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "clinician", String.valueOf(id));
+        if(response == null){
+            return null;
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         if(response.isValidJson()) {

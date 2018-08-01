@@ -89,6 +89,9 @@ public class UsersDB implements UsersDAO {
     @Override
     public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
         APIResponse response =  server.getRequest(searchMap, token, "users");
+        if(response == null){
+            return new ArrayList<>();
+        }
         if(response.isValidJson()){
             JsonArray searchResults = response.getAsJsonArray();
             Type type = new TypeToken<ArrayList<User>>() {
@@ -109,15 +112,20 @@ public class UsersDB implements UsersDAO {
     @Override
     public User getUser(long id, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id));
-        if (response.isValidJson()) {
+        if(response == null){
+            return null;
+        }
+        else if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
         }
-        return null;
+        else return null;
     }
 
     @Override
     public Image getUserPhoto(long id) {
         APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id), "photo");
+
+        if(response == null) return getDefaultProfilePhoto();
 
         if (response.getStatusCode() == 404) {
             // No image uploaded, return default image
@@ -182,6 +190,9 @@ public class UsersDB implements UsersDAO {
     @Override
     public List<User> getAllUsers(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users");
+        if(response == null){
+            return new ArrayList<>();
+        }
         if (response.isValidJson()) {
             List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>() {
             }.getType());
@@ -213,6 +224,9 @@ public class UsersDB implements UsersDAO {
     @Override
     public int count(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "usercount");
+        if(response == null){
+            throw new HttpResponseException(0, "Could not reach server");
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         return Integer.parseInt(response.getAsString());

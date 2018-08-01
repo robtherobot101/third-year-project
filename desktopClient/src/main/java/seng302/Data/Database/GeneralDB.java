@@ -99,11 +99,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public boolean status() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), null,"status");
-        if (response.getAsString().equals("DATABASE ONLINE")) {
-            return true;
-        } else {
-            return false;
-        }
+        return response != null && response.getAsString().equals("DATABASE ONLINE");
     }
 
     /**
@@ -129,6 +125,9 @@ public class GeneralDB implements GeneralDAO {
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", identifier);
         APIResponse response = server.getRequest(queryParameters, null, "unique");
+        if(response == null){
+            return false;
+        }
         System.out.println(response.getAsString());
         return response.getAsString().equalsIgnoreCase("true");
     }
@@ -142,6 +141,9 @@ public class GeneralDB implements GeneralDAO {
     @Override
     public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "waitingListItems");
+        if(response == null){
+            return new ArrayList<>();
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
 
@@ -162,6 +164,9 @@ public class GeneralDB implements GeneralDAO {
     @Override
     public List<Country> getAllCountries(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), token,"countries");
+        if(response == null){
+            return new ArrayList<Country>();
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
 

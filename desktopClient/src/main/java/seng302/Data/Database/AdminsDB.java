@@ -46,6 +46,9 @@ public class AdminsDB implements AdminsDAO {
 
     public Collection<Admin> getAllAdmins(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "admins");
+        if(response == null){
+            return new ArrayList<Admin>();
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         if (response.isValidJson()) {
@@ -58,6 +61,9 @@ public class AdminsDB implements AdminsDAO {
 
     public Admin getAdmin(long id, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "admins", String.valueOf(id));
+        if(response == null){
+            return null;
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         if(response.isValidJson()) {
