@@ -66,7 +66,6 @@ namespace mobileAppClient.odmsAPI
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine(ex);
                 return HttpStatusCode.ServiceUnavailable;
             }
         }
