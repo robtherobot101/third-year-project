@@ -76,11 +76,12 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
         updateBMI();
         updateAge();
-        if (currentUser.getRegion() == ""){
+        if (currentUser.getCountry() != null) {
+            setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
         }
-        setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
-        setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
-
+        if (currentUser.getCountryOfDeath() != null) {
+            setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
+        }
     }
 
     /**
@@ -144,7 +145,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the death region controls and updates the undo stack if changes were made
      */
     public void countryOfDeathChanged() {
-        setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
+        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox.getValue().toString(), regionOfDeathComboBox, regionOfDeathField);
         attributeFieldUnfocused();
     }
 
@@ -152,7 +153,8 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
+        System.out.println(countryComboBox.getValue().toString());
+        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
         attributeFieldUnfocused();
     }
 
@@ -423,9 +425,8 @@ public class UserAttributesController extends UserTabController implements Initi
 
         deathCityField.setText(currentUser.getCityOfDeath());
 
-        System.out.println(currentUser.getCityOfDeath());
         if(currentUser.getCountry() != null) {
-            countryComboBox.getSelectionModel().select(currentUser.getCountry().toString());
+            countryComboBox.getSelectionModel().select(currentUser.getCountry());
         }
 
         if(currentUser.getCountryOfDeath() != null) {
