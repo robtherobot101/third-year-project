@@ -84,6 +84,8 @@ public class WindowManager extends Application {
         WindowManager.dataManager = dataManager;
     }
 
+    private static boolean TESTING = true;
+
     /**
      * Returns the program icon.
      *
@@ -356,6 +358,7 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
+        TESTING = false;
         if (args.length == 0) {
             launch(args);
         } else if (args.length == 1 && args[0].equals("-c")) {
@@ -392,6 +395,10 @@ public class WindowManager extends Application {
         }
     }
 
+    public static boolean isTESTING() {
+        return TESTING;
+    }
+
 
     /**
      * Creates an internal, non-persistant DataManager (For testing and debugging)
@@ -412,7 +419,12 @@ public class WindowManager extends Application {
     public DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        APIServer server = new APIServer(properServer);
+        String testingServer = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
+
+        APIServer server;
+        if(TESTING) server = new APIServer(testingServer);
+        else server = new APIServer(properServer);
+
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
