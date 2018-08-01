@@ -154,7 +154,6 @@ public class WindowManager extends Application {
         stage.setWidth(WindowManager.mainWindowPrefWidth);
 
         stage.initModality(Modality.NONE);
-
         try {
             FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/user/user.fxml"));
             Parent root = loader.load();
@@ -567,9 +566,6 @@ public class WindowManager extends Application {
         } else {
             stop();
         }
-
-
-
     }
 
     /**

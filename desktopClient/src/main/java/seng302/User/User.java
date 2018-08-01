@@ -162,6 +162,7 @@ public class User {
         this.weight = user.weight;
         this.bloodType = user.bloodType;
         this.region = user.region;
+        this.country = user.country;
         this.currentAddress = user.currentAddress;
         this.creationTime = user.creationTime;
         this.id = user.id;
@@ -169,6 +170,9 @@ public class User {
         this.bloodPressure = user.bloodPressure;
         this.alcoholConsumption = user.alcoholConsumption;
         this.organs.addAll(user.organs);
+        this.countryOfDeath = user.countryOfDeath;
+        this.regionOfDeath = user.regionOfDeath;
+        this.cityOfDeath = user.cityOfDeath;
         this.currentMedications.addAll(user.currentMedications);
         this.historicMedications.addAll(user.historicMedications);
         this.waitingListItems.addAll(user.waitingListItems);
@@ -252,7 +256,12 @@ public class User {
                 smokerStatus == user.getSmokerStatus() &&
                 stringEqual(bloodPressure, user.getBloodPressure()) &&
                 alcoholConsumption == user.getAlcoholConsumption() &&
-                organs.equals(user.getOrgans())
+                organs.equals(user.getOrgans()) &&
+                stringEqual(country, user.getCountry()) &&
+                stringEqual(region, user.getRegion()) &&
+                stringEqual(countryOfDeath, user.getCountryOfDeath()) &&
+                stringEqual(regionOfDeath, user.getRegionOfDeath()) &&
+                stringEqual(cityOfDeath, user.getCityOfDeath())
         );
     }
 

@@ -1,13 +1,17 @@
 package seng302.GUI.Controllers.User;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
@@ -30,24 +34,26 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
     private Label settingAttributesLabel, ageLabel, bmiLabel;
+
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, deathCityField, regionOfDeathField, regionField;
+    private Label dateOfDeathLabel, countryOfDeathLabel, regionOfDeathLabel, cityOfDeathLabel;
+    @FXML
+    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, regionField;
     @FXML
     private DatePicker dateOfBirthPicker;
 
     @FXML
-    private ComboBox countryOfDeathComboBox, countryComboBox;
+    private ComboBox countryComboBox;
 
     @FXML
-    private ComboBox<String> regionComboBox, regionOfDeathComboBox;
+    private ComboBox<String> regionComboBox;
 
-    @FXML
-    private DateTimePicker dateOfDeathPicker;
     @FXML
     private ComboBox<Gender> genderComboBox, genderIdentityComboBox;
     @FXML
@@ -63,7 +69,11 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private ImageView profileImage;
     @FXML
-    private Button changePhotoButton;
+    private Button changePhotoButton, updateDeathDetailsButton;
+
+    @FXML
+    private Label dateOfDeath, countryOfDeath, regionOfDeath, cityOfDeath;
+
 
     private Map<Organ, CheckBox> organTickBoxes;
 
@@ -77,9 +87,181 @@ public class UserAttributesController extends UserTabController implements Initi
         updateBMI();
         updateAge();
         setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
-        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField);
-
     }
+
+    /**
+     * Updates the current clinicians attributes to
+     * reflect those of the values in the displayed TextFields
+     */
+    public void popupDeathDetails() {
+        // Create the custom dialog.
+        Dialog<ArrayList<Object>> dialog = new Dialog<>();
+        dialog.setTitle("Update death details");
+        dialog.setHeaderText("Update death details");
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
+
+        // Set the button types.
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 10, 10));
+
+        DateTimePicker popupDateOfDeathPicker = new DateTimePicker();
+        ComboBox popupCountryOfDeathComboBox = new ComboBox();
+        popupCountryOfDeathComboBox.maxWidthProperty().bind(dialog.widthProperty());
+
+        ComboBox popopRegionOfDeathComboBox = new ComboBox();
+        popopRegionOfDeathComboBox.maxWidthProperty().bind(dialog.widthProperty());
+        TextField popupRegionOfDeathField = new TextField();
+        TextField popupCityOfDeathField = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setText("");
+
+        grid.add(new Label("Date and Time:"), 0, 0);
+        grid.add(popupDateOfDeathPicker, 1, 0);
+
+        grid.add(new Label("Country:"), 0, 1);
+        grid.add(popupCountryOfDeathComboBox, 1, 1);
+
+        grid.add(new Label("Region:"), 0, 2);
+        grid.add(popopRegionOfDeathComboBox, 1, 2);
+        grid.add(popupRegionOfDeathField, 1, 2);
+
+        grid.add(new Label("City:"), 0, 3);
+        grid.add(popupCityOfDeathField, 1, 3);
+
+        errorLabel.setStyle("-fx-text-fill: red;");
+        grid.add(errorLabel, 0, 4, 2, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+        updateButton.setDisable(true);
+
+        AtomicBoolean dateIsValid = new AtomicBoolean(false);
+        AtomicBoolean countryIsValid = new AtomicBoolean(false);
+        AtomicBoolean regionIsValid = new AtomicBoolean(false);
+        AtomicBoolean cityIsValid = new AtomicBoolean(false);
+        AtomicBoolean inputIsValid = new AtomicBoolean(false);
+
+
+        // Do some validation (using the Java 8 lambda syntax).
+        popupDateOfDeathPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+
+            if(newValue != null) {
+                if (newValue.isAfter(LocalDate.now())) {
+                    errorLabel.setText("The date of death cannot be after today.");
+                    dateIsValid.set(false);
+                } else if (newValue.isBefore(dateOfBirthPicker.getValue())) {
+                    errorLabel.setText("The date of death must be after the date of birth.");
+                    dateIsValid.set(false);
+
+                } else {
+                    dateIsValid.set(true);
+                }
+            } else {
+                errorLabel.setText("The date of death must be defined.");
+                dateIsValid.set(false);
+            }
+
+            inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
+            updateButton.setDisable(!inputIsValid.get());
+            errorLabel.setVisible(!dateIsValid.get());
+        });
+        popupCountryOfDeathComboBox.valueProperty().addListener((observable, oldValue, newValue)  -> {
+            countryIsValid.set(!Objects.equals(newValue,""));
+            inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
+            updateButton.setDisable(!inputIsValid.get());
+
+            // Setup listener on the countries combobox to switch the regions input type to ComboBox when selected country is "New Zealand"
+            setRegionControls(currentUser.getRegionOfDeath(), popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField);
+        });
+
+        popopRegionOfDeathComboBox.valueProperty().addListener((observable, oldValue, newValue)  -> {
+            regionIsValid.set(!Objects.equals(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField),""));
+            inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
+            updateButton.setDisable(!inputIsValid.get());
+        });
+        popupRegionOfDeathField.textProperty().addListener((observable, oldValue, newValue)  -> {
+            regionIsValid.set(!Objects.equals(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField),""));
+            inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
+            updateButton.setDisable(!inputIsValid.get());
+        });
+
+        popupCityOfDeathField.textProperty().addListener((observable, oldValue, newValue)  -> {
+            cityIsValid.set(!Objects.equals(newValue, ""));
+            inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
+            updateButton.setDisable(!inputIsValid.get());
+        });
+
+        // Populate countries combobox
+        try {
+            List<String> validCountries = new ArrayList<>();
+            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(userController.getToken())) {
+                if(c.getValid())
+                    validCountries.add(c.getCountryName());
+            }
+            popupCountryOfDeathComboBox.setItems(FXCollections.observableArrayList(validCountries));
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
+        }
+
+        // Populate regions combobox
+        popopRegionOfDeathComboBox.setItems(FXCollections.observableArrayList(
+                Arrays.stream(NZRegion.values()).map(NZRegion::toString).collect(Collectors.toList())
+        ));
+
+        // If user death details have not been set, default the death location to user location. Set death date to now
+        if(Objects.equals(dateOfDeath.getText().trim(),"")) {
+            popupDateOfDeathPicker.setDateTimeValue(LocalDateTime.now());
+            if(popupCountryOfDeathComboBox.getItems().contains(countryComboBox.getValue())) {
+                popupCountryOfDeathComboBox.setValue(countryComboBox.getValue());
+            }
+            setRegion(getRegion(countryComboBox, regionComboBox, regionField), popopRegionOfDeathComboBox, popupRegionOfDeathField);
+        } else { // Otherwise, populate death location and timestamp
+            popupDateOfDeathPicker.setDateTimeValue(LocalDateTime.parse(dateOfDeath.getText()));
+            if(popupCountryOfDeathComboBox.getItems().contains(countryOfDeath.getText())) {
+                popupCountryOfDeathComboBox.setValue(countryOfDeath.getText());
+            }
+            setRegion(regionOfDeath.getText(), popopRegionOfDeathComboBox, popupRegionOfDeathField);
+            popupCityOfDeathField.setText(cityOfDeath.getText());
+        }
+
+        setRegionControls(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField)
+                , popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(popupDateOfDeathPicker::requestFocus);
+        // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+
+                return new ArrayList<Object>(Arrays.asList(
+                        popupDateOfDeathPicker.getDateTimeValue(),
+                        popupCountryOfDeathComboBox.getValue(),
+                        getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField),
+                        popupCityOfDeathField.getText()
+                ));
+            }
+            return null;
+        });
+
+        Optional<ArrayList<Object>> result = dialog.showAndWait();
+
+        result.ifPresent(newDeathDetails -> {
+            this.dateOfDeath.setText(newDeathDetails.get(0).toString());
+            this.countryOfDeath.setText((String) newDeathDetails.get(1));
+            this.regionOfDeath.setText((String) newDeathDetails.get(2));
+            this.cityOfDeath.setText((String) newDeathDetails.get(3));
+            attributeFieldUnfocused();
+        });
+    }
+
 
     /**
      * Gets the region from the regionComboBox or regionField. If New Zealand is the selected country in the
@@ -139,18 +321,11 @@ public class UserAttributesController extends UserTabController implements Initi
     }
 
     /**
-     * Updates the visibility of the death region controls and updates the undo stack if changes were made
-     */
-    public void countryOfDeathChanged() {
-        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField);
-        attributeFieldUnfocused();
-    }
-
-    /**
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
         setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
+        System.out.println("Country changed");
         attributeFieldUnfocused();
     }
 
@@ -178,8 +353,8 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the age label for the user window based on the date of birth and death of the user.
      */
     public void updateAge() {
-        LocalDate dobirthPick = dateOfBirthPicker.getValue();
-        LocalDateTime dodeathPick = dateOfDeathPicker.getDateTimeValue();
+        LocalDate dobirthPick = currentUser.getDateOfBirth();
+        LocalDateTime dodeathPick = currentUser.getDateOfDeath();
 
         if (dodeathPick == null) {
             LocalDateTime today = LocalDateTime.now();
@@ -304,15 +479,6 @@ public class UserAttributesController extends UserTabController implements Initi
             WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
             userController.requestFocus();
             return false;
-        } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
-            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
-            userController.requestFocus();
-            return false;
-        } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
-            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death" +
-                ".").show();
-            userController.requestFocus();
-            return false;
         }
 
         userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
@@ -323,7 +489,15 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
-        currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
+
+        if(!Objects.equals(dateOfDeath.getText().trim(), "")) {
+            currentUser.setDateOfDeath(LocalDateTime.parse(dateOfDeath.getText()));
+        }
+        currentUser.setCountryOfDeath(countryOfDeath.getText());
+        currentUser.setRegionOfDeath(regionOfDeath.getText());
+        currentUser.setCityOfDeath(cityOfDeath.getText());
+
+
         currentUser.setGender(genderComboBox.getValue());
         currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
         currentUser.setBloodType(bloodTypeComboBox.getValue());
@@ -335,21 +509,11 @@ public class UserAttributesController extends UserTabController implements Initi
                 countryComboBox,regionComboBox,regionField
         ));
 
-        currentUser.setRegionOfDeath(getRegion(
-                countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField
-        ));
-
-
         if(countryComboBox.getValue() != null) {
             currentUser.setCountry(countryComboBox.getValue().toString());
         }
 
-        if(countryOfDeathComboBox.getValue() != null) {
-            currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
-        }
-
         currentUser.setCurrentAddress(addressField.getText());
-        currentUser.setCityOfDeath(deathCityField.getText());
 
 
         for (Organ key : organTickBoxes.keySet()) {
@@ -379,7 +543,6 @@ public class UserAttributesController extends UserTabController implements Initi
                 if(c.getValid())
                     validCountries.add(c.getCountryName());
             }
-            countryOfDeathComboBox.setItems(FXCollections.observableArrayList(validCountries));
             countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
         } catch (HttpResponseException e) {
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
@@ -417,22 +580,21 @@ public class UserAttributesController extends UserTabController implements Initi
 
 
         setRegion(currentUser.getRegion(), regionComboBox, regionField);
-        setRegion(currentUser.getRegionOfDeath(), regionOfDeathComboBox, regionOfDeathField);
 
-        deathCityField.setText(currentUser.getCityOfDeath());
+        countryOfDeath.setText(currentUser.getCountryOfDeath());
+        regionOfDeath.setText(currentUser.getRegionOfDeath());
+
+        cityOfDeath.setText(currentUser.getCityOfDeath());
+
 
         System.out.println(currentUser.getCityOfDeath());
         if(currentUser.getCountry() != null) {
-            countryComboBox.getSelectionModel().select(currentUser.getCountry().toString());
-        }
-
-        if(currentUser.getCountryOfDeath() != null) {
-            countryOfDeathComboBox.getSelectionModel().select(currentUser.getCountryOfDeath());
+            countryComboBox.getSelectionModel().select(currentUser.getCountry());
         }
 
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
-        dateOfDeathPicker.setDateTimeValue(currentUser.getDateOfDeath());
+        dateOfDeath.setText(currentUser.getDateOfDeath() == null ? "" : currentUser.getDateOfDeath().toString());
         updateAge();
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
@@ -593,7 +755,6 @@ public class UserAttributesController extends UserTabController implements Initi
             nzRegions.add(r.toString());
         }
         regionComboBox.setItems(FXCollections.observableArrayList(nzRegions));
-        regionOfDeathComboBox.setItems(FXCollections.observableArrayList(nzRegions));
         genderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         genderIdentityComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         bloodTypeComboBox.setItems(FXCollections.observableArrayList(BloodType.values()));
@@ -652,18 +813,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 attributeFieldUnfocused();
             }
         });
-        deathCityField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                attributeFieldUnfocused();
-            }
-        });
         dateOfBirthPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                attributeFieldUnfocused();
-            }
-        });
-
-        dateOfDeathPicker.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 attributeFieldUnfocused();
             }
@@ -693,14 +843,21 @@ public class UserAttributesController extends UserTabController implements Initi
      * undos the last change
      */
     public void undo(){
+        System.out.println("Size of undo stack before afu: " + undoStack.size());
         attributeFieldUnfocused();
+        System.out.println("Size of undo stack after afu: " + undoStack.size());
+
         //Add the current fields to the redo stack
         redoStack.add(new User(currentUser));
         //Copy the attribute information from the top element of the undo stack
         currentUser.copyFieldsFrom(undoStack.getLast());
         //Remove the top element of the undo stack
         undoStack.removeLast();
+        System.out.println("Size of undo stack before puf: " + undoStack.size());
+
         populateUserFields();
+        System.out.println("Size of undo stack after puf: " + undoStack.size());
+
     }
 
     /**
@@ -718,18 +875,12 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
     }
 
+
     /**
      * set whether to show the date of death controls
-     * @param shown whaether to show or not
+     * @param shown whether to show or not
      */
     public void setDeathControlsShown(boolean shown) {
-        dateOfDeathPicker.setDisable(!shown);
-
-        deathCityField.setDisable(!shown);
-
-        regionOfDeathComboBox.setDisable(!shown);
-        regionOfDeathField.setDisable(!shown);
-
-        countryOfDeathComboBox.setDisable(!shown);
+        updateDeathDetailsButton.setVisible(shown);
     }
 }
