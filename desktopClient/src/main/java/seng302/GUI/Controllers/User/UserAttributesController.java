@@ -107,7 +107,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegion(String value, ComboBox<String> regionComboBox, TextField regionField) {
-        regionComboBox.setValue(value);
+        regionComboBox.getSelectionModel().select(value);
         regionField.setText(value);
     }
 
@@ -437,11 +437,11 @@ public class UserAttributesController extends UserTabController implements Initi
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
 
-        genderComboBox.setValue(currentUser.getGender());
-        genderIdentityComboBox.setValue(currentUser.getGenderIdentity());
-        bloodTypeComboBox.setValue(currentUser.getBloodType());
-        smokerStatusComboBox.setValue(currentUser.getSmokerStatus());
-        alcoholConsumptionComboBox.setValue(currentUser.getAlcoholConsumption());
+        genderComboBox.getSelectionModel().select(currentUser.getGender());
+        genderIdentityComboBox.getSelectionModel().select(currentUser.getGenderIdentity());
+        bloodTypeComboBox.getSelectionModel().select(currentUser.getBloodType());
+        smokerStatusComboBox.getSelectionModel().select(currentUser.getSmokerStatus());
+        alcoholConsumptionComboBox.getSelectionModel().select(currentUser.getAlcoholConsumption());
 
         for (Organ key : organTickBoxes.keySet()) {
             organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));
