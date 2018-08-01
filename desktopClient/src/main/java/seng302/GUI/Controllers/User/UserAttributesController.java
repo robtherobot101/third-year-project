@@ -76,8 +76,10 @@ public class UserAttributesController extends UserTabController implements Initi
         populateUserFields();
         updateBMI();
         updateAge();
-        setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
-        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField);
+        if (currentUser.getRegion() == ""){
+        }
+        setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
+        setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
 
     }
 
@@ -117,20 +119,20 @@ public class UserAttributesController extends UserTabController implements Initi
      * If New Zealand is selected in the countryComboBox, the  regionComboBox is visible, otherwise the regionField is visible.
      *
      * @param userValue The region value of the user (Could be region, or regionOfDeath)
-     * @param countryComboBox The ComboBox of countries
+     * @param country The country the user is from
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
-    public void setRegionControls(String userValue, ComboBox<Country> countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
-        boolean useCombo = Objects.equals(countryComboBox.getValue(), "New Zealand");
+    public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean useCombo = country.equalsIgnoreCase("New Zealand");
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
-
-        boolean validNZRegion = Arrays.stream(NZRegion.values())
-                .map(NZRegion::toString)
-                .collect(Collectors.toList())
-                .contains(userValue);
-
+        boolean validNZRegion;
+        try {
+            validNZRegion = Arrays.asList(NZRegion.values()).contains(NZRegion.parse(userValue));
+        } catch (IllegalArgumentException e) {
+            validNZRegion = false;
+        }
         if((useCombo && validNZRegion) || (!useCombo && !validNZRegion)) {
             setRegion(userValue, regionComboBox, regionField);
         } else {
@@ -142,7 +144,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the death region controls and updates the undo stack if changes were made
      */
     public void countryOfDeathChanged() {
-        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField);
+        setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
         attributeFieldUnfocused();
     }
 
@@ -150,7 +152,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
+        setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
         attributeFieldUnfocused();
     }
 
