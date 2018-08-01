@@ -40,6 +40,7 @@ public class AdminsDB implements AdminsDAO {
         JsonParser jp = new JsonParser();
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
         APIResponse response = server.patchRequest(adminJson, new HashMap<>(), token, "admins", String.valueOf(admin.getStaffID()));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         System.out.println(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());

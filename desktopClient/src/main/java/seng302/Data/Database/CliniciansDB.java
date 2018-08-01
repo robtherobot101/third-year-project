@@ -47,6 +47,7 @@ public class CliniciansDB implements CliniciansDAO {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
         APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), token, "clinicians", String.valueOf(clinician.getStaffID()));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         System.out.println(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());

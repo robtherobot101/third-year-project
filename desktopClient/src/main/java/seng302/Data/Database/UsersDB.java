@@ -75,6 +75,7 @@ public class UsersDB implements UsersDAO {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         APIResponse response = server.patchRequest(userJson, new HashMap<>(), token, "users", String.valueOf(user.getId()));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -174,6 +175,7 @@ public class UsersDB implements UsersDAO {
         PhotoStruct photoStruct = new PhotoStruct(image);
         JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
         APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 
     @Override

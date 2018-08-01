@@ -192,5 +192,6 @@ public class GeneralDB implements GeneralDAO {
         JsonParser jp = new JsonParser();
         JsonArray userJson = jp.parse(new Gson().toJson(countries)).getAsJsonArray();
         APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),token,"countries");
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 }
