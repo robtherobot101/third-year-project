@@ -80,6 +80,7 @@ public class CliniciansDB implements CliniciansDAO {
      */
     public void removeClinician(long id, String token) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), token, "clinician", String.valueOf(id));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }

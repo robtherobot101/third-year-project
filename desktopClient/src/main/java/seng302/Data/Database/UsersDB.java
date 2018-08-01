@@ -181,6 +181,7 @@ public class UsersDB implements UsersDAO {
     @Override
     public void deleteUserPhoto(long id) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 
     /**
@@ -213,6 +214,7 @@ public class UsersDB implements UsersDAO {
     @Override
     public void removeUser(long id, String token) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), token, "users", String.valueOf(id));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
