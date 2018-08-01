@@ -117,7 +117,7 @@ public class UsersDB implements UsersDAO {
 
     @Override
     public Image getUserPhoto(long id) {
-        APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.getRequest(new HashMap<>(), "users", "users", String.valueOf(id), "photo");
 
         if (response.getStatusCode() == 404) {
             // No image uploaded, return default image
@@ -165,12 +165,12 @@ public class UsersDB implements UsersDAO {
         JsonParser jp = new JsonParser();
         PhotoStruct photoStruct = new PhotoStruct(image);
         JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
-        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", "users", String.valueOf(id), "photo");
     }
 
     @Override
     public void deleteUserPhoto(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", "users", String.valueOf(id), "photo");
     }
 
     /**
