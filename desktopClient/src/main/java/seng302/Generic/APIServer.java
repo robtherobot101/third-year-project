@@ -158,14 +158,6 @@ public class APIServer {
 
 
     /**
-     * Queries the 'hello' endpoint to test connection
-     * @return A string containing the version of the queries server
-     */
-    public String testConnection() {
-        return getRequest(new HashMap<>(),"hello").getAsJsonObject().get("version").toString();
-    }
-
-    /**
      * Display an error message if the request fails
      */
     private void connectivityError(){

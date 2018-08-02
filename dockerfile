@@ -1,4 +1,4 @@
-FROM airdock/oracle-jdk:latest
+FROM myimage
 
 RUN apt-get update
 RUN apt-get install -y maven
