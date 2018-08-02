@@ -12,26 +12,15 @@ namespace mobileAppClient
      * Class to handle all functionality regarding the overview page for 
      * showing an overview of all of a user's details in the application.
      */ 
-    public partial class OverviewPage : ContentPage, UserObserver
+    public partial class OverviewPage : ContentPage
     {
         public OverviewPage()
         {
             InitializeComponent();
-            UserController.Instance.addUserObserver(this);
             if (UserController.Instance.LoggedInUser != null)
             {
-                fillFields();
+                //fillFields();
             }
-
-        }
-
-        /*
-         * Observer pattern used to refill all of the user fields 
-         * when there is an update elsewhere.
-         */ 
-        public void updateUser()
-        {
-            fillFields();
         }
 
         /*

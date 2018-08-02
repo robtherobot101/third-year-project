@@ -58,8 +58,10 @@ namespace mobileAppClient.odmsAPI
                 if (IsUser(responseContent))
                 {
                     // Login as the user
-                    userController.LoggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
-                    userController.AuthToken = response.Headers.GetValues("token").FirstOrDefault();
+                    User loggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
+                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
+
+                    UserController.Instance.Login(loggedInUser, authToken);
 
                     Console.WriteLine("Logged in as (USER)" + String.Join(String.Empty, userController.LoggedInUser.name));
 
@@ -68,13 +70,15 @@ namespace mobileAppClient.odmsAPI
                 } else if (IsClinician(responseContent))
                 {
                     // Login as the clinician
-                    clinicianController.LoggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);
-                    clinicianController.AuthToken = response.Headers.GetValues("token").FirstOrDefault();
+                    Clinician loggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);
+                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
 
-                    Console.WriteLine("Logged in as (CLINICIAN)" + String.Join(String.Empty, userController.LoggedInUser.name));
+                    ClinicianController.Instance.Login(loggedInClinician, authToken);
+
+                    Console.WriteLine("Logged in as (CLINICIAN)" + String.Join(String.Empty, clinicianController.LoggedInClinician.name));
 
                     // Created code to signifiy clinician login internally
-                    return HttpStatusCode.Created;
+                    return HttpStatusCode.OK;
                 } else
                 {
                     // Must've attempted login as admin -> deny
@@ -106,7 +110,7 @@ namespace mobileAppClient.odmsAPI
         }
 
         /*
-         * Returns true if the JSON string can be determined as a user object
+         * Returns true if the JSON string can be determined as a clinician object
          */
         private bool IsClinician(string jsonBody)
         {

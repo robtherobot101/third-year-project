@@ -131,7 +131,6 @@ namespace mobileAppClient
             {
                 case HttpStatusCode.OK:
                     // Pop away login screen on successful login
-                    UserController.Instance.Login();
                     await DisplayAlert("",
                         "Account successfully created",
                         "OK");

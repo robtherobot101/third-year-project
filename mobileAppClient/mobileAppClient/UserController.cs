@@ -12,8 +12,7 @@ namespace mobileAppClient
     {
         public User LoggedInUser { get; set; }
         public string AuthToken { get; set; }
-
-        private List<UserObserver> userObservers;
+        public MainPage mainPageController { get; set; }
 
         private static readonly Lazy<UserController> lazy =
         new Lazy<UserController>(() => new UserController());
@@ -32,25 +31,15 @@ namespace mobileAppClient
         /*
          * Logs in a given user, updating all of its observers.
          */ 
-        public void Login()
+        public void Login(User loggedInUser, string authToken)
         {
-            foreach (UserObserver userObserver in userObservers)
-            {
-                userObserver.updateUser();
-            }
-        }
-
-        /*
-         * Adds a given observer to the user.
-         */ 
-        public void addUserObserver(UserObserver newUserObserver)
-        {
-            userObservers.Add(newUserObserver);
+            this.LoggedInUser = loggedInUser;
+            this.AuthToken = authToken;
+            this.mainPageController.userLoggedIn();
         }
 
         private UserController()
         {
-            userObservers = new List<UserObserver>();
         }
     }
 }

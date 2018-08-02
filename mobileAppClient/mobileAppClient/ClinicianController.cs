@@ -13,6 +13,7 @@ namespace mobileAppClient
     {
         public Clinician LoggedInClinician { get; set; }
         public string AuthToken { get; set; }
+        public MainPage mainPageController { get; set; } 
 
         private static readonly Lazy<ClinicianController> lazy =
         new Lazy<ClinicianController>(() => new ClinicianController());
@@ -20,12 +21,22 @@ namespace mobileAppClient
         public static ClinicianController Instance { get { return lazy.Value; } }
 
         /*
-         * Logs out a given user, setting the logged in user to null.
+         * Logs out the logged in clinician, setting the logged in user to null.
          */
         public void Logout()
         {
             this.LoggedInClinician = null;
             this.AuthToken = null;
+        }
+
+        /*
+         * Logs in a given user, updating all of its observers.
+         */
+        public void Login(Clinician loggedInClinician, string authToken)
+        {
+            this.LoggedInClinician = loggedInClinician;
+            this.AuthToken = authToken;
+            this.mainPageController.clinicianLoggedIn();
         }
 
         private ClinicianController()
