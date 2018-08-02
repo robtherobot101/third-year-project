@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
-public class UserDiseasesTest {
+public class UserDiseasesTest extends GenericTest {
 
     private UserDiseases userDiseases = new UserDiseases();
     private GeneralUser generalUser = new GeneralUser();

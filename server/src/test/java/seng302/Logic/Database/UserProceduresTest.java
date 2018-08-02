@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class UserProceduresTest {
+public class UserProceduresTest extends GenericTest {
     
     private GeneralUser generalUser = new GeneralUser();
     private UserProcedures userProcedures = new UserProcedures();
