@@ -136,7 +136,6 @@ public class UsersDB implements UsersDAO {
         try {
             Debugger.log(response.getStatusCode());
             String encodedImage = response.getAsString();
-            System.out.println(encodedImage);
             //String base64Image = encodedImage.split(",")[1];
             //Decode the string to a byte array
             byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
@@ -149,7 +148,6 @@ public class UsersDB implements UsersDAO {
             return image;
         } catch (Exception e) {
             Debugger.error(e);
-            System.out.println(IO.getJarPath());
             return getDefaultProfilePhoto();
         }
     }
