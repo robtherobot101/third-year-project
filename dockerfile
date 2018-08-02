@@ -1,8 +1,14 @@
 FROM airdock/oracle-jdk:latest
-
-RUN ln -sf /usr/share/zoneinfo/Pacific/Auckland /etc/localtime
 RUN apt-get update
 RUN apt-get install -y maven
+
+FROM airdock/oracle-jdk-maven
+
+RUN ln -sf /usr/share/zoneinfo/Pacific/Auckland /etc/localtime
+RUN rm -r /code/*
+#RUN apt-get update
+#RUN apt-get install -y maven
+
 
 WORKDIR /code
 
