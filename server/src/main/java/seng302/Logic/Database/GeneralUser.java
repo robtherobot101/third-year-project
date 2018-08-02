@@ -5,10 +5,8 @@ import seng302.Model.*;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -486,6 +484,29 @@ public class GeneralUser {
         }
     }
 
+    private String createUserStatement(User user) {
+        StringBuilder sb = new StringBuilder();
+
+            String firstName = user.getNameArray()[0];
+            String middleNames = user.getNameArray().length > 2 ?
+            String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null;
+            String lastName = user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null;
+            String preferredName = user.getPreferredNameArray()[0];
+            String preferredMiddleNames = user.getPreferredNameArray().length > 2 ?
+                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null;
+            String preferredLastName = user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null;
+            LocalDateTime creationTime = user.getCreationTime();
+            LocalDateTime lastModified = user.getCreationTime();
+            String username = user.getUsername();
+            String email = user.getEmail();
+            String password = user.getPassword();
+            String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
+
+        return MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+                " email, password, date_of_birth) VALUES(\"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
+                firstName, middleNames, lastName, preferredName, preferredMiddleNames, preferredLastName, creationTime, lastModified, username, email, password, dateOfBirth);
+    }
+
     /**
      * Inserts the given user into the database.
      * @param user The given user which will be inserted.
@@ -493,23 +514,24 @@ public class GeneralUser {
      */
     public void insertUser(User user) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                    " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(insert);
-            statement.setString(1, user.getNameArray()[0]);
-            statement.setString(2, user.getNameArray().length > 2 ?
-                    String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
-            statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-            statement.setString(4, user.getPreferredNameArray()[0]);
-            statement.setString(5, user.getPreferredNameArray().length > 2 ?
-                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
-            statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
-            statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
-            statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
-            statement.setString(9, user.getUsername());
-            statement.setString(10, user.getEmail());
-            statement.setString(11, user.getPassword());
-            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
+//            String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+//                    " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//            PreparedStatement statement = connection.prepareStatement(insert);
+//            statement.setString(1, user.getNameArray()[0]);
+//            statement.setString(2, user.getNameArray().length > 2 ?
+//                    String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
+//            statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
+//            statement.setString(4, user.getPreferredNameArray()[0]);
+//            statement.setString(5, user.getPreferredNameArray().length > 2 ?
+//                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
+//            statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
+//            statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
+//            statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
+//            statement.setString(9, user.getUsername());
+//            statement.setString(10, user.getEmail());
+//            statement.setString(11, user.getPassword());
+//            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
+            PreparedStatement statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
         }
 
@@ -846,6 +868,16 @@ public class GeneralUser {
             ResultSet noUsers = statement.executeQuery();
             noUsers.next();
             return noUsers.getInt("count");
+        }
+    }
+
+    public void importUsers(List<User> users) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            for (User user : users) {
+                statement.addBatch(createUserStatement(user));
+            }
+            statement.executeBatch();
         }
     }
 }
