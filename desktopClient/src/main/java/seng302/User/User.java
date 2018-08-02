@@ -194,12 +194,16 @@ public class User {
         height = user.getHeight();
         weight = user.getWeight();
         region = user.getRegion();
+        country = user.getCountry();
         currentAddress = user.getCurrentAddress();
         smokerStatus = user.getSmokerStatus();
         bloodPressure = user.getBloodPressure();
         alcoholConsumption = user.getAlcoholConsumption();
         organs.clear();
         organs.addAll(user.getOrgans());
+        countryOfDeath = user.getCountryOfDeath();
+        regionOfDeath = user.getRegionOfDeath();
+        cityOfDeath = user.getCityOfDeath();
     }
 
     public void copyMedicationListsFrom(User user) {
@@ -258,7 +262,6 @@ public class User {
                 alcoholConsumption == user.getAlcoholConsumption() &&
                 organs.equals(user.getOrgans()) &&
                 stringEqual(country, user.getCountry()) &&
-                stringEqual(region, user.getRegion()) &&
                 stringEqual(countryOfDeath, user.getCountryOfDeath()) &&
                 stringEqual(regionOfDeath, user.getRegionOfDeath()) &&
                 stringEqual(cityOfDeath, user.getCityOfDeath())
