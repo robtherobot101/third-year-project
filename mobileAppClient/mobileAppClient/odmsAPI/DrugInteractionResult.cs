@@ -64,13 +64,20 @@ namespace mobileAppClient.odmsAPI
                     break;
             }
 
-            if (gender.Equals("Male"))
-            {
-                genderInteractions.AddRange(getEntries(genderInteractionsRaw, "male"));
-            } else if (gender.Equals("Female"))
-            {
-                genderInteractions.AddRange(getEntries(genderInteractionsRaw, "female"));
+
+            if(gender != null) {
+                if (gender.Equals("Male"))
+                {
+                    genderInteractions.AddRange(getEntries(genderInteractionsRaw, "male"));
+                }
+                else if (gender.Equals("Female"))
+                {
+                    genderInteractions.AddRange(getEntries(genderInteractionsRaw, "female"));
+                }   
+            } else {
+                genderInteractions.Add("No gender interactions");
             }
+
 
             durationInteractions.Add("\n1 - 2 years");
             durationInteractions.AddRange(getEntries(durationInteractionsRaw, "1 - 2 years"));
@@ -111,7 +118,14 @@ namespace mobileAppClient.odmsAPI
          */
         private List<String> getEntries(JObject jObject, string fieldName)
         {
-            JArray interactions = (JArray)jObject[fieldName];
+            JArray interactions;
+            try {
+                interactions = (JArray)jObject[fieldName];
+            } catch (NullReferenceException e) {
+                List<string> emptyInteractions = new List<string> { "No interactions" };
+                return emptyInteractions;
+            } 
+
             List<String> entries = new List<string>();
             if (interactions == null)
             {
