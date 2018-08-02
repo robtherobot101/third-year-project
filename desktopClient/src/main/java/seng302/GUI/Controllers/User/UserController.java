@@ -168,7 +168,7 @@ public class UserController implements Initializable {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
                 "Refreshing will overwrite your all unsaved changes.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+        if (result.get() == ButtonType.OK) {
             try {
                 User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId(), token);
                 attributesController.undoStack.clear();
