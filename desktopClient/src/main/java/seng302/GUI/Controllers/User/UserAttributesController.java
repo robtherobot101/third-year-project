@@ -235,145 +235,146 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public boolean updateUser() {
         //Extract names from user
-        String firstName = firstNameField.getText();
-        String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
-        String lastName = lastNameField.getText();
+        if(!onRefresh) {
+            String firstName = firstNameField.getText();
+            String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
+            String lastName = lastNameField.getText();
 
-        int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
-        String[] name = new String[1 + middleNames.length + isLastName];
-        name[0] = firstName;
-        System.arraycopy(middleNames, 0, name, 1, middleNames.length);
-        if (isLastName == 1) {
-            name[name.length - 1] = lastName;
-        }
+            int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
+            String[] name = new String[1 + middleNames.length + isLastName];
+            name[0] = firstName;
+            System.arraycopy(middleNames, 0, name, 1, middleNames.length);
+            if (isLastName == 1) {
+                name[name.length - 1] = lastName;
+            }
 
-        String preferredFirstName = preferredFirstNameField.getText();
-        String[] preferredMiddleNames = preferredMiddleNamesField.getText().isEmpty() ? new String[]{""} : preferredMiddleNamesField.getText().split(",");
-        String preferredLastName = preferredLastNameField.getText();
+            String preferredFirstName = preferredFirstNameField.getText();
+            String[] preferredMiddleNames = preferredMiddleNamesField.getText().isEmpty() ? new String[]{""} : preferredMiddleNamesField.getText().split(",");
+            String preferredLastName = preferredLastNameField.getText();
 
-        int isPreferredLastName = preferredLastNameField.getText() == null || preferredLastNameField.getText().isEmpty() ? 0 : 1;
-        String[] preferredName = new String[1 + preferredMiddleNames.length + isPreferredLastName];
-        preferredName[0] = preferredFirstName;
-        System.arraycopy(preferredMiddleNames, 0, preferredName, 1, preferredMiddleNames.length);
-        if (isLastName == 1) {
-            preferredName[preferredName.length - 1] = preferredLastName;
-        }
+            int isPreferredLastName = preferredLastNameField.getText() == null || preferredLastNameField.getText().isEmpty() ? 0 : 1;
+            String[] preferredName = new String[1 + preferredMiddleNames.length + isPreferredLastName];
+            preferredName[0] = preferredFirstName;
+            System.arraycopy(preferredMiddleNames, 0, preferredName, 1, preferredMiddleNames.length);
+            if (isLastName == 1) {
+                preferredName[preferredName.length - 1] = preferredLastName;
+            }
 
 
-        double userHeight = -1;
-        if (!heightField.getText().equals("")) {
-            try {
-                userHeight = Double.parseDouble(heightField.getText());
-                currentUser.setHeight(userHeight);
-            } catch (NumberFormatException e) {
-                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
+            double userHeight = -1;
+            if (!heightField.getText().equals("")) {
+                try {
+                    userHeight = Double.parseDouble(heightField.getText());
+                    currentUser.setHeight(userHeight);
+                } catch (NumberFormatException e) {
+                    WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
+                    userController.requestFocus();
+                    return false;
+                }
+            }
+
+            double userWeight = -1;
+            if (!weightField.getText().equals("")) {
+                try {
+                    userWeight = Double.parseDouble(weightField.getText());
+                    currentUser.setWeight(userWeight);
+                } catch (NumberFormatException e) {
+                    WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
+                    userController.requestFocus();
+                    return false;
+                }
+            }
+
+            String userBloodPressure = "";
+            String bloodPressure = bloodPressureTextField.getText();
+            if (bloodPressure != null && !bloodPressure.equals("")) {
+                String[] bloodPressureList = bloodPressureTextField.getText().split("/");
+                if (bloodPressureList.length != 2) {
+                    WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure " +
+                            "input.").show();
+                    userController.requestFocus();
+                    return false;
+                } else {
+                    for (String pressureComponent : bloodPressureList) {
+                        try {
+                            Integer.parseInt(pressureComponent);
+                        } catch (NumberFormatException e) {
+                            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood " +
+                                    "pressure input.").show();
+                            userController.requestFocus();
+                            return false;
+                        }
+                    }
+                    userBloodPressure = bloodPressureTextField.getText();
+                }
+            }
+
+            LocalDate currentDate = LocalDate.now();
+            if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
+                userController.requestFocus();
+                return false;
+            } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
+                userController.requestFocus();
+                return false;
+            } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death" +
+                        ".").show();
                 userController.requestFocus();
                 return false;
             }
-        }
 
-        double userWeight = -1;
-        if (!weightField.getText().equals("")) {
-            try {
-                userWeight = Double.parseDouble(weightField.getText());
-                currentUser.setWeight(userWeight);
-            } catch (NumberFormatException e) {
-                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
-                userController.requestFocus();
-                return false;
+            userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
+            //Commit changes
+            currentUser.setNameArray(name);
+            currentUser.setPreferredNameArray(preferredName);
+            currentUser.setHeight(userHeight);
+            currentUser.setWeight(userWeight);
+            currentUser.setBloodPressure(userBloodPressure);
+            currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
+            currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
+            currentUser.setGender(genderComboBox.getValue());
+            currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
+            currentUser.setBloodType(bloodTypeComboBox.getValue());
+            currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
+            currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
+
+
+            currentUser.setRegion(getRegion(
+                    countryComboBox, regionComboBox, regionField
+            ));
+
+            currentUser.setRegionOfDeath(getRegion(
+                    countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField
+            ));
+
+
+            if (countryComboBox.getValue() != null) {
+                currentUser.setCountry(countryComboBox.getValue().toString());
             }
-        }
 
-        String userBloodPressure = "";
-        String bloodPressure = bloodPressureTextField.getText();
-        if (bloodPressure != null && !bloodPressure.equals("")) {
-            String[] bloodPressureList = bloodPressureTextField.getText().split("/");
-            if (bloodPressureList.length != 2) {
-                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure " +
-                    "input.").show();
-                userController.requestFocus();
-                return false;
-            } else {
-                for (String pressureComponent : bloodPressureList) {
-                    try {
-                        Integer.parseInt(pressureComponent);
-                    } catch (NumberFormatException e) {
-                        WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood " +
-                            "pressure input.").show();
-                        userController.requestFocus();
-                        return false;
+            if (countryOfDeathComboBox.getValue() != null) {
+                currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
+            }
+
+            currentUser.setCurrentAddress(addressField.getText());
+            currentUser.setCityOfDeath(deathCityField.getText());
+
+            for (Organ key : organTickBoxes.keySet()) {
+                if (currentUser.getOrgans().contains(key)) {
+                    if (!organTickBoxes.get(key).isSelected()) {
+                        currentUser.getOrgans().remove(key);
+                    }
+                } else {
+                    if (organTickBoxes.get(key).isSelected()) {
+                        currentUser.getOrgans().add(key);
                     }
                 }
-                userBloodPressure = bloodPressureTextField.getText();
             }
+            userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
+            settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         }
-
-        LocalDate currentDate = LocalDate.now();
-        if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
-            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
-            userController.requestFocus();
-            return false;
-        } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
-            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
-            userController.requestFocus();
-            return false;
-        } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
-            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death" +
-                ".").show();
-            userController.requestFocus();
-            return false;
-        }
-
-        userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
-        //Commit changes
-        currentUser.setNameArray(name);
-        currentUser.setPreferredNameArray(preferredName);
-        currentUser.setHeight(userHeight);
-        currentUser.setWeight(userWeight);
-        currentUser.setBloodPressure(userBloodPressure);
-        currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
-        currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
-        currentUser.setGender(genderComboBox.getValue());
-        currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
-        currentUser.setBloodType(bloodTypeComboBox.getValue());
-        currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
-        currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
-
-
-        currentUser.setRegion(getRegion(
-                countryComboBox,regionComboBox,regionField
-        ));
-
-        currentUser.setRegionOfDeath(getRegion(
-                countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField
-        ));
-
-
-        if(countryComboBox.getValue() != null) {
-            currentUser.setCountry(countryComboBox.getValue().toString());
-        }
-
-        if(countryOfDeathComboBox.getValue() != null) {
-            currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
-        }
-
-        currentUser.setCurrentAddress(addressField.getText());
-        currentUser.setCityOfDeath(deathCityField.getText());
-
-
-        for (Organ key : organTickBoxes.keySet()) {
-            if (currentUser.getOrgans().contains(key)) {
-                if (!organTickBoxes.get(key).isSelected()) {
-                    currentUser.getOrgans().remove(key);
-                }
-            } else {
-                if (organTickBoxes.get(key).isSelected()) {
-                    currentUser.getOrgans().add(key);
-                }
-            }
-        }
-        userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
-        settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
         return true;
     }
 
@@ -424,12 +425,6 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         addressField.setText(currentUser.getCurrentAddress());
 
-
-        setRegion(currentUser.getRegion(), regionComboBox, regionField);
-        setRegion(currentUser.getRegionOfDeath(), regionOfDeathComboBox, regionOfDeathField);
-
-        deathCityField.setText(currentUser.getCityOfDeath());
-
         if(currentUser.getCountry() != null) {
             countryComboBox.getSelectionModel().select(currentUser.getCountry());
         }
@@ -437,6 +432,11 @@ public class UserAttributesController extends UserTabController implements Initi
         if(currentUser.getCountryOfDeath() != null) {
             countryOfDeathComboBox.getSelectionModel().select(currentUser.getCountryOfDeath());
         }
+
+        setRegion(currentUser.getRegion(), regionComboBox, regionField);
+        setRegion(currentUser.getRegionOfDeath(), regionOfDeathComboBox, regionOfDeathField);
+
+        deathCityField.setText(currentUser.getCityOfDeath());
 
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
