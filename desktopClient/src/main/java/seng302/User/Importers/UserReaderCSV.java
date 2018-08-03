@@ -80,9 +80,10 @@ public class UserReaderCSV implements ProfileReader<User> {
                 String region = nextLine[14];
                 int zipCode = Integer.parseInt(nextLine[15]);
                 String country = nextLine[16];
-                String homePhone = nextLine[17];
-                String mobilePhone = nextLine[18];
-                String email = nextLine[19];
+                String birth_country = nextLine[17];
+                String homePhone = nextLine[18];
+                String mobilePhone = nextLine[19];
+                String email = nextLine[20];
                 String password = "password";
 
                 // Convert raw dates to LocalDates

@@ -8,11 +8,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.client.HttpResponseException;
 import seng302.Data.Database.AdminsDB;
 import seng302.Data.Database.CliniciansDB;
 import seng302.Data.Database.GeneralDB;
@@ -44,6 +46,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static seng302.Generic.IO.getJarPath;
 
@@ -422,9 +425,7 @@ public class WindowManager extends Application {
      * @return returns true if can connect to the server, otherwise false
      */
     private boolean checkConnection() {
-        return true;
-
-        /*try {
+        try {
             if (!dataManager.getGeneral().status()) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
@@ -446,7 +447,7 @@ public class WindowManager extends Application {
                 return false;
             }
         }
-        return true;*/
+        return true;
     }
 
     /**

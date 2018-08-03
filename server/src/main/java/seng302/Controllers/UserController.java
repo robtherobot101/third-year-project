@@ -340,6 +340,14 @@ public class UserController {
             return "Bad Request";
         }
         System.out.println("Got " + receivedUsers.size() + " entries");
+
+        try {
+            model.insertUsers(receivedUsers);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            response.status(500);
+            return "Internal Server Error";
+        }
         response.status(200);
         return "OK";
     }

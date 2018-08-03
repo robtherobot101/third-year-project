@@ -1,14 +1,11 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
-import seng302.Model.*;
 import seng302.Model.Attribute.*;
+import seng302.Model.*;
 import seng302.Model.Medication.Medication;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -512,7 +509,56 @@ public class GeneralUser {
             statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
         }
+    }
 
+
+    private String getSingleUserStatement(User user) {
+        return String.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+                " email, password, date_of_birth) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                user.getNameArray()[0],
+                (user.getNameArray().length > 2 ?
+                        String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null),
+                (user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null),
+                (user.getPreferredNameArray()[0]),
+                (user.getPreferredNameArray().length > 2 ?
+                        String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null),
+                (user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null),
+                (java.sql.Timestamp.valueOf(user.getCreationTime())),
+                (java.sql.Timestamp.valueOf(user.getCreationTime())),
+                (user.getUsername()),
+                (user.getEmail()),
+                (user.getPassword()),
+                (java.sql.Date.valueOf(user.getDateOfBirth()))
+        );
+    }
+
+    /**
+     * Inserts the given users into the database.
+     * @param userList The given users which will be inserted.
+     * @throws SQLException If there is a problem working with the database.
+     */
+    public void insertUsers(List<User> userList) throws SQLException{
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            Statement stmt = connection.createStatement();
+            connection.setAutoCommit(false);
+
+            for (User foundUser: userList) {
+                if (foundUser.getUsername() == null) {
+                    System.out.println(foundUser);
+                }
+
+                stmt.addBatch(getSingleUserStatement(foundUser));
+            }
+
+            try {
+                // Batch is ready, execute it to insert the data
+                stmt.executeBatch();
+            } catch (SQLException e) {
+                System.out.println("Error message: " + e.getMessage());
+                return;
+            }
+            connection.commit();
+        }
     }
 
     /**
