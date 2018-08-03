@@ -65,7 +65,7 @@ namespace mobileAppClient
             if (loggedInUser.dateOfDeath != null)
             {
                 hasDiedSwitch.On = true;
-                dodInput.Date = loggedInUser.dateOfDeath.ToDateTime();
+                dodInput.Date = loggedInUser.dateOfDeath.date.ToDateTime();
             }
 
             HeightInput.Text = loggedInUser.height.ToString();
@@ -201,7 +201,8 @@ namespace mobileAppClient
 
             if (hasDiedSwitch.On)
             {
-                loggedInUser.dateOfDeath = new CustomDate(dodInput.Date);
+                loggedInUser.dateOfDeath = new CustomDateTime(dodInput.Date);
+                //loggedInUser.dateOfDeath.date = new CustomDate(dodInput.Date);
             } else
             {
                 loggedInUser.dateOfDeath = null;

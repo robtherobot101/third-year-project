@@ -85,6 +85,16 @@ namespace mobileAppClient
                         "One or both of the drugs are invalid",
                         "OK");
                         return;
+                    case HttpStatusCode.BadGateway:
+                        await DisplayAlert("Failed to get Interactions",
+                        "The Drug Interactions API is currently down",
+                                           "OK");
+                        return;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("Failed to get Interactions",
+                        "Please ensure you are connected to the internet",
+                        "OK");
+                        return;
                 }
             }
 
