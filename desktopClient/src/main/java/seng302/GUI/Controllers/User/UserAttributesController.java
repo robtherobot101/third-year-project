@@ -496,7 +496,7 @@ public class UserAttributesController extends UserTabController implements Initi
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Photo Options");
         alert.setHeaderText("Maximum Image size is 5MB.");
-        alert.setContentText("Accepted file formats are JPG, PNG, and BMP. Images MUST be square.");
+        alert.setContentText("Accepted file formats are JPEG, PNG, and BMP. Images MUST be square.");
 
         ButtonType upload_new_photo = new ButtonType("Upload new");
         ButtonType use_default_photo = new ButtonType("Use default");
@@ -506,10 +506,12 @@ public class UserAttributesController extends UserTabController implements Initi
         WindowManager.setIconAndStyle(alert.getDialogPane());
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == upload_new_photo){
-            uploadProfileImage();
-        } else if (result.get() == use_default_photo) {
-            deleteProfileImage();
+        if (result.isPresent()) {
+            if (result.get() == upload_new_photo) {
+                uploadProfileImage();
+            } else if (result.get() == use_default_photo) {
+                deleteProfileImage();
+            }
         }
 
 
@@ -543,14 +545,14 @@ public class UserAttributesController extends UserTabController implements Initi
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter fileExtensions =
                 new FileChooser.ExtensionFilter(
-                        "JPEG, PNG, BITMAP", "*.png", "*.jpg", "*.bmp"
+                        "JPEG, PNG, BITMAP", "*.png", "*.jpg", "*.jpeg", "*.bmp"
                 );
         fileChooser.getExtensionFilters().add(fileExtensions);
         try {
             File file = fileChooser.showOpenDialog(stage);
             String fileType = Files.probeContentType(file.toPath()).split("/")[1];
             if (file.length() < 5000000){
-                if(fileType.equals("png") || fileType.equals("jpg") || fileType.equals("bmp")){
+                if(fileType.equals("png") || fileType.equals("jpg") || fileType.equals("bmp") || fileType.equals("jpeg")){
                     currentUser.setProfileImageType(fileType);
                     BufferedImage bImage = ImageIO.read(file);
                     ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
