@@ -6,27 +6,27 @@ import java.time.LocalDateTime;
 
 public class DonatableOrgan {
 
-    private LocalDateTime dateOfDeath;
+    private LocalDateTime timeOfExpiry;
     private Organ organType;
     private long donorId;
     private int id;
 
 
-    public DonatableOrgan(LocalDateTime dateOfDeath, Organ organType, long donorId, int id){
-        this.dateOfDeath = dateOfDeath;
+    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
+        this.timeOfExpiry = timeOfExpiry;
         this.donorId = donorId;
         this.organType = organType;
         this.id = id;
     }
 
-    public DonatableOrgan(LocalDateTime dateOfDeath, Organ organType, long donorId){
-        this.dateOfDeath = dateOfDeath;
+    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId){
+        this.timeOfExpiry = timeOfExpiry;
         this.donorId = donorId;
         this.organType = organType;
     }
 
-    public LocalDateTime getDateOfDeath() {
-        return dateOfDeath;
+    public LocalDateTime getTimeOfExpiry() {
+        return timeOfExpiry;
     }
 
     public long getDonorId() {
@@ -41,7 +41,7 @@ public class DonatableOrgan {
         return id;
     }
 
-    public void setDateOfDeath(LocalDateTime dateOfDeath) {
-        this.dateOfDeath = dateOfDeath;
+    public void setTimeOfExpiry(LocalDateTime timeOfExpiry) {
+        this.timeOfExpiry = timeOfExpiry;
     }
 }
