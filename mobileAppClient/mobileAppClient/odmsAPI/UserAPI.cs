@@ -18,6 +18,63 @@ namespace mobileAppClient.odmsAPI
      */
     class UserAPI
     {
+
+        public async Task<HttpStatusCode> GetUserPhoto()
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await client.GetAsync(url + "/users/" + userController.LoggedInUser.id + "/photo");
+            }
+            catch (HttpRequestException e)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine(responseContent);
+
+                //User user;
+                //// If the profile received is not a user, return 401 to the Login screen
+                //try
+                //{
+                //    user = JsonConvert.DeserializeObject<User>(responseContent);
+                //}
+                //catch (JsonSerializationException jse)
+                //{
+                //    return HttpStatusCode.Unauthorized;
+                //}
+
+                //userController.LoggedInUser = user;
+                //IEnumerable<string> headerValues = response.Headers.GetValues("token");
+                //var token = headerValues.FirstOrDefault();
+                //userController.AuthToken = token;
+                //Console.WriteLine("Logged in as " + String.Join(String.Empty, userController.LoggedInUser.name));
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Failed to retrieve photo for user id ({0}) ({1})", userController.LoggedInUser.id, response.StatusCode));
+                return response.StatusCode;
+            }
+            
+        }
+
         /*
          * Returns the status of updating a user object to the server
          */

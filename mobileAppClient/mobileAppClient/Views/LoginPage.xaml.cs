@@ -91,6 +91,9 @@ namespace mobileAppClient
                     break;
             }
             loginClicked = false;
+
+            UserAPI userAPI = new UserAPI();
+            HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
         }
 
         /*
