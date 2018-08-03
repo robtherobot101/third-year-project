@@ -77,6 +77,8 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private Map<Organ, CheckBox> organTickBoxes;
 
+    private Boolean updatingFields = false;
+
     /**
      * Sets the current user and populates the fields
      * @param user the user to set as the current user
@@ -84,9 +86,12 @@ public class UserAttributesController extends UserTabController implements Initi
     public void setCurrentUser(User user) {
         currentUser = user;
         populateUserFields();
-        updateBMI();
-        updateAge();
-        setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
+        if (currentUser.getCountry() != null) {
+            setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
+        }
+        if (currentUser.getCountryOfDeath() != null) {
+            setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
+        }
     }
 
     /**
@@ -289,7 +294,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegion(String value, ComboBox<String> regionComboBox, TextField regionField) {
-        regionComboBox.setValue(value);
+        regionComboBox.getSelectionModel().select(value);
         regionField.setText(value);
     }
 
@@ -299,25 +304,27 @@ public class UserAttributesController extends UserTabController implements Initi
      * If New Zealand is selected in the countryComboBox, the  regionComboBox is visible, otherwise the regionField is visible.
      *
      * @param userValue The region value of the user (Could be region, or regionOfDeath)
-     * @param countryComboBox The ComboBox of countries
+     * @param country The country the user is from
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
-    public void setRegionControls(String userValue, ComboBox<Country> countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
-        boolean useCombo = Objects.equals(countryComboBox.getValue(), "New Zealand");
+    public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
+        updatingFields = true;
+        boolean useCombo = country.equalsIgnoreCase("New Zealand");
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
-
-        boolean validNZRegion = Arrays.stream(NZRegion.values())
-                .map(NZRegion::toString)
-                .collect(Collectors.toList())
-                .contains(userValue);
-
+        boolean validNZRegion;
+        try {
+            validNZRegion = Arrays.asList(NZRegion.values()).contains(NZRegion.parse(userValue));
+        } catch (IllegalArgumentException e) {
+            validNZRegion = false;
+        }
         if((useCombo && validNZRegion) || (!useCombo && !validNZRegion)) {
             setRegion(userValue, regionComboBox, regionField);
         } else {
             setRegion("", regionComboBox, regionField);
         }
+        updatingFields = false;
     }
 
     /**
@@ -456,7 +463,7 @@ public class UserAttributesController extends UserTabController implements Initi
             String[] bloodPressureList = bloodPressureTextField.getText().split("/");
             if (bloodPressureList.length != 2) {
                 WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure " +
-                    "input.").show();
+                        "input.").show();
                 userController.requestFocus();
                 return false;
             } else {
@@ -465,7 +472,7 @@ public class UserAttributesController extends UserTabController implements Initi
                         Integer.parseInt(pressureComponent);
                     } catch (NumberFormatException e) {
                         WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood " +
-                            "pressure input.").show();
+                                "pressure input.").show();
                         userController.requestFocus();
                         return false;
                     }
@@ -480,6 +487,8 @@ public class UserAttributesController extends UserTabController implements Initi
             userController.requestFocus();
             return false;
         }
+
+        updatingFields = true;
 
         userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
         //Commit changes
@@ -506,7 +515,7 @@ public class UserAttributesController extends UserTabController implements Initi
 
 
         currentUser.setRegion(getRegion(
-                countryComboBox,regionComboBox,regionField
+                countryComboBox, regionComboBox, regionField
         ));
 
         if(countryComboBox.getValue() != null) {
@@ -514,7 +523,6 @@ public class UserAttributesController extends UserTabController implements Initi
         }
 
         currentUser.setCurrentAddress(addressField.getText());
-
 
         for (Organ key : organTickBoxes.keySet()) {
             if (currentUser.getOrgans().contains(key)) {
@@ -529,6 +537,7 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
+        updatingFields = false;
         return true;
     }
 
@@ -537,6 +546,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * takes all their attributes and populates the user attributes on the attributes pane accordingly.
      */
     public void populateUserFields() {
+        updatingFields = true;
         try {
             List<String> validCountries = new ArrayList<>();
             for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(userController.getToken())) {
@@ -553,7 +563,7 @@ public class UserAttributesController extends UserTabController implements Initi
         if (splitNames.length > 2) {
             String[] middleName = new String[splitNames.length - 2];
             System.arraycopy(splitNames, 1, middleName, 0, splitNames.length - 2);
-            middleNameField.setText(String.join(",", middleName));
+            middleNameField.setText(String.join(" ", middleName));
             lastNameField.setText(splitNames[splitNames.length - 1]);
         } else if (splitNames.length == 2) {
             middleNameField.setText("");
@@ -567,7 +577,7 @@ public class UserAttributesController extends UserTabController implements Initi
         if (splitPreferredNames.length > 2) {
             String[] preferredMiddleName = new String[splitPreferredNames.length - 2];
             System.arraycopy(splitPreferredNames, 1, preferredMiddleName, 0, splitPreferredNames.length - 2);
-            preferredMiddleNamesField.setText(String.join(",", preferredMiddleName));
+            preferredMiddleNamesField.setText(String.join(" ", preferredMiddleName));
             preferredLastNameField.setText(splitPreferredNames[splitPreferredNames.length - 1]);
         } else if (splitPreferredNames.length == 2) {
             preferredMiddleNamesField.setText("");
@@ -578,6 +588,13 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         addressField.setText(currentUser.getCurrentAddress());
 
+        if(currentUser.getCountry() != null) {
+            countryComboBox.getSelectionModel().select(currentUser.getCountry());
+        }
+
+        if(currentUser.getCountryOfDeath() != null) {
+            countryOfDeathComboBox.getSelectionModel().select(currentUser.getCountryOfDeath());
+        }
 
         setRegion(currentUser.getRegion(), regionComboBox, regionField);
 
@@ -599,11 +616,11 @@ public class UserAttributesController extends UserTabController implements Initi
 
         bloodPressureTextField.setText(currentUser.getBloodPressure());
 
-        genderComboBox.setValue(currentUser.getGender());
-        genderIdentityComboBox.setValue(currentUser.getGenderIdentity());
-        bloodTypeComboBox.setValue(currentUser.getBloodType());
-        smokerStatusComboBox.setValue(currentUser.getSmokerStatus());
-        alcoholConsumptionComboBox.setValue(currentUser.getAlcoholConsumption());
+        genderComboBox.getSelectionModel().select(currentUser.getGender());
+        genderIdentityComboBox.getSelectionModel().select(currentUser.getGenderIdentity());
+        bloodTypeComboBox.getSelectionModel().select(currentUser.getBloodType());
+        smokerStatusComboBox.getSelectionModel().select(currentUser.getSmokerStatus());
+        alcoholConsumptionComboBox.getSelectionModel().select(currentUser.getAlcoholConsumption());
 
         for (Organ key : organTickBoxes.keySet()) {
             organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));
@@ -616,8 +633,10 @@ public class UserAttributesController extends UserTabController implements Initi
         Debugger.log("Attempting to update photo when populating attributes page");
         profileImage.setImage(WindowManager.getDataManager().getUsers().getUserPhoto((int) currentUser.getId()));
 
+        updateAge();
         updateBMI();
         highlightOrganCheckBoxes();
+        updatingFields = false;
     }
 
 
@@ -625,12 +644,14 @@ public class UserAttributesController extends UserTabController implements Initi
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
     public void attributeFieldUnfocused() {
-        User oldFields = new User(currentUser);
-        if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
-            addToUndoStack(oldFields);
-            userController.setUndoRedoButtonsDisabled(false, true);
-            titleBar.saved(false);
-            statusIndicator.setStatus("Edited user details", false);
+        if (!updatingFields) {
+            User oldFields = new User(currentUser);
+            if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
+                addToUndoStack(oldFields);
+                userController.setUndoRedoButtonsDisabled(false, true);
+                titleBar.saved(false);
+                statusIndicator.setStatus("Edited user details", false);
+            }
         }
     }
 
@@ -640,12 +661,11 @@ public class UserAttributesController extends UserTabController implements Initi
      * Called when the upload photo button is pressed. Presents a dialog with a choice of deleting an uploaded photo, or uploading a new one.
      */
     public void changeProfilePhoto() {
-
-            List<String> options = new ArrayList<>();
-            options.add("Upload a new profile photo");
-            if (currentUser.getProfileImageType() != null) {
-                options.add("Delete the current profile photo");
-            }
+        List<String> options = new ArrayList<>();
+        options.add("Upload a new profile photo");
+        if (currentUser.getProfileImageType() != null) {
+            options.add("Delete the current profile photo");
+        }
 
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Photo Options");
@@ -882,5 +902,9 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void setDeathControlsShown(boolean shown) {
         updateDeathDetailsButton.setVisible(shown);
+    }
+
+    public void setUpdatingFields(Boolean bool) {
+        updatingFields = bool;
     }
 }

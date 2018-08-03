@@ -4,6 +4,7 @@ import seng302.Logic.Database.Administration;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class DatabaseController {
@@ -20,7 +21,7 @@ public class DatabaseController {
         try {
             model.reset();
             return "RESET SUCCESSFUL";
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
             response.status(500);
             return "RESET FAILURE";
@@ -39,7 +40,7 @@ public class DatabaseController {
         try {
             model.resample();
             return "RESAMPLE SUCCESS";
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
             response.status(500);
             return "RESAMPLE FAILURE";

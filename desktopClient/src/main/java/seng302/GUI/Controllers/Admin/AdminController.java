@@ -812,14 +812,6 @@ public class AdminController implements Initializable {
             }
         });
 
-        updateFoundUsers(resultsPerPage, false);
-
-        try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users");
-        } catch (HttpResponseException e) {
-            Debugger.error("Could not set name search textfield placeholder. Failed to retrieve the number of users.");
-        }
-
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchNameTerm = newValue;
             updateFoundUsers();
@@ -902,7 +894,6 @@ public class AdminController implements Initializable {
             }
         });
         statusIndicator.setStatusBar(statusBar);
-        userTableView.refresh();
     }
 
     /**

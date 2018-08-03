@@ -73,7 +73,6 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
-            System.out.println("tried to update trans list with token " + token);
             for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token)) {
                 if (item.getStillWaitingOn()) {
                     addUserInfo(item);
