@@ -15,6 +15,7 @@ namespace mobileAppClient
      */ 
     public partial class OrgansPage : ContentPage 
     {
+        private bool isClinicianEditing;
         /*
          * Constructor which sets all of the organ cells to be on or off
          * depending on which organs a user has donated.
@@ -22,7 +23,15 @@ namespace mobileAppClient
         public OrgansPage()
         {
             InitializeComponent();
-            foreach(string item in UserController.Instance.LoggedInUser.organs) {
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                isClinicianEditing = true;
+            }
+            else
+            {
+                isClinicianEditing = false;
+            }
+            foreach (string item in UserController.Instance.LoggedInUser.organs) {
                 Console.WriteLine(item);
                 switch(item) {
                     case "LIVER":
@@ -139,7 +148,7 @@ namespace mobileAppClient
             }
 
             UserAPI userAPI = new UserAPI();
-            HttpStatusCode userUpdated = await userAPI.UpdateUser();
+            HttpStatusCode userUpdated = await userAPI.UpdateUser(isClinicianEditing);
 
             switch(userUpdated)
             {

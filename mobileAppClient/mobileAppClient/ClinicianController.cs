@@ -29,6 +29,17 @@ namespace mobileAppClient
             this.AuthToken = null;
         }
 
+        public bool isLoggedIn()
+        {
+            if (this.LoggedInClinician != null)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
         /*
          * Logs in a given user, updating all of its observers.
          */

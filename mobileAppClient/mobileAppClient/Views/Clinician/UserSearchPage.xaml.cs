@@ -136,13 +136,16 @@ namespace mobileAppClient.Views
             if (e.Item == null)
                 return;
 
-            //Deselect Item
+            // Deselect Item
             ((ListView)sender).SelectedItem = null;
 
-            User tappedUser = (User)e.Item;
-            string message = String.Format("{0} {1}", tappedUser.name[0], tappedUser.name[2]);
-            await DisplayAlert("User Selected", message, "OK");
+            User tappedUser = (User) e.Item;
+            UserController.Instance.LoggedInUser = tappedUser;
 
+            MainPage mainPage = new MainPage(true);
+            mainPage.Title = String.Format("User Viewer: {1}, {0}", tappedUser.name[0], tappedUser.name[2]);
+            
+            await Navigation.PushAsync(mainPage);
         }
     }
 }

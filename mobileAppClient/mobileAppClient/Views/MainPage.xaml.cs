@@ -21,16 +21,25 @@ namespace mobileAppClient
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
          */ 
-        public MainPage()
+        public MainPage(bool isClinicianView)
         {
-            OpenLogin();
             InitializeComponent();
-            UserController.Instance.mainPageController = this;
-            ClinicianController.Instance.mainPageController = this;
             menuList = new ObservableCollection<MasterPageItem>();
+            navigationDrawerList.ItemsSource = menuList;
+
+            // If a clinician is entering into a user's view
+            if (isClinicianView)
+            {
+                clinicianViewingUser();
+            } else
+            {
+                UserController.Instance.mainPageController = this;
+                ClinicianController.Instance.mainPageController = this;
+                OpenLogin();
+            }
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
-            navigationDrawerList.ItemsSource = menuList;
+            
             // Initial navigation, this can be used for our home page
 
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
@@ -111,6 +120,35 @@ namespace mobileAppClient
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(userSearchPage);
+        }
+
+        public void clinicianViewingUser()
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
+            BindingContext = new
+            {
+                Header = "  SENG302 - Team300",
+                Footer = "  Viewing user " + UserController.Instance.LoggedInUser.name[0]
+            };
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(UserOverviewPage) };
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
+            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png", TargetType = typeof(DiseasesPage) };
+            var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
+            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png", TargetType = typeof(WaitingListItemsPage) };
+            var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png", TargetType = typeof(MedicationsPage) };
+
+            // Adding menu items to menuList
+            menuList.Add(overviewPage);
+            menuList.Add(attributesPage);
+            menuList.Add(organsPage);
+            menuList.Add(medicationsPage);
+            menuList.Add(diseasesPage);
+            menuList.Add(proceduresPage);
+            menuList.Add(waitingListItemsPage);
         }
 
         /*
