@@ -2,7 +2,10 @@ package seng302.User;
 
 import seng302.User.Attribute.Organ;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class DonatableOrgan {
 
@@ -10,6 +13,7 @@ public class DonatableOrgan {
     private Organ organType;
     private long donorId;
     private int id;
+    private Duration timeLeft;
 
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
@@ -43,5 +47,17 @@ public class DonatableOrgan {
 
     public void setDateOfDeath(LocalDateTime timeOfExpiry) {
         this.timeOfExpiry = timeOfExpiry;
+    }
+
+    public Duration getTimeLeft(){
+        return timeLeft;
+    }
+
+    public void setTimeLeft(Duration time) {
+        timeLeft = time;
+    }
+
+    public void tickTimeLeft(){
+        timeLeft.minus(1, SECONDS);
     }
 }
