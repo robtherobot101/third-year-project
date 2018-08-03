@@ -196,7 +196,7 @@ public class Server {
             });
 
             path("/organs", () -> {
-                get("",     organsController::getAllDonatableOrgans);
+                get("",     organsController::queryOrgans);
                 post("",    organsController::insertOrgan);
                 delete("",  organsController::removeOrgan);
                 patch("",   organsController::updateOrgan);

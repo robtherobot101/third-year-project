@@ -9,8 +9,7 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class OrgansController {
 
@@ -30,6 +29,33 @@ public class OrgansController {
         List<DonatableOrgan> allDonatableOrgans;
         try {
             allDonatableOrgans = model.getAllDonatableOrgans();
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return e.getMessage();
+        }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String serializedOrgans = gson.toJson(allDonatableOrgans);
+
+        response.type("application/json");
+        response.status(200);
+        return serializedOrgans;
+    }
+
+    public String queryOrgans(Request request, Response response) {
+        List<DonatableOrgan> allDonatableOrgans;
+        Map<String, String> params = new HashMap<String, String>();
+        List<String> possibleParams = new ArrayList<String>(Arrays.asList(
+                "userRegion","organ",
+                "startIndex","count"
+        ));
+        for(String param:possibleParams){
+            if(request.queryParams(param) != null){
+                params.put(param,request.queryParams(param));
+            }
+        }
+        try {
+            allDonatableOrgans = model.queryOrgans(params);
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OrgansDatabase {
 
@@ -30,6 +31,39 @@ public class OrgansDatabase {
             }
             return allOrgans;
         }
+    }
+
+
+    /**
+     * gets all the organs from the database
+     * @return returns a list of all the organs in the database
+     * @throws SQLException throws if cannot connect to the database
+     */
+    public List<DonatableOrgan> queryOrgans(Map<String, String> params) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            List<DonatableOrgan> allOrgans = new ArrayList<>();
+            String query = buildOrganQuery(params);
+            System.out.println(query);
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                allOrgans.add(getOrganFromResultSet(resultSet));
+            }
+            return allOrgans;
+        }
+    }
+
+    public String buildOrganQuery(Map<String, String> params) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfExpiry IS NOT NULL ");
+        if(params.keySet().contains("userRegion")) {
+            queryBuilder.append("AND USER.region = '" + params.get("userRegion") + "' ");
+        }
+
+        if(params.keySet().contains("organ")) {
+            queryBuilder.append("AND DONATION_LIST_ITEM.name = '" + params.get("organ") + "' ");
+        }
+        return queryBuilder.toString();
     }
 
     /**
