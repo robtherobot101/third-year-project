@@ -89,9 +89,6 @@ public class UserAttributesController extends UserTabController implements Initi
         if (currentUser.getCountry() != null) {
             setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
         }
-        if (currentUser.getCountryOfDeath() != null) {
-            setRegionControls(currentUser.getRegionOfDeath(), currentUser.getCountryOfDeath(), regionOfDeathComboBox, regionOfDeathField);
-        }
     }
 
     /**
@@ -182,7 +179,7 @@ public class UserAttributesController extends UserTabController implements Initi
             updateButton.setDisable(!inputIsValid.get());
 
             // Setup listener on the countries combobox to switch the regions input type to ComboBox when selected country is "New Zealand"
-            setRegionControls(currentUser.getRegionOfDeath(), popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField);
+            setRegionControls(currentUser.getRegionOfDeath(), popupCountryOfDeathComboBox.getValue().toString(), popopRegionOfDeathComboBox, popupRegionOfDeathField);
         });
 
         popopRegionOfDeathComboBox.valueProperty().addListener((observable, oldValue, newValue)  -> {
@@ -236,7 +233,7 @@ public class UserAttributesController extends UserTabController implements Initi
         }
 
         setRegionControls(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField)
-                , popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField);
+                , currentUser.getCountryOfDeath(), popopRegionOfDeathComboBox, popupRegionOfDeathField);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -310,7 +307,10 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
         updatingFields = true;
-        boolean useCombo = country.equalsIgnoreCase("New Zealand");
+        boolean useCombo = false;
+        if (country != null) {
+            useCombo = country.equalsIgnoreCase("New Zealand");
+        }
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
         boolean validNZRegion;
@@ -331,7 +331,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setRegionControls(currentUser.getRegion(), countryComboBox, regionComboBox, regionField);
+        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
         System.out.println("Country changed");
         attributeFieldUnfocused();
     }
@@ -592,15 +592,10 @@ public class UserAttributesController extends UserTabController implements Initi
             countryComboBox.getSelectionModel().select(currentUser.getCountry());
         }
 
-        if(currentUser.getCountryOfDeath() != null) {
-            countryOfDeathComboBox.getSelectionModel().select(currentUser.getCountryOfDeath());
-        }
-
         setRegion(currentUser.getRegion(), regionComboBox, regionField);
 
         countryOfDeath.setText(currentUser.getCountryOfDeath());
         regionOfDeath.setText(currentUser.getRegionOfDeath());
-
         cityOfDeath.setText(currentUser.getCityOfDeath());
 
 
