@@ -144,5 +144,46 @@ namespace mobileAppClient.odmsAPI
             int userCount = Convert.ToInt32(responseContent);
             return new Tuple<HttpStatusCode, int>(HttpStatusCode.OK, userCount);
         }
+
+        public async Task<Tuple<HttpStatusCode, bool>> isUniqueUsernameEmail(string usernameEmail)
+        {
+            bool isUnique = false;
+            // Check internet connection
+            List<User> resultUsers = new List<User>();
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            string queries = String.Format("?usernameEmail={0}", usernameEmail);
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/unique" + queries);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, bool>(response.StatusCode, isUnique);
+            }
+            
+            string responseContent = await response.Content.ReadAsStringAsync();
+            if (responseContent.Equals("true"))
+            {
+                isUnique = true;
+            }
+            return new Tuple<HttpStatusCode, bool>(HttpStatusCode.OK, isUnique);
+        }
     }
 }

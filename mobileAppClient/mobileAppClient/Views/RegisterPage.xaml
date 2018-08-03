@@ -25,7 +25,7 @@
                 <Button Text="Check Availability"
                     HorizontalOptions="Center"
                     VerticalOptions="CenterAndExpand"
-                    Clicked="Handle_CheckAvailibilityButtonPressed" />
+                    Clicked="CheckCredentials" />
 
                 <Entry x:Name="passwordInput" Placeholder="Password"
                     IsPassword="true"
