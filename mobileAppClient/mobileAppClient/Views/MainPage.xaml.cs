@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using mobileAppClient.Views;
+using System;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -14,47 +12,37 @@ namespace mobileAppClient
      * Class to handle all functionality regarding the main menu slider for 
      * displaying all user navigation options.
      */ 
-    public partial class MainPage : MasterDetailPage, UserObserver
+    public partial class MainPage : MasterDetailPage
     {
 
-        public List<MasterPageItem> menuList { get; set; }
+        public ObservableCollection<MasterPageItem> menuList { get; set; }
 
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
          */ 
-        public MainPage()
+        public MainPage(bool isClinicianView)
         {
-            OpenLogin();
             InitializeComponent();
-            UserController.Instance.addUserObserver(this);
+            menuList = new ObservableCollection<MasterPageItem>();
+            navigationDrawerList.ItemsSource = menuList;
 
-            menuList = new List<MasterPageItem>();
-
-            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
-            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
-            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
-            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png" ,TargetType = typeof(LoginPage) };
-            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png",TargetType = typeof(DiseasesPage) };
-            var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
-            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png",TargetType = typeof(WaitingListItemsPage) };
-            var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
-
-
-            // Adding menu items to menuList
-            menuList.Add(overviewPage);
-            menuList.Add(attributesPage);
-            menuList.Add(organsPage);
-            menuList.Add(medicationsPage);
-            menuList.Add(diseasesPage);
-            menuList.Add(proceduresPage);
-            menuList.Add(waitingListItemsPage);
-            menuList.Add(logoutPage);
+            // If a clinician is entering into a user's view
+            if (isClinicianView)
+            {
+                clinicianViewingUser();
+            } else
+            {
+                UserController.Instance.mainPageController = this;
+                ClinicianController.Instance.mainPageController = this;
+                OpenLogin();
+            }
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
-            navigationDrawerList.ItemsSource = menuList;
+            
             // Initial navigation, this can be used for our home page
-            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(OverviewPage)));
+
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
             this.BindingContext = new
             {
                 Header = "",
@@ -78,21 +66,94 @@ namespace mobileAppClient
         }
 
         /*
-         * Observer class method to handle when a user is updated, 
-         * in this case updating the Details of the Menu Slider.
+         * Sets up the Main page for a user's view
          */ 
-        public void updateUser()
+        public void userLoggedIn()
         {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
                 Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(UserOverviewPage) };
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
+            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
+            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png", TargetType = typeof(DiseasesPage) };
+            var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
+            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png", TargetType = typeof(WaitingListItemsPage) };
+            var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png", TargetType = typeof(MedicationsPage) };
+
+            // Adding menu items to menuList
+            menuList.Add(overviewPage);
+            menuList.Add(attributesPage);
+            menuList.Add(organsPage);
+            menuList.Add(medicationsPage);
+            menuList.Add(diseasesPage);
+            menuList.Add(proceduresPage);
+            menuList.Add(waitingListItemsPage);
+            menuList.Add(logoutPage);
+        }
+
+        /*
+         * Sets up the Main page for a user's view
+         */
+        public void clinicianLoggedIn()
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(ClinicianOverviewPage)));
+            this.BindingContext = new
+            {
+                Header = "  SENG302 - Team300",
+                Footer = "  Logged in as CLINICIAN: " + ClinicianController.Instance.LoggedInClinician.name
+            };
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
+            var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
+
+
+            // Adding menu items to menuList
+            menuList.Add(overviewPage);
+            menuList.Add(userSearchPage);
+        }
+
+        public void clinicianViewingUser()
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
+            BindingContext = new
+            {
+                Header = "  SENG302 - Team300",
+                Footer = "  Viewing user " + UserController.Instance.LoggedInUser.name[0]
+            };
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(UserOverviewPage) };
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
+            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png", TargetType = typeof(DiseasesPage) };
+            var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
+            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png", TargetType = typeof(WaitingListItemsPage) };
+            var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png", TargetType = typeof(MedicationsPage) };
+
+            // Adding menu items to menuList
+            menuList.Add(overviewPage);
+            menuList.Add(attributesPage);
+            menuList.Add(organsPage);
+            menuList.Add(medicationsPage);
+            menuList.Add(diseasesPage);
+            menuList.Add(proceduresPage);
+            menuList.Add(waitingListItemsPage);
         }
 
         /*
          * Handles when a given page is selected in the menu slider and sends the user to that page.
-         */ 
+         */
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = (MasterPageItem)e.SelectedItem;
@@ -104,7 +165,6 @@ namespace mobileAppClient
                     OpenLogin();
                     break;
                 default:
-                    updateUser();
                     Detail = new NavigationPage((Page)Activator.CreateInstance(page));
                     IsPresented = false;
                     break;

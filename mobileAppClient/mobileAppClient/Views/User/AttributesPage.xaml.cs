@@ -19,8 +19,18 @@ namespace mobileAppClient
         // Whether the date of death input is visible
         private bool dateOfDeathShowing;
 
+        private bool isClinicianEditing;
+
         public AttributesPage()
         {
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                isClinicianEditing = true;
+            } else
+            {
+                isClinicianEditing = false;
+            }
+
             InitializeComponent();
 
             dateOfDeathShowing = false;
@@ -208,7 +218,7 @@ namespace mobileAppClient
             loggedInUser.alcoholConsumption = AlcoholConsumptionInput.SelectedItem.ToString().ToUpper();
 
             UserAPI userAPI = new UserAPI();
-            HttpStatusCode userUpdated = await userAPI.UpdateUser();
+            HttpStatusCode userUpdated = await userAPI.UpdateUser(isClinicianEditing);
 
             switch (userUpdated)
             {
