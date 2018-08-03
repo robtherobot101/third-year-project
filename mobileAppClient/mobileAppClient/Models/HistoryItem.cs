@@ -6,9 +6,10 @@ namespace mobileAppClient
      */ 
     public class HistoryItem
     {
-        public string Action { get; set; }
-        public string Description { get; set; }
-        public CustomDateTime DateTime { get; set; }
+        public string action { get; set; }
+        public string description { get; set; }
+        public CustomDateTime dateTime { get; set; }
+        public int id { get; set; }
 
     }
 }
