@@ -38,6 +38,10 @@ public class ProfileUtils {
                 statement.setString(1, token);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
+                    statement = connection.prepareStatement(
+                            "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
+                    statement.setString(1, token);
+                    statement.execute();
                     return resultSet.getInt("access_level");
                 } else {
                     return -1;
