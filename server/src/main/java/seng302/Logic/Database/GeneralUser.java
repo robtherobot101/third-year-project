@@ -4,6 +4,7 @@ import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.*;
 import seng302.Model.*;
 import seng302.Model.Medication.Medication;
+import seng302.Server;
 
 import java.sql.*;
 import java.text.MessageFormat;
@@ -578,11 +579,20 @@ public class GeneralUser {
             try {
                 // Batch is ready, execute it to insert the data
                 stmt.executeBatch();
-            } catch (SQLException e) {
+                connection.commit();
+            } catch (BatchUpdateException e) {
                 System.out.println("Error message: " + e.getMessage());
-                return;
+
+                int failedInserts = 0;
+                for (int i = 0; i < e.getUpdateCounts().length; i++ ) {
+                    if (e.getUpdateCounts()[i] == Statement.EXECUTE_FAILED) {
+                        failedInserts++;
+                        Server.getInstance().log.debug("Failed to execute record at: " + i);
+                    }
+                }
+                Server.getInstance().log.debug("Total failed inserts: " + failedInserts);
             }
-            connection.commit();
+
         }
     }
 
