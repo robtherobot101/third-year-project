@@ -60,4 +60,49 @@ public class DonatableOrgan {
     public void tickTimeLeft(){
         timeLeft.minus(1, SECONDS);
     }
+
+    /**
+     * Returns a duration of how long the organ will last based on the organ type entered.
+     * @param organType The organ type being donated
+     * @return How long the organ will last
+     */
+    public Duration getExpiryDuration(Organ organType) {
+        //TODO Find the duration of these
+        Duration duration = null;
+        switch(organType){
+
+            case LUNG:
+                duration = Duration.parse("PT6H");
+                break;
+            case HEART:
+                duration = Duration.parse("PT6H");
+                break;
+            case PANCREAS:
+                duration = Duration.parse("PT24H");
+                break;
+            case LIVER:
+                duration = Duration.parse("PT24H");
+                break;
+            case KIDNEY:
+                duration = Duration.parse("PT72H");
+                break;
+            case INTESTINE:
+                break;
+            case CORNEA:
+                duration = Duration.parse("P7D");
+                break;
+            case EAR:
+                break;
+            case TISSUE:
+                break;
+            case SKIN:
+                duration = Duration.parse("P3650D");
+                break;
+            case BONE:
+                duration = Duration.parse("P3650D");
+                break;
+
+        }
+        return duration;
+    }
 }
