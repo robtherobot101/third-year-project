@@ -30,7 +30,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
@@ -67,7 +66,7 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private Map<Organ, CheckBox> organTickBoxes;
 
-    private Boolean onRefresh = false;
+    private Boolean updatingFields = false;
 
     /**
      * Sets the current user and populates the fields
@@ -76,8 +75,6 @@ public class UserAttributesController extends UserTabController implements Initi
     public void setCurrentUser(User user) {
         currentUser = user;
         populateUserFields();
-        updateBMI();
-        updateAge();
         if (currentUser.getCountry() != null) {
             setRegionControls(currentUser.getRegion(), currentUser.getCountry(), regionComboBox, regionField);
         }
@@ -127,6 +124,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
+        updatingFields = true;
         boolean useCombo = country.equalsIgnoreCase("New Zealand");
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
@@ -141,26 +139,23 @@ public class UserAttributesController extends UserTabController implements Initi
         } else {
             setRegion("", regionComboBox, regionField);
         }
+        updatingFields = false;
     }
 
     /**
      * Updates the visibility of the death region controls and updates the undo stack if changes were made
      */
     public void countryOfDeathChanged() {
-        if (!onRefresh) {
-            setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox.getValue().toString(), regionOfDeathComboBox, regionOfDeathField);
-            attributeFieldUnfocused();
-        }
+        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox.getValue().toString(), regionOfDeathComboBox, regionOfDeathField);
+        attributeFieldUnfocused();
     }
 
     /**
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        if (!onRefresh) {
-            setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
-            attributeFieldUnfocused();
-        }
+        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
+        attributeFieldUnfocused();
     }
 
     /**
@@ -235,146 +230,147 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public boolean updateUser() {
         //Extract names from user
-        if(!onRefresh) {
-            String firstName = firstNameField.getText();
-            String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
-            String lastName = lastNameField.getText();
+        String firstName = firstNameField.getText();
+        String[] middleNames = middleNameField.getText().isEmpty() ? new String[]{""} : middleNameField.getText().split(",");
+        String lastName = lastNameField.getText();
 
-            int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
-            String[] name = new String[1 + middleNames.length + isLastName];
-            name[0] = firstName;
-            System.arraycopy(middleNames, 0, name, 1, middleNames.length);
-            if (isLastName == 1) {
-                name[name.length - 1] = lastName;
-            }
-
-            String preferredFirstName = preferredFirstNameField.getText();
-            String[] preferredMiddleNames = preferredMiddleNamesField.getText().isEmpty() ? new String[]{""} : preferredMiddleNamesField.getText().split(",");
-            String preferredLastName = preferredLastNameField.getText();
-
-            int isPreferredLastName = preferredLastNameField.getText() == null || preferredLastNameField.getText().isEmpty() ? 0 : 1;
-            String[] preferredName = new String[1 + preferredMiddleNames.length + isPreferredLastName];
-            preferredName[0] = preferredFirstName;
-            System.arraycopy(preferredMiddleNames, 0, preferredName, 1, preferredMiddleNames.length);
-            if (isLastName == 1) {
-                preferredName[preferredName.length - 1] = preferredLastName;
-            }
-
-
-            double userHeight = -1;
-            if (!heightField.getText().equals("")) {
-                try {
-                    userHeight = Double.parseDouble(heightField.getText());
-                    currentUser.setHeight(userHeight);
-                } catch (NumberFormatException e) {
-                    WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
-                    userController.requestFocus();
-                    return false;
-                }
-            }
-
-            double userWeight = -1;
-            if (!weightField.getText().equals("")) {
-                try {
-                    userWeight = Double.parseDouble(weightField.getText());
-                    currentUser.setWeight(userWeight);
-                } catch (NumberFormatException e) {
-                    WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
-                    userController.requestFocus();
-                    return false;
-                }
-            }
-
-            String userBloodPressure = "";
-            String bloodPressure = bloodPressureTextField.getText();
-            if (bloodPressure != null && !bloodPressure.equals("")) {
-                String[] bloodPressureList = bloodPressureTextField.getText().split("/");
-                if (bloodPressureList.length != 2) {
-                    WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure " +
-                            "input.").show();
-                    userController.requestFocus();
-                    return false;
-                } else {
-                    for (String pressureComponent : bloodPressureList) {
-                        try {
-                            Integer.parseInt(pressureComponent);
-                        } catch (NumberFormatException e) {
-                            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood " +
-                                    "pressure input.").show();
-                            userController.requestFocus();
-                            return false;
-                        }
-                    }
-                    userBloodPressure = bloodPressureTextField.getText();
-                }
-            }
-
-            LocalDate currentDate = LocalDate.now();
-            if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
-                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
-                userController.requestFocus();
-                return false;
-            } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
-                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
-                userController.requestFocus();
-                return false;
-            } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
-                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death" +
-                        ".").show();
-                userController.requestFocus();
-                return false;
-            }
-
-            userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
-            //Commit changes
-            currentUser.setNameArray(name);
-            currentUser.setPreferredNameArray(preferredName);
-            currentUser.setHeight(userHeight);
-            currentUser.setWeight(userWeight);
-            currentUser.setBloodPressure(userBloodPressure);
-            currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
-            currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
-            currentUser.setGender(genderComboBox.getValue());
-            currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
-            currentUser.setBloodType(bloodTypeComboBox.getValue());
-            currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
-            currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
-
-
-            currentUser.setRegion(getRegion(
-                    countryComboBox, regionComboBox, regionField
-            ));
-
-            currentUser.setRegionOfDeath(getRegion(
-                    countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField
-            ));
-
-
-            if (countryComboBox.getValue() != null) {
-                currentUser.setCountry(countryComboBox.getValue().toString());
-            }
-
-            if (countryOfDeathComboBox.getValue() != null) {
-                currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
-            }
-
-            currentUser.setCurrentAddress(addressField.getText());
-            currentUser.setCityOfDeath(deathCityField.getText());
-
-            for (Organ key : organTickBoxes.keySet()) {
-                if (currentUser.getOrgans().contains(key)) {
-                    if (!organTickBoxes.get(key).isSelected()) {
-                        currentUser.getOrgans().remove(key);
-                    }
-                } else {
-                    if (organTickBoxes.get(key).isSelected()) {
-                        currentUser.getOrgans().add(key);
-                    }
-                }
-            }
-            userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
-            settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
+        int isLastName = lastNameField.getText() == null || lastNameField.getText().isEmpty() ? 0 : 1;
+        String[] name = new String[1 + middleNames.length + isLastName];
+        name[0] = firstName;
+        System.arraycopy(middleNames, 0, name, 1, middleNames.length);
+        if (isLastName == 1) {
+            name[name.length - 1] = lastName;
         }
+
+        String preferredFirstName = preferredFirstNameField.getText();
+        String[] preferredMiddleNames = preferredMiddleNamesField.getText().isEmpty() ? new String[]{""} : preferredMiddleNamesField.getText().split(",");
+        String preferredLastName = preferredLastNameField.getText();
+
+        int isPreferredLastName = preferredLastNameField.getText() == null || preferredLastNameField.getText().isEmpty() ? 0 : 1;
+        String[] preferredName = new String[1 + preferredMiddleNames.length + isPreferredLastName];
+        preferredName[0] = preferredFirstName;
+        System.arraycopy(preferredMiddleNames, 0, preferredName, 1, preferredMiddleNames.length);
+        if (isLastName == 1) {
+            preferredName[preferredName.length - 1] = preferredLastName;
+        }
+
+
+        double userHeight = -1;
+        if (!heightField.getText().equals("")) {
+            try {
+                userHeight = Double.parseDouble(heightField.getText());
+                currentUser.setHeight(userHeight);
+            } catch (NumberFormatException e) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Height Input ", "Please input a valid height input.").show();
+                userController.requestFocus();
+                return false;
+            }
+        }
+
+        double userWeight = -1;
+        if (!weightField.getText().equals("")) {
+            try {
+                userWeight = Double.parseDouble(weightField.getText());
+                currentUser.setWeight(userWeight);
+            } catch (NumberFormatException e) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Weight Input ", "Please input a valid weight input.").show();
+                userController.requestFocus();
+                return false;
+            }
+        }
+
+        String userBloodPressure = "";
+        String bloodPressure = bloodPressureTextField.getText();
+        if (bloodPressure != null && !bloodPressure.equals("")) {
+            String[] bloodPressureList = bloodPressureTextField.getText().split("/");
+            if (bloodPressureList.length != 2) {
+                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood pressure " +
+                        "input.").show();
+                userController.requestFocus();
+                return false;
+            } else {
+                for (String pressureComponent : bloodPressureList) {
+                    try {
+                        Integer.parseInt(pressureComponent);
+                    } catch (NumberFormatException e) {
+                        WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Blood Pressure Input ", "Please input a valid blood " +
+                                "pressure input.").show();
+                        userController.requestFocus();
+                        return false;
+                    }
+                }
+                userBloodPressure = bloodPressureTextField.getText();
+            }
+        }
+
+        LocalDate currentDate = LocalDate.now();
+        if (dateOfBirthPicker.getValue().isAfter(currentDate)) {
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after today.").show();
+            userController.requestFocus();
+            return false;
+        } else if (dateOfDeathPicker.getValue() != null && dateOfDeathPicker.getValue().isAfter(currentDate)) {
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of death cannot be after today.").show();
+            userController.requestFocus();
+            return false;
+        } else if (dateOfDeathPicker.getValue() != null && dateOfBirthPicker.getValue().isAfter(dateOfDeathPicker.getValue())) {
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Date Input ", "The date of birth cannot be after the date of death" +
+                    ".").show();
+            userController.requestFocus();
+            return false;
+        }
+
+        updatingFields = true;
+
+        userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
+        //Commit changes
+        currentUser.setNameArray(name);
+        currentUser.setPreferredNameArray(preferredName);
+        currentUser.setHeight(userHeight);
+        currentUser.setWeight(userWeight);
+        currentUser.setBloodPressure(userBloodPressure);
+        currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
+        currentUser.setDateOfDeath(dateOfDeathPicker.getDateTimeValue());
+        currentUser.setGender(genderComboBox.getValue());
+        currentUser.setGenderIdentity(genderIdentityComboBox.getValue());
+        currentUser.setBloodType(bloodTypeComboBox.getValue());
+        currentUser.setAlcoholConsumption(alcoholConsumptionComboBox.getValue());
+        currentUser.setSmokerStatus(smokerStatusComboBox.getValue());
+
+
+        currentUser.setRegion(getRegion(
+                countryComboBox, regionComboBox, regionField
+        ));
+
+        currentUser.setRegionOfDeath(getRegion(
+                countryOfDeathComboBox, regionOfDeathComboBox, regionOfDeathField
+        ));
+
+
+        if (countryComboBox.getValue() != null) {
+            currentUser.setCountry(countryComboBox.getValue().toString());
+        }
+
+        if (countryOfDeathComboBox.getValue() != null) {
+            currentUser.setCountryOfDeath(countryOfDeathComboBox.getValue().toString());
+        }
+
+        currentUser.setCurrentAddress(addressField.getText());
+        currentUser.setCityOfDeath(deathCityField.getText());
+
+        for (Organ key : organTickBoxes.keySet()) {
+            if (currentUser.getOrgans().contains(key)) {
+                if (!organTickBoxes.get(key).isSelected()) {
+                    currentUser.getOrgans().remove(key);
+                }
+            } else {
+                if (organTickBoxes.get(key).isSelected()) {
+                    currentUser.getOrgans().add(key);
+                }
+            }
+        }
+        userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
+        settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
+        updatingFields = false;
         return true;
     }
 
@@ -383,6 +379,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * takes all their attributes and populates the user attributes on the attributes pane accordingly.
      */
     public void populateUserFields() {
+        updatingFields = true;
         try {
             List<String> validCountries = new ArrayList<>();
             for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(userController.getToken())) {
@@ -462,8 +459,10 @@ public class UserAttributesController extends UserTabController implements Initi
         Debugger.log("Attempting to update photo when populating attributes page");
         profileImage.setImage(WindowManager.getDataManager().getUsers().getUserPhoto((int) currentUser.getId()));
 
+        updateAge();
         updateBMI();
         highlightOrganCheckBoxes();
+        updatingFields = false;
     }
 
 
@@ -471,12 +470,14 @@ public class UserAttributesController extends UserTabController implements Initi
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
     public void attributeFieldUnfocused() {
-        User oldFields = new User(currentUser);
-        if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
-            addToUndoStack(oldFields);
-            userController.setUndoRedoButtonsDisabled(false, true);
-            titleBar.saved(false);
-            statusIndicator.setStatus("Edited user details", false);
+        if (!updatingFields) {
+            User oldFields = new User(currentUser);
+            if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
+                addToUndoStack(oldFields);
+                userController.setUndoRedoButtonsDisabled(false, true);
+                titleBar.saved(false);
+                statusIndicator.setStatus("Edited user details", false);
+            }
         }
     }
 
@@ -486,12 +487,11 @@ public class UserAttributesController extends UserTabController implements Initi
      * Called when the upload photo button is pressed. Presents a dialog with a choice of deleting an uploaded photo, or uploading a new one.
      */
     public void changeProfilePhoto() {
-
-            List<String> options = new ArrayList<>();
-            options.add("Upload a new profile photo");
-            if (currentUser.getProfileImageType() != null) {
-                options.add("Delete the current profile photo");
-            }
+        List<String> options = new ArrayList<>();
+        options.add("Upload a new profile photo");
+        if (currentUser.getProfileImageType() != null) {
+            options.add("Delete the current profile photo");
+        }
 
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Photo Options");
@@ -700,7 +700,7 @@ public class UserAttributesController extends UserTabController implements Initi
     /**
      * undos the last change
      */
-    public void undo(){
+    public void undo() {
         attributeFieldUnfocused();
         //Add the current fields to the redo stack
         redoStack.add(new User(currentUser));
@@ -741,7 +741,7 @@ public class UserAttributesController extends UserTabController implements Initi
         countryOfDeathComboBox.setDisable(!shown);
     }
 
-    public void setOnRefresh(Boolean bool) {
-        onRefresh = bool;
+    public void setUpdatingFields(Boolean bool) {
+        updatingFields = bool;
     }
 }
