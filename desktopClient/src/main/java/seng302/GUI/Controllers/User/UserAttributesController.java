@@ -125,7 +125,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
         updatingFields = true;
-        boolean useCombo = country.equalsIgnoreCase("New Zealand");
+        boolean useCombo = country != null && country.equalsIgnoreCase("New Zealand");
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
         boolean validNZRegion;
@@ -146,7 +146,8 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the death region controls and updates the undo stack if changes were made
      */
     public void countryOfDeathChanged() {
-        setRegionControls(currentUser.getRegionOfDeath(), countryOfDeathComboBox.getValue().toString(), regionOfDeathComboBox, regionOfDeathField);
+        String country =  countryOfDeathComboBox.getValue() == null ? null : countryOfDeathComboBox.getValue().toString();
+        setRegionControls(currentUser.getRegionOfDeath(), country, regionOfDeathComboBox, regionOfDeathField);
         attributeFieldUnfocused();
     }
 
@@ -154,7 +155,8 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
+        String country =  countryComboBox.getValue() == null ? null : countryComboBox.getValue().toString();
+        setRegionControls(currentUser.getRegion(), country, regionComboBox, regionField);
         attributeFieldUnfocused();
     }
 
@@ -471,6 +473,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void attributeFieldUnfocused() {
         if (!updatingFields) {
+            updatingFields = true;
             User oldFields = new User(currentUser);
             if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
                 addToUndoStack(oldFields);
@@ -478,6 +481,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 titleBar.saved(false);
                 statusIndicator.setStatus("Edited user details", false);
             }
+            updatingFields = false;
         }
     }
 
