@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.IO;
 
 
 namespace mobileAppClient.odmsAPI
@@ -45,26 +46,18 @@ namespace mobileAppClient.odmsAPI
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
+                
                 var responseContent = await response.Content.ReadAsStringAsync();
+                Photo receievedPhoto = new Photo(responseContent);
+                userController.photoObject = receievedPhoto;
 
-                Console.WriteLine(responseContent);
+                byte[] bytes = Convert.FromBase64String(receievedPhoto.data);
 
-                //User user;
-                //// If the profile received is not a user, return 401 to the Login screen
-                //try
-                //{
-                //    user = JsonConvert.DeserializeObject<User>(responseContent);
-                //}
-                //catch (JsonSerializationException jse)
-                //{
-                //    return HttpStatusCode.Unauthorized;
-                //}
+                ImageSource source = ImageSource.FromStream(() => new MemoryStream(bytes)); 
 
-                //userController.LoggedInUser = user;
-                //IEnumerable<string> headerValues = response.Headers.GetValues("token");
-                //var token = headerValues.FirstOrDefault();
-                //userController.AuthToken = token;
-                //Console.WriteLine("Logged in as " + String.Join(String.Empty, userController.LoggedInUser.name));
+                userController.ProfilePhotoSource = source;
+
+                Console.WriteLine("Successfully received profile photo for user id " + userController.LoggedInUser.id);
                 return HttpStatusCode.OK;
             }
             else
