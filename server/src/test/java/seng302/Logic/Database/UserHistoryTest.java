@@ -21,7 +21,7 @@ public class UserHistoryTest extends GenericTest {
         User user = HelperMethods.insertUser(generalUser);
         user.getUserHistory().clear();
         user.getUserHistory().addAll(HelperMethods.makeHistory());
-        generalUser.patchEntireUser(user, (int) user.getId());
+        generalUser.patchEntireUser(user, (int) user.getId(), false);
         assertEquals(userHistory.getAllHistoryItems((int) user.getId()), user.getUserHistory());
     }
 
@@ -38,7 +38,7 @@ public class UserHistoryTest extends GenericTest {
         User user = HelperMethods.insertUser(generalUser);
         user.getUserHistory().clear();
         user.getUserHistory().addAll(HelperMethods.makeHistory());
-        generalUser.patchEntireUser(user, (int) user.getId());
+        generalUser.patchEntireUser(user, (int) user.getId(), false);
         HistoryItem removed = userHistory.getAllHistoryItems((int) user.getId()).remove(5);
         userHistory.removeHistoryItem((int) user.getId(), removed.getId());
         assertFalse(userHistory.getAllHistoryItems((int) user.getId()).contains(removed));
