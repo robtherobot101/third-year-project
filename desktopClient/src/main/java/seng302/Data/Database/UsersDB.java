@@ -123,8 +123,8 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
-    public Image getUserPhoto(long id) {
-        APIResponse response = server.getRequest(new HashMap<>(), "users", "users", String.valueOf(id), "photo");
+    public Image getUserPhoto(long id, String token) {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id), "photo");
 
         if(response == null) return getDefaultProfilePhoto();
 
