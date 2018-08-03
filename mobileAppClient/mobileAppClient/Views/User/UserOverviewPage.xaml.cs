@@ -12,14 +12,14 @@ namespace mobileAppClient
      * Class to handle all functionality regarding the overview page for 
      * showing an overview of all of a user's details in the application.
      */ 
-    public partial class OverviewPage : ContentPage
+    public partial class UserOverviewPage : ContentPage
     {
-        public OverviewPage()
+        public UserOverviewPage()
         {
             InitializeComponent();
             if (UserController.Instance.LoggedInUser != null)
             {
-                //fillFields();
+                fillFields();
             }
         }
 
@@ -27,11 +27,10 @@ namespace mobileAppClient
          * Function which fill all in the table with all of the user's details
          * summarised from the other places in the application.
          */ 
-        public void fillFields() {
-            
+        private void fillFields()
+        {    
             User currentUser = UserController.Instance.LoggedInUser;
-
-
+           
             //Attributes Pane 
             //---------------------------------------------------------------------------
             double age = currentUser.getAge();

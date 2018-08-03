@@ -64,20 +64,37 @@ namespace mobileAppClient.Views
                 }
             };
 
-            // More ideal if this is awaited, but cant change the signature of the constructor method
             LoadItems();
         }
 
-        private async Task LoadItems()
+        /*
+         * Loads items from the DB and appends them to the bottom of the list. Infinity Scroll™
+         */
+        private async void LoadItems()
         {
             IsLoading = true;
+
             // This is where users will be populated from
             UserList.AddRange(await getUsers(currentIndex, 20));
-
             currentIndex += 20;
+
             IsLoading = false; 
         }
 
+        /*
+         * Loads items from the DB and appends them to the bottom of the list. Infinity Scroll™
+         * -Doesn't show an activity indicator
+         */
+        private async void LoadItemsQuiet()
+        { 
+            // This is where users will be populated from
+            UserList.AddRange(await getUsers(currentIndex, 20));
+            currentIndex += 20;
+        }
+
+        /*
+         * Fetches the users and checks if all users have been taken from DB
+         */
         private async Task<List<User>> getUsers(int startIndex, int count)
         {
             UserAPI userAPI = new UserAPI();
@@ -94,24 +111,24 @@ namespace mobileAppClient.Views
             return users.Item2;
         }
 
+        /*
+         * Resets the endOfUsers flag and grabs the start of the user list from DB, called by pull to refresh
+         */
         public ICommand RefreshCommand
         {
             get
             {
-                return new Command(async () =>
+                return new Command(() =>
                 {
                     UserListView.IsRefreshing = true;
-                    await refreshUserList();
+
+                    UserList.Clear();
+                    currentIndex = 0;
+                    LoadItemsQuiet();
+
                     UserListView.IsRefreshing = false;
                 });
             }
-        }
-
-        private async Task refreshUserList()
-        {
-            UserList.Clear();
-            currentIndex = 0;
-            await LoadItems();
         }
 
         async void Handle_UserTapped(object sender, ItemTappedEventArgs e)

@@ -32,7 +32,8 @@ namespace mobileAppClient
             // Setting our list to be ItemSource for ListView in MainPage.xaml
             navigationDrawerList.ItemsSource = menuList;
             // Initial navigation, this can be used for our home page
-            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(OverviewPage)));
+
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
             this.BindingContext = new
             {
                 Header = "",
@@ -60,6 +61,7 @@ namespace mobileAppClient
          */ 
         public void userLoggedIn()
         {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
@@ -68,7 +70,7 @@ namespace mobileAppClient
 
             menuList.Clear();
 
-            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(UserOverviewPage) };
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
             var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
@@ -93,6 +95,7 @@ namespace mobileAppClient
          */
         public void clinicianLoggedIn()
         {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(ClinicianOverviewPage)));
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
@@ -101,7 +104,7 @@ namespace mobileAppClient
 
             menuList.Clear();
 
-            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
             var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
 
 

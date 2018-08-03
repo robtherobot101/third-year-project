@@ -79,9 +79,6 @@ namespace mobileAppClient
                     "OK");
                 return;
             }
-
-
-
             // DOB validation is through constraints on the DatePicker in the XAML
 
             LoginAPI loginAPI = new LoginAPI();
@@ -163,7 +160,12 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_BackClicked(object sender, System.EventArgs e)
+        async void Handle_BackClicked(object sender, EventArgs e)
+        {
+            await Navigation.PopModalAsync();
+        }
+
+        async void Handle_CheckAvailibilityButtonPressed(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
         }

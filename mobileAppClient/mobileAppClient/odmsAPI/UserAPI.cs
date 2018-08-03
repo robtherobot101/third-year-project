@@ -73,6 +73,7 @@ namespace mobileAppClient.odmsAPI
 
         public async Task<Tuple<HttpStatusCode, List<User>>> GetUsers(int startIndex, int count)
         {
+            // Check internet connection
             List<User> resultUsers = new List<User>();
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -89,8 +90,7 @@ namespace mobileAppClient.odmsAPI
 
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
-            // TODO set this token back to the correct authWS
-            request.Headers.Add("token", "masterToken");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
             try
             {
@@ -103,15 +103,46 @@ namespace mobileAppClient.odmsAPI
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.Unauthorized, resultUsers);
-
+                return new Tuple<HttpStatusCode, List<User>>(response.StatusCode, resultUsers);
             }
 
             string responseContent = await response.Content.ReadAsStringAsync();
             resultUsers = JsonConvert.DeserializeObject<List<User>>(responseContent);
-            
-        
             return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.OK, resultUsers);
+        }
+
+        public async Task<Tuple<HttpStatusCode, int>> GetUserCount()
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, 0);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/usercount");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, 0);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, int>(response.StatusCode, 0);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            int userCount = Convert.ToInt32(responseContent);
+            return new Tuple<HttpStatusCode, int>(HttpStatusCode.OK, userCount);
         }
     }
 }
