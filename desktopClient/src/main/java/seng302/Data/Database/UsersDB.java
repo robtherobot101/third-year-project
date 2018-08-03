@@ -124,7 +124,7 @@ public class UsersDB implements UsersDAO {
 
     @Override
     public Image getUserPhoto(long id) {
-        APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.getRequest(new HashMap<>(), "users", "users", String.valueOf(id), "photo");
 
         if(response == null) return getDefaultProfilePhoto();
 
@@ -136,7 +136,6 @@ public class UsersDB implements UsersDAO {
         try {
             Debugger.log(response.getStatusCode());
             String encodedImage = response.getAsString();
-            System.out.println(encodedImage);
             //String base64Image = encodedImage.split(",")[1];
             //Decode the string to a byte array
             byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
@@ -149,7 +148,6 @@ public class UsersDB implements UsersDAO {
             return image;
         } catch (Exception e) {
             Debugger.error(e);
-            System.out.println(IO.getJarPath());
             return getDefaultProfilePhoto();
         }
     }
@@ -174,13 +172,13 @@ public class UsersDB implements UsersDAO {
         JsonParser jp = new JsonParser();
         PhotoStruct photoStruct = new PhotoStruct(image);
         JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
-        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", "users", String.valueOf(id), "photo");
         if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 
     @Override
     public void deleteUserPhoto(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", "users", String.valueOf(id), "photo");
         if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 

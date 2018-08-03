@@ -23,10 +23,19 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
             User loggedInUser = UserController.Instance.LoggedInUser;
 
+            drugA = drugA.Replace(" ", "-");
+            drugB = drugB.Replace(" ", "-");
+
             string query = String.Format("{0}/{1}/", drugA, drugB);
             string reversedQuery = String.Format("{0}/{1}/", drugB, drugA);
 
-            var response = await client.GetAsync(apiEndpoint + query);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.GetAsync(apiEndpoint + query);
+            } catch (HttpRequestException e) {
+                return new DrugInteractionResult(false, HttpStatusCode.BadRequest);
+            }
 
             // Reverse query attempt if 202, I dont know their API needs this
             if (response.StatusCode == HttpStatusCode.Accepted)

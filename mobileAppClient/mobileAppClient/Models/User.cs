@@ -18,7 +18,7 @@ namespace mobileAppClient
         public string alcoholConsumption { get; set; }
 
         public CustomDate dateOfBirth { get; set; }
-        public CustomDate dateOfDeath { get; set; }
+        public CustomDateTime dateOfDeath { get; set; }
         public CustomDateTime creationTime { get; set; }
         public CustomDateTime lastModified { get; set; }
 
@@ -73,7 +73,7 @@ namespace mobileAppClient
             }
             else
             {
-                age = (this.dateOfDeath.ToDateTime() - this.dateOfBirth.ToDateTime()).Days / 365.00;
+                age = (this.dateOfDeath.date.ToDateTime() - this.dateOfBirth.ToDateTime()).Days / 365.00;
             }
             return age;
         }
