@@ -7,9 +7,11 @@
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
             <Button 
-                Text="COMPARE"
-                Pressed="Handle_ChangeProfilePhotoPressed"
+                Text="Take Photo"
+                Pressed="SelectImageClicked"
             /> 
+
+            <Image x:Name="imageView" Aspect="AspectFit"/>
         </StackLayout>
         
     </ContentPage.Content>
