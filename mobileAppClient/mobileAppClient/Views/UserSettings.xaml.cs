@@ -1,11 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using mobileAppClient.odmsAPI;
 using Xamarin.Forms;
 
 namespace mobileAppClient
 {
     public partial class UserSettings : ContentPage
     {
+        
+        public string photoBase64String { get; set; }
+
         public UserSettings()
         {
             InitializeComponent();
@@ -13,11 +18,11 @@ namespace mobileAppClient
             //with the same format of a byte array and that string.
             MessagingCenter.Subscribe<byte[]>(this, "ImageSelected", (args) =>
             {
+                photoBase64String = Convert.ToBase64String((byte[])args);
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //Set the source of the image view with the byte array
                     imageView.Source = ImageSource.FromStream(() => new MemoryStream((byte[])args));
-                    Console.WriteLine(imageView.Source);
                 });
             });
         }
@@ -81,6 +86,43 @@ namespace mobileAppClient
                 }
                 else
                     return null;
+            }
+        }
+
+        async void Handle_SavePressed(object sender, System.EventArgs e)
+        {
+            Photo uploadedPhoto = new Photo(photoBase64String);
+            UserController.Instance.photoObject = uploadedPhoto;
+            UserAPI userAPI = new UserAPI();
+            HttpStatusCode photoUpdated = await userAPI.UpdateUserPhoto();
+
+            switch (photoUpdated)
+            {
+                case HttpStatusCode.OK:
+                    await DisplayAlert("",
+                    "User photo successfully updated",
+                    "OK");
+                    break;
+                case HttpStatusCode.BadRequest:
+                    await DisplayAlert("",
+                    "User photo update failed (400)",
+                    "OK");
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    await DisplayAlert("",
+                    "Unauthorised to modify photo",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error, please try again (500)",
+                    "OK");
+                    break;
             }
         }
     }

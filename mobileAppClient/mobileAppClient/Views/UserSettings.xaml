@@ -7,11 +7,16 @@
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
             <Button 
-                Text="Take Photo"
+                Text="Update Photo"
                 Pressed="SelectImageClicked"
             /> 
 
             <Image x:Name="imageView" Aspect="AspectFit"/>
+
+            <Button 
+                Text="Save"
+                Pressed="Handle_SavePressed"
+            /> 
         </StackLayout>
         
     </ContentPage.Content>

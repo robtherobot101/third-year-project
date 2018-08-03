@@ -89,9 +89,6 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            //User History Items are not currently configured thus must send as an empty list.
-            //UserController.Instance.LoggedInUser.userHistory = new List<HistoryItem>();
-
             String registerUserRequestBody = JsonConvert.SerializeObject(UserController.Instance.LoggedInUser);
             HttpContent body = new StringContent(registerUserRequestBody);
 
@@ -124,6 +121,55 @@ namespace mobileAppClient.odmsAPI
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
+        }
+
+        /*
+         * Function which returns the HTTPStatusCode of doing a call to the server
+         * to retrieve the user's profile photo.
+         */
+        public async Task<HttpStatusCode> UpdateUserPhoto()
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            //Create the request with token as a header
+            String uploadPhotoBody = JsonConvert.SerializeObject(UserController.Instance.photoObject);
+            HttpContent body = new StringContent(uploadPhotoBody);
+
+            int userId = UserController.Instance.LoggedInUser.id;
+
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + userId + "/photo");
+            request.Content = body;
+            request.Headers.Add("token", UserController.Instance.AuthToken);
+
+            try
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    Console.WriteLine("Success on editing user photo");
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    Console.WriteLine(String.Format("Failed update user photo ({0})", response.StatusCode));
+                    return response.StatusCode;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
         }
     }
 }
