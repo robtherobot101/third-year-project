@@ -68,6 +68,8 @@ namespace mobileAppClient
             {
                 case HttpStatusCode.OK:
                     // Pop away login screen on successful login
+                    UserAPI userAPI = new UserAPI();
+                    HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                     UserController.Instance.Login();
                     await Navigation.PopModalAsync();
                     break;
@@ -92,8 +94,7 @@ namespace mobileAppClient
             }
             loginClicked = false;
 
-            UserAPI userAPI = new UserAPI();
-            HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+ 
         }
 
         /*

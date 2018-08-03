@@ -104,6 +104,7 @@
     <AndroidResource Include="Resources\drawable\diseases_icon.png" />
     <AndroidResource Include="Resources\drawable\procedures_icon.png" />
     <AndroidResource Include="Resources\drawable\waitinglist_icon.png" />
+    <AndroidResource Include="Resources\drawable\settings_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-hdpi\" />

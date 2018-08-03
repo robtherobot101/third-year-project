@@ -39,6 +39,7 @@ namespace mobileAppClient
             var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
             var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png",TargetType = typeof(WaitingListItemsPage) };
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
+            var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
 
 
             // Adding menu items to menuList
@@ -49,6 +50,7 @@ namespace mobileAppClient
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
             menuList.Add(waitingListItemsPage);
+            menuList.Add(userSettingsPage);
             menuList.Add(logoutPage);
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml

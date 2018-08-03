@@ -20,6 +20,10 @@ namespace mobileAppClient.odmsAPI
     class UserAPI
     {
 
+        /*
+         * Function which returns the HTTPStatusCode of doing a call to the server
+         * to retrieve the user's profile photo.
+         */ 
         public async Task<HttpStatusCode> GetUserPhoto()
         {
             if (!await ServerConfig.Instance.IsConnectedToInternet())
@@ -33,11 +37,15 @@ namespace mobileAppClient.odmsAPI
             // Get the single userController instance
             UserController userController = UserController.Instance;
 
+            //Create the request with token as a header
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + userController.LoggedInUser.id + "/photo");
+            request.Headers.Add("token", UserController.Instance.AuthToken);
+
             HttpResponseMessage response;
 
             try
             {
-                response = await client.GetAsync(url + "/users/" + userController.LoggedInUser.id + "/photo");
+                response = await client.SendAsync(request);
             }
             catch (HttpRequestException e)
             {
@@ -96,8 +104,6 @@ namespace mobileAppClient.odmsAPI
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + userId);
             request.Content = body;
             request.Headers.Add("token", UserController.Instance.AuthToken);
-
-            Console.WriteLine(request);
 
             try
             {
