@@ -37,21 +37,8 @@ namespace mobileAppClient.Views
             }
         }
         
-
-        // Refreshing represents checking for new users and returning to the top of the list
-        private bool _isRefreshing = false;
-        public bool IsRefreshing
-        {
-            get { return _isRefreshing; }
-            set
-            {
-                _isRefreshing = value;
-                OnPropertyChanged(nameof(IsRefreshing));
-            }
-        }
         private int currentIndex;
         private bool endOfUsers;
-
         
         public CustomObservableCollection<User> UserList { get; set; }
 
@@ -63,6 +50,8 @@ namespace mobileAppClient.Views
             currentIndex = 0;
             UserList = new CustomObservableCollection<User>();
             UserListView.ItemsSource = UserList;
+            UserListView.RefreshCommand = RefreshCommand;
+
             UserListView.ItemAppearing += (sender, e) =>
             {
                 if (IsLoading || UserList.Count == 0 || endOfUsers)
@@ -75,10 +64,9 @@ namespace mobileAppClient.Views
                 }
             };
 
+            // More ideal if this is awaited, but cant change the signature of the constructor method
             LoadItems();
         }
-
-
 
         private async Task LoadItems()
         {
@@ -112,9 +100,9 @@ namespace mobileAppClient.Views
             {
                 return new Command(async () =>
                 {
-                    IsRefreshing = true;
+                    UserListView.IsRefreshing = true;
                     await refreshUserList();
-                    IsRefreshing = false;
+                    UserListView.IsRefreshing = false;
                 });
             }
         }
@@ -123,7 +111,7 @@ namespace mobileAppClient.Views
         {
             UserList.Clear();
             currentIndex = 0;
-            LoadItems();
+            await LoadItems();
         }
 
         async void Handle_UserTapped(object sender, ItemTappedEventArgs e)
@@ -138,16 +126,6 @@ namespace mobileAppClient.Views
             string message = String.Format("{0} {1}", tappedUser.name[0], tappedUser.name[2]);
             await DisplayAlert("User Selected", message, "OK");
 
-            
         }
     }
-
-        //private async void ListItemAppearing(object sender, ItemVisibilityEventArgs e)
-        //{
-        //    var itemTypeObject = e.Item as ItemType;
-        //    if (ItemsListView.ItemsSource.ToList().Last() == itemTypeObject)
-        //    {
-        //        //Now you are at bottom of list. Add more items to the ObservableCollection.
-        //    }
-        //}
 }
