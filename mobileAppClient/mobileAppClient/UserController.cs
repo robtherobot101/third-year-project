@@ -29,7 +29,7 @@ namespace mobileAppClient
         }
 
         /*
-         * Logs in a given user, updating all of its observers.
+         * Logs in a given user, updating the main view to be for a user
          */ 
         public void Login(User loggedInUser, string authToken)
         {

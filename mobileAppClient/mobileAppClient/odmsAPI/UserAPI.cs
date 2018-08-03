@@ -70,5 +70,48 @@ namespace mobileAppClient.odmsAPI
                 return HttpStatusCode.ServiceUnavailable;
             }
         }
+
+        public async Task<Tuple<HttpStatusCode, List<User>>> GetUsers(int startIndex, int count)
+        {
+            List<User> resultUsers = new List<User>();
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.ServiceUnavailable, resultUsers);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            String queries = null;
+
+            queries = String.Format("?startIndex={0}&count={1}", startIndex, count);
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
+            // TODO set this token back to the correct authWS
+            request.Headers.Add("token", "masterToken");
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.ServiceUnavailable, resultUsers);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.Unauthorized, resultUsers);
+
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            resultUsers = JsonConvert.DeserializeObject<List<User>>(responseContent);
+            
+        
+            return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.OK, resultUsers);
+        }
     }
 }

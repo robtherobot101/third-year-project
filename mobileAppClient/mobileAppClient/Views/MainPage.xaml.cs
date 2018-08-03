@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using mobileAppClient.Views;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -105,7 +102,7 @@ namespace mobileAppClient
             menuList.Clear();
 
             var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
-            var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
+            var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
 
 
             // Adding menu items to menuList
