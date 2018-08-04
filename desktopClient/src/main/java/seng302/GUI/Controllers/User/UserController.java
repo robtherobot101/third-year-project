@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.User.Attribute.ProfileType.CLINICIAN;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -48,6 +49,7 @@ public class UserController implements Initializable {
             userAttributesButton, diseasesButton, proceduresButton, historyButton;
     @FXML
     private StatusBar statusBar;
+
     @FXML
     private UserAttributesController attributesController;
     @FXML
@@ -103,6 +105,10 @@ public class UserController implements Initializable {
 
     public String getToken() {
         return token;
+    }
+
+    public UserAttributesController getAttributesController() {
+        return attributesController;
     }
 
     /**
@@ -170,7 +176,6 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             try {
-                attributesController.setOnRefresh(true);
                 User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId(), token);
                 attributesController.undoStack.clear();
                 attributesController.redoStack.clear();
@@ -185,7 +190,6 @@ public class UserController implements Initializable {
                 setUndoRedoButtonsDisabled(true, true);
                 setCurrentUser(latest, token);
                 addHistoryEntry("Refreshed", "User data was refreshed from the server.");
-                attributesController.setOnRefresh(false);
                 alert.close();
 
             } catch (HttpResponseException e) {
@@ -578,6 +582,6 @@ public class UserController implements Initializable {
         logoutMenuItem.setDisable(shown);
         logoutButton.setDisable(shown);
         waitingListButton.setVisible((currentUser != null && currentUser.isReceiver()) || shown);
-        attributesController.setDeathControlsShown(shown);
+        attributesController.setDeathControlsShown(false);
     }
 }

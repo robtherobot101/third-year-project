@@ -887,7 +887,7 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
+                        WindowManager.newAdminsUserWindow(row.getItem(), token);
                     }
                 });
                 return row;
