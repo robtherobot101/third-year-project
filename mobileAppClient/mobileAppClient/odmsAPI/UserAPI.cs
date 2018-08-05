@@ -21,7 +21,7 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns the status of updating a user object to the server
          */
-        public async Task<HttpStatusCode> UpdateUser()
+        public async Task<HttpStatusCode> UpdateUser(bool isClinician)
         {
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -45,7 +45,16 @@ namespace mobileAppClient.odmsAPI
 
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + userId);
             request.Content = body;
-            request.Headers.Add("token", UserController.Instance.AuthToken);
+
+            if (isClinician)
+            {
+                request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+            } else
+            {
+                request.Headers.Add("token", UserController.Instance.AuthToken);
+
+            }
+
 
             Console.WriteLine(request);
 
@@ -66,9 +75,123 @@ namespace mobileAppClient.odmsAPI
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine(ex);
                 return HttpStatusCode.ServiceUnavailable;
             }
+        }
+
+        public async Task<Tuple<HttpStatusCode, List<User>>> GetUsers(int startIndex, int count)
+        {
+            // Check internet connection
+            List<User> resultUsers = new List<User>();
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.ServiceUnavailable, resultUsers);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            String queries = null;
+
+            queries = String.Format("?startIndex={0}&count={1}", startIndex, count);
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.ServiceUnavailable, resultUsers);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, List<User>>(response.StatusCode, resultUsers);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            resultUsers = JsonConvert.DeserializeObject<List<User>>(responseContent);
+            return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.OK, resultUsers);
+        }
+
+        public async Task<Tuple<HttpStatusCode, int>> GetUserCount()
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, 0);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/usercount");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, 0);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, int>(response.StatusCode, 0);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            int userCount = Convert.ToInt32(responseContent);
+            return new Tuple<HttpStatusCode, int>(HttpStatusCode.OK, userCount);
+        }
+
+        public async Task<Tuple<HttpStatusCode, bool>> isUniqueUsernameEmail(string usernameEmail)
+        {
+            bool isUnique = false;
+            // Check internet connection
+            List<User> resultUsers = new List<User>();
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            string queries = String.Format("?usernameEmail={0}", usernameEmail);
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/unique" + queries);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, bool>(response.StatusCode, isUnique);
+            }
+            
+            string responseContent = await response.Content.ReadAsStringAsync();
+            if (responseContent.Equals("true"))
+            {
+                isUnique = true;
+            }
+            return new Tuple<HttpStatusCode, bool>(HttpStatusCode.OK, isUnique);
         }
     }
 }

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="mobileAppClient.Views.ClinicianOverviewPage"
+             Title="Overview">
+    <ContentPage.Content>
+        <StackLayout>
+            <Image Source="overviewImage.jpg" Aspect="AspectFit" />
+            <TableView Intent="Menu" HasUnevenRows="true">
+                <TableRoot>
+                    <TableSection>
+                        <TextCell Text="Database Details" x:Name="DatabaseCell"/>
+                        <ViewCell IsEnabled="false" >
+                            <StackLayout Padding="15, 0, 0, 0">
+                                <Label Text="Hello hello" LineBreakMode="WordWrap" x:Name="UserCountLabel"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

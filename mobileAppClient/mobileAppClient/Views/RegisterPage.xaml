@@ -22,6 +22,10 @@
                 <Entry x:Name="usernameInput" Placeholder="Username"
                     VerticalOptions="CenterAndExpand" 
                     />
+                <Button Text="Check Availability"
+                    HorizontalOptions="Center"
+                    VerticalOptions="CenterAndExpand"
+                    Clicked="CheckCredentials" />
 
                 <Entry x:Name="passwordInput" Placeholder="Password"
                     IsPassword="true"

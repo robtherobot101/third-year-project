@@ -195,7 +195,6 @@ public class WindowManager extends Application {
      */
     public static void setCurrentUser(User currentUser, String token) {
         userController.setCurrentUser(currentUser, token);
-        System.out.println(token);
         userController.setControlsShown(false);
     }
 
@@ -211,17 +210,6 @@ public class WindowManager extends Application {
             userController.populateWaitingList();
         }
     }
-
-    /**
-     * Calls the function which updates the the attributes panel of each user window.
-     */
-    public static void updateUserAttributes() {
-        for (UserController userController : cliniciansUserWindows.values()) {
-            userController.populateUserAttributes();
-        }
-    }
-
-
 
     /**
      * Calls the function which updates the transplant waiting list pane.
