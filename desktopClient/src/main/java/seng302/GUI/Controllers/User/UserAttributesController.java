@@ -734,16 +734,13 @@ public class UserAttributesController extends UserTabController implements Initi
 
     /**
      * set whether to show the date of daeth controls
-     * @param shown whaether to show or not
+     * @param shown whether to show or not
      */
     public void setDeathControlsShown(boolean shown) {
         dateOfDeathPicker.setDisable(!shown);
-
         deathCityField.setDisable(!shown);
-
         regionOfDeathComboBox.setDisable(!shown);
         regionOfDeathField.setDisable(!shown);
-
         countryOfDeathComboBox.setDisable(!shown);
     }
 
