@@ -19,6 +19,11 @@
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\James\Downloads\team-300.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>WindpipeOarsman3174</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>team-300</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>WindpipeOarsman3174</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
