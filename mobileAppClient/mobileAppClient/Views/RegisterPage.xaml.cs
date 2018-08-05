@@ -79,10 +79,19 @@ namespace mobileAppClient
                     "OK");
                 return;
             }
-
-
-
             // DOB validation is through constraints on the DatePicker in the XAML
+
+            // Check uniqueness
+            Tuple<bool, bool, bool> uniquenessResult = await isUsernameEmailUnique();
+
+            if (!uniquenessResult.Item1 || !uniquenessResult.Item2)
+            {
+                // Username + email taken
+                await DisplayAlert(
+                        "",
+                        "Email/username is taken",
+                        "OK");
+            }
 
             LoginAPI loginAPI = new LoginAPI();
             HttpStatusCode registerUserResult = await loginAPI.RegisterUser(givenFirstName, givenLastName, givenEmail,
@@ -131,7 +140,6 @@ namespace mobileAppClient
             {
                 case HttpStatusCode.OK:
                     // Pop away login screen on successful login
-                    UserController.Instance.Login();
                     await DisplayAlert("",
                         "Account successfully created",
                         "OK");
@@ -163,8 +171,84 @@ namespace mobileAppClient
                     break;
             }
         }
+        /*
+         * <bool, bool, bool> = <isUsernameUnique, isEmailUnique, wasApiCallSuccessful?>
+         */
+        async Task<Tuple<bool, bool, bool>> isUsernameEmailUnique()
+        {
+            UserAPI userAPI = new UserAPI();
 
-        async void Handle_BackClicked(object sender, System.EventArgs e)
+            // Get validity of username
+            Tuple<HttpStatusCode, bool> isUniqueUsernameResult = await userAPI.isUniqueUsernameEmail(usernameInput.Text);
+            if (isUniqueUsernameResult.Item1 != HttpStatusCode.OK)
+            {
+                await DisplayAlert(
+                        "Server Failed",
+                        "Failed to check username",
+                        "OK");
+                return new Tuple<bool, bool, bool>(false, false, false);
+            }
+
+            // Get validity of email
+            Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(emailInput.Text);
+            if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
+            {
+                await DisplayAlert(
+                        "Server Failed",
+                        "Failed to check email",
+                        "OK");
+                return new Tuple<bool, bool, bool>(false, false, false);
+            }
+
+            return new Tuple<bool, bool, bool>(isUniqueUsernameResult.Item2, isUniqueEmailResult.Item2, true);
+        }
+
+        async void CheckCredentials(object sender, EventArgs e)
+        {
+            string givenEmail = InputValidation.Trim(emailInput.Text);
+            string givenUsername = InputValidation.Trim(usernameInput.Text);
+
+            // Check if a username and valid email is entered
+            if (!InputValidation.IsValidEmail(givenEmail))
+            {
+                await DisplayAlert("",
+                    "Please enter a valid email",
+                    "OK");
+                return;
+            }
+
+            else if (!InputValidation.IsValidTextInput(givenUsername, true, false))
+            {
+                await DisplayAlert("",
+                    "Please enter a valid username",
+                    "OK");
+                return;
+            }
+
+            Tuple<bool, bool, bool> uniquenessResult = await isUsernameEmailUnique();
+            if (!uniquenessResult.Item3)
+            {
+                return;
+            }
+            if (!uniquenessResult.Item1 || !uniquenessResult.Item2)
+            {
+                // Username + email taken
+                await DisplayAlert(
+                        "",
+                        "Email/username is taken",
+                        "OK");
+            } 
+            else
+            {
+                // Both available
+                await DisplayAlert(
+                        "",
+                        "Email/username are available",
+                        "OK");
+            }
+        }
+
+        async void Handle_BackClicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
         }

@@ -67,8 +67,7 @@ namespace mobileAppClient
             switch(statusCode)
             {
                 case HttpStatusCode.OK:
-                    // Pop away login screen on successful login
-                    UserController.Instance.Login();
+                    // Pop away login screen on successful user/clinician login
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:

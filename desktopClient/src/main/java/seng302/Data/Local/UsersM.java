@@ -394,7 +394,7 @@ public class UsersM implements UsersDAO {
      * @param id the user id
      */
     @Override
-    public Image getUserPhoto(long id) {
+    public Image getUserPhoto(long id, String token) {
         return null;
     }
 
