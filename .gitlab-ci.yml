@@ -9,6 +9,7 @@ junit:
   stage: test
   script:
     - docker-compose build
+    - docker container stop testing
     - docker container prune -f
     - docker run -d -p 7016:7015 --name testing team300_app /srv/java/jvm/bin/java -jar target/server-1.0-SNAPSHOT.jar -t
     - mvn -B clean test
