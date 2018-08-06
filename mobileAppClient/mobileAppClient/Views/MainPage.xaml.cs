@@ -1,4 +1,5 @@
-﻿using mobileAppClient.Views;
+﻿using mobileAppClient.odmsAPI;
+using mobileAppClient.Views;
 using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
@@ -35,7 +36,7 @@ namespace mobileAppClient
             {
                 UserController.Instance.mainPageController = this;
                 ClinicianController.Instance.mainPageController = this;
-                OpenLogin();
+                LogoutUser();
             }
 
             // Setting our list to be ItemSource for ListView in MainPage.xaml
@@ -55,11 +56,15 @@ namespace mobileAppClient
         /*
          * Method which is used when a user logs out, opening the login page again.
          */ 
-        private async void OpenLogin()
+        private async void LogoutUser()
         {
+            // Remove token from server
+            LoginAPI loginAPI = new LoginAPI();
+            await loginAPI.Logout(false);
+
             // Logout any currently stored user
             UserController.Instance.Logout();
-
+           
             // Open the login page
             var loginPage = new LoginPage();
             await Navigation.PushModalAsync(loginPage);
@@ -162,7 +167,7 @@ namespace mobileAppClient
             switch(page.Name)
             {
                 case "LoginPage":
-                    OpenLogin();
+                    LogoutUser();
                     break;
                 default:
                     Detail = new NavigationPage((Page)Activator.CreateInstance(page));

@@ -16,7 +16,7 @@ namespace mobileAppClient.odmsAPI
     /*
      * Holds methods that interface to the /user endpoint in the ODMS API
      */
-    class UserAPI
+    public class UserAPI
     {
         /*
          * Returns the status of updating a user object to the server

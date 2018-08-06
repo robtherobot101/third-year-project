@@ -8,11 +8,12 @@ namespace mobileAppClient
      * Class to handle the logged in user of the application.
      * Accessible using a singleton framework with a given instance.
      */ 
-    sealed class UserController
+    public sealed class UserController
     {
         public User LoggedInUser { get; set; }
         public string AuthToken { get; set; }
         public MainPage mainPageController { get; set; }
+        public bool isTestMode { get; set; }
 
         private static readonly Lazy<UserController> lazy =
         new Lazy<UserController>(() => new UserController());
@@ -35,11 +36,15 @@ namespace mobileAppClient
         {
             this.LoggedInUser = loggedInUser;
             this.AuthToken = authToken;
-            this.mainPageController.userLoggedIn();
+            if (!isTestMode)
+            {
+                this.mainPageController.userLoggedIn();
+            }
         }
 
         private UserController()
         {
+            isTestMode = false;
         }
     }
 }
