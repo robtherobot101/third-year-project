@@ -306,11 +306,10 @@ public class UserController {
             response.status(400);
             return "Missing User Body";
         } else {
-            //TODO make model.insertUser return token
             try {
                 model.insertUser(receivedUser);
                 response.status(201);
-                return "placeholder token";
+                return "Success";
             } catch (SQLException e) {
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
@@ -364,7 +363,7 @@ public class UserController {
                 String token = request.headers("token");
                 ProfileUtils profileUtils = new ProfileUtils();
                 int accessLevel = profileUtils.checkToken(token);
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel > 1); //this version patches all user information
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {

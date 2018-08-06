@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserMedications {
 
@@ -114,5 +115,51 @@ public class UserMedications {
                 historyList,
                 medicationsResultSet.getInt("id")
         );
+    }
+
+    /**
+     * Replace a user's medications on the database with a new set of medications.
+     *
+     * @param newMedications The list of medications to replace the old one with
+     * @param userId The id of the user to replace medications of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
+        List<Medication> oldMedications = getAllMedications(userId);
+
+        //Remove all medications that are already on the database
+        for (int i = oldMedications.size() - 1; i >= 0; i--) {
+            Medication found = null;
+            for (Medication newMedication: newMedications) {
+                if (newMedication.equals(oldMedications.get(i))) {
+                    found = newMedication;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Medication newMedication: newMedications) {
+                    if (newMedication.getId() == oldMedications.get(i).getId()) {
+                        updateMedication(oldMedications.get(i), oldMedications.get(i).getId(), userId);
+                        found = newMedication;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newMedications.remove(found);
+                oldMedications.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Medication medication: oldMedications) {
+            removeMedication(userId, medication.getId());
+        }
+
+        //Upload all new medications
+        for (Medication medication: newMedications) {
+            insertMedication(medication, userId);
+        }
     }
 }

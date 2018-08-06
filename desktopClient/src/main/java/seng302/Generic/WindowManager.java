@@ -125,7 +125,8 @@ public class WindowManager extends Application {
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
 
-            newUserController.setCurrentUser(user, token);
+            User latest = WindowManager.getDataManager().getUsers().getUser((int)user.getId(), token);
+            newUserController.setCurrentUser(latest, token);
             newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
@@ -302,14 +303,6 @@ public class WindowManager extends Application {
         if (adminController.hasToken()) {
             adminController.updateFoundUsers();
         }
-    }
-
-    /**
-     * refreshes the admin
-     */
-    public static void refreshAdmin() {
-        adminController.refreshLatestProfiles();
-        adminController.updateFoundUsers();
     }
 
     /**
@@ -506,15 +499,12 @@ public class WindowManager extends Application {
                 if (event.getCode() == KeyCode.F5) {
                     updateTransplantWaitingList();
                     updateUserWaitingLists();
-                    refreshAdmin();
                 }
             });
 
             getScene(TFScene.admin).setOnKeyReleased(event -> {
                 if (event.getCode() == KeyCode.F5) {
-                    updateTransplantWaitingList();
-                    updateUserWaitingLists();
-
+                    adminController.refresh();
                 }
             });
         } else {

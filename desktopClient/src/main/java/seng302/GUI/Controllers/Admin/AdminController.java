@@ -82,7 +82,7 @@ public class AdminController implements Initializable {
     @FXML
     private Label staffIDLabel, userDisplayText, adminNameLabel, adminAddressLabel;
     @FXML
-    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton;
+    private Button refreshButton, homeButton, transplantListButton, cliTabButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -108,7 +108,6 @@ public class AdminController implements Initializable {
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
-    private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
 
@@ -141,6 +140,7 @@ public class AdminController implements Initializable {
         waitingListController.setToken(token);
         updateDisplay();
         refreshLatestProfiles();
+        WindowManager.updateTransplantWaitingList();
     }
 
     /**
@@ -211,8 +211,6 @@ public class AdminController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateAdminPopUp() {
-        addAdminToUndoStack(currentAdmin);
-
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update Admin");
@@ -304,11 +302,6 @@ public class AdminController implements Initializable {
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
-
-            //TODO PUT in save to Database for Users and Clinicians
-            //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         }
         alert.close();
     }
@@ -475,37 +468,6 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * The main admin undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
-     */
-    public void undo() {
-        // TODO implement undo
-        try {
-            WindowManager.getDataManager().getGeneral().reset(token);
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to reset the database.");
-        }
-    }
-
-    /**
-     * The main admin redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
-     */
-    public void redo() {
-        // TODO implement redo
-    }
-
-    /**
-     * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the GUI button to be usable.
-     *
-     * @param admin the currentAdmin object being copied.
-     */
-    private void addAdminToUndoStack(Admin admin) {
-        adminUndoStack.add(new Admin(admin));
-        if (undoWelcomeButton.isDisable()) {
-            undoWelcomeButton.setDisable(false);
-        }
-    }
-
-    /**
      * Clears the filter fields of the advanced filters
      */
     public void clearFilter() {
@@ -591,6 +553,44 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * Refresh the items in the search table, waiting list table, and the current admin's attributes.
+     */
+    public void refresh() {
+        refresh(true);
+    }
+
+    /**
+     * Refresh the items in the search table, waiting list table, and the current admin's attributes.
+     */
+    public void refresh(boolean ask) {
+        Alert alert = null;
+        Optional<ButtonType> result = Optional.empty();
+        if (ask) {
+            alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
+                    "Refreshing will update your admin attributes to the latest version from the server, as well as updating the search table and the waiting list item table.");
+            result = alert.showAndWait();
+        }
+        boolean fail = false;
+        if (!ask || (result != null && result.isPresent() && result.get() == ButtonType.OK)) {
+            try {
+                Admin latest = WindowManager.getDataManager().getAdmins().getAdmin((int) currentAdmin.getStaffID(), token);
+                setAdmin(latest, token);
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to fetch admin with id: " + currentAdmin.getStaffID());
+                fail = true;
+            }
+        }
+
+        if (ask) {
+            alert.close();
+            if (fail) {
+                alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Refresh Failed", "Refresh failed",
+                        "Admin data could not be refreshed because there was an error contacting the server.");
+                alert.showAndWait();
+            }
+        }
+    }
 
     /**
      * Checks whether this admin has an API token.
@@ -701,7 +701,6 @@ public class AdminController implements Initializable {
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove user with id: " + selectedUser.getId());
                     }
-                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
                     statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                 } else if (selectedClinician != null) {
@@ -714,7 +713,6 @@ public class AdminController implements Initializable {
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
                     }
-                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
                     statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                 } else if (selectedAdmin != null) {
@@ -726,7 +724,6 @@ public class AdminController implements Initializable {
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
                     }
-                    //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
 
                     statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                 }
@@ -902,8 +899,6 @@ public class AdminController implements Initializable {
      * @param clinician Clinician the clincian to use to display its info
      */
     public void updateClinicianPopUp(Clinician clinician) {
-        //adminUndoStack.add(new Clinician(clinician));
-        //undoWelcomeButton.setDisable(false);
         Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
@@ -1015,8 +1010,6 @@ public class AdminController implements Initializable {
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
         cliPane.setVisible(false);
-        undoWelcomeButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
     }
 
     /**
@@ -1026,12 +1019,6 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
-        undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
-        redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
-
-        //Could be updated in the CLI
-        clinicianTableView.refresh();
-        userTableView.refresh();
     }
 
     /**
@@ -1042,8 +1029,6 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
-
-        WindowManager.updateTransplantWaitingList();
     }
 
     /**
@@ -1089,6 +1074,7 @@ public class AdminController implements Initializable {
             Debugger.log("DB resample called");
             try {
                 WindowManager.getDataManager().getGeneral().resample(token);
+                refresh(false);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to resample the database.");
             }
@@ -1122,7 +1108,6 @@ public class AdminController implements Initializable {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to post admin to the server.");
                 }
-                //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
@@ -1160,7 +1145,6 @@ public class AdminController implements Initializable {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to insert new clinician.");
                 }
-                //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
@@ -1198,7 +1182,6 @@ public class AdminController implements Initializable {
                 } catch(HttpResponseException e) {
                     Debugger.error("Failed to insert new user.");
                 }
-                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 Debugger.error("AdminController: Failed to create user");

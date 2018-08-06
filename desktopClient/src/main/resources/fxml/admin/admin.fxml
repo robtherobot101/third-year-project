@@ -20,10 +20,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Admin.AdminController">
+<GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Admin.AdminController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -48,7 +47,7 @@
                         <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
                     </items>
                   </Menu>
-                  <MenuItem fx:id="SetCountriesMenuItem" mnemonicParsing="false" onAction="#setCountries" text="Set Countries"/>
+                  <MenuItem fx:id="SetCountriesMenuItem" mnemonicParsing="false" onAction="#setCountries" text="Set Countries" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>
@@ -306,12 +305,7 @@
                         <Font size="14.0" />
                     </font>
                 </Button>-->
-                <Button fx:id="undoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Button>
-                <Button fx:id="redoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
+                <Button fx:id="refreshButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#refresh" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Refresh" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
                     <font>
                         <Font size="14.0" />
                     </font>
