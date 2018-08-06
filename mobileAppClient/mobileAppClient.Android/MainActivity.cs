@@ -15,7 +15,7 @@ using Xamarin.Forms;
 
 namespace mobileAppClient.Droid
 {
-    [Activity(Label = "mobileAppClient.Android", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "mobileAppClient.Android", Icon = "@drawable/donationIcon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         internal static Context ActivityContext { get; private set; }
