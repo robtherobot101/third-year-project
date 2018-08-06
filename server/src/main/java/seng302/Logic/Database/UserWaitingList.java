@@ -120,6 +120,10 @@ public class UserWaitingList {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "UPDATE WAITING_LIST_ITEM SET organ_type = ?, organ_registered_date = ?, organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND id = ?";
             PreparedStatement statement = connection.prepareStatement(insert);
+            System.out.println("Updating waiting list item. Type: " + waitingListItem.getOrganType());
+            System.out.println("Updating waiting list item. RegDate: " + waitingListItem.getOrganRegisteredDate());
+            System.out.println("Updating waiting list item. DeRegDate: " + waitingListItem.getOrganDeregisteredDate());
+            System.out.println("Updating waiting list item. DeRegCode: " + waitingListItem.getOrganDeregisteredCode());
             statement.setString(1, waitingListItem.getOrganType().toString());
             statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
             statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
