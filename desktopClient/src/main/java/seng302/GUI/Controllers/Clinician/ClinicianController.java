@@ -419,7 +419,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users int total");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users in total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
