@@ -31,11 +31,9 @@ public class Administration {
      * method to resample the database with default entries
      * @throws SQLException when the connection to te database has an error
      */
-    public void resample() throws SQLException{
+    public void resample() throws SQLException, IOException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             SqlFileParser.parse(connection, getClass().getResourceAsStream("/resample.sql")).executeBatch();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -43,12 +41,10 @@ public class Administration {
      * method to empty the database tables with no values
      * @throws SQLException when the connection to te database has an error
      */
-    public void reset() throws SQLException {
+    public void reset() throws SQLException, IOException {
 
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             SqlFileParser.parse(connection, getClass().getResourceAsStream("/reset.sql")).executeBatch();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

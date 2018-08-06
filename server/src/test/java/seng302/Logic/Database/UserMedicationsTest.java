@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class UserMedicationsTest {
+public class UserMedicationsTest extends GenericTest {
 
     private GeneralUser generalUser = new GeneralUser();
     private UserMedications userMedications = new UserMedications();

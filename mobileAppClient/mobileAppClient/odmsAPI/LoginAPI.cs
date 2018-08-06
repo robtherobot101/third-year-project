@@ -1,4 +1,5 @@
-﻿using mobileAppClient.odmsAPI.RequestFormat;
+﻿using mobileAppClient.Models;
+using mobileAppClient.odmsAPI.RequestFormat;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -27,8 +28,9 @@ namespace mobileAppClient.odmsAPI
                 return HttpStatusCode.ServiceUnavailable;
             }
 
-            // Get the single userController instance
+            // Get the profile controller instances
             UserController userController = UserController.Instance;
+            ClinicianController clinicianController = ClinicianController.Instance;
 
             // Fetch the url and client from the server config class
             String url = ServerConfig.Instance.serverAddress;
@@ -51,29 +53,81 @@ namespace mobileAppClient.odmsAPI
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
+                string responseContent = await response.Content.ReadAsStringAsync();
 
-                User user;
-                // If the profile received is not a user, return 401 to the Login screen
-                try {
-                     user = JsonConvert.DeserializeObject<User>(responseContent);
-                } catch (JsonSerializationException jse)
+                if (IsUser(responseContent))
                 {
-                    return HttpStatusCode.Unauthorized;
+                    // Login as the user
+                    User loggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
+                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
+
+                    UserController.Instance.Login(loggedInUser, authToken);
+
+                    Console.WriteLine("Logged in as (USER)" + String.Join(String.Empty, userController.LoggedInUser.name));
+
+                    // OK code to signifiy user login internally
+                    return HttpStatusCode.OK;
+                } else if (IsClinician(responseContent))
+                {
+                    // Login as the clinician
+                    Clinician loggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);
+                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
+
+                    ClinicianController.Instance.Login(loggedInClinician, authToken);
+
+                    Console.WriteLine("Logged in as (CLINICIAN)" + String.Join(String.Empty, clinicianController.LoggedInClinician.name));
+
+                    // Created code to signifiy clinician login internally
+                    return HttpStatusCode.OK;
+                } else
+                {
+                    // Must've attempted login as admin -> deny
+                    return HttpStatusCode.BadRequest;
                 }
-                
-                userController.LoggedInUser = user;
-                IEnumerable<string> headerValues = response.Headers.GetValues("token");
-                var token = headerValues.FirstOrDefault();
-                userController.AuthToken = token;
-                Console.WriteLine("Logged in as " + String.Join(String.Empty, userController.LoggedInUser.name));
-                return HttpStatusCode.OK;
             }
             else
             {
-                Console.WriteLine(String.Format("Failed login ({0})", response.StatusCode));
+                Console.WriteLine(String.Format("Failed login (Server {0})", response.StatusCode));
                 return response.StatusCode;
             }
+        }
+
+        /*
+         * Returns true if the JSON string can be determined as a user object
+         */
+        private bool IsUser(string jsonBody)
+        {
+            User user;
+            try
+            {
+                user = JsonConvert.DeserializeObject<User>(jsonBody);
+            }
+            catch (JsonSerializationException jse)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /*
+         * Returns true if the JSON string can be determined as a clinician object
+         */
+        private bool IsClinician(string jsonBody)
+        {
+            Clinician clinician;
+            try
+            {
+                clinician = JsonConvert.DeserializeObject<Clinician>(jsonBody);
+            }
+            catch (JsonSerializationException jse)
+            {
+                return false;
+            }
+            if (!clinician.accountType.Equals("CLINICIAN"))
+            {
+                return false;
+            }
+            return true;
         }
 
         /*

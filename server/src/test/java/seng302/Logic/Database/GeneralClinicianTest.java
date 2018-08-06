@@ -16,18 +16,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class GeneralClinicianTest {
+public class GeneralClinicianTest extends GenericTest {
 
     private GeneralClinician generalClinician = new GeneralClinician();
-
-
-    @BeforeClass
-    @AfterClass
-    public static void reset() throws SQLException {
-        Administration administration = new Administration();
-        administration.reset();
-        administration.resample();
-    }
 
     @Test
     public void getClinicianFromResultSet() {

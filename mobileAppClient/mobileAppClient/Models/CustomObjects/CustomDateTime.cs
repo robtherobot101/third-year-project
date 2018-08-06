@@ -14,5 +14,7 @@ namespace mobileAppClient
             this.date = new CustomDate(dateTimeToParse);
             this.time = new CustomTime(dateTimeToParse);
         }
+
+
     }
 }

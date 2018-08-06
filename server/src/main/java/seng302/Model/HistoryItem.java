@@ -1,6 +1,7 @@
 package seng302.Model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Class for handling all history details of a user
@@ -77,5 +78,21 @@ public class HistoryItem {
      */
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HistoryItem that = (HistoryItem) o;
+        return Objects.equals(dateTime, that.dateTime) &&
+                Objects.equals(action, that.action) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(dateTime, action, description);
     }
 }
