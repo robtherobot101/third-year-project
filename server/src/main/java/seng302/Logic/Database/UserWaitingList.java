@@ -116,7 +116,6 @@ public class UserWaitingList {
         }
     }
 
-
     public void updateWaitingListItem(WaitingListItem waitingListItem, int waitingListItemId, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "UPDATE WAITING_LIST_ITEM SET organ_type = ?, organ_registered_date = ?, organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND id = ?";
@@ -151,7 +150,6 @@ public class UserWaitingList {
             System.out.println("Deletion of Waiting List Item - Organ: " + organ.toString() + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
-
 
 
     /**
