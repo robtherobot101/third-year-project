@@ -7,6 +7,7 @@ import org.junit.Test;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,7 @@ public class OrgansDatabaseTest {
 
 
     @Before
-    public void reset() throws SQLException {
+    public void reset() throws SQLException, IOException {
         Administration administration = new Administration();
         administration.reset();
         administration.resample();
