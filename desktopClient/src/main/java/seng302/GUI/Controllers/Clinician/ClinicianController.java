@@ -52,7 +52,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton;
+    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton, organListButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -62,7 +62,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private TextField clinicianAgeField;
     @FXML
-    private AnchorPane transplantListPane;
+    private AnchorPane transplantListPane, organsPane;
     @FXML
     private StatusBar statusBar;
     @FXML
@@ -652,6 +652,7 @@ public class ClinicianController implements Initializable {
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
+        organsPane.setVisible(false);
         undoWelcomeButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
     }
@@ -678,5 +679,17 @@ public class ClinicianController implements Initializable {
 
         WindowManager.updateTransplantWaitingList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
+    }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organsAvailable() {
+        hideAllTabs();
+        setButtonSelected(organListButton, true);
+        organsPane.setVisible(true);
+
+        titleBar.setTitle(clinician.getName(), "Clinician", "Available Organs");
     }
 }

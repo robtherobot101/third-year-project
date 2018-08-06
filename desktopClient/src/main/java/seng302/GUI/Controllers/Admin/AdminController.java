@@ -26,6 +26,7 @@ import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
 import seng302.Data.Interfaces.GeneralDAO;
+import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
 import seng302.GUI.Controllers.User.CreateUserController;
@@ -82,7 +83,7 @@ public class AdminController implements Initializable {
     @FXML
     private Label staffIDLabel, userDisplayText, adminNameLabel, adminAddressLabel;
     @FXML
-    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton;
+    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton, availableOrgansButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -100,11 +101,13 @@ public class AdminController implements Initializable {
     @FXML
     private StatusBar statusBar;
     @FXML
-    private AnchorPane cliPane, transplantListPane;
+    private AnchorPane cliPane, transplantListPane, organsPane;
     @FXML
     private AdminCliController cliController;
     @FXML
     private ClinicianWaitingListController waitingListController;
+    @FXML
+    private ClinicianAvailableOrgansController clinicianAvailableOrgansController;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
@@ -1015,6 +1018,7 @@ public class AdminController implements Initializable {
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
         cliPane.setVisible(false);
+        organsPane.setVisible(false);
         undoWelcomeButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
     }
@@ -1044,6 +1048,16 @@ public class AdminController implements Initializable {
         transplantListPane.setVisible(true);
 
         WindowManager.updateTransplantWaitingList();
+    }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organsAvailable() {
+        hideAllTabs();
+        setButtonSelected(availableOrgansButton, true);
+        organsPane.setVisible(true);
     }
 
     /**
