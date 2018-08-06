@@ -10,11 +10,11 @@
     <children>
         <TableView fx:id="organsTable" layoutX="56.0" layoutY="153.0" prefHeight="405.0" prefWidth="682.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="105.0">
             <columns>
-                <TableColumn fx:id="organColumn" prefWidth="147.0" text="Organ" />
-                <TableColumn fx:id="nameColumn" prefWidth="191.0" text="Name" />
-                <TableColumn fx:id="countdownColumn" prefWidth="147.0" text="Time Left" />
-                <TableColumn fx:id="dateOfDeathColumn" prefWidth="137.0" text="Date of Death" />
-                <TableColumn fx:id="regionColumn" prefWidth="97.0" text="Region" />
+                <TableColumn fx:id="organColumn" prefWidth="167.0" text="Organ" />
+                <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Name" />
+                <TableColumn fx:id="countdownColumn" prefWidth="200.0" text="Time Left" />
+                <TableColumn fx:id="dateOfDeathColumn" prefWidth="200.0" text="Date of Death" />
+                <TableColumn fx:id="regionColumn" prefWidth="200.0" text="Region" />
             </columns>
         </TableView>
         <Label layoutX="56.0" layoutY="44.0" text="Available Organs" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="20.0">
