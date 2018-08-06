@@ -128,6 +128,7 @@ public class WindowManager extends Application {
             newUserController.setTitleBar(stage);
 
             User latest = WindowManager.getDataManager().getUsers().getUser((int)user.getId(), token);
+            latest = latest == null ? user : latest;
             newUserController.setCurrentUser(latest, token);
             newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
