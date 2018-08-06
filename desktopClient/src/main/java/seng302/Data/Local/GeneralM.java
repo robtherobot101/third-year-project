@@ -20,7 +20,6 @@ public class GeneralM implements GeneralDAO {
     private UsersDAO users;
     private CliniciansDAO clinicians;
     private AdminsDAO admins;
-    private GeneralDAO general;
 
     public GeneralM(UsersDAO users, CliniciansDAO clinicians, AdminsDAO admins) {
         this.users = users;
@@ -68,7 +67,7 @@ public class GeneralM implements GeneralDAO {
     }
 
     @Override
-    public void logoutUser(String token) throws HttpResponseException {
+    public void logoutUser(String token) {
         //No need to log out from local test version
     }
 
@@ -90,7 +89,7 @@ public class GeneralM implements GeneralDAO {
             }
 
         } catch (HttpResponseException e) {
-
+            Debugger.error(e.getStackTrace());
         }
     }
 
@@ -112,7 +111,7 @@ public class GeneralM implements GeneralDAO {
             }
 
         } catch (HttpResponseException e) {
-
+            Debugger.error(e.getStackTrace());
         }
     }
 
@@ -158,26 +157,24 @@ public class GeneralM implements GeneralDAO {
     public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
         List<WaitingListItem> items = new ArrayList<>();
         for(User u : users.getAllUsers(null)) {
-            for(WaitingListItem i : u.getWaitingListItems()) {
-                items.add(i);
-            }
+            items.addAll(u.getWaitingListItems());
         }
         return items;
     }
 
     @Override
-    public boolean status() throws HttpResponseException {
+    public boolean status() {
         return true;
     }
 
-    public List<Country> getAllCountries(String token) throws HttpResponseException {
+    public List<Country> getAllCountries(String token) {
         return null;
     }
 
-    public void updateCountries(List<Country> countries, String token) throws HttpResponseException{}
+    public void updateCountries(List<Country> countries, String token) {}
 
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(String Token) throws HttpResponseException {
+    public List<DonatableOrgan> getAllDonatableOrgans(String Token) {
         return null;
     }
 }

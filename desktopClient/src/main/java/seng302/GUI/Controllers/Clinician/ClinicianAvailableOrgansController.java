@@ -6,11 +6,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import org.apache.http.client.HttpResponseException;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
+import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.DonatableOrgan;
+import seng302.User.WaitingListItem;
 
 import java.net.URL;
 import java.time.Duration;
@@ -36,6 +40,12 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     //This is filler bc  I don't know how tree tables work yet
     private ObservableList<DonatableOrgan> expiryList = FXCollections.observableArrayList();
+
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
 
     /**
@@ -93,8 +103,32 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         //TODO figure out how to handle changing tab - end the timer or leave it running in the background until app close??
     }
+
+    public void updateOrgans() {
+        try {
+            expiryList.clear();
+            for(DonatableOrgan organ : WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token)) {
+                if (!organ.getTimeLeft().isNegative() || !organ.getTimeLeft().isZero()) {
+                    expiryList.add(organ);
+                }
+            }
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         WindowManager.setClinicianAvailableOrgansController(this);
+
+        organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("DonorId"));
+        dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfExpiry"));
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
+
+        //transplantTable.setItems(transplantList);
+        organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        organsTable.setItems(expiryList);
     }
 }

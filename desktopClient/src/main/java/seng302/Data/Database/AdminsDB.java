@@ -49,7 +49,7 @@ public class AdminsDB implements AdminsDAO {
     public Collection<Admin> getAllAdmins(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "admins");
         if(response == null){
-            return new ArrayList<Admin>();
+            return new ArrayList<>();
         }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
@@ -57,10 +57,11 @@ public class AdminsDB implements AdminsDAO {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Admin>>() {
             }.getType());
         } else {
-            return new ArrayList<Admin>();
+            return new ArrayList<>();
         }
     }
 
+    @Override
     public Admin getAdmin(long id, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "admins", String.valueOf(id));
         if(response == null){
