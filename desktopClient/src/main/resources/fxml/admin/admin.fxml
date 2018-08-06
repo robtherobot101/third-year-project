@@ -212,6 +212,7 @@
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                               <Button fx:id="homeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showMainPane" stylesheets="@../../css/selectedmenubutton.css" text="Home" textAlignment="CENTER">
@@ -224,7 +225,12 @@
                                       <Font size="14.0" />
                                   </font>
                               </Button>
-                        <Button fx:id="cliTabButton" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#viewCli" stylesheets="@../../css/menubutton.css" text="Command Line" textAlignment="CENTER" GridPane.rowIndex="2">
+                         <Button fx:id="availableOrgansButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#organsAvailable" stylesheets="@../../css/menubutton.css" text="Available Organs" textAlignment="CENTER" GridPane.rowIndex="2">
+                             <font>
+                                 <Font size="13.0" />
+                             </font>
+                         </Button>
+                        <Button fx:id="cliTabButton" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#viewCli" stylesheets="@../../css/menubutton.css" text="Command Line" textAlignment="CENTER" GridPane.rowIndex="3">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -245,7 +251,7 @@
                               <Font name="Noto Sans Symbols2 Regular" size="31.0" />
                            </font>
                         </Label>
-                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="⌨" GridPane.rowIndex="2">
+                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="⌨" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets bottom="6.0" left="15.0" />
                            </GridPane.margin>
@@ -285,6 +291,11 @@
 							<AnchorPane fx:id="transplantListPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 								<fx:include fx:id="waitingList" source="../clinician/clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</AnchorPane>
+                <AnchorPane fx:id="organsPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <fx:include source="../clinician/clinicianAvailableOrgans.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    </children>
+                </AnchorPane>
             </children>
         </AnchorPane>
         <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="1">

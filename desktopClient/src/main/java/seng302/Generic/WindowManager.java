@@ -28,6 +28,7 @@ import seng302.Data.Local.CliniciansM;
 import seng302.Data.Local.GeneralM;
 import seng302.Data.Local.UsersM;
 import seng302.GUI.Controllers.Admin.AdminController;
+import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
@@ -73,6 +74,7 @@ public class WindowManager extends Application {
 
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
+    private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController, adminClinicianAvailableController;
 
     private static DataManager dataManager;
 
@@ -270,7 +272,14 @@ public class WindowManager extends Application {
         } else {
             WindowManager.adminClinicianWaitingListController = clinicianWaitingListController;
         }
+    }
 
+    public static void setClinicianAvailableOrgansController(ClinicianAvailableOrgansController clinicianAvailableOrgansController) {
+        if (scenes.get(TFScene.clinician) == null) {
+            WindowManager.clinicianClinicianAvailableOrgansController = clinicianAvailableOrgansController;
+        } else {
+            WindowManager.adminClinicianAvailableController = clinicianAvailableOrgansController;
+        }
     }
 
     /**
