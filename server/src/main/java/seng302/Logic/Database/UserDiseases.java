@@ -1,16 +1,14 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
-import seng302.Model.Attribute.Organ;
 import seng302.Model.Disease;
-import seng302.Model.Medication.Medication;
-import seng302.Model.Procedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserDiseases {
 
@@ -97,5 +95,51 @@ public class UserDiseases {
                 diseasesResultSet.getBoolean("is_cured"),
                 diseasesResultSet.getInt("id")
         );
+    }
+
+    /**
+     * Replace a user's diseases on the database with a new set of diseases.
+     *
+     * @param newDiseases The list of diseases to replace the old one with
+     * @param userId The id of the user to replace diseases of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllDiseases(List<Disease> newDiseases, int userId) throws SQLException {
+        List<Disease> oldDiseases = getAllDiseases(userId);
+
+        //Remove all procedures that are already on the database
+        for (int i = oldDiseases.size() - 1; i >= 0; i--) {
+            Disease found = null;
+            for (Disease newDisease: newDiseases) {
+                if (newDisease.equals(oldDiseases.get(i))) {
+                    found = newDisease;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Disease newDisease: newDiseases) {
+                    if (newDisease.getId() == oldDiseases.get(i).getId()) {
+                        updateDisease(oldDiseases.get(i), oldDiseases.get(i).getId(), userId);
+                        found = newDisease;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newDiseases.remove(found);
+                oldDiseases.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Disease disease: oldDiseases) {
+            removeDisease(userId, disease.getId());
+        }
+
+        //Upload all new medications
+        for (Disease disease: newDiseases) {
+            insertDisease(disease, userId);
+        }
     }
 }

@@ -1,85 +1,23 @@
 package seng302.Logic.Database;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.HelperMethods;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
-import seng302.Model.Attribute.Organ;
-import seng302.Model.Disease;
-import seng302.Model.Medication.Medication;
-import seng302.Model.Procedure;
 import seng302.Model.User;
-import seng302.Model.WaitingListItem;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class GeneralUserTest extends GenericTest {
 
     private GeneralUser generalUser = new GeneralUser();
-
-    @Test
-    public void patchEntireUser() {
-    }
-
-    @Test
-    public void updateAllMedications() throws SQLException {
-        String[] ingredients = {"water", "Air"};
-        User user = HelperMethods.insertUser(generalUser);
-        List<Medication> medications = HelperMethods.makeMedications();
-        generalUser.updateAllMedications(medications, (int) user.getId());
-        assertEquals(medications, generalUser.getUserFromId((int) user.getId()).getCurrentMedications());
-    }
-
-    @Test
-    public void updateAllProcedures() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-        ArrayList<Organ> organs = new ArrayList<Organ>();
-        organs.add(Organ.LUNG);
-        ArrayList<Procedure> procedures = new ArrayList<>();
-        procedures.add(new Procedure("Trachiotomy", "Removed oesophagus entirely", LocalDate.now(), organs, 1));
-        generalUser.updateAllProcedures(procedures, (int) user.getId());
-        User user2 = generalUser.getUserFromId((int) user.getId());
-        assertEquals(procedures, user2.getPreviousProcedures());
-    }
-
-    @Test
-    public void updateAllDiseases() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-
-        ArrayList<Disease> diseases = new ArrayList<>();
-        diseases.add(new Disease("Bronchitis", LocalDate.now(), false, false, 1));
-        generalUser.updateAllDiseases(diseases, (int) user.getId());
-
-        User user2 = generalUser.getUserFromId((int) user.getId());
-        assertEquals(diseases, user2.getCurrentDiseases());
-
-    }
-
-    @Test
-    public void updateWaitingListItems() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-
-        ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
-        WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) user.getId(), null, 0);
-        waitingListItems.add(waitingListItem);
-
-        generalUser.updateWaitingListItems(waitingListItems, (int) user.getId());
-
-        User user2 = generalUser.getUserFromId((int) user.getId());
-        assertEquals(waitingListItems, user2.getWaitingListItems());
-    }
 
     @Test
     public void getUsers() {

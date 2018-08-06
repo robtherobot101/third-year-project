@@ -2,15 +2,12 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.WaitingListItem;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class UserDonations {
@@ -100,5 +97,17 @@ public class UserDonations {
         }
     }
 
-
+    /**
+     * Replace a user's organ donation list with a new list of organs.
+     *
+     * @param newOrgans The list of organs to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllDonations(Set<Organ> newOrgans, int userId) throws SQLException {
+        removeAllUserDonations(userId);
+        for (Organ organ: newOrgans) {
+            insertDonation(organ, userId);
+        }
+    }
 }

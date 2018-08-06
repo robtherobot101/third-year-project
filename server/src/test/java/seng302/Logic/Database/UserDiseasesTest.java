@@ -33,7 +33,7 @@ public class UserDiseasesTest extends GenericTest {
         user.setCuredDiseases(diseases1);
         user.getCurrentDiseases().addAll(diseases2);
 
-        generalUser.updateAllDiseases(allDiseases, (int) user.getId());
+        userDiseases.updateAllDiseases(allDiseases, (int) user.getId());
 
         assertEquals(allDiseases, userDiseases.getAllDiseases((int) user.getId()));
 
@@ -103,10 +103,23 @@ public class UserDiseasesTest extends GenericTest {
     public void removeDisease() throws SQLException {
         User user = HelperMethods.insertUser(generalUser);
         user.setCuredDiseases(HelperMethods.makeDiseases(true));
-        generalUser.updateAllDiseases(user.getCuredDiseases(), (int) user.getId());
+        userDiseases.updateAllDiseases(user.getCuredDiseases(), (int) user.getId());
         user.setCuredDiseases(userDiseases.getAllDiseases((int) user.getId()));
         Disease removed = user.getCuredDiseases().remove(0);
         userDiseases.removeDisease((int) user.getId(), removed.getId());
         assertFalse(userDiseases.getAllDiseases((int) user.getId()).contains(removed));
+    }
+
+    @Test
+    public void updateAllDiseases() throws SQLException {
+        User user = HelperMethods.insertUser(generalUser);
+
+        ArrayList<Disease> diseases = new ArrayList<>();
+        diseases.add(new Disease("Bronchitis", LocalDate.now(), false, false, 1));
+        userDiseases.updateAllDiseases(diseases, (int) user.getId());
+
+        User user2 = generalUser.getUserFromId((int) user.getId());
+        assertEquals(diseases, user2.getCurrentDiseases());
+
     }
 }

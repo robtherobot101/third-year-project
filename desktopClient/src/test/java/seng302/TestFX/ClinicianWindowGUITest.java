@@ -22,7 +22,6 @@ import seng302.User.User;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
@@ -251,7 +250,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
                 stage.showAndWait();
 
                 }catch (IOException e){
-                System.out.println(e);
             }
         });
 
@@ -265,7 +263,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
         write("newTestPassword");
 
         clickOn("Update");
-        System.out.println(Arrays.toString(this.listWindows().toArray()));
         pressDialogOKButtons();
         assertEquals("newTestUsername", testClinician.getUsername());
         assertEquals("newTestPassword", testClinician.getPassword());

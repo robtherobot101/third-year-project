@@ -20,7 +20,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
 <?import org.controlsfx.control.StatusBar?>
 
 <GridPane prefHeight="700.0" prefWidth="1250.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Admin.AdminController">
@@ -48,7 +47,7 @@
                         <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#createUser" text="User" />
                     </items>
                   </Menu>
-                  <MenuItem fx:id="SetCountriesMenuItem" mnemonicParsing="false" onAction="#setCountries" text="Set Countries"/>
+                  <MenuItem fx:id="SetCountriesMenuItem" mnemonicParsing="false" onAction="#setCountries" text="Set Countries" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close" text="Close" />
                     </items>
@@ -213,6 +212,7 @@
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                               <Button fx:id="homeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showMainPane" stylesheets="@../../css/selectedmenubutton.css" text="Home" textAlignment="CENTER">
@@ -225,7 +225,12 @@
                                       <Font size="14.0" />
                                   </font>
                               </Button>
-                        <Button fx:id="cliTabButton" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#viewCli" stylesheets="@../../css/menubutton.css" text="Command Line" textAlignment="CENTER" GridPane.rowIndex="2">
+                         <Button fx:id="availableOrgansButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#organsAvailable" stylesheets="@../../css/menubutton.css" text="Available Organs" textAlignment="CENTER" GridPane.rowIndex="2">
+                             <font>
+                                 <Font size="13.0" />
+                             </font>
+                         </Button>
+                        <Button fx:id="cliTabButton" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#viewCli" stylesheets="@../../css/menubutton.css" text="Command Line" textAlignment="CENTER" GridPane.rowIndex="3">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -246,7 +251,7 @@
                               <Font name="Noto Sans Symbols2 Regular" size="31.0" />
                            </font>
                         </Label>
-                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="⌨" GridPane.rowIndex="2">
+                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="⌨" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets bottom="6.0" left="15.0" />
                            </GridPane.margin>
@@ -286,6 +291,11 @@
 							<AnchorPane fx:id="transplantListPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 								<fx:include fx:id="waitingList" source="../clinician/clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 							</AnchorPane>
+                <AnchorPane fx:id="organsPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <fx:include source="../clinician/clinicianAvailableOrgans.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    </children>
+                </AnchorPane>
             </children>
         </AnchorPane>
         <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="1">
@@ -306,12 +316,7 @@
                         <Font size="14.0" />
                     </font>
                 </Button>-->
-                <Button fx:id="undoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Button>
-                <Button fx:id="redoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
+                <Button fx:id="refreshButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#refresh" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Refresh" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
                     <font>
                         <Font size="14.0" />
                     </font>

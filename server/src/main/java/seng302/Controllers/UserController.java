@@ -306,11 +306,10 @@ public class UserController {
             response.status(400);
             return "Missing User Body";
         } else {
-            //TODO make model.insertUser return token
             try {
                 model.insertUser(receivedUser);
                 response.status(201);
-                return "placeholder token";
+                return "Success";
             } catch (SQLException e) {
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
