@@ -147,7 +147,7 @@ public class WaitingListController {
         } else {
             try {
                 model.updateAllWaitingListItems(waitingListItems, requestedUserId);
-                response.status(201);
+                response.status(200);
                 return "Success";
             } catch (SQLException e) {
                 response.status(500);
