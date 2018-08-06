@@ -177,13 +177,18 @@ public class UserWaitingList {
             }
             if (found == null) {
                 //Patch edited medications
+
+
                 for (WaitingListItem newWaitingListItem: newWaitingListItems) {
                     if (newWaitingListItem.getId() == oldWaitingListItems.get(i).getId()) {
-                        updateWaitingListItem(oldWaitingListItems.get(i), oldWaitingListItems.get(i).getId(), userId);
+                        updateWaitingListItem(newWaitingListItem, oldWaitingListItems.get(i).getId(), userId);
                         found = newWaitingListItem;
                         break;
                     }
                 }
+
+
+
             }
             if (found != null) {
                 newWaitingListItems.remove(found);
