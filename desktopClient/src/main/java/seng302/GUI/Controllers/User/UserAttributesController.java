@@ -598,7 +598,7 @@ public class UserAttributesController extends UserTabController implements Initi
         //set profile image
 
         Debugger.log("Attempting to update photo when populating attributes page");
-        profileImage.setImage(WindowManager.getDataManager().getUsers().getUserPhoto((int) currentUser.getId()));
+        profileImage.setImage(WindowManager.getDataManager().getUsers().getUserPhoto((int) currentUser.getId(), userController.getToken()));
 
         updateAge();
         updateBMI();
@@ -694,7 +694,7 @@ public class UserAttributesController extends UserTabController implements Initi
         try {
             WindowManager.getDataManager().getUsers().deleteUserPhoto(currentUser.getId());
             //success catch, set to default photo
-            Image profilePhoto = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId());
+            Image profilePhoto = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId(), userController.getToken());
             profileImage.setImage(profilePhoto);
             currentUser.setProfileImageType(null);
 
