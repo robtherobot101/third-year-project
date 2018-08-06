@@ -67,6 +67,8 @@ public class ClinicianController implements Initializable {
     private StatusBar statusBar;
     @FXML
     private ClinicianWaitingListController waitingListController;
+    @FXML
+    private ClinicianAvailableOrgansController availableOrgansController;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
@@ -124,6 +126,7 @@ public class ClinicianController implements Initializable {
         this.clinician = clinician;
         this.token = token;
         waitingListController.setToken(token);
+        availableOrgansController.setToken(token);
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
         }
@@ -690,6 +693,7 @@ public class ClinicianController implements Initializable {
         setButtonSelected(organListButton, true);
         organsPane.setVisible(true);
 
+        WindowManager.updateAvailableOrgans();
         titleBar.setTitle(clinician.getName(), "Clinician", "Available Organs");
     }
 }

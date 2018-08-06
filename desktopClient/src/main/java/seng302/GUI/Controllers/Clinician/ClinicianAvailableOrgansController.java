@@ -19,9 +19,7 @@ import seng302.User.WaitingListItem;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 public class ClinicianAvailableOrgansController implements Initializable{
@@ -47,12 +45,16 @@ public class ClinicianAvailableOrgansController implements Initializable{
         this.token = token;
     }
 
+    public boolean hasToken() {
+        return token != null;
+    }
+
 
     /**
      * Creates a timer which ticks every second and updates each organ object, counting down their expiry time by 1 second.
      * This timer runs in a background thread, and with only 1 timer running SHOULD be real time reliable.
      */
-    public void setTimeLeft(){
+    public void setTimeLeft(List<DonatableOrgan> expiryList){
         // get data from server and load them into the tree table or whatever
 
         //set up the timer
@@ -104,11 +106,16 @@ public class ClinicianAvailableOrgansController implements Initializable{
         //TODO figure out how to handle changing tab - end the timer or leave it running in the background until app close??
     }
 
+    /**
+     * Updates the organs in the available organs table
+     */
     public void updateOrgans() {
         try {
+            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token));
+            setTimeLeft(temp);
             expiryList.clear();
-            for(DonatableOrgan organ : WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token)) {
-                if (!organ.getTimeLeft().isNegative() || !organ.getTimeLeft().isZero()) {
+            for(DonatableOrgan organ : temp) {
+                if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
                     expiryList.add(organ);
                 }
             }
@@ -117,6 +124,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    /**
+     * Initilizes the gui display with the correct content in the table.
+     * @param location not used
+     * @param resources not used
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         WindowManager.setClinicianAvailableOrgansController(this);

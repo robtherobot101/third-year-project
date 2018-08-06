@@ -1,8 +1,6 @@
 package seng302.Logic.Database;
 
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
@@ -35,7 +33,7 @@ public class OrgansDatabaseTest {
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry().minusNanos(donatableOrgan.getTimeOfExpiry().getNano()));
+        assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
     }
 
     @Test
@@ -43,13 +41,13 @@ public class OrgansDatabaseTest {
         DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1,1);
         organsDatabase.insertOrgan(donatableOrgan);
 
-        donatableOrgan.setTimeOfExpiry(LocalDateTime.now().plusHours(5));
+        donatableOrgan.setTimeOfDeath(LocalDateTime.now().plusHours(5));
         organsDatabase.updateOrgan(donatableOrgan);
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
 
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry().minusNanos(donatableOrgan.getTimeOfExpiry().getNano()));
+        assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
     }
 
     @Test
@@ -60,7 +58,7 @@ public class OrgansDatabaseTest {
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        assertEquals(organs.get(0).getTimeOfExpiry(), donatableOrgan.getTimeOfExpiry().minusNanos(donatableOrgan.getTimeOfExpiry().getNano()));
+        assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
 
         organsDatabase.removeOrgan(organs.get(0));
         organs = organsDatabase.getAllDonatableOrgans();

@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `name` text NOT NULL,
   `id` int(11) NOT NULL,
   `user_id` bigint(11) NOT NULL,
-  `timeOfExpiry` bigint(20) DEFAULT NULL
+  `timeOfDeath` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

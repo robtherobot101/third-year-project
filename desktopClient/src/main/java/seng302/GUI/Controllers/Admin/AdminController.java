@@ -107,7 +107,7 @@ public class AdminController implements Initializable {
     @FXML
     private ClinicianWaitingListController waitingListController;
     @FXML
-    private ClinicianAvailableOrgansController clinicianAvailableOrgansController;
+    private ClinicianAvailableOrgansController availableOrgansController;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
@@ -142,6 +142,7 @@ public class AdminController implements Initializable {
         this.token = token;
         cliController.setToken(token);
         waitingListController.setToken(token);
+        availableOrgansController.setToken(token);
         updateDisplay();
         refreshLatestProfiles();
     }
@@ -1058,6 +1059,8 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(availableOrgansButton, true);
         organsPane.setVisible(true);
+
+        WindowManager.updateAvailableOrgans();
     }
 
     /**

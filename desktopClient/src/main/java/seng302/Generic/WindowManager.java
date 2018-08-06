@@ -227,6 +227,19 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Calls the function which updates the available organs pane.
+     */
+    public static void updateAvailableOrgans() {
+        if (clinicianClinicianAvailableOrgansController.hasToken()) {
+            clinicianClinicianAvailableOrgansController.updateOrgans();
+        }
+        if (adminClinicianAvailableController.hasToken()) {
+            adminClinicianAvailableController.updateOrgans();
+        }
+
+    }
+
+    /**
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician

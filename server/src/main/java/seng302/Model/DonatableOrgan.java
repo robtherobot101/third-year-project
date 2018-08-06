@@ -9,28 +9,28 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class DonatableOrgan {
 
-    private LocalDateTime timeOfExpiry;
+    private LocalDateTime timeOfDeath;
     private Organ organType;
     private long donorId;
     private int id;
     private Duration timeLeft;
 
 
-    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
-        this.timeOfExpiry = timeOfExpiry;
+    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId, int id){
+        this.timeOfDeath = timeOfDeath;
         this.donorId = donorId;
         this.organType = organType;
         this.id = id;
     }
 
-    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId){
-        this.timeOfExpiry = timeOfExpiry;
+    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId){
+        this.timeOfDeath = timeOfDeath;
         this.donorId = donorId;
         this.organType = organType;
     }
 
-    public LocalDateTime getTimeOfExpiry() {
-        return timeOfExpiry;
+    public LocalDateTime getTimeOfDeath() {
+        return timeOfDeath;
     }
 
     public long getDonorId() {
@@ -45,8 +45,8 @@ public class DonatableOrgan {
         return id;
     }
 
-    public void setTimeOfExpiry(LocalDateTime timeOfExpiry) {
-        this.timeOfExpiry = timeOfExpiry;
+    public void setTimeOfDeath(LocalDateTime timeOfDeath) {
+        this.timeOfDeath = timeOfDeath;
     }
 
     public Duration getTimeLeft(){

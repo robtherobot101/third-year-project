@@ -523,7 +523,7 @@ public class ClinicianWaitingListController implements Initializable {
                         try {
                             WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
                         } catch (HttpResponseException e) {
-                            Debugger.error("COuld not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
+                            Debugger.error("Could not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
                         }
                     }
                 });
