@@ -8,10 +8,7 @@ import seng302.Data.Interfaces.UsersDAO;
 import seng302.Data.ResampleData;
 import seng302.Generic.Debugger;
 import seng302.Generic.Country;
-import seng302.User.Admin;
-import seng302.User.Clinician;
-import seng302.User.User;
-import seng302.User.WaitingListItem;
+import seng302.User.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -178,4 +175,9 @@ public class GeneralM implements GeneralDAO {
     }
 
     public void updateCountries(List<Country> countries, String token) throws HttpResponseException{}
+
+    @Override
+    public List<DonatableOrgan> getAllDonatableOrgans(String Token) throws HttpResponseException {
+        return null;
+    }
 }

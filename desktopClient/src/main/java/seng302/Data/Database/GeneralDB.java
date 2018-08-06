@@ -8,10 +8,7 @@ import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
 import seng302.Generic.Country;
 import seng302.Generic.Debugger;
-import seng302.User.Admin;
-import seng302.User.Clinician;
-import seng302.User.User;
-import seng302.User.WaitingListItem;
+import seng302.User.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -192,5 +189,27 @@ public class GeneralDB implements GeneralDAO {
         JsonArray userJson = jp.parse(new Gson().toJson(countries)).getAsJsonArray();
         APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),token,"countries");
         if(response == null) throw new HttpResponseException(0, "Could not access server");
+    }
+
+    /**
+     * gets all of the organs that are available to donate from the server
+     * @param token the users token
+     * @return returns a list of donatableOrgans
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
+    @Override
+    public List<DonatableOrgan> getAllDonatableOrgans(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "organs");
+        if (response == null) {
+            return new ArrayList<DonatableOrgan>();
+        }
+        if (response.getStatusCode() != 200) {
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
+        } else {
+            return new ArrayList<DonatableOrgan>();
+        }
     }
 }
