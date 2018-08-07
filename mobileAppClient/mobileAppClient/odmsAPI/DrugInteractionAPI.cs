@@ -50,7 +50,7 @@ namespace mobileAppClient.odmsAPI
             }
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            DrugInteractionResult drugInteractionResult = new DrugInteractionResult(responseContent, Convert.ToInt32(loggedInUser.getAge()), loggedInUser.gender);
+            DrugInteractionResult drugInteractionResult = new DrugInteractionResult(responseContent, loggedInUser.Age, loggedInUser.gender);
             return drugInteractionResult;
         }
     }

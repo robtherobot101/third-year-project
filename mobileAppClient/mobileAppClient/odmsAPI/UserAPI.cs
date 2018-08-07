@@ -255,13 +255,8 @@ namespace mobileAppClient.odmsAPI
             String queries = null;
 
             queries = String.Format("?startIndex={0}&count={1}", startIndex, count);
-
-            // Add the name search query if given
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                queries += String.Format("&name={0}", searchQuery);
-            }
-
+            queries += processSearchQuery(searchQuery);
+            
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
@@ -283,6 +278,31 @@ namespace mobileAppClient.odmsAPI
             string responseContent = await response.Content.ReadAsStringAsync();
             resultUsers = JsonConvert.DeserializeObject<List<User>>(responseContent);
             return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.OK, resultUsers);
+        }
+
+        /// <summary>
+        /// Parses and checks the string search query and adapts the query for region or name
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        private string processSearchQuery(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return "";
+            }
+
+            query = query.ToLower();
+            List<string> team300RegionList = new List<string>(new string[] { "auckland", "northland", "waikato", "bay of plenty", "bop"});
+
+            if (team300RegionList.Contains(query))
+            {
+                return String.Format("&region={0}", query);
+            } else 
+            {
+                return String.Format("&name={0}", query);
+            }
+            
         }
 
         /// <summary>
