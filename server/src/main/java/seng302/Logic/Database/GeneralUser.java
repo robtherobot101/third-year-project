@@ -29,7 +29,7 @@ public class GeneralUser {
         UserDonations userDonations = new UserDonations();
         userDonations.removeAllUserDonations(userId);
         for (Organ organ: newDonations) {
-            userDonations.insertDonation(organ, userId);
+            userDonations.insertDonation(organ, userId, user.getDateOfDeath());
         }
 
         List<HistoryItem> newHistory = user.getUserHistory();

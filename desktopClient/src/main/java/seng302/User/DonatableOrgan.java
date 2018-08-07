@@ -87,13 +87,16 @@ public class DonatableOrgan {
                 duration = Duration.parse("PT72H");
                 break;
             case INTESTINE:
+                duration = Duration.parse("PT10H");
                 break;
             case CORNEA:
                 duration = Duration.parse("P7D");
                 break;
             case EAR:
+                duration = Duration.ZERO;
                 break;
             case TISSUE:
+                duration = Duration.parse("P1825D");
                 break;
             case SKIN:
                 duration = Duration.parse("P3650D");

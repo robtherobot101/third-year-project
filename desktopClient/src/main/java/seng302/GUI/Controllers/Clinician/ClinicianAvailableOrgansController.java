@@ -77,6 +77,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 Duration timeLeft = Duration.between(now, expiryDate);
                 organ.setTimeLeft(timeLeft);
             } else {
+                Duration timeLeft = Duration.between(now, expiryDate);
+                organ.setTimeLeft(timeLeft);
                 //Either the organ shouldn't be displaying, or it should display <4 days or something
             }
 
@@ -90,7 +92,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
                         //for each item set timeLeft -1
                         organ.tickTimeLeft();
-                        System.out.println(organ.getTimeLeft().toString());
                     } else {
                         //...unless it is 0, in which do whatever needs to be done
                     }

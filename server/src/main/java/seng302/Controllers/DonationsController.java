@@ -4,17 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import seng302.Logic.Database.UserDiseases;
 import seng302.Logic.Database.UserDonations;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.Disease;
-import seng302.Model.WaitingListItem;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Set;
 
 public class DonationsController {
@@ -22,7 +18,7 @@ public class DonationsController {
     private UserDonations model;
 
     /**
-     * Class builder to create a new donations controller aaaaaaaaa
+     * Class builder to create a new donations controller
      */
     public DonationsController() {model = new UserDonations();}
 
@@ -69,7 +65,7 @@ public class DonationsController {
         Organ organ = Organ.valueOf(organName.toUpperCase());
 
         try {
-            model.insertDonation(organ, requestedUserId);
+            model.insertDonation(organ, requestedUserId, null);
             response.status(201);
             return "DONATION INSERTED FOR USER ID: " + requestedUserId;
         } catch (SQLException e) {
