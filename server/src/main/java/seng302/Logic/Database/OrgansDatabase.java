@@ -39,7 +39,7 @@ public class OrgansDatabase {
      */
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfExpiry, user_id) VALUES (?, ?, ?)";
+            String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfDeath, user_id) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, donatableOrgan.getOrganType().toString());
             statement.setLong(2, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
