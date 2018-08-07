@@ -41,13 +41,5 @@ namespace mobileAppClient
 
         }
 
-        /*
-         * Handles the back button being clicked, returning the user to 
-         * the diseases page.
-         */ 
-        async void BackButtonClicked(object sender, EventArgs args) 
-        {
-            await Navigation.PopModalAsync();
-        }
     }
 }

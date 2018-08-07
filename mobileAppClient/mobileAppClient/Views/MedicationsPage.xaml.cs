@@ -91,7 +91,7 @@ namespace mobileAppClient
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
             var singleMedicationPage = new SingleMedicationPage((Medication)MedicationsList.SelectedItem);
-            await Navigation.PushModalAsync(singleMedicationPage);
+            await Navigation.PushAsync(singleMedicationPage);
         }
 
         /*
@@ -104,7 +104,7 @@ namespace mobileAppClient
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
             var compareMedicationsPage = new CompareMedicationsPage();
-            await Navigation.PushModalAsync(compareMedicationsPage);
+            await Navigation.PushAsync(compareMedicationsPage);
         }
     }
 }

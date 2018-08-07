@@ -32,13 +32,5 @@ namespace mobileAppClient
             IDEntry.Text = waitingListItem.Id.ToString();
         }
 
-        /*
-         * Handles the back button being clicked, returning the user to 
-         * the waiting list items page.
-         */ 
-        async void BackButtonClicked(object sender, EventArgs args)
-        {
-            await Navigation.PopModalAsync();
-        }
     }
 }

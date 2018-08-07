@@ -53,7 +53,7 @@ namespace mobileAppClient
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
             var singleWaitingListItemPage = new SingleWaitingListItemPage((WaitingListItem)WaitingListItemsList.SelectedItem);
-            await Navigation.PushModalAsync(singleWaitingListItemPage);
+            await Navigation.PushAsync(singleWaitingListItemPage);
         }
 
         /*
