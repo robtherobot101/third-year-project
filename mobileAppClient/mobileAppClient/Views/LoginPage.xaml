@@ -37,7 +37,15 @@
                     HorizontalOptions="EndAndExpand"
                     VerticalOptions="CenterAndExpand"
                     Clicked="SignUpButtonClicked" />
+
                 </StackLayout>
+
+                 <Button Text="Login with Facebook"
+                    Clicked="Handle_LoginWithFacebookClicked" />
+
+                 <Button Text="Login with Google"
+                    Clicked="Handle_Clicked" />
+                    
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

@@ -1,8 +1,10 @@
 ﻿using mobileAppClient.odmsAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +21,74 @@ namespace mobileAppClient
 	public partial class LoginPage : ContentPage
 	{
         private bool loginClicked;
+        private FacebookServices facebookServices;
 
 		public LoginPage ()
 		{
 			InitializeComponent ();
             loginClicked = false;
+            facebookServices = new FacebookServices();
+
 		}
+
+        private async void WebViewOnNavigated(object sender, WebNavigatedEventArgs e)
+        {
+
+            var accessToken = facebookServices.ExtractAccessTokenFromUrl(e.Url);
+
+            if (accessToken != "")
+            {
+                FacebookProfile facebookProfile = await facebookServices.GetFacebookProfileAsync(accessToken);
+                string password = "password";
+                LoginAPI loginAPI = new LoginAPI();
+                HttpStatusCode registerUserResult = await loginAPI.RegisterUser(facebookProfile.FirstName, facebookProfile.LastName, facebookProfile.Email,
+                                                                                facebookProfile.Email, password, DateTime.Parse(facebookProfile.Birthday));
+
+                switch (registerUserResult)
+                {
+                    case HttpStatusCode.Created:
+                        HttpStatusCode loginUserResult = await loginAPI.LoginUser(facebookProfile.Email, password);
+                        switch (loginUserResult) {
+                            case HttpStatusCode.OK:
+                                await Navigation.PopModalAsync();
+                                break;
+                            case HttpStatusCode.Unauthorized:
+                                await DisplayAlert(
+                                    "Failed to Login",
+                                    "Incorrect username/password",
+                                    "OK");
+                                break;
+                            case HttpStatusCode.ServiceUnavailable:
+                                await DisplayAlert(
+                                    "Failed to Login",
+                                    "Server unavailable, check connection",
+                                    "OK");
+                                break;
+                            case HttpStatusCode.InternalServerError:
+                                await DisplayAlert(
+                                    "Failed to Login",
+                                    "Server error",
+                                    "OK");
+                                break;
+                        }
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert(
+                            "Failed to Register",
+                            "Server unavailable, check connection",
+                            "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert(
+                            "Failed to Register",
+                            "Username/Email may be taken",
+                            "OK");
+                        break;
+                }
+
+            }
+        }
+
 
         /*
          * Called when the Sign Up button is pressed
@@ -99,11 +163,29 @@ namespace mobileAppClient
         /*
          * Function used to Stops the back button from working and 
          * opening the main view without a logged in user
-         */ 
+         */
         protected override bool OnBackButtonPressed()
         {
-            
             return true;
+        }
+
+        void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
+        {
+
+            var webView = new WebView
+            {
+                Source = facebookServices.apiRequest,
+                HeightRequest = 1
+            };
+
+            webView.Navigated += WebViewOnNavigated;
+
+            Content = webView;
+        }
+        
+        void Handle_Clicked(object sender, System.EventArgs e)
+        {
+            Console.WriteLine("Not implemented yet");
         }
     }
 }

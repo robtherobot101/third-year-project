@@ -58,9 +58,6 @@ namespace mobileAppClient
 
         public List<HistoryItem> userHistory { get; set; }
 
-        public User(string email) {
-            this.email = email;
-        }
 
         public User ShallowCopy()
         {
