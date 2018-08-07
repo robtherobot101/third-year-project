@@ -20,7 +20,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AndroidKeyStore>true</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\James\Downloads\team-300.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyStore>team-300.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>WindpipeOarsman3174</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>team-300</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>WindpipeOarsman3174</AndroidSigningKeyPass>
@@ -118,7 +118,6 @@
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\drawable-xxxhdpi\" />
-    <Folder Include="Resources\xml\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mobileAppClient\mobileAppClient.csproj">
