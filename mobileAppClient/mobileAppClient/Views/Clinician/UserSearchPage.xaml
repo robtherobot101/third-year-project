@@ -5,6 +5,7 @@
              Title="User Search">
     <StackLayout>
         <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
+        <SearchBar x:Name="UserSearchBar" Placeholder="Search..."/>
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding UserList}"
                 ItemTapped="Handle_UserTapped"
@@ -15,13 +16,24 @@
                 AbsoluteLayout.LayoutFlags="All">
             
         <!--Built in Cells-->
-        <ListView.ItemTemplate>
+        <!--<ListView.ItemTemplate>
             <DataTemplate>
-                <TextCell Text="{Binding name[0]}" />
+                <TextCell Text="{Binding FullName}" />
             </DataTemplate>
-        </ListView.ItemTemplate>
-    
-        <!--Custom View Cells-->
+        </ListView.ItemTemplate>-->
+
+        <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="12, 0, 12, 0">
+                            <Label Text="{Binding FullName}" FontAttributes="Bold" VerticalOptions="CenterAndExpand" />
+                            <Label Text="{Binding region}" FontAttributes="Italic" VerticalOptions="CenterAndExpand" HorizontalOptions="End" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+            <!--Custom View Cells-->
         <!--
         <ListView.ItemTemplate>
           <DataTemplate>

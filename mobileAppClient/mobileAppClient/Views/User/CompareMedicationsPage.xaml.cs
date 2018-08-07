@@ -101,7 +101,7 @@ namespace mobileAppClient
 
 
             string interactionsBody = String.Format("{0}y/o {1}\n\n{2}\n\n{3}\n\n{4}", 
-                Convert.ToInt32(loggedInUser.getAge()), 
+                loggedInUser.Age, 
                 loggedInUser.gender, 
                 string.Join("\r\n", retrievedDrugInteractions.genderInteractions),
                 string.Join("\r\n", retrievedDrugInteractions.ageInteractions), 
@@ -128,12 +128,5 @@ namespace mobileAppClient
             selectedItem2.Text = "";
         }
 
-        /*
-         * Handles when the back button is clicked, sending the user back to the medications page.
-         */ 
-        async void BackButtonClicked(object sender, EventArgs args)
-        {
-            await Navigation.PopModalAsync();
-        }
     }
 }

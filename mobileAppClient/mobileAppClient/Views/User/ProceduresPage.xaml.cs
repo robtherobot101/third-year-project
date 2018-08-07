@@ -107,7 +107,7 @@ namespace mobileAppClient
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
             var singleProcedurePage = new SingleProcedurePage((Procedure)ProceduresList.SelectedItem);
-            await Navigation.PushModalAsync(singleProcedurePage);
+            await Navigation.PushAsync(singleProcedurePage);
         }
 
         /*

@@ -8,11 +8,16 @@ namespace mobileAppClient
      * Class to handle the logged in user of the application.
      * Accessible using a singleton framework with a given instance.
      */ 
-    sealed class UserController
+    public sealed class UserController
     {
         public User LoggedInUser { get; set; }
         public string AuthToken { get; set; }
+        public Photo photoObject { get; set; }
+        public Xamarin.Forms.ImageSource ProfilePhotoSource { get; set; }
+
+        private List<UserObserver> userObservers;
         public MainPage mainPageController { get; set; }
+        public bool isTestMode { get; set; }
 
         private static readonly Lazy<UserController> lazy =
         new Lazy<UserController>(() => new UserController());
@@ -26,6 +31,8 @@ namespace mobileAppClient
         {
             this.LoggedInUser = null;
             this.AuthToken = null;
+            this.photoObject = null;
+            this.ProfilePhotoSource = null;
         }
 
         /*
@@ -35,11 +42,15 @@ namespace mobileAppClient
         {
             this.LoggedInUser = loggedInUser;
             this.AuthToken = authToken;
-            this.mainPageController.userLoggedIn();
+            if (!isTestMode)
+            {
+                this.mainPageController.userLoggedIn();
+            }
         }
 
         private UserController()
         {
+            isTestMode = false;
         }
     }
 }

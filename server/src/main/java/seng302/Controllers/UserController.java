@@ -364,7 +364,7 @@ public class UserController {
                 String token = request.headers("token");
                 ProfileUtils profileUtils = new ProfileUtils();
                 int accessLevel = profileUtils.checkToken(token);
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel > 1); //this version patches all user information
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {

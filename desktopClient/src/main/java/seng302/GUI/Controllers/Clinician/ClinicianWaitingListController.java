@@ -521,7 +521,7 @@ public class ClinicianWaitingListController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         try {
-                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
+                            WindowManager.newAdminsUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
                         } catch (HttpResponseException e) {
                             Debugger.error("Could not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
                         }
