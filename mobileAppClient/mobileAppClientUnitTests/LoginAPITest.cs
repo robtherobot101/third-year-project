@@ -41,6 +41,7 @@ namespace mobileAppClientUnitTests
             HttpStatusCode result = await loginAPI.LoginUser("default", "default");
             Assert.AreEqual(HttpStatusCode.OK, result);
             Assert.AreEqual("default", ClinicianController.Instance.LoggedInClinician.name);
+            Assert.IsNotNull(ClinicianController.Instance.AuthToken);
         }
 
         [TestMethod]

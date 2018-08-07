@@ -3,6 +3,7 @@ using mobileAppClient.odmsAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +23,13 @@ namespace mobileAppClientUnitTests
             var resampleRequest = new HttpRequestMessage(new HttpMethod("POST"), url + "/resample");
             resampleRequest.Headers.Add("token", "masterToken");
 
-            await client.SendAsync(resetRequest);
-            await client.SendAsync(resampleRequest);
+            var resetResult = await client.SendAsync(resetRequest);
+            var resampleResult = await client.SendAsync(resampleRequest);
+
+            if (resetResult.StatusCode != HttpStatusCode.OK || resampleResult.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception("Failed to reset/resample");
+            }
 
             UserController.Instance.Logout();
             ClinicianController.Instance.Logout();

@@ -51,6 +51,7 @@ namespace mobileAppClient.Views
             UserList = new CustomObservableCollection<User>();
             UserListView.ItemsSource = UserList;
             UserListView.RefreshCommand = RefreshCommand;
+            UserSearchBar.SearchCommand = SearchUsers;
 
             UserListView.ItemAppearing += (sender, e) =>
             {
@@ -127,6 +128,19 @@ namespace mobileAppClient.Views
                     LoadItemsQuiet();
 
                     UserListView.IsRefreshing = false;
+                });
+            }
+        }
+
+        public ICommand SearchUsers
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    await DisplayAlert("",
+                    "SEARCH ENGAGED: " + UserSearchBar.Text,
+                    "OK");
                 });
             }
         }

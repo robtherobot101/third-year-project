@@ -5,6 +5,7 @@
              Title="User Search">
     <StackLayout>
         <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
+        <SearchBar x:Name="UserSearchBar"/>
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding UserList}"
                 ItemTapped="Handle_UserTapped"
