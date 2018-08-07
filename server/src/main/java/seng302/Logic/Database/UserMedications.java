@@ -69,10 +69,12 @@ public class UserMedications {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
+            String activeIngredientsString = String.join(",", medication.getActiveIngredients());
+            String historyString = String.join(",", medication.getHistory());
 
             statement.setString(1, medication.getName());
-            statement.setString(2, String.join(",", medication.getActiveIngredients()));
-            statement.setString(3, String.join(",", medication.getHistory()));
+            statement.setString(2, String.join(",", activeIngredientsString));
+            statement.setString(3, String.join(",", historyString));
             statement.setInt(4, userId);
             statement.setInt(5, medicationId);
             System.out.println("Update Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
@@ -127,32 +129,7 @@ public class UserMedications {
     public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
         List<Medication> oldMedications = getAllMedications(userId);
 
-        //Remove all medications that are already on the database
-        for (int i = oldMedications.size() - 1; i >= 0; i--) {
-            Medication found = null;
-            for (Medication newMedication: newMedications) {
-                if (newMedication.equals(oldMedications.get(i))) {
-                    found = newMedication;
-                    break;
-                }
-            }
-            if (found == null) {
-                //Patch edited medications
-                for (Medication newMedication: newMedications) {
-                    if (newMedication.getId() == oldMedications.get(i).getId()) {
-                        updateMedication(oldMedications.get(i), oldMedications.get(i).getId(), userId);
-                        found = newMedication;
-                        break;
-                    }
-                }
-            }
-            if (found != null) {
-                newMedications.remove(found);
-                oldMedications.remove(i);
-            }
-        }
-
-        //Delete all medications from the database that are no longer up to date
+        //Delete all medications from the database
         for (Medication medication: oldMedications) {
             removeMedication(userId, medication.getId());
         }
