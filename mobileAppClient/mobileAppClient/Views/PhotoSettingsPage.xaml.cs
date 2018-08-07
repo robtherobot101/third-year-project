@@ -108,7 +108,7 @@ namespace mobileAppClient
                     DeletePhotoCell.IsEnabled = true;
                     NoPhotoLabel.IsVisible = false;
                     UserController.Instance.ProfilePhotoSource = imageView.Source;
-                    UserController.Instance.Login();
+                    //PUT IN SAVE TO MENU FOR PROFILE PHOTO
                     await DisplayAlert("",
                     "User photo successfully updated",
                     "OK");
@@ -147,7 +147,7 @@ namespace mobileAppClient
                     DeletePhotoCell.IsEnabled = false;
                     NoPhotoLabel.IsVisible = true;
                     imageView.Source = null;
-                    UserController.Instance.Login();
+                    //PUT IN SAVE TO MENU FOR PROFILE PHOTO
                     await DisplayAlert("",
                     "User photo successfully deleted",
                     "OK");
