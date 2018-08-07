@@ -158,7 +158,8 @@ DROP TABLE IF EXISTS `TOKEN`;
 CREATE TABLE IF NOT EXISTS `TOKEN` (
   `id` int(11) NOT NULL,
   `token` text NOT NULL,
-  `access_level` int(11) NOT NULL
+  `access_level` int(11) NOT NULL,
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

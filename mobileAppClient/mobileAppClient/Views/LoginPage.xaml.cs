@@ -70,7 +70,6 @@ namespace mobileAppClient
                     // Pop away login screen on successful login
                     UserAPI userAPI = new UserAPI();
                     HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
-                    UserController.Instance.Login();
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -94,7 +93,7 @@ namespace mobileAppClient
             }
             loginClicked = false;
 
- 
+
         }
 
         /*

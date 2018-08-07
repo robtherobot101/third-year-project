@@ -23,6 +23,7 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
             User loggedInUser = UserController.Instance.LoggedInUser;
 
+            // Removes whitespace from any drugs with a space -> fixes issue with fetching from API
             drugA = drugA.Replace(" ", "-");
             drugB = drugB.Replace(" ", "-");
 
@@ -37,7 +38,7 @@ namespace mobileAppClient.odmsAPI
                 return new DrugInteractionResult(false, HttpStatusCode.BadRequest);
             }
 
-            // Reverse query attempt if 202, I dont know their API needs this
+            // Reverse query attempt if 202, sometimes API will only work with a certain combination
             if (response.StatusCode == HttpStatusCode.Accepted)
             {
                 response = await client.GetAsync(apiEndpoint + reversedQuery);

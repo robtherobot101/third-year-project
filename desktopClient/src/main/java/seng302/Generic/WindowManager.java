@@ -109,7 +109,7 @@ public class WindowManager extends Application {
      * @param user The user to create the window for
      * @param token the users token
      */
-    public static void newCliniciansUserWindow(User user, String token){
+    public static void newAdminsUserWindow(User user, String token){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
         stage.setMinHeight(WindowManager.mainWindowMinHeight);
@@ -141,6 +141,45 @@ public class WindowManager extends Application {
             Platform.exit();
         }
     }
+
+    /**
+     * Creates a new user window from a clinician's view.
+     * @param user The user to create the window for
+     * @param token the users token
+     */
+    public static void newCliniciansUserWindow(User user, String token){
+        Stage stage = new Stage();
+        stage.getIcons().add(WindowManager.getIcon());
+        stage.setMinHeight(WindowManager.mainWindowMinHeight);
+        stage.setMinWidth(WindowManager.mainWindowMinWidth);
+        stage.setHeight(WindowManager.mainWindowPrefHeight);
+        stage.setWidth(WindowManager.mainWindowPrefWidth);
+
+        stage.initModality(Modality.NONE);
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/user/user.fxml"));
+            Parent root = loader.load();
+            UserController newUserController = loader.getController();
+            newUserController.setTitleBar(stage);
+
+            newUserController.setCurrentUser(user, token);
+            newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
+
+            newUserController.setControlsShown(true);
+            newUserController.getAttributesController().setDeathControlsShown(true);
+            cliniciansUserWindows.put(stage, newUserController);
+
+
+            Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
+            stage.setScene(newScene);
+            stage.show();
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
+    }
+
 
     /**
      * sets the current clinician
@@ -195,7 +234,6 @@ public class WindowManager extends Application {
      */
     public static void setCurrentUser(User currentUser, String token) {
         userController.setCurrentUser(currentUser, token);
-        System.out.println(token);
         userController.setControlsShown(false);
     }
 
@@ -211,17 +249,6 @@ public class WindowManager extends Application {
             userController.populateWaitingList();
         }
     }
-
-    /**
-     * Calls the function which updates the the attributes panel of each user window.
-     */
-    public static void updateUserAttributes() {
-        for (UserController userController : cliniciansUserWindows.values()) {
-            userController.populateUserAttributes();
-        }
-    }
-
-
 
     /**
      * Calls the function which updates the transplant waiting list pane.
@@ -539,9 +566,6 @@ public class WindowManager extends Application {
         } else {
             stop();
         }
-
-
-
     }
 
     /**

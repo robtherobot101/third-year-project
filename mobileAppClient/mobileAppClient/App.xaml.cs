@@ -30,7 +30,7 @@ namespace mobileAppClient
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
 
-            MainPage = new MainPage();
+            MainPage = new MainPage(false);
         }
 
         protected override void OnStart()

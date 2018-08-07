@@ -61,9 +61,14 @@ namespace mobileAppClient
         public User(string email) {
             this.email = email;
         }
+
+        public User ShallowCopy()
+        {
+            return (User) this.MemberwiseClone();
+        }
         /*
          * Simply calculates the user's age
-         */ 
+         */
         public double getAge()
         {
             double age;
