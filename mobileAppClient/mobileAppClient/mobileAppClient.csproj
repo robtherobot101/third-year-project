@@ -47,14 +47,14 @@
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\User\DiseasesPage.xaml.cs">
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\UserPages\DiseasesPage.xaml.cs">
       <DependentUpon>Views\DiseasesPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\User\UserOverviewPage.xaml.cs">
+    <Compile Update="Views\UserPages\UserOverviewPage.xaml.cs">
       <DependentUpon>UserOverviewPage.xaml</DependentUpon>
     </Compile>
-    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\User\SingleDiseasePage.xaml.cs">
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\UserPages\SingleDiseasePage.xaml.cs">
       <DependentUpon>Views\SingleDiseasePage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -64,7 +64,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Clinician\ClinicianOverviewPage.xaml">
+    <EmbeddedResource Update="Views\ClinicianPages\ClinicianOverviewPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">
@@ -73,7 +73,10 @@
     <EmbeddedResource Update="Views\RegisterPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Clinician\UserSearchPage.xaml">
+    <EmbeddedResource Update="Views\ClinicianPages\UserSearchPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UserPages\PointsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

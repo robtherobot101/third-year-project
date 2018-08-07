@@ -182,4 +182,7 @@
     <BundleResource Include="Resources\settings_icon.png" />
     <BundleResource Include="Resources\arrow_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\score_icon.png" />
+  </ItemGroup>
 </Project>

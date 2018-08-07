@@ -42,9 +42,9 @@ namespace mobileAppClient
         public string email { get; set; }
         public string username { get; set; }
         public string password { get; set; }
+        public int points { get; set; }
 
         public List<String> organs { get; set; }
-
         public List<Medication> currentMedications { get; set; }
         public List<Medication> historicMedications { get; set; }
 
