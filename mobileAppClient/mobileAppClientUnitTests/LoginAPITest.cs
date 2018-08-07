@@ -86,7 +86,7 @@ namespace mobileAppClientUnitTests
                 "password", dob);
 
             // TODO FIX THIS
-            Assert.AreEqual(HttpStatusCode.InternalServerError, result);
+            Assert.AreEqual(HttpStatusCode.Created, result);
         }
 
         [TestMethod]
