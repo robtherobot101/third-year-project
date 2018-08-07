@@ -171,5 +171,56 @@ namespace mobileAppClient.odmsAPI
             }
 
         }
+
+        /*
+         * Function which returns the HTTPStatusCode of doing a call to the server
+         * to delete the user's profile photo.
+         */
+        public async Task<HttpStatusCode> DeleteUserPhoto()
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            //Create the request with token as a header
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"), url + "/users/" + userController.LoggedInUser.id + "/photo");
+            request.Headers.Add("token", UserController.Instance.AuthToken);
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Photo receievedPhoto = new Photo(responseContent);
+                userController.photoObject = null;
+                userController.ProfilePhotoSource = null;
+
+                Console.WriteLine("Successfully deleted profile photo for user id " + userController.LoggedInUser.id);
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Failed to delete photo for user id ({0}) ({1})", userController.LoggedInUser.id, response.StatusCode));
+                return response.StatusCode;
+            }
+
+        }
     }
 }

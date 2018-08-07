@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.PhotoSettingsPage"
+             xmlns:local="clr-namespace:mobileAppClient"
+             Title="Photo"> 
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <TableView Intent="Menu" HasUnevenRows="true">
+                <TableRoot>
+                    <TableSection>
+                        <TextCell Text="Change Photo..." TextColor="Black" Tapped="SelectImageClicked"/>
+                        <TextCell Text="Delete Photo" x:Name="DeletePhotoCell" IsEnabled="false" TextColor="Red"  Tapped="Handle_DeleteTapped"/>
+                    </TableSection>
+                    <TableSection Title="Current Photo">
+                        <ViewCell Height="0">
+                            <StackLayout Orientation="Vertical" Padding="15,15,15,30">
+                                <Label Text="No photo currently uploaded." x:Name="NoPhotoLabel" IsVisible="true"/>  
+                                <Image x:Name="imageView" Aspect="AspectFit"/> 
+                            </StackLayout>
+                        </ViewCell>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+
+
+            
+        </StackLayout>
+        
+        
+    </ContentPage.Content>
+</ContentPage>
