@@ -14,7 +14,6 @@ import seng302.GUI.TitleBar;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.DonatableOrgan;
-import seng302.User.WaitingListItem;
 
 import java.net.URL;
 import java.time.Duration;
@@ -54,7 +53,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * Creates a timer which ticks every second and updates each organ object, counting down their expiry time by 1 second.
      * This timer runs in a background thread, and with only 1 timer running SHOULD be real time reliable.
      */
-    public void setTimeLeft(List<DonatableOrgan> expiryList){
+    public void setTimeLeftList(List<DonatableOrgan> expiryList){
         // get data from server and load them into the tree table or whatever
 
         //set up the timer
@@ -72,11 +71,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
             Duration expiryDuration = organ.getExpiryDuration(organ.getOrganType());
             LocalDateTime expiryDate = deathDate.plus(expiryDuration);
 
-
             if (now.isBefore(expiryDate) && expiryDate.isBefore(now.plusHours(100))){
                 // Set time remaining
                 //calculate the initial value of time remaining (if lower than 100 hours left)
-                Duration timeLeft = Duration.ZERO;
+                Duration timeLeft = Duration.between(now, expiryDate);
                 organ.setTimeLeft(timeLeft);
             } else {
                 //Either the organ shouldn't be displaying, or it should display <4 days or something
@@ -92,6 +90,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
                         //for each item set timeLeft -1
                         organ.tickTimeLeft();
+                        System.out.println(organ.getTimeLeft().toString());
                     } else {
                         //...unless it is 0, in which do whatever needs to be done
                     }
@@ -112,7 +111,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     public void updateOrgans() {
         try {
             List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token));
-            setTimeLeft(temp);
+            setTimeLeftList(temp);
             expiryList.clear();
             for(DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
@@ -135,11 +134,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("DonorId"));
-        dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfExpiry"));
+        countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeft"));
+        dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfDeath"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
 
         //transplantTable.setItems(transplantList);
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        updateOrgans();
 
         organsTable.setItems(expiryList);
     }

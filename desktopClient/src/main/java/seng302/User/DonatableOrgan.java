@@ -58,7 +58,7 @@ public class DonatableOrgan {
     }
 
     public void tickTimeLeft(){
-        timeLeft.minus(1, SECONDS);
+        timeLeft = timeLeft.minus(1, SECONDS);
     }
 
     /**
