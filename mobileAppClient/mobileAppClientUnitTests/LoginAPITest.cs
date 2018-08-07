@@ -22,6 +22,7 @@ namespace mobileAppClientUnitTests
             UserController.Instance.isTestMode = true;
             ClinicianController.Instance.isTestMode = true;
             ServerConfig.Instance.serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
+            //ServerConfig.Instance.serverAddress = "http://localhost:7015/api/v1";
             loginAPI = new LoginAPI();
 
             await UnitTestUtils.resetResample();
@@ -87,6 +88,8 @@ namespace mobileAppClientUnitTests
                 "password", dob);
 
             // TODO FIX THIS
+            // Works on a local server
+            // Temperamental on vm server
             Assert.AreEqual(HttpStatusCode.Created, result);
         }
 

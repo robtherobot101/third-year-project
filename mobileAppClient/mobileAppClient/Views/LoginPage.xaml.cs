@@ -69,7 +69,12 @@ namespace mobileAppClient
                 case HttpStatusCode.OK:
                     // Pop away login screen on successful login
                     UserAPI userAPI = new UserAPI();
-                    HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+
+                    // Fetch photo only on user login
+                    if (!ClinicianController.Instance.isLoggedIn())
+                    {
+                        HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                    } 
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:

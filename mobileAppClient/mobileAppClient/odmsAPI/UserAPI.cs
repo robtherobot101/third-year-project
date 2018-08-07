@@ -239,7 +239,7 @@ namespace mobileAppClient.odmsAPI
         /// <returns>
         /// Tuple containing the HTTP return code and the list of User objects
         /// </returns>
-        public async Task<Tuple<HttpStatusCode, List<User>>> GetUsers(int startIndex, int count)
+        public async Task<Tuple<HttpStatusCode, List<User>>> GetUsers(int startIndex, int count, string searchQuery)
         {
             // Check internet connection
             List<User> resultUsers = new List<User>();
@@ -255,6 +255,12 @@ namespace mobileAppClient.odmsAPI
             String queries = null;
 
             queries = String.Format("?startIndex={0}&count={1}", startIndex, count);
+
+            // Add the name search query if given
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                queries += String.Format("&name={0}", searchQuery);
+            }
 
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
