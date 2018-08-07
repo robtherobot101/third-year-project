@@ -79,6 +79,14 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
+        /// <summary>
+        /// Fetches a list of users from startIndex, with a max length of count
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <param name="count"></param>
+        /// <returns>
+        /// Tuple containing the HTTP return code and the list of User objects
+        /// </returns>
         public async Task<Tuple<HttpStatusCode, List<User>>> GetUsers(int startIndex, int count)
         {
             // Check internet connection
@@ -119,6 +127,12 @@ namespace mobileAppClient.odmsAPI
             return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.OK, resultUsers);
         }
 
+        /// <summary>
+        /// Gets the amount of users currently stored in the DB
+        /// </summary>
+        /// <returns>
+        /// Number of users in DB
+        /// </returns>
         public async Task<Tuple<HttpStatusCode, int>> GetUserCount()
         {
             if (!await ServerConfig.Instance.IsConnectedToInternet())
@@ -153,6 +167,13 @@ namespace mobileAppClient.odmsAPI
             return new Tuple<HttpStatusCode, int>(HttpStatusCode.OK, userCount);
         }
 
+        /// <summary>
+        /// Check if the username OR email already exists in the DB
+        /// </summary>
+        /// <param name="usernameEmail"></param>
+        /// <returns>
+        /// Tuple containing the HTTP status code and if the username/email is unique
+        /// </returns>
         public async Task<Tuple<HttpStatusCode, bool>> isUniqueUsernameEmail(string usernameEmail)
         {
             bool isUnique = false;

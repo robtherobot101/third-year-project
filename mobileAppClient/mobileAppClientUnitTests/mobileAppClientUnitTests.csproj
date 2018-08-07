@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="LoginAPITest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTestUtils.cs" />
+    <Compile Include="UserAPITest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
