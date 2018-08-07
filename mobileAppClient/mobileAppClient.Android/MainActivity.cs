@@ -29,6 +29,7 @@ namespace mobileAppClient.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
+            global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
 
             ActivityContext = this;
 

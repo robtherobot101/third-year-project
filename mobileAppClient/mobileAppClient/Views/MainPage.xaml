@@ -17,7 +17,7 @@
                 <StackLayout.Children>
                     <Label Text="{Binding Header}" />
 
-                    <Image Source="{Binding Image}" Aspect="AspectFit" />
+                    <Image Source="{Binding Image}" Aspect="AspectFit"/>
 
                     <Label Text="{Binding Footer}" />
                 </StackLayout.Children>
