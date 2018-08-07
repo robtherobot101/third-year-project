@@ -12,6 +12,10 @@ namespace mobileAppClient
     {
         public User LoggedInUser { get; set; }
         public string AuthToken { get; set; }
+        public Photo photoObject { get; set; }
+        public Xamarin.Forms.ImageSource ProfilePhotoSource { get; set; }
+
+        private List<UserObserver> userObservers;
         public MainPage mainPageController { get; set; }
         public bool isTestMode { get; set; }
 
@@ -27,6 +31,8 @@ namespace mobileAppClient
         {
             this.LoggedInUser = null;
             this.AuthToken = null;
+            this.photoObject = null;
+            this.ProfilePhotoSource = null;
         }
 
         /*

@@ -128,12 +128,5 @@ namespace mobileAppClient
             selectedItem2.Text = "";
         }
 
-        /*
-         * Handles when the back button is clicked, sending the user back to the medications page.
-         */ 
-        async void BackButtonClicked(object sender, EventArgs args)
-        {
-            await Navigation.PopModalAsync();
-        }
     }
 }

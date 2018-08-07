@@ -33,13 +33,5 @@ namespace mobileAppClient
 
         }
 
-        /*
-         * Handles the back button being clicked, returning the user to 
-         * the procedures page.
-         */ 
-        async void BackButtonClicked(object sender, EventArgs args)
-        {
-            await Navigation.PopModalAsync();
-        }
     }
 }

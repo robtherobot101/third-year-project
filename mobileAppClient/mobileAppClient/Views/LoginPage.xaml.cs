@@ -67,7 +67,9 @@ namespace mobileAppClient
             switch(statusCode)
             {
                 case HttpStatusCode.OK:
-                    // Pop away login screen on successful user/clinician login
+                    // Pop away login screen on successful login
+                    UserAPI userAPI = new UserAPI();
+                    HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -90,6 +92,8 @@ namespace mobileAppClient
                     break;
             }
             loginClicked = false;
+
+
         }
 
         /*

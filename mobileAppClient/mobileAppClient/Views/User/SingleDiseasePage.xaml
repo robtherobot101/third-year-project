@@ -5,11 +5,6 @@
              x:Class="mobileAppClient.SingleDiseasePage">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
-            
-            <Button x:Name="PressMeButton"
-            Text="Back"
-            Pressed="BackButtonClicked"
-            />
 
             <TableView Intent="Menu" >
                 <TableRoot>
