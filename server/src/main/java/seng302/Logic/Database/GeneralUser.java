@@ -470,8 +470,10 @@ public class GeneralUser {
 
                 if (proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                    for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        procedureOrgans.add(Organ.parse(organ));
+                    if (!proceduresResultSet.getString("organs_affected").isEmpty()) {
+                        for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                            procedureOrgans.add(Organ.parse(organ));
+                        }
                     }
                     user.getPendingProcedures().add(new Procedure(
                             proceduresResultSet.getString("summary"),
@@ -482,8 +484,10 @@ public class GeneralUser {
                     ));
                 } else {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                    for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        procedureOrgans.add(Organ.parse(organ));
+                    if (!proceduresResultSet.getString("organs_affected").isEmpty()) {
+                        for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                            procedureOrgans.add(Organ.parse(organ));
+                        }
                     }
                     user.getPreviousProcedures().add(new Procedure(
                             proceduresResultSet.getString("summary"),

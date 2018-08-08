@@ -41,7 +41,9 @@ public class UserProcedures {
             for (Organ organ : procedure.getOrgansAffected()) {
                 organsAffected += organ.toString() + ",";
             }
-            organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
+            if (!organsAffected.isEmpty()) {
+                organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
+            }
 
             insertProceduresStatement.setString(4, organsAffected);
             insertProceduresStatement.setInt(5, userId);
@@ -107,8 +109,10 @@ public class UserProcedures {
     public Procedure getProcedureFromResultSet(ResultSet proceduresResultSet) throws SQLException {
 
         ArrayList<Organ> procedureOrgans = new ArrayList<>();
-        for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
-            procedureOrgans.add(Organ.parse(organ));
+        if (!proceduresResultSet.getString("organs_affected").isEmpty()) {
+            for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                procedureOrgans.add(Organ.parse(organ));
+            }
         }
         return new Procedure(
                 proceduresResultSet.getString("summary"),
