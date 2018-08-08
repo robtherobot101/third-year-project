@@ -8,6 +8,10 @@ tag_checker:
 junit:
   stage: test
   script:
+    - docker-compose build
+    - docker container stop testing
+    - docker container prune -f
+    - docker run -d -p 7016:7015 --name testing team300_app /srv/java/jvm/bin/java -jar target/server-1.0-SNAPSHOT.jar -t
     - mvn -B clean test
   except:
     - server-deployment@seng302-2018/team-300
@@ -42,7 +46,7 @@ server-deployment:
     - docker stop testing
     - docker container prune -f
     - docker-compose up -d
-    - docker run -d -p 7016:7015 --name testing team300_app /srv/java/jvm/bin/java -jar server/target/server-1.0-SNAPSHOT.jar -t
+    - docker run -d -p 7016:7015 --name testing team300_app /srv/java/jvm/bin/java -jar target/server-1.0-SNAPSHOT.jar -t
   only:
     - server-deployment@seng302-2018/team-300
     - master@seng302-2018/team-300

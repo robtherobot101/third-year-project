@@ -11,7 +11,7 @@ namespace mobileAppClient.odmsAPI
     /*
      * Provides a singleton container that tracks the current server address and holds a single HttpClient to be used across API calls
      */
-    sealed class ServerConfig
+    public sealed class ServerConfig
     {
         public String serverAddress { get; set; }
 
@@ -28,6 +28,7 @@ namespace mobileAppClient.odmsAPI
 
             // Sets default address
             serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
+            //serverAddress = "http://localhost:7015/api/v1";
         }
 
         /*

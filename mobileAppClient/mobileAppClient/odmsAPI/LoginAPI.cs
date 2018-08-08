@@ -96,6 +96,55 @@ namespace mobileAppClient.odmsAPI
         }
 
         /*
+         * Returns whether or not the logout operation was successful
+         */
+        public async Task<HttpStatusCode> Logout(bool isClinician)
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent content = new StringContent("");
+            HttpResponseMessage response;
+
+            var request = new HttpRequestMessage(new HttpMethod("POST"), url + "/logout");
+            if (isClinician) {
+                request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+            } else
+            {
+                request.Headers.Add("token", UserController.Instance.AuthToken);
+            }
+
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                if (isClinician)
+                {
+                    ClinicianController.Instance.Logout();
+                } else
+                {
+                    UserController.Instance.Logout();
+                }
+            }
+
+            return response.StatusCode;
+        }
+
+        /*
          * Returns true if the JSON string can be determined as a user object
          */
         private bool IsUser(string jsonBody)
