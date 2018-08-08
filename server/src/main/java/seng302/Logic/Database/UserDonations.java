@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +52,7 @@ public class UserDonations {
 
             insertDonationStatement.setString(1, organ.toString());
             insertDonationStatement.setInt(2, userId);
-            insertDonationStatement.setTimestamp(3, deathDate != null ? java.sql.Timestamp.valueOf(deathDate) : null);
+            insertDonationStatement.setLong(3, deathDate != null ? deathDate.toEpochSecond(OffsetDateTime.now().getOffset()) : null);
 
 
             System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
