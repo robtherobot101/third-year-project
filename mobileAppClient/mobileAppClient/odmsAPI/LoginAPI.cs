@@ -55,19 +55,8 @@ namespace mobileAppClient.odmsAPI
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
 
-                if (IsUser(responseContent))
-                {
-                    // Login as the user
-                    User loggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
-                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
 
-                    UserController.Instance.Login(loggedInUser, authToken);
-
-                    Console.WriteLine("Logged in as (USER)" + String.Join(String.Empty, userController.LoggedInUser.name));
-
-                    // OK code to signifiy user login internally
-                    return HttpStatusCode.OK;
-                } else if (IsClinician(responseContent))
+                if (IsClinician(responseContent))
                 {
                     // Login as the clinician
                     Clinician loggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);
@@ -79,7 +68,21 @@ namespace mobileAppClient.odmsAPI
 
                     // Created code to signifiy clinician login internally
                     return HttpStatusCode.OK;
-                } else
+                }
+                else if (IsUser(responseContent))
+                {
+                    // Login as the user
+                    User loggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
+                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
+
+                    UserController.Instance.Login(loggedInUser, authToken);
+
+                    Console.WriteLine("Logged in as (USER)" + String.Join(String.Empty, userController.LoggedInUser.name));
+
+                    // OK code to signifiy user login internally
+                    return HttpStatusCode.OK;
+                }
+                else
                 {
                     // Must've attempted login as admin -> deny
                     return HttpStatusCode.BadRequest;
