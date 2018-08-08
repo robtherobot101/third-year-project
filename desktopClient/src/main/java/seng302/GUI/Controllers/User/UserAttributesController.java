@@ -328,7 +328,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
+        setRegionControls(currentUser.getRegion(), countryComboBox.getValue() != null ? countryComboBox.getValue().toString() : "", regionComboBox, regionField);
         System.out.println("Country changed");
         attributeFieldUnfocused();
     }

@@ -139,6 +139,7 @@ public class WindowManager extends Application {
             Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
             stage.setScene(newScene);
             stage.show();
+            newUserController.setRefreshEvent();
         } catch (IOException | NullPointerException e) {
             System.err.println("Unable to load fxml or save file.");
             e.printStackTrace();
@@ -177,6 +178,7 @@ public class WindowManager extends Application {
             Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
             stage.setScene(newScene);
             stage.show();
+            newUserController.setRefreshEvent();
         } catch (IOException | NullPointerException e) {
             System.err.println("Unable to load fxml or save file.");
             e.printStackTrace();
@@ -453,7 +455,7 @@ public class WindowManager extends Application {
 
         APIServer server;
         if(TESTING) server = new APIServer(testingServer);
-        else server = new APIServer(properServer);
+        else server = new APIServer(localServer);
 
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
@@ -554,6 +556,12 @@ public class WindowManager extends Application {
             getScene(TFScene.admin).setOnKeyReleased(event -> {
                 if (event.getCode() == KeyCode.F5) {
                     adminController.refresh();
+                }
+            });
+
+            getScene(TFScene.userWindow).setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    userController.refresh();
                 }
             });
         } else {
