@@ -69,10 +69,12 @@ public class UserMedications {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
+            String activeIngredientsString = String.join(",", medication.getActiveIngredients());
+            String historyString = String.join(",", medication.getHistory());
 
             statement.setString(1, medication.getName());
-            statement.setString(2, String.join(",", medication.getActiveIngredients()));
-            statement.setString(3, String.join(",", medication.getHistory()));
+            statement.setString(2, String.join(",", activeIngredientsString));
+            statement.setString(3, String.join(",", historyString));
             statement.setInt(4, userId);
             statement.setInt(5, medicationId);
             System.out.println("Update Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
