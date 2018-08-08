@@ -129,7 +129,7 @@ public class UserProcedures {
     public void updateAllProcedures(List<Procedure> newProcedures, int userId) throws SQLException {
         List<Procedure> oldProcedures = getAllProcedures(userId);
 
-        //Remove all procedures that are already on the database
+        //Ignore all procedures that are already on the database and up to date
         for (int i = oldProcedures.size() - 1; i >= 0; i--) {
             Procedure found = null;
             for (Procedure newProcedure: newProcedures) {
@@ -139,10 +139,10 @@ public class UserProcedures {
                 }
             }
             if (found == null) {
-                //Patch edited medications
+                //Patch edited procedures
                 for (Procedure newProcedure: newProcedures) {
                     if (newProcedure.getId() == oldProcedures.get(i).getId()) {
-                        updateProcedure(oldProcedures.get(i), oldProcedures.get(i).getId(), userId);
+                        updateProcedure(newProcedure, oldProcedures.get(i).getId(), userId);
                         found = newProcedure;
                         break;
                     }
@@ -154,12 +154,12 @@ public class UserProcedures {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all procedures from the database that are no longer up to date
         for (Procedure procedure: oldProcedures) {
             removeProcedure(userId, procedure.getId());
         }
 
-        //Upload all new medications
+        //Upload all new procedures
         for (Procedure procedure: newProcedures) {
             insertProcedure(procedure, userId);
         }

@@ -107,7 +107,7 @@ public class UserDiseases {
     public void updateAllDiseases(List<Disease> newDiseases, int userId) throws SQLException {
         List<Disease> oldDiseases = getAllDiseases(userId);
 
-        //Remove all procedures that are already on the database
+        //Ignore all diseases that are already on the database and up to date
         for (int i = oldDiseases.size() - 1; i >= 0; i--) {
             Disease found = null;
             for (Disease newDisease: newDiseases) {
@@ -117,10 +117,10 @@ public class UserDiseases {
                 }
             }
             if (found == null) {
-                //Patch edited medications
+                //Patch edited diseases
                 for (Disease newDisease: newDiseases) {
                     if (newDisease.getId() == oldDiseases.get(i).getId()) {
-                        updateDisease(oldDiseases.get(i), oldDiseases.get(i).getId(), userId);
+                        updateDisease(newDisease, oldDiseases.get(i).getId(), userId);
                         found = newDisease;
                         break;
                     }
@@ -132,12 +132,12 @@ public class UserDiseases {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all diseases from the database that are no longer up to date
         for (Disease disease: oldDiseases) {
             removeDisease(userId, disease.getId());
         }
 
-        //Upload all new medications
+        //Upload all new diseases
         for (Disease disease: newDiseases) {
             insertDisease(disease, userId);
         }

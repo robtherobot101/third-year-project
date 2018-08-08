@@ -166,7 +166,7 @@ public class UserWaitingList {
     public void updateAllWaitingListItems(List<WaitingListItem> newWaitingListItems, int userId) throws SQLException {
         List<WaitingListItem> oldWaitingListItems = getAllUserWaitingListItems(userId);
 
-        //Remove all procedures that are already on the database
+        //Ignore all waiting list items that are already on the database and up to date
         for (int i = oldWaitingListItems.size() - 1; i >= 0; i--) {
             WaitingListItem found = null;
             for (WaitingListItem newWaitingListItem: newWaitingListItems) {
@@ -176,9 +176,7 @@ public class UserWaitingList {
                 }
             }
             if (found == null) {
-                //Patch edited medications
-
-
+                //Patch edited waiting list items
                 for (WaitingListItem newWaitingListItem: newWaitingListItems) {
                     if (newWaitingListItem.getId() == oldWaitingListItems.get(i).getId()) {
                         updateWaitingListItem(newWaitingListItem, oldWaitingListItems.get(i).getId(), userId);
@@ -186,9 +184,6 @@ public class UserWaitingList {
                         break;
                     }
                 }
-
-
-
             }
             if (found != null) {
                 newWaitingListItems.remove(found);
@@ -196,12 +191,12 @@ public class UserWaitingList {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all waiting list items from the database that are no longer up to date
         for (WaitingListItem waitingListItem: oldWaitingListItems) {
             removeWaitingListItem(userId, waitingListItem.getId());
         }
 
-        //Upload all new medications
+        //Upload all new waiting list items
         for (WaitingListItem waitingListItem: newWaitingListItems) {
             insertWaitingListItem(waitingListItem, userId);
         }

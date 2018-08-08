@@ -127,7 +127,7 @@ public class UserMedications {
     public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
         List<Medication> oldMedications = getAllMedications(userId);
 
-        //Remove all medications that are already on the database
+        //Ignore all medications that are already on the database and up to date
         for (int i = oldMedications.size() - 1; i >= 0; i--) {
             Medication found = null;
             for (Medication newMedication: newMedications) {
@@ -140,7 +140,7 @@ public class UserMedications {
                 //Patch edited medications
                 for (Medication newMedication: newMedications) {
                     if (newMedication.getId() == oldMedications.get(i).getId()) {
-                        updateMedication(oldMedications.get(i), oldMedications.get(i).getId(), userId);
+                        updateMedication(newMedication, oldMedications.get(i).getId(), userId);
                         found = newMedication;
                         break;
                     }
