@@ -5,9 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
@@ -15,6 +18,7 @@ import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.DonatableOrgan;
 import seng302.User.User;
+import seng302.User.WaitingListItem;
 
 import java.net.URL;
 import java.time.Duration;
@@ -161,5 +165,27 @@ public class ClinicianAvailableOrgansController implements Initializable{
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         organsTable.setItems(expiryList);
+
+        organsTable.setRowFactory(new Callback<TableView<DonatableOrgan>, TableRow<DonatableOrgan>>() {
+            @Override
+            public TableRow<DonatableOrgan> call(TableView<DonatableOrgan> tableView) {
+                final TableRow<DonatableOrgan> row = new TableRow<DonatableOrgan>() {
+                    public void updateItem(DonatableOrgan item, boolean empty) {
+                        super.updateItem(item, empty);
+                        getStyleClass().remove("highlighted-row");
+                        setTooltip(null);
+                        if (item != null && !empty) {
+                            if (item.getTimePercent() > ((long) 0.99)) {
+                                if (!getStyleClass().contains("highlighted-row")) {
+                                    getStyleClass().add("highlighted-row");
+                                }
+                            }
+                        }
+                    }
+                };
+                organsTable.refresh();
+                return row;
+            }
+        });
     }
 }

@@ -16,6 +16,7 @@ public class DonatableOrgan {
     private Duration timeLeft;
     private String receiverName;
     private String receiverRegion;
+    private Long timePercent;
 
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
@@ -47,6 +48,10 @@ public class DonatableOrgan {
         return receiverRegion;
     }
 
+    public Long getTimePercent() {
+        return timePercent;
+    }
+
     public LocalDateTime getTimeOfDeath() {
         return timeOfDeath;
     }
@@ -73,10 +78,12 @@ public class DonatableOrgan {
 
     public void setTimeLeft(Duration time) {
         timeLeft = time;
+        timePercent = time.toMillis() / getExpiryDuration(organType).toMillis();
     }
 
     public void tickTimeLeft(){
         timeLeft = timeLeft.minus(1, SECONDS);
+        timePercent = timeLeft.toMillis() / getExpiryDuration(organType).toMillis();
     }
 
     /**
@@ -111,7 +118,7 @@ public class DonatableOrgan {
                 duration = Duration.parse("P7D");
                 break;
             case EAR:
-                duration = Duration.ZERO;
+                duration = Duration.parse("P3650D");//Todo this is unknown and is a place holder
                 break;
             case TISSUE:
                 duration = Duration.parse("P1825D");
