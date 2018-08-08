@@ -14,6 +14,8 @@ public class DonatableOrgan {
     private long donorId;
     private int id;
     private Duration timeLeft;
+    private String receiverName;
+    private String receiverRegion;
 
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
@@ -29,7 +31,23 @@ public class DonatableOrgan {
         this.organType = organType;
     }
 
-    public LocalDateTime getDateOfDeath() {
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public void setReceiverRegion(String receiverRegion) {
+        this.receiverRegion = receiverRegion;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public String getReceiverRegion() {
+        return receiverRegion;
+    }
+
+    public LocalDateTime getTimeOfDeath() {
         return timeOfDeath;
     }
 

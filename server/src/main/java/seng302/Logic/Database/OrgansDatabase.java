@@ -95,8 +95,8 @@ public class OrgansDatabase {
      */
     private DonatableOrgan getOrganFromResultSet(ResultSet organResultSet) throws SQLException{
         return new DonatableOrgan(
-                organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
-                //LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
+                //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
+                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
                 organResultSet.getInt("id"));

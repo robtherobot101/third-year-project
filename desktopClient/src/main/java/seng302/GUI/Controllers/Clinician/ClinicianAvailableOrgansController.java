@@ -14,6 +14,7 @@ import seng302.GUI.TitleBar;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.DonatableOrgan;
+import seng302.User.User;
 
 import java.net.URL;
 import java.time.Duration;
@@ -66,7 +67,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             LocalDateTime now = LocalDateTime.now();
 
             // Calculate the date the organ expires, based on the organ
-            LocalDateTime deathDate = organ.getDateOfDeath();
+            LocalDateTime deathDate = organ.getTimeOfDeath();
             //TODO Find a cleaner way of getting organ dates and times in durations or something to be able to add to deathDate, and find expiry durations for ear and tissue
             Duration expiryDuration = organ.getExpiryDuration(organ.getOrganType());
             LocalDateTime expiryDate = deathDate.plus(expiryDuration);
@@ -116,11 +117,28 @@ public class ClinicianAvailableOrgansController implements Initializable{
             expiryList.clear();
             for(DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
+                    addUserInfo(organ);
                     expiryList.add(organ);
                 }
             }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
+        }
+    }
+
+    /**
+     * adds the user info to a Donatable organ item
+     * @param organ the waiting list item to update
+     */
+    public void addUserInfo(DonatableOrgan organ) {
+        try{
+            User user = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
+            organ.setReceiverName(user.getName());
+            organ.setReceiverRegion(user.getRegion());
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
+        } catch (NullPointerException e) {
+
         }
     }
 
@@ -134,14 +152,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
         WindowManager.setClinicianAvailableOrgansController(this);
 
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("DonorId"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
         countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeft"));
         dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfDeath"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
 
         //transplantTable.setItems(transplantList);
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        updateOrgans();
 
         organsTable.setItems(expiryList);
     }
