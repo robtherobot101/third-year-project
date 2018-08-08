@@ -40,9 +40,23 @@ namespace mobileAppClient
             {
                 FacebookProfile facebookProfile = await facebookServices.GetFacebookProfileAsync(accessToken);
                 string password = "password";
+
+                User inputUser = new User();
+                inputUser.name = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
+                inputUser.preferredName = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
+                inputUser.email = facebookProfile.Email;
+                inputUser.username = facebookProfile.Email;
+                inputUser.password = password;
+                inputUser.dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday));
+                inputUser.creationTime = new CustomDateTime(DateTime.Now);
+                inputUser.gender = facebookProfile.Gender.ToUpper();
+                inputUser.region = facebookProfile.Location.Name;
+                //Server requires to initialise the organs and user history items on creation
+                inputUser.organs = new List<string>();
+                inputUser.userHistory = new List<HistoryItem>();
+
                 LoginAPI loginAPI = new LoginAPI();
-                HttpStatusCode registerUserResult = await loginAPI.RegisterUser(facebookProfile.FirstName, facebookProfile.LastName, facebookProfile.Email,
-                                                                                facebookProfile.Email, password, DateTime.Parse(facebookProfile.Birthday));
+                HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
 
                 switch (registerUserResult)
                 {

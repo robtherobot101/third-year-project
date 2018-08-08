@@ -8,7 +8,6 @@ namespace mobileAppClient
 
         public string Name { get; set; }
         public Picture Picture { get; set; }
-        public string Locale { get; set; }
         public string Link { get; set; }
         public Cover Cover { get; set; }
         [JsonProperty("age_range")]
@@ -22,6 +21,13 @@ namespace mobileAppClient
         public string Id { get; set; }
         public string Email { get; set; }
         public string Birthday { get; set; }
+        public Location Location { get; set; }
+    }
+
+    public class Location
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
     
 

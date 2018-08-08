@@ -11,7 +11,7 @@ namespace mobileAppClient
             "https://www.facebook.com/dialog/oauth?client_id="
             + "971327199740898"
             + "&display=popup&response_type=token&redirect_uri=https://www.facebook.com/connect/login_success.html"
-            + "&scope=email,user_birthday,user_gender";
+            + "&scope=email,user_birthday,user_gender,user_location";
 
         public FacebookServices()
         {
