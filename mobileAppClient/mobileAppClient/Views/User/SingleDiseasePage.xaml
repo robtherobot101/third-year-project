@@ -10,14 +10,20 @@
                 <TableRoot>
                     <TableSection Title="Disease Details">
                         <EntryCell Label="Name" x:Name="NameEntry" IsEnabled="false"/>
-                        <EntryCell Label="Diagnosis Date" x:Name="DateEntry" IsEnabled="false"/>
-                        <EntryCell Label="Chronic?" x:Name="ChronicEntry" IsEnabled="false"/>
-                        <EntryCell Label="Cured?" x:Name="CuredEntry" IsEnabled="false"/>
-                        <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                                <Label Text="Diagnosis Date" VerticalOptions="Center"/>
+                                <DatePicker x:Name="DateEntry" IsEnabled="false" Format="D" MinimumDate="01/01/1900"/>
+                            </StackLayout>
+                        </ViewCell>
+                        <SwitchCell Text="Chronic?" x:Name="ChronicEntry" IsEnabled="false" OnChanged="ChronicCheck"/>
+                        <SwitchCell Text="Cured?" x:Name="CuredEntry" IsEnabled="false" OnChanged="CuredCheck"/>
+                        <EntryCell Text="DiseaseId" x:Name="DiseaseId" IsEnabled="false"></EntryCell>
                     </TableSection>
                 </TableRoot>
             </TableView>
             
         </StackLayout>
     </ContentPage.Content>
+    
 </ContentPage>
