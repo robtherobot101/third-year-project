@@ -111,7 +111,7 @@ namespace mobileAppClient
                 var addItem = new ToolbarItem
                 {
                     Command = OpenAddProcedure,
-                    Icon = "add_icon.png"
+                    Icon = "add_icon.png",
                 };
 
                 this.ToolbarItems.Add(addItem);
@@ -122,10 +122,7 @@ namespace mobileAppClient
         {
             get
             {
-                return new Command(() =>
-                {
-                    Console.WriteLine("Opening single procedure...");
-                });
+                return new Command(() => { Navigation.PushAsync(new NavigationPage(new SingleProcedurePage())); });
             }
         }
 

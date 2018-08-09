@@ -150,7 +150,8 @@ namespace mobileAppClient
                 var addItem = new ToolbarItem
                 {
                     Command = OpenAddProcedure,
-                    Icon = "add_icon.png"
+                    Icon = "add_icon.png",
+                    Order = 0
                 };
 
                 this.ToolbarItems.Add(addItem);

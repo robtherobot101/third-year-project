@@ -14,5 +14,15 @@ namespace mobileAppClient
         public List<String> OrgansAffected { get; set; }
         public int Id { get; set; }
         public string DetailString { get; set; }
+        public Procedure(string summary, string description, CustomDate date,
+            List<String> organsAffected)
+        {
+            this.Summary = summary;
+            this.Description = description;
+            this.Date = date;
+            this.OrgansAffected = organsAffected;
+        }
     }
+
+    
 }

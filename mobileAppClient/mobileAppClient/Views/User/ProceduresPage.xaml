@@ -67,4 +67,7 @@
             <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
         </StackLayout>
     </ContentPage.Content>
+    <ContentPage.ToolbarItems >
+
+    </ContentPage.ToolbarItems>
 </ContentPage>

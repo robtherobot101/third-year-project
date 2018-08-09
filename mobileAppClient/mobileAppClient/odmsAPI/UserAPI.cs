@@ -79,7 +79,7 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns the status of updating a user object to the server
          */
-        public async Task<HttpStatusCode> UpdateUser(bool isClinician)
+        public async Task<HttpStatusCode> UpdateUser(bool isClinicianMakingUpdate)
         {
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -101,7 +101,7 @@ namespace mobileAppClient.odmsAPI
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + userId);
             request.Content = body;
 
-            if (isClinician)
+            if (isClinicianMakingUpdate)
             {
                 request.Headers.Add("token", ClinicianController.Instance.AuthToken);
             } else
