@@ -102,7 +102,7 @@ namespace mobileAppClient
                 List<string> currentDiseases = new List<string>();
                 foreach (Disease item in currentUser.currentDiseases)
                 {
-                    currentDiseases.Add(item.Name);
+                    currentDiseases.Add(item.name);
                 }
                 currentDiseasesString = "Currently suffering from: \n" + String.Join(", ", currentDiseases);
             }
@@ -117,7 +117,7 @@ namespace mobileAppClient
                 List<string> curedDiseases = new List<string>();
                 foreach (Disease item in currentUser.curedDiseases)
                 {
-                    curedDiseases.Add(item.Name);
+                    curedDiseases.Add(item.name);
                 }
                 curedDiseasesString = "Has suffered from: \n" + String.Join(", ", curedDiseases);
             }
@@ -173,7 +173,7 @@ namespace mobileAppClient
                 List<string> waitingListItems = new List<string>();
                 foreach (WaitingListItem item in currentUser.waitingListItems)
                 {
-                    waitingListItems.Add(item.OrganType);
+                    waitingListItems.Add(item.organType);
                 }
                 waitingListItemsString = "Organs waiting on: \n" + String.Join(", ", waitingListItems);
             }

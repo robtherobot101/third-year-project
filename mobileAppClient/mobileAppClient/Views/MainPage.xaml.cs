@@ -107,12 +107,14 @@ namespace mobileAppClient
             var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
             var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
+            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "attributes_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(userSearchPage);
             menuList.Add(attributesPage);
+            menuList.Add(transplantListPage);
             menuList.Add(logoutPage);
         }
 

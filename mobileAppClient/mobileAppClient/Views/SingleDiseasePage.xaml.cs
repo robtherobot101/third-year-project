@@ -19,16 +19,16 @@ namespace mobileAppClient
         public SingleDiseasePage(Disease disease)
         {
             InitializeComponent();
-            NameEntry.Text = disease.Name;
-            DateEntry.Text = disease.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(disease.DiagnosisDate.month) + ", " + disease.DiagnosisDate.year;
+            NameEntry.Text = disease.name;
+            DateEntry.Text = disease.diagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(disease.diagnosisDate.month) + ", " + disease.diagnosisDate.year;
 
-            if(disease.IsChronic) {
+            if(disease.isChronic) {
                 ChronicEntry.Text = "Yes";
             } else {
                 ChronicEntry.Text = "No";
             }
 
-            if (disease.IsCured)
+            if (disease.isCured)
             {
                 CuredEntry.Text = "Yes";
             }
@@ -37,7 +37,7 @@ namespace mobileAppClient
                 CuredEntry.Text = "No";
             }
 
-            IDEntry.Text = disease.Id.ToString();
+            IDEntry.Text = disease.id.ToString();
 
         }
 

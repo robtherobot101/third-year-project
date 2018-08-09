@@ -191,7 +191,7 @@ namespace mobileAppClient
 
             if (hasDiedSwitch.On)
             {
-                loggedInUser.dateOfDeath = new CustomDate(dodInput.Date);
+                loggedInUser.dateOfDeath = new CustomDateTime(dodInput.Date);
             } else
             {
                 loggedInUser.dateOfDeath = null;

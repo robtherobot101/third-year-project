@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="mobileAppClient.Views.DiseaseCuredDeregisterPage"
+             Title="Disease cured">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Button x:Name="PressMeButton"
+            Text="Back"
+            Pressed="BackButtonClicked"/>
+
+            <TableView>
+                <TableSection Title="Curable Diseases"></TableSection>
+            </TableView>
+
+            <ListView x:Name="DiseasesList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding CellText}"
+                         Detail="{Binding DiagnosisDateString}"
+                         TextColor="{Binding CellColour}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Text="Cure disease" HorizontalOptions="Center"
+                                   VerticalOptions="Start"
+                                   Clicked="ConfirmButtonClicked" />
+            
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -18,7 +18,7 @@ namespace mobileAppClient
         public string alcoholConsumption { get; set; }
 
         public CustomDate dateOfBirth { get; set; }
-        public CustomDate dateOfDeath { get; set; }
+        public CustomDateTime dateOfDeath { get; set; }
         public CustomDateTime creationTime { get; set; }
         public CustomDateTime lastModified { get; set; }
 
