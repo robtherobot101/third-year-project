@@ -44,7 +44,7 @@
                     Clicked="Handle_LoginWithFacebookClicked" />
 
                  <Button Text="Login with Google"
-                    Clicked="Handle_Clicked" />
+                    Clicked="Handle_LoginWithGoogleClicked" />
                     
             </StackLayout>
         </ScrollView>

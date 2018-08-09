@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -41,63 +42,131 @@ namespace mobileAppClient
                 FacebookProfile facebookProfile = await facebookServices.GetFacebookProfileAsync(accessToken);
                 string password = "password";
 
-                User inputUser = new User();
-                inputUser.name = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
-                inputUser.preferredName = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
-                inputUser.email = facebookProfile.Email;
-                inputUser.username = facebookProfile.Email;
-                inputUser.password = password;
-                inputUser.dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday));
-                inputUser.creationTime = new CustomDateTime(DateTime.Now);
-                inputUser.gender = facebookProfile.Gender.ToUpper();
-                inputUser.region = facebookProfile.Location.Name;
-                //Server requires to initialise the organs and user history items on creation
-                inputUser.organs = new List<string>();
-                inputUser.userHistory = new List<HistoryItem>();
-
+                UserAPI userAPI = new UserAPI();
                 LoginAPI loginAPI = new LoginAPI();
-                HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
 
-                switch (registerUserResult)
+                //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
+                Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(facebookProfile.Email);
+                if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
                 {
-                    case HttpStatusCode.Created:
-                        HttpStatusCode loginUserResult = await loginAPI.LoginUser(facebookProfile.Email, password);
-                        switch (loginUserResult) {
-                            case HttpStatusCode.OK:
-                                await Navigation.PopModalAsync();
-                                break;
-                            case HttpStatusCode.Unauthorized:
-                                await DisplayAlert(
-                                    "Failed to Login",
-                                    "Incorrect username/password",
-                                    "OK");
-                                break;
-                            case HttpStatusCode.ServiceUnavailable:
-                                await DisplayAlert(
-                                    "Failed to Login",
-                                    "Server unavailable, check connection",
-                                    "OK");
-                                break;
-                            case HttpStatusCode.InternalServerError:
-                                await DisplayAlert(
-                                    "Failed to Login",
-                                    "Server error",
-                                    "OK");
-                                break;
-                        }
-                        break;
-                    case HttpStatusCode.ServiceUnavailable:
-                        await DisplayAlert(
-                            "Failed to Register",
-                            "Server unavailable, check connection",
+                    await DisplayAlert(
+                            "Server Failed",
+                            "Failed to check email",
                             "OK");
-                        break;
-                    case HttpStatusCode.InternalServerError:
-                        await DisplayAlert(
-                            "Failed to Register",
-                            "Username/Email may be taken",
-                            "OK");
-                        break;
+                }
+
+                if (isUniqueEmailResult.Item2 == false)
+                {
+                    HttpStatusCode statusCode = await loginAPI.LoginUser(facebookProfile.Email, password);
+                    switch (statusCode)
+                    {
+                        case HttpStatusCode.OK:
+                            // Pop away login screen on successful login
+                            HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                            UserController.Instance.mainPageController.updateMenuPhoto();
+                            await Navigation.PopModalAsync();
+                            break;
+                        case HttpStatusCode.Unauthorized:
+                            await DisplayAlert(
+                                "Failed to Login",
+                                "Incorrect username/password",
+                                "OK");
+                            break;
+                        case HttpStatusCode.ServiceUnavailable:
+                            await DisplayAlert(
+                                "Failed to Login",
+                                "Server unavailable, check connection",
+                                "OK");
+                            break;
+                        case HttpStatusCode.InternalServerError:
+                            await DisplayAlert(
+                                "Failed to Login",
+                                "Server error",
+                                "OK");
+                            break;
+                    }
+                }
+                else
+                {
+
+                    User inputUser = new User();
+                    inputUser.name = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
+                    inputUser.preferredName = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
+                    inputUser.email = facebookProfile.Email;
+                    inputUser.username = facebookProfile.Email;
+                    inputUser.password = password;
+                    inputUser.dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday));
+                    inputUser.creationTime = new CustomDateTime(DateTime.Now);
+                    inputUser.gender = facebookProfile.Gender.ToUpper();
+                    inputUser.region = facebookProfile.Location.Name;
+                    //Server requires to initialise the organs and user history items on creation
+                    inputUser.organs = new List<string>();
+                    inputUser.userHistory = new List<HistoryItem>();
+
+                    HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
+
+                    switch (registerUserResult)
+                    {
+                        case HttpStatusCode.Created:
+                            //Set the local profile picture to the picture object
+
+                            HttpClient client = ServerConfig.Instance.client;
+                            // Get the single userController instance
+                            UserController userController = UserController.Instance;
+
+                            var bytes = await client.GetByteArrayAsync(facebookProfile.Picture.Data.Url);
+                            Photo receievedPhoto = new Photo(Convert.ToBase64String(bytes));
+                            userController.photoObject = receievedPhoto;
+
+                            ImageSource source = ImageSource.FromStream(() => new MemoryStream(bytes));
+
+                            userController.ProfilePhotoSource = source;
+
+                            HttpStatusCode loginUserResult = await loginAPI.LoginUser(facebookProfile.Email, password);
+                            switch (loginUserResult)
+                            {
+                                case HttpStatusCode.OK:
+                                    //Upload the photo to the server - must happen after a login as the token is required
+                                    HttpStatusCode photoUpdated = await userAPI.UpdateUserPhoto();
+                                    if (photoUpdated != HttpStatusCode.OK)
+                                    {
+                                        Console.WriteLine("Error uploading facebook photo to the server");
+                                    }
+                                    await Navigation.PopModalAsync();
+                                    break;
+                                case HttpStatusCode.Unauthorized:
+                                    await DisplayAlert(
+                                        "Failed to Login",
+                                        "Incorrect username/password",
+                                        "OK");
+                                    break;
+                                case HttpStatusCode.ServiceUnavailable:
+                                    await DisplayAlert(
+                                        "Failed to Login",
+                                        "Server unavailable, check connection",
+                                        "OK");
+                                    break;
+                                case HttpStatusCode.InternalServerError:
+                                    await DisplayAlert(
+                                        "Failed to Login",
+                                        "Server error",
+                                        "OK");
+                                    break;
+                            }
+                            break;
+                        case HttpStatusCode.ServiceUnavailable:
+                            await DisplayAlert(
+                                "Failed to Register",
+                                "Server unavailable, check connection",
+                                "OK");
+                            break;
+                        case HttpStatusCode.InternalServerError:
+                            await DisplayAlert(
+                                "Failed to Register",
+                                "Username/Email may be taken",
+                                "OK");
+                            break;
+                    }
                 }
 
             }
@@ -148,6 +217,7 @@ namespace mobileAppClient
                     // Pop away login screen on successful login
                     UserAPI userAPI = new UserAPI();
                     HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                    UserController.Instance.mainPageController.updateMenuPhoto();
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -197,7 +267,7 @@ namespace mobileAppClient
             Content = webView;
         }
         
-        void Handle_Clicked(object sender, System.EventArgs e)
+        void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
             Console.WriteLine("Not implemented yet");
         }

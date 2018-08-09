@@ -79,6 +79,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
+                Image = UserController.Instance.ProfilePhotoSource,
                 Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
 
@@ -177,6 +178,15 @@ namespace mobileAppClient
                     IsPresented = false;
                     break;
             }
+        }
+
+        public void updateMenuPhoto() {
+            this.BindingContext = new
+            {
+                Header = "  SENG302 - Team300",
+                Image = UserController.Instance.ProfilePhotoSource,
+                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
+            };
         }
     }
 }

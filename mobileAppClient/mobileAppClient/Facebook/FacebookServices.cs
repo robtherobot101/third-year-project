@@ -34,7 +34,7 @@ namespace mobileAppClient
         public async Task<FacebookProfile> GetFacebookProfileAsync(string accessToken)
         {
             var requestUrl =
-                "https://graph.facebook.com/v2.7/me/?fields=name,picture,work,website,religion," +
+                "https://graph.facebook.com/v2.7/me/?fields=name,picture.width(1000).height(1000),work,website,religion," +
                 "location,locale,link,cover,age_range,birthday,email,first_name,last_name," +
                 "gender,hometown,is_verified,languages&access_token="
                 + accessToken;
