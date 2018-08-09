@@ -91,7 +91,7 @@ namespace mobileAppClientUnitTests
                 await loginAPI.LoginUser("default", "default");
             }
 
-            Tuple<HttpStatusCode, List<User>> result = await userAPI.GetUsers(0, 9);
+            Tuple<HttpStatusCode, List<User>> result = await userAPI.GetUsers(0, 9, "");
             Assert.AreEqual(HttpStatusCode.OK, result.Item1);
             Assert.AreEqual(8, result.Item2.Count);
 

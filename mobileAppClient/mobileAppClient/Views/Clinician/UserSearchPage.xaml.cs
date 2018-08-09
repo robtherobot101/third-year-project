@@ -13,7 +13,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.Views
 {
-
+    /// <summary>
+    /// Clinician only page that contains a Listview of users alongside searching functionality
+    /// </summary>
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UserSearchPage : ContentPage
     {
@@ -39,6 +41,7 @@ namespace mobileAppClient.Views
         
         private int currentIndex;
         private bool endOfUsers;
+        private string searchQuery;
         
         public CustomObservableCollection<User> UserList { get; set; }
 
@@ -51,6 +54,8 @@ namespace mobileAppClient.Views
             UserList = new CustomObservableCollection<User>();
             UserListView.ItemsSource = UserList;
             UserListView.RefreshCommand = RefreshCommand;
+            UserSearchBar.SearchCommand = SearchCommand;
+            UserSearchBar.TextChanged += UserSearchBar_TextChanged;
 
             UserListView.ItemAppearing += (sender, e) =>
             {
@@ -65,6 +70,25 @@ namespace mobileAppClient.Views
             };
 
             LoadItems();
+        }
+
+        /// <summary>
+        /// Method that is called EVERY time the text within the UserSearchBox is changed
+        /// - Updates the current search query
+        /// - Calls a reset when the search is cleared
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UserSearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Update the current search param
+            searchQuery = InputValidation.Trim(e.NewTextValue);
+
+            // Has input been cleared?
+            if (string.IsNullOrEmpty(e.NewTextValue))
+            {
+                ResetItemsQuiet();
+            }
         }
 
         /*
@@ -83,10 +107,13 @@ namespace mobileAppClient.Views
 
         /*
          * Loads items from the DB and appends them to the bottom of the list. Infinity Scroll™
-         * -Doesn't show an activity indicator
+         * - Doesn't show an activity indicator
          */
-        private async void LoadItemsQuiet()
-        { 
+        private async void ResetItemsQuiet()
+        {
+            UserList.Clear();
+            currentIndex = 0;
+
             // This is where users will be populated from
             UserList.AddRange(await getUsers(currentIndex, 20));
             currentIndex += 20;
@@ -98,7 +125,7 @@ namespace mobileAppClient.Views
         private async Task<List<User>> getUsers(int startIndex, int count)
         {
             UserAPI userAPI = new UserAPI();
-            Tuple<HttpStatusCode, List<User>> users = await userAPI.GetUsers(startIndex, count);
+            Tuple<HttpStatusCode, List<User>> users = await userAPI.GetUsers(startIndex, count, searchQuery);
             if (users.Item1 != HttpStatusCode.OK)
             {
                 return new List<User>();
@@ -111,9 +138,9 @@ namespace mobileAppClient.Views
             return users.Item2;
         }
 
-        /*
-         * Resets the endOfUsers flag and grabs the start of the user list from DB, called by pull to refresh
-         */
+        /// <summary>
+        /// Resets the endOfUsers flag and grabs the start of the user list from DB, called by pull to refresh
+        /// </summary>
         public ICommand RefreshCommand
         {
             get
@@ -122,15 +149,33 @@ namespace mobileAppClient.Views
                 {
                     UserListView.IsRefreshing = true;
 
-                    UserList.Clear();
-                    currentIndex = 0;
-                    LoadItemsQuiet();
+
+                    ResetItemsQuiet();
 
                     UserListView.IsRefreshing = false;
                 });
             }
         }
 
+        /// <summary>
+        /// Is called when the UserSearchBox calls its search method
+        /// </summary>
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    ResetItemsQuiet();
+                });
+            }
+        }
+
+        /// <summary>
+        /// Called when a User entry on the ListView is tapped on
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         async void Handle_UserTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)

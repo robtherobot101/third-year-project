@@ -73,7 +73,12 @@ namespace mobileAppClient
                 case HttpStatusCode.OK:
                     // Pop away login screen on successful login
                     UserAPI userAPI = new UserAPI();
-                    HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+
+                    // Fetch photo only on user login
+                    if (!ClinicianController.Instance.isLoggedIn())
+                    {
+                        HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                    }
                     UserController.Instance.mainPageController.updateMenuPhoto();
                     await Navigation.PopModalAsync();
                     break;
@@ -125,7 +130,7 @@ namespace mobileAppClient
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(this)));
 
         }
-        
+
         void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
             Console.WriteLine("Not implemented yet");

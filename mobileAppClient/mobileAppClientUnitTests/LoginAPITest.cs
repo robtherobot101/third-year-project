@@ -22,6 +22,7 @@ namespace mobileAppClientUnitTests
             UserController.Instance.isTestMode = true;
             ClinicianController.Instance.isTestMode = true;
             ServerConfig.Instance.serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
+            //ServerConfig.Instance.serverAddress = "http://localhost:7015/api/v1";
             loginAPI = new LoginAPI();
 
             await UnitTestUtils.resetResample();
@@ -41,6 +42,7 @@ namespace mobileAppClientUnitTests
             HttpStatusCode result = await loginAPI.LoginUser("default", "default");
             Assert.AreEqual(HttpStatusCode.OK, result);
             Assert.AreEqual("default", ClinicianController.Instance.LoggedInClinician.name);
+            Assert.IsNotNull(ClinicianController.Instance.AuthToken);
         }
 
         [TestMethod]
@@ -79,14 +81,16 @@ namespace mobileAppClientUnitTests
         {
             // Note: Input would be validated by the time it hits the LoginAPI method
 
-/*            string email = String.Format("{0}@hotmale.com", getRandomString(6));
+            string email = String.Format("{0}@hotmale.com", getRandomString(6));
             string username = getRandomString(5);
             DateTime dob = new DateTime(1984, 5, 3);
             HttpStatusCode result = await loginAPI.RegisterUser("Bobby", "LaFlame", email, username, 
                 "password", dob);
 
             // TODO FIX THIS
-            Assert.AreEqual(HttpStatusCode.Created, result);*/
+            // Works on a local server
+            // Temperamental on vm server
+            Assert.AreEqual(HttpStatusCode.Created, result);
         }
 
         [TestMethod]
@@ -94,13 +98,13 @@ namespace mobileAppClientUnitTests
         {
             // Note: Input would be validated by the time it hits the LoginAPI method
 
-/*            string email = String.Format("{0}@hotmale.com", getRandomString(6));
+            string email = String.Format("{0}@hotmale.com", getRandomString(6));
             string username = getRandomString(5);
             DateTime dob = new DateTime(1984, 5, 3);
             await loginAPI.RegisterUser("Bobby", "La-Flame", email, username,
                 "password", dob);
             HttpStatusCode response = await loginAPI.LoginUser(username, "password");
-            Assert.AreEqual(HttpStatusCode.OK, response);*/
+            Assert.AreEqual(HttpStatusCode.OK, response);
         }
 
         /*
