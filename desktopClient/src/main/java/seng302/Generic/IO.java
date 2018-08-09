@@ -158,7 +158,6 @@ public class IO {
      * Imports users from csv file
      * @param path the path to the csv file
      * @param token the users token
-     * @return returns true if completed otherwise false
      */
     public static void importUserCSV(String path, String token) {
         Task taskToRun = runTestThread(path, token);
