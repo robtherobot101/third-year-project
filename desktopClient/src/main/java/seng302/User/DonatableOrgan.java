@@ -16,7 +16,7 @@ public class DonatableOrgan {
     private int id;
     private Duration timeLeft;
     private String receiverName;
-    private String receiverRegion;
+    private String receiverDeathRegion;
     private double timePercent;
 
 
@@ -37,16 +37,16 @@ public class DonatableOrgan {
         this.receiverName = receiverName;
     }
 
-    public void setReceiverRegion(String receiverRegion) {
-        this.receiverRegion = receiverRegion;
+    public void setReceiverDeathRegion(String receiverDeathRegion) {
+        this.receiverDeathRegion = receiverDeathRegion;
     }
 
     public String getReceiverName() {
         return receiverName;
     }
 
-    public String getReceiverRegion() {
-        return receiverRegion;
+    public String getReceiverDeathRegion() {
+        return receiverDeathRegion;
     }
 
     public double getTimePercent() {

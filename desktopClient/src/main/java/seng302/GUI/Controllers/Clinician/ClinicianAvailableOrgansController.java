@@ -136,7 +136,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
             organ.setReceiverName(user.getName());
-            organ.setReceiverRegion(user.getRegion());
+            organ.setReceiverDeathRegion(user.getRegionOfDeath());
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
         } catch (NullPointerException e) {
@@ -157,7 +157,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
         countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeft"));
         dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfDeath"));
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverDeathRegion"));
 
         //transplantTable.setItems(transplantList);
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
