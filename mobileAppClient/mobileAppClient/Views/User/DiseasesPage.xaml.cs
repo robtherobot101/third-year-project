@@ -149,16 +149,15 @@ namespace mobileAppClient
             {
                 var addItem = new ToolbarItem
                 {
-                    Command = OpenAddProcedure,
-                    Icon = "add_icon.png",
-                    Order = 0
+                    Command = OpenAddDisease,
+                    Icon = "add_icon.png"
                 };
-
+                
                 this.ToolbarItems.Add(addItem);
             }
         }
 
-        private ICommand OpenAddProcedure
+        private ICommand OpenAddDisease
         {
             get
             {
@@ -166,7 +165,8 @@ namespace mobileAppClient
                 {
                     Console.WriteLine("Opening single procedure...");
 
-                    //Navigation.PushAsync(new hot page);
+                    var singleDiseasePage = new SingleDiseasePage();
+                    Navigation.PushAsync(singleDiseasePage);
                 });
             }
         }
