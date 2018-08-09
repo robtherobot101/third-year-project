@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
@@ -18,8 +17,6 @@ import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.DonatableOrgan;
 import seng302.User.User;
-import seng302.User.WaitingListItem;
-
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -125,6 +122,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     expiryList.add(organ);
                 }
             }
+            expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
@@ -134,7 +132,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * adds the user info to a Donatable organ item
      * @param organ the waiting list item to update
      */
-    public void addUserInfo(DonatableOrgan organ) {
+    private void addUserInfo(DonatableOrgan organ) {
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
             organ.setReceiverName(user.getName());
