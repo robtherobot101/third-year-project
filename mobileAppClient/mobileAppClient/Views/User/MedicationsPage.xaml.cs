@@ -60,7 +60,7 @@ namespace mobileAppClient
         public MedicationsPage()
         {
             InitializeComponent();
-            checkIfClincianAccessing();
+            CheckIfClinicianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -89,16 +89,9 @@ namespace mobileAppClient
         /**
          * Checks if a clinician is viewing the user
          */
-        private void checkIfClincianAccessing()
+        private void CheckIfClinicianAccessing()
         {
-            if (ClinicianController.Instance.isLoggedIn())
-            {
-                isClinicianAccessing = true;
-            }
-            else
-            {
-                isClinicianAccessing = false;
-            }
+            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
         }
 
         /*

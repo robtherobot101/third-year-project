@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using System.Linq;
 using System.Globalization;
+using System.Windows.Input;
 
 namespace mobileAppClient
 {
@@ -103,7 +104,7 @@ namespace mobileAppClient
         public DiseasesPage()
         {
             InitializeComponent();
-            checkIfClincianAccessing();
+            CheckIfClinicianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -140,15 +141,32 @@ namespace mobileAppClient
         /**
          * Checks if a clinician is viewing the user
          */
-        private void checkIfClincianAccessing()
+        private void CheckIfClinicianAccessing()
         {
-            if (ClinicianController.Instance.isLoggedIn())
+            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
+
+            if (isClinicianAccessing)
             {
-                isClinicianAccessing = true;
+                var addItem = new ToolbarItem
+                {
+                    Command = OpenAddProcedure,
+                    Icon = "add_icon.png"
+                };
+
+                this.ToolbarItems.Add(addItem);
             }
-            else
+        }
+
+        private ICommand OpenAddProcedure
+        {
+            get
             {
-                isClinicianAccessing = false;
+                return new Command(() =>
+                {
+                    Console.WriteLine("Opening single procedure...");
+
+                    //Navigation.PushAsync(new hot page);
+                });
             }
         }
 
