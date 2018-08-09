@@ -181,5 +181,6 @@
     <BundleResource Include="Resources\waitinglist_icon.png" />
     <BundleResource Include="Resources\settings_icon.png" />
     <BundleResource Include="Resources\arrow_icon.png" />
+    <BundleResource Include="Resources\facebook_icon.png" />
   </ItemGroup>
 </Project>

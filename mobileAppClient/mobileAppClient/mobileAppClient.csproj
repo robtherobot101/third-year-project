@@ -12,6 +12,7 @@
     <Compile Remove="Views\Diseases\DiseasesPage.xaml.cs" />
     <Compile Remove="RequestTester.cs" />
     <Compile Remove="PhotoAccess\IPicturePicker.cs" />
+    <None Remove="facebook.png" />
   </ItemGroup>
 
   <ItemGroup>
