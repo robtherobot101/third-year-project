@@ -4,9 +4,17 @@
              x:Class="mobileAppClient.PointsPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome the Point System!"
+            <Label x:Name="savedLivesText"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
+            <Label x:Name="helpedLivesText"
+                   VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+
+            <Label Text="Recommendations"/>
+            <ListView x:Name="RecommendationsList">
+                
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

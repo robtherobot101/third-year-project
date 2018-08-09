@@ -111,7 +111,7 @@ namespace mobileAppClient
                 case HttpStatusCode.InternalServerError:
                     await DisplayAlert(
                         "Failed to Register",
-                        "Username/Email may be taken",
+                        "Server error, please try again",
                         "OK");
                     break;
             }

@@ -67,7 +67,6 @@ namespace mobileAppClient
                     case "TISSUE":
                         ConnectiveTissueCell.On = true;
                         break;
-                        
                 }
             }
 
