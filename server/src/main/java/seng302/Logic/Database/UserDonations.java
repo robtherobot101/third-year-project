@@ -3,10 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -52,8 +49,11 @@ public class UserDonations {
 
             insertDonationStatement.setString(1, organ.toString());
             insertDonationStatement.setInt(2, userId);
-            insertDonationStatement.setLong(3, deathDate != null ? deathDate.toEpochSecond(OffsetDateTime.now().getOffset()) : null);
-
+            if (deathDate == null) {
+                insertDonationStatement.setNull(3, Types.BIGINT);
+            } else {
+                insertDonationStatement.setLong(3, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
+            }
 
             System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
         }

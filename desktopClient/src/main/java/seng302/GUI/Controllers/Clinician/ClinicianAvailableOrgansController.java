@@ -173,11 +173,21 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     public void updateItem(DonatableOrgan item, boolean empty) {
                         super.updateItem(item, empty);
                         getStyleClass().remove("highlighted-row");
+                        getStyleClass().remove("highlighted-row-organs-50");
+                        getStyleClass().remove("highlighted-row-organs-75");
                         setTooltip(null);
                         if (item != null && !empty) {
-                            if (item.getTimePercent() > ((long) 0.99)) {
+                            if (item.getTimePercent() <  0.25) {
                                 if (!getStyleClass().contains("highlighted-row")) {
                                     getStyleClass().add("highlighted-row");
+                                }
+                            } else if (item.getTimePercent() <  0.50) {
+                                if (!getStyleClass().contains("highlighted-row-organs-50")) {
+                                    getStyleClass().add("highlighted-row-organs-50");
+                                }
+                            } else if (item.getTimePercent() <  0.75) {
+                                if (!getStyleClass().contains("highlighted-row-organs-75")) {
+                                    getStyleClass().add("highlighted-row-organs-75");
                                 }
                             }
                         }

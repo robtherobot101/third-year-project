@@ -1,5 +1,6 @@
 package seng302.User;
 
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 
 import java.time.Duration;
@@ -16,7 +17,7 @@ public class DonatableOrgan {
     private Duration timeLeft;
     private String receiverName;
     private String receiverRegion;
-    private Long timePercent;
+    private double timePercent;
 
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
@@ -48,7 +49,7 @@ public class DonatableOrgan {
         return receiverRegion;
     }
 
-    public Long getTimePercent() {
+    public double getTimePercent() {
         return timePercent;
     }
 
@@ -78,12 +79,17 @@ public class DonatableOrgan {
 
     public void setTimeLeft(Duration time) {
         timeLeft = time;
-        timePercent = time.toMillis() / getExpiryDuration(organType).toMillis();
+        timePercent = (double) time.toMillis() / (double) getExpiryDuration(organType).toMillis();
     }
 
     public void tickTimeLeft(){
         timeLeft = timeLeft.minus(1, SECONDS);
-        timePercent = timeLeft.toMillis() / getExpiryDuration(organType).toMillis();
+        double temp = (double) timeLeft.toMillis() /  (double) getExpiryDuration(organType).toMillis();
+        if ((timePercent >= 0.75 && temp < 0.75) || (timePercent >= 0.5 && temp < 0.5) || (timePercent >= 0.25 && temp < 0.25)) {
+            timePercent = temp;
+            WindowManager.updateAvailableOrgans();
+        }
+        timePercent = temp;
     }
 
     /**
