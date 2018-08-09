@@ -14,6 +14,8 @@ namespace mobileAppClient
     public partial class ProceduresPage : ContentPage
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
+        private bool isClinicianAccessing;
+
         /*
          * Event handler to handle when a user switches between pending and previous procedures
          * resetting the sorting and changing the listview items.
@@ -69,9 +71,10 @@ namespace mobileAppClient
          * Constructor which sets the detail strings for each text cell 
          * and also sets the visibility of the no data label and sorting picker.
          */ 
-        public ProceduresPage()
+        public ProceduresPage(bool isClinicianAccessing)
         {
             InitializeComponent();
+            checkIfClincianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -94,6 +97,21 @@ namespace mobileAppClient
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
 
 
+        }
+
+        /**
+         * Checks if a clinician is viewing the user
+         */
+        private void checkIfClincianAccessing()
+        {
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                isClinicianAccessing = true;
+            }
+            else
+            {
+                isClinicianAccessing = false;
+            }
         }
 
         /*

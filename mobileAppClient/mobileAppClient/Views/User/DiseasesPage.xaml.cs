@@ -14,6 +14,9 @@ namespace mobileAppClient
     public partial class DiseasesPage : ContentPage
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
+
+        private bool isClinicianAccessing;
+
         /*
          * Event handler to handle when a user switches between current and cured diseases
          * resetting the sorting and changing the listview items.
@@ -100,6 +103,7 @@ namespace mobileAppClient
         public DiseasesPage()
         {
             InitializeComponent();
+            checkIfClincianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -131,14 +135,27 @@ namespace mobileAppClient
             }
 
             DiseasesList.ItemsSource = returnCurrentDiseasesWithChronicAtTop();
-  
+        }
 
+        /**
+         * Checks if a clinician is viewing the user
+         */
+        private void checkIfClincianAccessing()
+        {
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                isClinicianAccessing = true;
+            }
+            else
+            {
+                isClinicianAccessing = false;
+            }
         }
 
         /*
          * Handles when a single disease it tapped, sending a user to the single disease page 
          * of that given disease.
-         */ 
+         */
         async void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)

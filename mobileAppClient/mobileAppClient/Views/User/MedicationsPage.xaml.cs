@@ -11,6 +11,8 @@ namespace mobileAppClient
      */ 
     public partial class MedicationsPage : ContentPage
     {
+        private bool isClinicianAccessing;
+
         /*
          * Event handler to handle when a user switches between current and historic medications
          * resetting the sorting and changing the listview items.
@@ -48,13 +50,17 @@ namespace mobileAppClient
             }
         }
 
+
+
+
         /*
          * Constructor which sets the detail strings for each medication and also sets
          * the visibility of the no data label and compare medications button.
-         */ 
+         */
         public MedicationsPage()
         {
             InitializeComponent();
+            checkIfClincianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -80,10 +86,25 @@ namespace mobileAppClient
             MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
         }
 
+        /**
+         * Checks if a clinician is viewing the user
+         */
+        private void checkIfClincianAccessing()
+        {
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                isClinicianAccessing = true;
+            }
+            else
+            {
+                isClinicianAccessing = false;
+            }
+        }
+
         /*
          * Handles when a single medication it tapped, sending a user to the single medication page 
          * of that given medication.
-         */ 
+         */
         async void Handle_MedicationTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)
