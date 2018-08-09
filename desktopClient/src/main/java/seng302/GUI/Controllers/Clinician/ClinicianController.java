@@ -242,7 +242,7 @@ public class ClinicianController implements Initializable {
         Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
-        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Update Clinician");
         dialog.setHeaderText("Update Clinician Details");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
@@ -293,62 +293,51 @@ public class ClinicianController implements Initializable {
         // Request focus on the username field by default.
         Platform.runLater(clinicianName::requestFocus);
 
-        dialog.setResultConverter(dialogButton -> {
-            String newName = "";
-            String newAddress = "";
-            String newRegion = "";
-            if (dialogButton == updateButtonType) {
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.get() == updateButtonType) {
+            String newName;
+            String newAddress;
+            String newRegion;
 
-                if (clinicianName.getText().equals("")) {
-                    newName = clinician.getName();
-                } else {
-                    newName = clinicianName.getText();
-                }
-
-                if (clinicianAddress.getText().equals("")) {
-                    newAddress = clinician.getWorkAddress();
-                } else {
-                    newAddress = clinicianAddress.getText();
-                }
-
-                if (clinicianRegion.getText().equals("")) {
-                    newRegion = clinician.getRegion();
-                } else {
-                    newRegion = clinicianRegion.getText();
-                }
+            if (clinicianName.getText().equals("")) {
+                newName = clinician.getName();
+            } else {
+                newName = clinicianName.getText();
             }
-            return new ArrayList<>(Arrays.asList(newName, newAddress, newRegion));
-        });
 
-        Optional<ArrayList<String>> result = dialog.showAndWait();
-        result.ifPresent(newClinicianDetails -> {
-            Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
-                    .get(2));
-            clinician.setName(newClinicianDetails.get(0));
-            clinician.setWorkAddress(newClinicianDetails.get(1));
-            clinician.setRegion(newClinicianDetails.get(2));
-            save();
+            if (clinicianAddress.getText().equals("")) {
+                newAddress = clinician.getWorkAddress();
+            } else {
+                newAddress = clinicianAddress.getText();
+            }
+
+            if (clinicianRegion.getText().equals("")) {
+                newRegion = clinician.getRegion();
+            } else {
+                newRegion = clinicianRegion.getText();
+            }
+            save(newName, newAddress, newRegion);
             updateDisplay();
-
-        });
+        }
     }
 
     /**
-     * Saves the clinician ArrayList to a JSON file
+     * Saves the clinician ArrayList to a JSON file. Used for updating attributes only
      */
-    public void save() {
+    public void save(String newName, String newAddress, String newRegion) {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            Debugger.log("Name=" + newName + ", Address=" + newAddress + ", Region=" + newRegion);
+            clinician.setName(newName);
+            clinician.setWorkAddress(newAddress);
+            clinician.setRegion(newRegion);
             try {
                 WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
             }
-
-            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
-            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
         }
         alert.close();
     }

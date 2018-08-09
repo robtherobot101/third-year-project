@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SegmentedControl;
+using Plugin.CrossPlatformTintedImage;
 
 using Foundation;
 using UIKit;
@@ -25,6 +26,7 @@ namespace mobileAppClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             global::SegmentedControl.FormsPlugin.iOS.SegmentedControlRenderer.Init();
+            global::Plugin.CrossPlatformTintedImage.iOS.TintedImageRenderer.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
