@@ -81,6 +81,7 @@ public class UsersDB implements UsersDAO {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         APIResponse response = server.patchRequest(userJson, new HashMap<>(), token, "users", String.valueOf(user.getId()));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -95,6 +96,9 @@ public class UsersDB implements UsersDAO {
     @Override
     public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
         APIResponse response =  server.getRequest(searchMap, token, "users");
+        if(response == null){
+            return new ArrayList<>();
+        }
         if(response.isValidJson()){
             JsonArray searchResults = response.getAsJsonArray();
             Type type = new TypeToken<ArrayList<User>>() {
@@ -115,15 +119,20 @@ public class UsersDB implements UsersDAO {
     @Override
     public User getUser(long id, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id));
-        if (response.isValidJson()) {
+        if(response == null){
+            return null;
+        }
+        else if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonObject(), User.class);
         }
-        return null;
+        else return null;
     }
 
     @Override
-    public Image getUserPhoto(long id) {
-        APIResponse response = server.getRequest(new HashMap<>(), "users", String.valueOf(id), "photo");
+    public Image getUserPhoto(long id, String token) {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users", String.valueOf(id), "photo");
+
+        if(response == null) return getDefaultProfilePhoto();
 
         if (response.getStatusCode() == 404) {
             // No image uploaded, return default image
@@ -133,7 +142,6 @@ public class UsersDB implements UsersDAO {
         try {
             Debugger.log(response.getStatusCode());
             String encodedImage = response.getAsString();
-            System.out.println(encodedImage);
             //String base64Image = encodedImage.split(",")[1];
             //Decode the string to a byte array
             byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
@@ -146,7 +154,6 @@ public class UsersDB implements UsersDAO {
             return image;
         } catch (Exception e) {
             Debugger.error(e);
-            System.out.println(IO.getJarPath());
             return getDefaultProfilePhoto();
         }
     }
@@ -171,12 +178,14 @@ public class UsersDB implements UsersDAO {
         JsonParser jp = new JsonParser();
         PhotoStruct photoStruct = new PhotoStruct(image);
         JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
-        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.patchRequest(imageJson, new HashMap<String, String>(), "users", "users", String.valueOf(id), "photo");
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 
     @Override
     public void deleteUserPhoto(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", String.valueOf(id), "photo");
+        APIResponse response = server.deleteRequest(new HashMap<String, String>(), "users", "users", String.valueOf(id), "photo");
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 
     /**
@@ -188,6 +197,9 @@ public class UsersDB implements UsersDAO {
     @Override
     public List<User> getAllUsers(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users");
+        if(response == null){
+            return new ArrayList<>();
+        }
         if (response.isValidJson()) {
             List<User> responses = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<User>>() {
             }.getType());
@@ -206,6 +218,7 @@ public class UsersDB implements UsersDAO {
     @Override
     public void removeUser(long id, String token) throws HttpResponseException {
         APIResponse response = server.deleteRequest(new HashMap<>(), token, "users", String.valueOf(id));
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -219,6 +232,9 @@ public class UsersDB implements UsersDAO {
     @Override
     public int count(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "usercount");
+        if(response == null){
+            throw new HttpResponseException(0, "Could not reach server");
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         return Integer.parseInt(response.getAsString());

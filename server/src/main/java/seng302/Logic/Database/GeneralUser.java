@@ -21,8 +21,22 @@ public class GeneralUser {
      * @param userId The id of the user to update
      * @throws SQLException If there is errors communicating with the database
      */
-    public void patchEntireUser(User user, int userId) throws SQLException {
+    public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
         updateUserAttributes(user, userId);
+
+        Set<Organ> newDonations = new HashSet<>(user.getOrgans());
+        UserDonations userDonations = new UserDonations();
+        userDonations.removeAllUserDonations(userId);
+        for (Organ organ: newDonations) {
+            userDonations.insertDonation(organ, userId);
+        }
+
+        List<HistoryItem> newHistory = user.getUserHistory();
+        updateHistory(newHistory, userId);
+
+        if (!canEditClinicianAttributes) {
+            return;
+        }
 
         List<Medication> newMedications = new ArrayList<>();
         newMedications.addAll(user.getCurrentMedications());
@@ -39,18 +53,8 @@ public class GeneralUser {
         newDiseases.addAll(user.getCurrentDiseases());
         updateAllDiseases(newDiseases, userId);
 
-        Set<Organ> newDonations = new HashSet<>(user.getOrgans());
-        UserDonations userDonations = new UserDonations();
-        userDonations.removeAllUserDonations(userId);
-        for (Organ organ: newDonations) {
-            userDonations.insertDonation(organ, userId);
-        }
-
         List<WaitingListItem> newWaitingListItems = new ArrayList<>(user.getWaitingListItems());
         updateWaitingListItems(newWaitingListItems, userId);
-
-        List<HistoryItem> newHistory = user.getUserHistory();
-        updateHistory(newHistory, userId);
     }
 
     /**

@@ -25,18 +25,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class GeneralUserTest {
+public class GeneralUserTest extends GenericTest {
 
     private GeneralUser generalUser = new GeneralUser();
-
-
-    @BeforeClass
-    @AfterClass
-    public static void reset() throws SQLException {
-        Administration administration = new Administration();
-        administration.reset();
-        administration.resample();
-    }
 
     @Test
     public void patchEntireUser() {

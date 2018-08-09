@@ -10,6 +10,7 @@ import seng302.Model.Medication.Medication;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -87,6 +88,10 @@ public abstract class HelperMethods {
         return diseases;
     }
 
+    /**
+     * Create a list of procedures with semi-random info
+     * @return A list of procedure objects
+     */
     public static ArrayList<Procedure> makeProcedures() {
         ArrayList<Procedure> procedures = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -95,5 +100,31 @@ public abstract class HelperMethods {
             procedures.add(p);
         }
         return procedures;
+    }
+
+    /**
+     * Create a list of random country names
+     * @return A list of procedure objects
+     */
+    public static ArrayList<Country> makeCountries() {
+        ArrayList<Country> countries = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Country c = new Country("country" + r.nextInt(1000000), i & 4);
+            countries.add(c);
+        }
+        return countries;
+    }
+
+    /**
+     * Create a list of HistoryItems with semi-random info
+     * @return A list of HistoryItem objects
+     */
+    public static ArrayList<HistoryItem> makeHistory() {
+        ArrayList<HistoryItem> history = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            HistoryItem h = new HistoryItem(LocalDateTime.of(2018, 6, 6, i, (i * 37) % 24, (i * 41) % 60), "Did a thing", "This is what happened", i);
+            history.add(h);
+        }
+        return history;
     }
 }

@@ -281,16 +281,16 @@ public class IO {
             Type type = new TypeToken<Cache>() {
             }.getType();
             Cache importedCache = gson.fromJson(reader, type);
-            Debugger.log("Opened user file successfully.");
+            Debugger.log("Opened cache file successfully.");
             importedCache.purgeEntriesOlderThan(Duration.ofDays(7));
             return importedCache;
         } catch (IOException e) {
             Debugger.error("IOException on " + path + ": Check your inputs and permissions!");
             e.printStackTrace();
         } catch (JsonSyntaxException | DateTimeException e1) {
-            Debugger.error("Invalid syntax in input file.");
+            Debugger.error("Invalid syntax in cache file.");
         } catch (NullPointerException e2) {
-            Debugger.log("Input file was empty.");
+            Debugger.log("Cache file was empty.");
         }
         return new Cache(path);
     }

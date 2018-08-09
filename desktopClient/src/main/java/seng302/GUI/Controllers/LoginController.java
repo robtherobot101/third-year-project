@@ -112,27 +112,7 @@ public class LoginController implements Initializable {
         loginButton.setDisable(true);
         errorMessage.setVisible(false);
     }
-    
 
-    /**
-     * connects to a server with a given url
-     * @param url the url of the server
-     * @return returns true if connected
-     */
-    private boolean connectServer(String url){
-        UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
-        if (urlValidator.isValid(url)) {
-            APIServer server = new APIServer(url);
-            Debugger.log("URL is valid");
-            server.testConnection();
-            return true;
-        }
-        else{
-            errorMessage.setText("Invalid URL given");
-            errorMessage.setVisible(true);
-            return false;
-        }
-    }
 
     /**
      * Removes focus from all fields.

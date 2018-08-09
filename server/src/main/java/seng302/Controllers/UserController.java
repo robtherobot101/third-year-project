@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -388,14 +389,15 @@ public class UserController {
 
         Gson gson = new Gson();
         User receivedUser = gson.fromJson(request.body(), User.class);
-        System.out.println(receivedUser.getCityOfDeath());
         if (receivedUser == null) {
             response.status(400);
             return "Missing User Body";
         } else {
             try {
-                //model.updateUserAttributes(receivedUser, Integer.parseInt(request.params(":id")));
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id"))); //this version patches all user information
+                String token = request.headers("token");
+                ProfileUtils profileUtils = new ProfileUtils();
+                int accessLevel = profileUtils.checkToken(token);
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
@@ -433,18 +435,17 @@ public class UserController {
     }
 
 
-    public String getUserPhoto(Request request, Response response) {
+    public String getUserPhoto(Request request, Response response) throws URISyntaxException {
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){
             return response.body();
         }
 
-        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+        String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+        String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
 
         File file = new File(filepath);
-        System.out.println(file.exists());
-
         if (!file.isFile()){
             response.status(404);
             return "Photo does not exist.";
@@ -470,7 +471,7 @@ public class UserController {
 
     }
 
-    public String editUserPhoto(Request request, Response response){
+    public String   editUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){
@@ -503,10 +504,11 @@ public class UserController {
                 BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
                 // Ensure directory exists
-                Files.createDirectories(Paths.get("home/serverImages/user/"));
+                String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+                Files.createDirectories(Paths.get(path + "/home/serverImages/user/"));
 
                 // Set filepath
-                String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+                String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
 
                 // Write the file
                 File outputfile = new File(filepath);
@@ -516,19 +518,23 @@ public class UserController {
             }  catch (IOException e) {
                 System.out.println(e);
                 return "Internal Server Error";
+            } catch (URISyntaxException el) {
+                el.printStackTrace();
+                return "URI Error";
             }
         }
     }
 
 
-    public String deleteUserPhoto(Request request, Response response){
+    public String deleteUserPhoto(Request request, Response response) throws URISyntaxException {
         User queriedUser = queryUser(request, response);
         if (queriedUser == null){
             return response.body();
         }
 
         //Find filepath in DB
-        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+        String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+        String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
 
         //Delete file from storage
         File file = new File(filepath);

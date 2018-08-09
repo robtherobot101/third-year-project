@@ -21,7 +21,7 @@ public interface UsersDAO {
 
     User getUser(long id, String token) throws HttpResponseException;
 
-    Image getUserPhoto(long id);
+    Image getUserPhoto(long id, String token);
 
     void updateUserPhoto(long id, String image) throws HttpResponseException;
 
