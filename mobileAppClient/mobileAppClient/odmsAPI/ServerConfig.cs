@@ -11,7 +11,7 @@ namespace mobileAppClient.odmsAPI
     /*
      * Provides a singleton container that tracks the current server address and holds a single HttpClient to be used across API calls
      */
-    sealed class ServerConfig
+    public sealed class ServerConfig
     {
         public String serverAddress { get; set; }
 

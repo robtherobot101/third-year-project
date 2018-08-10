@@ -146,7 +146,7 @@ namespace mobileAppClient
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
             var singleDiseasePage = new SingleDiseasePage((Disease)DiseasesList.SelectedItem);
-            await Navigation.PushModalAsync(singleDiseasePage);
+            await Navigation.PushAsync(singleDiseasePage);
         }
 
         /*

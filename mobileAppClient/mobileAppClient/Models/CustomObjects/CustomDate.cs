@@ -20,6 +20,11 @@ namespace mobileAppClient
             this.year = Convert.ToInt32(dateToParse.ToString("yyyy"));
         }
 
+        public override string ToString()
+        {
+            return String.Format("{0}/{1}/{2}", this.day, this.month, this.year);
+        }
+
         /*
          * Method to convert a CustomDate to a C# DateTime variable with the 
          * given day, month and year.

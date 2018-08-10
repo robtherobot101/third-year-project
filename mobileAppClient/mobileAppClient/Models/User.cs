@@ -58,24 +58,38 @@ namespace mobileAppClient
 
         public List<HistoryItem> userHistory { get; set; }
 
+        public string FullName
+        {
+            get
+            {
+                return String.Format("{0} {1}", name[0], name[2]);
+            }
+        }
+
         public User(string email) {
             this.email = email;
         }
+
+        public User ShallowCopy()
+        {
+            return (User)this.MemberwiseClone();
+        }
+
         /*
          * Simply calculates the user's age
-         */ 
-        public double getAge()
+         */
+        public int Age
         {
-            double age;
-            if (this.dateOfDeath == null)
-            {
-                age = (DateTime.Now - this.dateOfBirth.ToDateTime()).Days / 365.00;
+            get {
+                DateTime today = DateTime.Today;
+                DateTime dob = this.dateOfBirth.ToDateTime();
+                int age = today.Year - dob.Year;
+
+                if (dob > today.AddYears(-age))
+                    age--;
+
+                return age;
             }
-            else
-            {
-                age = (this.dateOfDeath.date.ToDateTime() - this.dateOfBirth.ToDateTime()).Days / 365.00;
-            }
-            return age;
         }
     }
 }

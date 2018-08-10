@@ -9,11 +9,12 @@ namespace mobileAppClient
      * Class to handle the logged in clinician of the application.
      * Accessible using a singleton framework with a given instance.
      */
-    sealed class ClinicianController
+    public sealed class ClinicianController
     {
         public Clinician LoggedInClinician { get; set; }
         public string AuthToken { get; set; }
         public MainPage mainPageController { get; set; } 
+        public bool isTestMode { get; set; }
 
         private static readonly Lazy<ClinicianController> lazy =
         new Lazy<ClinicianController>(() => new ClinicianController());
@@ -47,12 +48,15 @@ namespace mobileAppClient
         {
             this.LoggedInClinician = loggedInClinician;
             this.AuthToken = authToken;
-            this.mainPageController.clinicianLoggedIn();
+            if (!isTestMode)
+            {
+                this.mainPageController.clinicianLoggedIn();
+            }
         }
 
         private ClinicianController()
         {
-   
+            isTestMode = false;
         }
     }
 }
