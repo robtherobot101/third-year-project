@@ -8,12 +8,7 @@
     <ContentPage.Content>
 
         <StackLayout Orientation="Vertical">
-            
-            <TableView>
-                <TableSection Title="Waiting list items"></TableSection>
-            </TableView>
-
-            <Grid>
+            <Grid Padding="15,0,15,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
@@ -83,7 +78,9 @@
                 </Picker>
             </StackLayout>
 
-            <ListView x:Name="TransplantList" ItemTapped="Handle_ItemTapped">
+            <ListView x:Name="TransplantList" 
+                      ItemTapped="Handle_ItemTapped"
+                      VerticalOptions="StartAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding organType}"

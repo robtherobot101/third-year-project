@@ -6,20 +6,28 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <Button x:Name="PressMeButton"
-            Text="Back"
-            Pressed="BackButtonClicked"/>
+            <Grid Padding="15,15,15,15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="PressMeButton" Text="Back" Pressed="BackButtonClicked"
+                        Grid.Column="0" Grid.Row="0"/>
+                <Button Text="Confirm" HorizontalOptions="FillAndExpand" VerticalOptions="Start" Clicked="ConfirmButtonClicked"
+                        Grid.Column="1" Grid.Row="0"/>
+            </Grid>
+            
+            <Label Text="Date and time of death"
+                   FontSize="18" HorizontalOptions="Center"/>
+            <BoxView HeightRequest="2" />
 
-            <TableView>
-                <TableSection Title="Date and time of death"></TableSection>
-            </TableView>
-
-            <DatePicker x:Name="DeathDatePicker"/>
-            <TimePicker x:Name="DeathTimePicker"/>
-
-            <Button Text="Confirm" HorizontalOptions="FillAndExpand"
-                                   VerticalOptions="Start"
-                                   Clicked="ConfirmButtonClicked"/>
+            <DatePicker x:Name="DeathDatePicker"
+                        VerticalOptions="Start"/>
+            <TimePicker x:Name="DeathTimePicker"
+                        VerticalOptions="Start"/>
 
         </StackLayout>
     </ContentPage.Content>
