@@ -81,8 +81,13 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> UpdateUser(bool isClinician)
         {
-            return await UpdateUser(UserController.Instance.LoggedInUser,
-                UserController.Instance.AuthToken);
+            if(isClinician) {
+                        return await UpdateUser(UserController.Instance.LoggedInUser,
+                            ClinicianController.Instance.AuthToken);
+            } else {
+                        return await UpdateUser(UserController.Instance.LoggedInUser,
+                            UserController.Instance.AuthToken);
+            }
         }
 
         public async Task<HttpStatusCode> UpdateUser(User user, String token)
@@ -104,19 +109,10 @@ namespace mobileAppClient.odmsAPI
 
             Console.WriteLine(registerUserRequestBody);
 
-            Console.WriteLine(UserController.Instance.AuthToken);
-
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + user.id);
             request.Content = body;
 
-            if (isClinician)
-            {
-                request.Headers.Add("token", ClinicianController.Instance.AuthToken);
-            } else
-            {
-                request.Headers.Add("token", UserController.Instance.AuthToken);
-
-            }
+            request.Headers.Add("token", token);
 
             try
             {
