@@ -12,6 +12,7 @@
     <Compile Remove="Views\Diseases\DiseasesPage.xaml.cs" />
     <Compile Remove="RequestTester.cs" />
     <Compile Remove="PhotoAccess\IPicturePicker.cs" />
+    <None Remove="facebook.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,8 @@
   <ItemGroup>
     <Folder Include="MenuItems\" />
     <Folder Include="PhotoAccess\" />
+    <Folder Include="Facebook\" />
+    <Folder Include="Google\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />

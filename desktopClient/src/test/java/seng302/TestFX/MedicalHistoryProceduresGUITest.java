@@ -11,10 +11,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.control.TableView;
+import org.apache.http.client.HttpResponseException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
+import seng302.Generic.WindowManager;
 import seng302.User.Procedure;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -41,8 +43,9 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     /**
      * Method that can be called to path correctly to the stage to be tested.
      */
-    private void enterMedicalHistoryProceduresView() throws SQLException {
+    private void enterMedicalHistoryProceduresView() throws SQLException, HttpResponseException {
         // Assumed that calling method is currently on login screen
+        WindowManager.getDataManager().getGeneral().reset("masterToken");
         addTestUser();
         loginAsDefaultClinician();
 
@@ -63,7 +66,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     /**
      * Adds a new procedure to the user's pending procedures table view
      */
-    private void addNewProcedureToPendingProcedures() throws SQLException {
+    private void addNewProcedureToPendingProcedures() throws SQLException, HttpResponseException {
         enterMedicalHistoryProceduresView();
 
         clickOn("#summaryInput").write("Arm Transplant");
@@ -77,7 +80,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      * Add a completely valid procedure (both a pending and previous procedure)
      */
     @Test
-    public void addAllValidProcedure() throws SQLException{
+    public void addAllValidProcedure() throws SQLException, HttpResponseException{
         enterMedicalHistoryProceduresView();
 
         //Pending Procedure
@@ -119,7 +122,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addProcedureEmptySummaryAndDescription() throws SQLException{
+    public void addProcedureEmptySummaryAndDescription() throws SQLException, HttpResponseException{
         enterMedicalHistoryProceduresView();
         clickOn("#dateOfProcedureInput").write("9/1/2020");
         clickOn("#addNewProcedureButton");
@@ -133,7 +136,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      * Add a disease with an empty date of diagnosis but valid diagnosis
      */
     @Test
-    public void addProcedureEmptyDate() throws SQLException{
+    public void addProcedureEmptyDate() throws SQLException, HttpResponseException{
         enterMedicalHistoryProceduresView();
         clickOn("#summaryInput").write("Arm Transplant");
         clickOn("#addNewProcedureButton");
@@ -147,7 +150,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void addProcedureDateBeforeDOB() throws SQLException{
+    public void addProcedureDateBeforeDOB() throws SQLException, HttpResponseException{
         enterMedicalHistoryProceduresView();
         clickOn("#summaryInput").write("Arm Transplant");
         clickOn("#descriptionInput").write("Transfer of arm");
@@ -163,7 +166,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      * Checks when a procedure is updated, changes are reflected appropriately
      */
     @Test
-    public void updateProcedure() throws SQLException{
+    public void updateProcedure() throws SQLException, HttpResponseException{
         addNewProcedureToPendingProcedures();
         // Check procedure was added correctly
         clickOn("Arm Transplant");
@@ -214,7 +217,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      * Adds a procedure to the user and then deletes it, checking if the deletion is successful.
      */
     @Test
-    public void deleteProcedure() throws SQLException{
+    public void deleteProcedure() throws SQLException, HttpResponseException{
         //Add Procedure for user.
         addNewProcedureToPendingProcedures();
 
@@ -235,7 +238,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
      */
     @Ignore
     @Test
-    public void saveProcedure() throws SQLException{
+    public void saveProcedure() throws SQLException, HttpResponseException{
         //Add Medication for donor.
         addNewProcedureToPendingProcedures();
 

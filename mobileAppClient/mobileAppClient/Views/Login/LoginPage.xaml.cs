@@ -1,8 +1,11 @@
 ﻿using mobileAppClient.odmsAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +27,7 @@ namespace mobileAppClient
 		{
 			InitializeComponent ();
             loginClicked = false;
+
 		}
 
         /*
@@ -74,7 +78,8 @@ namespace mobileAppClient
                     if (!ClinicianController.Instance.isLoggedIn())
                     {
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
-                    } 
+                    }
+                    UserController.Instance.mainPageController.updateMenuPhoto();
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -104,11 +109,31 @@ namespace mobileAppClient
         /*
          * Function used to Stops the back button from working and 
          * opening the main view without a logged in user
-         */ 
+         */
         protected override bool OnBackButtonPressed()
         {
-            
             return true;
+        }
+
+        async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
+        {
+
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                await DisplayAlert(
+                "Failed to Login",
+                "Server unavailable, check connection",
+                "OK");
+                return;
+            }
+
+            await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(this)));
+
+        }
+
+        void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
+        {
+            Console.WriteLine("Not implemented yet");
         }
     }
 }
