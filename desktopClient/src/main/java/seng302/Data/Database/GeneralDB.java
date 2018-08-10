@@ -192,8 +192,8 @@ public class GeneralDB implements GeneralDAO {
      * @throws HttpResponseException throws if cannot connect to the server
      */
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), token, "organs");
+    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(filterParams, token, "organs");
         if (response == null) {
             return new ArrayList<>();
         }

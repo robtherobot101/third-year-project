@@ -34,8 +34,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     TableColumn organColumn, nameColumn, countdownColumn, dateOfDeathColumn, regionColumn;
 
-    @FXML
-    TextField nameFilter;
 
     @FXML
     ComboBox<String> organFilter, regionFilter;
@@ -119,7 +117,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      */
     public void updateOrgans() {
         try {
-            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token));
+            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(new HashMap(),token));
             setTimeLeftList(temp);
             expiryList.clear();
             for(DonatableOrgan organ : temp) {
@@ -147,6 +145,30 @@ public class ClinicianAvailableOrgansController implements Initializable{
             Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
         } catch (NullPointerException e) {
 
+        }
+    }
+
+    public void filterOrgans(){
+        HashMap filterParams = new HashMap();
+        if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
+            filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
+        }
+        if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
+            filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
+        }
+        try{
+            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
+            setTimeLeftList(temp);
+            expiryList.clear();
+            for(DonatableOrgan organ : temp) {
+                if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
+                    addUserInfo(organ);
+                    expiryList.add(organ);
+                }
+            }
+            expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
+        } catch (HttpResponseException e) {
+            Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
     }
 

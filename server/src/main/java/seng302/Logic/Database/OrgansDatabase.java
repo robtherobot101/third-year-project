@@ -57,7 +57,7 @@ public class OrgansDatabase {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfDeath IS NOT NULL ");
         if(params.keySet().contains("userRegion")) {
-            queryBuilder.append("AND USER.region = '" + params.get("userRegion") + "' ");
+            queryBuilder.append("AND USER.regionOfDeath = '" + params.get("userRegion") + "' ");
         }
 
         if(params.keySet().contains("organ")) {

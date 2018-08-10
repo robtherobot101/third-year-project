@@ -174,7 +174,7 @@ public class GeneralM implements GeneralDAO {
     public void updateCountries(List<Country> countries, String token) {}
 
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(String Token) {
+    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String Token) {
         return null;
     }
 }

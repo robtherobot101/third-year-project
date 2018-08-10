@@ -8,6 +8,7 @@ import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.ConnectException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,5 +34,5 @@ public interface GeneralDAO {
 
     void updateCountries(List<Country> countries, String token) throws HttpResponseException;
 
-    List<DonatableOrgan> getAllDonatableOrgans(String Token) throws HttpResponseException;
+    List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String Token) throws HttpResponseException;
 }
