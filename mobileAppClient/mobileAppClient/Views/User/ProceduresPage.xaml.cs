@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -14,6 +14,8 @@ namespace mobileAppClient
     public partial class ProceduresPage : ContentPage
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
+        private bool isClinicianAccessing;
+
         /*
          * Event handler to handle when a user switches between pending and previous procedures
          * resetting the sorting and changing the listview items.
@@ -72,6 +74,7 @@ namespace mobileAppClient
         public ProceduresPage()
         {
             InitializeComponent();
+            CheckIfClinicianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -94,6 +97,33 @@ namespace mobileAppClient
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
 
 
+        }
+
+        /**
+         * Checks if a clinician is viewing the user
+         */
+        private void CheckIfClinicianAccessing()
+        {
+            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
+
+            if (isClinicianAccessing)
+            {
+                var addItem = new ToolbarItem
+                {
+                    Command = OpenAddProcedure,
+                    Icon = "add_icon.png",
+                };
+
+                this.ToolbarItems.Add(addItem);
+            }
+        }
+
+        private ICommand OpenAddProcedure
+        {
+            get
+            {
+                return new Command(() => { Navigation.PushAsync(new NavigationPage(new SingleProcedurePage())); });
+            }
         }
 
         /*

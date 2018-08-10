@@ -6,20 +6,21 @@
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
-            <TableView Intent="Menu" >
-                <TableRoot>
-                    <TableSection Title="Procedure Details">
-                        <EntryCell Label="Summary" x:Name="SummaryEntry" IsEnabled="false"/>
-                        <EntryCell Label="Description" x:Name="DescriptionEntry" IsEnabled="false"/>
-                        <EntryCell Label="Date Due" x:Name="DateDueEntry" IsEnabled="false"/>
-                        <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
-                    </TableSection>
-                    <TableSection Title="Organs Affected" x:Name="OrgansAffectedSection">
-                        
-                    </TableSection>
-                </TableRoot>
-            </TableView>
-            
+            <Entry x:Name="SummaryEntry" IsEnabled="false" />
+            <Entry x:Name="DescriptionEntry" IsEnabled="false"/>
+
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Date Due" VerticalOptions="Center"/>
+                <DatePicker x:Name="DateDueEntry" IsEnabled="false" Format="D" MinimumDate="01/01/1900"/>
+            </StackLayout>
+
+            <StackLayout x:Name="affectedOrganStack" Orientation="Horizontal">
+                <Picker x:Name="NewAffectedOrganPicker" HorizontalOptions="Fill"/>
+                <Button Text="Add Organ" Clicked="AddAffectedOrganClicked" HorizontalOptions="End"/>
+            </StackLayout>
+
+            <ListView Header="Organs Affected" x:Name="organsAffectedList"/>
+            <Button Text="Add Procedure" Clicked="AddProcedureClicked" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

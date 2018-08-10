@@ -15,10 +15,10 @@
                                        SelectedSegment="0"
                                        ValueChanged="Handle_ProcedureChanged"
                                        HeightRequest="40">
-              <controls:SegmentedControl.Children>
-                <controls:SegmentedControlOption Text="Pending" />
-                <controls:SegmentedControlOption Text="Previous" />
-              </controls:SegmentedControl.Children>
+                <controls:SegmentedControl.Children>
+                    <controls:SegmentedControlOption Text="Pending" />
+                    <controls:SegmentedControlOption Text="Previous" />
+                </controls:SegmentedControl.Children>
             </controls:SegmentedControl>
 
             <StackLayout Orientation="Horizontal">
@@ -66,7 +66,8 @@
 
             <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
         </StackLayout>
-
-        
     </ContentPage.Content>
+    <ContentPage.ToolbarItems >
+
+    </ContentPage.ToolbarItems>
 </ContentPage>

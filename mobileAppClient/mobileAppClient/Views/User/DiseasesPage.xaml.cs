@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using System.Linq;
 using System.Globalization;
+using System.Windows.Input;
 
 namespace mobileAppClient
 {
@@ -14,6 +15,9 @@ namespace mobileAppClient
     public partial class DiseasesPage : ContentPage
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
+
+        private bool isClinicianAccessing;
+
         /*
          * Event handler to handle when a user switches between current and cured diseases
          * resetting the sorting and changing the listview items.
@@ -100,6 +104,7 @@ namespace mobileAppClient
         public DiseasesPage()
         {
             InitializeComponent();
+            CheckIfClinicianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
@@ -131,14 +136,45 @@ namespace mobileAppClient
             }
 
             DiseasesList.ItemsSource = returnCurrentDiseasesWithChronicAtTop();
-  
+        }
 
+        /**
+         * Checks if a clinician is viewing the user
+         */
+        private void CheckIfClinicianAccessing()
+        {
+            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
+
+            if (isClinicianAccessing)
+            {
+                var addItem = new ToolbarItem
+                {
+                    Command = OpenAddDisease,
+                    Icon = "add_icon.png"
+                };
+                
+                this.ToolbarItems.Add(addItem);
+            }
+        }
+
+        private ICommand OpenAddDisease
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    Console.WriteLine("Opening single procedure...");
+
+                    var singleDiseasePage = new SingleDiseasePage();
+                    Navigation.PushAsync(singleDiseasePage);
+                });
+            }
         }
 
         /*
          * Handles when a single disease it tapped, sending a user to the single disease page 
          * of that given disease.
-         */ 
+         */
         async void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)

@@ -172,7 +172,6 @@ namespace mobileAppClient
                     "Server error, please try again",
                     "OK");
                     break;
-
             }
         }
     }

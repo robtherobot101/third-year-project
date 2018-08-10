@@ -18,7 +18,7 @@ namespace mobileAppClient.odmsAPI
      */
     public class LoginAPI
     {
-        /*
+        /**
          * Returns response status code of the attempted login 
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
@@ -38,7 +38,7 @@ namespace mobileAppClient.odmsAPI
             
             String queries = null;
 
-            queries = String.Format("?usernameEmail={0}&password={1}", usernameEmail, password);
+            queries = $"?usernameEmail={usernameEmail}&password={password}";
 
             HttpContent content = new StringContent("");
             HttpResponseMessage response;
@@ -58,13 +58,12 @@ namespace mobileAppClient.odmsAPI
 
                 if (IsClinician(responseContent))
                 {
-                    // Login as the clinician
                     Clinician loggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);
                     string authToken = response.Headers.GetValues("token").FirstOrDefault();
 
                     ClinicianController.Instance.Login(loggedInClinician, authToken);
 
-                    Console.WriteLine("Logged in as (CLINICIAN)" + String.Join(String.Empty, clinicianController.LoggedInClinician.name));
+                    Console.WriteLine("Logged in as (CLINICIAN)" + string.Join(String.Empty, clinicianController.LoggedInClinician.name));
 
                     // Created code to signifiy clinician login internally
                     return HttpStatusCode.OK;
@@ -154,7 +153,7 @@ namespace mobileAppClient.odmsAPI
             {
                 user = JsonConvert.DeserializeObject<User>(jsonBody);
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return false;
             }
@@ -171,7 +170,7 @@ namespace mobileAppClient.odmsAPI
             {
                 clinician = JsonConvert.DeserializeObject<Clinician>(jsonBody);
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return false;
             }
@@ -199,7 +198,6 @@ namespace mobileAppClient.odmsAPI
             // Fetch the url and client from the server config class
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
-            String registerUserRequestBody;
 
             RegisterRequest registerRequest = new RegisterRequest();
             
@@ -222,12 +220,12 @@ namespace mobileAppClient.odmsAPI
             registerRequest.email = email;
            
             // Additional parameters on serialization needed to remove null email/username
-            registerUserRequestBody = JsonConvert.SerializeObject(registerRequest,
-                            Newtonsoft.Json.Formatting.None,
-                            new JsonSerializerSettings
-                            {
-                                NullValueHandling = NullValueHandling.Ignore
-                            });
+            var registerUserRequestBody = JsonConvert.SerializeObject(registerRequest,
+                Newtonsoft.Json.Formatting.None,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
             HttpContent body = new StringContent(registerUserRequestBody);
             Console.WriteLine(registerUserRequestBody);
             var response = await client.PostAsync(url + "/users", body);
@@ -238,7 +236,7 @@ namespace mobileAppClient.odmsAPI
             }
             else
             {
-                Console.WriteLine(String.Format("Failed register ({0})", response.StatusCode));
+                Console.WriteLine($"Failed register ({response.StatusCode})");
             }
             return response.StatusCode;
         }

@@ -15,10 +15,12 @@ namespace mobileAppClient
         public string CellText { get; set; }
         public Xamarin.Forms.Color CellColour { get; set; }
 
-        public Disease(string name, int id)
+        public Disease(string name, CustomDate date, bool Chronic, bool Cured)
         {
             this.Name = name;
-            this.Id = id;
+            this.DiagnosisDate = date;
+            this.IsChronic = Chronic;
+            this.IsCured = Cured;
         }
     }
 }
