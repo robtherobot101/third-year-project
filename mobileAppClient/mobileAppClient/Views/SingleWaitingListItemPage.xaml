@@ -24,10 +24,9 @@
 
             <Button x:Name="DeregisterButton"
                     Text="De-register"
-                    HorizontalOptions="Start"
-                    VerticalOptions="CenterAndExpand"
-                    Clicked="DeregisterButtonClicked" />
-
+                    HorizontalOptions="CenterAndExpand"
+                    VerticalOptions="End"
+                    Clicked="DeregisterButtonClicked"/>
 
         </StackLayout>
     </ContentPage.Content>

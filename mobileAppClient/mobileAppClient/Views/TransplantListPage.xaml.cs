@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,9 @@ namespace mobileAppClient
 	public partial class TransplantListPage : ContentPage
 	{
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
+        /*
+         * Class which handles the viewing and de-registering of all transplant WaitingListItems
+         */
         public TransplantListPage ()
 		{
             Console.WriteLine("About initialize component");
@@ -30,6 +34,11 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * Fetches and curates the WaitingListItem data, then
+         * sets the visibility of GUI elements depending on whether there are 
+         * any WaitingListItems to display
+         */
         public async Task setupItems()
         {
             Console.WriteLine("About to prepare items");
@@ -54,26 +63,49 @@ namespace mobileAppClient
             TransplantList.ItemsSource = waitingOn;
         }
 
+        /*
+         * Fetches and curates the WaitingListItem data
+         */
         public async Task<List<WaitingListItem>> prepareWaitingListItems()
         {
-            String query = prepareQuery();
-            Console.WriteLine("About to query with: " + query);
-            List<WaitingListItem> items = await new TransplantListAPI().getItems(query);
-            items = waitingOn(items);
-            items = style(items);
-            return items;
+            try
+            {
+                String query = prepareQuery();
+                Console.WriteLine("About to query with: " + query);
+                List<WaitingListItem> items = await new TransplantListAPI().getItems(query);
+                items = waitingOn(items);
+                items = style(items);
+                return items;
+            }
+            catch (HttpRequestException e)
+            {
+                await DisplayAlert("Connection Error",
+                                   "Failed to reach the server",
+                                   "OK");
+                return new List<WaitingListItem>();
+            }
         }
 
+        /*
+         * Refreshes the whole page whenever the page appears
+         */
         protected override void OnAppearing()
         {
             refreshPage();
         }
 
+        /*
+         * Refreshes the page by re-fetching filtering the latest WaitingListItems
+         */
         public void refreshPage()
         {
             Handle_FilterChange(null, null);
         }
 
+        /*
+         * Builds a query for the GET /waitingListItems endpoint depending on
+         * the values in the organ and region filter inputs
+         */
         public String prepareQuery()
         {
             String query = "";
@@ -105,6 +137,9 @@ namespace mobileAppClient
             return query;
         }
 
+        /*
+         * Opens a new modal which displays an overview of the tapped WaitingListItem
+         */
         public async void Handle_ItemTapped()
         {
             WaitingListItem tapped = (WaitingListItem)TransplantList.SelectedItem;
@@ -114,7 +149,10 @@ namespace mobileAppClient
             }
         }
 
-
+        /*
+         * Removes all previously de-registered WaitingListItems from the given list 
+         * and returns it
+         */
         public List<WaitingListItem> waitingOn(List<WaitingListItem> items)
         {
             foreach (WaitingListItem item in new List<WaitingListItem>(items))
@@ -127,6 +165,9 @@ namespace mobileAppClient
             return items;
         }
 
+        /*
+         * Sets the text colour and detail string of the given WaitingListItems
+         */
         public List<WaitingListItem> style(List<WaitingListItem> items)
         {
             foreach (WaitingListItem item in items)
@@ -145,6 +186,9 @@ namespace mobileAppClient
             return items;
         }
 
+        /*
+         * Refetches and filters the latest WaitingListItems, styles and sorts them, then displays them
+         */
         async void Handle_FilterChange(object sender, System.EventArgs e)
         {
             await setupItems();

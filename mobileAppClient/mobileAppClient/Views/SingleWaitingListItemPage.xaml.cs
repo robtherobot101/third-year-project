@@ -6,6 +6,7 @@ using System.Globalization;
 using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using System.Net;
+using System.Net.Http;
 
 namespace mobileAppClient
 {
@@ -47,6 +48,10 @@ namespace mobileAppClient
             await Navigation.PopModalAsync();
         }
 
+        /*
+         * Shows a dialog which allows a user to select a reason for de-registering
+         * the selected WaitingListItem.
+         */
         public async void showDeregisteringOptions(WaitingListItem item)
         {
             var action = await DisplayActionSheet("Select the reason code: ", "Cancel", "", "1: Error while registering", "2: Disease Cured", "3: Receiver Deceased", "4: Successful Transplant");
@@ -57,17 +62,24 @@ namespace mobileAppClient
             }
             else if (action == "2: Disease Cured")
             {
-                User user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
-                if (user != null && user.currentDiseases.Count > 0)
+                try
                 {
-                    Console.WriteLine("About to open disease cured page");
-                    await Navigation.PushModalAsync(new DiseaseCuredDeregisterPage(item, this));
-                }
-                else
+                    User user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
+                    if (user != null && user.currentDiseases.Count > 0)
+                    {
+                        await Navigation.PushModalAsync(new DiseaseCuredDeregisterPage(item, this));
+                    }
+                    else
+                    {
+                        await DisplayAlert("Alert",
+                            "There are no un-cured diseases for this user",
+                            "OK");
+                    }
+                } catch (HttpRequestException e)
                 {
-                    await DisplayAlert("Alert",
-                        "There are no un-cured diseases for this user",
-                        "OK");
+                    await DisplayAlert("Connection Error",
+                                       "Failed to reach the server",
+                                       "OK");
                 }
             }
             else if (action == "3: Receiver Deceased")
@@ -81,22 +93,39 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Shows a dialog which allows a user to select a reason for de-registering
+         * the selected WaitingListItem.
+         */
         public async void DeregisterButtonClicked()
         {
             showDeregisteringOptions(item);
         }
 
+        /*
+         * De-registers the given WaitingListItem and saves the changes
+         * to the server.
+         */
         public async void deregister(WaitingListItem item, int reasonCode)
         {
-            item.organDeregisteredDate = new CustomDate(DateTime.Now);
-            item.organDeregisteredCode = reasonCode;
-            HttpStatusCode code = await new TransplantListAPI().updateItem(item);
-            if (code != HttpStatusCode.Created)
+            try
             {
-                await DisplayAlert(
-                        "Failed to de-register item",
-                        "Server error",
-                        "OK");
+                item.organDeregisteredDate = new CustomDate(DateTime.Now);
+                item.organDeregisteredCode = reasonCode;
+                HttpStatusCode code = await new TransplantListAPI().updateItem(item);
+                if (code != HttpStatusCode.Created)
+                {
+                    await DisplayAlert(
+                            "Failed to de-register item",
+                            "Server error",
+                            "OK");
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                await DisplayAlert("Connection Error",
+                   "Failed to reach the server",
+                   "OK");
             }
         }
 
