@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -17,6 +18,7 @@ public class DonatableOrgan {
     private long donorId;
     private int id;
     private Duration timeLeft;
+    private String timeLeftString;
     private String receiverName;
     private String receiverDeathRegion;
     private double timePercent;
@@ -84,13 +86,25 @@ public class DonatableOrgan {
         return timeLeft;
     }
 
+    public String getTimeLeftString(){return timeLeftString;}
+
     public void setTimeLeft(Duration time) {
         timeLeft = time;
+        setTimeLeftString(time);
         timePercent = (double) time.toMillis() / (double) getExpiryDuration(organType).toMillis();
+    }
+
+    private void setTimeLeftString(Duration time) {
+        long millis = time.toMillis();
+        timeLeftString = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+        System.out.println(timeLeftString);
     }
 
     public void tickTimeLeft(){
         timeLeft = timeLeft.minus(1, SECONDS);
+        setTimeLeftString(timeLeft);
         double temp = (double) timeLeft.toMillis() /  (double) getExpiryDuration(organType).toMillis();
         if ((timePercent >= 0.75 && temp < 0.75) || (timePercent >= 0.5 && temp < 0.5) || (timePercent >= 0.25 && temp < 0.25)) {
             timePercent = temp;
