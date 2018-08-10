@@ -8,9 +8,7 @@ import seng302.Model.DonatableOrgan;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,12 +21,12 @@ public class OrgansDatabaseTest {
     @Before
     public void reset() throws SQLException, IOException {
         Administration administration = new Administration();
-        //administration.reset();
-        //administration.resample();
+        administration.reset();
+        administration.resample();
     }
 
     @Test
-    public void insertOrganTest() throws SQLException{
+    public void insertOrganTest() throws SQLException {
         DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.EAR, 1);
         organsDatabase.insertOrgan(donatableOrgan);
 
@@ -39,8 +37,8 @@ public class OrgansDatabaseTest {
     }
 
     @Test
-    public void updateOrganTest() throws SQLException{
-        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1,1);
+    public void updateOrganTest() throws SQLException {
+        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1, 1);
         organsDatabase.insertOrgan(donatableOrgan);
 
         donatableOrgan.setTimeOfDeath(LocalDateTime.now().plusHours(5));
@@ -53,7 +51,7 @@ public class OrgansDatabaseTest {
     }
 
     @Test
-    public void removeOrganTest() throws SQLException{
+    public void removeOrganTest() throws SQLException {
         DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.SKIN, 1, 1);
         organsDatabase.insertOrgan(donatableOrgan);
 
@@ -67,6 +65,4 @@ public class OrgansDatabaseTest {
 
         assertTrue(organs.isEmpty());
     }
-
-
 }
