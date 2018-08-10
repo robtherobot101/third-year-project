@@ -6,14 +6,20 @@
              x:Class="mobileAppClient.Views.ClinicianOverviewPage"
              Title="Overview">
     <ContentPage.Content>
-        <StackLayout>
-            <controls:CarouselViewControl x:Name="RssCarousel" ItemsSource="{Binding rss}" Orientation="Horizontal" InterPageSpacing="10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+        <StackLayout VerticalOptions="StartAndExpand">
+            <controls:CarouselViewControl x:Name="RssCarousel" ItemsSource="{Binding rss}" Orientation="Horizontal" InterPageSpacing="10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="300">
                 <controls:CarouselViewControl.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout>
-                            <Image Aspect="AspectFill" Source="{Binding ImageUrl}" VerticalOptions="FillAndExpand"/>
-                            <Label Text="{Binding Title}" />
-                        </StackLayout>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Image Grid.RowSpan="2" Aspect="AspectFill" Source="{Binding ImageUrl}"/>
+                            <StackLayout Grid.Row="1" BackgroundColor="#80000000" Padding="12">
+                                <Label TextColor="White" Text="{Binding Title}" FontSize="16" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+                            </StackLayout>
+                        </Grid>
                     </DataTemplate>
                 </controls:CarouselViewControl.ItemTemplate>
             </controls:CarouselViewControl>
@@ -29,7 +35,6 @@
                     </TableSection>
                 </TableRoot>
             </TableView>
-
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

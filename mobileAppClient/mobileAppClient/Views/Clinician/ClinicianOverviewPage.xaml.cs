@@ -69,8 +69,6 @@ namespace mobileAppClient.Views
 
             foreach (var element in rssParser.Parse(rssString))
             {
-                Console.WriteLine($"Title: {element.Title}");
-                Console.WriteLine($"Summary: {element.Summary}");
                 rss.Add(element);
             }
         }
