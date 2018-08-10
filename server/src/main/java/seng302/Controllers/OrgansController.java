@@ -3,6 +3,7 @@ package seng302.Controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.OrgansDatabase;
+import seng302.Logic.OrganMatching;
 import seng302.Model.DonatableOrgan;
 import seng302.Server;
 import spark.Request;
@@ -60,6 +61,10 @@ public class OrgansController {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
+        }
+        OrganMatching organMatching = new OrganMatching();
+        for(DonatableOrgan organ: allDonatableOrgans){
+            organ.setTopReceivers(organMatching.getTop5Matches(organ));
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String serializedOrgans = gson.toJson(allDonatableOrgans);
