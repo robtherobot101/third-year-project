@@ -1,6 +1,7 @@
 ﻿using CarouselView.FormsPlugin.Abstractions;
 using Microsoft.Toolkit.Parsers.Rss;
 using mobileAppClient.Models;
+using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
 using System;
 using System.Collections.Generic;
@@ -16,15 +17,19 @@ namespace mobileAppClient.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ClinicianOverviewPage : ContentPage
 	{
-        public CarouselViewControl carousel;
-        public ObservableCollection<RssSchema> rss { get; set; }
+        public CustomObservableCollection<RssSchema> rss { get; set; }
         public int rssPosition = 0;
 
-		public ClinicianOverviewPage ()
-		{
-			InitializeComponent();
+        public ClinicianOverviewPage()
+        {
+            InitializeComponent();
             fillFields();
-            rss = new ObservableCollection<RssSchema>();
+            rss = new CustomObservableCollection<RssSchema>();
+            this.BindingContext = new
+            {
+                rss = rss
+            };
+            //RssCarousel.ItemsSource = rss;
             fillFeed();
 		}
 
@@ -62,7 +67,7 @@ namespace mobileAppClient.Views
             var rssString = await ServerConfig.Instance.client.GetStringAsync("http://qwantz.com/rssfeed.php");
             var rssParser = new RssParser();
 
-            foreach (var element in rss)
+            foreach (var element in rssParser.Parse(rssString))
             {
                 Console.WriteLine($"Title: {element.Title}");
                 Console.WriteLine($"Summary: {element.Summary}");

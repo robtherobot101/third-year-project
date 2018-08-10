@@ -78,8 +78,10 @@ namespace mobileAppClient
                     if (!ClinicianController.Instance.isLoggedIn())
                     {
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                        UserController.Instance.mainPageController.updateMenuPhoto();
+
                     }
-                    UserController.Instance.mainPageController.updateMenuPhoto();
+                  
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
