@@ -540,7 +540,7 @@ public class AdminController implements Initializable {
         }
 
         try {
-            searchMap.put("count", "15"/*String.valueOf(WindowManager.getDataManager().getUsers().count(token))*/);
+            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
             searchMap.put("count", String.valueOf(count));
 
