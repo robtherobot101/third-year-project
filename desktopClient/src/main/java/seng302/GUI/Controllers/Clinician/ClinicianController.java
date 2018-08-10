@@ -188,6 +188,7 @@ public class ClinicianController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);

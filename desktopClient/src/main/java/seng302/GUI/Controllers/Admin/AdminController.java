@@ -188,6 +188,7 @@ public class AdminController implements Initializable {
         } catch (HttpResponseException e) {
             Debugger.error("Failed to log out on server.");
         }
+
         this.token = null;
     }
 
@@ -200,6 +201,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
+            availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
@@ -1033,7 +1035,7 @@ public class AdminController implements Initializable {
         mainPane.setVisible(true);
         undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
         redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
-
+        availableOrgansController.stopTimer();
         //Could be updated in the CLI
         clinicianTableView.refresh();
         userTableView.refresh();
@@ -1047,6 +1049,7 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
+        availableOrgansController.stopTimer();
 
         WindowManager.updateTransplantWaitingList();
     }
@@ -1059,7 +1062,7 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(availableOrgansButton, true);
         organsPane.setVisible(true);
-
+        availableOrgansController.startTimer();
         WindowManager.updateAvailableOrgans();
     }
 
@@ -1069,6 +1072,7 @@ public class AdminController implements Initializable {
     public void viewCli() {
         hideAllTabs();
         setButtonSelected(cliTabButton, true);
+        availableOrgansController.stopTimer();
         cliPane.setVisible(true);
     }
 

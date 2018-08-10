@@ -208,6 +208,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
         focused = false;
     }
 
+    /**
+     * Starts the timer when the organs tab is first opened.
+     */
     public void startTimer() {
         if (!focused) {
             initTimer();
@@ -215,6 +218,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
         focused = true;
     }
 
+    /**
+     * Stops the timer when the tab or window is exited.
+     */
     public void stopTimer(){
         if(focused) {
             if (time != null) {
