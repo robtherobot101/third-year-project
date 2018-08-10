@@ -852,4 +852,24 @@ public class GeneralUser {
             return noUsers.getInt("count");
         }
     }
+
+    /**
+     * gets a list of user that are waiting for th given organ
+     * @param organ the organ to match with
+     * @return returns a list of users
+     * @throws SQLException If there is a problem working with the database.
+     */
+    public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
+            ArrayList<User> possibleMatches = new ArrayList<>();
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, organ.getOrganType().toString());
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                possibleMatches.add(getUserFromResultSet(resultSet));
+            }
+            return possibleMatches;
+        }
+    }
 }

@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
+import seng302.Model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,15 +54,15 @@ public class OrgansDatabase {
         }
     }
 
-    public String buildOrganQuery(Map<String, String> params) {
+    private String buildOrganQuery(Map<String, String> params) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfDeath IS NOT NULL ");
         if(params.keySet().contains("userRegion")) {
-            queryBuilder.append("AND USER.regionOfDeath = '" + params.get("userRegion") + "' ");
+            queryBuilder.append("AND USER.regionOfDeath = '").append(params.get("userRegion")).append("' ");
         }
 
         if(params.keySet().contains("organ")) {
-            queryBuilder.append("AND DONATION_LIST_ITEM.name = '" + params.get("organ") + "' ");
+            queryBuilder.append("AND DONATION_LIST_ITEM.name = '").append(params.get("organ")).append("' ");
         }
         return queryBuilder.toString();
     }

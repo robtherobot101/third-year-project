@@ -3,6 +3,7 @@ package seng302.Model;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -141,6 +142,12 @@ public class User {
         this.pendingProcedures = new ArrayList<>();
         this.previousProcedures = new ArrayList<>();
         this.profileImageType = profileImageType;
+    }
+
+    public double getAgeDouble() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        return days / 365.00;
+
     }
 
     public String getName() {
