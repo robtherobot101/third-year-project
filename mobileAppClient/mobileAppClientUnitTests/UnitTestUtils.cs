@@ -28,7 +28,7 @@ namespace mobileAppClientUnitTests
 
             if (resetResult.StatusCode != HttpStatusCode.OK || resampleResult.StatusCode != HttpStatusCode.OK)
             {
-                throw new Exception("Failed to reset/resample");
+                throw new Exception("Failed to reset/resample: " + resampleResult.StatusCode);
             }
 
             UserController.Instance.Logout();

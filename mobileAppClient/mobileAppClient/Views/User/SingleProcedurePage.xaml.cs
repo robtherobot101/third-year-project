@@ -79,6 +79,11 @@ namespace mobileAppClient
             DateDueEntry.Date = DateTime.Today;
         }
 
+        /// <summary>
+        /// When the Add Affected organ is clicked, the selected organ is added to affected organs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddAffectedOrganClicked(object sender, EventArgs e)
         {
             if (NewAffectedOrganPicker.SelectedItem == null)
@@ -90,6 +95,11 @@ namespace mobileAppClient
             organsAvailable.Remove(NewAffectedOrganPicker.SelectedItem.ToString());
         }
 
+        /// <summary>
+        /// When the Add Procedure button is clicked, this method is ran
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void AddProcedureClicked(object sender, EventArgs e)
         {
             string summaryInput = InputValidation.Trim(SummaryEntry.Text);
