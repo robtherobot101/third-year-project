@@ -198,25 +198,38 @@ public class UserMedicationsController extends UserTabController implements Init
                 // and then the list views are updated after.
                 statusIndicator.setStatus("Fetching from API", true);
                 new Thread(() -> {
-                    List<String> activeIngredients = searchActiveIngredients(medicationChoice);
-                    Platform.runLater(() -> {
-                        if (!activeIngredients.get(0).equals("")) {
-                            Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
+                    try {
+                        List<String> activeIngredients = searchActiveIngredients(medicationChoice);
+                        Platform.runLater(() -> {
+                            if (!activeIngredients.get(0).equals("")) {
+                                Medication newMedication = new Medication(medicationChoice, activeIngredients.toArray(new String[0]));
+                                newMedication.startedTaking();
+                                currentItems.add(newMedication);
+                                userController.addHistoryEntry("Medication added", "A new medication (" + newMedication.getName() + ") was added.");
+                                // NOTE: I have created another constructor in the Medications class for a medication with a name and
+                                // active ingredients also.
+
+                                newMedicationField.clear();
+                                saveToUndoStack();
+                                statusIndicator.setStatus("Added " + medicationChoice, false);
+                                titleBar.saved(false);
+                            } else {
+                                WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s" +
+                                        " does not exist.", medicationChoice)).show();
+                            }
+                        });
+                    } catch (ConcurrentModificationException e) { //If api call fails and the user adds the medication anyway
+                        Platform.runLater(() -> {
+                            Medication newMedication = new Medication(medicationChoice);
                             newMedication.startedTaking();
                             currentItems.add(newMedication);
                             userController.addHistoryEntry("Medication added", "A new medication (" + newMedication.getName() + ") was added.");
-                            // NOTE: I have created another constructor in the Medications class for a medication with a name and
-                            // active ingredients also.
-
                             newMedicationField.clear();
                             saveToUndoStack();
                             statusIndicator.setStatus("Added " + medicationChoice, false);
                             titleBar.saved(false);
-                        } else {
-                            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the Medication Input", String.format("The medication %s" +
-                                    " does not exist.", medicationChoice)).show();
-                        }
-                    });
+                        });
+                    }
                 }).start();
 
             }

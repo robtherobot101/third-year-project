@@ -17,6 +17,8 @@ public class Medication {
 
     public Medication(String name) {
         this.name = name;
+        activeIngredients = new String[]{};
+        history = new ArrayList<>();
     }
 
     public Medication(String name, String[] activeIngredients) {

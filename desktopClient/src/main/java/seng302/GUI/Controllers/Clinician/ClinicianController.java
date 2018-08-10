@@ -147,7 +147,6 @@ public class ClinicianController implements Initializable {
      */
     public void updateDisplay() {
         titleBar.setTitle(clinician.getName(), "Clinician", null);
-        System.out.print(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         nameLabel.setText("Name: " + clinician.getName());
@@ -419,7 +418,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users int total");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users in total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -464,7 +463,7 @@ public class ClinicianController implements Initializable {
         }
 
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
+            searchMap.put("count", "15"/*String.valueOf(WindowManager.getDataManager().getUsers().count(token))*/);
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
             searchMap.put("count", String.valueOf(count));
 

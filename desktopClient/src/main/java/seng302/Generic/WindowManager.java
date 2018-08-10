@@ -195,7 +195,6 @@ public class WindowManager extends Application {
      */
     public static void setCurrentClinician(Clinician clinician, String token) {
         clinicianController.setClinician(clinician, token);
-        clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
         updateTransplantWaitingList();
     }
