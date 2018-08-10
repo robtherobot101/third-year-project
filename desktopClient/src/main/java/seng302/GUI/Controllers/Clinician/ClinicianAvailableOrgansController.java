@@ -1,12 +1,11 @@
 package seng302.GUI.Controllers.Clinician;
 
+import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
@@ -17,6 +16,7 @@ import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.DonatableOrgan;
 import seng302.User.User;
+
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -34,6 +34,12 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     TableColumn organColumn, nameColumn, countdownColumn, dateOfDeathColumn, regionColumn;
 
+    @FXML
+    Button refreshOrganTable;
+
+    @FXML
+    Label refreshSuccessText;
+
     private StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
 
@@ -44,6 +50,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
     private TimerTask tick;
     private String token;
     private boolean focused;
+    private boolean updated;
+    private FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(3500));
 
     public void setToken(String token) {
         this.token = token;
@@ -133,6 +141,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 }
             }
             expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
+            updated = true;
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
@@ -206,6 +215,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
             }
         });
         focused = false;
+        fade.setNode(refreshSuccessText);
+        fade.setFromValue(1.0);
+        fade.setToValue(0);
+        fade.setCycleCount(1);
+        fade.setAutoReverse(false);
     }
 
     /**
@@ -228,5 +242,19 @@ public class ClinicianAvailableOrgansController implements Initializable{
             }
         }
         focused = false;
+    }
+
+
+    /**
+     * Refreshes the available organs table and displays a label on a successful update.
+     * Helps reduce server load by removing the need to create an auto update.
+     */
+    public void refreshTable(){
+        updated = false;
+        WindowManager.updateAvailableOrgans();
+        if (updated){
+            refreshSuccessText.setVisible(true);
+            fade.playFromStart();
+        }
     }
 }

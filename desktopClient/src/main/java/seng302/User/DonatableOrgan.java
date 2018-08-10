@@ -92,7 +92,6 @@ public class DonatableOrgan {
         timeLeftString = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                 TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
-        System.out.println(timeLeftString);
     }
 
     public void tickTimeLeft(){
