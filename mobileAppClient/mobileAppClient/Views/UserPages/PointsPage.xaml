@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="mobileAppClient.PointsPage">
+             x:Class="mobileAppClient.PointsPage"
+             Title="Lives Saved" NavigationPage.HasNavigationBar="True">
     <ContentPage.Content>
         <StackLayout>
             <Label x:Name="savedLivesText"
@@ -12,7 +13,7 @@
                 HorizontalOptions="CenterAndExpand" />
 
             <Label Text="Recommendations"/>
-            <ListView x:Name="RecommendationsList">
+            <ListView x:Name="RecommendationsList" ItemTapped="RecommendationsList_ItemTapped">
                 
             </ListView>
         </StackLayout>
