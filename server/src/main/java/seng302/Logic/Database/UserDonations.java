@@ -2,15 +2,12 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.WaitingListItem;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.EnumSet;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class UserDonations {
@@ -44,14 +41,19 @@ public class UserDonations {
         }
     }
 
-    public void insertDonation(Organ organ, int userId) throws SQLException {
+    public void insertDonation(Organ organ, int userId, LocalDateTime deathDate) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) " +
-                    "VALUES (?,?)";
+            String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id, timeOfDeath) " +
+                    "VALUES (?,?,?)";
             PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
 
             insertDonationStatement.setString(1, organ.toString());
             insertDonationStatement.setInt(2, userId);
+            if (deathDate == null) {
+                insertDonationStatement.setNull(3, Types.BIGINT);
+            } else {
+                insertDonationStatement.setLong(3, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
+            }
 
             System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
         }

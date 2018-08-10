@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `name` text NOT NULL,
   `id` int(11) NOT NULL,
   `user_id` bigint(11) NOT NULL,
-  `timeOfExpiry` bigint(20) DEFAULT NULL
+  `timeOfDeath` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -158,7 +158,8 @@ DROP TABLE IF EXISTS `TOKEN`;
 CREATE TABLE IF NOT EXISTS `TOKEN` (
   `id` int(11) NOT NULL,
   `token` text NOT NULL,
-  `access_level` int(11) NOT NULL
+  `access_level` int(11) NOT NULL,
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

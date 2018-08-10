@@ -295,6 +295,24 @@
 	-fx-background-color: #DD0000;
 }
 
+.highlighted-row-organs-75 {
+	-fx-background-color: #00dd1f;
+}
+
+
+.highlighted-row-organs-75:selected {
+	-fx-background-color: #00dd1f;
+}
+
+.highlighted-row-organs-50 {
+	-fx-background-color: #ddc800;
+}
+
+
+.highlighted-row-organs-50:selected {
+	-fx-background-color: #ddc800;
+}
+
 .tab-header-background {
 	-fx-background-color: #2b506e;
 }

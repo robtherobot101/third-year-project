@@ -3,6 +3,7 @@ package seng302.Data.Interfaces;
 import org.apache.http.client.HttpResponseException;
 import seng302.Generic.APIResponse;
 import seng302.Generic.Country;
+import seng302.User.DonatableOrgan;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
@@ -31,4 +32,6 @@ public interface GeneralDAO {
     List<Country> getAllCountries(String token) throws HttpResponseException;
 
     void updateCountries(List<Country> countries, String token) throws HttpResponseException;
+
+    List<DonatableOrgan> getAllDonatableOrgans(String Token) throws HttpResponseException;
 }

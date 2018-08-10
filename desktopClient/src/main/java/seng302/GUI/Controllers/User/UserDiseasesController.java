@@ -735,8 +735,6 @@ public class UserDiseasesController extends UserTabController implements Initial
         curedDiseaseItems.addAll(currentUser.getCuredDiseases());
         curedDiseaseTableView.setItems(curedDiseaseItems);
         sortCuredDiseases(false);
-
-        Debugger.log("Setting donor of Medical History pane...");
     }
 
     /**

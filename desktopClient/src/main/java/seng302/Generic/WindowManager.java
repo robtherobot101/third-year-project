@@ -28,6 +28,7 @@ import seng302.Data.Local.CliniciansM;
 import seng302.Data.Local.GeneralM;
 import seng302.Data.Local.UsersM;
 import seng302.GUI.Controllers.Admin.AdminController;
+import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
@@ -73,6 +74,7 @@ public class WindowManager extends Application {
 
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
+    private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController, adminClinicianAvailableController;
 
     private static DataManager dataManager;
 
@@ -83,6 +85,8 @@ public class WindowManager extends Application {
     public static void setDataManager(DataManager dataManager) {
         WindowManager.dataManager = dataManager;
     }
+
+    private static boolean TESTING = true;
 
     /**
      * Returns the program icon.
@@ -107,7 +111,7 @@ public class WindowManager extends Application {
      * @param user The user to create the window for
      * @param token the users token
      */
-    public static void newCliniciansUserWindow(User user, String token){
+    public static void newAdminsUserWindow(User user, String token){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
         stage.setMinHeight(WindowManager.mainWindowMinHeight);
@@ -139,6 +143,45 @@ public class WindowManager extends Application {
             Platform.exit();
         }
     }
+
+    /**
+     * Creates a new user window from a clinician's view.
+     * @param user The user to create the window for
+     * @param token the users token
+     */
+    public static void newCliniciansUserWindow(User user, String token){
+        Stage stage = new Stage();
+        stage.getIcons().add(WindowManager.getIcon());
+        stage.setMinHeight(WindowManager.mainWindowMinHeight);
+        stage.setMinWidth(WindowManager.mainWindowMinWidth);
+        stage.setHeight(WindowManager.mainWindowPrefHeight);
+        stage.setWidth(WindowManager.mainWindowPrefWidth);
+
+        stage.initModality(Modality.NONE);
+        try {
+            FXMLLoader loader = new FXMLLoader(WindowManager.class.getResource("/fxml/user/user.fxml"));
+            Parent root = loader.load();
+            UserController newUserController = loader.getController();
+            newUserController.setTitleBar(stage);
+
+            newUserController.setCurrentUser(user, token);
+            newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
+
+            newUserController.setControlsShown(true);
+            newUserController.getAttributesController().setDeathControlsShown(true);
+            cliniciansUserWindows.put(stage, newUserController);
+
+
+            Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
+            stage.setScene(newScene);
+            stage.show();
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
+            Platform.exit();
+        }
+    }
+
 
     /**
      * sets the current clinician
@@ -193,7 +236,6 @@ public class WindowManager extends Application {
      */
     public static void setCurrentUser(User currentUser, String token) {
         userController.setCurrentUser(currentUser, token);
-        System.out.println(token);
         userController.setControlsShown(false);
     }
 
@@ -211,17 +253,6 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Calls the function which updates the the attributes panel of each user window.
-     */
-    public static void updateUserAttributes() {
-        for (UserController userController : cliniciansUserWindows.values()) {
-            userController.populateUserAttributes();
-        }
-    }
-
-
-
-    /**
      * Calls the function which updates the transplant waiting list pane.
      */
     public static void updateTransplantWaitingList() {
@@ -230,6 +261,19 @@ public class WindowManager extends Application {
         }
         if (adminClinicianWaitingListController.hasToken()) {
             adminClinicianWaitingListController.updateTransplantList();
+        }
+
+    }
+
+    /**
+     * Calls the function which updates the available organs pane.
+     */
+    public static void updateAvailableOrgans() {
+        if (clinicianClinicianAvailableOrgansController.hasToken()) {
+            clinicianClinicianAvailableOrgansController.updateOrgans();
+        }
+        if (adminClinicianAvailableController.hasToken()) {
+            adminClinicianAvailableController.updateOrgans();
         }
 
     }
@@ -279,7 +323,14 @@ public class WindowManager extends Application {
         } else {
             WindowManager.adminClinicianWaitingListController = clinicianWaitingListController;
         }
+    }
 
+    public static void setClinicianAvailableOrgansController(ClinicianAvailableOrgansController clinicianAvailableOrgansController) {
+        if (scenes.get(TFScene.clinician) == null) {
+            WindowManager.clinicianClinicianAvailableOrgansController = clinicianAvailableOrgansController;
+        } else {
+            WindowManager.adminClinicianAvailableController = clinicianAvailableOrgansController;
+        }
     }
 
     /**
@@ -356,6 +407,7 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
+        TESTING = false;
         if (args.length == 0) {
             launch(args);
         } else if (args.length == 1 && args[0].equals("-c")) {
@@ -392,6 +444,10 @@ public class WindowManager extends Application {
         }
     }
 
+    public static boolean isTESTING() {
+        return TESTING;
+    }
+
 
     /**
      * Creates an internal, non-persistant DataManager (For testing and debugging)
@@ -412,7 +468,12 @@ public class WindowManager extends Application {
     public DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        APIServer server = new APIServer(properServer);
+        String testingServer = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
+
+        APIServer server;
+        if(TESTING) server = new APIServer(testingServer);
+        else server = new APIServer(localServer);
+
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -426,7 +487,6 @@ public class WindowManager extends Application {
      */
     public boolean checkConnection() {
         try {
-
             if (dataManager.getGeneral().status() == false) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
@@ -518,18 +578,9 @@ public class WindowManager extends Application {
 
                 }
             });
-
-            /*getScene(TFScene.userWindow).setOnKeyReleased(event -> {
-                if (event.getCode() == KeyCode.F5) {
-                    refreshUser();
-                }
-            });*/
         } else {
             stop();
         }
-
-
-
     }
 
     /**

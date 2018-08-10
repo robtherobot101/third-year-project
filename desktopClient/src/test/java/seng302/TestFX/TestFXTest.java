@@ -122,7 +122,7 @@ abstract class TestFXTest extends ApplicationTest {
 
     public void userWindowAsClinician(User user) {
         Platform.runLater(() -> {
-            WindowManager.newCliniciansUserWindow(user, null);
+            WindowManager.newAdminsUserWindow(user, null);
         });
         waitForFxEvents();
     }

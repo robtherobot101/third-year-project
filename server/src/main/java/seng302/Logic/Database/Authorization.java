@@ -114,7 +114,7 @@ public class Authorization {
     public String generateToken(int id, int accessLevel) throws SQLException {
         String token = UUID.randomUUID().toString();
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO TOKEN VALUES (?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO TOKEN(id, token, access_level) VALUES (?, ?, ?)");
             statement.setInt(1, id);
             statement.setString(2, token);
             statement.setInt(3, accessLevel);

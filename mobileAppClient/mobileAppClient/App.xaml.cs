@@ -14,6 +14,11 @@ namespace mobileAppClient
      */ 
     public partial class App : Application
     {
+
+        //Static variables for the app
+        public static string DefaultImageId = "default_image";
+        public static string ImageIdToSave = null;
+
         /*
          * Open the app to have a the main page xaml as the bottom of 
          * the stack of views.
@@ -25,7 +30,7 @@ namespace mobileAppClient
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
 
-            MainPage = new MainPage();
+            MainPage = new MainPage(false);
         }
 
         protected override void OnStart()

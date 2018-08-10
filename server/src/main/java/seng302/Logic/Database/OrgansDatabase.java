@@ -23,7 +23,7 @@ public class OrgansDatabase {
     public List<DonatableOrgan> getAllDonatableOrgans() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
-            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfExpiry IS NOT NULL";
+            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfDeath IS NOT NULL";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
@@ -73,10 +73,10 @@ public class OrgansDatabase {
      */
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfExpiry, user_id) VALUES (?, ?, ?)";
+            String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfDeath, user_id) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, donatableOrgan.getOrganType().toString());
-            statement.setLong(2, donatableOrgan.getTimeOfExpiry().atZone(ZoneId.systemDefault()).toEpochSecond());
+            statement.setLong(2, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setLong(3, donatableOrgan.getDonorId());
 
             System.out.println("Inserting new organ  -> Successful -> Rows Added: " + statement.executeUpdate());
@@ -108,15 +108,15 @@ public class OrgansDatabase {
      */
     public void updateOrgan(DonatableOrgan donatableOrgan) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "UPDATE DONATION_LIST_ITEM SET timeOfExpiry = ? WHERE id = ?";
+            String query = "UPDATE DONATION_LIST_ITEM SET timeOfDeath = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setLong(1, donatableOrgan.getTimeOfExpiry().atZone(ZoneId.systemDefault()).toEpochSecond());
+            statement.setLong(1, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setInt(2, donatableOrgan.getId());
 
             System.out.println("Update of Organ - organType: "
                     + donatableOrgan.getOrganType().toString() +
                     " donor: " + donatableOrgan.getDonorId() +
-                    " dateOfDeath: "+ donatableOrgan.getTimeOfExpiry() +
+                    " dateOfDeath: "+ donatableOrgan.getTimeOfDeath() +
                     " -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }
@@ -129,7 +129,8 @@ public class OrgansDatabase {
      */
     private DonatableOrgan getOrganFromResultSet(ResultSet organResultSet) throws SQLException{
         return new DonatableOrgan(
-                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfExpiry"),0, ZoneOffset.ofHours(+12)),
+                //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
+                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
                 organResultSet.getInt("id"));
