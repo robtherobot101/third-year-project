@@ -270,20 +270,17 @@ public class UserDiseasesController extends UserTabController implements Initial
                             "Diagnosis date occurs in the future.");
                     alert.showAndWait();
                     dateOfDiagnosis.setValue(null);
-                    if (current) {
-                        updateDiseasePopUp(selectedDisease, true);
-                    } else {
-                        updateDiseasePopUp(selectedDisease, false);
-                    }
-
                 } else {
                     return new Pair<>(diseaseName.getText(), dateOfDiagnosis.getValue());
                 }
+                return new Pair<>(null, null);
             }
             return null;
         });
 
         Optional<Pair<String, LocalDate>> result = dialog.showAndWait();
+        // Keep asking if an invalid date was entered
+        while(result.isPresent() && result.get().getKey() == null) result = dialog.showAndWait();
 
         result.ifPresent(newDiseaseDetails -> {
             Debugger.log("Name=" + newDiseaseDetails.getKey() + ", DateOfDiagnosis=" + newDiseaseDetails.getValue());
