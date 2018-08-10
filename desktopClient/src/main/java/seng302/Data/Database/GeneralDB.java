@@ -132,7 +132,6 @@ public class GeneralDB implements GeneralDAO {
         if(response == null){
             return false;
         }
-        System.out.println(response.getAsString());
         return response.getAsString().equalsIgnoreCase("true");
     }
 

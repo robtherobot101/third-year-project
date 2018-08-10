@@ -43,7 +43,7 @@ namespace mobileAppClient.odmsAPI
 
             Console.WriteLine(ClinicianController.Instance.AuthToken);
 
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/clinicans/" + clinicianId);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/clinicians/" + clinicianId);
             request.Content = body;
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 

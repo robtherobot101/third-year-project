@@ -1,6 +1,5 @@
 package seng302.GUI.Controllers.Clinician;
 
-import com.google.api.client.util.DateTime;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +13,6 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
-import seng302.GUI.TFScene;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
@@ -75,7 +73,6 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
-            System.out.println("tried to update trans list with token " + token);
             for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token)) {
                 if (item.getStillWaitingOn()) {
                     addUserInfo(item);
@@ -524,7 +521,7 @@ public class ClinicianWaitingListController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         try {
-                            WindowManager.newCliniciansUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
+                            WindowManager.newAdminsUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
                         } catch (HttpResponseException e) {
                             Debugger.error("COuld not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
                         }

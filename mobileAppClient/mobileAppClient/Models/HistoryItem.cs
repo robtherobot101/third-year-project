@@ -9,6 +9,7 @@ namespace mobileAppClient
         public string action { get; set; }
         public string description { get; set; }
         public CustomDateTime dateTime { get; set; }
+        public int id { get; set; }
 
     }
 }

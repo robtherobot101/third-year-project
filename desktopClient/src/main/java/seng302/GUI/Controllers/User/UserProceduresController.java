@@ -685,10 +685,6 @@ public class UserProceduresController extends UserTabController implements Initi
         previousProcedureItems = FXCollections.observableArrayList();
         previousProcedureItems.addAll(currentUser.getPreviousProcedures());
         previousProcedureTableView.setItems(previousProcedureItems);
-
-        //unsavedDonorDiseases = currentDonor.getDiseases();
-        //pastDiseasesCopy = currentDonor.getCuredDiseases();
-        Debugger.log("MedicalHistoryProcedureController: Setting donor of Medical History pane...");
     }
 
     /**
