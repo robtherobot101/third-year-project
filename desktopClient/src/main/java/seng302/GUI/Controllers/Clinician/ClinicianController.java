@@ -653,6 +653,7 @@ public class ClinicianController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
 
+        availableOrgansController.stopTimer();
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
         organsPane.setVisible(false);
@@ -667,6 +668,7 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
+        availableOrgansController.stopTimer();
         undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
         redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
     }
@@ -679,6 +681,7 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
+        availableOrgansController.stopTimer();
 
         WindowManager.updateTransplantWaitingList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
@@ -692,6 +695,7 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(organListButton, true);
         organsPane.setVisible(true);
+        availableOrgansController.startTimer();
 
         WindowManager.updateAvailableOrgans();
         titleBar.setTitle(clinician.getName(), "Clinician", "Available Organs");

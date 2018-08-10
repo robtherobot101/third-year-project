@@ -40,7 +40,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
     //This is filler bc  I don't know how tree tables work yet
     private ObservableList<DonatableOrgan> expiryList = FXCollections.observableArrayList();
 
+    private Timer time = new Timer();
     private String token;
+    private boolean focused = false;
 
     public void setToken(String token) {
         this.token = token;
@@ -94,8 +96,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
         //set up the timer
         int delay = 1000;
         int period = 1000;
-        Timer time = new Timer();
         System.out.println("Initializing timer...");
+        time = new Timer();
         time.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 for (DonatableOrgan organ : expiryList){
@@ -170,7 +172,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         organsTable.setItems(expiryList);
-        initTimer();
 
         organsTable.setRowFactory(new Callback<TableView<DonatableOrgan>, TableRow<DonatableOrgan>>() {
             @Override
@@ -203,5 +204,22 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 return row;
             }
         });
+    }
+
+    public void startTimer() {
+        if (!focused) {
+            initTimer();
+        }
+        focused = true;
+    }
+
+    public void stopTimer(){
+        if(focused) {
+            if (time != null) {
+                time.cancel();
+                time.purge();
+            }
+        }
+        focused = false;
     }
 }
