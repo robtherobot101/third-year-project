@@ -167,7 +167,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
         try{
             List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
-            setTimeLeftList(temp);
+            setInitTimeLeft(temp);
             expiryList.clear();
             for(DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
