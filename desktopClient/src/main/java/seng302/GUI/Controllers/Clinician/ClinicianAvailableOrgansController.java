@@ -40,9 +40,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
     //This is filler bc  I don't know how tree tables work yet
     private ObservableList<DonatableOrgan> expiryList = FXCollections.observableArrayList();
 
-    private Timer time = new Timer();
+    private Timer time = new Timer(true);
+    private TimerTask tick;
     private String token;
-    private boolean focused = false;
+    private boolean focused;
 
     public void setToken(String token) {
         this.token = token;
@@ -97,8 +98,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
         int delay = 1000;
         int period = 1000;
         System.out.println("Initializing timer...");
-        time = new Timer();
-        time.scheduleAtFixedRate(new TimerTask() {
+        //time = new Timer(true);
+        tick = new TimerTask() {
             public void run() {
                 for (DonatableOrgan organ : expiryList){
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
@@ -107,14 +108,14 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     } else {
                         //...unless it is 0, in which do whatever needs to be done
                     }
-                    System.out.println("tick, " + LocalDateTime.now());
                     organsTable.refresh();
                 }
 
 
             }
 
-        }, delay, period);
+        };
+        time.scheduleAtFixedRate(tick, delay, period);
 
     }
     /**
@@ -204,6 +205,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 return row;
             }
         });
+        focused = false;
     }
 
     public void startTimer() {
@@ -216,8 +218,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     public void stopTimer(){
         if(focused) {
             if (time != null) {
-                time.cancel();
-                time.purge();
+                tick.cancel();
             }
         }
         focused = false;

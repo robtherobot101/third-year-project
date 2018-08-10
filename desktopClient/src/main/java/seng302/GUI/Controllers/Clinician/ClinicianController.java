@@ -653,7 +653,6 @@ public class ClinicianController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
 
-        availableOrgansController.stopTimer();
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
         organsPane.setVisible(false);
