@@ -52,16 +52,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
 
     /**
-     * Creates a timer which ticks every second and updates each organ object, counting down their expiry time by 1 second.
-     * This timer runs in a background thread, and with only 1 timer running SHOULD be real time reliable.
+     * Sets the initial time left values for all list items.
      */
-    public void setTimeLeftList(List<DonatableOrgan> expiryList){
-        // get data from server and load them into the tree table or whatever
-
-        //set up the timer
-        int delay = 1000;
-        int period = 1000;
-        Timer time = new Timer();
+    public void setInitTimeLeft(List<DonatableOrgan> expiryList){
 
         for (DonatableOrgan organ : expiryList){
             //for each item in the list
@@ -86,10 +79,25 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         }
         //create timer task to tick down
+
+
+        //TODO figure out how to handle changing tab - end the timer or leave it running in the background until app close??
+    }
+
+    /**
+     * Creates a timer which ticks every second and updates each organ object, counting down their expiry time by 1 second.
+     * This timer runs in a background thread, and with only 1 timer running SHOULD be real time reliable.
+     */
+    public void initTimer(){
+        // get data from server and load them into the tree table or whatever
+
+        //set up the timer
+        int delay = 1000;
+        int period = 1000;
+        Timer time = new Timer();
+        System.out.println("Initializing timer...");
         time.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-
-
                 for (DonatableOrgan organ : expiryList){
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
                         //for each item set timeLeft -1
@@ -97,7 +105,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     } else {
                         //...unless it is 0, in which do whatever needs to be done
                     }
-
+                    System.out.println("tick, " + LocalDateTime.now());
+                    organsTable.refresh();
                 }
 
 
@@ -105,16 +114,14 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         }, delay, period);
 
-        //TODO figure out how to handle changing tab - end the timer or leave it running in the background until app close??
     }
-
     /**
      * Updates the organs in the available organs table
      */
     public void updateOrgans() {
         try {
             List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token));
-            setTimeLeftList(temp);
+            setInitTimeLeft(temp);
             expiryList.clear();
             for(DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
@@ -155,7 +162,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
-        countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeft"));
+        countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeftString"));
         dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfDeath"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverDeathRegion"));
 
@@ -163,6 +170,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         organsTable.setItems(expiryList);
+        initTimer();
 
         organsTable.setRowFactory(new Callback<TableView<DonatableOrgan>, TableRow<DonatableOrgan>>() {
             @Override
