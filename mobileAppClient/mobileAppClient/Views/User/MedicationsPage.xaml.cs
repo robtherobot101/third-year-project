@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -84,6 +84,29 @@ namespace mobileAppClient
             }
 
             MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
+
+            if(isClinicianAccessing) {
+                var addItem = new ToolbarItem
+                {
+                    Command = addNewMedication,
+                    Icon = "add_icon.png"
+                };
+                this.ToolbarItems.Add(addItem);
+
+            }
+
+
+        }
+
+        private ICommand addNewMedication
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    await Navigation.PushAsync(new SingleMedicationPage());
+                });
+            }
         }
 
         /**
