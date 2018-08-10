@@ -338,7 +338,7 @@ public class GeneralUser {
             startIndex = Integer.parseInt(params.get("startIndex"));
         }
 
-        int count = 100;
+        int count = 20;
         if (params.containsKey("count")) {
             count = Integer.parseInt(params.get("count"));
         }
