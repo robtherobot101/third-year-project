@@ -4,9 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
@@ -15,6 +13,8 @@ import seng302.GUI.StatusIndicator;
 import seng302.GUI.TitleBar;
 import seng302.Generic.Debugger;
 import seng302.Generic.WindowManager;
+import seng302.User.Attribute.NZRegion;
+import seng302.User.Attribute.Organ;
 import seng302.User.DonatableOrgan;
 import seng302.User.User;
 import java.net.URL;
@@ -33,6 +33,12 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     @FXML
     TableColumn organColumn, nameColumn, countdownColumn, dateOfDeathColumn, regionColumn;
+
+    @FXML
+    TextField nameFilter;
+
+    @FXML
+    ComboBox<String> organFilter, regionFilter;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
@@ -161,6 +167,26 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         //transplantTable.setItems(transplantList);
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        ObservableList<String> organSearchlist = FXCollections.observableArrayList();
+        Organ[] organsList = Organ.values();
+        organSearchlist.add("All Organs");
+        for (Organ o : organsList) {
+            String v = o.toString();
+            organSearchlist.add(v);
+        }
+        organFilter.setItems(organSearchlist);
+        organFilter.setValue("All Organs");
+
+        ObservableList<String> regionSearchlist = FXCollections.observableArrayList();
+        NZRegion[] regionList = NZRegion.values();
+        regionSearchlist.add("All Regions");
+        for (NZRegion o : regionList) {
+            String v = o.toString();
+            regionSearchlist.add(v);
+        }
+        regionFilter.setItems(regionSearchlist);
+        regionFilter.setValue("All Regions");
 
         organsTable.setItems(expiryList);
 

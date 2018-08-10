@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -21,4 +24,8 @@
                 <Font name="System Bold" size="28.0" />
             </font>
         </Label>
+   <ComboBox fx:id="regionFilter" layoutX="234.0" layoutY="63.0" prefWidth="171.0" promptText="Region" />
+   <Button fx:id="organsFilterButton" layoutX="659.0" layoutY="61.0" mnemonicParsing="false" text="Filter Organs" />
+   <TextField fx:id="nameFilter" layoutX="40.0" layoutY="63.0" promptText="Donor's Name" />
+   <ComboBox fx:id="organFilter" layoutX="428.0" layoutY="64.0" prefWidth="171.0" promptText="Organ" />
 </AnchorPane>

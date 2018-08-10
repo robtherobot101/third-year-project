@@ -55,7 +55,7 @@ public class OrgansDatabase {
 
     public String buildOrganQuery(Map<String, String> params) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfExpiry IS NOT NULL ");
+        queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfDeath IS NOT NULL ");
         if(params.keySet().contains("userRegion")) {
             queryBuilder.append("AND USER.region = '" + params.get("userRegion") + "' ");
         }
