@@ -58,7 +58,14 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding summary}"
-                         Detail="{Binding detailString}" />
+                         Detail="{Binding detailString}">
+                            <TextCell.ContextActions>
+                                <MenuItem Clicked="Handle_EditClicked" CommandParameter="{Binding .}"
+                                          Text="Edit" />
+                                <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
+                                          Text="Delete" IsDestructive="True" />
+                            </TextCell.ContextActions>
+                        </TextCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

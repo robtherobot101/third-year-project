@@ -206,8 +206,6 @@ namespace mobileAppClient
                 }
                 //updateUser
             }
-
-
         }
     }
 }

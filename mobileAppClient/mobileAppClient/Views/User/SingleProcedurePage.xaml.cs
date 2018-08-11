@@ -116,10 +116,12 @@ namespace mobileAppClient
             if (newProcedure.date.ToDateTime() < DateTime.Today)
             {
                 UserController.Instance.LoggedInUser.previousProcedures.Add(newProcedure);
+                proceduresPageController.refreshProcedures(1);
             }
             else
             {
                 UserController.Instance.LoggedInUser.pendingProcedures.Add(newProcedure);
+                proceduresPageController.refreshProcedures(0);
             }
 
             UserAPI userAPI = new UserAPI();
@@ -148,12 +150,6 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
-            await ReturnToProcedures();
-        }
-
-        private async Task ReturnToProcedures()
-        {
-            proceduresPageController.refreshProcedures();
             await proceduresPageController.Navigation.PopAsync();
         }
 
