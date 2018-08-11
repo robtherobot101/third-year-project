@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using mobileAppClient.Models.CustomObjects;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -12,6 +13,7 @@ namespace mobileAppClient
     public partial class MedicationsPage : ContentPage
     {
         private bool isClinicianAccessing;
+        public CustomObservableCollection<Medication> observableMedicationList;
 
         /*
          * Event handler to handle when a user switches between current and historic medications
@@ -32,7 +34,8 @@ namespace mobileAppClient
                         NoDataLabel.IsVisible = false;
                         MedicationsList.IsVisible = true;
                     }
-                    MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
+                    observableMedicationList.Clear();
+                    observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
                     break;
                 case 1:
                     if (UserController.Instance.LoggedInUser.historicMedications.Count == 0)
@@ -45,7 +48,9 @@ namespace mobileAppClient
                         NoDataLabel.IsVisible = false;
                         MedicationsList.IsVisible = true;
                     }
-                    MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.historicMedications;
+
+                    observableMedicationList.Clear();
+                    observableMedicationList.AddRange(UserController.Instance.LoggedInUser.historicMedications);
                     break;
             }
         }
@@ -60,6 +65,8 @@ namespace mobileAppClient
         public MedicationsPage()
         {
             InitializeComponent();
+            observableMedicationList = new CustomObservableCollection<Medication>();
+            MedicationsList.ItemsSource = observableMedicationList;
             CheckIfClinicianAccessing();
 
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
@@ -83,7 +90,7 @@ namespace mobileAppClient
                 CompareButton.IsVisible = false;
             }
 
-            MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
+            observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
 
             if(isClinicianAccessing) {
                 var addItem = new ToolbarItem
@@ -145,8 +152,62 @@ namespace mobileAppClient
         }
 
         public void refreshMedicationsListView() {
-            MedicationsList.ItemsSource = new List<string>();
-            MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
+            observableMedicationList.Clear();
+            observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
+        }
+
+        async void Handle_MoveToClicked(object sender, System.EventArgs e)
+        {
+            var mi = ((MenuItem)sender);
+            Medication selectedMedication = mi.CommandParameter as Medication;
+            String status = SegControl.SelectedSegment == 0 ? "historic" : "current";
+ 
+
+            bool answer = await DisplayAlert("Are you sure?", "Do you want to move " + selectedMedication.Name + " to " + UserController.Instance.LoggedInUser.FullName + "'s " + status + " medications?", "Yes", "No");
+            if (answer == true)
+            {
+                if (SegControl.SelectedSegment == 0)
+                {
+                    UserController.Instance.LoggedInUser.currentMedications.Remove(selectedMedication);
+                    selectedMedication.History.Add("Stopped taking on " + DateTime.Now.ToString());
+                    selectedMedication.DetailString = selectedMedication.History[selectedMedication.History.Count - 1];
+                    UserController.Instance.LoggedInUser.historicMedications.Add(selectedMedication);
+                    observableMedicationList.Clear();
+                    observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
+                }
+                else
+                {
+                    UserController.Instance.LoggedInUser.historicMedications.Remove(selectedMedication);
+                    selectedMedication.History.Add("Started taking on " + DateTime.Now.ToString());
+                    selectedMedication.DetailString = selectedMedication.History[selectedMedication.History.Count - 1];
+                    UserController.Instance.LoggedInUser.currentMedications.Add(selectedMedication);
+                    observableMedicationList.Clear();
+                    observableMedicationList.AddRange(UserController.Instance.LoggedInUser.historicMedications);
+                }
+                //updateUser
+            }
+
+        }
+
+        async void Handle_DeleteClicked(object sender, System.EventArgs e)
+        {
+            var mi = ((MenuItem)sender);
+            Medication selectedMedication = mi.CommandParameter as Medication;
+            bool answer = await DisplayAlert("Are you sure?", "Do you want to remove " + selectedMedication.Name + " from " + UserController.Instance.LoggedInUser.FullName + "?", "Yes", "No");
+            if(answer == true) {
+                if(SegControl.SelectedSegment == 0) {
+                    UserController.Instance.LoggedInUser.currentMedications.Remove(selectedMedication);
+                    observableMedicationList.Clear();
+                    observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
+                } else {
+                    UserController.Instance.LoggedInUser.historicMedications.Remove(selectedMedication);
+                    observableMedicationList.Clear();
+                    observableMedicationList.AddRange(UserController.Instance.LoggedInUser.historicMedications);
+                }
+                //updateUser
+            }
+
+
         }
     }
 }
