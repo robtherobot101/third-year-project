@@ -28,6 +28,7 @@ import seng302.Data.Local.CliniciansM;
 import seng302.Data.Local.GeneralM;
 import seng302.Data.Local.UsersM;
 import seng302.GUI.Controllers.Admin.AdminController;
+import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianController;
 import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
@@ -73,6 +74,7 @@ public class WindowManager extends Application {
 
     private static ClinicianSettingsController clinicianSettingsController;
     private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
+    private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController, adminClinicianAvailableController;
 
     private static DataManager dataManager;
 
@@ -263,6 +265,19 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Calls the function which updates the available organs pane.
+     */
+    public static void updateAvailableOrgans() {
+        if (clinicianClinicianAvailableOrgansController.hasToken()) {
+            clinicianClinicianAvailableOrgansController.updateOrgans();
+        }
+        if (adminClinicianAvailableController.hasToken()) {
+            adminClinicianAvailableController.updateOrgans();
+        }
+
+    }
+
+    /**
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician
@@ -307,7 +322,14 @@ public class WindowManager extends Application {
         } else {
             WindowManager.adminClinicianWaitingListController = clinicianWaitingListController;
         }
+    }
 
+    public static void setClinicianAvailableOrgansController(ClinicianAvailableOrgansController clinicianAvailableOrgansController) {
+        if (scenes.get(TFScene.clinician) == null) {
+            WindowManager.clinicianClinicianAvailableOrgansController = clinicianAvailableOrgansController;
+        } else {
+            WindowManager.adminClinicianAvailableController = clinicianAvailableOrgansController;
+        }
     }
 
     /**
@@ -464,7 +486,6 @@ public class WindowManager extends Application {
      */
     public boolean checkConnection() {
         try {
-
             if (dataManager.getGeneral().status() == false) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
@@ -556,12 +577,6 @@ public class WindowManager extends Application {
 
                 }
             });
-
-            /*getScene(TFScene.userWindow).setOnKeyReleased(event -> {
-                if (event.getCode() == KeyCode.F5) {
-                    refreshUser();
-                }
-            });*/
         } else {
             stop();
         }
@@ -655,6 +670,7 @@ public class WindowManager extends Application {
     @Override
     public void stop() {
         Debugger.log("Exiting GUI");
+        clinicianClinicianAvailableOrgansController.stopTimer();
         if (userController != null && userController.hasToken()) {
             userController.serverLogout();
         }

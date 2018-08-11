@@ -52,7 +52,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton;
+    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton, organListButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -62,11 +62,13 @@ public class ClinicianController implements Initializable {
     @FXML
     private TextField clinicianAgeField;
     @FXML
-    private AnchorPane transplantListPane;
+    private AnchorPane transplantListPane, organsPane;
     @FXML
     private StatusBar statusBar;
     @FXML
     private ClinicianWaitingListController waitingListController;
+    @FXML
+    private ClinicianAvailableOrgansController availableOrgansController;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
@@ -124,6 +126,7 @@ public class ClinicianController implements Initializable {
         this.clinician = clinician;
         this.token = token;
         waitingListController.setToken(token);
+        availableOrgansController.setToken(token);
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
         }
@@ -185,6 +188,7 @@ public class ClinicianController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
@@ -419,7 +423,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateFoundUsers(int count, boolean onlyChangingPage) {
         try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users int total");
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users in total");
         } catch (HttpResponseException e) {
             Debugger.error("Failed to fetch all users.");
         }
@@ -662,6 +666,7 @@ public class ClinicianController implements Initializable {
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
+        organsPane.setVisible(false);
         undoWelcomeButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
     }
@@ -673,6 +678,7 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
+        availableOrgansController.stopTimer();
         undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
         redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
     }
@@ -685,8 +691,23 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
+        availableOrgansController.stopTimer();
 
         WindowManager.updateTransplantWaitingList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
+    }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organsAvailable() {
+        hideAllTabs();
+        setButtonSelected(organListButton, true);
+        organsPane.setVisible(true);
+        availableOrgansController.startTimer();
+
+        WindowManager.updateAvailableOrgans();
+        titleBar.setTitle(clinician.getName(), "Clinician", "Available Organs");
     }
 }

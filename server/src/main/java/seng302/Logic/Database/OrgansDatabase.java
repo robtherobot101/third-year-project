@@ -8,8 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class OrgansDatabase {
     public List<DonatableOrgan> getAllDonatableOrgans() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
-            String query = "SELECT * FROM DONATION_lIST_ITEM WHERE timeOfDeath IS NOT NULL";
+            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfDeath IS NOT NULL and expired=0";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
@@ -40,10 +39,10 @@ public class OrgansDatabase {
      */
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "INSERT INTO DONATION_lIST_ITEM (name, timeOfDeath, user_id) VALUES (?, ?, ?)";
+            String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfDeath, user_id) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, donatableOrgan.getOrganType().toString());
-            statement.setLong(2, donatableOrgan.getDateOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
+            statement.setLong(2, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setLong(3, donatableOrgan.getDonorId());
 
             System.out.println("Inserting new organ  -> Successful -> Rows Added: " + statement.executeUpdate());
@@ -57,7 +56,7 @@ public class OrgansDatabase {
      */
     public void removeOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "DELETE FROM DONATION_lIST_ITEM WHERE id = ?";
+            String query = "DELETE FROM DONATION_LIST_ITEM WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, donatableOrgan.getId());
 
@@ -75,15 +74,15 @@ public class OrgansDatabase {
      */
     public void updateOrgan(DonatableOrgan donatableOrgan) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "UPDATE DONATION_lIST_ITEM SET timeOfDeath = ? WHERE id = ?";
+            String query = "UPDATE DONATION_LIST_ITEM SET timeOfDeath = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setLong(1, donatableOrgan.getDateOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
+            statement.setLong(1, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setInt(2, donatableOrgan.getId());
 
             System.out.println("Update of Organ - organType: "
                     + donatableOrgan.getOrganType().toString() +
                     " donor: " + donatableOrgan.getDonorId() +
-                    " dateOfDeath: "+ donatableOrgan.getDateOfDeath() +
+                    " dateOfDeath: "+ donatableOrgan.getTimeOfDeath() +
                     " -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }
@@ -95,10 +94,16 @@ public class OrgansDatabase {
      * @throws SQLException throws if cannot reach the resultSet
      */
     private DonatableOrgan getOrganFromResultSet(ResultSet organResultSet) throws SQLException{
+        boolean expired = true;
+        if (organResultSet.getInt("expired") == 0){
+            expired = false;
+        }
         return new DonatableOrgan(
-                Instant.ofEpochMilli(organResultSet.getLong("timeOfDeath")).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
+                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
-                organResultSet.getInt("id"));
+                organResultSet.getInt("id"),
+                expired);
     }
 }
