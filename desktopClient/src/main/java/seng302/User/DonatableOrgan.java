@@ -20,6 +20,7 @@ public class DonatableOrgan {
     private String receiverName;
     private String receiverDeathRegion;
     private double timePercent;
+    private boolean expired;
 
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){

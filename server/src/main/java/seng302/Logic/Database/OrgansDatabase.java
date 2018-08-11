@@ -22,7 +22,7 @@ public class OrgansDatabase {
     public List<DonatableOrgan> getAllDonatableOrgans() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
-            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfDeath IS NOT NULL";
+            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfDeath IS NOT NULL and expired=0";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
@@ -94,11 +94,16 @@ public class OrgansDatabase {
      * @throws SQLException throws if cannot reach the resultSet
      */
     private DonatableOrgan getOrganFromResultSet(ResultSet organResultSet) throws SQLException{
+        boolean expired = true;
+        if (organResultSet.getInt("expired") == 0){
+            expired = false;
+        }
         return new DonatableOrgan(
                 //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
                 LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
-                organResultSet.getInt("id"));
+                organResultSet.getInt("id"),
+                expired);
     }
 }

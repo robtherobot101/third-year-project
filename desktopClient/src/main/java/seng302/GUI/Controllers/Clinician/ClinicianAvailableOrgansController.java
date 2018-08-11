@@ -201,14 +201,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 final TableRow<DonatableOrgan> row = new TableRow<DonatableOrgan>() {
                     public void updateItem(DonatableOrgan item, boolean empty) {
                         super.updateItem(item, empty);
-                        getStyleClass().remove("highlighted-row");
+                        getStyleClass().remove("highlighted-row-organs-25");
                         getStyleClass().remove("highlighted-row-organs-50");
                         getStyleClass().remove("highlighted-row-organs-75");
+                        getStyleClass().remove("highlighted-row-organs-100");
                         setTooltip(null);
                         if (item != null && !empty) {
                             if (item.getTimePercent() <  0.25) {
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
+                                if (!getStyleClass().contains("highlighted-row-organs-25")) {
+                                    getStyleClass().add("highlighted-row-organs-25");
                                 }
                             } else if (item.getTimePercent() <  0.50) {
                                 if (!getStyleClass().contains("highlighted-row-organs-50")) {
@@ -217,6 +218,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
                             } else if (item.getTimePercent() <  0.75) {
                                 if (!getStyleClass().contains("highlighted-row-organs-75")) {
                                     getStyleClass().add("highlighted-row-organs-75");
+                                }
+                            } else {
+                                if (!getStyleClass().contains("highlighted-row-organs-100")) {
+                                    getStyleClass().add("highlighted-row-organs-100");
                                 }
                             }
                         }
