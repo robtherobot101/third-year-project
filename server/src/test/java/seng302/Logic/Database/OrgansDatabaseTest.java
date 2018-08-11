@@ -27,7 +27,7 @@ public class OrgansDatabaseTest {
 
     @Test
     public void insertOrganTest() throws SQLException{
-        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.EAR, 1);
+        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.EAR, 1,false);
         organsDatabase.insertOrgan(donatableOrgan);
 
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
@@ -38,7 +38,7 @@ public class OrgansDatabaseTest {
 
     @Test
     public void updateOrganTest() throws SQLException{
-        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1,1);
+        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.BONE, 1,1, false);
         organsDatabase.insertOrgan(donatableOrgan);
 
         donatableOrgan.setTimeOfDeath(LocalDateTime.now().plusHours(5));
@@ -52,7 +52,7 @@ public class OrgansDatabaseTest {
 
     @Test
     public void removeOrganTest() throws SQLException{
-        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.SKIN, 1, 1);
+        DonatableOrgan donatableOrgan = new DonatableOrgan(LocalDateTime.now().plusHours(4), Organ.SKIN, 1, 1,false);
         organsDatabase.insertOrgan(donatableOrgan);
 
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
