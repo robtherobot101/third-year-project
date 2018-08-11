@@ -2,8 +2,10 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
+import seng302.Model.DonatableOrgan;
 
 import java.sql.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -44,15 +46,21 @@ public class UserDonations {
     public void insertDonation(Organ organ, int userId, LocalDateTime deathDate) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id, timeOfDeath) " +
-                    "VALUES (?,?,?)";
+                    "VALUES (?,?,?,?)";
             PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
 
             insertDonationStatement.setString(1, organ.toString());
             insertDonationStatement.setInt(2, userId);
             if (deathDate == null) {
                 insertDonationStatement.setNull(3, Types.BIGINT);
+                insertDonationStatement.setInt(4,0);
             } else {
                 insertDonationStatement.setLong(3, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
+                if (deathDate.plus(getExpiryDuration(organ)).isBefore(LocalDateTime.now())){
+                    insertDonationStatement.setInt(4, 1);
+                } else {
+                    insertDonationStatement.setInt(4,0);
+                }
             }
 
             System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
@@ -102,5 +110,49 @@ public class UserDonations {
         }
     }
 
+    /**
+     * Returns a duration of how long the organ will last based on the organ type entered.
+     * @param organType The organ type being donated
+     * @return How long the organ will last
+     */
+    public Duration getExpiryDuration(Organ organType) {
+        Duration duration = null;
+        switch(organType){
+            case LUNG:
+                duration = Duration.parse("PT6H");
+                break;
+            case HEART:
+                duration = Duration.parse("PT6H");
+                break;
+            case PANCREAS:
+                duration = Duration.parse("PT24H");
+                break;
+            case LIVER:
+                duration = Duration.parse("PT24H");
+                break;
+            case KIDNEY:
+                duration = Duration.parse("PT72H");
+                break;
+            case INTESTINE:
+                duration = Duration.parse("PT10H");
+                break;
+            case CORNEA:
+                duration = Duration.parse("P7D");
+                break;
+            case EAR:
+                duration = Duration.parse("P3650D");//Todo this is unknown and is a place holder
+                break;
+            case TISSUE:
+                duration = Duration.parse("P1825D");
+                break;
+            case SKIN:
+                duration = Duration.parse("P3650D");
+                break;
+            case BONE:
+                duration = Duration.parse("P3650D");
+                break;
 
+        }
+        return duration;
+    }
 }

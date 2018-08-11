@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers.Clinician;
 
+import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
 import seng302.User.DonatableOrgan;
 import seng302.User.User;
+
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,15 +40,24 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     ComboBox<String> organFilter, regionFilter;
 
+    @FXML
+    Button refreshOrganTable;
+
+    @FXML
+    Label refreshSuccessText;
+
     private StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
 
     //This is filler bc  I don't know how tree tables work yet
     private ObservableList<DonatableOrgan> expiryList = FXCollections.observableArrayList();
 
-    private Timer time = new Timer();
+    private Timer time = new Timer(true);
+    private TimerTask tick;
     private String token;
-    private boolean focused = false;
+    private boolean focused;
+    private boolean updated;
+    private FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(3500));
 
     public void setToken(String token) {
         this.token = token;
@@ -101,8 +112,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
         int delay = 1000;
         int period = 1000;
         System.out.println("Initializing timer...");
-        time = new Timer();
-        time.scheduleAtFixedRate(new TimerTask() {
+        //time = new Timer(true);
+        tick = new TimerTask() {
             public void run() {
                 for (DonatableOrgan organ : expiryList){
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
@@ -111,14 +122,14 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     } else {
                         //...unless it is 0, in which do whatever needs to be done
                     }
-                    System.out.println("tick, " + LocalDateTime.now());
                     organsTable.refresh();
                 }
 
 
             }
 
-        }, delay, period);
+        };
+        time.scheduleAtFixedRate(tick, delay, period);
 
     }
     /**
@@ -129,13 +140,24 @@ public class ClinicianAvailableOrgansController implements Initializable{
             List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(new HashMap(),token));
             setInitTimeLeft(temp);
             expiryList.clear();
+            User lastUser = null;
             for(DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
-                    addUserInfo(organ);
+                    if(lastUser == null){
+                        lastUser = addUserInfo(organ);
+                    }
+                    //if multiple organs from the same user no need to do multiple API calls
+                    if (organ.getDonorId() == lastUser.getId()){
+                        organ.setReceiverName(lastUser.getName());
+                        organ.setReceiverDeathRegion(lastUser.getRegionOfDeath());
+                    } else {
+                        lastUser = addUserInfo(organ);
+                    }
                     expiryList.add(organ);
                 }
             }
             expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
+            updated = true;
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
@@ -145,15 +167,17 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * adds the user info to a Donatable organ item
      * @param organ the waiting list item to update
      */
-    private void addUserInfo(DonatableOrgan organ) {
+    private User addUserInfo(DonatableOrgan organ) {
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
             organ.setReceiverName(user.getName());
             organ.setReceiverDeathRegion(user.getRegionOfDeath());
+            return user;
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
+            return null;
         } catch (NullPointerException e) {
-
+            return null;
         }
     }
 
@@ -227,14 +251,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 final TableRow<DonatableOrgan> row = new TableRow<DonatableOrgan>() {
                     public void updateItem(DonatableOrgan item, boolean empty) {
                         super.updateItem(item, empty);
-                        getStyleClass().remove("highlighted-row");
+                        getStyleClass().remove("highlighted-row-organs-25");
                         getStyleClass().remove("highlighted-row-organs-50");
                         getStyleClass().remove("highlighted-row-organs-75");
+                        getStyleClass().remove("highlighted-row-organs-100");
                         setTooltip(null);
                         if (item != null && !empty) {
                             if (item.getTimePercent() <  0.25) {
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
+                                if (!getStyleClass().contains("highlighted-row-organs-25")) {
+                                    getStyleClass().add("highlighted-row-organs-25");
                                 }
                             } else if (item.getTimePercent() <  0.50) {
                                 if (!getStyleClass().contains("highlighted-row-organs-50")) {
@@ -244,6 +269,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
                                 if (!getStyleClass().contains("highlighted-row-organs-75")) {
                                     getStyleClass().add("highlighted-row-organs-75");
                                 }
+                            } else {
+                                if (!getStyleClass().contains("highlighted-row-organs-100")) {
+                                    getStyleClass().add("highlighted-row-organs-100");
+                                }
                             }
                         }
                     }
@@ -252,8 +281,17 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 return row;
             }
         });
+        focused = false;
+        fade.setNode(refreshSuccessText);
+        fade.setFromValue(1.0);
+        fade.setToValue(0);
+        fade.setCycleCount(1);
+        fade.setAutoReverse(false);
     }
 
+    /**
+     * Starts the timer when the organs tab is first opened.
+     */
     public void startTimer() {
         if (!focused) {
             initTimer();
@@ -261,13 +299,29 @@ public class ClinicianAvailableOrgansController implements Initializable{
         focused = true;
     }
 
+    /**
+     * Stops the timer when the tab or window is exited.
+     */
     public void stopTimer(){
         if(focused) {
             if (time != null) {
-                time.cancel();
-                time.purge();
+                tick.cancel();
             }
         }
         focused = false;
+    }
+
+
+    /**
+     * Refreshes the available organs table and displays a label on a successful update.
+     * Helps reduce server load by removing the need to create an auto update.
+     */
+    public void refreshTable(){
+        updated = false;
+        WindowManager.updateAvailableOrgans();
+        if (updated){
+            refreshSuccessText.setVisible(true);
+            fade.playFromStart();
+        }
     }
 }

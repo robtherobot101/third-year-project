@@ -16,19 +16,22 @@ public class DonatableOrgan {
     private int id;
     private Duration timeLeft;
     private List<Long> topReceivers;
+    private Boolean expired;
 
 
-    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId, int id){
+    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId, int id, boolean expired){
         this.timeOfDeath = timeOfDeath;
         this.donorId = donorId;
         this.organType = organType;
         this.id = id;
+        this.expired = expired;
     }
 
-    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId){
+    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId, boolean expired){
         this.timeOfDeath = timeOfDeath;
         this.donorId = donorId;
         this.organType = organType;
+        this.expired = expired;
     }
 
     public LocalDateTime getTimeOfDeath() {
