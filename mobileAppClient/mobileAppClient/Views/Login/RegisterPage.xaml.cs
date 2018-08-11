@@ -94,8 +94,19 @@ namespace mobileAppClient
             }
 
             LoginAPI loginAPI = new LoginAPI();
-            HttpStatusCode registerUserResult = await loginAPI.RegisterUser(givenFirstName, givenLastName, givenEmail,
-                givenUsername, givenPassword, dobInput.Date);
+            User inputUser = new User();
+            inputUser.name = new List<string>{ givenFirstName, "", givenLastName };
+            inputUser.preferredName = new List<string> { givenFirstName, "", givenLastName };
+            inputUser.email = givenEmail;
+            inputUser.username = givenUsername;
+            inputUser.password = givenPassword;
+            inputUser.dateOfBirth = new CustomDate(dobInput.Date);
+            inputUser.creationTime = new CustomDateTime(DateTime.Now);
+            //Server requires to initialise the organs and user history items on creation
+            inputUser.organs = new List<string>();
+            inputUser.userHistory = new List<HistoryItem>();
+
+            HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
 
             switch (registerUserResult)
             {

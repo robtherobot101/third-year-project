@@ -37,7 +37,22 @@
                     HorizontalOptions="EndAndExpand"
                     VerticalOptions="CenterAndExpand"
                     Clicked="SignUpButtonClicked" />
+
                 </StackLayout>
+
+                 <Button Text="Login with Facebook"
+                    Clicked="Handle_LoginWithFacebookClicked" 
+                         TextColor="White"
+                         Image="facebook_icon.png"
+                         BackgroundColor="#39569A"
+                         HeightRequest="50"
+                         WidthRequest="100"
+                         x:Name="FacebookButton"
+                         />
+
+                 <Button Text="Login with Google"
+                    Clicked="Handle_LoginWithGoogleClicked" />
+                    
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

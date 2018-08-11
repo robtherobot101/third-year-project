@@ -40,18 +40,16 @@
                     />
                 </StackLayout>
 
-                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                    <Button Text="Sign Up"
-                    HorizontalOptions="Center"
-                    VerticalOptions="CenterAndExpand"
-                    Clicked="SignUpButtonClicked" />
-                    <Button Text="Back"
-                    HorizontalOptions="Center"
-                    VerticalOptions="CenterAndExpand"
-                    Clicked="Handle_BackClicked" />
-                </StackLayout>
+                <Button Text="Sign Up"
+                HorizontalOptions="Center"
+                VerticalOptions="CenterAndExpand"
+                Clicked="SignUpButtonClicked" />
+                
 
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
+    <ContentPage.ToolbarItems> 
+        <ToolbarItem Text="Back" Clicked="Handle_BackClicked"/>
+    </ContentPage.ToolbarItems>
 </ContentPage>

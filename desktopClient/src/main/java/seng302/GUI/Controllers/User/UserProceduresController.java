@@ -390,7 +390,6 @@ public class UserProceduresController extends UserTabController implements Initi
         // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
-                Debugger.log(dateDue.getValue());
                 String newSummary;
                 String newDescription;
                 String newDate = "";

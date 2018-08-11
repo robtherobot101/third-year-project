@@ -339,7 +339,7 @@ public class GeneralUser {
             startIndex = Integer.parseInt(params.get("startIndex"));
         }
 
-        int count = 100;
+        int count = 20;
         if (params.containsKey("count")) {
             count = Integer.parseInt(params.get("count"));
         }
@@ -689,7 +689,9 @@ public class GeneralUser {
                 } else {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
                     for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        procedureOrgans.add(Organ.parse(organ));
+                        if (!organ.isEmpty()) {
+                            procedureOrgans.add(Organ.parse(organ));
+                        }
                     }
                     user.getPreviousProcedures().add(new Procedure(
                             proceduresResultSet.getString("summary"),
