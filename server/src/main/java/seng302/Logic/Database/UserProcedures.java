@@ -38,10 +38,13 @@ public class UserProcedures {
             insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
 
             String organsAffected = "";
-            for (Organ organ : procedure.getOrgansAffected()) {
-                organsAffected += organ.toString() + ",";
+            if (!procedure.getOrgansAffected().isEmpty()) {
+                for (Organ organ : procedure.getOrgansAffected()) {
+                    organsAffected += organ.toString() + ",";
+                }
+                organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
             }
-            organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
+
 
             insertProceduresStatement.setString(4, organsAffected);
             insertProceduresStatement.setInt(5, userId);
@@ -108,7 +111,9 @@ public class UserProcedures {
 
         ArrayList<Organ> procedureOrgans = new ArrayList<>();
         for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
-            procedureOrgans.add(Organ.parse(organ));
+            if (!organ.isEmpty()) {
+                procedureOrgans.add(Organ.parse(organ));
+            }
         }
         return new Procedure(
                 proceduresResultSet.getString("summary"),
