@@ -16,8 +16,6 @@ namespace mobileAppClient
      */ 
     public partial class SingleProcedurePage : ContentPage
     {
-        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
-
         private CustomObservableCollection<String> organsAffected;
 
         private CustomObservableCollection<String> organsAvailable;
@@ -66,6 +64,7 @@ namespace mobileAppClient
                 "Bone Marrow",
                 "Connective Tissue"
             };
+
             organsAffected = new CustomObservableCollection<string>();
 
             organsAffectedList.ItemsSource = organsAffected;
@@ -106,7 +105,7 @@ namespace mobileAppClient
         {
             string summaryInput = InputValidation.Trim(SummaryEntry.Text);
             string descriptionInput = InputValidation.Trim(DescriptionEntry.Text);
-            if (!await checkInputs(summaryInput, descriptionInput))
+            if (!await CheckInputs(summaryInput, descriptionInput))
             {
                 return;
             }
@@ -149,16 +148,16 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
-            await returnToProcedures();
+            await ReturnToProcedures();
         }
 
-        private async Task returnToProcedures()
+        private async Task ReturnToProcedures()
         {
             proceduresPageController.refreshProcedures();
             await proceduresPageController.Navigation.PopAsync();
         }
 
-        private async Task<bool> checkInputs(string summary, string description)
+        private async Task<bool> CheckInputs(string summary, string description)
         {
             string summaryInput = InputValidation.Trim(SummaryEntry.Text);
             string descriptionInput = InputValidation.Trim(DescriptionEntry.Text);

@@ -107,15 +107,18 @@ namespace mobileAppClient
 
         public void refreshProcedures()
         {
-            ProceduresList.ItemsSource = new List<Procedure>();
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
+
+            NoDataLabel.IsVisible = false;
+            ProceduresList.IsVisible = true;
+            SortingInput.IsVisible = true;
         }
 
         private ICommand OpenAddProcedure
         {
             get
             {
-                return new Command(() => { Navigation.PushAsync(new NavigationPage(new SingleProcedurePage(this))); });
+                return new Command(() => { Navigation.PushAsync(new SingleProcedurePage(this)); });
             }
         }
 
@@ -185,9 +188,6 @@ namespace mobileAppClient
                     AscendingDescendingPicker.IsVisible = false;
                     break;
             }
-
-
-
         }
 
         /*
