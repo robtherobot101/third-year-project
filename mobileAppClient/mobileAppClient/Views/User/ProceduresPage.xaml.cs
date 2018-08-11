@@ -13,7 +13,6 @@ namespace mobileAppClient
      */ 
     public partial class ProceduresPage : ContentPage
     {
-        DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         private bool isClinicianAccessing;
 
         /*
@@ -107,6 +106,7 @@ namespace mobileAppClient
 
         public void refreshProcedures()
         {
+            ProceduresList.ItemsSource = new List<Procedure>();
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
 
             NoDataLabel.IsVisible = false;

@@ -84,7 +84,7 @@ namespace mobileAppClientUnitTests
             string email = String.Format("{0}@hotmale.com", getRandomString(6));
             string username = getRandomString(5);
             DateTime dob = new DateTime(1984, 5, 3);
-            HttpStatusCode result = await loginAPI.RegisterUser("Bobby", "LaFlame", email, username, 
+            HttpStatusCode result = loginAPI.RegisterUser("Bobby", "LaFlame", email, username, 
                 "password", dob);
 
             // TODO FIX THIS
@@ -101,7 +101,7 @@ namespace mobileAppClientUnitTests
             string email = String.Format("{0}@hotmale.com", getRandomString(6));
             string username = getRandomString(5);
             DateTime dob = new DateTime(1984, 5, 3);
-            await loginAPI.RegisterUser("Bobby", "La-Flame", email, username,
+            loginAPI.RegisterUser("Bobby", "La-Flame", email, username,
                 "password", dob);
             HttpStatusCode response = await loginAPI.LoginUser(username, "password");
             Assert.AreEqual(HttpStatusCode.OK, response);

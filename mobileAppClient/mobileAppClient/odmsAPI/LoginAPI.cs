@@ -142,6 +142,12 @@ namespace mobileAppClient.odmsAPI
             return response.StatusCode;
         }
 
+        // Stub method for testing, todo
+        public HttpStatusCode RegisterUser(string v1, string v2, string email, string username, string v3, DateTime dob)
+        {
+            return HttpStatusCode.Created;
+        }
+
         /*
          * Returns true if the JSON string can be determined as a user object
          */
