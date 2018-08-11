@@ -17,8 +17,7 @@ namespace mobileAppClient
         DrugAutoFillActiveIngredientsAPI drugAutoFillActiveIngredientsAPI;
         private bool _IsLoading;
         private CustomObservableCollection<string> observableMedicationList;
-        public MedicationsPage parentMedicationsPage;
-
+        public MedicationsPage parentmedicationsPage;
 
         public bool IsLoading
         {
@@ -52,7 +51,7 @@ namespace mobileAppClient
             drugAutoFillActiveIngredientsAPI = new DrugAutoFillActiveIngredientsAPI();
             observableMedicationList = new CustomObservableCollection<string>();
             MedicationsList.ItemsSource = observableMedicationList;
-            this.parentMedicationsPage = medicationsPage;
+            parentmedicationsPage = medicationsPage;
 
 
         }
@@ -141,7 +140,11 @@ namespace mobileAppClient
 
                 UserController.Instance.LoggedInUser.currentMedications.Add(newMedication);
                 User currentUser = UserController.Instance.LoggedInUser;
-                parentMedicationsPage.refreshMedicationsListView();
+
+                parentmedicationsPage.refreshMedicationsListView();
+
+                //Update list view
+
 
                 await Navigation.PopAsync();
                 //Save user object
