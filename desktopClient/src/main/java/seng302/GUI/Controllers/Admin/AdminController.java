@@ -523,7 +523,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * refreshes the list of users with a max ammount
+     * refreshes the list of users with a max amount
      */
     public void updateFoundUsers() {
         updateFoundUsers(resultsPerPage,false);
@@ -1037,8 +1037,7 @@ public class AdminController implements Initializable {
         redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
         availableOrgansController.stopTimer();
         //Could be updated in the CLI
-        clinicianTableView.refresh();
-        userTableView.refresh();
+        refreshLatestProfiles();
     }
 
     /**
