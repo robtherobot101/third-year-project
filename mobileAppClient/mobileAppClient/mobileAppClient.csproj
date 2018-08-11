@@ -70,7 +70,6 @@
     <Compile Update="Views\DiseaseCuredDeregisterPage.xaml.cs">
       <DependentUpon>DiseaseCuredDeregisterPage.xaml</DependentUpon>
     </Compile>
-    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\SingleDiseasePage.xaml.cs">
     <Compile Update="Views\User\UserOverviewPage.xaml.cs">
       <DependentUpon>UserOverviewPage.xaml</DependentUpon>
     </Compile>
