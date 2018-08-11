@@ -36,5 +36,9 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Transcend needs your permission to take photos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Transcend needs your permission to access your photos</string>
 </dict>
 </plist>

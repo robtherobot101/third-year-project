@@ -25,7 +25,6 @@ import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
-import seng302.Data.Database.GeneralDB;
 import seng302.Data.Interfaces.GeneralDAO;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
@@ -577,7 +576,7 @@ public class AdminController implements Initializable {
 
         try {
             searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
-            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));
 
             usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
@@ -813,14 +812,6 @@ public class AdminController implements Initializable {
             }
         });
 
-        updateFoundUsers(resultsPerPage, false);
-
-        try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users");
-        } catch (HttpResponseException e) {
-            Debugger.error("Could not set name search textfield placeholder. Failed to retrieve the number of users.");
-        }
-
         profileSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchNameTerm = newValue;
             updateFoundUsers();
@@ -896,14 +887,13 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
+                        WindowManager.newAdminsUserWindow(row.getItem(), token);
                     }
                 });
                 return row;
             }
         });
         statusIndicator.setStatusBar(statusBar);
-        userTableView.refresh();
     }
 
     /**

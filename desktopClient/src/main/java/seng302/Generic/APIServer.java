@@ -3,6 +3,7 @@ package seng302.Generic;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
 import javax.ws.rs.client.Client;
@@ -10,6 +11,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +49,13 @@ public class APIServer {
         for (Map.Entry<String, String> entry : queryParams.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
-
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token).get());
+        try {
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token).get());
+        }
+        catch(Exception e) {
+            connectivityError();
+            return null;
+        }
     }
 
 
@@ -73,10 +80,15 @@ public class APIServer {
         for (Map.Entry<String, String> entry : queryParams.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
-
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
-                // Send the data in the post request as JSON -
-                .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+        try {
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
+                    // Send the data in the post request as JSON -
+                    .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+        }
+        catch(Exception e) {
+            connectivityError();
+            return null;
+        }
     }
 
 
@@ -102,9 +114,15 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
-                // Send the data in the patch request as JSON -
-                .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+        try {
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
+                    // Send the data in the patch request as JSON -
+                    .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
+        }
+        catch(Exception e) {
+            connectivityError();
+            return null;
+        }
     }
 
     /**
@@ -127,18 +145,23 @@ public class APIServer {
         for (Map.Entry<String, String> entry : queryParams.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
-
-        return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
-                // Send the data in the post request as JSON -
-                .delete());
+        try {
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
+                    // Send the data in the post request as JSON -
+                    .delete());
+        }
+        catch(Exception e){
+            connectivityError();
+            return null;
+        }
     }
 
 
     /**
-     * Queries the 'hello' endpoint to test connection
-     * @return A string containing the version of the queries server
+     * Display an error message if the request fails
      */
-    public String testConnection() {
-        return getRequest(new HashMap<>(),"hello").getAsJsonObject().get("version").toString();
+    private void connectivityError(){
+        WindowManager.createAlert(Alert.AlertType.ERROR, "Error", "Connection failed", "Unable to connect to server. Are you connected to the internet?" ).showAndWait();
+
     }
 }

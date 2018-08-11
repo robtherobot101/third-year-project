@@ -39,6 +39,7 @@ public class GeneralDB implements GeneralDAO {
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
+        if(response == null) return responseMap;
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
             if (serverResponse.get("accountType") == null) {
@@ -77,6 +78,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public void reset(String token) throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(), new HashMap<>(), token, "reset");
+        if(response == null) throw new HttpResponseException(0, "Could not acccess database");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -88,6 +90,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public void resample(String token) throws HttpResponseException {
         APIResponse response = server.postRequest(new JsonObject(), new HashMap<>(), token, "resample");
+        if(response == null) throw new HttpResponseException(0, "Could not acccess database");
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -99,11 +102,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public boolean status() throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), null,"status");
-        if (response.getAsString().equals("DATABASE ONLINE")) {
-            return true;
-        } else {
-            return false;
-        }
+        return response != null && response.getAsString().equals("DATABASE ONLINE");
     }
 
     /**
@@ -116,7 +115,8 @@ public class GeneralDB implements GeneralDAO {
         JsonObject commandObject = new JsonObject();
         commandObject.addProperty("command", command);
         APIResponse response = server.postRequest(commandObject, new HashMap<>(), token, "cli");
-        return response.getAsString();
+        if(response == null) return null;
+        else return response.getAsString();
     }
 
     /**
@@ -129,7 +129,9 @@ public class GeneralDB implements GeneralDAO {
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", identifier);
         APIResponse response = server.getRequest(queryParameters, null, "unique");
-        System.out.println(response.getAsString());
+        if(response == null){
+            return false;
+        }
         return response.getAsString().equalsIgnoreCase("true");
     }
 
@@ -142,6 +144,9 @@ public class GeneralDB implements GeneralDAO {
     @Override
     public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "waitingListItems");
+        if(response == null){
+            return new ArrayList<>();
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
 
@@ -162,6 +167,9 @@ public class GeneralDB implements GeneralDAO {
     @Override
     public List<Country> getAllCountries(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<String, String>(), token,"countries");
+        if(response == null){
+            return new ArrayList<Country>();
+        }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
 
@@ -183,5 +191,6 @@ public class GeneralDB implements GeneralDAO {
         JsonParser jp = new JsonParser();
         JsonArray userJson = jp.parse(new Gson().toJson(countries)).getAsJsonArray();
         APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),token,"countries");
+        if(response == null) throw new HttpResponseException(0, "Could not access server");
     }
 }

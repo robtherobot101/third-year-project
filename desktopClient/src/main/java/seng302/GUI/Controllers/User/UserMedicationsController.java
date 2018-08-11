@@ -387,7 +387,6 @@ public class UserMedicationsController extends UserTabController implements Init
      * @param shown A Boolean where true shows the control buttons and false hides them.
      */
     public void setControlsShown(boolean shown) {
-        System.out.println("setting med buttons shown: " + shown);
         addNewMedicationButton.setVisible(shown);
         deleteMedicationButton.setVisible(shown);
         moveToCurrentButton.setVisible(shown);

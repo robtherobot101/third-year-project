@@ -8,6 +8,7 @@ using Android.App;
 // associated with an assembly.
 [assembly: AssemblyTitle("mobileAppClient.Android")]
 [assembly: AssemblyDescription("")]
+[assembly: Application(Icon = "@drawable/donationIcon")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("mobileAppClient.Android")]

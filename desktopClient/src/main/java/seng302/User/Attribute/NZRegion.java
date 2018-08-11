@@ -1,8 +1,7 @@
 package seng302.User.Attribute;
 
 public enum NZRegion {
-    NTL("Northland"), AUK("Auckland"),WKO("Waikato"),BOP("Bay of Plenty"),GIS("Gisborne"),HKB("Hawke's Bay"),
-    TKI("Taranaki"),MWT("Manawatu-Wanganui"),WGN("Wellington"),TAS("Tasman"),NSN("Nelson"),MBH("Marlborough"),WTC("West Coast"),CAN("Canterbury"),OTA("Otago"),STL("Southland"),CHI("Chatham Islands");
+    NTL("Northland"), AUK("Auckland"),WKO("Waikato"),BOP("Bay of Plenty");
 
     private String region;
 

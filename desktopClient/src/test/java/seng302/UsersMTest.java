@@ -1,12 +1,8 @@
 package seng302;
 
-import org.apache.http.client.HttpResponseException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.Data.Local.UsersM;
-import seng302.Generic.WindowManager;
-import seng302.User.Attribute.ProfileType;
 import seng302.User.User;
 
 import java.time.LocalDate;

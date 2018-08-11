@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.User.Attribute.ProfileType.CLINICIAN;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -48,6 +49,7 @@ public class UserController implements Initializable {
             userAttributesButton, diseasesButton, proceduresButton, historyButton;
     @FXML
     private StatusBar statusBar;
+
     @FXML
     private UserAttributesController attributesController;
     @FXML
@@ -103,6 +105,10 @@ public class UserController implements Initializable {
 
     public String getToken() {
         return token;
+    }
+
+    public UserAttributesController getAttributesController() {
+        return attributesController;
     }
 
     /**
@@ -168,7 +174,7 @@ public class UserController implements Initializable {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
                 "Refreshing will overwrite your all unsaved changes.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+        if (result.get() == ButtonType.OK) {
             try {
                 User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId(), token);
                 attributesController.undoStack.clear();
@@ -576,6 +582,6 @@ public class UserController implements Initializable {
         logoutMenuItem.setDisable(shown);
         logoutButton.setDisable(shown);
         waitingListButton.setVisible((currentUser != null && currentUser.isReceiver()) || shown);
-        attributesController.setDeathControlsShown(shown);
+        attributesController.setDeathControlsShown(false);
     }
 }

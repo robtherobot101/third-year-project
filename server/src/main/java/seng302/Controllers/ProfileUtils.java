@@ -18,6 +18,8 @@ import static spark.Spark.halt;
  */
 public class ProfileUtils {
 
+
+
     /**
      * Checks the authorisation level of a token.
      *
@@ -28,16 +30,26 @@ public class ProfileUtils {
         try {
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
                 PreparedStatement statement = connection.prepareStatement(
+                        "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 1 DAY))");
+                statement.execute();
+
+                statement = connection.prepareStatement(
                         "SELECT access_level FROM TOKEN WHERE token = ?");
                 statement.setString(1, token);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
+                    statement = connection.prepareStatement(
+                            "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
+                    statement.setString(1, token);
+                    statement.execute();
                     return resultSet.getInt("access_level");
                 } else {
                     return -1;
                 }
             }
         } catch (SQLException e) {
+            return -1;
+        } catch (NullPointerException npe) {
             return -1;
         }
     }
