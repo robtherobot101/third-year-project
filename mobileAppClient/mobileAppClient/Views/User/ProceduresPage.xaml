@@ -57,8 +57,8 @@
                       ItemTapped="Handle_ProcedureTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Summary}"
-                         Detail="{Binding DetailString}" />
+                        <TextCell Text="{Binding summary}"
+                         Detail="{Binding detailString}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

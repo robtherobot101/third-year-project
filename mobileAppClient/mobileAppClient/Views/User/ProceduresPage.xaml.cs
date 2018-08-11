@@ -76,17 +76,6 @@ namespace mobileAppClient
             InitializeComponent();
             CheckIfClinicianAccessing();
 
-            //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
-
-            foreach (Procedure item in UserController.Instance.LoggedInUser.pendingProcedures)
-            {
-                item.DetailString = item.Description + ", due on " + item.Date.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.Date.month) + ", " + item.Date.year;
-            }
-            foreach (Procedure item in UserController.Instance.LoggedInUser.previousProcedures)
-            {
-                item.DetailString = item.Description + ", due on " + item.Date.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.Date.month) + ", " + item.Date.year;
-            }
-
             if (UserController.Instance.LoggedInUser.pendingProcedures.Count == 0)
             {
                 NoDataLabel.IsVisible = true;
@@ -95,8 +84,6 @@ namespace mobileAppClient
             }
 
             ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
-
-
         }
 
         /**
@@ -118,11 +105,17 @@ namespace mobileAppClient
             }
         }
 
+        public void refreshProcedures()
+        {
+            ProceduresList.ItemsSource = new List<Procedure>();
+            ProceduresList.ItemsSource = UserController.Instance.LoggedInUser.pendingProcedures;
+        }
+
         private ICommand OpenAddProcedure
         {
             get
             {
-                return new Command(() => { Navigation.PushAsync(new NavigationPage(new SingleProcedurePage())); });
+                return new Command(() => { Navigation.PushAsync(new NavigationPage(new SingleProcedurePage(this))); });
             }
         }
 
@@ -152,13 +145,13 @@ namespace mobileAppClient
                     if (SegControl.SelectedSegment == 0)
                     {
                         List<Procedure> mylist = UserController.Instance.LoggedInUser.pendingProcedures;
-                        List<Procedure> SortedList = mylist.OrderBy(o => o.Date.ToDateTime()).ToList();
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.date.ToDateTime()).ToList();
                         ProceduresList.ItemsSource = SortedList;
                     }
                     else
                     {
                         List<Procedure> mylist = UserController.Instance.LoggedInUser.previousProcedures;
-                        List<Procedure> SortedList = mylist.OrderBy(o => o.Date.ToDateTime()).ToList();
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.date.ToDateTime()).ToList();
                         ProceduresList.ItemsSource = SortedList;
                     }
                     AscendingDescendingPicker.IsVisible = true;
@@ -167,13 +160,13 @@ namespace mobileAppClient
                     if (SegControl.SelectedSegment == 0)
                     {
                         List<Procedure> mylist = UserController.Instance.LoggedInUser.pendingProcedures;
-                        List<Procedure> SortedList = mylist.OrderBy(o => o.Summary).ToList();
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.summary).ToList();
                         ProceduresList.ItemsSource = SortedList;
                     }
                     else
                     {
                         List<Procedure> mylist = UserController.Instance.LoggedInUser.previousProcedures; 
-                        List<Procedure> SortedList = mylist.OrderBy(o => o.Summary).ToList();
+                        List<Procedure> SortedList = mylist.OrderBy(o => o.summary).ToList();
                         ProceduresList.ItemsSource = SortedList;
                     }
                     AscendingDescendingPicker.IsVisible = true;
@@ -209,11 +202,11 @@ namespace mobileAppClient
                 case "Date":
                     switch(AscendingDescendingPicker.SelectedItem) {
                         case "⬆ (Descending)":
-                            List<Procedure> SortedList = currentList.OrderByDescending(o => o.Date.ToDateTime()).ToList();
+                            List<Procedure> SortedList = currentList.OrderByDescending(o => o.date.ToDateTime()).ToList();
                             ProceduresList.ItemsSource = SortedList;
                             break;
                         case "⬇ (Ascending)":
-                            SortedList = currentList.OrderBy(o => o.Date.ToDateTime()).ToList();
+                            SortedList = currentList.OrderBy(o => o.date.ToDateTime()).ToList();
                             ProceduresList.ItemsSource = SortedList;
                             break;
                         case "Clear":
@@ -226,11 +219,11 @@ namespace mobileAppClient
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":
-                            List<Procedure> SortedList = currentList.OrderByDescending(o => o.Summary).ToList();
+                            List<Procedure> SortedList = currentList.OrderByDescending(o => o.summary).ToList();
                             ProceduresList.ItemsSource = SortedList;
                             break;
                         case "⬇ (Ascending)":
-                            SortedList = currentList.OrderBy(o => o.Summary).ToList();
+                            SortedList = currentList.OrderBy(o => o.summary).ToList();
                             ProceduresList.ItemsSource = SortedList;
                             break;
                         case "Clear":

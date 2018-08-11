@@ -73,7 +73,6 @@ namespace mobileAppClient.odmsAPI
                     // Login as the user
                     User loggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
                     string authToken = response.Headers.GetValues("token").FirstOrDefault();
-
                     UserController.Instance.Login(loggedInUser, authToken);
 
                     Console.WriteLine("Logged in as (USER)" + String.Join(String.Empty, userController.LoggedInUser.name));

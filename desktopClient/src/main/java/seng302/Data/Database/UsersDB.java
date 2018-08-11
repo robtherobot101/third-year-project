@@ -74,6 +74,7 @@ public class UsersDB implements UsersDAO {
     public void updateUser(User user, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
+        Debugger.log(userJson);
         APIResponse response = server.patchRequest(userJson, new HashMap<>(), token, "users", String.valueOf(user.getId()));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)

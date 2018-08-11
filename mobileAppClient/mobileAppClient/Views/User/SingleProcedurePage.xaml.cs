@@ -21,6 +21,8 @@ namespace mobileAppClient
         private CustomObservableCollection<String> organsAffected;
 
         private CustomObservableCollection<String> organsAvailable;
+
+        private ProceduresPage proceduresPageController;
         /*
          * Constructor which initialises the entries of the procedures listview.
          */ 
@@ -33,21 +35,23 @@ namespace mobileAppClient
             organsAffected = new CustomObservableCollection<string>();
             organsAffectedList.ItemsSource = organsAffected;
 
-            SummaryEntry.Text = procedure.Summary;
-            DescriptionEntry.Text = procedure.Description;
-            DateDueEntry.Date = procedure.Date.ToDateTime();
+            SummaryEntry.Text = procedure.summary;
+            DescriptionEntry.Text = procedure.description;
+            DateDueEntry.Date = procedure.date.ToDateTime();
 
-            organsAffected.AddRange(procedure.OrgansAffected);
+            organsAffected.AddRange(procedure.organsAffected);
         }
 
         /*
          * Used when adding a new procedure
          * Constructor which initialises the entries of the procedures listview.
          */
-        public SingleProcedurePage()
+        public SingleProcedurePage(ProceduresPage proceduresPageController)
         {
             Title = "Add New Procedure";
             InitializeComponent();
+            this.proceduresPageController = proceduresPageController;
+
             organsAvailable = new CustomObservableCollection<string>
             {
                 "Liver",
@@ -66,8 +70,6 @@ namespace mobileAppClient
 
             organsAffectedList.ItemsSource = organsAffected;
             NewAffectedOrganPicker.ItemsSource = organsAvailable;
-
-            DateDueEntry.MaximumDate = DateTime.Today;
             NewAffectedOrganPicker.SelectedIndex = 0;
 
             SummaryEntry.IsEnabled = true;
@@ -110,13 +112,20 @@ namespace mobileAppClient
             }
 
             Procedure newProcedure = new Procedure(summaryInput, descriptionInput, new CustomDate(DateDueEntry.Date),
-                organsAffected.ToList());
+                new List<string>(organsAffected));
 
-            UserController.Instance.LoggedInUser.pendingProcedures.Add(newProcedure);
+            if (newProcedure.date.ToDateTime() < DateTime.Today)
+            {
+                UserController.Instance.LoggedInUser.previousProcedures.Add(newProcedure);
+            }
+            else
+            {
+                UserController.Instance.LoggedInUser.pendingProcedures.Add(newProcedure);
+            }
 
             UserAPI userAPI = new UserAPI();
             HttpStatusCode userUpdated = await userAPI.UpdateUser(true);
-
+            Console.WriteLine(userUpdated);
             switch (userUpdated)
             {
                 case HttpStatusCode.Created:
@@ -140,6 +149,13 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+            await returnToProcedures();
+        }
+
+        private async Task returnToProcedures()
+        {
+            proceduresPageController.refreshProcedures();
+            await proceduresPageController.Navigation.PopAsync();
         }
 
         private async Task<bool> checkInputs(string summary, string description)

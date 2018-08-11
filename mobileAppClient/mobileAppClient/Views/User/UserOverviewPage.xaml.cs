@@ -137,7 +137,7 @@ namespace mobileAppClient
                 List<string> pendingProcedures = new List<string>();
                 foreach (Procedure item in currentUser.pendingProcedures)
                 {
-                    pendingProcedures.Add(item.Summary);
+                    pendingProcedures.Add(item.summary);
                 }
                 pendingProceduresString = "Procedures due for: \n" + String.Join(", ", pendingProcedures);
             }
@@ -152,7 +152,7 @@ namespace mobileAppClient
                 List<string> previousProcedures = new List<string>();
                 foreach (Procedure item in currentUser.previousProcedures)
                 {
-                    previousProcedures.Add(item.Summary);
+                    previousProcedures.Add(item.summary);
                 }
                 previousProceduresString = "Has had the following procedures: \n" + String.Join(", ", previousProcedures);
             }

@@ -57,19 +57,29 @@ namespace mobileAppClient.Views
             UserSearchBar.SearchCommand = SearchCommand;
             UserSearchBar.TextChanged += UserSearchBar_TextChanged;
 
-            UserListView.ItemAppearing += (sender, e) =>
+            UserListView.ItemAppearing += HitBottomOfList;
+        }
+
+        private void HitBottomOfList(object sender, ItemVisibilityEventArgs e)
+        {
+            if (IsLoading || UserList.Count == 0 || endOfUsers)
+                return;
+
+            // Hit the bottom
+            if (e.Item == UserList[UserList.Count - 1])
             {
-                if (IsLoading || UserList.Count == 0 || endOfUsers)
-                    return;
+                LoadItems();
+            }
+        }
 
-                // Hit the bottom
-                if (e.Item == UserList[UserList.Count - 1])
-                {
-                    LoadItems();
-                }
-            };
-
-            LoadItems();
+        /// <summary>
+        /// Activated whenever focus is on this page
+        /// </summary>
+        protected override async void OnAppearing()
+        {
+            UserList.Clear();
+            currentIndex = 0;
+            await LoadItems();
         }
 
         /// <summary>
@@ -94,7 +104,7 @@ namespace mobileAppClient.Views
         /*
          * Loads items from the DB and appends them to the bottom of the list. Infinity Scroll™
          */
-        private async void LoadItems()
+        private async Task LoadItems()
         {
             IsLoading = true;
 
@@ -109,7 +119,7 @@ namespace mobileAppClient.Views
          * Loads items from the DB and appends them to the bottom of the list. Infinity Scroll™
          * - Doesn't show an activity indicator
          */
-        private async void ResetItemsQuiet()
+        private async Task ResetItemsQuiet()
         {
             UserList.Clear();
             currentIndex = 0;
@@ -141,16 +151,15 @@ namespace mobileAppClient.Views
         /// <summary>
         /// Resets the endOfUsers flag and grabs the start of the user list from DB, called by pull to refresh
         /// </summary>
-        public ICommand RefreshCommand
+        private ICommand RefreshCommand
         {
             get
             {
-                return new Command(() =>
+                return new Command(async () =>
                 {
                     UserListView.IsRefreshing = true;
 
-
-                    ResetItemsQuiet();
+                    await ResetItemsQuiet();
 
                     UserListView.IsRefreshing = false;
                 });
@@ -160,13 +169,13 @@ namespace mobileAppClient.Views
         /// <summary>
         /// Is called when the UserSearchBox calls its search method
         /// </summary>
-        public ICommand SearchCommand
+        private ICommand SearchCommand
         {
             get
             {
                 return new Command(async () =>
                 {
-                    ResetItemsQuiet();
+                    await ResetItemsQuiet();
                 });
             }
         }
@@ -190,7 +199,6 @@ namespace mobileAppClient.Views
             MainPage mainPage = new MainPage(true);
             mainPage.Title = String.Format("User Viewer: {1}, {0}", tappedUser.name[0], tappedUser.name[2]);
 
-            
             await Navigation.PushAsync(mainPage);
         }
     }

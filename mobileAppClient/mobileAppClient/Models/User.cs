@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace mobileAppClient
 {
     /*
@@ -58,6 +60,7 @@ namespace mobileAppClient
 
         public List<HistoryItem> userHistory { get; set; }
 
+        [JsonIgnore]
         public string FullName
         {
             get
@@ -78,6 +81,7 @@ namespace mobileAppClient
         /*
          * Simply calculates the user's age
          */
+        [JsonIgnore]
         public int Age
         {
             get {
