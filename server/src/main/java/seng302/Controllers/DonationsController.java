@@ -11,6 +11,7 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class DonationsController {
@@ -62,10 +63,11 @@ public class DonationsController {
         JsonParser parser = new JsonParser();
         JsonObject obj = parser.parse(request.body()).getAsJsonObject();
         String organName = obj.get("name").getAsString();
+        LocalDateTime deathDate = LocalDateTime.parse(obj.get("deathDate").getAsString());
         Organ organ = Organ.valueOf(organName.toUpperCase());
 
         try {
-            model.insertDonation(organ, requestedUserId, null);
+            model.insertDonation(organ, requestedUserId, deathDate);
             response.status(201);
             return "DONATION INSERTED FOR USER ID: " + requestedUserId;
         } catch (SQLException e) {

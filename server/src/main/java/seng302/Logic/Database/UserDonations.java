@@ -45,7 +45,7 @@ public class UserDonations {
 
     public void insertDonation(Organ organ, int userId, LocalDateTime deathDate) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id, timeOfDeath) " +
+            String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id, timeOfDeath, expired) " +
                     "VALUES (?,?,?,?)";
             PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
 
