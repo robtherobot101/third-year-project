@@ -98,13 +98,13 @@ namespace mobileAppClient
 
         }
 
-        private ICommand addNewMedication
+        public ICommand addNewMedication
         {
             get
             {
                 return new Command(async () =>
                 {
-                    await Navigation.PushAsync(new SingleMedicationPage());
+                    await Navigation.PushAsync(new SingleMedicationPage(this));
                 });
             }
         }
@@ -142,6 +142,11 @@ namespace mobileAppClient
             }
             var compareMedicationsPage = new CompareMedicationsPage();
             await Navigation.PushAsync(compareMedicationsPage);
+        }
+
+        public void refreshMedicationsListView() {
+            MedicationsList.ItemsSource = new List<string>();
+            MedicationsList.ItemsSource = UserController.Instance.LoggedInUser.currentMedications;
         }
     }
 }

@@ -27,14 +27,14 @@
 
             <StackLayout Orientation="Vertical" x:Name="AddMedicationLayout">
 
-                <SearchBar x:Name="MedicationSearchBar" Placeholder="Search..." SearchButtonPressed="Handle_SearchButtonPressed"/>
+                <SearchBar x:Name="MedicationSearchBar" Placeholder="Search for a medication..." SearchButtonPressed="Handle_SearchButtonPressed"/>
+                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
 
-                <TableView Intent="Menu" >
-                    <TableRoot>
-                        <TableSection Title="Results">
-                         </TableSection>
-                    </TableRoot>
-                </TableView>
+
+                <ListView x:Name="MedicationsList"
+                          ItemTapped="Handle_MedicationTapped"
+                          >
+                </ListView>
 
             </StackLayout>
         </StackLayout>
