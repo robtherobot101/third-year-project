@@ -670,6 +670,7 @@ public class WindowManager extends Application {
     @Override
     public void stop() {
         Debugger.log("Exiting GUI");
+        clinicianClinicianAvailableOrgansController.stopTimer();
         if (userController != null && userController.hasToken()) {
             userController.serverLogout();
         }

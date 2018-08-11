@@ -72,10 +72,20 @@ public class ClinicianWaitingListController implements Initializable {
      */
     public void updateTransplantList() {
         try {
+            List<WaitingListItem> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token));
             transplantList.clear();
-            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token)) {
+            User lastUser = null;
+            for(WaitingListItem item : temp) {
                 if (item.getStillWaitingOn()) {
-                    addUserInfo(item);
+                    if (lastUser == null) {
+                        lastUser = addUserInfo(item);
+                    }
+                    if (item.getUserId() == lastUser.getId()){
+                        item.setReceiverName(lastUser.getName());
+                        item.setReceiverRegion(lastUser.getRegion());
+                    } else {
+                        lastUser = addUserInfo(item);
+                    }
                     transplantList.add(item);
                 }
             }
@@ -89,15 +99,17 @@ public class ClinicianWaitingListController implements Initializable {
      * adds the user info to a waiting list item
      * @param item the waiting list item to update
      */
-    public void addUserInfo(WaitingListItem item) {
+    public User addUserInfo(WaitingListItem item) {
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue(), token);
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
+            return user;
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
+            return null;
         } catch (NullPointerException e) {
-
+            return null;
         }
     }
 
