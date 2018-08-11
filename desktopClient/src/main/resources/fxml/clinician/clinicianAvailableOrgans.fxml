@@ -27,9 +27,9 @@
                 <Font name="System Bold" size="28.0" />
             </font>
         </Label>
-   <ComboBox fx:id="regionFilter" layoutX="40.0" layoutY="64.0" prefWidth="171.0" promptText="Region" />
-   <Button fx:id="organsFilterButton" layoutX="659.0" layoutY="61.0" mnemonicParsing="false" onAction="#filterOrgans" text="Filter Organs" />
-   <ComboBox fx:id="organFilter" layoutX="229.0" layoutY="64.0" prefWidth="171.0" promptText="Organ" />
+   <ComboBox fx:id="regionFilter" layoutX="40.0" layoutY="71.0" prefWidth="171.0" promptText="Region" />
+   <Button fx:id="organsFilterButton" layoutX="426.0" layoutY="68.0" mnemonicParsing="false" onAction="#filterOrgans" text="Filter Organs" />
+   <ComboBox fx:id="organFilter" layoutX="229.0" layoutY="70.0" prefWidth="171.0" promptText="Organ" />
    <Button fx:id="refreshOrganTable" layoutX="672.0" layoutY="67.0" mnemonicParsing="false" onAction="#refreshTable" text="Refresh Table" AnchorPane.rightAnchor="40.0" />
-   <Label fx:id="refreshSuccessText" layoutX="546.0" layoutY="75.0" text="Updated successfully." visible="false" AnchorPane.rightAnchor="140.0" />
+   <Label fx:id="refreshSuccessText" layoutX="530.0" layoutY="75.0" text="Updated successfully." visible="false" AnchorPane.rightAnchor="150.0" />
 </AnchorPane>

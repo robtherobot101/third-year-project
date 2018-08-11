@@ -41,7 +41,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     ComboBox<String> organFilter, regionFilter;
 
     @FXML
-    Button refreshOrganTable;
+    Button refreshOrganTable, organsFilterButton;
 
     @FXML
     Label refreshSuccessText;
