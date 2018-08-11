@@ -134,9 +134,19 @@ public class ClinicianAvailableOrgansController implements Initializable{
             List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(token));
             setInitTimeLeft(temp);
             expiryList.clear();
+            User lastUser = null;
             for(DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
-                    addUserInfo(organ);
+                    if(lastUser == null){
+                        lastUser = addUserInfo(organ);
+                    }
+                    //if multiple organs from the same user no need to do multiple API calls
+                    if (organ.getDonorId() == lastUser.getId()){
+                        organ.setReceiverName(lastUser.getName());
+                        organ.setReceiverDeathRegion(lastUser.getRegionOfDeath());
+                    } else {
+                        lastUser = addUserInfo(organ);
+                    }
                     expiryList.add(organ);
                 }
             }
@@ -151,15 +161,17 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * adds the user info to a Donatable organ item
      * @param organ the waiting list item to update
      */
-    private void addUserInfo(DonatableOrgan organ) {
+    private User addUserInfo(DonatableOrgan organ) {
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
             organ.setReceiverName(user.getName());
             organ.setReceiverDeathRegion(user.getRegionOfDeath());
+            return user;
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
+            return null;
         } catch (NullPointerException e) {
-
+            return null;
         }
     }
 
