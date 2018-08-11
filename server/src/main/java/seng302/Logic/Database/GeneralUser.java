@@ -689,7 +689,9 @@ public class GeneralUser {
                 } else {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
                     for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        procedureOrgans.add(Organ.parse(organ));
+                        if (!organ.isEmpty()) {
+                            procedureOrgans.add(Organ.parse(organ));
+                        }
                     }
                     user.getPreviousProcedures().add(new Procedure(
                             proceduresResultSet.getString("summary"),
