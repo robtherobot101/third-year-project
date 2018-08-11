@@ -33,7 +33,7 @@ namespace mobileAppClient.Droid
             global::Xamarin.FormsMaps.Init(this, bundle);
 
             ActivityContext = this;
-
+            
             LoadApplication(new App());
         }
 
