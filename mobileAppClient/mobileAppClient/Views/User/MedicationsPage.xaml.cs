@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Windows.Input;
 using mobileAppClient.Models.CustomObjects;
+using mobileAppClient.odmsAPI;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -73,11 +75,11 @@ namespace mobileAppClient
 
             foreach (Medication item in UserController.Instance.LoggedInUser.currentMedications)
             {
-                item.DetailString = item.History[0];
+                item.DetailString = item.history[0];
             }
             foreach (Medication item in UserController.Instance.LoggedInUser.historicMedications)
             {
-                item.DetailString = item.History[item.History.Count - 1];            
+                item.DetailString = item.history[item.history.Count - 1];            
             }
 
             if (UserController.Instance.LoggedInUser.currentMedications.Count == 0)
@@ -111,7 +113,7 @@ namespace mobileAppClient
             {
                 return new Command(async () =>
                 {
-                    await Navigation.PushAsync(new SingleMedicationPage(this));
+                    await Navigation.PushAsync(new SingleMedicationPage(this, SegControl.SelectedSegment));
                 });
             }
         }
@@ -152,6 +154,8 @@ namespace mobileAppClient
         }
 
         public void refreshMedicationsListView() {
+            NoDataLabel.IsVisible = false; 
+            MedicationsList.IsVisible = true;
             observableMedicationList.Clear();
             observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
         }
@@ -163,14 +167,14 @@ namespace mobileAppClient
             String status = SegControl.SelectedSegment == 0 ? "historic" : "current";
  
 
-            bool answer = await DisplayAlert("Are you sure?", "Do you want to move " + selectedMedication.Name + " to " + UserController.Instance.LoggedInUser.FullName + "'s " + status + " medications?", "Yes", "No");
+            bool answer = await DisplayAlert("Are you sure?", "Do you want to move " + selectedMedication.name + " to " + UserController.Instance.LoggedInUser.FullName + "'s " + status + " medications?", "Yes", "No");
             if (answer == true)
             {
                 if (SegControl.SelectedSegment == 0)
                 {
                     UserController.Instance.LoggedInUser.currentMedications.Remove(selectedMedication);
-                    selectedMedication.History.Add("Stopped taking on " + DateTime.Now.ToString());
-                    selectedMedication.DetailString = selectedMedication.History[selectedMedication.History.Count - 1];
+                    selectedMedication.history.Add("Stopped taking on " + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToString("HH:mm:ss"));
+                    selectedMedication.DetailString = selectedMedication.history[selectedMedication.history.Count - 1];
                     UserController.Instance.LoggedInUser.historicMedications.Add(selectedMedication);
                     observableMedicationList.Clear();
                     observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
@@ -178,14 +182,47 @@ namespace mobileAppClient
                 else
                 {
                     UserController.Instance.LoggedInUser.historicMedications.Remove(selectedMedication);
-                    selectedMedication.History.Add("Started taking on " + DateTime.Now.ToString());
-                    selectedMedication.DetailString = selectedMedication.History[selectedMedication.History.Count - 1];
+                    selectedMedication.history.Add("Started taking on " + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToString("HH:mm:ss"));
+                    selectedMedication.DetailString = selectedMedication.history[selectedMedication.history.Count - 1];
                     UserController.Instance.LoggedInUser.currentMedications.Add(selectedMedication);
                     observableMedicationList.Clear();
                     observableMedicationList.AddRange(UserController.Instance.LoggedInUser.historicMedications);
                 }
-                //updateUser
+                //update the User
+                UserAPI userAPI = new UserAPI();
+                HttpStatusCode userUpdated = await userAPI.UpdateUser(true);
+
+                switch (userUpdated)
+                {
+                    case HttpStatusCode.Created:
+                        await DisplayAlert("",
+                        "User medications successfully updated",
+                        "OK");
+                        await Navigation.PopAsync();
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("",
+                        "User medications update failed (400)",
+                        "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                        "Server unavailable, check connection",
+                        "OK");
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await DisplayAlert("",
+                        "Unauthorised to modify profile",
+                        "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                        "Server error, please try again (500)",
+                        "OK");
+                        break;
+                }
             }
+
 
         }
 
@@ -193,7 +230,7 @@ namespace mobileAppClient
         {
             var mi = ((MenuItem)sender);
             Medication selectedMedication = mi.CommandParameter as Medication;
-            bool answer = await DisplayAlert("Are you sure?", "Do you want to remove " + selectedMedication.Name + " from " + UserController.Instance.LoggedInUser.FullName + "?", "Yes", "No");
+            bool answer = await DisplayAlert("Are you sure?", "Do you want to remove " + selectedMedication.name + " from " + UserController.Instance.LoggedInUser.FullName + "?", "Yes", "No");
             if(answer == true) {
                 if(SegControl.SelectedSegment == 0) {
                     UserController.Instance.LoggedInUser.currentMedications.Remove(selectedMedication);
@@ -204,7 +241,39 @@ namespace mobileAppClient
                     observableMedicationList.Clear();
                     observableMedicationList.AddRange(UserController.Instance.LoggedInUser.historicMedications);
                 }
-                //updateUser
+                UserAPI userAPI = new UserAPI();
+                HttpStatusCode userUpdated = await userAPI.UpdateUser(true);
+
+                switch (userUpdated)
+                {
+                    case HttpStatusCode.Created:
+                        await DisplayAlert("",
+                        "User medications successfully updated",
+                        "OK");
+                        await Navigation.PopAsync();
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("",
+                        "User medications update failed (400)",
+                        "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                        "Server unavailable, check connection",
+                        "OK");
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await DisplayAlert("",
+                        "Unauthorised to modify profile",
+                        "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                        "Server error, please try again (500)",
+                        "OK");
+                        break;
+                }
+
             }
         }
     }
