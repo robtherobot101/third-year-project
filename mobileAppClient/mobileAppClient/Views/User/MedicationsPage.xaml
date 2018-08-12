@@ -10,7 +10,6 @@
          <StackLayout Orientation="Vertical">
 
             <controls:SegmentedControl x:Name="SegControl" 
-                                       TintColor="#007AFF" 
                                        SelectedSegment="0"
                                        ValueChanged="Handle_MedicationChanged"
                                        HeightRequest="40">
