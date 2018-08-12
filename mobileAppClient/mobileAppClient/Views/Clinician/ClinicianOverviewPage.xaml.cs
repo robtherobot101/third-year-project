@@ -17,20 +17,14 @@ namespace mobileAppClient.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ClinicianOverviewPage : ContentPage
 	{
-        public CustomObservableCollection<RssSchema> rss { get; set; }
-        public int rssPosition = 0;
-
         public ClinicianOverviewPage()
         {
             InitializeComponent();
             fillFields();
-            rss = new CustomObservableCollection<RssSchema>();
             this.BindingContext = new
             {
-                rss = rss
+                rss = (new NewsFeed()).rss
             };
-            //RssCarousel.ItemsSource = rss;
-            fillFeed();
 		}
 
         private async void fillFields()
@@ -47,29 +41,6 @@ namespace mobileAppClient.Views
             } else
             {
                 UserCountLabel.Text = String.Format("Failed to get result from database ({0})", userCountResult.Item1);
-            }
-        }
-
-        /**
-         * A temporary class to define an RSS item
-         */ 
-        public class RssItem
-        {
-            public string Title { get; set; }
-            public string Content { get; set; }
-        }
-
-        /**
-         * Fill the image carousel with images and captions
-         */
-        private async void fillFeed()
-        {
-            var rssString = await ServerConfig.Instance.client.GetStringAsync("http://qwantz.com/rssfeed.php");
-            var rssParser = new RssParser();
-
-            foreach (var element in rssParser.Parse(rssString))
-            {
-                rss.Add(element);
             }
         }
 	}
