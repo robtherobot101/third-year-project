@@ -354,7 +354,9 @@ public class AdminController implements Initializable {
                             extension = fileToLoadPath.substring(i+1);
                         }
                         if (extension.equals("csv")) {
-                            loadSuccessful = IO.importUserCSV(fileToLoadPath, token);
+                            IO.importUserCSV(fileToLoadPath, token);
+                            return;
+                            // TODO something
                         } else if (extension.equals("json")) {
                             loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
                         } else {

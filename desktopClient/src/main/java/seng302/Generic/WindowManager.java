@@ -449,8 +449,7 @@ public class WindowManager extends Application {
 
         APIServer server;
         if(TESTING) server = new APIServer(testingServer);
-        else server = new APIServer(properServer);
-
+        else server = new APIServer(localServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -462,10 +461,9 @@ public class WindowManager extends Application {
      * checks the connection to the server.
      * @return returns true if can connect to the server, otherwise false
      */
-    public boolean checkConnection() {
+    private boolean checkConnection() {
         try {
-
-            if (dataManager.getGeneral().status() == false) {
+            if (!dataManager.getGeneral().status()) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {

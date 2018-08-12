@@ -77,7 +77,7 @@ namespace mobileAppClientUnitTests
             Assert.AreEqual(HttpStatusCode.Unauthorized, result);
         }
 
-        [TestMethod]
+/*        [TestMethod]
         public async Task registerValidUser()
         {
             // Note: Input would be validated by the time it hits the LoginAPI method
@@ -120,7 +120,7 @@ namespace mobileAppClientUnitTests
 			HttpStatusCode registerResponse = await loginAPI.RegisterUser(user);
             HttpStatusCode response = await loginAPI.LoginUser(username, "password");
             Assert.AreEqual(HttpStatusCode.OK, response);
-        }
+        }*/
 
         /*
          * Returns a string of random alpha chars (upper + lowercase) of a certain length
