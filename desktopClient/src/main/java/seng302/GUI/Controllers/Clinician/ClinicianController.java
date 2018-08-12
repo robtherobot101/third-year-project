@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.apache.http.client.HttpResponseException;
@@ -36,6 +37,7 @@ import java.net.URL;
 import java.util.*;
 
 import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.Generic.WindowManager.updateTransplantWaitingList;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -52,7 +54,7 @@ public class ClinicianController implements Initializable {
     @FXML
     private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton, organListButton;
+    private Button transplantListButton, homeButton, organListButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -81,8 +83,6 @@ public class ClinicianController implements Initializable {
     private int numberXofResults;
 
     private List<User> usersFound = new ArrayList<>();
-
-    private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
 
     private ObservableList<User> currentUsers = FXCollections.observableArrayList();
 
@@ -131,6 +131,7 @@ public class ClinicianController implements Initializable {
             clinician.setWorkAddress("");
         }
         updateDisplay();
+        updateTransplantWaitingList();
     }
 
     public int getResultsPerPage() {
@@ -173,6 +174,33 @@ public class ClinicianController implements Initializable {
             Debugger.error("Failed to log out on server.");
         }
         this.token = null;
+    }
+
+    /**
+     * Refresh the items in the search table, waiting list table, and the current clinician's attributes.
+     */
+    public void refresh() {
+        Optional<ButtonType> result = Optional.empty();
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
+                "Refreshing will update your clinician attributes to the latest version from the server, as well as updating the search table and the waiting list item table.");
+        result = alert.showAndWait();
+
+        if (result != null && result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                Clinician latest = WindowManager.getDataManager().getClinicians().getClinician((int) clinician.getStaffID(), token);
+                setClinician(latest, token);
+                updateFoundUsers();
+                WindowManager.updateTransplantWaitingList();
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to fetch admin with id: " + clinician.getStaffID());
+                e.printStackTrace();
+                alert.close();
+                alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Refresh Failed", "Refresh failed",
+                        "Clinician data could not be refreshed because there was an error contacting the server.");
+                alert.showAndWait();
+            }
+        }
+        alert.close();
     }
 
     /**
@@ -236,8 +264,6 @@ public class ClinicianController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateClinicianPopUp() {
-        clinicianUndoStack.add(new Clinician(clinician));
-        undoWelcomeButton.setDisable(false);
         Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
@@ -363,36 +389,6 @@ public class ClinicianController implements Initializable {
      */
     public void requestFocus() {
         background.requestFocus();
-    }
-
-    /**
-     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
-     */
-    public void undo() {
-        clinicianRedoStack.add(new Clinician(clinician));
-        clinician.copyFieldsFrom(clinicianUndoStack.getLast());
-        clinicianUndoStack.removeLast();
-
-        updateDisplay();
-        redoWelcomeButton.setDisable(false);
-        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
-        titleBar.saved(false);
-        statusIndicator.setStatus("Undid last action", false);
-    }
-
-    /**
-     * The main clinician redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
-     */
-    public void redo() {
-        clinicianUndoStack.add(new Clinician(clinician));
-        clinician.copyFieldsFrom(clinicianRedoStack.getLast());
-        clinicianRedoStack.removeLast();
-
-        updateDisplay();
-        undoWelcomeButton.setDisable(false);
-        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
-        titleBar.saved(false);
-        statusIndicator.setStatus("Redid last action", false);
     }
 
     /**
@@ -662,8 +658,6 @@ public class ClinicianController implements Initializable {
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
         organsPane.setVisible(false);
-        undoWelcomeButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
     }
 
     /**
@@ -673,8 +667,6 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
-        undoWelcomeButton.setDisable(clinicianUndoStack.isEmpty());
-        redoWelcomeButton.setDisable(clinicianRedoStack.isEmpty());
     }
 
     /**
@@ -686,7 +678,6 @@ public class ClinicianController implements Initializable {
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
 
-        WindowManager.updateTransplantWaitingList();
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
 

@@ -190,7 +190,6 @@ public class Server {
             });
 
             path("/countries", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
             });

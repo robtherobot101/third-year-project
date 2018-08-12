@@ -79,7 +79,7 @@ public class CliniciansDB implements CliniciansDAO {
      * @throws HttpResponseException throws if cannot connect to the server
      */
     public void removeClinician(long id, String token) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<>(), token, "clinician", String.valueOf(id));
+        APIResponse response = server.deleteRequest(new HashMap<>(), token, "clinicians", String.valueOf(id));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
@@ -93,7 +93,7 @@ public class CliniciansDB implements CliniciansDAO {
      * @throws HttpResponseException throws if cannot connect to the server
      */
     public Clinician getClinician(long id, String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), token, "clinician", String.valueOf(id));
+        APIResponse response = server.getRequest(new HashMap<>(), token, "clinicians", String.valueOf(id));
         if(response == null){
             return null;
         }
