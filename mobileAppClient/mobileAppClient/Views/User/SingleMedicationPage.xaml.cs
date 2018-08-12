@@ -18,6 +18,7 @@ namespace mobileAppClient
         private bool _IsLoading;
         private CustomObservableCollection<string> observableMedicationList;
         public MedicationsPage parentmedicationsPage;
+        private int selectedList;
 
         public bool IsLoading
         {
@@ -42,7 +43,7 @@ namespace mobileAppClient
         /*
          * Constructor used to create a new medication
          */ 
-        public SingleMedicationPage(MedicationsPage medicationsPage)
+        public SingleMedicationPage(MedicationsPage medicationsPage, int selectedList)
         {
             InitializeComponent();
             AddMedicationLayout.IsVisible = true;
@@ -52,6 +53,7 @@ namespace mobileAppClient
             observableMedicationList = new CustomObservableCollection<string>();
             MedicationsList.ItemsSource = observableMedicationList;
             parentmedicationsPage = medicationsPage;
+            this.selectedList = selectedList;
 
 
         }
@@ -65,10 +67,10 @@ namespace mobileAppClient
             AddMedicationLayout.IsVisible = false;
             UserViewLayout.IsVisible = true;
             this.Title = "Viewing Medication";
-            NameEntry.Text = medication.Name;
+            NameEntry.Text = medication.name;
             IDEntry.Text = medication.Id.ToString();
 
-            foreach(string item in medication.ActiveIngredients) 
+            foreach(string item in medication.activeIngredients) 
             {
                 TextCell cell = new TextCell();
                 cell.Text = item;
@@ -76,10 +78,9 @@ namespace mobileAppClient
                 activeIngredientsTableSection.Add(cell);
             }
 
-            foreach (string item in medication.History)
+            foreach (string item in medication.history)
             {
                 TextCell cell = new TextCell();
-                //ViewCell cell = new ViewCell();
                 StackLayout tmpLayout = new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
@@ -89,7 +90,8 @@ namespace mobileAppClient
                         {
                             Text = item,
                             TextColor = Color.Gray,
-                            FontSize = 15
+                            FontSize = 15,
+                            VerticalOptions = LayoutOptions.Center
                         }
                     }
                 };
@@ -115,6 +117,10 @@ namespace mobileAppClient
             observableMedicationList.AddRange(medicationsReturned.suggestions);
 
             IsLoading = false;
+            DateTime dateTime = DateTime.Now;
+
+
+
         }
 
         async void Handle_MedicationTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e) {
@@ -130,56 +136,56 @@ namespace mobileAppClient
                 //Create new medication object
 
                 Medication newMedication = new Medication();
-                newMedication.Name = MedicationsList.SelectedItem.ToString();
-                newMedication.ActiveIngredients = medicationsReturned.activeIngredients;
-                newMedication.History = new List<string>();
-                newMedication.History.Add("Started taking on " + DateTime.Now.ToString());
-                newMedication.DetailString = newMedication.History[0];
+                newMedication.name = MedicationsList.SelectedItem.ToString();
+                newMedication.activeIngredients = medicationsReturned.activeIngredients;
+                newMedication.history = new List<string>();
+                newMedication.history.Add("Started taking on " + DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToString("HH:mm:ss"));
+                newMedication.DetailString = newMedication.history[0];
 
                 //Add it to the user's current medications
 
                 UserController.Instance.LoggedInUser.currentMedications.Add(newMedication);
-                User currentUser = UserController.Instance.LoggedInUser;
-
-                parentmedicationsPage.refreshMedicationsListView();
 
                 //Update list view
 
+                parentmedicationsPage.refreshMedicationsListView();
 
-                await Navigation.PopAsync();
                 //Save user object
-                //UserAPI userAPI = new UserAPI();
-                //HttpStatusCode userUpdated = await userAPI.UpdateUser(true);
+                UserAPI userAPI = new UserAPI();
+                HttpStatusCode userUpdated = await userAPI.UpdateUser(true);
 
-                //switch (userUpdated)
-                //{
-                //    case HttpStatusCode.Created:
-                //        await DisplayAlert("",
-                //        "User medications successfully updated",
-                //        "OK");
-                //        await Navigation.PopAsync();
-                //        break;
-                //    case HttpStatusCode.BadRequest:
-                //        await DisplayAlert("",
-                //        "User medications update failed (400)",
-                //        "OK");
-                //        break;
-                //    case HttpStatusCode.ServiceUnavailable:
-                //        await DisplayAlert("",
-                //        "Server unavailable, check connection",
-                //        "OK");
-                //        break;
-                //    case HttpStatusCode.Unauthorized:
-                //        await DisplayAlert("",
-                //        "Unauthorised to modify profile",
-                //        "OK");
-                //        break;
-                //    case HttpStatusCode.InternalServerError:
-                //        await DisplayAlert("",
-                //        "Server error, please try again (500)",
-                //        "OK");
-                //        break;
-                //}
+                switch (userUpdated)
+                {
+                    case HttpStatusCode.Created:
+                        await DisplayAlert("",
+                        "User medications successfully updated",
+                        "OK");
+                        await Navigation.PopAsync();
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("",
+                        "User medications update failed (400)",
+                        "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                        "Server unavailable, check connection",
+                        "OK");
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await DisplayAlert("",
+                        "Unauthorised to modify profile",
+                        "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                        "Server error, please try again (500)",
+                        "OK");
+                        break;
+                }
+
+
+
 
 
             }

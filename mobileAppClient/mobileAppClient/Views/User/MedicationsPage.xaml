@@ -31,7 +31,7 @@
                                        Text="Delete" IsDestructive="True" />
                              </ViewCell.ContextActions>
                             <StackLayout Orientation="Vertical" Padding="15, 0, 0, 0">
-                                <Label Text="{Binding Name}"
+                                <Label Text="{Binding name}"
                                 TextColor="Blue"
                                 FontSize="Default"
                                        />

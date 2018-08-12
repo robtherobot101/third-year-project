@@ -66,7 +66,7 @@ namespace mobileAppClient
                 List<string> currentMedications = new List<string>();
                 foreach (Medication item in currentUser.currentMedications)
                 {
-                    currentMedications.Add(item.Name);
+                    currentMedications.Add(item.name);
                 }
                 currentMedicationsString = "Currently taking: \n" + String.Join(", ", currentMedications);
             }
@@ -81,7 +81,7 @@ namespace mobileAppClient
                 List<string> historicMedications = new List<string>();
                 foreach (Medication item in currentUser.historicMedications)
                 {
-                    historicMedications.Add(item.Name);
+                    historicMedications.Add(item.name);
                 }
                 historicMedicationsString = "Has taken: \n" + String.Join(", ", historicMedications);
             }
