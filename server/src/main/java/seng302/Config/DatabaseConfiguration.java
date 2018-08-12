@@ -17,10 +17,10 @@ public class DatabaseConfiguration {
 
     private ComboPooledDataSource cpds = new ComboPooledDataSource();
 
-    private String connectDatabase = "seng302-2018-team300-prod";
-    private String username = "seng302-team300";
-    private String password = "WeldonAside5766";
-    private String url = "jdbc:mysql://mysql2.csse.canterbury.ac.nz";
+    private String connectDatabase;
+    private String username;
+    private String password;
+    private String url;
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
 
     /**
@@ -28,6 +28,10 @@ public class DatabaseConfiguration {
      * that contains all the required information to interact with the database
      */
     private DatabaseConfiguration() {
+        connectDatabase = (String) Server.getInstance().getConfig().get("database_name");
+        username = (String) Server.getInstance().getConfig().get("username");
+        password = (String) Server.getInstance().getConfig().get("password");
+        url = (String) Server.getInstance().getConfig().get("jdbc:mysql://" + "database_address");
         if(Server.getInstance().isTesting()){
             connectDatabase = "seng302-2018-team300-test";
         }

@@ -86,6 +86,8 @@ public class WindowManager extends Application {
 
     private static boolean TESTING = true;
 
+    private static Map<Object, Object> config;
+
     /**
      * Returns the program icon.
      *
@@ -383,7 +385,8 @@ public class WindowManager extends Application {
      *
      * @param args The command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        config = new ConfigParser().getConfig();
         TESTING = false;
         if (args.length == 0) {
             launch(args);
@@ -425,6 +428,10 @@ public class WindowManager extends Application {
         return TESTING;
     }
 
+    public static Map<Object, Object> getConfig() {
+        return config;
+    }
+
 
     /**
      * Creates an internal, non-persistant DataManager (For testing and debugging)
@@ -443,13 +450,10 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     public DataManager createDatabaseDataManager() {
-        String localServer = "http://localhost:7015/api/v1";
-        String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        String testingServer = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
+        String serverAddress = (String) config.get("server");
+        if(TESTING) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
 
-        APIServer server;
-        if(TESTING) server = new APIServer(testingServer);
-        else server = new APIServer(localServer);
+        APIServer server = new APIServer(serverAddress);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
