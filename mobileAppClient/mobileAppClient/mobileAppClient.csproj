@@ -22,6 +22,8 @@
     <PackageReference Include="Plugin.CrossPlatformTintedImage" Version="1.0.0" />
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
     <PackageReference Include="Xamarin.Forms.Maps" Version="3.1.0.697729" />
+    <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
+    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MenuItems\" />

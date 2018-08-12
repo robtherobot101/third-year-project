@@ -28,6 +28,8 @@ namespace mobileAppClient.iOS
             global::SegmentedControl.FormsPlugin.iOS.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.iOS.TintedImageRenderer.Init();
             global::Xamarin.FormsMaps.Init();
+
+
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
