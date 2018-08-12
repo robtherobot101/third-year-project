@@ -31,8 +31,7 @@ public class DatabaseConfiguration {
         connectDatabase = (String) Server.getInstance().getConfig().get("database_name");
         username = (String) Server.getInstance().getConfig().get("username");
         password = (String) Server.getInstance().getConfig().get("password");
-        url = "jdbc:mysql://" + (String) Server.getInstance().getConfig().get("jdbc:mysql://" + "database_address");
-        System.out.println(url);
+        url = "jdbc:mysql://" + (String) Server.getInstance().getConfig().get("database_address");
         if(Server.getInstance().isTesting()){
             connectDatabase = "seng302-2018-team300-test";
         }
