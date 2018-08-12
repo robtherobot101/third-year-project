@@ -38,12 +38,13 @@ public class UserProcedures {
             insertProceduresStatement.setDate(3, java.sql.Date.valueOf(procedure.getDate()));
 
             String organsAffected = "";
-            for (Organ organ : procedure.getOrgansAffected()) {
-                organsAffected += organ.toString() + ",";
-            }
-            if (!organsAffected.isEmpty()) {
+            if (!procedure.getOrgansAffected().isEmpty()) {
+                for (Organ organ : procedure.getOrgansAffected()) {
+                    organsAffected += organ.toString() + ",";
+                }
                 organsAffected = organsAffected.substring(0, organsAffected.length() - 1);
             }
+
 
             insertProceduresStatement.setString(4, organsAffected);
             insertProceduresStatement.setInt(5, userId);
@@ -109,8 +110,8 @@ public class UserProcedures {
     public Procedure getProcedureFromResultSet(ResultSet proceduresResultSet) throws SQLException {
 
         ArrayList<Organ> procedureOrgans = new ArrayList<>();
-        if (!proceduresResultSet.getString("organs_affected").isEmpty()) {
-            for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+        for (String organ: proceduresResultSet.getString("organs_affected").split(",")) {
+            if (!organ.isEmpty()) {
                 procedureOrgans.add(Organ.parse(organ));
             }
         }

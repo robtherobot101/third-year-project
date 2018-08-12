@@ -118,7 +118,7 @@ public class GeneralUser {
             startIndex = Integer.parseInt(params.get("startIndex"));
         }
 
-        int count = 100;
+        int count = 20;
         if (params.containsKey("count")) {
             count = Integer.parseInt(params.get("count"));
         }
@@ -484,8 +484,8 @@ public class GeneralUser {
                     ));
                 } else {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                    if (!proceduresResultSet.getString("organs_affected").isEmpty()) {
-                        for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                    for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                        if (!organ.isEmpty()) {
                             procedureOrgans.add(Organ.parse(organ));
                         }
                     }

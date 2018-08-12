@@ -464,7 +464,7 @@ public class ClinicianController implements Initializable {
 
         try {
             searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
-            int totalNumberOfResults = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token).size();
+            int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));
 
             usersFound = WindowManager.getDataManager().getUsers().queryUsers(searchMap, token);
@@ -477,6 +477,16 @@ public class ClinicianController implements Initializable {
         } catch (HttpResponseException e) {
             Debugger.error("Failed to perform user search on the server.");
         }
+    }
+
+    public void firstClinicianLoad(){
+        try {
+            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count(token) + " users int total");
+            currentUsers = FXCollections.observableArrayList(WindowManager.getDataManager().getUsers().getAllUsers(token));
+        } catch (HttpResponseException e){
+            Debugger.error("Failed to perform user search on the server.");
+        }
+
     }
 
     /**
