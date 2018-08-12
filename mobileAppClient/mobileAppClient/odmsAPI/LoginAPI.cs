@@ -171,7 +171,7 @@ namespace mobileAppClient.odmsAPI
             {
                 clinician = JsonConvert.DeserializeObject<Clinician>(jsonBody);
             }
-            catch (JsonSerializationException jse)
+            catch (JsonReaderException jse)
             {
                 return false;
             }
