@@ -70,6 +70,10 @@ namespace mobileAppClient
             this.email = email;
         }
 
+        public User()
+        {
+        }
+
         public User ShallowCopy()
         {
             return (User)this.MemberwiseClone();
