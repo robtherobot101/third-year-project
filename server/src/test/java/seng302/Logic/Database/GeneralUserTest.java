@@ -1,34 +1,46 @@
 package seng302.Logic.Database;
 
 import org.junit.Test;
+import seng302.Config.DatabaseConfiguration;
 import seng302.HelperMethods;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.User;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class GeneralUserTest extends GenericTest {
 
     private GeneralUser generalUser = new GeneralUser();
 
     @Test
-    public void getUsers() {
+    public void getUsers() throws SQLException {
+        List<User> expected = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            expected.add(HelperMethods.insertUser(generalUser));
+        }
+        assertTrue(generalUser.getUsers(new HashMap<>()).containsAll(expected));
     }
 
     @Test
-    public void buildUserQuery() {
-    }
+    public void getUserFromId() throws SQLException {
+        User expected = HelperMethods.insertUser(generalUser);
 
-    @Test
-    public void getUserFromId() {
+        assertEquals(expected, generalUser.getUserFromId((int) expected.getId()));
     }
 
     @Test
@@ -38,12 +50,27 @@ public class GeneralUserTest extends GenericTest {
         assertEquals(user, user2);
     }
 
+    /**
+     * Test the function to get users from a raw resultset object from the database
+     * @throws SQLException
+     */
     @Test
-    public void getIdFromUser() {
-    }
+    public void getUserFromResultSet() throws SQLException {
 
-    @Test
-    public void getUserFromResultSet() {
+        User user = HelperMethods.insertUser(generalUser);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT * FROM USER WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setString(1, user.getUsername());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                assertEquals(user, generalUser.getUserFromResultSet(resultSet));
+                return;
+            }
+        }
+        fail();
     }
 
     @Test

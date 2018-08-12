@@ -55,7 +55,7 @@ public class UserDonations {
     }
 
     public Organ getOrganFromResultSet(ResultSet resultSet) throws SQLException {
-        return Organ.valueOf(resultSet.getString("name").toUpperCase());
+        return Organ.parse(resultSet.getString("name").toUpperCase());
     }
 
     public Organ getDonationListItemFromName(String donationListItemName, int userId) throws SQLException {

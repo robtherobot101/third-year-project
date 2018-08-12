@@ -1,17 +1,11 @@
 package seng302.Logic.Database;
 
-import com.mchange.util.AssertException;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Config.DatabaseConfiguration;
 import seng302.HelperMethods;
-import seng302.Model.Admin;
 import seng302.Model.Clinician;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -20,8 +14,26 @@ public class GeneralClinicianTest extends GenericTest {
 
     private GeneralClinician generalClinician = new GeneralClinician();
 
+    /**
+     * Test the function to get clinicians from a raw resultset object from the database
+     * @throws SQLException
+     */
     @Test
-    public void getClinicianFromResultSet() {
+    public void getClinicianFromResultSet() throws SQLException {
+        Clinician clinician = HelperMethods.insertClinician(generalClinician);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT * FROM CLINICIAN WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setString(1, clinician.getUsername());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                assertEquals(clinician, generalClinician.getClinicianFromResultSet(resultSet));
+                return;
+            }
+        }
+        fail();
     }
 
     /**
