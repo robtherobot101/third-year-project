@@ -86,7 +86,7 @@ public class WindowManager extends Application {
 
     private static boolean TESTING = true;
 
-    private static Map<Object, Object> config;
+    private static Map<Object, Object> config = new ConfigParser().getConfig();
 
     /**
      * Returns the program icon.
@@ -386,7 +386,6 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) throws IOException {
-        config = new ConfigParser().getConfig();
         TESTING = false;
         if (args.length == 0) {
             launch(args);

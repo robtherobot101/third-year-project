@@ -40,18 +40,9 @@ public class Server {
 
     private ProfileUtils profileUtils;
 
-    private Map<Object, Object> config;
+    private Map<Object, Object> config = new ConfigParser().getConfig();
 
-    private Server() {
-        try {
-            config = new ConfigParser().getConfig();
-        } catch (IOException e) {
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setContentText("Unable to read config file");
-            a.showAndWait();
-            e.printStackTrace();
-        }
-    }
+    private Server() { }
 
     public static Server getInstance() {
         return INSTANCE;

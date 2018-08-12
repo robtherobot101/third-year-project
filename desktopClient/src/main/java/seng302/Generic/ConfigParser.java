@@ -1,5 +1,6 @@
 package seng302.Generic;
 
+import javafx.scene.control.Alert;
 import jdk.nashorn.internal.runtime.ParserException;
 
 import java.io.*;
@@ -28,26 +29,37 @@ public class ConfigParser {
      */
     private Properties properties = new Properties();
 
-    public ConfigParser() throws IOException {
+    public ConfigParser() {
         File file = new File(FILENAME);
-        // If the config file does not exist, create one with the default config.
-        if(!file.exists()){
-            Files.copy(getClass().getResourceAsStream("/" + FILENAME), file.toPath());
-        }
-        properties.load(new FileInputStream(file));
-        // Recreate the config file if the current one is corrupt
-        for(String parameter : PARAMETERS) {
-            if(!properties.containsKey(parameter)) {
-                Debugger.log("Invalid config file, backing up and reverting to default");
-                File backup = new File(FILENAME + ".bak");
-                backup.delete();
-                Files.copy(file.toPath(), backup.toPath());
-                file.delete();
+        try {
+            // If the config file does not exist, create one with the default config.
+            if (!file.exists()) {
                 Files.copy(getClass().getResourceAsStream("/" + FILENAME), file.toPath());
-                break;
             }
+            properties.load(new FileInputStream(file));
+            // Recreate the config file if the current one is corrupt
+            for (String parameter : PARAMETERS) {
+                if (!properties.containsKey(parameter)) {
+                    Debugger.log("Invalid config file, backing up and reverting to default");
+                    File backup = new File(FILENAME + ".bak");
+                    backup.delete();
+                    Files.copy(file.toPath(), backup.toPath());
+                    file.delete();
+                    Files.copy(getClass().getResourceAsStream("/" + FILENAME), file.toPath());
+                    break;
+                }
+            }
+            properties.load(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Could not find or create config file");
+            a.showAndWait();
+            e.printStackTrace();
+        } catch (IOException e) {
+            Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while loading configuration file.");
+            a.showAndWait();
+            e.printStackTrace();
         }
-        properties.load(new FileInputStream(file));
+
     }
 
     /**
