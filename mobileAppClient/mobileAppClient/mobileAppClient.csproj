@@ -26,7 +26,6 @@
     <Folder Include="MenuItems\" />
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
-    <Folder Include="Google\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />
@@ -53,6 +52,9 @@
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Login\GooglePage.xaml.cs">
+      <DependentUpon>GooglePage.xaml</DependentUpon>
+    </Compile>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\User\DiseasesPage.xaml.cs">
       <DependentUpon>Views\DiseasesPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -74,6 +76,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Login\GooglePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\RegisterPage.xaml">

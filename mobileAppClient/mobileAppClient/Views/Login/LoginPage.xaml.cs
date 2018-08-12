@@ -131,9 +131,18 @@ namespace mobileAppClient
 
         }
 
-        void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
+        async void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
-            Console.WriteLine("Not implemented yet");
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                await DisplayAlert(
+                    "Failed to Login",
+                    "Server unavailable, check connection",
+                    "OK");
+                return;
+            }
+
+            await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this)));
         }
     }
 }
