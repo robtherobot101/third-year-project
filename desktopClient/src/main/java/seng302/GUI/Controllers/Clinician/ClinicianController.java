@@ -643,7 +643,14 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
+                        try{
+                            User latestCopy = WindowManager.getDataManager().getUsers().getUser((long)row.getItem().getId(), token);
+                            row.setItem(latestCopy);
+                            WindowManager.newCliniciansUserWindow(latestCopy, token);
+
+                        } catch (HttpResponseException e) {
+                            Debugger.error("Failed to open user window. User could not be fetched from the server.");
+                        }
                     }
                 });
                 return row;
