@@ -136,8 +136,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * Updates the organs in the available organs table
      */
     public void updateOrgans() {
+        HashMap filterParams = new HashMap();
+        if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
+            filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
+        }
+        if (organFilter.getSelectionModel().getSelectedItem() != "All Organs") {
+            filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
+        }
         try {
-            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(new HashMap(),token));
+            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans( filterParams,token));
             setInitTimeLeft(temp);
             expiryList.clear();
             User lastUser = null;
@@ -178,30 +185,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
             return null;
         } catch (NullPointerException e) {
             return null;
-        }
-    }
-
-    public void filterOrgans(){
-        HashMap filterParams = new HashMap();
-        if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
-            filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
-        }
-        if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
-            filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
-        }
-        try{
-            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
-            setInitTimeLeft(temp);
-            expiryList.clear();
-            for(DonatableOrgan organ : temp) {
-                if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
-                    addUserInfo(organ);
-                    expiryList.add(organ);
-                }
-            }
-            expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
     }
 
