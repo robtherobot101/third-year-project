@@ -131,13 +131,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * Updates the organs in the available organs table
      */
     public void updateOrgans() {
-        HashMap filterParams = new HashMap();
-        if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
-            filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
-        }
-        if (organFilter.getSelectionModel().getSelectedItem() != "All Organs") {
-            filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
-        }
         try {
             HashMap filterParams = new HashMap();
             if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
