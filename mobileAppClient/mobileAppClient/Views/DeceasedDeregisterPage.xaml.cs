@@ -63,7 +63,7 @@ namespace mobileAppClient.Views
          * WaitingListItems, and saves the changes to the server before
          * poping to the previous page
          */
-        public async void ConfirmButtonClicked()
+        public async void ConfirmButtonClicked(object sender, EventArgs args)
         {
             if(user == null)
             {

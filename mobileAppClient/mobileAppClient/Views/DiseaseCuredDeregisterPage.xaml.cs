@@ -66,7 +66,7 @@ namespace mobileAppClient.Views
          * 
          * This is called whenever the confirm button is pressed.
          */ 
-        public async void ConfirmButtonClicked()
+        public async void ConfirmButtonClicked(object sender, EventArgs args)
         {
             Disease disease = (Disease)DiseasesList.SelectedItem;
             if (disease == null)

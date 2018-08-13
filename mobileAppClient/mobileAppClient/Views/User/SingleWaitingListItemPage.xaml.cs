@@ -97,7 +97,7 @@ namespace mobileAppClient
          * Shows a dialog which allows a user to select a reason for de-registering
          * the selected WaitingListItem.
          */
-        public async void DeregisterButtonClicked()
+        public async void DeregisterButtonClicked(object sender, EventArgs args)
         {
             showDeregisteringOptions(item);
         }

@@ -1,5 +1,4 @@
-﻿using Android.App;
-using mobileAppClient.odmsAPI;
+﻿using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using System;
 using System.Collections.Generic;
@@ -140,7 +139,7 @@ namespace mobileAppClient
         /*
          * Opens a new modal which displays an overview of the tapped WaitingListItem
          */
-        public async void Handle_ItemTapped()
+        public async void Handle_ItemTapped(object sender, EventArgs args)
         {
             WaitingListItem tapped = (WaitingListItem)TransplantList.SelectedItem;
             if(tapped != null)
