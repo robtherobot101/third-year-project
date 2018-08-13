@@ -34,7 +34,7 @@ namespace mobileAppClient
             // For each source
             foreach (var source in sources)
             {
-                var rssString = await ServerConfig.Instance.client.GetStringAsync(source);
+                string rssString = await ServerConfig.Instance.client.GetStringAsync(source);
                 foreach (var element in rssParser.Parse(rssString))
                 {
                     // If the item does not include an image, use a default one

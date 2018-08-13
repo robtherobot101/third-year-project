@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -43,5 +43,11 @@ namespace mobileAppClient.Views
                 UserCountLabel.Text = String.Format("Failed to get result from database ({0})", userCountResult.Item1);
             }
         }
-	}
+
+        public ICommand ClickFeedItem => new Command<string>((url) =>
+        {
+            Console.WriteLine("Opening url");
+            Device.OpenUri(new System.Uri(url));
+        });
+    }
 }

@@ -17,7 +17,17 @@
                             </Grid.RowDefinitions>
                             <Image Grid.RowSpan="2" Aspect="AspectFill" Source="{Binding ImageUrl}"/>
                             <StackLayout Grid.Row="1" BackgroundColor="#80000000" Padding="12">
-                                <Label TextColor="White" Text="{Binding Title}" FontSize="16" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+                                <Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span TextColor="White" Text="{Binding Title}" FontSize="16">
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding ClickFeedItem}" CommandParameter="{Binding MediaUrl}" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
                                 <Label TextColor="White" Text="{Binding Summary}" FontSize="12" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
                             </StackLayout>
                         </Grid>
