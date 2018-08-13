@@ -1,5 +1,5 @@
 ### This is the default configuration file
 
 # Set the address of the server from which the API is served
-server=http://csse-s302g3.canterbury.ac.nz/api/v1
+server=https://csse-s302g3.canterbury.ac.nz/api/v1
 
