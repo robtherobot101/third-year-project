@@ -131,6 +131,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * Updates the organs in the available organs table
      */
     public void updateOrgans() {
+        HashMap filterParams = new HashMap();
+        if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
+            filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
+        }
+        if (organFilter.getSelectionModel().getSelectedItem() != "All Organs") {
+            filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
+        }
         try {
             HashMap filterParams = new HashMap();
             if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
@@ -138,8 +145,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             }
             if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
                 filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
-            }
-            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
+            }List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams,token));
             setInitTimeLeft(temp);
 
             expiryList.clear();
@@ -244,10 +250,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
         } catch (HttpResponseException | NullPointerException e) {
             Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
         }
-    }
-
-    public void filterOrgans(){
-        updateOrgans();
     }
 
     /**
