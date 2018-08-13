@@ -72,20 +72,10 @@ public class ClinicianWaitingListController implements Initializable {
      */
     public void updateTransplantList() {
         try {
-            List<WaitingListItem> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token));
             transplantList.clear();
-            User lastUser = null;
-            for(WaitingListItem item : temp) {
+            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(new HashMap<>(), token)) {
                 if (item.getStillWaitingOn()) {
-                    if (lastUser == null) {
-                        lastUser = addUserInfo(item);
-                    }
-                    if (item.getUserId() == lastUser.getId()){
-                        item.setReceiverName(lastUser.getName());
-                        item.setReceiverRegion(lastUser.getRegion());
-                    } else {
-                        lastUser = addUserInfo(item);
-                    }
+                    addUserInfo(item);
                     transplantList.add(item);
                 }
             }
@@ -122,24 +112,16 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         try {
             transplantList.clear();
-            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers(token);
-            for (User user : users) {
-                for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (item.getStillWaitingOn()) {
-                        if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
-                            if(user.getOrgans().contains(item.getOrganType())){
-                                item.setIsConflicting(true);
-                            }
-
-                            if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
-                                addUserInfo(item);
-                                transplantList.add(item);
-                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && item.getStillWaitingOn()) {
-                                addUserInfo(item);
-                                transplantList.add(item);
-                            }
-                        }
-                    }
+            Map<String, String> params = new HashMap<String, String> ();
+            if(!organSearch.equals("None")) {
+                params.put("organ", organSearch);
+            }
+            params.put("region", regionSearch);
+            List<WaitingListItem> items = WindowManager.getDataManager().getGeneral().getAllWaitingListItems(params, token);
+            for(WaitingListItem item : items) {
+                if(item.getStillWaitingOn()) {
+                    addUserInfo(item);
+                    transplantList.add(item);
                 }
             }
             deregisterReceiverButton.setDisable(true);
