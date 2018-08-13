@@ -101,6 +101,7 @@ public class Server {
             });
 
             path("/users", () -> {
+                post( "/import",          userController::importUsers);
                 get("", (request, response) -> {
                     if (profileUtils.hasAccessToAllUsers(request, response)) {
                         return userController.getUsers(request, response);

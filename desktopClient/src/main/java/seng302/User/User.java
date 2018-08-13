@@ -74,6 +74,7 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length - 1] = lastNames;
         }
+        this.username = email;
 
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;

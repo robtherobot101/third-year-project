@@ -40,6 +40,12 @@ public class UsersM implements UsersDAO {
         users.add(user);
     }
 
+    @Override
+    public void exportUsers(List<User> userList) {
+        // TODO I have no idea how this works help - Mr Buzz
+        Debugger.error("Not implemented");
+    }
+
     /**
      * updates a user
      * @param User the user to update

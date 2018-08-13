@@ -360,7 +360,9 @@ public class AdminController implements Initializable {
                             extension = fileToLoadPath.substring(i+1);
                         }
                         if (extension.equals("csv")) {
-                            loadSuccessful = IO.importUserCSV(fileToLoadPath, token);
+                            IO.importUserCSV(fileToLoadPath, token);
+                            return;
+                            // TODO something
                         } else if (extension.equals("json")) {
                             loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
                         } else {
@@ -893,7 +895,13 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newAdminsUserWindow(row.getItem(), token);
+                        try{
+                            User latestCopy = WindowManager.getDataManager().getUsers().getUser((long)row.getItem().getId(), token);
+                            row.setItem(latestCopy);
+                            WindowManager.newAdminsUserWindow(latestCopy, token);
+                        } catch (HttpResponseException e) {
+                            Debugger.error("Failed to open user window. User could not be fetched from the server.");
+                        }
                     }
                 });
                 return row;

@@ -14,6 +14,7 @@ import seng302.Generic.APIServer;
 import seng302.Generic.Debugger;
 import seng302.Generic.IO;
 import seng302.User.User;
+import seng302.User.UserCSVStorer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -22,10 +23,6 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class UsersDB implements UsersDAO {
     private final APIServer server;
@@ -60,6 +57,15 @@ public class UsersDB implements UsersDAO {
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
         userJson.remove("id");
         server.postRequest(userJson, new HashMap<>(), null, "users");
+    }
+
+    @Override
+    public void exportUsers(List<User> usersToSend) {
+        // Serialise read user list to JSON string
+        JsonParser jp = new JsonParser();
+        UserCSVStorer csvUsers = new UserCSVStorer(usersToSend);
+        JsonObject usersJson = jp.parse(new Gson().toJson(csvUsers)).getAsJsonObject();
+        APIResponse response = server.postRequest(usersJson, new HashMap<>(), "masterToken", "users/import");
     }
 
     /**

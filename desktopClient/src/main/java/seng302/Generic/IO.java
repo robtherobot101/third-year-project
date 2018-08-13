@@ -2,6 +2,8 @@ package seng302.Generic;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
@@ -153,27 +155,102 @@ public class IO {
     }
 
     /**
-     * imports users from csv file
+     * Imports users from csv file
      * @param path the path to the csv file
      * @param token the users token
-     * @return returns true if completed otherwise false
      */
-    public static boolean importUserCSV(String path, String token) {
-        try {
+    public static void importUserCSV(String path, String token) {
+        Task taskToRun = runTestThread(path, token);
+        new Thread(taskToRun).start();
+    }
+
+    private static Task runTestThread(String path, String token) {
+        Task task = new Task<Void>() {
+            @Override
+            public Void call() {
+                final int max = 4;
+
+                // Start the timer
+                long importTimeTaken = System.nanoTime();
+                double duration;
+
+                Debugger.log("importUserCSV called");
+                ProfileReader<User> userReader = new UserReaderCSV();
+                List<User> readUsers = userReader.getProfiles(path);
+                updateProgress(1, max);
+
+                // Get time taken to process on client side
+                duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+                Debugger.log("Time taken to process on clientside: " + duration + "s");
+
+                // Check if no users read
+                if (readUsers.isEmpty()) {
+                    Debugger.log("CSV import, no entries read");
+                    this.failed();
+                }
+                updateProgress(2, max);
+
+                // Send POST request
+                try {
+                    WindowManager.getDataManager().getUsers().exportUsers(readUsers);
+                } catch (IllegalStateException e) {
+                    Debugger.error(e.getStackTrace());
+                    this.failed();
+                }
+                updateProgress(3, max);
+
+                // Get time taken in total (client + POST req)
+                duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+                Debugger.log(readUsers.size() + " entries imported in (total) " + duration + "s");
+
+                updateProgress(4, max);
+                this.succeeded();
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(t -> WindowManager.createAlert(Alert.AlertType.INFORMATION,
+                "Import CSV", "Import successful", "").show());
+        task.setOnCancelled(t -> WindowManager.createAlert(Alert.AlertType.INFORMATION,
+                "Import CSV", "Import failure", "").show());
+        return task;
+    }
+
+    private static void runImportCSVThread(String path) {
+        Thread t = new Thread((Runnable) () -> {
+            // Start the timer
+            long importTimeTaken = System.nanoTime();
+            double duration;
+
             Debugger.log("importUserCSV called");
             ProfileReader<User> userReader = new UserReaderCSV();
             List<User> readUsers = userReader.getProfiles(path);
-            if (readUsers != null) {
-                for(User u : readUsers) {
-                    WindowManager.getDataManager().getUsers().insertUser(u);
-                }
-            }
-            return true;
 
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to import users from CSV.");
-            return false;
-        }
+            // Get time taken to process on client side
+            duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+            Debugger.log("Time taken to process on clientside: " + duration + "s");
+
+            // Check if no users read
+            if (readUsers.isEmpty()) {
+                Debugger.log("CSV import, no entries read");
+                //return false;
+            }
+
+            // Send POST request
+            try {
+                WindowManager.getDataManager().getUsers().exportUsers(readUsers);
+            } catch (IllegalStateException e) {
+                // TODO can someone fill in the more specific exception
+                Debugger.error(e.getLocalizedMessage());
+                //return false;
+            }
+
+            // Get time taken in total (client + POST req)
+            duration = (System.nanoTime() - importTimeTaken) / 1000000000.0;
+            Debugger.log(readUsers.size() + " entries imported in (total) " + duration + "s");
+        });
+
+        t.start();
     }
 
     /**
