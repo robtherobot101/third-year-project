@@ -302,16 +302,17 @@ public class ClinicianAvailableOrgansController implements Initializable{
             public TreeTableRow<Object> call(TreeTableView<Object> tableView) {
                 final TreeTableRow<Object> row = new TreeTableRow<Object>() {
                     public void updateItem(Object item, boolean empty) {
-                        getStyleClass().remove("highlighted-row");
+                        getStyleClass().remove("highlighted-row-organs-25");
                         getStyleClass().remove("highlighted-row-organs-50");
                         getStyleClass().remove("highlighted-row-organs-75");
+                        getStyleClass().remove("highlighted-row-organs-100");
                         super.updateItem(item, empty);
                         if(item != null && item instanceof DonatableOrgan) {
                             DonatableOrgan di = (DonatableOrgan) item;
                             setTooltip(null);
                             if (di.getTimePercent() <  0.25) {
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
+                                if (!getStyleClass().contains("highlighted-row-organs-25")) {
+                                    getStyleClass().add("highlighted-row-organs-25");
                                 }
                             } else if (di.getTimePercent() <  0.50) {
                                 if (!getStyleClass().contains("highlighted-row-organs-50")) {
