@@ -1017,6 +1017,7 @@ public class AdminController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
         setButtonSelected(cliTabButton, false);
+        setButtonSelected(availableOrgansButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
