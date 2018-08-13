@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+
 namespace mobileAppClient
 {
     /*
@@ -15,6 +17,17 @@ namespace mobileAppClient
             this.time = new CustomTime(dateTimeToParse);
         }
 
+        /*
+         * Method to convert a CustomDate to a C# DateTime variable with the
+         * given day, month and year.
+        */
+        public DateTime ToDateTime()
+        {
+            String rawDate = String.Format("{0}/{1}/{2}", this.date.day, this.date.month, this.date.year);
+            DateTime dt = DateTime.ParseExact(rawDate, "d/M/yyyy", CultureInfo.InvariantCulture);
+
+            return dt;
+        }
 
     }
 }
