@@ -1,5 +1,6 @@
 package seng302.GUI.Controllers.Clinician;
 
+import javafx.animation.FadeTransition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -43,7 +44,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     TreeTableView<Object> organsTreeTable;
 
+    @FXML
+    Label refreshSuccessText;
 
+    @FXML
+    Button refreshOrganTable, organsFilterButton;
 
     @FXML
     ComboBox<String> organFilter, regionFilter;
@@ -54,6 +59,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
     private Timer time = new Timer();
     private String token;
     private boolean focused = false;
+    private boolean updated;
+    private FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(3500));
+
 
     public void setToken(String token) {
         this.token = token;
@@ -313,6 +321,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
                                 if (!getStyleClass().contains("highlighted-row-organs-75")) {
                                     getStyleClass().add("highlighted-row-organs-75");
                                 }
+                            } else {
+                                if (!getStyleClass().contains("highlighted-row-organs-100")) {
+                                    getStyleClass().add("highlighted-row-organs-100");
+                                }
                             }
                         }
                     }
@@ -357,4 +369,18 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
         focused = false;
     }
+
+    /**
+     * Refreshes the available organs table and displays a label on a successful update.
+     * Helps reduce server load by removing the need to create an auto update.
+     */
+    public void refreshTable(){
+        updated = false;
+        WindowManager.updateAvailableOrgans();
+        if (updated){
+            refreshSuccessText.setVisible(true);
+            fade.playFromStart();
+        }
+    }
+
 }
