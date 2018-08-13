@@ -12,17 +12,16 @@ namespace mobileAppClient
     public partial class GooglePage : ContentPage
     {
         private LoginPage parentLoginPage;
-        private GoogleServices googleServices;
 
         public GooglePage(LoginPage loginPage)
         {
             InitializeComponent();
             this.parentLoginPage = loginPage;
-            googleServices = new GoogleServices();
+            //googleServices = new GoogleServices();
 
             var webView = new WebView
             {
-                Source = googleServices.apiRequest,
+                //Source = googleServices.apiRequest,
                 HeightRequest = 1
             };
 

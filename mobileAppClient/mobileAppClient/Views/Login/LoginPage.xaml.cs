@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
+using mobileAppClient.Google;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -142,7 +142,9 @@ namespace mobileAppClient
                 return;
             }
 
-            await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this)));
+            Device.OpenUri(new Uri(GoogleServices.GetLoginAPIRequest()));
+
+            //await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this)));
         }
     }
 }

@@ -3,6 +3,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
+using mobileAppClient.Google;
 using Newtonsoft.Json;
 using mobileAppClient.odmsAPI;
 
@@ -33,6 +34,11 @@ namespace mobileAppClient
             MainPage = new MainPage(false);
         }
 
+        public static void GetTokenFromLogin(string code)
+        {
+            GoogleServices.GetUserProfile(code);
+        }
+
         protected override void OnStart()
         {
             // Handle when your app starts
@@ -47,6 +53,5 @@ namespace mobileAppClient
         {
             // Handle when your app resumes
         }
-
     }
 }

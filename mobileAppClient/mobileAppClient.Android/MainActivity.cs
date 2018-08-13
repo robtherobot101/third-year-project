@@ -11,11 +11,15 @@ using System.Threading.Tasks;
 using System.IO;
 using Android.Media;
 using Android.Graphics;
+using mobileAppClient.Google;
 using Xamarin.Forms;
 
 namespace mobileAppClient.Droid
 {
-    [Activity(Label = "mobileAppClient.Android", Icon = "@drawable/donationIcon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "mobileAppClient.Android", Icon = "@drawable/donationIcon", LaunchMode = LaunchMode.SingleInstance, Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+
+    [IntentFilter(new [] {Intent.ActionView}, Categories = new [] {Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "http", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirect")]
+
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         internal static Context ActivityContext { get; private set; }
@@ -218,6 +222,21 @@ namespace mobileAppClient.Droid
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Captures the redirect URI from the Google login
+        /// </summary>
+        /// <param name="intent"></param>
+        protected override void OnNewIntent(Intent intent)
+        {
+            if (intent.Data != null)
+            {
+                var data = intent.Data;
+
+                string queryParameter = data.GetQueryParameter("code");
+                App.GetTokenFromLogin(queryParameter);
             }
         }
     }
