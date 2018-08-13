@@ -201,7 +201,11 @@ public class GeneralDB implements GeneralDAO {
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         }
         if (response.isValidJson()) {
-            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
+            List<DonatableOrgan> organs = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
+            for(DonatableOrgan organ : organs) {
+                System.out.println("Top receivers: "+organ.getTopReceivers());
+            }
+            return organs;
         } else {
             return new ArrayList<>();
         }

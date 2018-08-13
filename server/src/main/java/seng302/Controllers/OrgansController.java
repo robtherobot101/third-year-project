@@ -57,21 +57,21 @@ public class OrgansController {
         }
         try {
             allDonatableOrgans = model.queryOrgans(params);
+            OrganMatching organMatching = new OrganMatching();
+            for(DonatableOrgan organ: allDonatableOrgans){
+                organ.setTopReceivers(organMatching.getTop5Matches(organ));
+            }
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String serializedOrgans = gson.toJson(allDonatableOrgans);
+            System.out.println(serializedOrgans);
+            response.type("application/json");
+            response.status(200);
+            return serializedOrgans;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return e.getMessage();
         }
-        OrganMatching organMatching = new OrganMatching();
-        for(DonatableOrgan organ: allDonatableOrgans){
-            organ.setTopReceivers(organMatching.getTop5Matches(organ));
-        }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String serializedOrgans = gson.toJson(allDonatableOrgans);
-
-        response.type("application/json");
-        response.status(200);
-        return serializedOrgans;
     }
 
     /**

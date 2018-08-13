@@ -53,8 +53,6 @@ abstract class TestFXTest extends ApplicationTest {
                 e.printStackTrace();
             }
         });
-
-
     }
 
     @After

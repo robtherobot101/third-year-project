@@ -1,11 +1,17 @@
 package seng302.GUI.Controllers.Clinician;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ProgressBarTreeTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
@@ -28,11 +34,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     AnchorPane organsPane;
 
-    @FXML
-    TableView organsTable;
 
     @FXML
-    TableColumn organColumn, nameColumn, countdownColumn, dateOfDeathColumn, regionColumn;
+    TreeTableColumn<Object, String> organColumn, nameColumn, countdownColumn, dateOfDeathColumn, organRegionColumn, receiverRegionColumn;
+
+    TreeTableColumn<Object, Double> progressCol;
+
+    @FXML
+    TreeTableView<Object> organsTreeTable;
+
 
 
     @FXML
@@ -40,9 +50,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
-
-    //This is filler bc  I don't know how tree tables work yet
-    private ObservableList<DonatableOrgan> expiryList = FXCollections.observableArrayList();
 
     private Timer time = new Timer();
     private String token;
@@ -56,6 +63,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
         return token != null;
     }
 
+
+    List<DonatableOrgan> expiryList = new ArrayList<>();
 
     /**
      * Sets the initial time left values for all list items.
@@ -95,6 +104,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * This timer runs in a background thread, and with only 1 timer running SHOULD be real time reliable.
      */
     public void initTimer(){
+
         // get data from server and load them into the tree table or whatever
 
         //set up the timer
@@ -104,16 +114,14 @@ public class ClinicianAvailableOrgansController implements Initializable{
         time = new Timer();
         time.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                for (DonatableOrgan organ : expiryList){
-                    if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
-                        //for each item set timeLeft -1
-                        organ.tickTimeLeft();
-                    } else {
-                        //...unless it is 0, in which do whatever needs to be done
-                    }
-                    System.out.println("tick, " + LocalDateTime.now());
-                    organsTable.refresh();
+            for (DonatableOrgan organ : expiryList){
+                if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
+                    organ.tickTimeLeft();
+                } else {
+                    //...unless it is 0, in which do whatever needs to be done
                 }
+                organsTreeTable.refresh();
+            }
 
 
             }
@@ -126,16 +134,101 @@ public class ClinicianAvailableOrgansController implements Initializable{
      */
     public void updateOrgans() {
         try {
-            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(new HashMap(),token));
+            HashMap filterParams = new HashMap();
+            if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
+                filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
+            }
+            if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
+                filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
+            }
+            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
             setInitTimeLeft(temp);
+
             expiryList.clear();
-            for(DonatableOrgan organ : temp) {
+            for (DonatableOrgan organ : temp) {
                 if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
                     addUserInfo(organ);
                     expiryList.add(organ);
                 }
             }
             expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
+
+            for (DonatableOrgan don : expiryList) {
+                System.out.println("DON: " + don.getTimeLeftString());
+            }
+
+            System.out.println("there are " + expiryList.size() + " items in expiryList when updating organs");
+            TreeItem<Object> root = new TreeItem<>();
+            for (DonatableOrgan organ : expiryList) {
+                TreeItem expiringOrganItem = new TreeItem<>(organ);
+                for (int receiverId : organ.getTopReceivers()) {
+                    User receiver = WindowManager.getDataManager().getUsers().getUser(receiverId, token);
+                    expiringOrganItem.getChildren().add(new TreeItem<>(receiver));
+                }
+                root.getChildren().add(expiringOrganItem);
+            }
+
+            organColumn.setCellValueFactory(
+                    param -> {
+                        if (param.getValue().getValue() instanceof DonatableOrgan) {
+                            return new ReadOnlyStringWrapper(((DonatableOrgan) param.getValue().getValue()).getOrganType().toString());
+                        } else {
+                            return new ReadOnlyStringWrapper("");
+                        }
+                    }
+            );
+
+            nameColumn.setCellValueFactory(
+                    param -> {
+                        if (param.getValue().getValue() instanceof User) {
+                            return new ReadOnlyStringWrapper(((User) param.getValue().getValue()).getName());
+                        } else {
+                            return new ReadOnlyStringWrapper("");
+                        }
+                    }
+            );
+
+            countdownColumn.setCellValueFactory(
+                    param -> {
+                        if (param.getValue().getValue() instanceof DonatableOrgan) {
+                            return new ReadOnlyStringWrapper(((DonatableOrgan) param.getValue().getValue()).getTimeLeftString());
+                        } else {
+                            return new ReadOnlyStringWrapper("");
+                        }
+                    }
+            );
+
+            dateOfDeathColumn.setCellValueFactory(
+                    param -> {
+                        if (param.getValue().getValue() instanceof DonatableOrgan) {
+                            return new ReadOnlyStringWrapper(((DonatableOrgan) param.getValue().getValue()).getTimeOfDeath().format(User.dateTimeFormat));
+                        } else {
+                            return new ReadOnlyStringWrapper("");
+                        }
+                    }
+            );
+
+            organRegionColumn.setCellValueFactory(
+                    param -> {
+                        if (param.getValue().getValue() instanceof DonatableOrgan) {
+                            return new ReadOnlyStringWrapper(((DonatableOrgan) param.getValue().getValue()).getReceiverDeathRegion());
+                        } else {
+                            return new ReadOnlyStringWrapper("");
+                        }
+                    }
+            );
+
+            receiverRegionColumn.setCellValueFactory(
+                    param -> {
+                        if (param.getValue().getValue() instanceof User) {
+                            return new ReadOnlyStringWrapper(((User) param.getValue().getValue()).getRegion());
+                        } else {
+                            return new ReadOnlyStringWrapper("");
+                        }
+                    }
+            );
+
+            organsTreeTable.setRoot(root);
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
         }
@@ -158,27 +251,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     }
 
     public void filterOrgans(){
-        HashMap filterParams = new HashMap();
-        if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
-            filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
-        }
-        if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
-            filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
-        }
-        try{
-            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
-            setInitTimeLeft(temp);
-            expiryList.clear();
-            for(DonatableOrgan organ : temp) {
-                if (!organ.getTimeLeft().isNegative() && !organ.getTimeLeft().isZero()) {
-                    addUserInfo(organ);
-                    expiryList.add(organ);
-                }
-            }
-            expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
-        }
+        updateOrgans();
     }
 
     /**
@@ -188,16 +261,18 @@ public class ClinicianAvailableOrgansController implements Initializable{
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        updateOrgans();
+
+        organsTreeTable.setShowRoot(false);
+
         WindowManager.setClinicianAvailableOrgansController(this);
 
-        organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
-        countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeftString"));
-        dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfDeath"));
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverDeathRegion"));
-
         //transplantTable.setItems(transplantList);
-        organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // TODO
+        //organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
 
         ObservableList<String> organSearchlist = FXCollections.observableArrayList();
         Organ[] organsList = Organ.values();
@@ -219,28 +294,31 @@ public class ClinicianAvailableOrgansController implements Initializable{
         regionFilter.setItems(regionSearchlist);
         regionFilter.setValue("All Regions");
 
-        organsTable.setItems(expiryList);
+        // TODO
+        //organsTable.setItems(expiryList);
 
-        organsTable.setRowFactory(new Callback<TableView<DonatableOrgan>, TableRow<DonatableOrgan>>() {
+
+        organsTreeTable.setRowFactory(new Callback<TreeTableView<Object>, TreeTableRow<Object>>() {
             @Override
-            public TableRow<DonatableOrgan> call(TableView<DonatableOrgan> tableView) {
-                final TableRow<DonatableOrgan> row = new TableRow<DonatableOrgan>() {
-                    public void updateItem(DonatableOrgan item, boolean empty) {
-                        super.updateItem(item, empty);
+            public TreeTableRow<Object> call(TreeTableView<Object> tableView) {
+                final TreeTableRow<Object> row = new TreeTableRow<Object>() {
+                    public void updateItem(Object item, boolean empty) {
                         getStyleClass().remove("highlighted-row");
                         getStyleClass().remove("highlighted-row-organs-50");
                         getStyleClass().remove("highlighted-row-organs-75");
-                        setTooltip(null);
-                        if (item != null && !empty) {
-                            if (item.getTimePercent() <  0.25) {
+                        super.updateItem(item, empty);
+                        if(item != null && item instanceof DonatableOrgan) {
+                            DonatableOrgan di = (DonatableOrgan) item;
+                            setTooltip(null);
+                            if (di.getTimePercent() <  0.25) {
                                 if (!getStyleClass().contains("highlighted-row")) {
                                     getStyleClass().add("highlighted-row");
                                 }
-                            } else if (item.getTimePercent() <  0.50) {
+                            } else if (di.getTimePercent() <  0.50) {
                                 if (!getStyleClass().contains("highlighted-row-organs-50")) {
                                     getStyleClass().add("highlighted-row-organs-50");
                                 }
-                            } else if (item.getTimePercent() <  0.75) {
+                            } else if (di.getTimePercent() <  0.75) {
                                 if (!getStyleClass().contains("highlighted-row-organs-75")) {
                                     getStyleClass().add("highlighted-row-organs-75");
                                 }
@@ -248,7 +326,25 @@ public class ClinicianAvailableOrgansController implements Initializable{
                         }
                     }
                 };
-                organsTable.refresh();
+                row.setOnMouseClicked(event -> {
+                    if (!row.isEmpty() && event.getClickCount() == 2 && row.getItem() instanceof User) {
+                        int receiverId = (int)((User) row.getItem()).getId();
+                        try {
+                            WindowManager.newAdminsUserWindow(WindowManager.getDataManager().getUsers().getUser(receiverId, token), token);
+                        } catch (HttpResponseException e) {
+                            Debugger.error("Could not open user window. Failed to fetch user with id: " + receiverId);
+                        }
+                    } else if(!row.isEmpty() && event.getClickCount() == 2 && row.getItem() instanceof DonatableOrgan) {
+                        System.out.println("Clicked organ row");
+                        int donorId = (int)((DonatableOrgan) row.getItem()).getDonorId();
+                        try {
+                            WindowManager.newAdminsUserWindow(WindowManager.getDataManager().getUsers().getUser(donorId, token), token);
+                        } catch (HttpResponseException e) {
+                            Debugger.error("Could not open user window. Failed to fetch user with id: " + donorId);
+                        }
+                    }
+                });
+                organsTreeTable.refresh();
                 return row;
             }
         });
