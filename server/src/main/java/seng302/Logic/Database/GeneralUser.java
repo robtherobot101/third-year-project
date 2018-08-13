@@ -291,9 +291,6 @@ public class GeneralUser {
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
             }
-
-            System.out.println("thing size: " + users.size());
-
             return users;
         }
     }
