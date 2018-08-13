@@ -103,7 +103,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * Creates a timer which ticks every second and updates each organ object, counting down their expiry time by 1 second.
      * This timer runs in a background thread, and with only 1 timer running SHOULD be real time reliable.
      */
-    public void initTimer(){
+    private void initTimer(){
 
         // get data from server and load them into the tree table or whatever
 
@@ -117,8 +117,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
             for (DonatableOrgan organ : expiryList){
                 if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
                     organ.tickTimeLeft();
-                } else {
-                    //...unless it is 0, in which do whatever needs to be done
                 }
                 organsTreeTable.refresh();
             }
@@ -243,10 +241,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
             User user = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
             organ.setReceiverName(user.getName());
             organ.setReceiverDeathRegion(user.getRegionOfDeath());
-        } catch (HttpResponseException e) {
+        } catch (HttpResponseException | NullPointerException e) {
             Debugger.error("Failed to retrieve user with ID: " + organ.getDonorId());
-        } catch (NullPointerException e) {
-
         }
     }
 
