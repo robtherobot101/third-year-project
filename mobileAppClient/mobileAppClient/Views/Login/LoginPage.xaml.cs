@@ -142,7 +142,7 @@ namespace mobileAppClient
                 return;
             }
 
-            Device.OpenUri(new Uri(GoogleServices.GetLoginAPIRequest()));
+            Device.OpenUri(new Uri(GoogleServices.GetLoginAddr()));
 
             //await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this)));
         }
