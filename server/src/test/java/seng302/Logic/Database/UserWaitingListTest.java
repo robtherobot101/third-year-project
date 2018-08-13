@@ -9,6 +9,7 @@ import seng302.Model.WaitingListItem;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -18,31 +19,63 @@ public class UserWaitingListTest extends GenericTest {
     private UserWaitingList userWaitingList = new UserWaitingList();
 
     @Test
-    public void getAllWaitingListItems() {
+    public void getAllWaitingListItems() throws SQLException {
+        User user1 = HelperMethods.insertUser(generalUser);
+        user1.getWaitingListItems().addAll(HelperMethods.makeWaitingListItems((int)user1.getId(), 1));
+        generalUser.patchEntireUser(user1, (int)user1.getId(), true);
+
+        List<WaitingListItem> all = user1.getWaitingListItems();
+        assertEquals(all, userWaitingList.getAllUserWaitingListItems((int) user1.getId()));
+    }/*
+
+    @Test
+    public void getAllUserWaitingListItems() throws SQLException {
+        User user1 = HelperMethods.insertUser(generalUser);
+        user1.getWaitingListItems().addAll(HelperMethods.makeWaitingListItems((int)user1.getId(), 1));
+        generalUser.patchEntireUser(user1, (int)user1.getId(), true);
+
+        User user2 = HelperMethods.insertUser(generalUser);
+        user2.getWaitingListItems().addAll(HelperMethods.makeWaitingListItems((int)user2.getId(), 4));
+        generalUser.patchEntireUser(user2, (int)user2.getId(), true);
+
+        List<WaitingListItem> all = user1.getWaitingListItems();
+        all.addAll(user2.getWaitingListItems());
+        assertEquals(all, userWaitingList.getAllWaitingListItems());
     }
 
     @Test
-    public void getAllUserWaitingListItems() {
+    public void getWaitingListItemFromId() throws SQLException {
+        User user1 = HelperMethods.insertUser(generalUser);
+        WaitingListItem test = HelperMethods.makeWaitingListItems((int)user1.getId(), 1).get(0);
+        userWaitingList.insertWaitingListItem(test, (int)user1.getId());
+        assertEquals(test, userWaitingList.getWaitingListItemFromId(test.getId(), (int)user1.getId()));
     }
 
     @Test
-    public void getWaitingListItemFromId() {
+    public void insertWaitingListItem() throws SQLException {
+        User user1 = HelperMethods.insertUser(generalUser);
+        WaitingListItem test = HelperMethods.makeWaitingListItems((int)user1.getId(), 1).get(0);
+        userWaitingList.insertWaitingListItem(test, (int)user1.getId());
+        assertEquals(test, generalUser.getUserFromId((int)user1.getId()).getWaitingListItems().get(0));
     }
 
     @Test
-    public void insertWaitingListItem() {
+    public void updateWaitingListItem() throws SQLException {
+        User user1 = HelperMethods.insertUser(generalUser);
+        WaitingListItem test = HelperMethods.makeWaitingListItems((int)user1.getId(), 1).get(0);
+        WaitingListItem test2 = HelperMethods.makeWaitingListItems((int)user1.getId(), 0).get(1);
+        userWaitingList.insertWaitingListItem(test, (int)user1.getId());
+        userWaitingList.updateWaitingListItem(test2, test.getId(), (int)user1.getId());
+        assertEquals(test2, userWaitingList.getWaitingListItemFromId(test.getId(), (int)user1.getId()));
     }
 
     @Test
-    public void updateWaitingListItem() {
-    }
-
-    @Test
-    public void removeWaitingListItem() {
-    }
-
-    @Test
-    public void removeWaitingListItem1() {
+    public void removeWaitingListItem() throws SQLException {
+        User user1 = HelperMethods.insertUser(generalUser);
+        WaitingListItem test = HelperMethods.makeWaitingListItems((int)user1.getId(), 1).get(0);
+        userWaitingList.insertWaitingListItem(test, (int)user1.getId());
+        userWaitingList.removeWaitingListItem((int)user1.getId(), test.getId());
+        assertEquals(0, userWaitingList.getAllWaitingListItems().size());
     }
 
     @Test
@@ -57,5 +90,5 @@ public class UserWaitingListTest extends GenericTest {
 
         User user2 = generalUser.getUserFromId((int) user.getId());
         assertEquals(waitingListItems, user2.getWaitingListItems());
-    }
+    }*/
 }

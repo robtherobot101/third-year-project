@@ -103,6 +103,18 @@ public abstract class HelperMethods {
     }
 
     /**
+     * Create a list of waiting list items
+     * @return A list of waiting list items objects
+     */
+    public static ArrayList<WaitingListItem> makeWaitingListItems(int userid, int startIndex) {
+        ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+        waitingListItems.add(new WaitingListItem(Organ.HEART, LocalDate.of(2013 + r.nextInt(10), 3, 14), startIndex, userid, null, 0));
+        waitingListItems.add(new WaitingListItem(Organ.BONE, LocalDate.of(2013 + r.nextInt(10), 3, 14), startIndex+1, userid, null, 0));
+        waitingListItems.add(new WaitingListItem(Organ.SKIN, LocalDate.of(2013 + r.nextInt(10), 3, 14), startIndex+2, userid, null, 0));
+        return waitingListItems;
+    }
+
+    /**
      * Create a list of random country names
      * @return A list of procedure objects
      */
