@@ -24,7 +24,7 @@ public interface GeneralDAO {
 
     boolean isUniqueIdentifier(String username) throws HttpResponseException;
 
-    List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException;
+    List<WaitingListItem> getAllWaitingListItems(Map<String, String> params, String token) throws HttpResponseException;
 
     boolean status() throws HttpResponseException, ConnectException;
 

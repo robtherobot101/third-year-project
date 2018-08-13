@@ -142,8 +142,8 @@ public class GeneralDB implements GeneralDAO {
      * @throws HttpResponseException throws if cannot connect to the server
      */
     @Override
-    public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), token, "waitingListItems");
+    public List<WaitingListItem> getAllWaitingListItems(Map<String, String> params, String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(params, token, "waitingListItems");
         if(response == null){
             return new ArrayList<>();
         }

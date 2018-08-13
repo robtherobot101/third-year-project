@@ -152,13 +152,14 @@ public class GeneralM implements GeneralDAO {
         return true;
     }
 
+
     /**
      * gets all the waiting list items
      * @param token the users token
      * @return returns all waiting list items
      * @throws HttpResponseException throws if cannot connect to the server
      */
-    public List<WaitingListItem> getAllWaitingListItems(String token) throws HttpResponseException {
+    public List<WaitingListItem> getAllWaitingListItems(Map<String, String> params, String token) throws HttpResponseException {
         List<WaitingListItem> items = new ArrayList<>();
         for(User u : users.getAllUsers(null)) {
             for(WaitingListItem i : u.getWaitingListItems()) {
