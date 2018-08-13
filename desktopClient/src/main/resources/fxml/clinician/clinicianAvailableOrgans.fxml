@@ -14,10 +14,10 @@
          <TreeTableColumn fx:id="regionColumn1" prefWidth="112.0" text="Organ">
             <columns>
              <TreeTableColumn fx:id="organColumn" prefWidth="117.0" text="Type" />
-               <TreeTableColumn fx:id="organRegionColumn" prefWidth="112.0" text="Region" />
+               <TreeTableColumn fx:id="organRegionColumn" prefWidth="100.0" text="Region" />
                <TreeTableColumn fx:id="dateOfDeathColumn" prefWidth="117.0" text="Donor Death Date" />
-               <TreeTableColumn fx:id="countdownColumn" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="112.0" text="Time Left" />
-               <TreeTableColumn fx:id="organColumn1" prefWidth="117.0" text="Progress" />
+               <TreeTableColumn fx:id="countdownColumn"  prefWidth="112.0" text="Time Left" />
+               <!--<TreeTableColumn fx:id="organColumn1" prefWidth="117.0" text="Progress" />-->
             </columns>
          </TreeTableColumn>
          <TreeTableColumn maxWidth="386.0" minWidth="50.0" prefWidth="172.0" text="Potential Receiver">

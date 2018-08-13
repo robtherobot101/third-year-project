@@ -663,6 +663,7 @@ public class ClinicianController implements Initializable {
     private void hideAllTabs() {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
+        setButtonSelected(organListButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);

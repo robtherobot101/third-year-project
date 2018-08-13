@@ -25,6 +25,9 @@ public class OrganMatching {
      * @return returns truew if they are in the correct age range, otherwise false
      */
     private boolean isWithinAgeRange(User donor, User receiver){
+        if (receiver.getDateOfDeath() == null){
+            return false;
+        }
         if (donor.getAgeDouble() == receiver.getAgeDouble()){
             return true;
         } else if (donor.getAgeDouble() < 12 && receiver.getAgeDouble() < 12){

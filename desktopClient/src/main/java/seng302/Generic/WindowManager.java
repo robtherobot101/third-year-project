@@ -471,7 +471,7 @@ public class WindowManager extends Application {
 
         APIServer server;
         if(TESTING) server = new APIServer(testingServer);
-        else server = new APIServer(localServer);
+        else server = new APIServer(properServer);
 
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);

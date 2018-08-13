@@ -269,7 +269,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         //transplantTable.setItems(transplantList);
         // TODO
-        //organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        organsTreeTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
 
 
