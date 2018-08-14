@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 import seng302.User.Procedure;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -50,7 +50,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         loginAsDefaultClinician();
 
         System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
-        // Click on the Created User in clinician table and enter the medications panel.
+        // Click on the Created user in clinician table and enter the medications panel.
         doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
@@ -249,7 +249,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         sleep(200);
         clickOn("#exitOK");
 
-        //Check if procedure added is correct in the Medication Array List of the User.
+        //Check if procedure added is correct in the Medication Array List of the user.
         TableView donorList = lookup("#profileTable").queryTableView();
         User topDonor = (User) donorList.getItems().get(0);
         assertTrue(topDonor.getPendingProcedures().get(0).getSummary().equalsIgnoreCase("Arm Transplant"));

@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
