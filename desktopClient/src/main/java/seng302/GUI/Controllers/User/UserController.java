@@ -17,15 +17,15 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
  * Class which handles all the logic for the User Window.

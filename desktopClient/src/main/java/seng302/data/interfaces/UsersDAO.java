@@ -1,4 +1,4 @@
-package seng302.Data.Interfaces;
+package seng302.data.interfaces;
 
 import javafx.scene.image.Image;
 import org.apache.http.client.HttpResponseException;

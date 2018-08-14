@@ -8,7 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
@@ -16,7 +16,6 @@ import seng302.User.WaitingListItem;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 

@@ -1,10 +1,8 @@
-package seng302.Data.Interfaces;
+package seng302.data.interfaces;
 
 import org.apache.http.client.HttpResponseException;
-import seng302.Generic.APIResponse;
-import seng302.Generic.Country;
+import seng302.generic.Country;
 import seng302.User.DonatableOrgan;
-import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.ConnectException;
@@ -34,5 +32,5 @@ public interface GeneralDAO {
 
     void updateCountries(List<Country> countries, String token) throws HttpResponseException;
 
-    List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String Token) throws HttpResponseException;
+    List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String Token) throws HttpResponseException;
 }

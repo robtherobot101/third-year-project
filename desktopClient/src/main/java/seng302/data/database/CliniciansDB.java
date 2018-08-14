@@ -1,14 +1,15 @@
-package seng302.Data.Database;
+package seng302.data.database;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
-import seng302.Data.Interfaces.CliniciansDAO;
-import seng302.Generic.APIResponse;
-import seng302.Generic.APIServer;
+import seng302.data.interfaces.CliniciansDAO;
+import seng302.generic.APIResponse;
+import seng302.generic.APIServer;
 import seng302.User.Clinician;
+import seng302.generic.Debugger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class CliniciansDB implements CliniciansDAO {
     private final APIServer server;
+    private String clinicians = "clinicians";
 
     public CliniciansDB(APIServer server) {
         this.server = server;
@@ -30,9 +32,9 @@ public class CliniciansDB implements CliniciansDAO {
     public void insertClinician(Clinician clinician, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
-        APIResponse response = server.postRequest(clinicianJson, new HashMap<>(), token, "clinicians");
+        APIResponse response = server.postRequest(clinicianJson, new HashMap<>(), token, clinicians);
         if(response == null) return;
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -46,9 +48,9 @@ public class CliniciansDB implements CliniciansDAO {
     public void updateClinician(Clinician clinician, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
-        APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), token, "clinicians", String.valueOf(clinician.getStaffID()));
+        APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), token, clinicians, String.valueOf(clinician.getStaffID()));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -58,8 +60,8 @@ public class CliniciansDB implements CliniciansDAO {
      * @param token the users token
      * @return returns all the clinicians from the server
      */
-    public ArrayList<Clinician> getAllClinicians(String token) {
-        APIResponse response = server.getRequest(new HashMap<>(), token, "clinicians");
+    public List<Clinician> getAllClinicians(String token) {
+        APIResponse response = server.getRequest(new HashMap<>(), token, clinicians);
         if(response == null){
             return new ArrayList<>();
         }

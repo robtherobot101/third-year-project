@@ -8,9 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import seng302.Generic.Cache;
-import seng302.Generic.IO;
-import seng302.Generic.WindowManager;
+import seng302.generic.Cache;
+import seng302.generic.IO;
+import seng302.generic.WindowManager;
 import seng302.User.Medication.DrugInteraction;
 import seng302.User.Medication.InteractionApi;
 import seng302.User.Medication.Mapi;
@@ -159,7 +159,7 @@ public class UserMedicationsController extends UserTabController implements Init
     }
 
     /**
-     * Converts a String ArrayList query from Generic/Mapi to a single string with each ingredient separated by a newline
+     * Converts a String ArrayList query from generic/Mapi to a single string with each ingredient separated by a newline
      *
      * @param ApiQueryResult String ArrayList returned from a call to Mapi.activeIngredients
      * @return String of newline separated ingredients

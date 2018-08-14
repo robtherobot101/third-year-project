@@ -1,13 +1,14 @@
-package seng302.Data.Database;
+package seng302.data.database;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
-import seng302.Data.Interfaces.AdminsDAO;
-import seng302.Generic.APIResponse;
-import seng302.Generic.APIServer;
+import seng302.data.interfaces.AdminsDAO;
+import seng302.generic.APIResponse;
+import seng302.generic.APIServer;
+import seng302.generic.Debugger;
 import seng302.User.Admin;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class AdminsDB implements AdminsDAO {
     private final APIServer server;
+    private String admins = "admins";
 
     /**
      * constructor method to create a adminsDB object
@@ -29,9 +31,9 @@ public class AdminsDB implements AdminsDAO {
     public void insertAdmin(Admin admin, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
-        APIResponse response = server.postRequest(adminJson, new HashMap<>(), token, "admins");
+        APIResponse response = server.postRequest(adminJson, new HashMap<>(), token, admins);
         if(response == null) return;
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -39,15 +41,15 @@ public class AdminsDB implements AdminsDAO {
     public void updateAdminDetails(Admin admin, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
-        APIResponse response = server.patchRequest(adminJson, new HashMap<>(), token, "admins", String.valueOf(admin.getStaffID()));
+        APIResponse response = server.patchRequest(adminJson, new HashMap<>(), token, admins, String.valueOf(admin.getStaffID()));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     public Collection<Admin> getAllAdmins(String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), token, "admins");
+        APIResponse response = server.getRequest(new HashMap<>(), token, admins);
         if(response == null){
             return new ArrayList<>();
         }
@@ -63,7 +65,7 @@ public class AdminsDB implements AdminsDAO {
 
     @Override
     public Admin getAdmin(long id, String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), token, "admins", String.valueOf(id));
+        APIResponse response = server.getRequest(new HashMap<>(), token, admins, String.valueOf(id));
         if(response == null){
             return null;
         }

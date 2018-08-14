@@ -1,7 +1,7 @@
-package seng302.Data.Local;
+package seng302.data.local;
 
-import seng302.Data.Interfaces.CliniciansDAO;
-import seng302.Generic.Debugger;
+import seng302.data.interfaces.CliniciansDAO;
+import seng302.generic.Debugger;
 import seng302.User.Clinician;
 
 import java.util.ArrayList;
@@ -34,13 +34,13 @@ public class CliniciansM implements CliniciansDAO {
 
     /**
      * updates a clinician
-     * @param Clinician the clinician to update
+     * @param clinician the clinician to update
      * @param token the users token
      */
     @Override
-    public void updateClinician(Clinician Clinician, String token) {
-        removeClinician(Clinician.getStaffID(), null);
-        clinicians.add(Clinician);
+    public void updateClinician(Clinician clinician, String token) {
+        removeClinician(clinician.getStaffID(), null);
+        clinicians.add(clinician);
     }
 
     /**

@@ -25,14 +25,14 @@ import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
-import seng302.Data.Interfaces.GeneralDAO;
+import seng302.data.interfaces.GeneralDAO;
 import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
@@ -46,8 +46,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import static seng302.Generic.IO.getJarPath;
-import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.generic.IO.getJarPath;
+import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
  * Class to control all the logic for the currentAdmin interactions with the application.
@@ -311,7 +311,7 @@ public class AdminController implements Initializable {
                 Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
 
-            //TODO PUT in save to Database for Users and Clinicians
+            //TODO PUT in save to database for Users and Clinicians
             //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
             //IO.saveUsers(IO.getUserPath(), LoginType.USER);
             //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
@@ -327,7 +327,7 @@ public class AdminController implements Initializable {
 
         // Formats the initial load dialog window
         Alert loadDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        loadDialog.setTitle("Confirm Data Type");
+        loadDialog.setTitle("Confirm data Type");
         loadDialog.setHeaderText("Please Select the Profile Type to Import");
         loadDialog.setContentText("This will close other open ODMS windows.");
 
@@ -1085,7 +1085,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Resets the database. Called by Database , then Reset
+     * Resets the database. Called by database , then Reset
      */
     public void databaseReset() {
 
@@ -1108,7 +1108,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Resamples the database. Called by Database, then Resample
+     * Resamples the database. Called by database, then Resample
      */
     public void databaseResample() {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",

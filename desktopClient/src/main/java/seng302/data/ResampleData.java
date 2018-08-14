@@ -1,18 +1,17 @@
-package seng302.Data;
+package seng302.data;
 
 import seng302.User.Admin;
 import seng302.User.Attribute.ProfileType;
 import seng302.User.Clinician;
 import seng302.User.User;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ResampleData {
-
+    private static String string = "default";
     /**
      * the local data to resample
      * @return returns all the users
@@ -36,7 +35,7 @@ public class ResampleData {
         User user8 = new User("Andrew", new String[]{"Daveo"}, "Davidson", LocalDate.now(), "andrew", "andrew@andrew.com", "andrew");
         allUsers.add(user8);
         for(int i = 0; i < allUsers.size(); i++) {
-            allUsers.get(i).setId(i+1);
+            allUsers.get(i).setId((long)i+1);
         }
         return allUsers;
     }
@@ -46,7 +45,7 @@ public class ResampleData {
      * @return returns the clinicians
      */
     public static List<Clinician> clinicians() {
-        return Arrays.asList(new Clinician("default","default","default clinician",ProfileType.CLINICIAN,1));
+        return Arrays.asList(new Clinician(string, string,"default clinician",ProfileType.CLINICIAN,1));
     }
 
     /**
@@ -54,7 +53,7 @@ public class ResampleData {
      * @return returns the admin
      */
     public static List<Admin> admins() {
-        Admin defaultAdmin = new Admin("admin","default","default admin");
+        Admin defaultAdmin = new Admin("admin", string,"default admin");
         defaultAdmin.setStaffID(1);
         return Arrays.asList(defaultAdmin);
     }

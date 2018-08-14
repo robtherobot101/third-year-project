@@ -5,7 +5,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.DataManager;
 import seng302.User.Disease;
 
 import java.sql.SQLException;

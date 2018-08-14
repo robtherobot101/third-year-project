@@ -1,7 +1,7 @@
-package seng302.Data.Local;
+package seng302.data.local;
 
-import seng302.Data.Interfaces.AdminsDAO;
-import seng302.Generic.Debugger;
+import seng302.data.interfaces.AdminsDAO;
+import seng302.generic.Debugger;
 import seng302.User.Admin;
 
 import java.util.ArrayList;

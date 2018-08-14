@@ -1,13 +1,13 @@
-package seng302.Data.Database;
+package seng302.data.database;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.HttpResponseException;
-import seng302.Data.Interfaces.GeneralDAO;
-import seng302.Generic.APIResponse;
-import seng302.Generic.APIServer;
-import seng302.Generic.Country;
-import seng302.Generic.Debugger;
+import seng302.data.interfaces.GeneralDAO;
+import seng302.generic.APIResponse;
+import seng302.generic.APIServer;
+import seng302.generic.Country;
+import seng302.generic.Debugger;
 import seng302.User.*;
 
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ public class GeneralDB implements GeneralDAO {
      * @return returns the response from the server
      */
     public Map<Object, String> loginUser(String usernameEmail, String password) {
+        String accountType = "accountType";
         Map<Object, String> responseMap = new HashMap<>();
 
         Debugger.log("Logging in with server.");
@@ -39,13 +40,13 @@ public class GeneralDB implements GeneralDAO {
         if(response == null) return responseMap;
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
-            if (serverResponse.get("accountType") == null) {
+            if (serverResponse.get(accountType) == null) {
                 responseMap.put(new Gson().fromJson(serverResponse, User.class), response.getToken());
                 return responseMap;
-            } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
+            } else if (serverResponse.get(accountType).getAsString().equals("CLINICIAN")) {
                 responseMap.put(new Gson().fromJson(serverResponse, Clinician.class), response.getToken());
                 return responseMap;
-            } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
+            } else if (serverResponse.get(accountType).getAsString().equals("ADMIN")) {
                 responseMap.put(new Gson().fromJson(serverResponse, Admin.class), response.getToken());
                 return responseMap;
             } else {
@@ -192,7 +193,7 @@ public class GeneralDB implements GeneralDAO {
      * @throws HttpResponseException throws if cannot connect to the server
      */
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String token) throws HttpResponseException {
+    public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(filterParams, token, "organs");
         if (response == null) {
             return new ArrayList<>();
@@ -203,7 +204,7 @@ public class GeneralDB implements GeneralDAO {
         if (response.isValidJson()) {
             List<DonatableOrgan> organs = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
             for(DonatableOrgan organ : organs) {
-                System.out.println("Top receivers: "+organ.getTopReceivers());
+                Debugger.log("Top receivers: "+organ.getTopReceivers());
             }
             return organs;
         } else {

@@ -25,8 +25,8 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
@@ -35,7 +35,7 @@ import seng302.User.User;
 import java.net.URL;
 import java.util.*;
 
-import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.

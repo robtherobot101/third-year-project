@@ -1,9 +1,8 @@
-package seng302.Data.Local;
+package seng302.data.local;
 
 import javafx.scene.image.Image;
-import seng302.Data.Interfaces.UsersDAO;
-import seng302.Generic.Debugger;
-import seng302.User.Attribute.Gender;
+import seng302.data.interfaces.UsersDAO;
+import seng302.generic.Debugger;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 
@@ -42,19 +41,18 @@ public class UsersM implements UsersDAO {
 
     @Override
     public void exportUsers(List<User> userList) {
-        // TODO I have no idea how this works help - Mr Buzz
-        Debugger.error("Not implemented");
+        // does nothing on local
     }
 
     /**
      * updates a user
-     * @param User the user to update
+     * @param user the user to update
      * @param token the users token
      */
     @Override
-    public void updateUser(User User, String token) {
-        removeUser(User.getId(), null);
-        users.add(User);
+    public void updateUser(User user, String token) {
+        removeUser(user.getId(), null);
+        users.add(user);
     }
 
 
@@ -73,7 +71,7 @@ public class UsersM implements UsersDAO {
      * @param term The search term which will be broken into space separated tokens
      * @return A sorted list of results
      */
-    public ArrayList<User> getUsersByNameAlternative(String term) {
+    public List<User> getUsersByNameAlternative(String term) {
         if (term.equals("")) {
             ArrayList<User> sorted = new ArrayList<>(users);
             sorted.sort(Comparator.comparing(User::getName));
@@ -100,18 +98,18 @@ public class UsersM implements UsersDAO {
                 return o1.getName().compareTo(o2.getName());
             }
 
-            System.out.println("{");
-            System.out.println("Name:" + o1.getName() + ", score: " + o1Score);
-            System.out.println("Name:" + o2.getName() + ", score: " + o2Score);
-            System.out.println("Score comparison: " + scoreComparison);
-            System.out.println("}");
+            Debugger.log("{");
+            Debugger.log("Name:" + o1.getName() + ", score: " + o1Score);
+            Debugger.log("Name:" + o2.getName() + ", score: " + o2Score);
+            Debugger.log("Score comparison: " + scoreComparison);
+            Debugger.log("}");
 
             return scoreComparison;
         });
-        System.out.println(matched.get(0).getName());
+        Debugger.log(matched.get(0).getName());
 
         Collections.reverse(matched);
-        System.out.println(matched.get(0).getName());
+        Debugger.log(matched.get(0).getName());
         return matched;
     }
 
@@ -278,22 +276,51 @@ public class UsersM implements UsersDAO {
         int startIndex;
         int count;
 
-        if(searchMap.containsKey("startIndex")) {
-            startIndex = Integer.parseInt(searchMap.get("startIndex"));
-        } else {
-            startIndex = 0;
-        }
+        startIndex = getStartIndex(searchMap);
 
-        if(searchMap.containsKey("count")) {
-            count = Integer.parseInt(searchMap.get("count"));
-        } else {
-            count = 100;
-        }
+        count =getcount(searchMap);
 
         if(searchMap.containsKey("name")) {
             queriedUsers.retainAll(getUsersByNameAlternative(searchMap.get("name")));
         }
 
+
+        usersWithPassword(searchMap, queriedUsers);
+
+        usersWithUserType(searchMap, queriedUsers);
+
+        usersWithSameAge(searchMap, queriedUsers);
+
+        usersWithSameGender(searchMap, queriedUsers);
+
+        usersWithSameRegion(searchMap, queriedUsers);
+
+        usersWithSameOrgans(searchMap, queriedUsers);
+
+        return queriedUsers.subList(startIndex, Math.min(startIndex + count, queriedUsers.size()));
+    }
+
+    private int getStartIndex(Map<String, String> searchMap){
+        int startIndex;
+        if(searchMap.containsKey("startIndex")) {
+            startIndex = Integer.parseInt(searchMap.get("startIndex"));
+        } else {
+            startIndex = 0;
+        }
+        return startIndex;
+    }
+
+    private int getcount(Map<String, String> searchMap){
+        int count;
+        if(searchMap.containsKey("count")) {
+            count = Integer.parseInt(searchMap.get("count"));
+        } else {
+            count = 100;
+        }
+        return count;
+    }
+
+    private void usersWithPassword(Map<String, String> searchMap, List<User> queriedUsers){
         if(searchMap.containsKey("password")) {
             List<User> usersWithSamePass = new ArrayList<>();
             for(User u : users) {
@@ -303,22 +330,39 @@ public class UsersM implements UsersDAO {
             }
             queriedUsers.retainAll(usersWithSamePass);
         }
+    }
 
+    private void usersWithUserType(Map<String, String> searchMap, List<User> queriedUsers){
+        String userType = "userType";
         if(searchMap.containsKey("userType")) {
             List<User> usersOfSameType = new ArrayList<>();
             for(User u : users) {
-                if(searchMap.get("userType").toLowerCase().equals("neither") && !u.isDonor() && !u.isReceiver()) {
+                if(searchMap.get(userType).toLowerCase().equalsIgnoreCase("neither") && !u.isDonor() && !u.isReceiver()) {
                     usersOfSameType.add(u);
-                } else if(searchMap.get("userType").toLowerCase().equals("donor") && u.isDonor() && !u.isReceiver()) {
+                } else if(searchMap.get(userType).equalsIgnoreCase("donor") && u.isDonor() && !u.isReceiver()) {
                     usersOfSameType.add(u);
-                } else if(searchMap.get("userType").toLowerCase().equals("receiver") && !u.isDonor() && u.isReceiver()) {
+                } else if(searchMap.get(userType).equalsIgnoreCase("receiver") && !u.isDonor() && u.isReceiver()) {
                     usersOfSameType.add(u);
                 }
             }
             queriedUsers.retainAll(usersOfSameType);
         }
+    }
 
+    private void usersWithSameGender(Map<String, String> searchMap, List<User> queriedUsers){
+        String gender = "gender";
+        if(searchMap.containsKey(gender)) {
+            List<User> usersOfSameGender = new ArrayList<>();
+            for(User u : users) {
+                if(searchMap.get(gender).equalsIgnoreCase(u.getGender().toString())) {
+                    usersOfSameGender.add(u);
+                }
+            }
+            queriedUsers.retainAll(usersOfSameGender);
+        }
+    }
 
+    private void usersWithSameAge(Map<String, String> searchMap, List<User> queriedUsers){
         if(searchMap.containsKey("age")) {
             List<User> usersOfSameAge = new ArrayList<>();
             for(User u : users) {
@@ -328,36 +372,26 @@ public class UsersM implements UsersDAO {
             }
             queriedUsers.retainAll(usersOfSameAge);
         }
+    }
 
-        if(searchMap.containsKey("gender")) {
-            List<User> usersOfSameGender = new ArrayList<>();
-            for(User u : users) {
-                if(searchMap.get("gender").toLowerCase().equals("male") && u.getGender()== Gender.MALE) {
-                    usersOfSameGender.add(u);
-                } else if(searchMap.get("gender").toLowerCase().equals("female") && u.getGender()== Gender.FEMALE) {
-                    usersOfSameGender.add(u);
-                } else if(searchMap.get("gender").toLowerCase().equals("other") && u.getGender()== Gender.NONBINARY) {
-                    usersOfSameGender.add(u);
-                }
-            }
-            queriedUsers.retainAll(usersOfSameGender);
-        }
-
+    private void usersWithSameRegion(Map<String, String> searchMap, List<User> queriedUsers){
         if(searchMap.containsKey("region")) {
             List<User> usersOfSameRegion = new ArrayList<>();
             for(User u : users) {
-                if(searchMap.get("region").toLowerCase().equals(u.getRegion().toLowerCase())) {
+                if(searchMap.get("region").equalsIgnoreCase(u.getRegion().toLowerCase())) {
                     usersOfSameRegion.add(u);
                 }
             }
             queriedUsers.retainAll(usersOfSameRegion);
         }
+    }
 
+    private void usersWithSameOrgans(Map<String, String> searchMap, List<User> queriedUsers){
         if(searchMap.containsKey("organ")) {
             List<User> usersOfWithSameOrgan = new ArrayList<>();
             for(User u : users) {
                 for(Organ o : u.getOrgans()) {
-                    if(searchMap.get("organ").toLowerCase().equals(o.name().toLowerCase())) {
+                    if(searchMap.get("organ").equalsIgnoreCase(o.name())) {
                         usersOfWithSameOrgan.add(u);
                         break;
                     }
@@ -365,9 +399,8 @@ public class UsersM implements UsersDAO {
             }
             queriedUsers.retainAll(usersOfWithSameOrgan);
         }
-
-        return queriedUsers.subList(startIndex, Math.min(startIndex + count, queriedUsers.size()));
     }
+
 
 
     @Override
@@ -402,10 +435,14 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public void updateUserPhoto(long id, String image) {}
+    public void updateUserPhoto(long id, String image) {
+        // does nothing on local
+    }
 
     @Override
-    public void deleteUserPhoto(long id) {}
+    public void deleteUserPhoto(long id) {
+        // does nothing on local
+    }
 
     @Override
     public void removeUser(long id, String token) {

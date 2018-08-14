@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.Debugger;
+import seng302.generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 

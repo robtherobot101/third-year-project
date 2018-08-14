@@ -1,13 +1,13 @@
-package seng302.Data.Local;
+package seng302.data.local;
 
 import org.apache.http.client.HttpResponseException;
-import seng302.Data.Interfaces.AdminsDAO;
-import seng302.Data.Interfaces.CliniciansDAO;
-import seng302.Data.Interfaces.GeneralDAO;
-import seng302.Data.Interfaces.UsersDAO;
-import seng302.Data.ResampleData;
-import seng302.Generic.Debugger;
-import seng302.Generic.Country;
+import seng302.data.interfaces.AdminsDAO;
+import seng302.data.interfaces.CliniciansDAO;
+import seng302.data.interfaces.GeneralDAO;
+import seng302.data.interfaces.UsersDAO;
+import seng302.data.ResampleData;
+import seng302.generic.Debugger;
+import seng302.generic.Country;
 import seng302.User.*;
 
 import java.util.ArrayList;
@@ -169,13 +169,15 @@ public class GeneralM implements GeneralDAO {
     }
 
     public List<Country> getAllCountries(String token) {
-        return null;
+        return new ArrayList<>();
     }
 
-    public void updateCountries(List<Country> countries, String token) {}
+    public void updateCountries(List<Country> countries, String token) {
+        // does nothing on local
+    }
 
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String Token) {
-        return null;
+    public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) {
+        return new ArrayList<>();
     }
 }

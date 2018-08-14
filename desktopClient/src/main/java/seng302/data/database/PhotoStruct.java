@@ -1,4 +1,4 @@
-package seng302.Data.Database;
+package seng302.data.database;
 
 public class PhotoStruct {
     private String data;

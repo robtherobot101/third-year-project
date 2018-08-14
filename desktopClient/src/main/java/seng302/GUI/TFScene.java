@@ -1,6 +1,6 @@
 package seng302.GUI;
 
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 
 /**
  * An enum to store constants that refer to each GUI window.
