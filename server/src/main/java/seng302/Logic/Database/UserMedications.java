@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserMedications {
 
@@ -68,10 +69,12 @@ public class UserMedications {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
+            String activeIngredientsString = String.join(",", medication.getActiveIngredients());
+            String historyString = String.join(",", medication.getHistory());
 
             statement.setString(1, medication.getName());
-            statement.setString(2, String.join(",", medication.getActiveIngredients()));
-            statement.setString(3, String.join(",", medication.getHistory()));
+            statement.setString(2, String.join(",", activeIngredientsString));
+            statement.setString(3, String.join(",", historyString));
             statement.setInt(4, userId);
             statement.setInt(5, medicationId);
             System.out.println("Update Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
@@ -114,5 +117,51 @@ public class UserMedications {
                 historyList,
                 medicationsResultSet.getInt("id")
         );
+    }
+
+    /**
+     * Replace a user's medications on the database with a new set of medications.
+     *
+     * @param newMedications The list of medications to replace the old one with
+     * @param userId The id of the user to replace medications of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
+        List<Medication> oldMedications = getAllMedications(userId);
+
+        //Ignore all medications that are already on the database and up to date
+        for (int i = oldMedications.size() - 1; i >= 0; i--) {
+            Medication found = null;
+            for (Medication newMedication: newMedications) {
+                if (newMedication.equals(oldMedications.get(i))) {
+                    found = newMedication;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited medications
+                for (Medication newMedication: newMedications) {
+                    if (newMedication.getId() == oldMedications.get(i).getId()) {
+                        updateMedication(newMedication, oldMedications.get(i).getId(), userId);
+                        found = newMedication;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newMedications.remove(found);
+                oldMedications.remove(i);
+            }
+        }
+
+        //Delete all medications from the database that are no longer up to date
+        for (Medication medication: oldMedications) {
+            removeMedication(userId, medication.getId());
+        }
+
+        //Upload all new medications
+        for (Medication medication: newMedications) {
+            insertMedication(medication, userId);
+        }
     }
 }

@@ -2,7 +2,6 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.Procedure;
 import seng302.Model.WaitingListItem;
 
 import java.sql.Connection;
@@ -142,14 +141,17 @@ public class UserWaitingList {
         }
     }
 
-
     public void updateWaitingListItem(WaitingListItem waitingListItem, int waitingListItemId, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "UPDATE WAITING_LIST_ITEM SET organ_type = ?, organ_registered_date = ?, organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND id = ?";
             PreparedStatement statement = connection.prepareStatement(insert);
             statement.setString(1, waitingListItem.getOrganType().toString());
             statement.setDate(2, java.sql.Date.valueOf(waitingListItem.getOrganRegisteredDate()));
-            statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+            if (waitingListItem.getOrganDeregisteredDate() != null) {
+                statement.setDate(3, java.sql.Date.valueOf(waitingListItem.getOrganDeregisteredDate()));
+            } else {
+                statement.setDate(3, null);
+            }
             statement.setInt(4, waitingListItem.getOrganDeregisteredCode());
             statement.setInt(5, userId);
             statement.setInt(6, waitingListItemId);
@@ -175,6 +177,53 @@ public class UserWaitingList {
             statement.setDate(1,java.sql.Date.valueOf(LocalDate.now()));
             statement.setInt(2,5);
             System.out.println("Deletion of Waiting List Item - Organ: " + organ.toString() + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+    }
+
+
+    /**
+     * Replace a user's waiting list items on the database with a new set of waiting list items.
+     *
+     * @param newWaitingListItems The list of waiting list items to replace the old one with
+     * @param userId The id of the user to replace waiting list items of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllWaitingListItems(List<WaitingListItem> newWaitingListItems, int userId) throws SQLException {
+        List<WaitingListItem> oldWaitingListItems = getAllUserWaitingListItems(userId);
+
+        //Ignore all waiting list items that are already on the database and up to date
+        for (int i = oldWaitingListItems.size() - 1; i >= 0; i--) {
+            WaitingListItem found = null;
+            for (WaitingListItem newWaitingListItem: newWaitingListItems) {
+                if (newWaitingListItem.equals(oldWaitingListItems.get(i))) {
+                    found = newWaitingListItem;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited waiting list items
+                for (WaitingListItem newWaitingListItem: newWaitingListItems) {
+                    if (newWaitingListItem.getId() == oldWaitingListItems.get(i).getId()) {
+                        updateWaitingListItem(newWaitingListItem, oldWaitingListItems.get(i).getId(), userId);
+                        found = newWaitingListItem;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newWaitingListItems.remove(found);
+                oldWaitingListItems.remove(i);
+            }
+        }
+
+        //Delete all waiting list items from the database that are no longer up to date
+        for (WaitingListItem waitingListItem: oldWaitingListItems) {
+            removeWaitingListItem(userId, waitingListItem.getId());
+        }
+
+        //Upload all new waiting list items
+        for (WaitingListItem waitingListItem: newWaitingListItems) {
+            insertWaitingListItem(waitingListItem, userId);
         }
     }
 }

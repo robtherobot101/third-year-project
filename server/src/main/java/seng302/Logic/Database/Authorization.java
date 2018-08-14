@@ -21,7 +21,6 @@ public class Authorization {
      * @throws SQLException If there is an error working with the database
      */
     public User loginUser(String usernameEmail, String password) throws SQLException{
-
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password

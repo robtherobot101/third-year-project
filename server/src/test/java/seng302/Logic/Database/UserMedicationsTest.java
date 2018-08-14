@@ -5,9 +5,7 @@ import seng302.HelperMethods;
 import seng302.Model.Medication.Medication;
 import seng302.Model.User;
 
-import java.sql.Array;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class UserMedicationsTest extends GenericTest {
         user.setCurrentMedications(medications1);
         user.setHistoricMedications(medications2);
 
-        generalUser.updateAllMedications(allMedications, (int) user.getId());
+        userMedications.updateAllMedications(allMedications, (int) user.getId());
 
         assertEquals(allMedications, userMedications.getAllMedications((int) user.getId()));
     }
@@ -107,10 +105,19 @@ public class UserMedicationsTest extends GenericTest {
     public void removeMedication() throws SQLException {
         User user = HelperMethods.insertUser(generalUser);
         user.setCurrentMedications(HelperMethods.makeMedications());
-        generalUser.updateAllMedications(user.getCurrentMedications(), (int) user.getId());
+        userMedications.updateAllMedications(user.getCurrentMedications(), (int) user.getId());
         user.setCurrentMedications(userMedications.getAllMedications((int) user.getId()));
         Medication removed = user.getCurrentMedications().remove(0);
         userMedications.removeMedication((int) user.getId(), removed.getId());
         assertFalse(userMedications.getAllMedications((int) user.getId()).contains(removed));
+    }
+
+    @Test
+    public void updateAllMedications() throws SQLException {
+        String[] ingredients = {"water", "Air"};
+        User user = HelperMethods.insertUser(generalUser);
+        List<Medication> medications = HelperMethods.makeMedications();
+        userMedications.updateAllMedications(medications, (int) user.getId());
+        assertEquals(medications, generalUser.getUserFromId((int) user.getId()).getCurrentMedications());
     }
 }

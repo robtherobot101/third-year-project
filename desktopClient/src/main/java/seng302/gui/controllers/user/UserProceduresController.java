@@ -399,8 +399,6 @@ public class UserProceduresController extends UserTabController implements Initi
                 String newDescription;
                 String newDate = "";
 
-
-
                 for (CheckBox organCheckBox: organTickBoxes.values()) {
                     if(organCheckBox.isSelected()) {
                         organsUpdatedAffected.add(Organ.parse(organCheckBox.getText()));

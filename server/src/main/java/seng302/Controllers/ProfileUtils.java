@@ -29,6 +29,7 @@ public class ProfileUtils {
     public int checkToken(String token) {
         try {
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+                // Check all tokens for time expiry
                 PreparedStatement statement = connection.prepareStatement(
                         "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < DATE_SUB(NOW(), INTERVAL 1 DAY)");
                 statement.execute();

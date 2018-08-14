@@ -2,7 +2,6 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.Medication.Medication;
 import seng302.Model.Procedure;
 
 import java.sql.Connection;
@@ -10,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserProcedures {
 
@@ -122,5 +122,51 @@ public class UserProcedures {
                 procedureOrgans,
                 proceduresResultSet.getInt("id")
         );
+    }
+
+    /**
+     * Replace a user's procedures on the database with a new set of procedures.
+     *
+     * @param newProcedures The list of procedures to replace the old one with
+     * @param userId The id of the user to replace procedures of
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllProcedures(List<Procedure> newProcedures, int userId) throws SQLException {
+        List<Procedure> oldProcedures = getAllProcedures(userId);
+
+        //Ignore all procedures that are already on the database and up to date
+        for (int i = oldProcedures.size() - 1; i >= 0; i--) {
+            Procedure found = null;
+            for (Procedure newProcedure: newProcedures) {
+                if (newProcedure.equals(oldProcedures.get(i))) {
+                    found = newProcedure;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited procedures
+                for (Procedure newProcedure: newProcedures) {
+                    if (newProcedure.getId() == oldProcedures.get(i).getId()) {
+                        updateProcedure(newProcedure, oldProcedures.get(i).getId(), userId);
+                        found = newProcedure;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newProcedures.remove(found);
+                oldProcedures.remove(i);
+            }
+        }
+
+        //Delete all procedures from the database that are no longer up to date
+        for (Procedure procedure: oldProcedures) {
+            removeProcedure(userId, procedure.getId());
+        }
+
+        //Upload all new procedures
+        for (Procedure procedure: newProcedures) {
+            insertProcedure(procedure, userId);
+        }
     }
 }

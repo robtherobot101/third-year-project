@@ -319,12 +319,7 @@
                         <Font size="14.0" />
                     </font>
                 </Button>-->
-                <Button fx:id="undoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="699.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Undo" textAlignment="CENTER" AnchorPane.rightAnchor="110.0">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Button>
-                <Button fx:id="redoWelcomeButton" alignment="CENTER" blendMode="SRC_ATOP" disable="true" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Redo" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
+                <Button fx:id="refreshButton" alignment="CENTER" blendMode="SRC_ATOP" layoutX="797.0" layoutY="3.0" mnemonicParsing="false" onAction="#refresh" prefHeight="44.0" prefWidth="89.0" style="-fx-label-padding: 0;" stylesheets="@../../css/flatbutton.css" text="Refresh" textAlignment="CENTER" AnchorPane.rightAnchor="14.0">
                     <font>
                         <Font size="14.0" />
                     </font>

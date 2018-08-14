@@ -19,25 +19,6 @@ public class UserProceduresTest extends GenericTest {
     private UserProcedures userProcedures = new UserProcedures();
 
     /**
-     * Test getting all procedures for a user
-     * @throws SQLException
-     */
-    @Test
-    public void getAllProcedures() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-
-        ArrayList<Procedure> procedures = HelperMethods.makeProcedures();
-        for(Procedure p : procedures) {
-            if(p.getDate().isBefore(LocalDate.now())) user.getPreviousProcedures().add(p);
-            else user.getPendingProcedures().add(p);
-        }
-
-        generalUser.updateAllProcedures(procedures, (int) user.getId());
-
-        assertEquals(procedures, userProcedures.getAllProcedures((int) user.getId()));
-    }
-
-    /**
      * Test inserting a new procedure item into the database
      * @throws SQLException
      */
@@ -104,10 +85,41 @@ public class UserProceduresTest extends GenericTest {
     public void removeProcedure() throws SQLException {
         User user = HelperMethods.insertUser(generalUser);
         user.setPreviousProcedures(HelperMethods.makeProcedures());
-        generalUser.updateAllProcedures(user.getPreviousProcedures(), (int) user.getId());
+        userProcedures.updateAllProcedures(user.getPreviousProcedures(), (int) user.getId());
         user.setPreviousProcedures(userProcedures.getAllProcedures((int) user.getId()));
         Procedure removed = user.getPreviousProcedures().remove(0);
         userProcedures.removeProcedure((int) user.getId(), removed.getId());
         assertFalse(userProcedures.getAllProcedures((int) user.getId()).contains(removed));
+    }
+
+    /**
+     * Test getting all procedures for a user
+     * @throws SQLException
+     */
+    @Test
+    public void getAllProcedures() throws SQLException {
+        User user = HelperMethods.insertUser(generalUser);
+
+        ArrayList<Procedure> procedures = HelperMethods.makeProcedures();
+        for(Procedure p : procedures) {
+            if(p.getDate().isBefore(LocalDate.now())) user.getPreviousProcedures().add(p);
+            else user.getPendingProcedures().add(p);
+        }
+
+        userProcedures.updateAllProcedures(procedures, (int) user.getId());
+
+        assertEquals(procedures, userProcedures.getAllProcedures((int) user.getId()));
+    }
+
+    @Test
+    public void updateAllProcedures() throws SQLException {
+        User user = HelperMethods.insertUser(generalUser);
+        ArrayList<Organ> organs = new ArrayList<Organ>();
+        organs.add(Organ.LUNG);
+        ArrayList<Procedure> procedures = new ArrayList<>();
+        procedures.add(new Procedure("Trachiotomy", "Removed oesophagus entirely", LocalDate.now(), organs, 1));
+        userProcedures.updateAllProcedures(procedures, (int) user.getId());
+        User user2 = generalUser.getUserFromId((int) user.getId());
+        assertEquals(procedures, user2.getPreviousProcedures());
     }
 }

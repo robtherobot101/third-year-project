@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -201,6 +202,17 @@ public class UserController implements Initializable {
                 alert.showAndWait();
             }
         }
+    }
+
+    /**
+     * Adds the event listener for f5 key releases to trigger a refresh.
+     */
+    public void setRefreshEvent() {
+        welcomePane.getScene().setOnKeyReleased((event -> {
+            if (event.getCode() == KeyCode.F5) {
+                refresh();
+            }
+        }));
     }
 
     /**

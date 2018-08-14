@@ -34,7 +34,6 @@ public class MedicationsGUITest extends TestFXTest {
     @Before
     public void setUp() throws SQLException {
         testUser = addTestUser();
-        System.out.println("PN"+testUser.getPreferredName());
         testUser.setGender(Gender.FEMALE);
         userWindowAsClinician(testUser);
         //loginAsDefaultClinician();
