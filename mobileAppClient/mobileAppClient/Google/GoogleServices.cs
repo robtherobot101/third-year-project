@@ -84,6 +84,9 @@ namespace mobileAppClient.Google
             // TODO update image
             string imageURL = foundProfile.image.url;
 
+            imageURL = imageURL.Substring(0, imageURL.Length - 6);
+            imageURL += "?sz=1000";
+
             return new Tuple<User, string>(new User(
                 firstName, lastName, email), imageURL);
         }

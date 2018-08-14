@@ -9,7 +9,7 @@
                    WidthRequest="272"
                    HeightRequest="92"
             />
-            <Label Text="Please complete your donor profile"/>
+            <Label Text="Please complete your donor profile" HorizontalTextAlignment="Center"/>
 
             <DatePicker x:Name="dobInput"
                         Format="D"

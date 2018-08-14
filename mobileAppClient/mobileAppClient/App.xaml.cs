@@ -19,7 +19,6 @@ namespace mobileAppClient
         //Static variables for the app
         public static string DefaultImageId = "default_image";
         public static string ImageIdToSave = null;
-        private MainPage mainPage;
 
         /*
          * Open the app to have a the main page xaml as the bottom of 
@@ -31,8 +30,7 @@ namespace mobileAppClient
             // Ensure config is set
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
-            mainPage = new MainPage(false);
-            MainPage = mainPage;
+            MainPage = new MainPage(false);
         }
 
         public static async void ProcessGoogleLogin(string code)

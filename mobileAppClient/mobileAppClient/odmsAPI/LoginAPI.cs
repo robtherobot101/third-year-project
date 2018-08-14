@@ -158,6 +158,10 @@ namespace mobileAppClient.odmsAPI
             {
                 return false;
             }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
             return true;
         }
 
@@ -175,6 +179,11 @@ namespace mobileAppClient.odmsAPI
             {
                 return false;
             }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
+
             if (!clinician.accountType.Equals("CLINICIAN"))
             {
                 return false;

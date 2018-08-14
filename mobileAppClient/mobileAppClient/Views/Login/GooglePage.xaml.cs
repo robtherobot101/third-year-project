@@ -63,8 +63,9 @@ namespace mobileAppClient
                             {
                                 Console.WriteLine("Error uploading facebook photo to the server");
                             }
-                            await Navigation.PopAsync();
-                            await parentLoginPage.Navigation.PopAsync();
+                            Console.WriteLine("PHOTO STATUS---------------------------" + photoUpdated);
+                            await Navigation.PopModalAsync();
+                            await parentLoginPage.Navigation.PopModalAsync();
                             break;
                         case HttpStatusCode.Unauthorized:
                             await DisplayAlert(
