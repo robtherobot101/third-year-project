@@ -4,8 +4,8 @@ package seng302.User.Attribute;
  * An enum representing the different organ types.
  */
 public enum Organ {
-    LIVER("liver"), KIDNEY("kidney"), PANCREAS("pancreas"), HEART("heart"), LUNG("lung"), INTESTINE("intestine"), CORNEA("cornea"), EAR
-            ("middle-ear"), SKIN("skin"), BONE("bone-marrow"), TISSUE("connective-tissue");
+    BONE("bone-marrow"), TISSUE("connective-tissue"),  CORNEA("cornea"), HEART("heart"), INTESTINE("intestine"), KIDNEY("kidney"), LIVER("liver"), LUNG("lung"),
+    EAR("middle-ear"), PANCREAS("pancreas"),  SKIN("skin");
 
     private String organ;
 

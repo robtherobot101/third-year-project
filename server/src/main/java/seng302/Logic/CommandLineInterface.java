@@ -364,7 +364,7 @@ public class CommandLineInterface {
             return new CommandLineResponse(false, String.format("User with ID %s not found.", nextCommand[1]));
         }
         try {
-            new UserDonations().insertDonation(Organ.parse(nextCommand[2]), (int) toSet.getId());
+            new UserDonations().insertDonation(Organ.parse(nextCommand[2]), (int) toSet.getId(), toSet.getDateOfDeath());
             return new CommandLineResponse(true, "Successful update of Organs", toSet.getId());
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false, "Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +

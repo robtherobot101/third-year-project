@@ -1,7 +1,6 @@
 package seng302.Data.Local;
 
 import javafx.scene.image.Image;
-import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.UsersDAO;
 import seng302.Generic.Debugger;
 import seng302.User.Attribute.Gender;
@@ -271,12 +270,10 @@ public class UsersM implements UsersDAO {
      * @param searchMap The hashmap with associated key value pairs
      * @param token the users token
      * @return a JSON array of users.
-     * @throws HttpResponseException throws if cannot connect to the server
      */
     @Override
-    public List<User> queryUsers(Map<String, String> searchMap, String token) throws HttpResponseException {
-        List<User> queriedUsers = new ArrayList<>();
-        queriedUsers.addAll(users);
+    public List<User> queryUsers(Map<String, String> searchMap, String token) {
+        List<User> queriedUsers = new ArrayList<>(users);
 
         int startIndex;
         int count;

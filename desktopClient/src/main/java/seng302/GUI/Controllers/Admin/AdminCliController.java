@@ -119,13 +119,13 @@ public class AdminCliController implements Initializable {
                 capturedOutput.add(response);
             }
 
-
-
             commandInputHistory.add(commandInputField.getText());
             currentHistoryIndex = commandInputHistory.size();
             commandInputField.setText("TF > ");
             commandInputField.positionCaret(5);
             commandOutputView.scrollTo(capturedOutput.size() - 1);
+
+
         }
     }
 

@@ -1,28 +1,13 @@
 package seng302.Generic;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 
 import static java.lang.Thread.sleep;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CacheTest {
-
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-
-    }
-
 
     @Test
     public void purgeEntriesOlderThan_oldEntiresCached_oldEntriesPurged() throws InterruptedException{
