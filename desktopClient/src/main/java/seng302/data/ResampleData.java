@@ -44,7 +44,7 @@ public class ResampleData {
      * @return returns the clinicians
      */
     public static List<Clinician> clinicians() {
-        return Arrays.asList(new Clinician(string, string,"default clinician",ProfileType.CLINICIAN,1));
+        return Arrays.asList(new Clinician("default", "default","default clinician",ProfileType.CLINICIAN,1));
     }
 
     /**
@@ -52,7 +52,7 @@ public class ResampleData {
      * @return returns the admin
      */
     public static List<Admin> admins() {
-        Admin defaultAdmin = new Admin("admin", string,"default admin");
+        Admin defaultAdmin = new Admin("admin", "default","default admin");
         defaultAdmin.setStaffID(1);
         return Arrays.asList(defaultAdmin);
     }

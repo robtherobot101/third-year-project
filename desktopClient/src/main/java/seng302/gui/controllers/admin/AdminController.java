@@ -679,8 +679,6 @@ public class AdminController implements Initializable {
         resultsPerPage = 15;
         numberXofResults = 200;
 
-        String delete = "Delete ";
-
         // Set the items of the TableView to populate objects
         userTableView.setItems(currentUsers);
         clinicianTableView.setItems(currentClinicians);

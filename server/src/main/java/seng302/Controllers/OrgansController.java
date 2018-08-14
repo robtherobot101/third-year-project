@@ -55,11 +55,13 @@ public class OrgansController {
                 params.put(param,request.queryParams(param));
             }
         }
+
+        System.out.println(request.queryParams());
         try {
             allDonatableOrgans = model.queryOrgans(params);
             OrganMatching organMatching = new OrganMatching();
 
-            if (!params.get("receiverName").equals("")) {
+            if (!Objects.equals(params.get("receiverName"),"")) {
                 String receiverNameQuery = params.get("receiverName");
                 for(DonatableOrgan organ: allDonatableOrgans){
                     organ.setTopReceivers(organMatching.getTop5Matches(organ, receiverNameQuery));

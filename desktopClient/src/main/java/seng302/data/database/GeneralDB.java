@@ -31,7 +31,6 @@ public class GeneralDB implements GeneralDAO {
     public Map<Object, String> loginUser(String usernameEmail, String password) {
         String accountType = "accountType";
         Map<Object, String> responseMap = new HashMap<>();
-        String accountType = "accountType";
 
         Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<>();

@@ -1,5 +1,6 @@
 package seng302.Logic;
 
+import com.sun.javafx.scene.web.Debugger;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.DonatableOrgan;
 import seng302.Model.User;
@@ -135,6 +136,7 @@ public class OrganMatching {
         public int compare(User user1, User user2) {
             int i = 0;
             int j = 0;
+
             for(; i < user1.getWaitingListItems().size(); i++) {
                 if (user1.getWaitingListItems().get(i).getOrganType().toString().equals(organ.getOrganType().toString()) && user1.getWaitingListItems().get(i).getOrganDeregisteredDate() == null){
                     break;
@@ -145,7 +147,13 @@ public class OrganMatching {
                     break;
                 }
             }
-            return user1.getWaitingListItems().get(i).getOrganRegisteredDate().compareTo(user2.getWaitingListItems().get(j).getOrganRegisteredDate());
+            try{
+                int comp = user1.getWaitingListItems().get(i).getOrganRegisteredDate().compareTo(user2.getWaitingListItems().get(j).getOrganRegisteredDate());;
+                return comp;
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Avaliable organs comparator is broken");
+                return 0;
+            }
         }
     }
 }

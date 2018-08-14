@@ -479,7 +479,7 @@ public class WindowManager extends Application {
 
         APIServer server;
         if(testing) server = new APIServer(testingServer);
-        else server = new APIServer(properServer);
+        else server = new APIServer(localServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -636,7 +636,7 @@ public class WindowManager extends Application {
         stage.setScene(null);
         stage.setScene(scenes.get(scene));
 
-        if (!(scene.getWidth() == mainWindowPrefWidth)) {
+        if (!(scene.getWidth() == MAIN_WINDOW_PREF_WIDTH)) {
             stage.setResizable(false);
         }
     }

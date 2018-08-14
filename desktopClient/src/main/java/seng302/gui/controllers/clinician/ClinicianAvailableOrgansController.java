@@ -83,6 +83,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     List<DonatableOrgan> expiryList = new ArrayList<>();
 
     private String allRegions = "All Regions";
+    private String allOrgans = "All Organs";
 
     /**
      * Sets the initial time left values for all list items.
@@ -143,7 +144,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             if (regionFilter.getSelectionModel().getSelectedItem() != allRegions){
                 filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
             }
-            if (organFilter.getSelectionModel().getSelectedItem() != allRegions){
+            if (organFilter.getSelectionModel().getSelectedItem() != allOrgans){
                 filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
             }
             filterParams.put("receiverName", receiverNameTextField.getText());
@@ -292,13 +293,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         ObservableList<String> organSearchlist = FXCollections.observableArrayList();
         Organ[] organsList = Organ.values();
-        organSearchlist.add("All Organs");
+        organSearchlist.add(allOrgans);
         for (Organ o : organsList) {
             String v = o.toString();
             organSearchlist.add(v);
         }
         organFilter.setItems(organSearchlist);
-        organFilter.setValue("All Organs");
+        organFilter.setValue(allOrgans);
 
         ObservableList<String> regionSearchlist = FXCollections.observableArrayList();
         NZRegion[] regionList = NZRegion.values();
