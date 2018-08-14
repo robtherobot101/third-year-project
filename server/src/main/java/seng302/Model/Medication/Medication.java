@@ -17,7 +17,7 @@ public class Medication {
     private int id;
 
     /**
-     * constructor method to create a new medication object to be passed on to the database
+     * constructor method to create a new medication object to be passed on to the Database
      * @param name String the name of the medication
      */
     public Medication(String name) {
@@ -25,7 +25,7 @@ public class Medication {
     }
 
     /**
-     * constructor method to create a new medication object to be passed on to the database
+     * constructor method to create a new medication object to be passed on to the Database
      * @param name String the name of the medication
      * @param activeIngredients String[] list of all active ingredients in the medication
      */
@@ -36,11 +36,11 @@ public class Medication {
     }
 
     /**
-     * Constructor used for the creation of a medication from the database
+     * Constructor used for the creation of a medication from the Database
      * @param name Name of the medication
      * @param activeIngredients All the ingredients in the medication
      * @param history All of the history of the medication's use.
-     * @param id The id of the medication within the database.
+     * @param id The id of the medication within the Database.
      */
     public Medication(String name, String[] activeIngredients, ArrayList<String> history, int id) {
         this.name = name;
@@ -76,14 +76,14 @@ public class Medication {
 
     //TODO what are these for, do we need them anymore?
     /**
-     * Add a line to the user history that states that they started taking this medication now.
+     * Add a line to the User history that states that they started taking this medication now.
      */
     public void startedTaking() {
         history.add("Started taking on " + User.dateTimeFormat.format(LocalDateTime.now()));
     }
 
     /**
-     * Add a line to the user history that states that they stopped taking this medication now.
+     * Add a line to the User history that states that they stopped taking this medication now.
      */
     public void stoppedTaking() {
         history.add("Stopped taking on " + User.dateTimeFormat.format(LocalDateTime.now()));

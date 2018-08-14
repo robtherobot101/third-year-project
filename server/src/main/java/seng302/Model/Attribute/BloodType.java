@@ -11,7 +11,7 @@ public enum BloodType {
     /**
      * constructor method to create a new blood type attribute
      * input can be of type: A-, A+, B-, B+, AB-, AB+, O-, or O+
-     * @param type String the type of blood a user has
+     * @param type String the type of blood a User has
      */
     BloodType(String type) { this.type = type; }
 

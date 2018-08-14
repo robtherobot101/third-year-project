@@ -13,7 +13,7 @@ import org.controlsfx.control.StatusBar;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import seng302.gui.StatusIndicator;
+import seng302.GUI.StatusIndicator;
 
 public class StatusIndicatorTest extends TestFXTest {
 

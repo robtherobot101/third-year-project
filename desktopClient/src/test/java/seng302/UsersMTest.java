@@ -2,7 +2,7 @@ package seng302;
 
 import org.junit.Before;
 import org.junit.Test;
-import seng302.data.local.UsersM;
+import seng302.Data.Local.UsersM;
 import seng302.User.User;
 
 import java.time.LocalDate;

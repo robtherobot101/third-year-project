@@ -14,8 +14,8 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import org.junit.*;
-import seng302.generic.Debugger;
-import seng302.generic.WindowManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
 

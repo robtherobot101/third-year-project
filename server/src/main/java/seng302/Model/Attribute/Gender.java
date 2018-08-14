@@ -9,9 +9,9 @@ public enum Gender {
     private String gender;
 
     /**
-     * constructor method to add the gender attribute to a user
+     * constructor method to add the gender attribute to a User
      * input can be of type: Non-Binary, Female, or Male
-     * @param gender String the gender of a user
+     * @param gender String the gender of a User
      */
     Gender(String gender) { this.gender = gender; }
 

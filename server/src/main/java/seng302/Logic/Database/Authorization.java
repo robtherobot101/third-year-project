@@ -14,16 +14,16 @@ import java.util.UUID;
 public class Authorization {
 
     /**
-     * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
+     * Returns the User with a matching username/email and password if such a User exists, otherwise returns null
      * @param usernameEmail Either a username or an email address
      * @param password A password
-     * @return The matched user
-     * @throws SQLException If there is an error working with the database
+     * @return The matched User
+     * @throws SQLException If there is an error working with the Database
      */
     public User loginUser(String usernameEmail, String password) throws SQLException{
 
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            //First needs to do a search to see if there is a unique user with the given inputs
+            //First needs to do a search to see if there is a unique User with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
             String query = "SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
@@ -37,7 +37,7 @@ public class Authorization {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then get the user object from the result set
+                //If response is not empty then get the User object from the result set
                 GeneralUser generalUser = new GeneralUser();
                 return generalUser.getUserFromResultSet(resultSet);
             }
@@ -47,15 +47,15 @@ public class Authorization {
 
 
     /**
-     * Returns the clinician with a matching username and password if such a clinician exists, otherwise returns null
+     * Returns the Clinician with a matching username and password if such a Clinician exists, otherwise returns null
      * @param username A username
      * @param password A password
-     * @return The matched clinician if it was found, otherwise null
-     * @throws SQLException If there is an error working with the database
+     * @return The matched Clinician if it was found, otherwise null
+     * @throws SQLException If there is an error working with the Database
      */
     public Clinician loginClinician(String username, String password) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            //First needs to do a search to see if there is a unique clinician with the given inputs
+            //First needs to do a search to see if there is a unique Clinician with the given inputs
             String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
@@ -66,7 +66,7 @@ public class Authorization {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new Clinican Object with the fields from the database
+                //If response is not empty then return a new Clinican Object with the fields from the Database
                 GeneralClinician generalClinician = new GeneralClinician();
                 return generalClinician.getClinicianFromResultSet(resultSet);
             }
@@ -76,15 +76,15 @@ public class Authorization {
 
 
     /**
-     * Returns the admin with a matching username and password if such a admin exists, otherwise returns null
+     * Returns the Admin with a matching username and password if such a Admin exists, otherwise returns null
      * @param username A username
      * @param password A password
-     * @return The matched admin if it was found, otherwise null
-     * @throws SQLException If there is an error working with the database
+     * @return The matched Admin if it was found, otherwise null
+     * @throws SQLException If there is an error working with the Database
      */
     public Admin loginAdmin(String username, String password) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            //First needs to do a search to see if there is a unique admin with the given inputs
+            //First needs to do a search to see if there is a unique Admin with the given inputs
             String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
@@ -96,7 +96,7 @@ public class Authorization {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new admin Object with the fields from the database
+                //If response is not empty then return a new Admin Object with the fields from the Database
                 GeneralAdmin generalAdmin = new GeneralAdmin();
                 return generalAdmin.getAdminFromResultSet(resultSet);
             }
@@ -104,12 +104,12 @@ public class Authorization {
     }
 
     /**
-     * Adds a token to the database for a new user login.
+     * Adds a token to the Database for a new User login.
      *
-     * @param id The id of the user/admin/clinician that is logging in
-     * @param accessLevel The access level of the user
+     * @param id The id of the User/Admin/Clinician that is logging in
+     * @param accessLevel The access level of the User
      * @return The token
-     * @throws SQLException If there is an error communicating with the database
+     * @throws SQLException If there is an error communicating with the Database
      */
     public String generateToken(int id, int accessLevel) throws SQLException {
         String token = UUID.randomUUID().toString();
@@ -126,7 +126,7 @@ public class Authorization {
     /**
      * Removes the row containing the given token from the TOKEN table
      * @param token The token which will be discarded
-     * @throws SQLException If there is an error communicating with the database
+     * @throws SQLException If there is an error communicating with the Database
      */
     public void logout(String token) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {

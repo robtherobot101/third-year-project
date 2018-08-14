@@ -50,9 +50,9 @@ public class DrugInteractionGUITest extends TestFXTest {
 
     /**
      * Types the given drug into the add medication field and adds it to the
-     * user's list of medications. Only medications which are recognised by the
+     * User's list of medications. Only medications which are recognised by the
      * auto-complete box should be passed here. This method should only be called while in a
-     * user's medications pane with the controls enabled. Only
+     * User's medications pane with the controls enabled. Only
      *
      * @param drug The given medication which is recognised by the add medication auto-complete box
      * @throws TimeoutException If the auto-complete does not recognise the drug within 10 seconds.
@@ -65,9 +65,9 @@ public class DrugInteractionGUITest extends TestFXTest {
     }
 
     /**
-     * Adds the given medications to the user's medications list and compares them for symptom interactions.
+     * Adds the given medications to the User's medications list and compares them for symptom interactions.
      * Only medications which are recognised by the auto-complete box should be passed here.
-     * This method should only be called while in a user's medications pane with the controls enabled.
+     * This method should only be called while in a User's medications pane with the controls enabled.
      *
      * @param drugA The name of the first medication
      * @param drugB The name of the second medication
@@ -87,9 +87,9 @@ public class DrugInteractionGUITest extends TestFXTest {
     }
 
     /**
-     * Adds the given medications to the user's medications list and compares them for symptom interactions.
+     * Adds the given medications to the User's medications list and compares them for symptom interactions.
      * Only medications which are recognised by the auto-complete box should be passed here.
-     * This method should only be called while in a user's medications pane with the controls enabled.
+     * This method should only be called while in a User's medications pane with the controls enabled.
      *
      * @param drugA The name of the first medication
      * @param drugB The name of the second medication
@@ -102,7 +102,7 @@ public class DrugInteractionGUITest extends TestFXTest {
     }
 
     /**
-     * Takes the symptoms from the interactionsContentLabel in a user's medications pane and
+     * Takes the symptoms from the interactionsContentLabel in a User's medications pane and
      * returns them as a set of strings.
      *
      * @return A set of symptom strings

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * Class for handling all history details of a user
+ * Class for handling all history details of a User
  */
 public class HistoryItem {
     private LocalDateTime dateTime;

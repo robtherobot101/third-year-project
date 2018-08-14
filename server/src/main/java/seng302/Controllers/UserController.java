@@ -29,7 +29,7 @@ public class UserController {
     private GeneralUser model;
 
     /**
-     * Class to handle all user processing eg. adding and editing users
+     * Class to handle all User processing eg. adding and editing users
      */
     public UserController() {
         model = new GeneralUser();
@@ -39,7 +39,7 @@ public class UserController {
     /**
      * method to get all users
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return JSON object containing all users and their information
      */
     public String getUsers(Request request, Response response) {
@@ -91,7 +91,7 @@ public class UserController {
     /**
      * Returns the number of entries in the USERS table.
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String the number of users currently registered
      */
     public String countUsers(Request request, Response response) {
@@ -110,19 +110,19 @@ public class UserController {
     }
 
     /**
-     * Returns a score for a user based on how well their name matches the given search tokens.
-     * Every token needs to entirely match all or some of one of the user's names starting at the beginning of each, otherwise
+     * Returns a score for a User based on how well their name matches the given search tokens.
+     * Every token needs to entirely match all or some of one of the User's names starting at the beginning of each, otherwise
      * the lowest possible score, zero, is returned.
      * <p>
-     * For example, the tokens {"abc","def","ghi"} would match a user with the name "adcd defg ghij", so some positive integer
-     * would be returned. But for a user with the name "abc def", zero would be returned as one token is unmatched. Likewise,
-     * a user with the name "abw d ghi" would score zero because the tokens "abc" and "def" are un-matched.
+     * For example, the tokens {"abc","def","ghi"} would match a User with the name "adcd defg ghij", so some positive integer
+     * would be returned. But for a User with the name "abc def", zero would be returned as one token is unmatched. Likewise,
+     * a User with the name "abw d ghi" would score zero because the tokens "abc" and "def" are un-matched.
      * <p>
      * Matches on different parts of a name add different amounts to the total score. Last name matches contribute the most to the total score,
      * followed by, preferred last name, preferred first name, preferred middle names, first name, and middle names in descending order.
      *
-     * @param user         The user whose name will be be scored
-     * @param searchTokens The search tokens which will be compared with the given user's name
+     * @param user         The User whose name will be be scored
+     * @param searchTokens The search tokens which will be compared with the given User's name
      * @return An integer score
      */
     public static int scoreUserOnSearch(User user, List<String> searchTokens) {
@@ -158,7 +158,7 @@ public class UserController {
     }
 
     /**
-     * Returns true if all given tokens match at least one name from the given user's name array
+     * Returns true if all given tokens match at least one name from the given User's name array
      * or preferred name array. For a token to match a name, the beginning of each must be the same.
      *
      * @param user         The use whose names will be checked against the tokens
@@ -258,10 +258,10 @@ public class UserController {
     }
 
     /**
-     * Checks for the validity of the request ID, and returns a user obj
+     * Checks for the validity of the request ID, and returns a User obj
      * @param request HTTP request
      * @param response HTTP response
-     * @return A valid user object if the user exists otherwise return null
+     * @return A valid User object if the User exists otherwise return null
      */
     private User queryUser(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -277,7 +277,7 @@ public class UserController {
         }
 
         if (queriedUser == null) {
-            Server.getInstance().log.warn(String.format("No user of ID: %d found", requestedUserId));
+            Server.getInstance().log.warn(String.format("No User of ID: %d found", requestedUserId));
             response.status(404);
             response.body("Not found");
             return null;
@@ -286,9 +286,9 @@ public class UserController {
     }
 
     /**
-     * method to process the add user request. parses the input to be in a better format
+     * method to process the add User request. parses the input to be in a better format
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String output whether the request was successful or not
      */
     public String addUser(Request request, Response response) {
@@ -307,7 +307,7 @@ public class UserController {
         if (receivedUser == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing user Body";
+            return "Missing User Body";
         } else {
             //TODO make model.insertUser return token
             try {
@@ -323,9 +323,9 @@ public class UserController {
     }
 
     /**
-     * method to process the add user request. parses the input to be in a better format
+     * method to process the add User request. parses the input to be in a better format
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String output whether the request was successful or not
      */
     public String importUsers(Request request, Response response) {
@@ -354,10 +354,10 @@ public class UserController {
     }
 
     /**
-     * method to handle the getting of a specific user
+     * method to handle the getting of a specific User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return JSON object containing the requested user information
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return JSON object containing the requested User information
      */
     public String getUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
@@ -375,10 +375,10 @@ public class UserController {
     }
 
     /**
-     * method to process the editing of a specific user
+     * method to process the editing of a specific User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return String whether the editing of the user was successful or not
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return String whether the editing of the User was successful or not
      */
     public String editUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
@@ -391,13 +391,13 @@ public class UserController {
         User receivedUser = gson.fromJson(request.body(), User.class);
         if (receivedUser == null) {
             response.status(400);
-            return "Missing user Body";
+            return "Missing User Body";
         } else {
             try {
                 String token = request.headers("token");
                 ProfileUtils profileUtils = new ProfileUtils();
                 int accessLevel = profileUtils.checkToken(token);
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all User information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
@@ -411,10 +411,10 @@ public class UserController {
     }
 
     /**
-     * method to handle the deletion of a specific user
+     * method to handle the deletion of a specific User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return String whether or not the user was deleted successfully
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return String whether or not the User was deleted successfully
      */
     public String deleteUser(Request request, Response response) {
         User queriedUser = queryUser(request, response);
@@ -443,7 +443,7 @@ public class UserController {
         }
 
         String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-        String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
+        String filepath = path + "/home/serverImages/User/" + queriedUser.getId() + ".png";
 
         File file = new File(filepath);
         if (!file.isFile()){
@@ -505,10 +505,10 @@ public class UserController {
 
                 // Ensure directory exists
                 String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-                Files.createDirectories(Paths.get(path + "/home/serverImages/user/"));
+                Files.createDirectories(Paths.get(path + "/home/serverImages/User/"));
 
                 // Set filepath
-                String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
+                String filepath = path + "/home/serverImages/User/" + queriedUser.getId() + ".png";
 
                 // Write the file
                 File outputfile = new File(filepath);
@@ -534,7 +534,7 @@ public class UserController {
 
         //Find filepath in DB
         String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-        String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
+        String filepath = path + "/home/serverImages/User/" + queriedUser.getId() + ".png";
 
         //Delete file from storage
         File file = new File(filepath);

@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.generic.Debugger;
-import seng302.generic.WindowManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.User;
 
 import java.io.File;
@@ -54,7 +54,7 @@ public class AdminCLITest extends TestFXTest {
     public void checkDeletionIsConsistent() throws SQLException {
         addTestUser();
         clickOn("Home");
-        assertEquals(1, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is in the admin table
+        assertEquals(1, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test User is in the Admin table
 
         clickOn("#cliTabButton");
         clickOn("#commandInputField").write("deleteuser 0");
@@ -65,7 +65,7 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
 
         clickOn("Home");
-        assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is no longer in the admin table
+        assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test User is no longer in the Admin table
     }
 
     @Ignore //Works non-headless but not headless?
@@ -92,7 +92,7 @@ public class AdminCLITest extends TestFXTest {
         sleep(500);
         clickOn("Home");
         sleep(500);
-        assertEquals(1, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is in the admin table
+        assertEquals(1, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test User is in the Admin table
 
         new File("testsave").createNewFile();//Create a new blank file to load from
         clickOn("#cliTabButton");
@@ -101,7 +101,7 @@ public class AdminCLITest extends TestFXTest {
         release(KeyCode.ENTER);
         clickOn("Home");
 
-        assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test user is no longer in the admin table
+        assertEquals(0, lookup("#userTableView").queryTableView().getItems().size()); //Make sure the test User is no longer in the Admin table
 
         new File("testsave").delete();
     }
@@ -139,7 +139,7 @@ public class AdminCLITest extends TestFXTest {
     @Test
     public void cliInputIsRead() {
         clickOn("#commandInputField");
-        write("adduser \"Test,user\" 01/10/1998");
+        write("adduser \"Test,User\" 01/10/1998");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         try {
@@ -153,7 +153,7 @@ public class AdminCLITest extends TestFXTest {
     @Test
     public void cliOutputIsShown() {
         clickOn("#commandInputField");
-        write("adduser \"Test,user\" 01/10/1998");
+        write("adduser \"Test,User\" 01/10/1998");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         sleep(200);

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class Administration {
 
     /**
-     * method to call to the database to check if it is online
-     * @throws SQLException when the connection to te database has an error
+     * method to call to the Database to check if it is online
+     * @throws SQLException when the connection to te Database has an error
      */
     public void status() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -28,8 +28,8 @@ public class Administration {
 
 
     /**
-     * method to resample the database with default entries
-     * @throws SQLException when the connection to te database has an error
+     * method to resample the Database with default entries
+     * @throws SQLException when the connection to te Database has an error
      */
     public void resample() throws SQLException, IOException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -38,8 +38,8 @@ public class Administration {
     }
 
     /**
-     * method to empty the database tables with no values
-     * @throws SQLException when the connection to te database has an error
+     * method to empty the Database tables with no values
+     * @throws SQLException when the connection to te Database has an error
      */
     public void reset() throws SQLException, IOException {
 

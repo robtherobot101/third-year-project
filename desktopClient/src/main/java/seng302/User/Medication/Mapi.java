@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 public class Mapi {
 
     /**
-     * Returns all the medicines that match the string passed in by user.
+     * Returns all the medicines that match the string passed in by User.
      *
      * @param query The string to auto complete.
      * @return Returns an ArrayList of strings of the matching medicines.

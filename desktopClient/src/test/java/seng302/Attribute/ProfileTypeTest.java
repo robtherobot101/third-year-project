@@ -11,7 +11,7 @@ public class ProfileTypeTest {
 
     @Test
     public void testValidLowerCaseParse() {
-        assertEquals(ProfileType.parse("user"), ProfileType.USER);
+        assertEquals(ProfileType.parse("User"), ProfileType.USER);
     }
 
     @Test

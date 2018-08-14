@@ -45,8 +45,8 @@ public class OrganMatching {
 
     /**
      * check if two users have the same blood type
-     * @param donor the first user
-     * @param receiver the second user
+     * @param donor the first User
+     * @param receiver the second User
      * @return returns true if both users have the same blood type, otherwise false
      */
     private boolean isSameBloodType(User donor, User receiver){
@@ -119,7 +119,7 @@ public class OrganMatching {
             }
             return topMatches;
         } catch (SQLException e){
-            System.out.println("Error communicating with the database");
+            System.out.println("Error communicating with the Database");
             return new ArrayList<>();
 
         }

@@ -23,10 +23,10 @@ public class MedicationsController {
     }
 
     /**
-     * method handle the request to get all medications of a specific user
+     * method handle the request to get all medications of a specific User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return Json object containing all the medications of a user, or an error message
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return Json object containing all the medications of a User, or an error message
      */
     public String getAllMedications(Request request, Response response) {
 
@@ -50,9 +50,9 @@ public class MedicationsController {
     }
 
     /**
-     * method to handle getting a single medication object from a specific user
+     * method to handle getting a single medication object from a specific User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return Json object containing the details of the requested medication, or an error message
      */
     public String getSingleMedication(Request request, Response response) {
@@ -72,9 +72,9 @@ public class MedicationsController {
     }
 
     /**
-     * method to handle the request to add a new medication for a user
+     * method to handle the request to add a new medication for a User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String addMedication(Request request, Response response) {
@@ -100,9 +100,9 @@ public class MedicationsController {
     }
 
     /**
-     * method to handle the request to edit an existing medication for a user
+     * method to handle the request to edit an existing medication for a User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String editMedication(Request request, Response response) {
@@ -136,7 +136,7 @@ public class MedicationsController {
     /**
      * method to handle the request to delete an existing medication
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String deleteMedication(Request request, Response response) {

@@ -5,7 +5,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class RevisedNameandGenderTest extends TestFXTest {
 
 /*
-    private user user;
+    private User User;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {
@@ -13,8 +13,8 @@ public class RevisedNameandGenderTest extends TestFXTest {
     }
 
     private void enterAttributesPanel() throws SQLException {
-        user = addTestUser();
-        userWindow(user);
+        User = addTestUser();
+        userWindow(User);
         sleep(500);
 
         clickOn("#userAttributesButton");
@@ -29,7 +29,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         verifyThat("#userDisplayText", LabeledMatchers.hasText("Welcome, Bobby Dong Flame"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
 
-        //Add a new medication for the user.
+        //Add a new medication for the User.
         doubleClickOn("#firstNameField").write("New");
         doubleClickOn("#middleNameField").write("Name");
         doubleClickOn("#lastNameField").write("Test");
@@ -52,7 +52,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         verifyThat("#userDisplayText", LabeledMatchers.hasText("Welcome, Bobby Dong Flame"));
         verifyThat("#settingAttributesLabel", LabeledMatchers.hasText("Attributes for Bobby Dong Flame"));
 
-        //Add a new medication for the user.
+        //Add a new medication for the User.
         doubleClickOn("#preferredFirstNameField").write("New");
         doubleClickOn("#preferredMiddleNamesField").write("Name");
         doubleClickOn("#preferredLastNameField").write("Test");

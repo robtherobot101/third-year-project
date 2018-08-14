@@ -16,18 +16,18 @@ public class AdminController {
     private GeneralAdmin model;
 
     /**
-     * constructor method to create a new admin controller object
-     * that handles all admin related requests
+     * constructor method to create a new Admin controller object
+     * that handles all Admin related requests
      */
     public AdminController() {
         model = new GeneralAdmin();
     }
 
     /**
-     * Retrieves an admin object from the HTTP request ":id" param
+     * Retrieves an Admin object from the HTTP request ":id" param
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @return A valid admin obj if the admin exists otherwise return null
+     * @return A valid Admin obj if the Admin exists otherwise return null
      */
     private Admin queryAdmin(Request request, Response response) {
         int requestedAdminId = Integer.parseInt(request.params(":id"));
@@ -43,7 +43,7 @@ public class AdminController {
         }
 
         if (queriedAdmin == null) {
-            Server.getInstance().log.warn(String.format("No user of ID: %d found", requestedAdminId));
+            Server.getInstance().log.warn(String.format("No User of ID: %d found", requestedAdminId));
             response.status(404);
             response.body("Not found");
             return null;
@@ -52,9 +52,9 @@ public class AdminController {
     }
 
     /**
-     * method to handle the request to get all the admins from the database
+     * method to handle the request to get all the admins from the Database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return Json object containing all admins and their information, or an error message
      */
     public String getAllAdmins(Request request, Response response) {
@@ -75,9 +75,9 @@ public class AdminController {
     }
 
     /**
-     * method to handle the request to create a new admin on the database
+     * method to handle the request to create a new Admin on the Database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully
      */
     public String addAdmin(Request request, Response response) {
@@ -96,7 +96,7 @@ public class AdminController {
         if (receivedAdmin == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing admin Body";
+            return "Missing Admin Body";
         } else {
             //TODO make model.insertAdmin return token
             try {
@@ -113,10 +113,10 @@ public class AdminController {
     }
 
     /**
-     * method to handle the request to get a specific admin and all its details
+     * method to handle the request to get a specific Admin and all its details
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return Json object containing all the information of the requested admin
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return Json object containing all the information of the requested Admin
      */
     public String getAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
@@ -134,9 +134,9 @@ public class AdminController {
     }
 
     /**
-     * method to handle the request to edit an existing admin in the database
+     * method to handle the request to edit an existing Admin in the Database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully
      */
     public String editAdmin(Request request, Response response) {
@@ -151,7 +151,7 @@ public class AdminController {
         Admin receivedAdmin = gson.fromJson(request.body(), Admin.class);
         if (receivedAdmin == null) {
             response.status(400);
-            return "Missing admin Body";
+            return "Missing Admin Body";
         } else {
             try {
                 model.updateAdminDetails(receivedAdmin);
@@ -166,9 +166,9 @@ public class AdminController {
     }
 
     /**
-     * method to handle the request to deleted an admin
+     * method to handle the request to deleted an Admin
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully
      */
     public String deleteAdmin(Request request, Response response) {

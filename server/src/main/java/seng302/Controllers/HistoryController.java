@@ -27,8 +27,8 @@ public class HistoryController {
     /**
      * method to handle getting a single users history items and their details
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return Json object containing all the history of a single user, or an error message
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return Json object containing all the history of a single User, or an error message
      */
     public String getUserHistoryItems(Request request, Response response) {
 
@@ -52,9 +52,9 @@ public class HistoryController {
     }
 
     /**
-     * method to handle creating a new history object on the database
+     * method to handle creating a new history object on the Database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String addUserHistoryItem(Request request, Response response) {

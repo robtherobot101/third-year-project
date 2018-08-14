@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.generic.Debugger;
+import seng302.Generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -149,7 +149,7 @@ public class User {
     /**
      * Used to create a deep copy of the object. Does not copy username, password, or email.
      *
-     * @param user The user to make a copy of
+     * @param user The User to make a copy of
      */
     public User(User user) {
         this.name = user.name;
@@ -230,9 +230,9 @@ public class User {
     }
 
     /**
-     * Copies all items in the given users waiting list and adds them to the current user.
+     * Copies all items in the given users waiting list and adds them to the current User.
      *
-     * @param user the user being copied.
+     * @param user the User being copied.
      */
     public void copyWaitingListsFrom(User user) {
         waitingListItems.clear();
@@ -240,9 +240,9 @@ public class User {
     }
 
     /**
-     * Checks whether there is any difference between the attributes of this user and a given user. Does NOT compare username, password, email, or any lists.
+     * Checks whether there is any difference between the attributes of this User and a given User. Does NOT compare username, password, email, or any lists.
      *
-     * @param user The user to compare to
+     * @param user The User to compare to
      * @return Whether they are equal
      */
     public boolean attributeFieldsEqual(User user) {
@@ -538,7 +538,7 @@ public class User {
     }
 
     /**
-     * Get a string containing key information about the user.
+     * Get a string containing key information about the User.
      *
      * @return The information string
      */
@@ -564,7 +564,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("user (ID %d) created at %s "
+        return String.format("User (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"
@@ -624,8 +624,8 @@ public class User {
 
     /**
      * Returns the intersection of the organs which are being donated and organs that the
-     * user is currently waiting to receive
-     * @return The organs which are being donated and the user is currently waiting on
+     * User is currently waiting to receive
+     * @return The organs which are being donated and the User is currently waiting on
      */
     public Set<Organ> conflictingOrgans(){
         Set<Organ> conflicting = new HashSet<>();
@@ -652,7 +652,7 @@ public class User {
     }
 
     /**
-     * Only called by the admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
+     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
      * @param toRemove The organ being removed from the waiting list.
      */
     public void removeWaitingListItem(Organ toRemove) {

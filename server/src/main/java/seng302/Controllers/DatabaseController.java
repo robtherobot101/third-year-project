@@ -12,9 +12,9 @@ public class DatabaseController {
     Administration model = new Administration();
 
     /**
-     * method to handle the request to reset the database to its default tables with no entries
+     * method to handle the request to reset the Database to its default tables with no entries
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully
      */
     public String reset(Request request, Response response) {
@@ -30,10 +30,10 @@ public class DatabaseController {
     }
 
     /**
-     * method to add default objects to the database, assumes tables exist already
-     * note: reset the database before using this request
+     * method to add default objects to the Database, assumes tables exist already
+     * note: reset the Database before using this request
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String resample(Request request, Response response) {
@@ -50,9 +50,9 @@ public class DatabaseController {
     }
 
     /**
-     * method to handle request to check if the database is online and a connection can be made
+     * method to handle request to check if the Database is online and a connection can be made
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String status(Request request, Response response) {

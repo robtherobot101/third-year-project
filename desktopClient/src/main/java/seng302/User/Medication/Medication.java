@@ -26,7 +26,7 @@ public class Medication {
     }
 
     /**
-     * Constructor used for the creation of a medication from the database
+     * Constructor used for the creation of a medication from the Database
      * @param name Name of the medication
      * @param activeIngredients All the ingredients in the medication
      * @param history All of the history of the medication's use.
@@ -55,14 +55,14 @@ public class Medication {
     }
 
     /**
-     * Add a line to the user history that states that they started taking this medication now.
+     * Add a line to the User history that states that they started taking this medication now.
      */
     public void startedTaking() {
         history.add("Started taking on " + User.dateTimeFormat.format(LocalDateTime.now()));
     }
 
     /**
-     * Add a line to the user history that states that they stopped taking this medication now.
+     * Add a line to the User history that states that they stopped taking this medication now.
      */
     public void stoppedTaking() {
         history.add("Stopped taking on " + User.dateTimeFormat.format(LocalDateTime.now()));

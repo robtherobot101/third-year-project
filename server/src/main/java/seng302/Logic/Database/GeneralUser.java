@@ -15,11 +15,11 @@ import java.util.*;
 public class GeneralUser {
 
     /**
-     * Update a user's attributes, medications, procedures, diseases, organ donations, waiting list items, and history.
+     * Update a User's attributes, medications, procedures, diseases, organ donations, waiting list items, and history.
      *
-     * @param user The user to update
-     * @param userId The id of the user to update
-     * @throws SQLException If there is errors communicating with the database
+     * @param user The User to update
+     * @param userId The id of the User to update
+     * @throws SQLException If there is errors communicating with the Database
      */
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
         updateUserAttributes(user, userId);
@@ -58,17 +58,17 @@ public class GeneralUser {
     }
 
     /**
-     * Replace a user's medications on the database with a new set of medications.
+     * Replace a User's medications on the Database with a new set of medications.
      *
      * @param newMedications The list of medications to replace the old one with
-     * @param userId The id of the user to replace medications of
-     * @throws SQLException If there is errors communicating with the database
+     * @param userId The id of the User to replace medications of
+     * @throws SQLException If there is errors communicating with the Database
      */
     public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
         UserMedications userMedications = new UserMedications();
         List<Medication> oldMedications = userMedications.getAllMedications(userId);
 
-        //Remove all medications that are already on the database
+        //Remove all medications that are already on the Database
         for (int i = oldMedications.size() - 1; i >= 0; i--) {
             Medication found = null;
             for (Medication newMedication: newMedications) {
@@ -93,7 +93,7 @@ public class GeneralUser {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all medications from the Database that are no longer up to date
         for (Medication medication: oldMedications) {
             userMedications.removeMedication(userId, medication.getId());
         }
@@ -105,17 +105,17 @@ public class GeneralUser {
     }
 
     /**
-     * Replace a user's procedures on the database with a new set of procedures.
+     * Replace a User's procedures on the Database with a new set of procedures.
      *
      * @param newProcedures The list of procedures to replace the old one with
-     * @param userId The id of the user to replace procedures of
-     * @throws SQLException If there is errors communicating with the database
+     * @param userId The id of the User to replace procedures of
+     * @throws SQLException If there is errors communicating with the Database
      */
     public void updateAllProcedures(List<Procedure> newProcedures, int userId) throws SQLException {
         UserProcedures userProcedures = new UserProcedures();
         List<Procedure> oldProcedures = userProcedures.getAllProcedures(userId);
 
-        //Remove all procedures that are already on the database
+        //Remove all procedures that are already on the Database
         for (int i = oldProcedures.size() - 1; i >= 0; i--) {
             Procedure found = null;
             for (Procedure newProcedure: newProcedures) {
@@ -140,7 +140,7 @@ public class GeneralUser {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all medications from the Database that are no longer up to date
         for (Procedure procedure: oldProcedures) {
             userProcedures.removeProcedure(userId, procedure.getId());
         }
@@ -152,17 +152,17 @@ public class GeneralUser {
     }
 
     /**
-     * Replace a user's diseases on the database with a new set of diseases.
+     * Replace a User's diseases on the Database with a new set of diseases.
      *
      * @param newDiseases The list of diseases to replace the old one with
-     * @param userId The id of the user to replace diseases of
-     * @throws SQLException If there is errors communicating with the database
+     * @param userId The id of the User to replace diseases of
+     * @throws SQLException If there is errors communicating with the Database
      */
     public void updateAllDiseases(List<Disease> newDiseases, int userId) throws SQLException {
         UserDiseases userDiseases = new UserDiseases();
         List<Disease> oldDiseases = userDiseases.getAllDiseases(userId);
 
-        //Remove all procedures that are already on the database
+        //Remove all procedures that are already on the Database
         for (int i = oldDiseases.size() - 1; i >= 0; i--) {
             Disease found = null;
             for (Disease newDisease: newDiseases) {
@@ -187,7 +187,7 @@ public class GeneralUser {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all medications from the Database that are no longer up to date
         for (Disease disease: oldDiseases) {
             userDiseases.removeDisease(userId, disease.getId());
         }
@@ -199,17 +199,17 @@ public class GeneralUser {
     }
 
     /**
-     * Replace a user's waiting list items on the database with a new set of waiting list items.
+     * Replace a User's waiting list items on the Database with a new set of waiting list items.
      *
      * @param newWaitingListItems The list of waiting list items to replace the old one with
-     * @param userId The id of the user to replace waiting list items of
-     * @throws SQLException If there is errors communicating with the database
+     * @param userId The id of the User to replace waiting list items of
+     * @throws SQLException If there is errors communicating with the Database
      */
     public void updateWaitingListItems(List<WaitingListItem> newWaitingListItems, int userId) throws SQLException {
         UserWaitingList userWaitingList = new UserWaitingList();
         List<WaitingListItem> oldWaitingListItems = userWaitingList.getAllUserWaitingListItems(userId);
 
-        //Remove all procedures that are already on the database
+        //Remove all procedures that are already on the Database
         for (int i = oldWaitingListItems.size() - 1; i >= 0; i--) {
             WaitingListItem found = null;
             for (WaitingListItem newWaitingListItem: newWaitingListItems) {
@@ -234,7 +234,7 @@ public class GeneralUser {
             }
         }
 
-        //Delete all medications from the database that are no longer up to date
+        //Delete all medications from the Database that are no longer up to date
         for (WaitingListItem waitingListItem: oldWaitingListItems) {
             userWaitingList.removeWaitingListItem(userId, waitingListItem.getId());
         }
@@ -246,11 +246,11 @@ public class GeneralUser {
     }
 
     /**
-     * Updates a user's history on the database to a new history list.
+     * Updates a User's history on the Database to a new history list.
      *
      * @param newHistory The list of history to update to
-     * @param userId The id of the user to update
-     * @throws SQLException If there is issues connecting to the database
+     * @param userId The id of the User to update
+     * @throws SQLException If there is issues connecting to the Database
      */
     public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
         UserHistory userHistory = new UserHistory();
@@ -276,7 +276,7 @@ public class GeneralUser {
      * for an explanation of these
      * @param params The given params
      * @return The List of matched users
-     * @throws SQLException If there are issues working with the database
+     * @throws SQLException If there are issues working with the Database
      */
     public List<User> getUsers(Map<String,String> params) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -426,7 +426,7 @@ public class GeneralUser {
     }
 
     /**
-     * Constructs a portion of an SQL statement which matches users by which type of user they are ('neither', 'donor', 'receiver', or 'both').
+     * Constructs a portion of an SQL statement which matches users by which type of User they are ('neither', 'donor', 'receiver', or 'both').
      * @param params The query params
      * @return A string containing part of the query string
      */
@@ -462,10 +462,10 @@ public class GeneralUser {
 
 
     /**
-     * Returns the user whose id matches the given id
+     * Returns the User whose id matches the given id
      * @param id The given id
-     * @return The matched user
-     * @throws SQLException If there is a problem working with the database.
+     * @return The matched User
+     * @throws SQLException If there is a problem working with the Database.
      */
     public User getUserFromId(int id) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -480,7 +480,7 @@ public class GeneralUser {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new user Object with the fields from the database
+                //If response is not empty then return a new User Object with the fields from the Database
                 return getUserFromResultSet(resultSet);
             }
         }
@@ -510,31 +510,31 @@ public class GeneralUser {
     }
 
     /**
-     * Inserts the given user into the database.
-     * @param user The given user which will be inserted.
-     * @throws SQLException If there is a problem working with the database.
+     * Inserts the given User into the Database.
+     * @param user The given User which will be inserted.
+     * @throws SQLException If there is a problem working with the Database.
      */
     public void insertUser(User user) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 //            String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
 //                    " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 //            PreparedStatement statement = connection.prepareStatement(insert);
-//            statement.setString(1, user.getNameArray()[0]);
-//            statement.setString(2, user.getNameArray().length > 2 ?
-//                    String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
-//            statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-//            statement.setString(4, user.getPreferredNameArray()[0]);
-//            statement.setString(5, user.getPreferredNameArray().length > 2 ?
-//                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
-//            statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
-//            statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
-//            statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
-//            statement.setString(9, user.getUsername());
-//            statement.setString(10, user.getEmail());
-//            statement.setString(11, user.getPassword());
-//            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
+//            statement.setString(1, User.getNameArray()[0]);
+//            statement.setString(2, User.getNameArray().length > 2 ?
+//                    String.join(",", Arrays.copyOfRange(User.getNameArray(), 1, User.getNameArray().length - 1)) : null);
+//            statement.setString(3, User.getNameArray().length > 1 ? User.getNameArray()[User.getNameArray().length - 1] : null);
+//            statement.setString(4, User.getPreferredNameArray()[0]);
+//            statement.setString(5, User.getPreferredNameArray().length > 2 ?
+//                    String.join(",", Arrays.copyOfRange(User.getPreferredNameArray(), 1, User.getPreferredNameArray().length - 1)) : null);
+//            statement.setString(6, User.getPreferredNameArray().length > 1 ? User.getPreferredNameArray()[User.getPreferredNameArray().length - 1] : null);
+//            statement.setTimestamp(7, java.sql.Timestamp.valueOf(User.getCreationTime()));
+//            statement.setTimestamp(8, java.sql.Timestamp.valueOf(User.getCreationTime()));
+//            statement.setString(9, User.getUsername());
+//            statement.setString(10, User.getEmail());
+//            statement.setString(11, User.getPassword());
+//            statement.setDate(12, java.sql.Date.valueOf(User.getDateOfBirth()));
             PreparedStatement statement = connection.prepareStatement(createUserStatement(user));
-            System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
+            System.out.println("Inserting new User -> Successful -> Rows Added: " + statement.executeUpdate());
         }
     }
 
@@ -560,9 +560,9 @@ public class GeneralUser {
     }
 
     /**
-     * Inserts the given users into the database.
+     * Inserts the given users into the Database.
      * @param userList The given users which will be inserted.
-     * @throws SQLException If there is a problem working with the database.
+     * @throws SQLException If there is a problem working with the Database.
      */
     public void insertUsers(List<User> userList) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -578,7 +578,7 @@ public class GeneralUser {
             }
 
             try {
-                // Batch is ready, execute it to insert the data
+                // Batch is ready, execute it to insert the Data
                 stmt.executeBatch();
                 connection.commit();
             } catch (BatchUpdateException e) {
@@ -598,10 +598,10 @@ public class GeneralUser {
     }
 
     /**
-     * Returns the id of the user whose username matches the one given.
+     * Returns the id of the User whose username matches the one given.
      * @param username The givcen username
-     * @return the id of the matched user.
-     * @throws SQLException If there is a problem working with the database.
+     * @return the id of the matched User.
+     * @throws SQLException If there is a problem working with the Database.
      */
     public int getIdFromUser(String username) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -615,10 +615,10 @@ public class GeneralUser {
     }
 
     /**
-     * Takes a resultSet, pulls out a user instance, and returns it.
+     * Takes a resultSet, pulls out a User instance, and returns it.
      * @param resultSet The given resultSet
-     * @return The user
-     * @throws SQLException If there is a problem working with the database.
+     * @return The User
+     * @throws SQLException If there is a problem working with the Database.
      */
     public User getUserFromResultSet(ResultSet resultSet) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -682,7 +682,7 @@ public class GeneralUser {
                 user.setAlcoholConsumption(null);
             }
 
-            //Get all the organs for the given user
+            //Get all the organs for the given User
 
             String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
             PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
@@ -694,7 +694,7 @@ public class GeneralUser {
                 user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
             }
 
-            //Get all the medications for the given user
+            //Get all the medications for the given User
 
             String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
             PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
@@ -742,7 +742,7 @@ public class GeneralUser {
             }
 
 
-            //Get all the procedures for the given user
+            //Get all the procedures for the given User
 
             String proceduresQuery = "SELECT * FROM PROCEDURES WHERE user_id = ?";
             PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
@@ -784,7 +784,7 @@ public class GeneralUser {
 
             }
 
-            //Get all the diseases for the given user
+            //Get all the diseases for the given User
 
             String diseasesQuery = "SELECT * FROM DISEASE WHERE user_id = ?";
             PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
@@ -814,7 +814,7 @@ public class GeneralUser {
 
             }
 
-            //Get all waiting list items from database
+            //Get all waiting list items from Database
             String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
             PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
             waitingListStatement.setInt(1, userId);
@@ -833,7 +833,7 @@ public class GeneralUser {
             }
 
 
-            //Get all waiting list items from database
+            //Get all waiting list items from Database
             String historyQuery = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
             PreparedStatement historyStatement = connection.prepareStatement(historyQuery);
             historyStatement.setInt(1, userId);
@@ -854,10 +854,10 @@ public class GeneralUser {
     }
 
     /**
-     * Updates the attributes of the user on the database whose id matches the one given with the attributes of the given user.
-     * @param user The given user
+     * Updates the attributes of the User on the Database whose id matches the one given with the attributes of the given User.
+     * @param user The given User
      * @param userId The given id
-     * @throws SQLException If there is a problem working with the database.
+     * @throws SQLException If there is a problem working with the Database.
      */
     public void updateUserAttributes(User user, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -902,28 +902,28 @@ public class GeneralUser {
             statement.setString(24, user.getRegionOfDeath());
             statement.setString(25, user.getCountryOfDeath());
             statement.setInt(26, userId);
-            System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+            System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }
 
     /**
-     * removes the user from the database whoe ID matches that of the user given
-     * @param user The given user
-     * @throws SQLException If there is a problem working with the database.
+     * removes the User from the Database whoe ID matches that of the User given
+     * @param user The given User
+     * @throws SQLException If there is a problem working with the Database.
      */
     public void removeUser(User user) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM USER WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getUsername());
-            System.out.println("Deletion of user: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+            System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
 
     /**
-     * Returns the number of Users in the database.
-     * @return The number of Users in the database
-     * @throws SQLException If there is a problem working with the database.
+     * Returns the number of Users in the Database.
+     * @return The number of Users in the Database
+     * @throws SQLException If there is a problem working with the Database.
      */
     public int countUsers() throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -936,10 +936,10 @@ public class GeneralUser {
     }
 
     /**
-     * gets a list of user that are waiting for th given organ
+     * gets a list of User that are waiting for th given organ
      * @param organ the organ to match with
      * @return returns a list of users
-     * @throws SQLException If there is a problem working with the database.
+     * @throws SQLException If there is a problem working with the Database.
      */
     public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){

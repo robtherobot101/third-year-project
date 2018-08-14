@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.gui.TitleBar;
+import seng302.GUI.TitleBar;
 import seng302.User.User;
 
 import java.time.LocalDate;
@@ -52,10 +52,10 @@ public class TitleBarTest extends TestFXTest {
     @Ignore
     @Test
     public void setTitle1() {
-        titleBar.setTitle(user.getName(), "user", "Home");
-        assertEquals("user: William Shakespeare - Home", stage.getTitle());
-        titleBar.setTitle(user.getName(), "user", null);
-        assertEquals("user: William Shakespeare", stage.getTitle());
+        titleBar.setTitle(user.getName(), "User", "Home");
+        assertEquals("User: William Shakespeare - Home", stage.getTitle());
+        titleBar.setTitle(user.getName(), "User", null);
+        assertEquals("User: William Shakespeare", stage.getTitle());
     }
 
     @Ignore

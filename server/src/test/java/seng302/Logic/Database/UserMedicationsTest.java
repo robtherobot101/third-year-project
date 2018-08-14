@@ -19,7 +19,7 @@ public class UserMedicationsTest extends GenericTest {
     private UserMedications userMedications = new UserMedications();
 
     /**
-     * Test getting all medications for a user
+     * Test getting all medications for a User
      * @throws SQLException
      */
     @Test
@@ -42,7 +42,7 @@ public class UserMedicationsTest extends GenericTest {
     }
 
     /**
-     * Test inserting a new medication item into the database
+     * Test inserting a new medication item into the Database
      * @throws SQLException
      */
     @Test
@@ -100,7 +100,7 @@ public class UserMedicationsTest extends GenericTest {
     }
 
     /**
-     * Test the removal of a medication item from the database
+     * Test the removal of a medication item from the Database
      * @throws SQLException
      */
     @Test

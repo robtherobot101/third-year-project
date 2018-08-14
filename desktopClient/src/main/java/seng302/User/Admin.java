@@ -5,18 +5,18 @@ import seng302.User.Attribute.ProfileType;
 import java.util.Random;
 
 /**
- * This class contains information about admin.
+ * This class contains information about Admin.
  */
 public class Admin extends Clinician {
 
     private String accessLevel;
 
     /**
-     * Method to create a new admin instance
+     * Method to create a new Admin instance
      *
-     * @param username the username of the admin
-     * @param password the password of the admin
-     * @param name     the name of the admin
+     * @param username the username of the Admin
+     * @param password the password of the Admin
+     * @param name     the name of the Admin
      */
     public Admin(String username, String password, String name) {
         super(username, password, name, ProfileType.ADMIN, 1);
@@ -26,9 +26,9 @@ public class Admin extends Clinician {
     }
 
     /**
-     * Constructor used when making a deep copy of a clinician.
+     * Constructor used when making a deep copy of a Clinician.
      *
-     * @param originalAdmin the original clinician object being copied.
+     * @param originalAdmin the original Clinician object being copied.
      */
     public Admin(Admin originalAdmin) {
         super(originalAdmin);
@@ -64,7 +64,7 @@ public class Admin extends Clinician {
      */
     @Override
     public String toString() {
-        return "admin{" +
+        return "Admin{" +
                 "name='" + getName() + '\'' +
                 ", staffID='" + getStaffID() + '\'' +
                 ", username='" + getUsername() + '\'' +

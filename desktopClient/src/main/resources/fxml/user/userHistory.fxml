@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="historyGridPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="469.0" prefWidth="624.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.user.UserHistoryController">
+<GridPane fx:id="historyGridPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="469.0" prefWidth="624.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.User.UserHistoryController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="328.41766357421875" minWidth="10.0" percentWidth="50.0" prefWidth="328.41766357421875" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="345.58233642578125" minWidth="10.0" percentWidth="50.0" prefWidth="345.58233642578125" />

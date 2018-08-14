@@ -20,8 +20,8 @@ public class AuthorizationController {
     /**
      * method to handle the login requests
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return JSON object containing the information of the user logging in or a message saying why it failed, very nice
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return JSON object containing the information of the User logging in or a message saying why it failed, very nice
      */
     public String login(Request request, Response response) {
 
@@ -39,40 +39,40 @@ public class AuthorizationController {
         Clinician currentClinician = null;
         Admin currentAdmin = null;
 
-        // Check for a user match
+        // Check for a User match
         try {
             currentUser = model.loginUser(usernameEmail, password);
             if (currentUser != null) {
                 loginToken = model.generateToken((int) currentUser.getId(), 0);
                 typeMatched = ProfileType.USER;
-                System.out.println("LoginController: Logging in as user...");
+                System.out.println("LoginController: Logging in as User...");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        if (loginToken == null) { //if user login was unsuccessful
-            // Check for a clinician match
+        if (loginToken == null) { //if User login was unsuccessful
+            // Check for a Clinician match
             try {
                 currentClinician = model.loginClinician(usernameEmail, password);
                 if (currentClinician != null) {
                     loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
                     typeMatched = ProfileType.CLINICIAN;
-                    System.out.println("LoginController: Logging in as clinician...");
+                    System.out.println("LoginController: Logging in as Clinician...");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
-        if (loginToken == null) { //if user login and clinician login was unsuccessful
-            // Check for an admin match
+        if (loginToken == null) { //if User login and Clinician login was unsuccessful
+            // Check for an Admin match
             try {
                 currentAdmin = model.loginAdmin(usernameEmail, password);
                 if (currentAdmin != null) {
                     loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
                     typeMatched = ProfileType.ADMIN;
-                    System.out.println("LoginController: Logging in as admin...");
+                    System.out.println("LoginController: Logging in as Admin...");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -113,9 +113,9 @@ public class AuthorizationController {
     }
 
     /**
-     * method to handle logging out a user
+     * method to handle logging out a User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String containing information whether the logout was successful
      */
     public String logout(Request request, Response response) {

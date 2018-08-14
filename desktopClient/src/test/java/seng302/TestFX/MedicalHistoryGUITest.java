@@ -42,7 +42,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
         // Assumed that calling method is currently on login screen
 
         //DataManager.users.clear();
-//        System.out.println("MedicalHistoryGUITest: Test user not found -> adding test user");
+//        System.out.println("MedicalHistoryGUITest: Test User not found -> adding test User");
 //        clickOn("#createAccountButton");
 //        clickOn("#usernameInput").write("buzz");
 //        clickOn("#emailInput").write("mkn29@uclive.ac.nz");
@@ -54,19 +54,19 @@ public class MedicalHistoryGUITest extends TestFXTest {
 //        clickOn("#dateOfBirthInput").write("12/06/1997");
 //        doubleClickOn("#createAccountButton");
 //
-//        // Logout to be able to login as a clinician
+//        // Logout to be able to login as a Clinician
 //        clickOn("#logoutButton");
 //        clickOn("OK");
-//        System.out.println("MedicalHistoryGUITest: Logging in as default clinician");
+//        System.out.println("MedicalHistoryGUITest: Logging in as default Clinician");
         addTestUser();
-        // Login as default clinician
+        // Login as default Clinician
         clickOn("#identificationInput");
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
 
-        System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
-        // Click on the Created user in clinician table and enter the medications panel.
+        System.out.println("MedicalHistoryGUITest: Selecting test User -> entering medical history");
+        // Click on the Created User in Clinician table and enter the medications panel.
         doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 

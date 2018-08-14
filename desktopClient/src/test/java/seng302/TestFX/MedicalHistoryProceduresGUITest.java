@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.generic.WindowManager;
+import seng302.Generic.WindowManager;
 import seng302.User.Procedure;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
@@ -49,8 +49,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         addTestUser();
         loginAsDefaultClinician();
 
-        System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
-        // Click on the Created user in clinician table and enter the medications panel.
+        System.out.println("MedicalHistoryGUITest: Selecting test User -> entering medical history");
+        // Click on the Created User in Clinician table and enter the medications panel.
         doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 
@@ -64,7 +64,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     }
 
     /**
-     * Adds a new procedure to the user's pending procedures table view
+     * Adds a new procedure to the User's pending procedures table view
      */
     private void addNewProcedureToPendingProcedures() throws SQLException, HttpResponseException {
         enterMedicalHistoryProceduresView();
@@ -146,7 +146,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     }
 
     /**
-     * Add a procedure with a valid diagnosis with date before user's date of birth
+     * Add a procedure with a valid diagnosis with date before User's date of birth
      */
     @Ignore
     @Test
@@ -214,11 +214,11 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     }
 
     /**
-     * Adds a procedure to the user and then deletes it, checking if the deletion is successful.
+     * Adds a procedure to the User and then deletes it, checking if the deletion is successful.
      */
     @Test
     public void deleteProcedure() throws SQLException, HttpResponseException{
-        //Add Procedure for user.
+        //Add Procedure for User.
         addNewProcedureToPendingProcedures();
 
         clickOn("Arm Transplant");
@@ -249,7 +249,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         sleep(200);
         clickOn("#exitOK");
 
-        //Check if procedure added is correct in the Medication Array List of the user.
+        //Check if procedure added is correct in the Medication Array List of the User.
         TableView donorList = lookup("#profileTable").queryTableView();
         User topDonor = (User) donorList.getItems().get(0);
         assertTrue(topDonor.getPendingProcedures().get(0).getSummary().equalsIgnoreCase("Arm Transplant"));
@@ -262,7 +262,7 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
         clickOn("#proceduresButton");
 
-        //Check if medication added is correct and is populated when the user re-enters the medications window.
+        //Check if medication added is correct and is populated when the User re-enters the medications window.
         pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
         Procedure topProcedure = pendingProcedureTableView.getItems().get(0);
         assertEquals("Arm Transplant", topProcedure.getSummary());

@@ -27,7 +27,7 @@ public class WaitingListController {
     /**
      * method to get all waiting list items
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return Json object containing all waiting list items or a error message
      */
     public String getAllWaitingListItems(Request request, Response response) {
@@ -63,10 +63,10 @@ public class WaitingListController {
 
 
     /**
-     * method to get all waiting list items of a single user
+     * method to get all waiting list items of a single User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
-     * @return Json object containing all the waiting list items of a user or an error message
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @return Json object containing all the waiting list items of a User or an error message
      */
     public String getAllUserWaitingListItems(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -89,9 +89,9 @@ public class WaitingListController {
     }
 
     /**
-     * method to handle getting a single waiting list object from a specific user
+     * method to handle getting a single waiting list object from a specific User
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return Json object containing the waiting list item objects information, or an error message
      */
     public String getSingleUserWaitingListItem(Request request, Response response) {
@@ -110,9 +110,9 @@ public class WaitingListController {
     }
 
     /**
-     * method to handle adding a new user waiting list item
+     * method to handle adding a new User waiting list item
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully
      */
     public String addNewUserWaitingListItem(Request request, Response response) {
@@ -141,7 +141,7 @@ public class WaitingListController {
     /**
      * method to edit an existing waiting list item
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether he operation was completed successfully
      */
     public String editWaitingListItem(Request request, Response response) {
@@ -176,7 +176,7 @@ public class WaitingListController {
     /**
      * method to delete a specific waiting list item
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
      * @return String whether the operation was completed successfully or not
      */
     public String deleteWaitingListItem(Request request, Response response) {

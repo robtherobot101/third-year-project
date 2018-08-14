@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.generic.Debugger;
-import seng302.generic.WindowManager;
+import seng302.Generic.Debugger;
+import seng302.Generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -41,13 +41,13 @@ public class UserWaitingListGUITest extends TestFXTest {
         try {
             WindowManager.getDataManager().getGeneral().reset(null);
         } catch (HttpResponseException e) {
-            Debugger.error("Failed to reset the database.");
+            Debugger.error("Failed to reset the Database.");
         }
         user = addTestUser();
     }
 
     /**
-     * Logs into the test user's account and navigates to the transplant waiting list.
+     * Logs into the test User's account and navigates to the transplant waiting list.
      * This method should only be run from the main login screen.
      */
     public void usersTransplantWaitingListAsUser() throws TimeoutException{
@@ -57,8 +57,8 @@ public class UserWaitingListGUITest extends TestFXTest {
     }
 
     /**
-     * Logs into the default clinician account,
-     * opens the test user's profile, and then navigates to the
+     * Logs into the default Clinician account,
+     * opens the test User's profile, and then navigates to the
      * transplant waiting list.
      * This method should only be run from the main login screen.
      */
@@ -70,7 +70,7 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     /**
      * Registers an organ of the given type.
-     * This method should only be run from the transplant waiting list view opened by a clinician.
+     * This method should only be run from the transplant waiting list view opened by a Clinician.
      *
      * @param type The organ type to register
      */
@@ -81,7 +81,7 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     /**
      * Deregisters an organ of the given type from the open transplant waiting list
-     * This method should only be run from the transplant waiting list view opened by a clinician with
+     * This method should only be run from the transplant waiting list view opened by a Clinician with
      * an organ of the given type already registered
      *
      * @param type The organ type to deregister
@@ -94,7 +94,7 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     /**
      * Changes the selection in the organTypeComboBox to the given organ type.
-     * This method should only be run from the transplant waiting list view opened by a clinician.
+     * This method should only be run from the transplant waiting list view opened by a Clinician.
      *
      * @param type The type of organ
      */

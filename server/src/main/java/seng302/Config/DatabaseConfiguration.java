@@ -24,8 +24,8 @@ public class DatabaseConfiguration {
     private String jdbcDriver = "com.mysql.cj.jdbc.Driver";
 
     /**
-     * Constructor method to create a new database configuration object
-     * that contains all the required information to interact with the database
+     * Constructor method to create a new Database configuration object
+     * that contains all the required information to interact with the Database
      */
     private DatabaseConfiguration() {
         if(Server.getInstance().isTesting()){
@@ -44,15 +44,15 @@ public class DatabaseConfiguration {
     }
 
     /**
-     * method to get the current database instance
-     * @return The current database configuration object
+     * method to get the current Database instance
+     * @return The current Database configuration object
      */
     public static DatabaseConfiguration getInstance() {
         return INSTANCE;
     }
 
     /**
-     * Send an SQL update command to the database and return how many rows were affected or -1 if the command failed
+     * Send an SQL update command to the Database and return how many rows were affected or -1 if the command failed
      * @param sql The command to be run
      * @return The number of rows affected
      */
@@ -66,10 +66,10 @@ public class DatabaseConfiguration {
     }
 
     /**
-     * Send an SQL query to the database and returns the set of results
+     * Send an SQL query to the Database and returns the set of results
      * @param sql The query to be executed
      * @return A ResultSet of the results
-     * @throws SQLException if an error occurred with communicating with the database
+     * @throws SQLException if an error occurred with communicating with the Database
      */
     public ResultSet querySql(String sql) throws SQLException {
         Connection connection = cpds.getConnection();
@@ -77,9 +77,9 @@ public class DatabaseConfiguration {
     }
 
     /**
-     * Get a connection to the database from the pool
-     * @return a connection to the database
-     * @throws SQLException if an error occurred with communicating with the database
+     * Get a connection to the Database from the pool
+     * @return a connection to the Database
+     * @throws SQLException if an error occurred with communicating with the Database
      */
     public Connection getConnection() throws SQLException {
         return cpds.getConnection();

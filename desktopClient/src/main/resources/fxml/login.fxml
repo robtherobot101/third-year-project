@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="295.0" maxWidth="550.0" minHeight="250.0" minWidth="400.0" onMousePressed="#requestFocus" prefHeight="276.0" prefWidth="550.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.LoginController">
+<AnchorPane fx:id="background" maxHeight="295.0" maxWidth="550.0" minHeight="250.0" minWidth="400.0" onMousePressed="#requestFocus" prefHeight="276.0" prefWidth="550.0" stylesheets="@../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.LoginController">
    <children>
       <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="160.0" layoutY="64.0" text="Log in or" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="61.0">
          <font>

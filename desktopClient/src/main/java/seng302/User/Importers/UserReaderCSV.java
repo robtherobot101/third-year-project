@@ -1,7 +1,7 @@
 package seng302.User.Importers;
 
 import com.opencsv.CSVReader;
-import seng302.generic.Debugger;
+import seng302.Generic.Debugger;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
@@ -22,7 +22,7 @@ public class UserReaderCSV implements ProfileReader<User> {
     private List<User> readUsers;
 
     /**
-     * gets user profiles from a csv file
+     * gets User profiles from a csv file
      * @param path the path to the csv file
      * @return returns the imported profiles
      */
@@ -125,7 +125,7 @@ public class UserReaderCSV implements ProfileReader<User> {
                 // Process address
                 String address = String.format("%s %s, %s", streetNumber, streetName, suburb);
 
-                // Finally create the user profile
+                // Finally create the User profile
                 User readUser = new User(firstName, lastNames, dateOfBirth, dateOfDeath,
                         birthGender, identityGender, bloodType, height, weight, address, region, city,
                         zipCode, country, homePhone, mobilePhone, email);
