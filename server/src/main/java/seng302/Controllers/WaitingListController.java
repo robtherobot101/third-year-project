@@ -11,7 +11,7 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.*;
 
 public class WaitingListController {
     private UserWaitingList model;
@@ -32,9 +32,20 @@ public class WaitingListController {
      */
     public String getAllWaitingListItems(Request request, Response response) {
 
-        ArrayList<WaitingListItem> queriedWaitingListItems;
+        Map<String, String> params = new HashMap<String, String>();
+        List<String> possibleParams = new ArrayList<String>(Arrays.asList(
+                "organ","region"
+        ));
+
+        for(String param:possibleParams){
+            if(request.queryParams(param) != null){
+                params.put(param,request.queryParams(param));
+            }
+        }
+
+        List<WaitingListItem> queriedWaitingListItems;
         try {
-            queriedWaitingListItems = model.getAllWaitingListItems();
+            queriedWaitingListItems = model.queryWaitingListItems(params);
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
@@ -48,6 +59,8 @@ public class WaitingListController {
         response.status(200);
         return serialQueriedWaitingListItems;
     }
+
+
 
     /**
      * method to get all waiting list items of a single user

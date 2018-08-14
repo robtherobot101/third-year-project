@@ -317,7 +317,7 @@ public class CommandLineInterface {
                 return new CommandLineResponse(false, "An error occurred creating this user. This username may already be taken");
             }
         } else {
-            return new CommandLineResponse(false, getIncorrectUsageString("addUser", 2, "\"name part 1,name part 2\" <date of birth>"));
+            return new CommandLineResponse(false, getIncorrectUsageString("addUser", 4, "<username> <password> \"name part 1,name part 2\" <date of birth>"));
         }
     }
 
@@ -1017,14 +1017,13 @@ public class CommandLineInterface {
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
                 case "adduser":
-                    return new CommandLineResponse(false, "This command adds a new user with a name and date of birth.\n"
+                    return new CommandLineResponse(false, "This command adds a new user with a username, password, name and date of birth.\n"
                             + "The syntax is: addUser <name> <date of birth>\n"
                             + "Rules:\n"
                             + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
                             + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
                             + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
-                            + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
-
+                            + "Example valid usage: add my_username my_password \"Test,User with,SpacesIn Name\" 01/05/1994");
                 case "addclinician":
                     return new CommandLineResponse(false, "This command adds a new clinician with a username, password, and name.\n"
                             + "The syntax is: addClinician <username> <password> <name> \n"
