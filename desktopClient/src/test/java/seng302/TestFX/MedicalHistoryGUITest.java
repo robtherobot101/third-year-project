@@ -66,7 +66,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
         clickOn("#loginButton");
 
         System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
-        // Click on the Created User in clinician table and enter the medications panel.
+        // Click on the Created user in clinician table and enter the medications panel.
         doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 

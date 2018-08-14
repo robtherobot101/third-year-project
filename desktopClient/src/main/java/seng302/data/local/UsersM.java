@@ -65,7 +65,7 @@ public class UsersM implements UsersDAO {
      * token. For example, the token "dani" would not match the name "dan", but would match "daniel".
      * <p>
      * The results are returned sorted by a score according to which names were matched.
-     * See scoreUserOnSearch(User, List(String))
+     * See scoreUserOnSearch(user, List(String))
      * If two users are ranked the same, they're sorted alphabetically
      *
      * @param term The search term which will be broken into space separated tokens
@@ -421,7 +421,7 @@ public class UsersM implements UsersDAO {
                 return a;
             }
         }
-        Debugger.log("User with id: " + id + " not found. Returning null.");
+        Debugger.log("user with id: " + id + " not found. Returning null.");
         return null;
     }
 

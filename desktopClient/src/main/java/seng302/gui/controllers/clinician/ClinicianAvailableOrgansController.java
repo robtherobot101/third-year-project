@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.Clinician;
+package seng302.gui.controllers.clinician;
 
 import javafx.animation.FadeTransition;
 import javafx.beans.property.*;
@@ -10,8 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TitleBar;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.User.Attribute.NZRegion;
@@ -28,24 +28,32 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     @FXML
     AnchorPane organsPane;
-
-
     @FXML
-    TreeTableColumn<Object, String> organColumn, nameColumn, countdownColumn, dateOfDeathColumn, organRegionColumn, receiverRegionColumn;
-
+    TreeTableColumn<Object, String> organColumn;
+    @FXML
+    TreeTableColumn<Object, String> nameColumn;
+    @FXML
+    TreeTableColumn<Object, String> countdownColumn;
+    @FXML
+    TreeTableColumn<Object, String> dateOfDeathColumn;
+    @FXML
+    TreeTableColumn<Object, String> organRegionColumn;
+    @FXML
+    TreeTableColumn<Object, String> receiverRegionColumn;
+    @FXML
     TreeTableColumn<Object, Double> progressCol;
-
     @FXML
     TreeTableView<Object> organsTreeTable;
-
     @FXML
     Label refreshSuccessText;
-
     @FXML
-    Button refreshOrganTable, organsFilterButton;
-
+    Button refreshOrganTable;
     @FXML
-    ComboBox<String> organFilter, regionFilter;
+    Button organsFilterButton;
+    @FXML
+    ComboBox<String> organFilter;
+    @FXML
+    ComboBox<String> regionFilter;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
@@ -68,6 +76,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     List<DonatableOrgan> expiryList = new ArrayList<>();
 
+    private String allRegions = "All Regions";
+
     /**
      * Sets the initial time left values for all list items.
      */
@@ -79,27 +89,16 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
             // Calculate the date the organ expires, based on the organ
             LocalDateTime deathDate = organ.getTimeOfDeath();
-            //TODO Find a cleaner way of getting organ dates and times in durations or something to be able to add to deathDate, and find expiry durations for ear and tissue
             Duration expiryDuration = organ.getExpiryDuration(organ.getOrganType());
             LocalDateTime expiryDate = deathDate.plus(expiryDuration);
-
-            if (now.isBefore(expiryDate) && expiryDate.isBefore(now.plusHours(100))){
-                // Set time remaining
-                //calculate the initial value of time remaining (if lower than 100 hours left)
-                Duration timeLeft = Duration.between(now, expiryDate);
-                organ.setTimeLeft(timeLeft);
-            } else {
-                Duration timeLeft = Duration.between(now, expiryDate);
-                organ.setTimeLeft(timeLeft);
-                //Either the organ shouldn't be displaying, or it should display <4 days or something
-            }
-
+            // Set time remaining
+            //calculate the initial value of time remaining (if lower than 100 hours left)
+            Duration timeLeft = Duration.between(now, expiryDate);
+            organ.setTimeLeft(timeLeft);
+            //Either the organ shouldn't be displaying, or it should display <4 days or something
         }
-        //create timer task to tick down
-
-
-        //TODO figure out how to handle changing tab - end the timer or leave it running in the background until app close??
     }
+
 
     /**
      * Creates a timer which ticks every second and updates each organ object, counting down their expiry time by 1 second.
@@ -112,7 +111,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         //set up the timer
         int delay = 1000;
         int period = 1000;
-        System.out.println("Initializing timer...");
+        Debugger.log("Initializing timer...");
         time = new Timer();
         time.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -135,10 +134,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
     public void updateOrgans() {
         try {
             HashMap filterParams = new HashMap();
-            if (regionFilter.getSelectionModel().getSelectedItem() != "All Regions"){
+            if (regionFilter.getSelectionModel().getSelectedItem() != allRegions){
                 filterParams.put("userRegion", regionFilter.getSelectionModel().getSelectedItem());
             }
-            if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
+            if (organFilter.getSelectionModel().getSelectedItem() != allRegions){
                 filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
             }List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams,token));
             setInitTimeLeft(temp);
@@ -153,10 +152,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
             expiryList.sort(Comparator.comparing(DonatableOrgan::getTimeLeft));
 
             for (DonatableOrgan don : expiryList) {
-                System.out.println("DON: " + don.getTimeLeftString());
+                Debugger.log("DON: " + don.getTimeLeftString());
             }
 
-            System.out.println("there are " + expiryList.size() + " items in expiryList when updating organs");
+            Debugger.log("there are " + expiryList.size() + " items in expiryList when updating organs");
             TreeItem<Object> root = new TreeItem<>();
             for (DonatableOrgan organ : expiryList) {
                 TreeItem expiringOrganItem = new TreeItem<>(organ);
@@ -261,8 +260,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         WindowManager.setClinicianAvailableOrgansController(this);
 
-        //transplantTable.setItems(transplantList);
-        // TODO
         organsTreeTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
 
@@ -279,16 +276,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         ObservableList<String> regionSearchlist = FXCollections.observableArrayList();
         NZRegion[] regionList = NZRegion.values();
-        regionSearchlist.add("All Regions");
+        regionSearchlist.add(allRegions);
         for (NZRegion o : regionList) {
             String v = o.toString();
             regionSearchlist.add(v);
         }
         regionFilter.setItems(regionSearchlist);
-        regionFilter.setValue("All Regions");
-
-        // TODO
-        //organsTable.setItems(expiryList);
+        regionFilter.setValue(allRegions);
 
 
         organsTreeTable.setRowFactory(new Callback<TreeTableView<Object>, TreeTableRow<Object>>() {
@@ -301,7 +295,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                         getStyleClass().remove("highlighted-row-organs-75");
                         getStyleClass().remove("highlighted-row-organs-100");
                         super.updateItem(item, empty);
-                        if(item != null && item instanceof DonatableOrgan) {
+                        if(item instanceof DonatableOrgan) {
                             DonatableOrgan di = (DonatableOrgan) item;
                             setTooltip(null);
                             if (di.getTimePercent() <  0.25) {
@@ -333,7 +327,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                             Debugger.error("Could not open user window. Failed to fetch user with id: " + receiverId);
                         }
                     } else if(!row.isEmpty() && event.getClickCount() == 2 && row.getItem() instanceof DonatableOrgan) {
-                        System.out.println("Clicked organ row");
+                        Debugger.log("Clicked organ row");
                         int donorId = (int)((DonatableOrgan) row.getItem()).getDonorId();
                         try {
                             WindowManager.newAdminsUserWindow(WindowManager.getDataManager().getUsers().getUser(donorId, token), token);
@@ -356,11 +350,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
     }
 
     public void stopTimer(){
-        if(focused) {
-            if (time != null) {
-                time.cancel();
-                time.purge();
-            }
+        if (focused && time != null) {
+            time.cancel();
+            time.purge();
         }
         focused = false;
     }

@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

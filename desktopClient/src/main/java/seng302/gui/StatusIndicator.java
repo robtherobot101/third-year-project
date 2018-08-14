@@ -1,4 +1,4 @@
-package seng302.GUI;
+package seng302.gui;
 
 import javafx.scene.control.ProgressBar;
 import org.controlsfx.control.StatusBar;

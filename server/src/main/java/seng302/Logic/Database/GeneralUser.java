@@ -480,7 +480,7 @@ public class GeneralUser {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new User Object with the fields from the database
+                //If response is not empty then return a new user Object with the fields from the database
                 return getUserFromResultSet(resultSet);
             }
         }
@@ -615,9 +615,9 @@ public class GeneralUser {
     }
 
     /**
-     * Takes a resultSet, pulls out a User instance, and returns it.
+     * Takes a resultSet, pulls out a user instance, and returns it.
      * @param resultSet The given resultSet
-     * @return The User
+     * @return The user
      * @throws SQLException If there is a problem working with the database.
      */
     public User getUserFromResultSet(ResultSet resultSet) throws SQLException{
@@ -902,13 +902,13 @@ public class GeneralUser {
             statement.setString(24, user.getRegionOfDeath());
             statement.setString(25, user.getCountryOfDeath());
             statement.setInt(26, userId);
-            System.out.println("Update User Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+            System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }
 
     /**
-     * removes the User from the database whoe ID matches that of the User given
-     * @param user The given User
+     * removes the user from the database whoe ID matches that of the user given
+     * @param user The given user
      * @throws SQLException If there is a problem working with the database.
      */
     public void removeUser(User user) throws SQLException {
@@ -916,7 +916,7 @@ public class GeneralUser {
             String update = "DELETE FROM USER WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, user.getUsername());
-            System.out.println("Deletion of User: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+            System.out.println("Deletion of user: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
 

@@ -108,7 +108,7 @@ public class ProfileUtils {
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else {
-            return true; //User has clinician or admin level access
+            return true; //user has clinician or admin level access
         }
     }
 
@@ -136,14 +136,14 @@ public class ProfileUtils {
                 return false;
             }
             if (checkTokenId(token, ProfileType.USER, id)) {
-                return true; //User is logged on and supplied their token
+                return true; //user is logged on and supplied their token
             } else {
                 Server.getInstance().log.warn(failure + "(token does not match user id)");
                 halt(401, "Unauthorized");
                 return false;
             }
         } else {
-            return true; //User has clinician or admin level access
+            return true; //user has clinician or admin level access
         }
     }
 
@@ -175,14 +175,14 @@ public class ProfileUtils {
                 return false;
             }
             if (checkTokenId(token, ProfileType.CLINICIAN, id)) {
-                return true; //User is logged on and supplied their token
+                return true; //user is logged on and supplied their token
             } else {
                 Server.getInstance().log.warn(failure + "(token does not match clinician id)");
                 halt(401, "Unauthorized");
                 return false;
             }
         } else {
-            return true; //User has clinician or admin level access
+            return true; //user has clinician or admin level access
         }
     }
 
@@ -211,7 +211,7 @@ public class ProfileUtils {
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else {
-            return true; //User has admin level access
+            return true; //user has admin level access
         }
     }
 

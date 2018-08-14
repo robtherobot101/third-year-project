@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -672,7 +672,7 @@ public class UserProceduresController extends UserTabController implements Initi
      */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-        donorNameLabel.setText("User: " + currentUser.getName());
+        donorNameLabel.setText("user: " + currentUser.getName());
 
         //Check if pending procedure due date is now past the current date
         for (Procedure procedure : currentUser.getPendingProcedures()) {

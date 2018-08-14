@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,9 +14,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TFScene;
-import seng302.GUI.TitleBar;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TFScene;
+import seng302.gui.TitleBar;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.User.User;
@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
- * Class which handles all the logic for the User Window.
+ * Class which handles all the logic for the user Window.
  * Handles all functions including:
  * Saving, Undo, Redo, All input fields and more.
  */
@@ -113,7 +113,7 @@ public class UserController implements Initializable {
     }
 
     /**
-     * Sets the user displayed by this controller, and initializes the GUI to display the user's data.
+     * Sets the user displayed by this controller, and initializes the gui to display the user's data.
      * @param token authentication token for the database
      * @param currentUser The user to display
      */
@@ -125,7 +125,7 @@ public class UserController implements Initializable {
         } else {
             setWelcomeText("Welcome, " + currentUser.getName());
         }
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Home");
 
         diseasesController.setCurrentUser(currentUser);
         proceduresController.setCurrentUser(currentUser);
@@ -190,21 +190,21 @@ public class UserController implements Initializable {
                 waitingListController.redoStack.clear();
                 setUndoRedoButtonsDisabled(true, true);
                 setCurrentUser(latest, token);
-                addHistoryEntry("Refreshed", "User data was refreshed from the server.");
+                addHistoryEntry("Refreshed", "user data was refreshed from the server.");
                 alert.close();
 
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to fetch user with id: " + currentUser.getId());
                 alert.close();
                 alert = WindowManager.createAlert(AlertType.ERROR, "Refresh Failed", "Refresh failed",
-                        "User data could not be refreshed because there was an error contacting the server.");
+                        "user data could not be refreshed because there was an error contacting the server.");
                 alert.showAndWait();
             }
         }
     }
 
     /**
-     * Set up the User window.
+     * Set up the user window.
      *
      * @param location  Not used
      * @param resources Not used
@@ -322,18 +322,18 @@ public class UserController implements Initializable {
     public void showWelcomePane() {
         hideAllTabs();
         welcomePane.setVisible(true);
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Home");
     }
 
     /**
-     * Sets the User Attribute pane as the visible pane
+     * Sets the user Attribute pane as the visible pane
      */
     public void showAttributesPane() {
         hideAllTabs();
         attributesPane.setVisible(true);
         setButtonSelected(userAttributesButton, true);
         setUndoRedoButtonsDisabled(attributesController.undoEmpty(), attributesController.redoEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Attributes");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Attributes");
     }
 
     /**
@@ -344,7 +344,7 @@ public class UserController implements Initializable {
         medicationsPane.setVisible(true);
         setButtonSelected(medicationsButton, true);
         setUndoRedoButtonsDisabled(medicationsController.undoEmpty(), medicationsController.redoEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Medications");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Medications");
     }
 
     /**
@@ -355,7 +355,7 @@ public class UserController implements Initializable {
         diseasesPane.setVisible(true);
         setButtonSelected(diseasesButton, true);
         setUndoRedoButtonsDisabled(diseasesController.undoEmpty(), diseasesController.redoEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Disease History");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Disease History");
     }
 
     /**
@@ -365,7 +365,7 @@ public class UserController implements Initializable {
         hideAllTabs();
         proceduresPane.setVisible(true);
         setButtonSelected(proceduresButton, true);
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Procedure History");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Procedure History");
     }
 
     /**
@@ -375,18 +375,18 @@ public class UserController implements Initializable {
         hideAllTabs();
         historyPane.setVisible(true);
         setButtonSelected(historyButton, true);
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Action History");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Action History");
     }
 
     public void showWaitingListPane() {
         hideAllTabs();
         waitingListPane.setVisible(true);
         setUndoRedoButtonsDisabled(waitingListController.undoEmpty(), waitingListController.redoEmpty());
-        titleBar.setTitle(currentUser.getPreferredName(), "User", "Waiting List");
+        titleBar.setTitle(currentUser.getPreferredName(), "user", "Waiting List");
     }
 
     /**
-     * Saves the current state of the GUI.
+     * Saves the current state of the gui.
      * Gets all the inputs for the user attributes and sets the user attributes to those by calling the update user function.
      * Then calls the populate user function to repopulate the user fields.
      */
@@ -408,7 +408,7 @@ public class UserController implements Initializable {
 
             addHistoryEntry("Updated", "Changes were saved to the server.");
             titleBar.saved(true);
-            titleBar.setTitle(currentUser.getPreferredName(), "User");
+            titleBar.setTitle(currentUser.getPreferredName(), "user");
             statusIndicator.setStatus("Saved", false);
 
             WindowManager.updateFoundClinicianUsers();
@@ -562,7 +562,7 @@ public class UserController implements Initializable {
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("exitOK");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            Debugger.log("Exiting GUI");
+            Debugger.log("Exiting gui");
             Stage stage = (Stage) welcomePane.getScene().getWindow();
             stage.close();
         } else {

@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers;
+package seng302.gui.controllers;
 
 import com.google.gson.Gson;
 import javafx.fxml.FXML;
@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import org.apache.http.client.HttpResponseException;
-import seng302.GUI.TFScene;
+import seng302.gui.TFScene;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.User.Admin;

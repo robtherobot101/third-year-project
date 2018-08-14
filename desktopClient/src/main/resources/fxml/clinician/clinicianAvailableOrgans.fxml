@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="organsPane" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController">
+<AnchorPane fx:id="organsPane" minHeight="0.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.clinician.ClinicianAvailableOrgansController">
    <TreeTableView fx:id="organsTreeTable" layoutX="40.0" layoutY="105.0" maxWidth="1.7976931348623157E308" prefHeight="455.0" prefWidth="720.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="105.0">
      <columns>
          <TreeTableColumn fx:id="regionColumn1" prefWidth="112.0" text="Organ">

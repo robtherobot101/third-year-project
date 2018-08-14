@@ -18,7 +18,7 @@ import seng302.data.local.AdminsM;
 import seng302.data.local.CliniciansM;
 import seng302.data.local.GeneralM;
 import seng302.data.local.UsersM;
-import seng302.GUI.TFScene;
+import seng302.gui.TFScene;
 import seng302.generic.DataManager;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
@@ -157,7 +157,7 @@ abstract class TestFXTest extends ApplicationTest {
                 return false;
             } else {
                 if (nodeFound.isVisible()) {
-                    //Let the GUI skin catchup to the controller state
+                    //Let the gui skin catchup to the controller state
                     waitForFxEvents();
                     return true;
                 } else {
@@ -175,7 +175,7 @@ abstract class TestFXTest extends ApplicationTest {
                 return false;
             } else {
                 if (!nodeFound.isDisable()) {
-                    //Let the GUI skin catchup to the controller state
+                    //Let the gui skin catchup to the controller state
                     waitForFxEvents();
                     return true;
                 } else {

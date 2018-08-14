@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.Clinician;
+package seng302.gui.controllers.clinician;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -22,9 +22,9 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TFScene;
-import seng302.GUI.TitleBar;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TFScene;
+import seng302.gui.TitleBar;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
@@ -42,27 +42,63 @@ import static seng302.generic.WindowManager.setButtonSelected;
  */
 public class ClinicianController implements Initializable {
     @FXML
-    private TableColumn profileName, profileUserType, profileAge, profileGender, profileRegion;
+    private TableColumn profileName;
+    @FXML
+    private TableColumn profileUserType;
+    @FXML
+    private TableColumn profileAge;
+    @FXML
+    private TableColumn profileGender;
+    @FXML
+    private TableColumn profileRegion;
     @FXML
     private TableView profileTable;
     @FXML
-    private TextField profileSearchTextField, clinicianRegionField;
+    private TextField profileSearchTextField;
+    @FXML
+    private TextField clinicianRegionField;
     @FXML
     private Pane background;
     @FXML
-    private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
+    private Label staffIDLabel;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton, organListButton;
+    private Label nameLabel;
+    @FXML
+    private Label addressLabel;
+    @FXML
+    private Label regionLabel;
+    @FXML
+    private Label clinicianDisplayText;
+    @FXML
+    private Label userDisplayText;
+    @FXML
+    private Button undoWelcomeButton;
+    @FXML
+    private Button redoWelcomeButton;
+    @FXML
+    private Button transplantListButton;
+    @FXML
+    private Button homeButton;
+    @FXML
+    private Button organListButton;
     @FXML
     private GridPane mainPane;
     @FXML
     private MenuItem accountSettingsMenuItem;
     @FXML
-    private ComboBox clinicianGenderComboBox, clinicianUserTypeComboBox, clinicianOrganComboBox, numberOfResultsToDisplay;
+    private ComboBox clinicianGenderComboBox;
+    @FXML
+    private ComboBox clinicianUserTypeComboBox;
+    @FXML
+    private ComboBox clinicianOrganComboBox;
+    @FXML
+    private ComboBox numberOfResultsToDisplay;
     @FXML
     private TextField clinicianAgeField;
     @FXML
-    private AnchorPane transplantListPane, organsPane;
+    private AnchorPane transplantListPane;
+    @FXML
+    private AnchorPane organsPane;
     @FXML
     private StatusBar statusBar;
     @FXML
@@ -84,7 +120,8 @@ public class ClinicianController implements Initializable {
 
     private List<User> usersFound = new ArrayList<>();
 
-    private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
+    private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>();
+    private LinkedList<Clinician> clinicianRedoStack = new LinkedList<>();
 
     private ObservableList<User> currentUsers = FXCollections.observableArrayList();
 
@@ -95,6 +132,9 @@ public class ClinicianController implements Initializable {
     private String searchOrganTerm = null;
     private String searchUserTypeTerm = null;
     private String token;
+
+    private String clinicianString = "clinician";
+    private String areYouSure = "Are you sure?";
 
     public ClinicianController() {
         this.titleBar = new TitleBar();
@@ -149,8 +189,8 @@ public class ClinicianController implements Initializable {
      * from the current clinician
      */
     public void updateDisplay() {
-        titleBar.setTitle(clinician.getName(), "Clinician", null);
-        System.out.print(clinician);
+        titleBar.setTitle(clinician.getName(), clinicianString, null);
+        Debugger.log(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         nameLabel.setText("Name: " + clinician.getName());
@@ -184,10 +224,10 @@ public class ClinicianController implements Initializable {
      * all open user windows spawned by the clinician are closed and the main scene is returned to the logout screen.
      */
     public void logout() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
@@ -226,8 +266,7 @@ public class ClinicianController implements Initializable {
 
                     stage.showAndWait();
                 } catch (Exception e) {
-                    Debugger.error("here");
-                    e.printStackTrace();
+                    Debugger.error(e.getLocalizedMessage());
                 }
             } else { // Password incorrect
                 WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
@@ -247,8 +286,8 @@ public class ClinicianController implements Initializable {
 
         // Create the custom dialog.
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Update Clinician");
-        dialog.setHeaderText("Update Clinician Details");
+        dialog.setTitle("Update clinician");
+        dialog.setHeaderText("Update clinician Details");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
@@ -298,7 +337,7 @@ public class ClinicianController implements Initializable {
         Platform.runLater(clinicianName::requestFocus);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.get() == updateButtonType) {
+        if (result.isPresent() && result.get() == updateButtonType) {
             String newName;
             String newAddress;
             String newRegion;
@@ -329,10 +368,10 @@ public class ClinicianController implements Initializable {
      * Saves the clinician ArrayList to a JSON file. Used for updating attributes only
      */
     public void save(String newName, String newAddress, String newRegion) {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure,
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             Debugger.log("Name=" + newName + ", Address=" + newAddress + ", Region=" + newRegion);
             clinician.setName(newName);
             clinician.setWorkAddress(newAddress);
@@ -350,10 +389,10 @@ public class ClinicianController implements Initializable {
      * Closes the application
      */
     public void close() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to exit? ",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Are you sure would like to exit? ",
                 "You will lose any unsaved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
                 userWindow.close();
             }
@@ -371,7 +410,7 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
+     * The main clincian undo function. Called from the button press, reads from the undo stack and then updates the gui accordingly.
      */
     public void undo() {
         clinicianRedoStack.add(new Clinician(clinician));
@@ -386,7 +425,7 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * The main clinician redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
+     * The main clinician redo function. Called from the button press, reads from the redo stack and then updates the gui accordingly.
      */
     public void redo() {
         clinicianUndoStack.add(new Clinician(clinician));
@@ -500,6 +539,7 @@ public class ClinicianController implements Initializable {
      * @param numberOfSearchResults the number of results of the users found
      */
     public void populateNResultsComboBox(int numberOfSearchResults) {
+        String results = " results";
         numberOfResultsToDisplay.getItems().clear();
         String firstPage = "First page";
         numberOfResultsToDisplay.setDisable(true);
@@ -507,11 +547,11 @@ public class ClinicianController implements Initializable {
         numberOfResultsToDisplay.getSelectionModel().select(firstPage);
         if (numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults) {
             numberOfResultsToDisplay.setDisable(false);
-            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + results);
         } else if (numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults) {
             numberOfResultsToDisplay.setDisable(false);
-            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + " results");
-            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + results);
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + results);
         }
     }
 
@@ -522,11 +562,6 @@ public class ClinicianController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users in total");
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to fetch all users.");
-        }*/
 
         clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
@@ -653,7 +688,7 @@ public class ClinicianController implements Initializable {
                             WindowManager.newCliniciansUserWindow(latestCopy, token);
 
                         } catch (HttpResponseException e) {
-                            Debugger.error("Failed to open user window. User could not be fetched from the server.");
+                            Debugger.error("Failed to open user window. user could not be fetched from the server.");
                         }
                     }
                 });
@@ -680,7 +715,7 @@ public class ClinicianController implements Initializable {
     }
 
     /**
-     * Sets the User Attribute pane as the visible pane.
+     * Sets the user Attribute pane as the visible pane.
      */
     public void showMainPane() {
         hideAllTabs();
@@ -702,7 +737,7 @@ public class ClinicianController implements Initializable {
         availableOrgansController.stopTimer();
 
         WindowManager.updateTransplantWaitingList();
-        titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
+        titleBar.setTitle(clinician.getName(), clinicianString, "Transplant Waiting List");
     }
 
     /**
@@ -716,6 +751,6 @@ public class ClinicianController implements Initializable {
         availableOrgansController.startTimer();
 
         WindowManager.updateAvailableOrgans();
-        titleBar.setTitle(clinician.getName(), "Clinician", "Available Organs");
+        titleBar.setTitle(clinician.getName(), clinicianString, "Available Organs");
     }
 }

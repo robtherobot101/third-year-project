@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.Clinician;
+package seng302.gui.controllers.admin;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
-import seng302.User.Clinician;
+import seng302.User.Admin;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,10 +19,18 @@ import java.util.ResourceBundle;
 /**
  * A controller class for the create admin screen.
  */
-public class CreateClinicianController implements Initializable {
+public class CreateAdminController implements Initializable {
 
     @FXML
-    private TextField usernameInput, passwordConfirmInput, firstNameInput, middleNamesInput, lastNameInput;
+    private TextField usernameInput;
+    @FXML
+    private TextField passwordConfirmInput;
+    @FXML
+    private TextField firstNameInput;
+    @FXML
+    private TextField middleNamesInput;
+    @FXML
+    private TextField lastNameInput;
     @FXML
     private PasswordField passwordInput;
     @FXML
@@ -32,19 +40,19 @@ public class CreateClinicianController implements Initializable {
     @FXML
     private AnchorPane background;
 
-    private Clinician clinician;
+    private Admin admin;
     private Stage stage;
 
     /**
-     * shows the create controller and waits for a clinician to be created
+     * method to show the create admin controller
      *
-     * @param stage the current stage
-     * @return the created clinician
+     * @param stage the current stage to use
+     * @return the created admin user
      */
-    public Clinician showAndWait(Stage stage) {
+    public Admin showAndWait(Stage stage) {
         this.stage = stage;
         stage.showAndWait();
-        return clinician;
+        return admin;
     }
 
     /**
@@ -62,10 +70,10 @@ public class CreateClinicianController implements Initializable {
     }
 
     /**
-     * Attempts to create a new clinician based on the information currently provided by the user. Provides appropriate feedback if this fails.
+     * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
      */
     public void createAccount() {
-        try {
+        try{
             if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
@@ -78,13 +86,12 @@ public class CreateClinicianController implements Initializable {
                 String username = usernameInput.getText();
                 String name = firstNameInput.getText() + " " + middleNamesInput.getText() + " " + lastNameInput.getText();
                 String password = passwordInput.getText();
-                clinician = new Clinician(username, password, name);
+                admin = new Admin(username, password, name);
                 stage.close();
             }
         } catch (HttpResponseException e) {
-            Debugger.error("Failed to check uniqueness of new clinician.");
+            Debugger.error("Failed to check uniqueness of new admin.");
         }
-
 
     }
 
@@ -109,4 +116,5 @@ public class CreateClinicianController implements Initializable {
         passwordConfirmInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         firstNameInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
     }
+
 }

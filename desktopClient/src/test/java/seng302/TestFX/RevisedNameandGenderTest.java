@@ -5,7 +5,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class RevisedNameandGenderTest extends TestFXTest {
 
 /*
-    private User user;
+    private user user;
 
     @BeforeClass
     public static void setupClass() throws TimeoutException {

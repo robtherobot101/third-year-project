@@ -1,8 +1,8 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import java.util.LinkedList;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TitleBar;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TitleBar;
 import seng302.User.User;
 
 public abstract class UserTabController {

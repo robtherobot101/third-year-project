@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.Admin;
+package seng302.gui.controllers.admin;
 
 import com.google.gson.Gson;
 import javafx.application.Platform;
@@ -26,12 +26,12 @@ import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
 import seng302.data.interfaces.GeneralDAO;
-import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
-import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
-import seng302.GUI.Controllers.Clinician.CreateClinicianController;
-import seng302.GUI.Controllers.User.CreateUserController;
-import seng302.GUI.StatusIndicator;
-import seng302.GUI.TFScene;
+import seng302.gui.controllers.clinician.ClinicianAvailableOrgansController;
+import seng302.gui.controllers.clinician.ClinicianWaitingListController;
+import seng302.gui.controllers.clinician.CreateClinicianController;
+import seng302.gui.controllers.user.CreateUserController;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TFScene;
 import seng302.generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
@@ -56,52 +56,88 @@ public class AdminController implements Initializable {
 
     @FXML
     private TabPane tableTabPane;
-    // User Tab Pane FXML elements
+    // user Tab Pane FXML elements
     @FXML
     private TableView<User> userTableView;
     @FXML
-    private TableColumn<User, String> userNameTableColumn, userTypeTableColumn, userGenderTableColumn, userRegionTableColumn;
+    private TableColumn<User, String> userNameTableColumn;
+    @FXML
+    private TableColumn<User, String> userTypeTableColumn;
+    @FXML
+    private TableColumn<User, String> userGenderTableColumn;
+    @FXML
+    private TableColumn<User, String> userRegionTableColumn;
     @FXML
     private TableColumn<User, Double> userAgeTableColumn;
-    // Clinician Tab Pane FXML elements
+    // clinician Tab Pane FXML elements
     @FXML
     private TableView<Clinician> clinicianTableView;
     @FXML
-    private TableColumn<Clinician, String> clinicianUsernameTableColumn, clinicianNameTableColumn, clinicianAddressTableColumn, clinicianRegionTableColumn;
+    private TableColumn<Clinician, String> clinicianUsernameTableColumn;
+    @FXML
+    private TableColumn<Clinician, String> clinicianNameTableColumn;
+    @FXML
+    private TableColumn<Clinician, String> clinicianAddressTableColumn;
+    @FXML
+    private TableColumn<Clinician, String> clinicianRegionTableColumn;
     @FXML
     private TableColumn<Clinician, Long> clinicianIDTableColumn;
 
-    // Admin Tab Pane FXML elements
+    // admin Tab Pane FXML elements
     @FXML
     private TableView<Admin> adminTableView;
     @FXML
-    private TableColumn<Admin, String> adminUsernameTableColumn, adminNameTableColumn;
+    private TableColumn<Admin, String> adminUsernameTableColumn;
+    @FXML
+    private TableColumn<Admin, String> adminNameTableColumn;
     @FXML
     private TableColumn<Admin, Long> adminIDTableColumn;
     @FXML
     private Pane background;
     @FXML
-    private Label staffIDLabel, userDisplayText, adminNameLabel, adminAddressLabel;
+    private Label staffIDLabel;
     @FXML
-    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton, availableOrgansButton;
+    private Label userDisplayText;
+    @FXML
+    private Label adminNameLabel;
+    @FXML
+    private Label adminAddressLabel;
+    @FXML
+    private Button undoWelcomeButton;
+    @FXML
+    private Button redoWelcomeButton;
+    @FXML
+    private Button homeButton;
+    @FXML
+    private Button transplantListButton;
+    @FXML
+    private Button cliTabButton;
+    @FXML
+    private Button availableOrgansButton;
     @FXML
     private GridPane mainPane;
     @FXML
-    private TextField profileSearchTextField, adminRegionField, adminAgeField;
+    private TextField profileSearchTextField;
+    @FXML
+    private TextField adminRegionField;
+    @FXML
+    private TextField adminAgeField;
     @FXML
     private ComboBox<Gender> adminGenderComboBox;
     @FXML
     private ComboBox<Organ> adminOrganComboBox;
     @FXML
     private ComboBox<String> adminUserTypeComboBox;
-
     @FXML
     private ComboBox numberOfResultsToDisplay;
-
     @FXML
     private StatusBar statusBar;
     @FXML
-    private AnchorPane cliPane, transplantListPane, organsPane;
+    private AnchorPane cliPane;
+    @FXML
+    private AnchorPane transplantListPane;
+    @FXML
+    private AnchorPane organsPane;
     @FXML
     private AdminCliController cliController;
     @FXML
@@ -111,7 +147,8 @@ public class AdminController implements Initializable {
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
-    private LinkedList<Admin> adminUndoStack = new LinkedList<>(), adminRedoStack = new LinkedList<>();
+    private LinkedList<Admin> adminUndoStack = new LinkedList<>();
+    private LinkedList<Admin> adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
 
@@ -132,6 +169,11 @@ public class AdminController implements Initializable {
     private Gson gson = new Gson();
     private String token;
 
+    private String areYouSure = "Are you sure?";
+    private String update = "Update";
+    private String region = "region";
+    private String unableTo = "Unable to load fxml or save file.";
+
     /**
      * Sets the current currentAdmin
      * @param currentAdmin The currentAdmin to se as the current
@@ -149,7 +191,7 @@ public class AdminController implements Initializable {
 
     /**
      * method to get the current admin
-     * @return Admin the current admin
+     * @return admin the current admin
      */
     public Admin getAdmin() {
         return this.currentAdmin;
@@ -197,7 +239,7 @@ public class AdminController implements Initializable {
      * all open user windows spawned by the currentAdmin are closed and the main scene is returned to the logout screen.
      */
     public void logout() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
@@ -221,12 +263,12 @@ public class AdminController implements Initializable {
 
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
-        dialog.setTitle("Update Admin");
-        dialog.setHeaderText("Update Admin Details");
+        dialog.setTitle("Update admin");
+        dialog.setHeaderText("Update admin Details");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
-        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        ButtonType updateButtonType = new ButtonType(update, ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
         // Create the username and password labels and fields.
@@ -300,21 +342,16 @@ public class AdminController implements Initializable {
      */
     public void save() {
         Debugger.log("AdminController: Save called");
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure,
                 "Are you sure would like to save all profiles? ",
                 "All profiles will be saved (user, clinician, admin).");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 WindowManager.getDataManager().getAdmins().updateAdminDetails(currentAdmin, token);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to save admin with id: " + currentAdmin.getStaffID());
             }
-
-            //TODO PUT in save to database for Users and Clinicians
-            //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
-            //IO.saveUsers(IO.getUserPath(), LoginType.USER);
-            //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
         }
         alert.close();
     }
@@ -362,7 +399,6 @@ public class AdminController implements Initializable {
                         if (extension.equals("csv")) {
                             IO.importUserCSV(fileToLoadPath, token);
                             return;
-                            // TODO something
                         } else if (extension.equals("json")) {
                             loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
                         } else {
@@ -437,13 +473,13 @@ public class AdminController implements Initializable {
                                 "JSON/CSV Files", "*.csv", "*.json");
                 fileChooser.getExtensionFilters().remove(fileExtensionJSON);
                 fileChooser.getExtensionFilters().add(fileExtensionJSONCSV);
-                fileChooser.setTitle("Open User File");
+                fileChooser.setTitle("Open user File");
                 break;
             case CLINICIAN:
-                fileChooser.setTitle("Open Clinician File");
+                fileChooser.setTitle("Open clinician File");
                 break;
             case ADMIN:
-                fileChooser.setTitle("Open Admin File");
+                fileChooser.setTitle("Open admin File");
                 break;
             default:
                 throw new IllegalArgumentException("Not a valid file import type.");
@@ -462,10 +498,10 @@ public class AdminController implements Initializable {
      * Closes the application
      */
     public void close() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to exit? ",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Are you sure would like to exit? ",
                 "You will lose any unsaved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
                 userWindow.close();
             }
@@ -483,10 +519,9 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * The main admin undo function. Called from the button press, reads from the undo stack and then updates the GUI accordingly.
+     * The main admin undo function. Called from the button press, reads from the undo stack and then updates the gui accordingly.
      */
     public void undo() {
-        // TODO implement undo
         try {
             WindowManager.getDataManager().getGeneral().reset(token);
         } catch (HttpResponseException e) {
@@ -495,14 +530,13 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * The main admin redo function. Called from the button press, reads from the redo stack and then updates the GUI accordingly.
+     * The main admin redo function. Called from the button press, reads from the redo stack and then updates the gui accordingly.
      */
     public void redo() {
-        // TODO implement redo
     }
 
     /**
-     * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the GUI button to be usable.
+     * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the gui button to be usable.
      *
      * @param admin the currentAdmin object being copied.
      */
@@ -551,7 +585,7 @@ public class AdminController implements Initializable {
         //Add in check for region
 
         if (!searchRegionTerm.equals("")) {
-            searchMap.put("region", searchRegionTerm);
+            searchMap.put(region, searchRegionTerm);
         }
 
         //Add in check for age
@@ -615,6 +649,7 @@ public class AdminController implements Initializable {
      * @param numberOfSearchResults the number of results of the users found
      */
     public void populateNResultsComboBox(int numberOfSearchResults) {
+        String results = " results";
         numberOfResultsToDisplay.getItems().clear();
         String firstPage = "First page";
         numberOfResultsToDisplay.setDisable(true);
@@ -622,11 +657,11 @@ public class AdminController implements Initializable {
         numberOfResultsToDisplay.getSelectionModel().select(firstPage);
         if (numberOfSearchResults > resultsPerPage && numberOfSearchResults < numberXofResults) {
             numberOfResultsToDisplay.setDisable(false);
-            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + results);
         } else if (numberOfSearchResults > resultsPerPage && numberOfSearchResults > numberXofResults) {
             numberOfResultsToDisplay.setDisable(false);
-            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + " results");
-            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + " results");
+            numberOfResultsToDisplay.getItems().add("Top " + numberXofResults + results);
+            numberOfResultsToDisplay.getItems().add("All " + numberOfSearchResults + results);
         }
     }
 
@@ -637,6 +672,7 @@ public class AdminController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        String delete = "Delete ";
 
         resultsPerPage = 15;
         numberXofResults = 200;
@@ -646,21 +682,21 @@ public class AdminController implements Initializable {
         clinicianTableView.setItems(currentClinicians);
         adminTableView.setItems(currentAdmins);
 
-        // Set User TableColumns to point at correct attributes
+        // Set user TableColumns to point at correct attributes
         userNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         userTypeTableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         userAgeTableColumn.setCellValueFactory(new PropertyValueFactory<>("ageString"));
         userGenderTableColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
-        userRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        userRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>(region));
 
-        // Set Clinician TableColumns to point at correct attributes
+        // Set clinician TableColumns to point at correct attributes
         clinicianUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         clinicianNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         clinicianAddressTableColumn.setCellValueFactory(new PropertyValueFactory<>("workAddress"));
-        clinicianRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        clinicianRegionTableColumn.setCellValueFactory(new PropertyValueFactory<>(region));
         clinicianIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
 
-        // Set Admin TableColumns to point at correct attributes
+        // Set admin TableColumns to point at correct attributes
         adminNameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         adminUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         adminIDTableColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
@@ -696,25 +732,24 @@ public class AdminController implements Initializable {
             Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
             Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
 
-            Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm profile deletion",
+            Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Confirm profile deletion",
                     "Are you sure you want to delete this profile? This cannot be undone.");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.orElse(null) == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
-                    Debugger.log("Deleting User: " + selectedUser);
+                    Debugger.log("Deleting user: " + selectedUser);
                     try {
                         WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove user with id: " + selectedUser.getId());
                     }
-                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
                     statusIndicator.setStatus("Deleted user " + selectedUser.getName(), false);
                 } else if (selectedClinician != null) {
                     // A clinician has been selected for deletion
-                    Debugger.log("Deleting Clinician: " + selectedClinician);
+                    Debugger.log("Deleting clinician: " + selectedClinician);
 
                     try {
                         WindowManager.getDataManager().getClinicians().removeClinician(selectedClinician.getStaffID(), token);
@@ -722,19 +757,17 @@ public class AdminController implements Initializable {
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove clinician with id: " + selectedClinician.getStaffID());
                     }
-                    //IO.saveUsers(IO.getUserPath(), LoginType.USER);
 
                     statusIndicator.setStatus("Deleted clinician " + selectedClinician.getName(), false);
                 } else if (selectedAdmin != null) {
                     // An admin has been selected for deletion
-                    Debugger.log("Deleting Admin: " + selectedAdmin);
+                    Debugger.log("Deleting admin: " + selectedAdmin);
                     try{
                         WindowManager.getDataManager().getAdmins().removeAdmin(selectedAdmin.getStaffID(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to remove admin with id: " + currentAdmin.getStaffID());
                     }
-                    //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
 
                     statusIndicator.setStatus("Deleted admin " + selectedAdmin.getName(), false);
                 }
@@ -757,7 +790,7 @@ public class AdminController implements Initializable {
                 User selectedUser = userTableView.getSelectionModel().getSelectedItem();
                 // No need to check for default user
                 if (selectedUser != null) {
-                    deleteProfile.setText("Delete " + selectedUser.getName());
+                    deleteProfile.setText(delete + selectedUser.getName());
                     profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
                 }
             }
@@ -773,7 +806,7 @@ public class AdminController implements Initializable {
                         deleteProfile.setText("Cannot delete default clinician");
                     } else {
                         deleteProfile.setDisable(false);
-                        deleteProfile.setText("Delete " + selectedClinician.getName());
+                        deleteProfile.setText(delete + selectedClinician.getName());
                         editClinician.setVisible(true);
                         editClinician.setText("Edit " + selectedClinician.getName());
                     }
@@ -792,7 +825,7 @@ public class AdminController implements Initializable {
                         deleteProfile.setText("Cannot delete default admin");
                     } else {
                         deleteProfile.setDisable(false);
-                        deleteProfile.setText("Delete " + selectedAdmin.getName());
+                        deleteProfile.setText(delete + selectedAdmin.getName());
                     }
                     profileMenu.show(adminTableView, event.getScreenX(), event.getScreenY());
                 }
@@ -887,7 +920,7 @@ public class AdminController implements Initializable {
                                 tooltip.setText(user.getName() + ".");
                             } else {
                                 String organs = user.getOrgans().toString();
-                                tooltip.setText(user.getName() + ". User: " + organs.substring(1, organs.length() - 1));
+                                tooltip.setText(user.getName() + ". user: " + organs.substring(1, organs.length() - 1));
                             }
                             setTooltip(tooltip);
                         }
@@ -900,7 +933,7 @@ public class AdminController implements Initializable {
                             row.setItem(latestCopy);
                             WindowManager.newAdminsUserWindow(latestCopy, token);
                         } catch (HttpResponseException e) {
-                            Debugger.error("Failed to open user window. User could not be fetched from the server.");
+                            Debugger.error("Failed to open user window. user could not be fetched from the server.");
                         }
                     }
                 });
@@ -913,21 +946,19 @@ public class AdminController implements Initializable {
     /**
      * Updates the current clinicians attributes to
      * reflect those of the values in the displayed TextFields
-     * @param clinician Clinician the clincian to use to display its info
+     * @param clinician clinician the clincian to use to display its info
      */
     public void updateClinicianPopUp(Clinician clinician) {
-        //adminUndoStack.add(new Clinician(clinician));
-        //undoWelcomeButton.setDisable(false);
         Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
-        dialog.setTitle("Update Clinician");
-        dialog.setHeaderText("Update Clinician Details");
+        dialog.setTitle("Update clinician");
+        dialog.setHeaderText("Update clinician Details");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
 
         // Set the button types.
-        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        ButtonType updateButtonType = new ButtonType(update, ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
         dialog.getDialogPane().lookupButton(updateButtonType).setId("clinicianSettingsPopupUpdateButton");
@@ -1036,7 +1067,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Sets the User Attribute pane as the visible pane.
+     * Sets the user Attribute pane as the visible pane.
      */
     public void showMainPane() {
         hideAllTabs();
@@ -1089,7 +1120,7 @@ public class AdminController implements Initializable {
      */
     public void databaseReset() {
 
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Confirm database reset",
                 "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
@@ -1111,7 +1142,7 @@ public class AdminController implements Initializable {
      * Resamples the database. Called by database, then Resample
      */
     public void databaseResample() {
-        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",
+        Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Confirm database reset",
                 "Are you sure you want to reset the entire database? All admins, clinicians and users will be deleted. This cannot be undone.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
@@ -1151,12 +1182,11 @@ public class AdminController implements Initializable {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to post admin to the server.");
                 }
-                //IO.saveUsers(IO.getAdminPath(), LoginType.ADMIN);
                 statusIndicator.setStatus("Added new admin " + newAdmin.getUsername(), false);
             }
         } catch (IOException e) {
-            Debugger.error("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error(unableTo);
+            Debugger.error(e.getLocalizedMessage());
             Platform.exit();
         }
     }
@@ -1189,12 +1219,11 @@ public class AdminController implements Initializable {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to insert new clinician.");
                 }
-                //IO.saveUsers(IO.getClinicianPath(), LoginType.CLINICIAN);
                 statusIndicator.setStatus("Added new clinician " + newClinician.getUsername(), false);
             }
         } catch (IOException e) {
-            Debugger.error("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error(unableTo);
+            Debugger.error(e.getLocalizedMessage());
             Platform.exit();
         }
     }
@@ -1227,14 +1256,13 @@ public class AdminController implements Initializable {
                 } catch(HttpResponseException e) {
                     Debugger.error("Failed to insert new user.");
                 }
-                //IO.saveUsers(IO.getUserPath(), LoginType.USER);
                 statusIndicator.setStatus("Added new user " + user.getUsername(), false);
             } else {
                 Debugger.error("AdminController: Failed to create user");
             }
         } catch (IOException e) {
-            Debugger.error("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error(unableTo);
+            Debugger.error(e.getLocalizedMessage());
             Platform.exit();
         }
     }
@@ -1268,7 +1296,7 @@ public class AdminController implements Initializable {
             dialog.setTitle("Update Countries");
             dialog.setHeaderText("Update Countries");
             WindowManager.setIconAndStyle(dialog.getDialogPane());
-            ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+            ButtonType updateButtonType = new ButtonType(update, ButtonBar.ButtonData.OK_DONE);
             dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
 

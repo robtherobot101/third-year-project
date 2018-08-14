@@ -1,4 +1,4 @@
-package seng302.GUI;
+package seng302.gui;
 
 import javafx.stage.Stage;
 
@@ -30,7 +30,7 @@ public class TitleBar {
      * Set the title for a user and a page.
      *
      * @param user The name of the currently logged in user
-     * @param type The type of user (User, Clinician etc)
+     * @param type The type of user (user, clinician etc)
      * @param page The currently visible page
      */
     public void setTitle(String user, String type, String page) {
@@ -48,7 +48,7 @@ public class TitleBar {
      * Set the title for a user and a page, when page is unknown.
      *
      * @param user The name of the currently logged in user
-     * @param type The type of user (User, Clinician etc)
+     * @param type The type of user (user, clinician etc)
      */
     public void setTitle(String user, String type) {
         String title = type + ": " + user;

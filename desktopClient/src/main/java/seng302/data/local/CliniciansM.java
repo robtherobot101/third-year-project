@@ -66,7 +66,7 @@ public class CliniciansM implements CliniciansDAO {
                 return a;
             }
         }
-        Debugger.log("Clinician with id: " + id + " not found. Returning null.");
+        Debugger.log("clinician with id: " + id + " not found. Returning null.");
         return null;
     }
 

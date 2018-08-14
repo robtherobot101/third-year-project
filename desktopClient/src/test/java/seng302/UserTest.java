@@ -139,7 +139,7 @@ public class UserTest {
         LocalDateTime now = LocalDateTime.now();
         LocalDate nowDate = now.toLocalDate();
         User user = new User("test user", nowDate);
-        assertEquals("User (ID 1) created at " + now.format(User.dateTimeFormat) + " "
+        assertEquals("user (ID 1) created at " + now.format(User.dateTimeFormat) + " "
                 + "\n-Name: test user"
                 + "\n-Preferred Name: test user"
                 + "\n-Date of Birth: " + nowDate.format(User.dateFormat)
