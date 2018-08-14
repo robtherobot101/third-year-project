@@ -1,7 +1,7 @@
 package seng302.User.Importers;
 
 import com.opencsv.CSVReader;
-import seng302.Generic.Debugger;
+import seng302.generic.Debugger;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;

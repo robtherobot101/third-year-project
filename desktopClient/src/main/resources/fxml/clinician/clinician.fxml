@@ -20,7 +20,7 @@
 
 <?import org.controlsfx.control.StatusBar?>
 
-<GridPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.GUI.Controllers.Clinician.ClinicianController">
+<GridPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.clinician.ClinicianController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     </columnConstraints>
@@ -204,6 +204,7 @@
                     <rowConstraints>
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                               <Button fx:id="homeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showMainPane" stylesheets="@../../css/selectedmenubutton.css" text="Home" textAlignment="CENTER">
@@ -216,6 +217,11 @@
                                       <Font size="14.0" />
                                   </font>
                               </Button>
+                         <Button fx:id="organListButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#organsAvailable" stylesheets="@../../css/menubutton.css" text="Available Organs" textAlignment="CENTER" GridPane.rowIndex="2">
+                             <font>
+                                 <Font size="13.0" />
+                             </font>
+                         </Button>
                         <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="🏠">
                            <font>
                               <Font size="31.0" />
@@ -237,10 +243,15 @@
                     </children>
                 </AnchorPane>
             <AnchorPane fx:id="transplantListPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-							<children>
-								<fx:include fx:id="waitingList" source="clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-							</children>
-						</AnchorPane>
+                <children>
+                    <fx:include fx:id="waitingList" source="clinicianWaitingList.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                </children>
+            </AnchorPane>
+                <AnchorPane fx:id="organsPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <fx:include fx:id="availableOrgans" source="clinicianAvailableOrgans.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    </children>
+                </AnchorPane>
             </children>
         </AnchorPane>
         <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="1">

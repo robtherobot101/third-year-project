@@ -25,7 +25,7 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
      * @param username    The username of the clinician
      * @param password    The clinician's password
@@ -44,7 +44,7 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
      * @param username    The username of the clinician
      * @param password    The clinician's password
@@ -139,7 +139,7 @@ public class Clinician {
      */
     @Override
     public String toString() {
-        return "Clinician{" +
+        return "clinician{" +
                 "name='" + name + '\'' +
                 ", staffID='" + staffID + '\'' +
                 ", workAddress='" + workAddress + '\'' +
