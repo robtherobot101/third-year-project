@@ -295,6 +295,7 @@ public class ClinicianController implements Initializable {
         setRegionControls("", "All Countries", regionComboBox, clinicianRegionField);
 
         waitingListController.setup();
+        availableOrgansController.setup();
 
         updateDisplay();
     }
@@ -720,7 +721,6 @@ public class ClinicianController implements Initializable {
         clinicianRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
             updateFoundUsers(resultsPerPage,false);
         });
-
 
 
         clinicianGenderComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

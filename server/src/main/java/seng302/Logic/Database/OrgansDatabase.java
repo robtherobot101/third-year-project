@@ -64,6 +64,11 @@ public class OrgansDatabase {
         if(params.keySet().contains("organ")) {
             queryBuilder.append("AND DONATION_LIST_ITEM.name = '").append(params.get("organ")).append("' ");
         }
+
+        if(params.keySet().contains("country")) {
+            queryBuilder.append("AND USER.countryOfDeath = '").append(params.get("country")).append("' ");
+        }
+
         return queryBuilder.toString();
     }
 
