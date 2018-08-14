@@ -164,6 +164,8 @@ public class ClinicianController implements Initializable {
         this.token = token;
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
+        availableOrgansController.updateOrgans();
+
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
         }

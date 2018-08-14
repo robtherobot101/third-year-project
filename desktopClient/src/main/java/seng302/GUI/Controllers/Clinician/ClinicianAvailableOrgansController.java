@@ -2,6 +2,8 @@ package seng302.GUI.Controllers.Clinician;
 
 import javafx.animation.FadeTransition;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,7 +31,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     AnchorPane organsPane;
 
-
     @FXML
     TreeTableColumn<Object, String> organColumn;
     @FXML
@@ -43,18 +44,17 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     TreeTableColumn<Object, String> receiverRegionColumn;
 
-    TreeTableColumn<Object, Double> progressCol;
-
     @FXML
     TreeTableView<Object> organsTreeTable;
 
     @FXML
-    Label refreshSuccessText;
+    TextField receiverNameTextField;
+
+    @FXML
+    Label updateResultsLabel;
 
     @FXML
     Button refreshOrganTable;
-    @FXML
-    Button organsFilterButton;
 
     @FXML
     ComboBox<String> organFilter;
@@ -69,6 +69,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
     private boolean focused = false;
     private boolean updated;
     private FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(3500));
+
+    private String organApplied, regionApplied, nameApplied = "";
 
 
     public void setToken(String token) {
@@ -154,7 +156,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
             }
             if (organFilter.getSelectionModel().getSelectedItem() != "All Organs"){
                 filterParams.put("organ", organFilter.getSelectionModel().getSelectedItem());
-            }List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams,token));
+            }
+            filterParams.put("receiverName", receiverNameTextField.getText());
+            System.out.println(filterParams);
+            List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
             setInitTimeLeft(temp);
 
             expiryList.clear();
@@ -243,9 +248,12 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
             organsTreeTable.setRoot(root);
         } catch (HttpResponseException e) {
-            Debugger.error("Failed to retrieve all users and refresh transplant waiting list..");
+            e.printStackTrace();
+            Debugger.error("Failed to update organs table...");
         }
     }
+
+
 
     /**
      * adds the user info to a Donatable organ item
@@ -261,6 +269,21 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    private void filterApplied(){
+        this.regionApplied = regionFilter.getValue();
+        this.organApplied = organFilter.getValue();
+        this.nameApplied = receiverNameTextField.getText();
+    }
+
+    private void filterChanged(){
+        if(!this.receiverNameTextField.getText().equals(nameApplied) ||
+                !this.organFilter.getValue().equals(organApplied) ||
+                !this.regionFilter.getValue().equals(regionApplied)) {
+            updateResultsLabel.setText("Click to apply filter changes");
+            updateResultsLabel.setVisible(true);
+        }
+    }
+
     /**
      * Initilizes the gui display with the correct content in the table.
      * @param location not used
@@ -269,7 +292,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        updateOrgans();
 
         organsTreeTable.setShowRoot(false);
 
@@ -298,6 +320,21 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
         regionFilter.setItems(regionSearchlist);
         regionFilter.setValue("All Regions");
+
+
+
+
+        regionFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            filterChanged();
+        });
+
+        organFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            filterChanged();
+        });
+
+        receiverNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterChanged();
+        });
 
 
         organsTreeTable.setRowFactory(new Callback<TreeTableView<Object>, TreeTableRow<Object>>() {
@@ -379,10 +416,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
     public void refreshTable(){
         updated = false;
         WindowManager.updateAvailableOrgans();
+        updateResultsLabel.setText("Updated successfully.");
+        updateResultsLabel.setVisible(true);
+
         if (updated){
-            refreshSuccessText.setVisible(true);
             fade.playFromStart();
+
+            filterApplied();
         }
     }
-
 }

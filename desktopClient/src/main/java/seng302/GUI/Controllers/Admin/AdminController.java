@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -134,11 +135,11 @@ public class AdminController implements Initializable {
     @FXML
     private StatusBar statusBar;
     @FXML
-    private TextField cliPane;
+    private AnchorPane cliPane;
     @FXML
-    private TextField transplantListPane;
+    private AnchorPane transplantListPane;
     @FXML
-    private TextField organsPane;
+    private AnchorPane organsPane;
     @FXML
     private AdminCliController cliController;
     @FXML
@@ -186,6 +187,7 @@ public class AdminController implements Initializable {
         cliController.setToken(token);
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
+        availableOrgansController.updateOrgans();
         updateDisplay();
         refreshLatestProfiles();
     }

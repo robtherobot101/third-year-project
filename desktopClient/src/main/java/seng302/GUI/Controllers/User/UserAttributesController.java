@@ -632,7 +632,6 @@ public class UserAttributesController extends UserTabController implements Initi
         cityOfDeath.setText(currentUser.getCityOfDeath());
 
 
-        Debugger.log(currentUser.getCityOfDeath());
         if(currentUser.getCountry() != null) {
             countryComboBox.getSelectionModel().select(currentUser.getCountry());
         }

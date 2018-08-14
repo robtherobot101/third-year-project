@@ -184,6 +184,7 @@ public class WindowManager extends Application {
             stage.show();
         } catch (IOException | NullPointerException e) {
             Debugger.error("Unable to load fxml or save file.");
+            e.printStackTrace();
             Debugger.error(e.getStackTrace());
             Platform.exit();
         }
@@ -477,7 +478,7 @@ public class WindowManager extends Application {
 
         APIServer server;
         if(testing) server = new APIServer(testingServer);
-        else server = new APIServer(properServer);
+        else server = new APIServer(localServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -559,6 +560,7 @@ public class WindowManager extends Application {
                 stop();
             } catch (IOException e) {
                 Debugger.error("Unable to load fxml or save file.");
+                e.printStackTrace();
                 Debugger.error(e.getStackTrace());
                 stop();
             }

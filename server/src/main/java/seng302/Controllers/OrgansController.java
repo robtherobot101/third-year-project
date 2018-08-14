@@ -47,7 +47,7 @@ public class OrgansController {
         List<DonatableOrgan> allDonatableOrgans;
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
-                "userRegion","organ",
+                "userRegion","organ","receiverName",
                 "startIndex","count"
         ));
         for(String param:possibleParams){
@@ -58,12 +58,24 @@ public class OrgansController {
         try {
             allDonatableOrgans = model.queryOrgans(params);
             OrganMatching organMatching = new OrganMatching();
-            for(DonatableOrgan organ: allDonatableOrgans){
-                organ.setTopReceivers(organMatching.getTop5Matches(organ));
+
+            if (!params.get("receiverName").equals("")) {
+                String receiverNameQuery = params.get("receiverName");
+                for(DonatableOrgan organ: allDonatableOrgans){
+                    organ.setTopReceivers(organMatching.getTop5Matches(organ, receiverNameQuery));
+                }
+                for(DonatableOrgan organ: new ArrayList<>(allDonatableOrgans)){
+                    if(organ.getTopReceivers().size() == 0){
+                        allDonatableOrgans.remove(organ);
+                    }
+                }
+            } else {
+                for(DonatableOrgan organ: allDonatableOrgans){
+                    organ.setTopReceivers(organMatching.getTop5Matches(organ, ""));
+                }
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String serializedOrgans = gson.toJson(allDonatableOrgans);
-            System.out.println(serializedOrgans);
             response.type("application/json");
             response.status(200);
             return serializedOrgans;

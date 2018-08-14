@@ -101,13 +101,12 @@ public class OrganMatching {
         }
     }
 
-
     /**
      * returns a list of the top 5 users ids
      * @param organ the organ to compare against
      * @return the list of users ids
      */
-    public List<Long> getTop5Matches(DonatableOrgan organ){
+    public List<Long> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
         try {
             OrganMatching.organ = organ;
             User donor = model.getUserFromId((int) OrganMatching.organ.getDonorId());
@@ -115,13 +114,16 @@ public class OrganMatching {
             matches = getBestMatches(donor.getRegionOfDeath(), matches);
             List<Long> topMatches = new ArrayList<>();
             for (User user : matches){
-                topMatches.add(user.getId());
+                if(user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
+                    topMatches.add(user.getId());
+                } else if(user.getName() == null && user.getName().equals("")){
+                    topMatches.add(user.getId());
+                }
             }
             return topMatches;
         } catch (SQLException e){
             System.out.println("Error communicating with the database");
             return new ArrayList<>();
-
         }
     }
 
