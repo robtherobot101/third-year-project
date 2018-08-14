@@ -188,8 +188,6 @@
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
     <BundleResource Include="Resources\map_icon.png" />
-    <BundleResource Include="Resources\pin.png" />
-    <BundleResource Include="Resources\xamarin.png" />
     <BundleResource Include="Resources\bone_icon.png" />
     <BundleResource Include="Resources\ear_icon.png" />
     <BundleResource Include="Resources\eye_icon.png" />
@@ -201,5 +199,31 @@
     <BundleResource Include="Resources\pancreas_icon.png" />
     <BundleResource Include="Resources\skin_icon.png" />
     <BundleResource Include="Resources\tissue_icon.png" />
+    <BundleResource Include="Resources\man1.png" />
+    <BundleResource Include="Resources\man2.png" />
+    <BundleResource Include="Resources\man3.png" />
+    <BundleResource Include="Resources\man4.png" />
+    <BundleResource Include="Resources\man5.png" />
+    <BundleResource Include="Resources\man6.png" />
+    <BundleResource Include="Resources\man7.png" />
+    <BundleResource Include="Resources\man8.png" />
+    <BundleResource Include="Resources\man9.png" />
+    <BundleResource Include="Resources\man10.png" />
+    <BundleResource Include="Resources\man11.png" />
+    <BundleResource Include="Resources\man12.png" />
+    <BundleResource Include="Resources\man13.png" />
+    <BundleResource Include="Resources\man14.png" />
+    <BundleResource Include="Resources\woman1.png" />
+    <BundleResource Include="Resources\woman2.png" />
+    <BundleResource Include="Resources\woman3.png" />
+    <BundleResource Include="Resources\woman4.png" />
+    <BundleResource Include="Resources\woman5.png" />
+    <BundleResource Include="Resources\woman6.png" />
+    <BundleResource Include="Resources\woman7.png" />
+    <BundleResource Include="Resources\woman8.png" />
+    <BundleResource Include="Resources\woman9.png" />
+    <BundleResource Include="Resources\woman10.png" />
+    <BundleResource Include="Resources\woman11.png" />
+    <BundleResource Include="Resources\other.png" />
   </ItemGroup>
 </Project>

@@ -6,12 +6,13 @@ using Xamarin.Forms.Maps;
 using System.Threading.Tasks;
 using mobileAppClient.odmsAPI;
 using System.Net;
+using System.IO;
 
 namespace mobileAppClient
 {
     public partial class ClinicianMapPage : ContentPage
     {
-        List<CustomMapObject> organs;
+        List<CustomMapObject> users;
         CustomMap customMap;
 
         public ClinicianMapPage()
@@ -29,13 +30,29 @@ namespace mobileAppClient
 
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-              new Position(37.79752, -122.40183), Distance.FromMiles(2000.0)));
-            
+                new Position(-41.626217, 172.361873), Distance.FromMiles(350.0)));
 
 
             var stack = new StackLayout { Spacing = 0 };
             stack.Children.Add(customMap);
             Content = stack;
+        }
+
+        public async void displayUserDialog(string organString, string id) {
+            string[] organList = organString.Split(',');
+            List<string> finalList = new List<string>();
+            string final;
+            foreach(string item in organList) {
+                final = item.Replace("_icon.png", "");
+                finalList.Add("- " + final + "\n");
+            }
+            string listString = String.Join("", finalList);
+            
+            var answer = await DisplayAlert("Display User?", "This user is currently donating: \n" + listString + "Would you like to view their profile?", "Yes", "No");
+            //if(answer == true) {
+            //    UserAPI userAPI = new UserAPI();
+            //    User user = await userAPI.get
+            //}
         }
 
         /// <summary>
@@ -51,25 +68,29 @@ namespace mobileAppClient
             {
                 case HttpStatusCode.OK:
                     Console.WriteLine("Organ Map Objects Successfully received");
-                    organs = tuple.Item2;
+                    users = tuple.Item2;
 
                     Geocoder geocoder = new Geocoder();
-                    foreach (CustomMapObject item in organs)
-                    {
-                        if (item.regionOfDeath != null)
-                        {
 
-                            IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(item.regionOfDeath);
-                            Position organPosition = new Position();
-                            using (var sequenceEnum = position.GetEnumerator())
+                    foreach (CustomMapObject user in users)
+                    {
+                        
+                        IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath);
+                        Position organPosition = new Position();
+                        using (var sequenceEnum = position.GetEnumerator())
+                        {
+                            while (sequenceEnum.MoveNext())
                             {
-                                while (sequenceEnum.MoveNext())
-                                {
-                                    organPosition = sequenceEnum.Current;
-                                }
+                                organPosition = sequenceEnum.Current;
                             }
+                        }
+                        List<string> organIcons = new List<string>();
+
+                        foreach(string organ in user.organs) {
+
                             string imageString = "";
-                            switch(item.name) {
+                            switch (organ)
+                            {
                                 case ("pancreas"):
                                     imageString = "pancreas_icon.png";
                                     break;
@@ -89,7 +110,7 @@ namespace mobileAppClient
                                     imageString = "skin_icon.png";
                                     break;
                                 case ("lung"):
-                                    imageString = "lung_icon.png";
+                                    imageString = "lungs_icon.png";
                                     break;
                                 case ("cornea"):
                                     imageString = "eye_icon.png";
@@ -98,25 +119,64 @@ namespace mobileAppClient
                                     imageString = "kidney_icon.png";
                                     break;
                                 case ("intestine"):
-                                    imageString = "intestine_icon.png";
+                                    imageString = "intestines_icon.png";
                                     break;
                             }
-
-                            var pin = new CustomPin
-                            {
-                                Type = PinType.Place,
-                                Position = organPosition,
-                                Label = item.name[0].ToString().ToUpper() + item.name.Substring(1),
-                                Address = item.regionOfDeath,
-                                Id = "Xamarin",
-                                Url = "http://xamarin.com/about/",
-                                image = imageString
-                            };
-                            customMap.Pins.Add(pin);
-                            customMap.CustomPins.Add(pin);
-
-
+                            organIcons.Add(imageString);
                         }
+
+                        //SET GENDER ICON
+                        //Randomize man or woman photo
+                        //If other then set to a pin
+                        //If none then also set to a pin
+
+                        string genderIcon = "";
+                        Random rnd = new Random();
+                        switch(user.gender) {
+                            case("Male"):
+                                int number = rnd.Next(1, 15);
+                                genderIcon = "man" + number + ".png";
+                                break;
+                            case("Female"):
+                                number = rnd.Next(1, 12);
+                                genderIcon = "woman" + number + ".png";
+                                break;
+                            case("Other"):
+                                genderIcon = "other.png";
+                                break;
+                            default:
+                                genderIcon = "other.png";
+                                break;
+                        }
+
+                        //SET PROFILE PHOTO
+                        //Get profile photo from users uploaded photo (if there is one)
+
+                        string profilePhoto = "";
+                        Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(user.id);
+                        if(photoResponse.Item1 != HttpStatusCode.OK) {
+                            Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
+                            Byte[] bytes = File.ReadAllBytes("donationIcon.png");
+                            profilePhoto = Convert.ToBase64String(bytes);
+                        } else {
+                            profilePhoto = photoResponse.Item2;
+                        }
+
+
+                        var pin = new CustomPin
+                        {
+                            Type = PinType.Generic,
+                            Position = organPosition,
+                            Label = user.firstName + " " + user.middleName + " " + user.lastName,
+                            Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
+                            Id = user.id,
+                            Url = String.Join(",", organIcons),
+                            genderIcon = genderIcon,
+                            userPhoto = profilePhoto                         
+                        };
+                        customMap.Pins.Add(pin);
+                        customMap.CustomPins.Add(pin);
+
 
                     }
 

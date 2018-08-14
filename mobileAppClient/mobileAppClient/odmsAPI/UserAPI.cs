@@ -77,6 +77,52 @@ namespace mobileAppClient.odmsAPI
         }
 
         /*
+         * Function which returns the string of the photo based on the users id
+         * to retrieve the user's profile photo.
+         * Used for maps.
+         */
+        public async Task<Tuple<HttpStatusCode, string>> GetUserPhotoForMapObjects(int id)
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, string>(HttpStatusCode.ServiceUnavailable, "");
+            }
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            //Create the request with token as a header
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + id + "/photo");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, string>(HttpStatusCode.ServiceUnavailable, "");
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine("Successfully received profile photo for user id " + id);
+                return new Tuple<HttpStatusCode, string>(HttpStatusCode.OK, responseContent);
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Failed to retrieve photo for user id ({0}) ({1})", id, response.StatusCode));
+                return new Tuple<HttpStatusCode, string>(response.StatusCode, "");
+            }
+
+        }
+
+        /*
          * Returns the status of updating a user object to the server
          */
         public async Task<HttpStatusCode> UpdateUser(bool isClinician)

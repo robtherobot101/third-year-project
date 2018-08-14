@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.MapObjectModel;
 import seng302.Model.MapObject;
+import seng302.Model.User;
 import seng302.Model.WaitingListItem;
 import seng302.Server;
 import spark.Request;

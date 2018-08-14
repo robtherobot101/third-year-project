@@ -1,50 +1,71 @@
 package seng302.Model;
 
+import java.util.List;
+
 public class MapObject {
 
-    public String name;
-    public int userId;
-    public long timeOfDeath;
+    public String firstName;
+    public String middleName;
+    public String lastName;
+    public String gender;
+    public int id;
     public String currentAddress;
     public String region;
     public String cityOfDeath;
     public String regionOfDeath;
     public String countryOfDeath;
+    public List<String> organs;
 
-    public MapObject(String name, int userId, long timeOfDeath, String currentAddress,
-                     String region, String cityOfDeath, String regionOfDeath, String countryOfDeath) {
-        this.name = name;
-        this.userId = userId;
-        this.timeOfDeath = timeOfDeath;
-        this.currentAddress = currentAddress;
-        this.region = region;
-        this.cityOfDeath = cityOfDeath;
-        this.regionOfDeath = regionOfDeath;
-        this.countryOfDeath = countryOfDeath;
+    public MapObject() {
+
     }
 
-    public String getName() {
-        return name;
+    public List<String> getOrgans() {
+        return organs;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setOrgans(List<String> organs) {
+        this.organs = organs;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public long getTimeOfDeath() {
-        return timeOfDeath;
+    public String getMiddleName() {
+        return middleName;
     }
 
-    public void setTimeOfDeath(long timeOfDeath) {
-        this.timeOfDeath = timeOfDeath;
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCurrentAddress() {

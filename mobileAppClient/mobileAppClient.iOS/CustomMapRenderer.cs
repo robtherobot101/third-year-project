@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CoreGraphics;
 using CustomRenderer.iOS;
+using Foundation;
 using MapKit;
 using mobileAppClient;
 using UIKit;
@@ -10,6 +11,7 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 
+
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
 {
@@ -17,6 +19,7 @@ namespace CustomRenderer.iOS
     {
         UIView customPinView;
         List<CustomPin> customPins;
+        CustomMap formsMap;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
@@ -33,7 +36,7 @@ namespace CustomRenderer.iOS
 
             if (e.NewElement != null)
             {
-                var formsMap = (CustomMap)e.NewElement;
+                formsMap = (CustomMap)e.NewElement;
                 var nativeMap = Control as MKMapView;
                 customPins = formsMap.CustomPins;
 
@@ -48,8 +51,6 @@ namespace CustomRenderer.iOS
         {
             MKAnnotationView annotationView = null;
 
-            //var updatedAnnotation = (MKPointAnnotation)(annotation);
-
             if (annotation is MKUserLocation)
                 return null;
 
@@ -62,10 +63,16 @@ namespace CustomRenderer.iOS
             annotationView = mapView.DequeueReusableAnnotation(customPin.Id.ToString());
             if (annotationView == null)
             {
+                
                 annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
-                annotationView.Image = UIImage.FromFile(customPin.image).Scale(new CGSize(50,50));
+                annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70,70));
                 annotationView.CalloutOffset = new CGPoint(0, 0);
-                annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.FromFile(customPin.image).Scale(new CGSize(40, 40)));
+                //Set image to profile photo
+
+                var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+                var imageData = NSData.FromArray(imageBytes);
+
+                annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.LoadFromData(imageData).Scale(new CGSize(40, 40)));
                 annotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
                 ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
                 ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
@@ -75,13 +82,16 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
-        void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs e)
+        async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs e)
         {
+
+            //Display Alert 
+            //Go back to Mobile App Clent and call show dialog event
             var customView = e.View as CustomMKAnnotationView;
-            if (!string.IsNullOrWhiteSpace(customView.Url))
-            {
-                UIApplication.SharedApplication.OpenUrl(new Foundation.NSUrl(customView.Url));
-            }
+            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+            parent.displayUserDialog(customView.Url, customView.Id);
+
+
         }
 
         void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
@@ -89,15 +99,28 @@ namespace CustomRenderer.iOS
             var customView = e.View as CustomMKAnnotationView;
             customPinView = new UIView();
 
-            if (customView.Id == "Xamarin")
-            {
-                customPinView.Frame = new CGRect(0, 0, 200, 84);
-                var image = new UIImageView(new CGRect(0, 0, 200, 84));
-                image.Image = UIImage.FromFile("xamarin.png");
+            //Set size of frame and add all photos from the custom pin image
+            string[] organs = customView.Url.Split(',');
+            int rectangleWidthInt = (organs.Length * 40) + (5 * (organs.Length + 1));
+
+            customPinView.Frame = new CGRect(0, 0, rectangleWidthInt, 50);
+            customPinView.BackgroundColor = UIColor.White;
+            customPinView.Layer.CornerRadius = 5;
+            customPinView.Layer.MasksToBounds = true;
+
+            int i = 0;
+            foreach(string organ in organs) {
+                int horizontalPosition = 5 + (45 * i);
+                var image = new UIImageView(new CGRect(horizontalPosition, 5, 40, 40));
+                image.Image = UIImage.FromFile(organ);
                 customPinView.AddSubview(image);
-                customPinView.Center = new CGPoint(0, -(e.View.Frame.Height + 75));
-                e.View.AddSubview(customPinView);
+                i++;
             }
+
+            customPinView.Center = new CGPoint(0, -(e.View.Frame.Height + 20));
+
+            e.View.AddSubview(customPinView);
+            
         }
 
         void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
