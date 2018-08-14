@@ -35,7 +35,13 @@ public class ClinicianWaitingListController implements Initializable {
     @FXML
     private TableView transplantTable;
     @FXML
-    private TableColumn organColumn, nameColumn, dateColumn, regionColumn;
+    private TableColumn organColumn;
+    @FXML
+    private TableColumn nameColumn;
+    @FXML
+    private TableColumn dateColumn;
+    @FXML
+    private TableColumn regionColumn;
     @FXML
     private ComboBox organSearchComboBox;
     @FXML
@@ -125,25 +131,22 @@ public class ClinicianWaitingListController implements Initializable {
             Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers(token);
             for (User user : users) {
                 for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (item.getStillWaitingOn()) {
-                        if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
-                            if(user.getOrgans().contains(item.getOrganType())){
-                                item.setIsConflicting(true);
-                            }
+                    if (item.getStillWaitingOn() && organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
+                        if(user.getOrgans().contains(item.getOrganType())){
+                            item.setIsConflicting(true);
+                        }
 
-                            if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
-                                addUserInfo(item);
-                                transplantList.add(item);
-                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && item.getStillWaitingOn()) {
-                                addUserInfo(item);
-                                transplantList.add(item);
-                            }
+                        if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
+                            addUserInfo(item);
+                            transplantList.add(item);
+                        } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && item.getStillWaitingOn()) {
+                            addUserInfo(item);
+                            transplantList.add(item);
                         }
                     }
                 }
             }
             deregisterReceiverButton.setDisable(true);
-            //transplantTable.refresh();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and filter transplant waiting list.");
         }
@@ -227,8 +230,7 @@ public class ClinicianWaitingListController implements Initializable {
     /**
      * Removes an organ from the transplant waiting list and writes it as an error to the history log.
      */
-    private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) throws HttpResponseException {
-        Long userId = user.getId();
+    private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) {
         deregisterWaitingListItem(selectedWaitingListItem,user,1);
     }
 
@@ -246,7 +248,7 @@ public class ClinicianWaitingListController implements Initializable {
             alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == buttonTypeOne) {
+            if (result.isPresent() && result.get() == buttonTypeOne) {
                 showDiseaseDeregisterDialog(selectedWaitingListItem, selectedUser);
             } else {
                 deregisterWaitingListItem(selectedWaitingListItem,selectedUser,2);
@@ -429,11 +431,7 @@ public class ClinicianWaitingListController implements Initializable {
                         Debugger.error("Failed to de-register waiting list item.");
                     }
                 } else {
-                    try {
-                        deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
-                    } catch (HttpResponseException e) {
-                        Debugger.error("Failed to de-register waiting list item.");
-                    }
+                    deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
                 }
             }
         });
@@ -453,7 +451,7 @@ public class ClinicianWaitingListController implements Initializable {
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
-    private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
+    private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) {
         deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
         if (selectedUser.getWaitingListItems() != null) {
             for (WaitingListItem item : selectedUser.getWaitingListItems()) {
@@ -483,7 +481,6 @@ public class ClinicianWaitingListController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
 
-        //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
@@ -519,12 +516,10 @@ public class ClinicianWaitingListController implements Initializable {
                         super.updateItem(item, empty);
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
-                        if (item != null && !empty) {
-                            if(item.isConflicting()) {
-                                setTooltip(new Tooltip("User is currently donating this organ"));
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
-                                }
+                        if(item != null && !empty && item.isConflicting()) {
+                            setTooltip(new Tooltip("User is currently donating this organ"));
+                            if (!getStyleClass().contains("highlighted-row")) {
+                                getStyleClass().add("highlighted-row");
                             }
                         }
                     }

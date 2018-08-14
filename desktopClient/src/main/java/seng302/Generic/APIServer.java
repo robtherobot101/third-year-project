@@ -2,7 +2,6 @@ package seng302.Generic;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import javafx.scene.control.Alert;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
@@ -11,14 +10,12 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class APIServer {
     private String url;
     private Client client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-    private JsonParser jp = new JsonParser();
+    private String tokenString = "token";
 
     /**
      * constructor method to create a new apiserver object
@@ -50,7 +47,7 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
         try {
-            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token).get());
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header(tokenString, token).get());
         }
         catch(Exception e) {
             connectivityError();
@@ -81,7 +78,7 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
         try {
-            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header(tokenString, token)
                     // Send the data in the post request as JSON -
                     .post(Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
         }
@@ -115,7 +112,7 @@ public class APIServer {
         }
 
         try {
-            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header(tokenString, token)
                     // Send the data in the patch request as JSON -
                     .method("PATCH", Entity.entity(body.toString(), MediaType.APPLICATION_JSON)));
         }
@@ -146,7 +143,7 @@ public class APIServer {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
         try {
-            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header("token", token)
+            return new APIResponse(target.request(MediaType.APPLICATION_JSON).header(tokenString, token)
                     // Send the data in the post request as JSON -
                     .delete());
         }

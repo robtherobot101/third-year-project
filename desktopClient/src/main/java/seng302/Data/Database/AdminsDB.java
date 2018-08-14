@@ -8,6 +8,7 @@ import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.AdminsDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
 import seng302.User.Admin;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class AdminsDB implements AdminsDAO {
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
         APIResponse response = server.postRequest(adminJson, new HashMap<>(), token, "admins");
         if(response == null) return;
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -41,7 +42,7 @@ public class AdminsDB implements AdminsDAO {
         JsonObject adminJson = jp.parse(new Gson().toJson(admin)).getAsJsonObject();
         APIResponse response = server.patchRequest(adminJson, new HashMap<>(), token, "admins", String.valueOf(admin.getStaffID()));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }

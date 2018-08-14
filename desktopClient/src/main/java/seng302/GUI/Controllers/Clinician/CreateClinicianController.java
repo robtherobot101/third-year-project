@@ -14,7 +14,6 @@ import seng302.Generic.WindowManager;
 import seng302.User.Clinician;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -23,7 +22,15 @@ import java.util.ResourceBundle;
 public class CreateClinicianController implements Initializable {
 
     @FXML
-    private TextField usernameInput, passwordConfirmInput, firstNameInput, middleNamesInput, lastNameInput;
+    private TextField usernameInput;
+    @FXML
+    private TextField passwordConfirmInput;
+    @FXML
+    private TextField firstNameInput;
+    @FXML
+    private TextField middleNamesInput;
+    @FXML
+    private TextField lastNameInput;
     @FXML
     private PasswordField passwordInput;
     @FXML

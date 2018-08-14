@@ -168,13 +168,15 @@ public class GeneralM implements GeneralDAO {
     }
 
     public List<Country> getAllCountries(String token) {
-        return null;
+        return new ArrayList<>();
     }
 
-    public void updateCountries(List<Country> countries, String token) {}
+    public void updateCountries(List<Country> countries, String token) {
+        return;
+    }
 
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String Token) {
-        return null;
+    public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) {
+        return new ArrayList<>();
     }
 }

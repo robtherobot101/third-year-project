@@ -42,27 +42,63 @@ import static seng302.Generic.WindowManager.setButtonSelected;
  */
 public class ClinicianController implements Initializable {
     @FXML
-    private TableColumn profileName, profileUserType, profileAge, profileGender, profileRegion;
+    private TableColumn profileName;
+    @FXML
+    private TableColumn profileUserType;
+    @FXML
+    private TableColumn profileAge;
+    @FXML
+    private TableColumn profileGender;
+    @FXML
+    private TableColumn profileRegion;
     @FXML
     private TableView profileTable;
     @FXML
-    private TextField profileSearchTextField, clinicianRegionField;
+    private TextField profileSearchTextField;
+    @FXML
+    private TextField clinicianRegionField;
     @FXML
     private Pane background;
     @FXML
-    private Label staffIDLabel, nameLabel, addressLabel, regionLabel, clinicianDisplayText, userDisplayText;
+    private Label staffIDLabel;
     @FXML
-    private Button undoWelcomeButton, redoWelcomeButton, transplantListButton, homeButton, organListButton;
+    private Label nameLabel;
+    @FXML
+    private Label addressLabel;
+    @FXML
+    private Label regionLabel;
+    @FXML
+    private Label clinicianDisplayText;
+    @FXML
+    private Label  userDisplayText;
+    @FXML
+    private Button undoWelcomeButton;
+    @FXML
+    private Button redoWelcomeButton;
+    @FXML
+    private Button transplantListButton;
+    @FXML
+    private Button homeButton;
+    @FXML
+    private Button organListButton;
     @FXML
     private GridPane mainPane;
     @FXML
     private MenuItem accountSettingsMenuItem;
     @FXML
-    private ComboBox clinicianGenderComboBox, clinicianUserTypeComboBox, clinicianOrganComboBox, numberOfResultsToDisplay;
+    private ComboBox clinicianGenderComboBox;
+    @FXML
+    private ComboBox clinicianUserTypeComboBox;
+    @FXML
+    private ComboBox clinicianOrganComboBox;
+    @FXML
+    private ComboBox numberOfResultsToDisplay;
     @FXML
     private TextField clinicianAgeField;
     @FXML
-    private AnchorPane transplantListPane, organsPane;
+    private AnchorPane transplantListPane;
+    @FXML
+    private AnchorPane organsPane;
     @FXML
     private StatusBar statusBar;
     @FXML
@@ -84,7 +120,8 @@ public class ClinicianController implements Initializable {
 
     private List<User> usersFound = new ArrayList<>();
 
-    private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>(), clinicianRedoStack = new LinkedList<>();
+    private LinkedList<Clinician> clinicianUndoStack = new LinkedList<>();
+    private LinkedList<Clinician> clinicianRedoStack = new LinkedList<>();
 
     private ObservableList<User> currentUsers = FXCollections.observableArrayList();
 
@@ -150,7 +187,7 @@ public class ClinicianController implements Initializable {
      */
     public void updateDisplay() {
         titleBar.setTitle(clinician.getName(), "Clinician", null);
-        System.out.print(clinician);
+        Debugger.log(clinician);
         userDisplayText.setText("Welcome " + clinician.getName());
         staffIDLabel.setText(Long.toString(clinician.getStaffID()));
         nameLabel.setText("Name: " + clinician.getName());
@@ -187,7 +224,7 @@ public class ClinicianController implements Initializable {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ",
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
@@ -227,7 +264,7 @@ public class ClinicianController implements Initializable {
                     stage.showAndWait();
                 } catch (Exception e) {
                     Debugger.error("here");
-                    e.printStackTrace();
+                    Debugger.error(e.getStackTrace());
                 }
             } else { // Password incorrect
                 WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
@@ -298,7 +335,7 @@ public class ClinicianController implements Initializable {
         Platform.runLater(clinicianName::requestFocus);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.get() == updateButtonType) {
+        if (result.isPresent() && result.get() == updateButtonType) {
             String newName;
             String newAddress;
             String newRegion;
@@ -332,7 +369,7 @@ public class ClinicianController implements Initializable {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?",
                 "Are you sure would like to update the current clinician? ", "By doing so, the clinician will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             Debugger.log("Name=" + newName + ", Address=" + newAddress + ", Region=" + newRegion);
             clinician.setName(newName);
             clinician.setWorkAddress(newAddress);
@@ -353,7 +390,7 @@ public class ClinicianController implements Initializable {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to exit? ",
                 "You will lose any unsaved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             for (Stage userWindow : WindowManager.getCliniciansUserWindows().keySet()) {
                 userWindow.close();
             }
@@ -522,12 +559,6 @@ public class ClinicianController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*try {
-            profileSearchTextField.setPromptText("There are " + WindowManager.getDataManager().getUsers().count() + " users in total");
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to fetch all users.");
-        }*/
-
         clinicianGenderComboBox.setItems(FXCollections.observableArrayList(Gender.values()));
         clinicianUserTypeComboBox.setItems(FXCollections.observableArrayList(Arrays.asList("Donor", "Receiver", "Neither")));
         clinicianOrganComboBox.setItems(FXCollections.observableArrayList(Organ.values()));

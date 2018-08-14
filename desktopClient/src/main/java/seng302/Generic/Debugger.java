@@ -10,9 +10,9 @@ import java.sql.Timestamp;
 public class Debugger {
     private Debugger() {}
 
-    private static final boolean consoleEnabled = true;
-    private static final boolean logToFile = true;
-    private static final String fileName = "debuglog.txt";
+    private static final boolean CONSOLE_ENABLED = true;
+    private static final boolean LOG_TO_FILE = true;
+    private static final String FILE_NAME = "debuglog.txt";
 
     /**
      * Prints the object as a console message
@@ -23,11 +23,11 @@ public class Debugger {
         String callerClassName = new Exception().getStackTrace()[1].getClassName();
         String message = timestamp + ": " + callerClassName + " -> " + o.toString();
 
-        if (Debugger.logToFile) {
+        if (Debugger.LOG_TO_FILE) {
             appendLog(message);
         }
 
-        if (Debugger.consoleEnabled) {
+        if (Debugger.CONSOLE_ENABLED) {
             System.out.println(message);
         }
     }
@@ -44,11 +44,11 @@ public class Debugger {
         String callerClassName = new Exception().getStackTrace()[1].getClassName();
         String message = timestamp + ": " + callerClassName + " -> " + o.toString();
 
-        if (Debugger.logToFile) {
+        if (Debugger.LOG_TO_FILE) {
             appendLog(message);
         }
 
-        if (Debugger.consoleEnabled) {
+        if (Debugger.CONSOLE_ENABLED) {
             System.out.println(ANSI_YELLOW + message + ANSI_RESET);
         }
     }
@@ -58,9 +58,9 @@ public class Debugger {
      * @param message to be appended to log
      */
     private static void appendLog(String message) {
-        File log = new File(Debugger.fileName);
+        File log = new File(Debugger.FILE_NAME);
         try {
-            boolean fileCreated = log.createNewFile(); // if file already exists will do nothing
+            log.createNewFile(); // if file already exists will do nothing
         } catch (IOException e) {
             e.printStackTrace();
         }

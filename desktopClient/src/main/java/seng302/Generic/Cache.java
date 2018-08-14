@@ -1,27 +1,18 @@
 package seng302.Generic;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import seng302.User.Attribute.ProfileType;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Cache {
     private String filepath;
-    Map<String, CachedItem> cacheMap;
+    private Map<String, CachedItem> cacheMap;
 
 
     public Cache(String filepath) {
         this.filepath = filepath;
-        this.cacheMap = new HashMap<String, CachedItem>();
+        this.cacheMap = new HashMap<>();
     }
 
     /**

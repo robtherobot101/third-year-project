@@ -26,6 +26,7 @@ public class AdminCliController implements Initializable {
     private ArrayList<String> commandInputHistory;
     private int currentHistoryIndex;
     private String token;
+    private String text = "TF > ";
 
     /**
      * sets the token to be used by the cli controller
@@ -45,7 +46,7 @@ public class AdminCliController implements Initializable {
         // Initialise output components
         currentHistoryIndex = 1;
         commandInputHistory = new ArrayList<>();
-        commandInputHistory.add("TF > ");
+        commandInputHistory.add(text);
         capturedOutput = FXCollections.observableArrayList();
         commandOutputView.setItems(capturedOutput);
 
@@ -59,10 +60,10 @@ public class AdminCliController implements Initializable {
                 commandInputField.setText(command);
             }
         });
-        commandInputField.setText("TF > ");
+        commandInputField.setText(text);
         commandInputField.positionCaret(5);
         commandInputField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.startsWith("TF > ")) {
+            if (!newValue.startsWith(text)) {
                 commandInputField.setText(oldValue);
             }
         });
@@ -77,10 +78,10 @@ public class AdminCliController implements Initializable {
      */
     private String getCommandFromHistory(boolean up) {
         if (commandInputHistory.isEmpty()) {
-            return "TF > ";
+            return text;
         } else if (!up && currentHistoryIndex == commandInputHistory.size() - 1) {
             currentHistoryIndex = commandInputHistory.size();
-            return "TF > ";
+            return text;
         } else {
             return commandInputHistory.get(getCommandIndex(up));
         }
@@ -109,7 +110,7 @@ public class AdminCliController implements Initializable {
      * Called when the enter key is pressed on the command input TextField
      */
     public void onEnter() {
-        if (!commandInputField.getText().equals("TF > ")) {
+        if (!commandInputField.getText().equals(text)) {
             capturedOutput.add(commandInputField.getText());
 
             String response = WindowManager.getDataManager().getGeneral().sendCommand(commandInputField.getText().substring(5), token);
@@ -121,7 +122,7 @@ public class AdminCliController implements Initializable {
 
             commandInputHistory.add(commandInputField.getText());
             currentHistoryIndex = commandInputHistory.size();
-            commandInputField.setText("TF > ");
+            commandInputField.setText(text);
             commandInputField.positionCaret(5);
             commandOutputView.scrollTo(capturedOutput.size() - 1);
 
@@ -143,8 +144,8 @@ public class AdminCliController implements Initializable {
      * @param response the input command
      */
     public void executeInstruction(String response){
-        switch (response) {
-            case "CLEAR": capturedOutput.clear();
+        if  (response.equalsIgnoreCase("CLEAR")) {
+            capturedOutput.clear();
         }
     }
 }

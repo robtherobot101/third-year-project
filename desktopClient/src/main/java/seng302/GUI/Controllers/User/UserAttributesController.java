@@ -39,12 +39,42 @@ import java.util.stream.Collectors;
 
 public class UserAttributesController extends UserTabController implements Initializable {
     @FXML
-    private Label settingAttributesLabel, ageLabel, bmiLabel;
+    private Label settingAttributesLabel;
+    @FXML
+    private Label ageLabel;
+    @FXML
+    private Label bmiLabel;
 
     @FXML
-    private Label dateOfDeathLabel, countryOfDeathLabel, regionOfDeathLabel, cityOfDeathLabel;
+    private Label dateOfDeathLabel;
     @FXML
-    private TextField firstNameField, middleNameField, lastNameField, addressField, heightField, weightField, bloodPressureTextField, preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField, regionField;
+    private Label countryOfDeathLabel;
+    @FXML
+    private Label regionOfDeathLabel;
+    @FXML
+    private Label cityOfDeathLabel;
+    @FXML
+    private TextField firstNameField;
+    @FXML
+    private TextField middleNameField;
+    @FXML
+    private TextField lastNameField;
+    @FXML
+    private TextField addressField;
+    @FXML
+    private TextField heightField;
+    @FXML
+    private TextField weightField;
+    @FXML
+    private TextField bloodPressureTextField;
+    @FXML
+    private TextField preferredFirstNameField;
+    @FXML
+    private TextField preferredMiddleNamesField;
+    @FXML
+    private TextField preferredLastNameField;
+    @FXML
+    private TextField regionField;
     @FXML
     private DatePicker dateOfBirthPicker;
 
@@ -55,7 +85,9 @@ public class UserAttributesController extends UserTabController implements Initi
     private ComboBox<String> regionComboBox;
 
     @FXML
-    private ComboBox<Gender> genderComboBox, genderIdentityComboBox;
+    private ComboBox<Gender> genderComboBox;
+    @FXML
+    private ComboBox<Gender> genderIdentityComboBox;
     @FXML
     private ComboBox<BloodType> bloodTypeComboBox;
     @FXML
@@ -63,16 +95,41 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private ComboBox<AlcoholConsumption> alcoholConsumptionComboBox;
     @FXML
-
-    private CheckBox liverCheckBox, kidneyCheckBox, pancreasCheckBox, heartCheckBox, lungCheckBox, intestineCheckBox, corneaCheckBox,
-        middleEarCheckBox, skinCheckBox, boneMarrowCheckBox, connectiveTissueCheckBox;
+    private CheckBox liverCheckBox;
+    @FXML
+    private CheckBox kidneyCheckBox;
+    @FXML
+    private CheckBox pancreasCheckBox;
+    @FXML
+    private CheckBox heartCheckBox;
+    @FXML
+    private CheckBox lungCheckBox;
+    @FXML
+    private CheckBox intestineCheckBox;
+    @FXML
+    private CheckBox corneaCheckBox;
+    @FXML
+    private CheckBox middleEarCheckBox;
+    @FXML
+    private CheckBox skinCheckBox;
+    @FXML
+    private CheckBox boneMarrowCheckBox;
+    @FXML
+    private CheckBox connectiveTissueCheckBox;
     @FXML
     private ImageView profileImage;
     @FXML
-    private Button changePhotoButton, updateDeathDetailsButton;
-
+    private Button changePhotoButton;
     @FXML
-    private Label dateOfDeath, countryOfDeath, regionOfDeath, cityOfDeath;
+    private Button updateDeathDetailsButton;
+    @FXML
+    private Label dateOfDeath;
+    @FXML
+    private Label countryOfDeath;
+    @FXML
+    private Label regionOfDeath;
+    @FXML
+    private Label cityOfDeath;
 
 
     private Map<Organ, CheckBox> organTickBoxes;
@@ -390,11 +447,12 @@ public class UserAttributesController extends UserTabController implements Initi
             try {
                 double height = Double.parseDouble(heightField.getText());
                 double weight = Double.parseDouble(weightField.getText());
-                double BMI = (weight / Math.pow(height, 2)) * 10000;
-                if (!Double.isNaN(BMI)) {
-                    bmiLabel.setText("BMI: " + String.format("%.2f", BMI));
+                double bmi = (weight / Math.pow(height, 2)) * 10000;
+                if (!Double.isNaN(bmi)) {
+                    bmiLabel.setText("BMI: " + String.format("%.2f", bmi));
                 }
             } catch (NumberFormatException e) {
+                Debugger.error(e.getStackTrace());
             }
         }
     }
@@ -574,7 +632,7 @@ public class UserAttributesController extends UserTabController implements Initi
         cityOfDeath.setText(currentUser.getCityOfDeath());
 
 
-        System.out.println(currentUser.getCityOfDeath());
+        Debugger.log(currentUser.getCityOfDeath());
         if(currentUser.getCountry() != null) {
             countryComboBox.getSelectionModel().select(currentUser.getCountry());
         }
@@ -669,18 +727,18 @@ public class UserAttributesController extends UserTabController implements Initi
         alert.setHeaderText("Maximum Image size is 5MB.");
         alert.setContentText("Accepted file formats are JPEG, PNG, and BMP. Images MUST be square.");
 
-        ButtonType upload_new_photo = new ButtonType("Upload new");
-        ButtonType use_default_photo = new ButtonType("Use default");
+        ButtonType uploadNewPhoto = new ButtonType("Upload new");
+        ButtonType useDefaultPhoto = new ButtonType("Use default");
         ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        alert.getButtonTypes().setAll(upload_new_photo, use_default_photo, buttonTypeCancel);
+        alert.getButtonTypes().setAll(uploadNewPhoto, useDefaultPhoto, buttonTypeCancel);
         WindowManager.setIconAndStyle(alert.getDialogPane());
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
-            if (result.get() == upload_new_photo) {
+            if (result.get() == uploadNewPhoto) {
                 uploadProfileImage();
-            } else if (result.get() == use_default_photo) {
+            } else if (result.get() == useDefaultPhoto) {
                 deleteProfileImage();
             }
         }
@@ -702,7 +760,7 @@ public class UserAttributesController extends UserTabController implements Initi
             currentUser.setProfileImageType(null);
 
         } catch (HttpResponseException e) {
-            e.printStackTrace();
+            Debugger.error(e.getStackTrace());
         }
     }
 
@@ -755,9 +813,9 @@ public class UserAttributesController extends UserTabController implements Initi
                 alert.showAndWait();
             }
         } catch (NullPointerException e){
-            System.out.println("Error: NULL");
+            Debugger.error("Error: NULL");
         } catch (IOException e) {
-            e.printStackTrace();
+            Debugger.error(e.getStackTrace());
         }
     }
 
@@ -769,7 +827,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<String> nzRegions = new ArrayList<String>();
+        List<String> nzRegions = new ArrayList<>();
         for(NZRegion r : NZRegion.values()) {
             nzRegions.add(r.toString());
         }
@@ -862,9 +920,9 @@ public class UserAttributesController extends UserTabController implements Initi
      * undos the last change
      */
     public void undo(){
-        System.out.println("Size of undo stack before afu: " + undoStack.size());
+        Debugger.log("Size of undo stack before afu: " + undoStack.size());
         attributeFieldUnfocused();
-        System.out.println("Size of undo stack after afu: " + undoStack.size());
+        Debugger.log("Size of undo stack after afu: " + undoStack.size());
 
         //Add the current fields to the redo stack
         redoStack.add(new User(currentUser));
@@ -872,10 +930,10 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.copyFieldsFrom(undoStack.getLast());
         //Remove the top element of the undo stack
         undoStack.removeLast();
-        System.out.println("Size of undo stack before puf: " + undoStack.size());
+        Debugger.log("Size of undo stack before puf: " + undoStack.size());
 
         populateUserFields();
-        System.out.println("Size of undo stack after puf: " + undoStack.size());
+        Debugger.log("Size of undo stack after puf: " + undoStack.size());
 
     }
 

@@ -27,7 +27,7 @@ import java.util.List;
 
 public class IO {
 
-    private static String jarPath, userPath, clinicianPath, adminPath;
+    private static String jarPath;
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
@@ -95,7 +95,7 @@ public class IO {
             PrintStream outputStream = new PrintStream(new FileOutputStream(outputFile));
             gson.toJson(cache, outputStream);
         }catch (IOException e) {
-            e.printStackTrace();
+            Debugger.log(e.getStackTrace());
         }
     }
 
@@ -123,6 +123,7 @@ public class IO {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to import users from Json.");
                 }
+                break;
             case CLINICIAN:
                 try {
                     ProfileReader<Clinician> clinicianReader = new ClinicianReaderJSON();
@@ -136,6 +137,7 @@ public class IO {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to import clinicians from Json.");
                 }
+                break;
             case ADMIN:
                 try {
                     ProfileReader<Admin> adminReader = new AdminReaderJSON();
@@ -150,6 +152,7 @@ public class IO {
                 } catch (HttpResponseException e) {
                     Debugger.error("Failed to import admins from Json.");
                 }
+                break;
         }
         return false;
     }
@@ -157,14 +160,13 @@ public class IO {
     /**
      * Imports users from csv file
      * @param path the path to the csv file
-     * @param token the users token
      */
-    public static void importUserCSV(String path, String token) {
-        Task taskToRun = runTestThread(path, token);
+    public static void importUserCSV(String path) {
+        Task taskToRun = runTestThread(path);
         new Thread(taskToRun).start();
     }
 
-    private static Task runTestThread(String path, String token) {
+    private static Task runTestThread(String path) {
         Task task = new Task<Void>() {
             @Override
             public Void call() {
@@ -233,16 +235,13 @@ public class IO {
             // Check if no users read
             if (readUsers.isEmpty()) {
                 Debugger.log("CSV import, no entries read");
-                //return false;
             }
 
             // Send POST request
             try {
                 WindowManager.getDataManager().getUsers().exportUsers(readUsers);
             } catch (IllegalStateException e) {
-                // TODO can someone fill in the more specific exception
                 Debugger.error(e.getLocalizedMessage());
-                //return false;
             }
 
             // Get time taken in total (client + POST req)
@@ -262,10 +261,8 @@ public class IO {
     public static Cache importCache(String path){
         File inputFile = new File(path);
         try {
-            if (!inputFile.exists()) {
-                if (!inputFile.createNewFile()) {
-                    throw new IOException();
-                }
+            if (!inputFile.exists() && !inputFile.createNewFile()) {
+                throw new IOException();
             }
         } catch (IOException e) {
             Debugger.error("Failed to create file: " + path);
@@ -286,7 +283,7 @@ public class IO {
             return importedCache;
         } catch (IOException e) {
             Debugger.error("IOException on " + path + ": Check your inputs and permissions!");
-            e.printStackTrace();
+            Debugger.error(e.getStackTrace());
         } catch (JsonSyntaxException | DateTimeException e1) {
             Debugger.error("Invalid syntax in cache file.");
         } catch (NullPointerException e2) {
@@ -323,8 +320,5 @@ public class IO {
      */
     public static void setPaths() throws URISyntaxException {
         jarPath = new File(WindowManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-        userPath = jarPath + File.separatorChar + "users.json";
-        clinicianPath = jarPath + File.separatorChar + "clinicians.json";
-        adminPath = jarPath + File.separatorChar + "admins.json";
     }
 }

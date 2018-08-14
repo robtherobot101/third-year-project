@@ -30,6 +30,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public Map<Object, String> loginUser(String usernameEmail, String password) {
         Map<Object, String> responseMap = new HashMap<>();
+        String accountType = "accountType";
 
         Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<>();
@@ -39,13 +40,13 @@ public class GeneralDB implements GeneralDAO {
         if(response == null) return responseMap;
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();
-            if (serverResponse.get("accountType") == null) {
+            if (serverResponse.get(accountType) == null) {
                 responseMap.put(new Gson().fromJson(serverResponse, User.class), response.getToken());
                 return responseMap;
-            } else if (serverResponse.get("accountType").getAsString().equals("CLINICIAN")) {
+            } else if (serverResponse.get(accountType).getAsString().equals("CLINICIAN")) {
                 responseMap.put(new Gson().fromJson(serverResponse, Clinician.class), response.getToken());
                 return responseMap;
-            } else if (serverResponse.get("accountType").getAsString().equals("ADMIN")) {
+            } else if (serverResponse.get(accountType).getAsString().equals("ADMIN")) {
                 responseMap.put(new Gson().fromJson(serverResponse, Admin.class), response.getToken());
                 return responseMap;
             } else {
@@ -192,7 +193,7 @@ public class GeneralDB implements GeneralDAO {
      * @throws HttpResponseException throws if cannot connect to the server
      */
     @Override
-    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String token) throws HttpResponseException {
+    public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) throws HttpResponseException {
         APIResponse response = server.getRequest(filterParams, token, "organs");
         if (response == null) {
             return new ArrayList<>();
@@ -203,7 +204,7 @@ public class GeneralDB implements GeneralDAO {
         if (response.isValidJson()) {
             List<DonatableOrgan> organs = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
             for(DonatableOrgan organ : organs) {
-                System.out.println("Top receivers: "+organ.getTopReceivers());
+                Debugger.log("Top receivers: "+organ.getTopReceivers());
             }
             return organs;
         } else {

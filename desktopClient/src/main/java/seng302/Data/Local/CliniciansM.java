@@ -34,13 +34,13 @@ public class CliniciansM implements CliniciansDAO {
 
     /**
      * updates a clinician
-     * @param Clinician the clinician to update
+     * @param clinician the clinician to update
      * @param token the users token
      */
     @Override
-    public void updateClinician(Clinician Clinician, String token) {
-        removeClinician(Clinician.getStaffID(), null);
-        clinicians.add(Clinician);
+    public void updateClinician(Clinician clinician, String token) {
+        removeClinician(clinician.getStaffID(), null);
+        clinicians.add(clinician);
     }
 
     /**

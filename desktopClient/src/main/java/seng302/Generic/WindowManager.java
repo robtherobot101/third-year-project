@@ -57,13 +57,18 @@ import static seng302.Generic.IO.getJarPath;
  */
 public class WindowManager extends Application {
 
-    public static final int mainWindowMinWidth = 800, mainWindowMinHeight = 600, mainWindowPrefWidth = 1250, mainWindowPrefHeight = 725;
+    private static final int MAIN_WINDOW_MIN_WIDTH = 800;
+    private static final int MAIN_WINDOW_MIN_HEIGHT = 600;
+    private static final int MAIN_WINDOW_PREF_WIDTH = 1250;
+    private static final int MAIN_WINDOW_PREF_HEIGHT = 725;
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
     private static Map<Stage, UserController> cliniciansUserWindows = new HashMap<>();
     private static Image icon;
-    private static String dialogStyle, menuButtonStyle, selectedMenuButtonStyle;
+    private static String dialogStyle;
+    private static String menuButtonStyle;
+    private static String selectedMenuButtonStyle;
 
     //Main windows
     private static LoginController loginController;
@@ -73,8 +78,10 @@ public class WindowManager extends Application {
     private static UserController userController;
 
     private static ClinicianSettingsController clinicianSettingsController;
-    private static ClinicianWaitingListController clinicianClinicianWaitingListController, adminClinicianWaitingListController;
-    private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController, adminClinicianAvailableController;
+    private static ClinicianWaitingListController clinicianClinicianWaitingListController;
+    private static ClinicianWaitingListController adminClinicianWaitingListController;
+    private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController;
+    private static ClinicianAvailableOrgansController adminClinicianAvailableController;
 
     private static DataManager dataManager;
 
@@ -86,7 +93,7 @@ public class WindowManager extends Application {
         WindowManager.dataManager = dataManager;
     }
 
-    private static boolean TESTING = true;
+    private static boolean testing = true;
 
     /**
      * Returns the program icon.
@@ -114,10 +121,10 @@ public class WindowManager extends Application {
     public static void newAdminsUserWindow(User user, String token){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setMinHeight(WindowManager.MAIN_WINDOW_MIN_HEIGHT);
+        stage.setMinWidth(WindowManager.MAIN_WINDOW_MIN_WIDTH);
+        stage.setHeight(WindowManager.MAIN_WINDOW_PREF_HEIGHT);
+        stage.setWidth(WindowManager.MAIN_WINDOW_PREF_WIDTH);
 
         stage.initModality(Modality.NONE);
 
@@ -134,12 +141,12 @@ public class WindowManager extends Application {
             cliniciansUserWindows.put(stage, newUserController);
 
 
-            Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
+            Scene newScene = new Scene(root, MAIN_WINDOW_PREF_WIDTH, MAIN_WINDOW_PREF_HEIGHT);
             stage.setScene(newScene);
             stage.show();
         } catch (IOException | NullPointerException e) {
-            System.err.println("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error("Unable to load fxml or save file.");
+            Debugger.error(e.getStackTrace());
             Platform.exit();
         }
     }
@@ -152,10 +159,10 @@ public class WindowManager extends Application {
     public static void newCliniciansUserWindow(User user, String token){
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
-        stage.setMinHeight(WindowManager.mainWindowMinHeight);
-        stage.setMinWidth(WindowManager.mainWindowMinWidth);
-        stage.setHeight(WindowManager.mainWindowPrefHeight);
-        stage.setWidth(WindowManager.mainWindowPrefWidth);
+        stage.setMinHeight(WindowManager.MAIN_WINDOW_MIN_HEIGHT);
+        stage.setMinWidth(WindowManager.MAIN_WINDOW_MIN_WIDTH);
+        stage.setHeight(WindowManager.MAIN_WINDOW_PREF_HEIGHT);
+        stage.setWidth(WindowManager.MAIN_WINDOW_PREF_WIDTH);
 
         stage.initModality(Modality.NONE);
         try {
@@ -172,12 +179,12 @@ public class WindowManager extends Application {
             cliniciansUserWindows.put(stage, newUserController);
 
 
-            Scene newScene = new Scene(root, mainWindowPrefWidth, mainWindowPrefHeight);
+            Scene newScene = new Scene(root, MAIN_WINDOW_PREF_WIDTH, MAIN_WINDOW_PREF_HEIGHT);
             stage.setScene(newScene);
             stage.show();
         } catch (IOException | NullPointerException e) {
-            System.err.println("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error("Unable to load fxml or save file.");
+            Debugger.error(e.getStackTrace());
             Platform.exit();
         }
     }
@@ -367,7 +374,7 @@ public class WindowManager extends Application {
     /**
      * refreshes the admin
      */
-    public static void refreshAdmin() {
+    private static void refreshAdmin() {
         adminController.refreshLatestProfiles();
         adminController.updateFoundUsers();
     }
@@ -406,17 +413,17 @@ public class WindowManager extends Application {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
-        TESTING = false;
+        testing = false;
         if (args.length == 0) {
             launch(args);
         } else if (args.length == 1 && args[0].equals("-c")) {
             try {
                 IO.setPaths();
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                Debugger.error(e.getStackTrace());
             }
         } else {
-            System.out.println("Please either run using:" +
+           Debugger.error("Please either run using:" +
                     "\nGUI mode: java -jar app-0.0.jar" +
                     "\nCommand line mode: java -jar app-0.0.jar -c.");
         }
@@ -435,7 +442,6 @@ public class WindowManager extends Application {
         Debugger.log("Non-critical error caught, probably platform dependent.");
         Debugger.log(e.getStackTrace());
         Debugger.error(e.getStackTrace());
-        e.printStackTrace();
         if (Platform.isFxApplicationThread()) {
             Debugger.error(e.getStackTrace());
         } else {
@@ -443,8 +449,8 @@ public class WindowManager extends Application {
         }
     }
 
-    public static boolean isTESTING() {
-        return TESTING;
+    public static boolean isTesting() {
+        return testing;
     }
 
 
@@ -464,13 +470,13 @@ public class WindowManager extends Application {
      * Creates a standard DataManager which manipulates the database via the API server.
      * @return A new DataManager instance
      */
-    public DataManager createDatabaseDataManager() {
+    private DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
         String testingServer = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
 
         APIServer server;
-        if(TESTING) server = new APIServer(testingServer);
+        if(testing) server = new APIServer(testingServer);
         else server = new APIServer(properServer);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
@@ -488,7 +494,7 @@ public class WindowManager extends Application {
             if (!dataManager.getGeneral().status()) {
                 Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK) {
+                if (result.isPresent() && result.get() == ButtonType.OK) {
                     return checkConnection();
                 } else {
                     return false;
@@ -496,15 +502,11 @@ public class WindowManager extends Application {
             }
 
         } catch (HttpResponseException e) {
-            e.printStackTrace();
+            Debugger.error(e.getStackTrace());
         } catch (Exception e) {
             Alert alert = createAlert(Alert.AlertType.CONFIRMATION, "Server offline", "Cannot Connect to Server", "Would you like to try again? (Will exit program if not)");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
-                return checkConnection();
-            } else {
-                return false;
-            }
+            return result.isPresent() && result.get() == ButtonType.OK && checkConnection();
         }
         return true;
     }
@@ -552,12 +554,12 @@ public class WindowManager extends Application {
                 stage.show();
 
             } catch (URISyntaxException e) {
-                System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
-                e.printStackTrace();
+                Debugger.error("Unable to read jar path. Please run from a directory with a simpler path.");
+                Debugger.error(e.getStackTrace());
                 stop();
             } catch (IOException e) {
-                System.err.println("Unable to load fxml or save file.");
-                e.printStackTrace();
+                Debugger.error("Unable to load fxml or save file.");
+                Debugger.error(e.getStackTrace());
                 stop();
             }
 
@@ -584,7 +586,7 @@ public class WindowManager extends Application {
     /**
      * Sets up a drug interaction cache
      */
-    public void setupDrugInteractionCache(){
+    private void setupDrugInteractionCache(){
         Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
@@ -596,11 +598,11 @@ public class WindowManager extends Application {
     public static void resetScene(TFScene scene) {
         try {
             scenes.remove(scene);
-            scenes.put(scene, new Scene(FXMLLoader.load(WindowManager.class.getResource(scene.getPath())), mainWindowPrefWidth,
-                    mainWindowPrefHeight));
+            scenes.put(scene, new Scene(FXMLLoader.load(WindowManager.class.getResource(scene.getPath())), MAIN_WINDOW_PREF_WIDTH,
+                    MAIN_WINDOW_PREF_HEIGHT));
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error("Unable to load fxml or save file.");
+
         }
     }
 
@@ -617,8 +619,8 @@ public class WindowManager extends Application {
         stage.setResizable(true);
         stage.setScene(scenes.get(scene));
         if (scene == TFScene.userWindow || scene == TFScene.clinician || scene == TFScene.admin) {
-            stage.setMinWidth(mainWindowMinWidth);
-            stage.setMinHeight(mainWindowMinHeight);
+            stage.setMinWidth(MAIN_WINDOW_MIN_WIDTH);
+            stage.setMinHeight(MAIN_WINDOW_MIN_HEIGHT);
         } else {
             stage.setMinWidth(0);
             stage.setMinHeight(0);
@@ -628,7 +630,7 @@ public class WindowManager extends Application {
         stage.setScene(null);
         stage.setScene(scenes.get(scene));
 
-        if (!(scene.getWidth() == mainWindowPrefWidth)) {
+        if (MAIN_WINDOW_PREF_WIDTH != scene.getWidth()) {
             stage.setResizable(false);
         }
     }

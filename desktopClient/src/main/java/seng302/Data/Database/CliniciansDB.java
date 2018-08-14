@@ -8,6 +8,7 @@ import org.apache.http.client.HttpResponseException;
 import seng302.Data.Interfaces.CliniciansDAO;
 import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
+import seng302.Generic.Debugger;
 import seng302.User.Clinician;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class CliniciansDB implements CliniciansDAO {
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
         APIResponse response = server.postRequest(clinicianJson, new HashMap<>(), token, "clinicians");
         if(response == null) return;
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -48,7 +49,7 @@ public class CliniciansDB implements CliniciansDAO {
         JsonObject clinicianJson = jp.parse(new Gson().toJson(clinician)).getAsJsonObject();
         APIResponse response = server.patchRequest(clinicianJson, new HashMap<>(), token, "clinicians", String.valueOf(clinician.getStaffID()));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
-        System.out.println(response.getStatusCode());
+        Debugger.log(response.getStatusCode());
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
@@ -58,7 +59,7 @@ public class CliniciansDB implements CliniciansDAO {
      * @param token the users token
      * @return returns all the clinicians from the server
      */
-    public ArrayList<Clinician> getAllClinicians(String token) {
+    public List<Clinician> getAllClinicians(String token) {
         APIResponse response = server.getRequest(new HashMap<>(), token, "clinicians");
         if(response == null){
             return new ArrayList<>();
