@@ -80,7 +80,6 @@ public class UserWaitingListController extends UserTabController implements Init
         WindowManager.updateTransplantWaitingList();
     }
 
-
     /**
      * Removes the selected item from the user's waiting list and refreshes
      * the waiting TableView
