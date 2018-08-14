@@ -55,7 +55,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <DefineConstants>
     </DefineConstants>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidSupportedAbis />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
