@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using mobileAppClient.Models;
 using Newtonsoft.Json;
 
 namespace mobileAppClient
@@ -13,7 +14,7 @@ namespace mobileAppClient
         public string summary { get; set; }
         public string description { get; set; }
         public CustomDate date { get; set; }
-        public List<String> organsAffected { get; set; }
+        public List<Organ> organsAffected { get; set; }
 
         [JsonIgnore]
         public string detailString
@@ -37,13 +38,12 @@ namespace mobileAppClient
         }
 
         public Procedure(string summary, string description, CustomDate date,
-            List<String> organsAffected)
+            List<Organ> organsAffected)
         {
             this.summary = summary;
             this.description = description;
             this.date = date;
     
-            organsAffected = organsAffected.ConvertAll(org => org.ToUpper());
             this.organsAffected = organsAffected;
         }
     }

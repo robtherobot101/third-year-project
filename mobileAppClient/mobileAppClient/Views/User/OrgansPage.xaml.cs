@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using mobileAppClient.odmsAPI;
 using System.Net;
+using mobileAppClient.Models;
 
 namespace mobileAppClient
 {
@@ -31,40 +32,40 @@ namespace mobileAppClient
             {
                 isClinicianEditing = false;
             }
-            foreach (string item in UserController.Instance.LoggedInUser.organs) {
+            foreach (Organ item in UserController.Instance.LoggedInUser.organs) {
                 Console.WriteLine(item);
                 switch(item) {
-                    case "LIVER":
+                    case Organ.LIVER:
                         LiverCell.On = true;
                         break;
-                    case "KIDNEY":
+                    case Organ.KIDNEY:
                         KidneyCell.On = true;
                         break;
-                    case "PANCREAS":
+                    case Organ.PANCREAS:
                         PancreasCell.On = true;
                         break;
-                    case "HEART": 
+                    case Organ.HEART: 
                         HeartCell.On = true;
                         break;
-                    case "LUNG":
+                    case Organ.LUNG:
                         LungCell.On = true;
                         break;
-                    case "INTESTINE":
+                    case Organ.INTESTINE:
                         IntestineCell.On = true;
                         break;
-                    case "CORNEA":
+                    case Organ.CORNEA:
                         CorneaCell.On = true;
                         break;
-                    case "EAR":
+                    case Organ.EAR:
                         MiddleEarCell.On = true;
                         break;
-                    case "SKIN":
+                    case Organ.SKIN:
                         SkinCell.On = true;
                         break;
-                    case "BONE":
+                    case Organ.BONE:
                         BoneMarrowCell.On = true;
                         break;
-                    case "TISSUE":
+                    case Organ.TISSUE:
                         ConnectiveTissueCell.On = true;
                         break;
                         
@@ -101,50 +102,47 @@ namespace mobileAppClient
         {
             UserController.Instance.LoggedInUser.organs.Clear();
             if(LiverCell.On) {
-                UserController.Instance.LoggedInUser.organs.Add("LIVER");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.LIVER);
             }
             if (KidneyCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("KIDNEY");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.KIDNEY);
             }
             if (PancreasCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("PANCREAS");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.PANCREAS);
             }
             if (HeartCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("HEART");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.HEART);
             }
             if (LungCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("LUNG");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.LUNG);
             }
             if (IntestineCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("INTESTINE");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.INTESTINE);
             }
             if (CorneaCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("CORNEA");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.CORNEA);
             }
             if (MiddleEarCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("EAR");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.EAR);
             }
             if (SkinCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("SKIN");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.SKIN);
             }
             if (BoneMarrowCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("BONE");
+                UserController.Instance.LoggedInUser.organs.Add(Organ.BONE);
             }
             if (ConnectiveTissueCell.On)
             {
-                UserController.Instance.LoggedInUser.organs.Add("TISSUE");
-            }
-            foreach(string item in UserController.Instance.LoggedInUser.organs) {
-                Console.WriteLine(item);
+                UserController.Instance.LoggedInUser.organs.Add(Organ.TISSUE);
             }
 
             UserAPI userAPI = new UserAPI();

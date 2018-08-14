@@ -15,7 +15,7 @@ namespace mobileAppClient
      */ 
     public partial class ProceduresPage : ContentPage
     {
-        private bool isClinicianAccessing;
+        public bool isClinicianAccessing;
 
         /*
          * Event handler to handle when a user switches between pending and previous procedures
@@ -143,7 +143,7 @@ namespace mobileAppClient
             {
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
-            var singleProcedurePage = new SingleProcedurePage((Procedure)ProceduresList.SelectedItem);
+            var singleProcedurePage = new SingleProcedurePage((Procedure)ProceduresList.SelectedItem, this);
             await Navigation.PushAsync(singleProcedurePage);
         }
 

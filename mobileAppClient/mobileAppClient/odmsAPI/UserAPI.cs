@@ -89,6 +89,11 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
+            // Convert organs to fake enums
+
+
+
+
             String registerUserRequestBody = JsonConvert.SerializeObject(UserController.Instance.LoggedInUser);
             HttpContent body = new StringContent(registerUserRequestBody);
 

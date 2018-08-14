@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using mobileAppClient.Models;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -49,7 +49,7 @@ namespace mobileAppClient
             }
             else
             {
-                organsString = "Currently donating: \n" + String.Join(", ", currentUser.organs);
+                organsString = "Currently donating: \n" + String.Join(", ", currentUser.organs.ToList().ConvertAll(x => OrganExtensions.ToString(x)));
             }
             OrgansLabel.Text = organsString;
 

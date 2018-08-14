@@ -20,7 +20,9 @@
             </StackLayout>
 
             <ListView Header="Organs Affected" x:Name="organsAffectedList"/>
-            <Button Text="Add Procedure" Clicked="AddProcedureClicked" />
+            <Button Text="Add Procedure" Clicked="AddProcedureClicked" x:Name="AddProcedureButton" IsVisible="False"/>
+            <Button Text="Edit Procedure" Clicked="EditProcedureButton_OnClicked" x:Name="EditProcedureButton" IsVisible="False"/>
+            <Button Text="Save Procedure" x:Name="SaveProcedureButton" Clicked="SaveProcedureButton_OnClicked" IsVisible="False"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
