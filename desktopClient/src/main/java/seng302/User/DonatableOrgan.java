@@ -112,7 +112,6 @@ public class DonatableOrgan {
      * @return How long the organ will last
      */
     public Duration getExpiryDuration(Organ organType) {
-        //TODO Find the duration of these
         Duration duration = null;
         switch(organType){
 

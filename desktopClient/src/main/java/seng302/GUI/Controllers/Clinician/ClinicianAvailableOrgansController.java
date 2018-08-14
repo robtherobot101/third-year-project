@@ -73,7 +73,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
             // Calculate the date the organ expires, based on the organ
             LocalDateTime deathDate = organ.getTimeOfDeath();
-            //TODO Find a cleaner way of getting organ dates and times in durations or something to be able to add to deathDate, and find expiry durations for ear and tissue
             Duration expiryDuration = organ.getExpiryDuration(organ.getOrganType());
             LocalDateTime expiryDate = deathDate.plus(expiryDuration);
 
@@ -87,12 +86,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 organ.setTimeLeft(timeLeft);
                 //Either the organ shouldn't be displaying, or it should display <4 days or something
             }
-
         }
-        //create timer task to tick down
-
-
-        //TODO figure out how to handle changing tab - end the timer or leave it running in the background until app close??
     }
 
     /**
@@ -113,8 +107,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
                         //for each item set timeLeft -1
                         organ.tickTimeLeft();
-                    } else {
-                        //...unless it is 0, in which do whatever needs to be done
                     }
                     organsTable.refresh();
                 }
