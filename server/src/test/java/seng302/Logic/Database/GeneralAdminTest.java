@@ -46,7 +46,7 @@ public class GeneralAdminTest extends GenericTest {
     }
 
     /**
-     * Test insertion of an Admin with no username
+     * Test insertion of an admin with no username
      * @throws SQLException
      */
     @Test(expected = Exception.class)
@@ -76,7 +76,7 @@ public class GeneralAdminTest extends GenericTest {
 
 
     /**
-     * Test getting Admin with id 1
+     * Test getting admin with id 1
      * @throws SQLException
      */
     @Test
@@ -86,7 +86,7 @@ public class GeneralAdminTest extends GenericTest {
     }
 
     /**
-     * Test getting Admin with id 9999
+     * Test getting admin with id 9999
      * @throws SQLException
      */
     @Test

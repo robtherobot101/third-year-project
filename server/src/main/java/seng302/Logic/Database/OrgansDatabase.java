@@ -17,9 +17,9 @@ import java.util.Map;
 public class OrgansDatabase {
 
     /**
-     * gets all the organs from the Database
-     * @return returns a list of all the organs in the Database
-     * @throws SQLException throws if cannot connect to the Database
+     * gets all the organs from the database
+     * @return returns a list of all the organs in the database
+     * @throws SQLException throws if cannot connect to the database
      */
     public List<DonatableOrgan> getAllDonatableOrgans() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -36,9 +36,9 @@ public class OrgansDatabase {
 
 
     /**
-     * gets all the organs from the Database
-     * @return returns a list of all the organs in the Database
-     * @throws SQLException throws if cannot connect to the Database
+     * gets all the organs from the database
+     * @return returns a list of all the organs in the database
+     * @throws SQLException throws if cannot connect to the database
      */
     public List<DonatableOrgan> queryOrgans(Map<String, String> params) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -68,9 +68,9 @@ public class OrgansDatabase {
     }
 
     /**
-     * inserts a new organ into the Database
-     * @param donatableOrgan the donatable organ to insert into the Database
-     * @throws SQLException throws if cannot connect to the Database
+     * inserts a new organ into the database
+     * @param donatableOrgan the donatable organ to insert into the database
+     * @throws SQLException throws if cannot connect to the database
      */
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
@@ -85,9 +85,9 @@ public class OrgansDatabase {
     }
 
     /**
-     * removes a given DonatableOrgan from the Database
+     * removes a given DonatableOrgan from the database
      * @param donatableOrgan the donatableOgran to remove
-     * @throws SQLException throws if cannot connect to Database
+     * @throws SQLException throws if cannot connect to database
      */
     public void removeOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
@@ -103,9 +103,9 @@ public class OrgansDatabase {
     }
 
     /**
-     * updates a the date of death of donatable organ in the Database to the new date of death of the donatable organ
+     * updates a the date of death of donatable organ in the database to the new date of death of the donatable organ
      * @param donatableOrgan the donatable organ to update
-     * @throws SQLException throws if cannot connect to Database
+     * @throws SQLException throws if cannot connect to database
      */
     public void updateOrgan(DonatableOrgan donatableOrgan) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){

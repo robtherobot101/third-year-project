@@ -25,13 +25,13 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
-     * @param username    The username of the Clinician
-     * @param password    The Clinician's password
-     * @param name        The Clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
-     * @param staffID     The Clinician's ID
+     * @param staffID     The clinician's ID
      */
     public Clinician(String username, String password, String name, ProfileType accountType, long staffID) {
         this.username = username;
@@ -44,11 +44,11 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
-     * @param username    The username of the Clinician
-     * @param password    The Clinician's password
-     * @param name        The Clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
      */
     public Clinician(String username, String password, String name, ProfileType accountType) {
@@ -62,9 +62,9 @@ public class Clinician {
     }
 
     /**
-     * Constructor used when making a deep copy of a Clinician.
+     * Constructor used when making a deep copy of a clinician.
      *
-     * @param clinician the original Clinician object being copied.
+     * @param clinician the original clinician object being copied.
      */
     public Clinician(Clinician clinician) {
         this.username = clinician.username;
@@ -124,8 +124,8 @@ public class Clinician {
     }
 
     /**
-     * copies info from one Clinician to another
-     * @param clinician the Clinician to copy from
+     * copies info from one clinician to another
+     * @param clinician the clinician to copy from
      */
     public void copyFieldsFrom(Clinician clinician) {
         this.name = clinician.name;
@@ -135,11 +135,11 @@ public class Clinician {
 
     /**
      * overrides the toString function
-     * @return returns the Clinician info
+     * @return returns the clinician info
      */
     @Override
     public String toString() {
-        return "Clinician{" +
+        return "clinician{" +
                 "name='" + name + '\'' +
                 ", staffID='" + staffID + '\'' +
                 ", workAddress='" + workAddress + '\'' +

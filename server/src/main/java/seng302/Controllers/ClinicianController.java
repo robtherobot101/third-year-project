@@ -23,10 +23,10 @@ public class ClinicianController {
     }
 
     /**
-     * Retrieves a Clinician object from the HTTP request ":id" param
+     * Retrieves a clinician object from the HTTP request ":id" param
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @return A valid Clinician obj if the Clinician exists otherwise return null
+     * @return A valid clinician obj if the clinician exists otherwise return null
      */
     private Clinician queryClinician(Request request, Response response) {
         int requestedClinicianId = Integer.parseInt(request.params(":id"));
@@ -42,7 +42,7 @@ public class ClinicianController {
         }
 
         if (queriedClinician == null) {
-            Server.getInstance().log.warn(String.format("No Clinician of ID: %d found", requestedClinicianId));
+            Server.getInstance().log.warn(String.format("No clinician of ID: %d found", requestedClinicianId));
             response.status(404);
             response.body("Not found");
             return null;
@@ -53,7 +53,7 @@ public class ClinicianController {
     /**
      * method to get all registered clinicans
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return JSON object containing all the clinicians and their information
      */
     public String getAllClinicians(Request request, Response response) {
@@ -75,9 +75,9 @@ public class ClinicianController {
     }
 
     /**
-     * method to handle the request to create a new Clinician
+     * method to handle the request to create a new clinician
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String output whether the request was processed correctly or not
      */
     public String addClinician(Request request, Response response) {
@@ -96,7 +96,7 @@ public class ClinicianController {
         if (receivedClinician == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing Clinician Body";
+            return "Missing clinician Body";
         } else {
             try {
                 model.insertClinician(receivedClinician);
@@ -112,9 +112,9 @@ public class ClinicianController {
     }
 
     /**
-     * method to get a specific Clinician
+     * method to get a specific clinician
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return JSON object containing the requested clinicians information
      */
     public String getClinician(Request request, Response response) {
@@ -135,7 +135,7 @@ public class ClinicianController {
     /**
      * method to edit a clinicians details
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String containing whether the request was processed correctly or not
      */
     public String editClinician(Request request, Response response) {
@@ -150,7 +150,7 @@ public class ClinicianController {
         Clinician receivedClinician = gson.fromJson(request.body(), Clinician.class);
         if (receivedClinician == null) {
             response.status(400);
-            return "Missing Clinician Body";
+            return "Missing clinician Body";
         } else {
             try {
                 model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")));
@@ -167,8 +167,8 @@ public class ClinicianController {
     /**
      * method to process the deletion of a clinican
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
-     * @return String whether or not the Clinician was deleted or not
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether or not the clinician was deleted or not
      */
     public String deleteClinician(Request request, Response response) {
         Clinician queriedClinician = queryClinician(request, response);

@@ -17,9 +17,9 @@ import java.util.Map;
 public class UserWaitingList {
 
     /**
-     * gets all the organs from the Database
-     * @return returns a list of all the organs in the Database
-     * @throws SQLException throws if cannot connect to the Database
+     * gets all the organs from the database
+     * @return returns a list of all the organs in the database
+     * @throws SQLException throws if cannot connect to the database
      */
     public List<WaitingListItem> queryWaitingListItems(Map<String, String> params) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {

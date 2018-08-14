@@ -10,18 +10,18 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Data.Interfaces.AdminsDAO;
-import seng302.Data.Interfaces.CliniciansDAO;
-import seng302.Data.Interfaces.GeneralDAO;
-import seng302.Data.Interfaces.UsersDAO;
-import seng302.Data.Local.AdminsM;
-import seng302.Data.Local.CliniciansM;
-import seng302.Data.Local.GeneralM;
-import seng302.Data.Local.UsersM;
-import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.data.interfaces.AdminsDAO;
+import seng302.data.interfaces.CliniciansDAO;
+import seng302.data.interfaces.GeneralDAO;
+import seng302.data.interfaces.UsersDAO;
+import seng302.data.local.AdminsM;
+import seng302.data.local.CliniciansM;
+import seng302.data.local.GeneralM;
+import seng302.data.local.UsersM;
+import seng302.gui.TFScene;
+import seng302.generic.DataManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -48,7 +48,7 @@ abstract class TestFXTest extends ApplicationTest {
 
                 WindowManager.getDataManager().getGeneral().reset("masterToken");
                 WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"), "masterToken");
-                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("Admin", "default", "default_admin"), "masterToken");
+                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"), "masterToken");
             } catch (HttpResponseException e) {
                 e.printStackTrace();
             }
@@ -96,13 +96,13 @@ abstract class TestFXTest extends ApplicationTest {
         try {
             WindowManager.getDataManager().getUsers().insertUser(testUser);
         } catch (HttpResponseException e) {
-            Debugger.log("Failed to insert new User.");
+            Debugger.log("Failed to insert new user.");
         }
         return testUser;
     }
 
     void loginAsDefaultAdmin() {
-        clickOn("#identificationInput").write("Admin");
+        clickOn("#identificationInput").write("admin");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
     }
@@ -157,7 +157,7 @@ abstract class TestFXTest extends ApplicationTest {
                 return false;
             } else {
                 if (nodeFound.isVisible()) {
-                    //Let the GUI skin catchup to the controller state
+                    //Let the gui skin catchup to the controller state
                     waitForFxEvents();
                     return true;
                 } else {
@@ -175,7 +175,7 @@ abstract class TestFXTest extends ApplicationTest {
                 return false;
             } else {
                 if (!nodeFound.isDisable()) {
-                    //Let the GUI skin catchup to the controller state
+                    //Let the gui skin catchup to the controller state
                     waitForFxEvents();
                     return true;
                 } else {

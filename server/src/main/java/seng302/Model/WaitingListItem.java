@@ -21,10 +21,10 @@ public class WaitingListItem {
 
     /**
      * constructor method to create a new waiting list item object
-     * @param organType Organ the type of organ a User is waiting on
+     * @param organType Organ the type of organ a user is waiting on
      * @param organRegisteredDate LocalDate the date of the waiting list item registration
      * @param id int the id of the waiting list entry
-     * @param userId int the id of the User that is waiting on the organ
+     * @param userId int the id of the user that is waiting on the organ
      * @param organDeregisteredDate LocalDate the date that the entry was de-registered
      * @param organDeregisteredCode int the code for the de-registration
      */
@@ -39,13 +39,13 @@ public class WaitingListItem {
 
     /**
      * constructor method to create a new waiting list item object
-     * @param organType Organ the type of organ a User is waiting on
+     * @param organType Organ the type of organ a user is waiting on
      * @param organRegisteredDate LocalDate the date of the waiting list item registration
      * @param id int the id of the waiting list entry
-     * @param userId int the id of the User that is waiting on the organ
+     * @param userId int the id of the user that is waiting on the organ
      * @param organDeregisteredDate LocalDate the date that the entry was de-registered
      * @param organDeregisteredCode int the code for the de-registration
-     * @param isConflicting boolean if the User is waiting on the organ and also a donor
+     * @param isConflicting boolean if the user is waiting on the organ and also a donor
      */
     public WaitingListItem(Organ organType, LocalDate organRegisteredDate, int id, int userId, LocalDate organDeregisteredDate, int organDeregisteredCode, boolean isConflicting) {
         this.organType = organType;
@@ -82,8 +82,8 @@ public class WaitingListItem {
     }
 
     /**
-     * method to get the id of the User that is waiting on the organ
-     * @return int the id of the User on the waiting list
+     * method to get the id of the user that is waiting on the organ
+     * @return int the id of the user on the waiting list
      */
     public int getUserId() {
         return userId;

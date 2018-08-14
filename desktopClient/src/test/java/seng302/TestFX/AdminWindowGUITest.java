@@ -63,7 +63,7 @@ public class AdminWindowGUITest extends TestFXTest {
 
 
     /**
-     * Add a simple User and verify it appears with appropriate details in the TabPane
+     * Add a simple user and verify it appears with appropriate details in the TabPane
      */
     @Ignore
     @Test
@@ -75,7 +75,7 @@ public class AdminWindowGUITest extends TestFXTest {
         moveTo("#adminMenuItem");
         clickOn("#userMenuItem");
 
-        // Create a User
+        // Create a user
         clickOn("#usernameInput");
         write("testing buzz");
         clickOn("#emailInput");
@@ -100,7 +100,7 @@ public class AdminWindowGUITest extends TestFXTest {
 
         clickOn("Matthew Pieter Knight");
         refreshTableSelections();
-        // Check this is the User:
+        // Check this is the user:
         assertEquals(LocalDate.of(1997, 6, 12), currentSelectedUser.getDateOfBirth());
 
         rightClickOn("Matthew Pieter Knight");
@@ -109,7 +109,7 @@ public class AdminWindowGUITest extends TestFXTest {
     }
 
     /**
-     * Add a simple Admin and verify it appears with appropriate details in the TabPane
+     * Add a simple admin and verify it appears with appropriate details in the TabPane
      */
     @Ignore
     @Test
@@ -119,7 +119,7 @@ public class AdminWindowGUITest extends TestFXTest {
         moveTo("#createMenu");
         clickOn("#adminMenuItem");
 
-        // Create an Admin
+        // Create an admin
         clickOn("#usernameInput");
         write("testing buzz");
         clickOn("#passwordInput");
@@ -141,7 +141,7 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("#administratorsTab");
         clickOn("Matthew Pieter Knight");
         refreshTableSelections();
-        // Check this is the User:
+        // Check this is the user:
         assertEquals("testing buzz", currentSelectedAdmin.getUsername());
 
         rightClickOn("testing buzz");
@@ -150,7 +150,7 @@ public class AdminWindowGUITest extends TestFXTest {
     }
 
     /**
-     * Add a simple User and verify it appears with appropriate details in the TabPane
+     * Add a simple user and verify it appears with appropriate details in the TabPane
      */
     @Ignore
     @Test
@@ -163,7 +163,7 @@ public class AdminWindowGUITest extends TestFXTest {
         moveTo("#adminMenuItem");
         clickOn("#clinicianMenuItem");
 
-        // Create a Clinician
+        // Create a clinician
         clickOn("#usernameInput");
         write("testing buzz");
         clickOn("#passwordInput");
@@ -185,7 +185,7 @@ public class AdminWindowGUITest extends TestFXTest {
         clickOn("#cliniciansTab");
         clickOn("Matthew Pieter Knight");
         refreshTableSelections();
-        // Check this is the User:
+        // Check this is the user:
         assertEquals("testing buzz", currentSelectedClinician.getUsername());
 
         rightClickOn("Matthew Pieter Knight");
@@ -197,17 +197,17 @@ public class AdminWindowGUITest extends TestFXTest {
     public void checkExistenceDefaultClinician() {
         loginAsDefaultAdmin();
         clickOn("#cliniciansTab");
-        clickOn("default Clinician");
+        clickOn("default clinician");
         refreshTableSelections();
-        assertEquals("default Clinician", currentSelectedClinician.getName());
+        assertEquals("default clinician", currentSelectedClinician.getName());
     }
 
     @Test
     public void checkExistenceDefaultAdmin() {
         loginAsDefaultAdmin();
         clickOn("#administratorsTab");
-        clickOn("default Admin");
+        clickOn("default admin");
         refreshTableSelections();
-        assertEquals("default Admin", currentSelectedAdmin.getName());
+        assertEquals("default admin", currentSelectedAdmin.getName());
     }
 }

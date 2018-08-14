@@ -14,19 +14,19 @@ public class SqlSanitation {
     public String sanitizeSqlString(String sqlCommand) {
         String printStream = "";
         if(sqlCommand.toLowerCase().contains("delete")){
-            printStream = "You do not have permission to delete from the Database.";
+            printStream = "You do not have permission to delete from the database.";
         } else if (sqlCommand.toLowerCase().contains("update")) {
-            printStream = "You do not have permission to update in the Database.";
+            printStream = "You do not have permission to update in the database.";
         } else if (sqlCommand.toLowerCase().contains("create")) {
-            printStream = "You do not have permission to create in the Database.";
+            printStream = "You do not have permission to create in the database.";
         } else if (sqlCommand.toLowerCase().contains("password")) {
-            printStream = "You do not have permission to view the passwords of users in the Database.";
+            printStream = "You do not have permission to view the passwords of users in the database.";
         } else if (sqlCommand.toLowerCase().contains("drop")) {
-            printStream = "You do not have permission to drop in the Database.";
+            printStream = "You do not have permission to drop in the database.";
         } else if (sqlCommand.toLowerCase().contains("insert")) {
-            printStream = "You do not have permission to insert into the Database.";
+            printStream = "You do not have permission to insert into the database.";
         } else if (sqlCommand.toLowerCase().contains("alter")) {
-            printStream = "You do not have permission to alter the Database.";
+            printStream = "You do not have permission to alter the database.";
         }
         return printStream;
     }

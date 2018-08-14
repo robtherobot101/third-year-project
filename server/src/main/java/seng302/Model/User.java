@@ -40,14 +40,14 @@ public class User {
     private String countryOfDeath;
 
     /**
-     * constructor method to create a new User object
-     * @param firstName String the User first name
-     * @param middleNames String[] the middle names of the User
-     * @param lastName String the last name of the User
-     * @param dateOfBirth LocalDate the date of birth of the User
-     * @param username String the username of the User
-     * @param email String the email of the User
-     * @param password String the password of the User
+     * constructor method to create a new user object
+     * @param firstName String the user first name
+     * @param middleNames String[] the middle names of the user
+     * @param lastName String the last name of the user
+     * @param dateOfBirth LocalDate the date of birth of the user
+     * @param username String the username of the user
+     * @param email String the email of the user
+     * @param password String the password of the user
      */
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
@@ -68,10 +68,10 @@ public class User {
     }
 
     /**
-     * constructor method to create a new User object with the bare minimum attributes
+     * constructor method to create a new user object with the bare minimum attributes
      * used with the cli
-     * @param name the full name of the User
-     * @param dateOfBirth the date of birth of the User
+     * @param name the full name of the user
+     * @param dateOfBirth the date of birth of the user
      */
     public User(String name, LocalDate dateOfBirth) {
         this.name = name.split(",");
@@ -81,22 +81,22 @@ public class User {
     }
 
     /**
-     * constructor method to create a User object from the Database
-     * @param id int the id of the User
-     * @param firstName String the User first name
-     * @param middleNames String[] the middle names of the User
-     * @param lastName String the last name of the User
+     * constructor method to create a user object from the database
+     * @param id int the id of the user
+     * @param firstName String the user first name
+     * @param middleNames String[] the middle names of the user
+     * @param lastName String the last name of the user
      * @param dateOfBirth LocalDate the date of birth of the userh
-     * @param dateOfDeath LocalDate the date of death of the User
-     * @param gender String the gender of the User
-     * @param height double the height of the User
-     * @param weight double the weight of the User
-     * @param bloodType String the blood type of the User
-     * @param region String the region of the User
-     * @param currentAddress String the current address of the User
-     * @param username String the username of the User
-     * @param email String the email of the User
-     * @param password String the password of the User
+     * @param dateOfDeath LocalDate the date of death of the user
+     * @param gender String the gender of the user
+     * @param height double the height of the user
+     * @param weight double the weight of the user
+     * @param bloodType String the blood type of the user
+     * @param region String the region of the user
+     * @param currentAddress String the current address of the user
+     * @param username String the username of the user
+     * @param email String the email of the user
+     * @param password String the password of the user
      * @param cityOfDeath String of the city of death
      * @param country String of the country of residence
      * @param countryOfDeath String of the country of death
@@ -375,7 +375,7 @@ public class User {
     }
 
     /**
-     * Get a string containing key information about the User.
+     * Get a string containing key information about the user.
      *
      * @return The information string
      */
@@ -401,7 +401,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("User (ID %d) created at %s "
+        return String.format("user (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"

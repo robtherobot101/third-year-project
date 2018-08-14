@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 
 import java.time.Duration;

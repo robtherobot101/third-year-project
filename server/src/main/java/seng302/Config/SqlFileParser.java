@@ -13,7 +13,7 @@ public abstract class SqlFileParser {
     /**
      * Returns an sql Statement for a batch of sql statements defined in the filed given by the file input stream.
      *
-     * @param connection The connection to the SQL Database.
+     * @param connection The connection to the SQL database.
      * @param file The InputStream to the file containing sql statements
      * @return The statement which can be executed.
      * @throws SQLException If an error occurs while defining the statement

@@ -14,9 +14,9 @@ import org.apache.http.client.HttpResponseException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.GUI.TFScene;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.gui.TFScene;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
@@ -48,7 +48,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
-        // Create a valid User
+        // Create a valid user
         clickOn("#usernameInput").write("bflame");
         clickOn("#emailInput").write("flameman@hotmail.com");
         clickOn("#passwordInput").write("password123");
@@ -78,7 +78,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         // Assumed that calling method is currently on login screen
         clickOn("#createAccountButton");
 
-        // Create a valid User
+        // Create a valid user
         clickOn("#usernameInput").push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE).write("bobr");
         clickOn("#emailInput").push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE).write("bob@live.com");
         clickOn("#passwordInput").push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE).write("password");
@@ -102,7 +102,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     @Ignore
     @Test
     public void checkForBlankTables() {
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -127,7 +127,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkForFullTable() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -162,7 +162,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkDeregister() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -185,7 +185,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         clickOn("#deregisterOrganButton");
         clickOn("OK");
 
-        //close User window
+        //close user window
         clickOn("#saveUserButton");
         clickOn("OK");
         clickOn("#exitUserButton");
@@ -208,7 +208,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkDeregisterDeath() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -249,7 +249,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkDeregisterError() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -286,7 +286,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkFutureDate() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -327,7 +327,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkDeregisterCure() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -384,7 +384,7 @@ public class TransplantWaitingListTest extends TestFXTest {
         try{
             WindowManager.getDataManager().getUsers().insertUser(testUser);
         }catch (HttpResponseException e) {
-            Debugger.error("Should avoid using using DB for testing when possilbe. Failed to insert new User.");
+            Debugger.error("Should avoid using using DB for testing when possilbe. Failed to insert new user.");
         }
         testUser = new User(
                 "Bob", new String[]{}, "Ross",
@@ -395,13 +395,13 @@ public class TransplantWaitingListTest extends TestFXTest {
         try{
             WindowManager.getDataManager().getUsers().insertUser(testUser);
         } catch (HttpResponseException e) {
-            Debugger.error("Should avoid using DB for testing where possible. Failed to insert new User.");
+            Debugger.error("Should avoid using DB for testing where possible. Failed to insert new user.");
         }
 
         WindowManager.resetScene(TFScene.userWindow);
         //createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
@@ -448,7 +448,7 @@ public class TransplantWaitingListTest extends TestFXTest {
     public void checkOrganFilter() {
         createAccounts();
 
-        //login as Clinician
+        //login as clinician
         clickOn("#identificationInput").write("default");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");

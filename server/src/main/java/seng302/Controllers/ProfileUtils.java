@@ -24,7 +24,7 @@ public class ProfileUtils {
      * Checks the authorisation level of a token.
      *
      * @param token The token to check for
-     * @return The authorisation level of the token, or -1 if the token is not found or the Database could not be contacted
+     * @return The authorisation level of the token, or -1 if the token is not found or the database could not be contacted
      */
     public int checkToken(String token) {
         try {
@@ -58,7 +58,7 @@ public class ProfileUtils {
      * @param token The token to check for
      * @param profileType The type of profile associated with that token
      * @param id The id to check for
-     * @return Whether the token is associated with that id or false if the Database could not be contacted
+     * @return Whether the token is associated with that id or false if the database could not be contacted
      */
     public boolean checkTokenId(String token, ProfileType profileType, int id) {
         try {
@@ -95,7 +95,7 @@ public class ProfileUtils {
      * @return Whether they are authorised
      */
     public boolean hasAccessToAllUsers(Request request, Response response) {
-        String failure = "Unauthorised: access denied to all User access request ";
+        String failure = "Unauthorised: access denied to all user access request ";
 
         String token = request.headers("token");
         int accessLevel = checkToken(token);
@@ -104,23 +104,23 @@ public class ProfileUtils {
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else if (accessLevel == 0) {
-            Server.getInstance().log.warn(failure + "because they only have single User level access");
+            Server.getInstance().log.warn(failure + "because they only have single user level access");
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else {
-            return true; //User has Clinician or Admin level access
+            return true; //user has clinician or admin level access
         }
     }
 
     /**
-     * Checks if the requester is authorized to access/modify a User.
+     * Checks if the requester is authorized to access/modify a user.
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
     public boolean hasUserLevelAccess(Request request, Response response) {
-        String failure = "Unauthorised: access denied to single User access ";
+        String failure = "Unauthorised: access denied to single user access ";
 
         String token = request.headers("token");
         int accessLevel = checkToken(token);
@@ -136,26 +136,26 @@ public class ProfileUtils {
                 return false;
             }
             if (checkTokenId(token, ProfileType.USER, id)) {
-                return true; //User is logged on and supplied their token
+                return true; //user is logged on and supplied their token
             } else {
-                Server.getInstance().log.warn(failure + "(token does not match User id)");
+                Server.getInstance().log.warn(failure + "(token does not match user id)");
                 halt(401, "Unauthorized");
                 return false;
             }
         } else {
-            return true; //User has Clinician or Admin level access
+            return true; //user has clinician or admin level access
         }
     }
 
     /**
-     * Checks if the requester is authorized to access/modify a Clinician.
+     * Checks if the requester is authorized to access/modify a clinician.
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
     public boolean hasClinicianLevelAccess(Request request, Response response) {
-        String failure = "Unauthorised: access denied to single Clinician access ";
+        String failure = "Unauthorised: access denied to single clinician access ";
         String token = request.headers("token");
 
         int accessLevel = checkToken(token);
@@ -175,14 +175,14 @@ public class ProfileUtils {
                 return false;
             }
             if (checkTokenId(token, ProfileType.CLINICIAN, id)) {
-                return true; //User is logged on and supplied their token
+                return true; //user is logged on and supplied their token
             } else {
-                Server.getInstance().log.warn(failure + "(token does not match Clinician id)");
+                Server.getInstance().log.warn(failure + "(token does not match clinician id)");
                 halt(401, "Unauthorized");
                 return false;
             }
         } else {
-            return true; //User has Clinician or Admin level access
+            return true; //user has clinician or admin level access
         }
     }
 
@@ -194,7 +194,7 @@ public class ProfileUtils {
      * @return Whether they are authorised
      */
     public boolean hasAdminAccess(Request request, Response response) {
-        String failure = "Unauthorised: access denied to Admin level request ";
+        String failure = "Unauthorised: access denied to admin level request ";
 
         String token = request.headers("token");
         int accessLevel = checkToken(token);
@@ -203,15 +203,15 @@ public class ProfileUtils {
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else if (accessLevel == 0) {
-            Server.getInstance().log.warn(failure + "because they only have single User level access");
+            Server.getInstance().log.warn(failure + "because they only have single user level access");
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else if (accessLevel == 1) {
-            Server.getInstance().log.warn(failure + "because they only have single Clinician level access");
+            Server.getInstance().log.warn(failure + "because they only have single clinician level access");
             halt(401, "Unauthorized");
             return false; //Token was not found
         } else {
-            return true; //User has Admin level access
+            return true; //user has admin level access
         }
     }
 

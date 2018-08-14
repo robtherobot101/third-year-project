@@ -6,18 +6,18 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * This class contains information about Admin.
+ * This class contains information about admin.
  */
 public class Admin extends Clinician {
 
     private String accessLevel;
 
     /**
-     * Method to create a new Admin instance
+     * Method to create a new admin instance
      *
-     * @param username the usernam of the Admin
-     * @param password the password of the Admin
-     * @param name     the name of the Admin
+     * @param username the usernam of the admin
+     * @param password the password of the admin
+     * @param name     the name of the admin
 
      */
     public Admin(String username, String password, String name) {
@@ -28,9 +28,9 @@ public class Admin extends Clinician {
     }
 
     /**
-     * Constructor used when making a deep copy of a Clinician.
+     * Constructor used when making a deep copy of a clinician.
      *
-     * @param originalAdmin the original Clinician object being copied.
+     * @param originalAdmin the original clinician object being copied.
      */
     public Admin(Admin originalAdmin) {
         super(originalAdmin);
@@ -62,7 +62,7 @@ public class Admin extends Clinician {
 
     @Override
     public String toString() {
-        return "Admin{" +
+        return "admin{" +
                 "name='" + getName() + '\'' +
                 ", staffID='" + getStaffID() + '\'' +
                 ", username='" + getUsername() + '\'' +

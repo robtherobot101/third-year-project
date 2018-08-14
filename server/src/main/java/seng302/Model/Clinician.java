@@ -17,10 +17,10 @@ public class Clinician {
     private ProfileType accountType;
 
     /**
-     * constructor method to create a new Clinician object with minimal objects
-     * @param username String the username of the Clinician
-     * @param password String the password for the Clinician
-     * @param name String the name of the Clinician
+     * constructor method to create a new clinician object with minimal objects
+     * @param username String the username of the clinician
+     * @param password String the password for the clinician
+     * @param name String the name of the clinician
      */
     public Clinician(String username, String password, String name) {
         this.username = username;
@@ -51,13 +51,13 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
-     * @param username    The username of the Clinician
-     * @param password    The Clinician's password
-     * @param name        The Clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
-     * @param staffID     The Clinician's ID
+     * @param staffID     The clinician's ID
      */
     public Clinician(String username, String password, String name, ProfileType accountType, long staffID) {
         this.username = username;
@@ -70,11 +70,11 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
-     * @param username    The username of the Clinician
-     * @param password    The Clinician's password
-     * @param name        The Clinician's name
+     * @param username    The username of the clinician
+     * @param password    The clinician's password
+     * @param name        The clinician's name
      * @param accountType The type of account
      */
     public Clinician(String username, String password, String name, ProfileType accountType) {
@@ -88,9 +88,9 @@ public class Clinician {
     }
 
     /**
-     * Constructor used when making a deep copy of a Clinician.
+     * Constructor used when making a deep copy of a clinician.
      *
-     * @param clinician the original Clinician object being copied.
+     * @param clinician the original clinician object being copied.
      */
     public Clinician(Clinician clinician) {
         this.username = clinician.username;
@@ -103,28 +103,28 @@ public class Clinician {
 
     /**
      * method to set the clinicians staffid
-     * @param staffID long the staff id of the Clinician
+     * @param staffID long the staff id of the clinician
      */
     public void setStaffID(long staffID) { this.staffID = staffID; }
 
     /**
-     * method to get the name of the Clinician
-     * @return String the name of the Clinician
+     * method to get the name of the clinician
+     * @return String the name of the clinician
      */
     public String getName() {
         return name;
     }
 
     /**
-     * method to set the name of the Clinician
-     * @param name String the name of the Clinician
+     * method to set the name of the clinician
+     * @param name String the name of the clinician
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * method to get the staff id of a Clinician
+     * method to get the staff id of a clinician
      * @return long the staff id
      */
     public long getStaffID() {
@@ -132,7 +132,7 @@ public class Clinician {
     }
 
     /**
-     * method to get the work address of a Clinician
+     * method to get the work address of a clinician
      * @return String the work address
      */
     public String getWorkAddress() {
@@ -149,15 +149,15 @@ public class Clinician {
 
     /**
      * method to get the clinicians region
-     * @return String the region of the Clinician
+     * @return String the region of the clinician
      */
     public String getRegion() {
         return region;
     }
 
     /**
-     * method to set the region of the Clinician
-     * @param region String the region of the Clinician
+     * method to set the region of the clinician
+     * @param region String the region of the clinician
      */
     public void setRegion(String region) {
         this.region = region;
@@ -165,38 +165,38 @@ public class Clinician {
 
     /**
      * method to get the clinicians username
-     * @return String the username of the Clinician
+     * @return String the username of the clinician
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * method to set the username of the Clinician
-     * @param username String the User name of the Clinician
+     * method to set the username of the clinician
+     * @param username String the user name of the clinician
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     * method to get the password of the Clinician
-     * @return String the password of the Clinician
+     * method to get the password of the clinician
+     * @return String the password of the clinician
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * method to set the password of the Clinician
-     * @param password String the password of the Clinician
+     * method to set the password of the clinician
+     * @param password String the password of the clinician
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
     /**
-     * Get a string containing key information about the User. Can be formatted as a table row.
+     * Get a string containing key information about the user. Can be formatted as a table row.
      *
      * @param table Whether to format the information as a table row
      * @return The information string
@@ -207,7 +207,7 @@ public class Clinician {
             return String.format("%-8d | %s | %-22s | %10s    | %-10s    ", staffID,
                     name, workAddress,region, username);
         } else {
-                return String.format("Clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
+                return String.format("clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
                         , name, workAddress, region, username);
             }
     }
@@ -216,7 +216,7 @@ public class Clinician {
 
     @Override
     public String toString() {
-        return "Clinician{" +
+        return "clinician{" +
                 "name='" + name + '\'' +
                 ", staffID='" + staffID + '\'' +
                 ", workAddress='" + workAddress + '\'' +

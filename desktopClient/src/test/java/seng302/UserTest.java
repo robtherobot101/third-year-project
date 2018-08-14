@@ -77,7 +77,7 @@ public class UserTest {
 
     @Test
     public void testConflictingOrgans_noConflictingOrgans_returnsEmptySet(){
-        User user = new User("test User", LocalDate.now());
+        User user = new User("test user", LocalDate.now());
         user.getWaitingListItems().add(
                 new WaitingListItem("","",-1,Organ.HEART));
         user.getOrgans().add(Organ.KIDNEY);
@@ -86,7 +86,7 @@ public class UserTest {
 
     @Test
     public void testConflictingOrgans_conflictingOrgans_returnsConflictingOrgans(){
-        User user = new User("test User", LocalDate.now());
+        User user = new User("test user", LocalDate.now());
         user.getWaitingListItems().add(new WaitingListItem("","",-1,Organ.KIDNEY));
         user.getWaitingListItems().add(new WaitingListItem("","",-1,Organ.HEART));
         user.getOrgans().add(Organ.KIDNEY);
@@ -105,7 +105,7 @@ public class UserTest {
 
     @Test
     public void testAttributeCopy() {
-        User user = new User("test User", LocalDate.now());
+        User user = new User("test user", LocalDate.now());
         user.copyFieldsFrom(testUser);
         assertTrue(user.attributeFieldsEqual(testUser));
     }
@@ -138,10 +138,10 @@ public class UserTest {
     public void testCLIUserFormat() {
         LocalDateTime now = LocalDateTime.now();
         LocalDate nowDate = now.toLocalDate();
-        User user = new User("test User", nowDate);
-        assertEquals("User (ID 1) created at " + now.format(User.dateTimeFormat) + " "
-                + "\n-Name: test User"
-                + "\n-Preferred Name: test User"
+        User user = new User("test user", nowDate);
+        assertEquals("user (ID 1) created at " + now.format(User.dateTimeFormat) + " "
+                + "\n-Name: test user"
+                + "\n-Preferred Name: test user"
                 + "\n-Date of Birth: " + nowDate.format(User.dateFormat)
                 + "\n-Date of death: null"
                 + "\n-Gender: null"

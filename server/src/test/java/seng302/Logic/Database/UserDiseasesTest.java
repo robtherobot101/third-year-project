@@ -17,7 +17,7 @@ public class UserDiseasesTest extends GenericTest {
     private GeneralUser generalUser = new GeneralUser();
 
     /**
-     * Create a User with cured, chrnoic and existing diseases and test they are all returned when requested
+     * Create a user with cured, chrnoic and existing diseases and test they are all returned when requested
      * @throws SQLException
      */
     @Test

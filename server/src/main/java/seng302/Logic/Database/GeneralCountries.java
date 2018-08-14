@@ -10,9 +10,9 @@ import java.util.List;
 public class GeneralCountries {
 
     /**
-     * Gets all the countries from the Database and if they are valid or not
+     * Gets all the countries from the database and if they are valid or not
      * @return returns a list of all the countries
-     * @throws SQLException Throws if the Database cannot be reached
+     * @throws SQLException Throws if the database cannot be reached
      */
     public ArrayList<Country> getCountries() throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -28,9 +28,9 @@ public class GeneralCountries {
     }
 
     /**
-     * updates all the countries in the Database
-     * @param countries the list of countries for the Database to be updated to
-     * @throws SQLException throws if the Database cannot be reached
+     * updates all the countries in the database
+     * @param countries the list of countries for the database to be updated to
+     * @throws SQLException throws if the database cannot be reached
      */
     public void patchCounties(List<Country> countries) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {

@@ -10,8 +10,8 @@ import javafx.stage.Window;
 import junit.framework.TestCase;
 import org.apache.http.client.HttpResponseException;
 import org.junit.*;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
@@ -55,7 +55,7 @@ public class MedicationsGUITest extends TestFXTest {
 
 
     /**
-     * Method to add a new medication to a User's current medications list.
+     * Method to add a new medication to a user's current medications list.
      *
      * @param medication The medication to add.
      */
@@ -85,7 +85,7 @@ public class MedicationsGUITest extends TestFXTest {
     }
 
     /**
-     * Add an invalid medication and verify it is not added to the User's current medications
+     * Add an invalid medication and verify it is not added to the user's current medications
      */
     //@Ignore
     @Test
@@ -177,10 +177,10 @@ public class MedicationsGUITest extends TestFXTest {
         try{
             openClinicianWindow(WindowManager.getDataManager().getClinicians().getClinician(1, null));
         } catch (HttpResponseException e) {
-            Debugger.error("Testing should use not use the server where possible. Failed to fetch Clinician with id: 1");
+            Debugger.error("Testing should use not use the server where possible. Failed to fetch clinician with id: 1");
         }
 
-        //Check if medication added is correct in the Medication Array List of the User.
+        //Check if medication added is correct in the Medication Array List of the user.
         TableView donorList = lookup("#profileTable").queryTableView();
         User topDonor = (User) donorList.getItems().get(0);
         assertTrue(topDonor.getCurrentMedications().get(0).getName().equalsIgnoreCase("Asacol"));
@@ -188,7 +188,7 @@ public class MedicationsGUITest extends TestFXTest {
         openUserAsClinician(testUser.getName());
         clickOn("Medications");
 
-        //Check if medication added is correct and is populated when the User re-enters the medications window.
+        //Check if medication added is correct and is populated when the user re-enters the medications window.
         ListView currentMedicationList = lookup("#currentListView").queryListView();
         Medication topMedication = (Medication) currentMedicationList.getItems().get(0);
         assertTrue(topMedication.getName().equalsIgnoreCase("Asacol"));

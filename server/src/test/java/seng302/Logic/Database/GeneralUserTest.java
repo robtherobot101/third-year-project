@@ -122,7 +122,7 @@ public class GeneralUserTest extends GenericTest {
         user.setBloodPressure("High");
         user.setGender(Gender.NONBINARY);
         user.setBloodType(BloodType.AB_POS);
-        //User.setEmail("newemail@newdomain.newtld");
+        //user.setEmail("newemail@newdomain.newtld");
 
         generalUser.updateUserAttributes(user, (int) user.getId());
 

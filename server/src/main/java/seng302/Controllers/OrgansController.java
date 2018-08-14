@@ -23,7 +23,7 @@ public class OrgansController {
     /**
      * gets all the DonatableOrgans and parses it into a json string
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return Json object containing all the DonatableOrgan objects, or an error message
      */
     public String getAllDonatableOrgans(Request request, Response response) {
@@ -75,9 +75,9 @@ public class OrgansController {
     }
 
     /**
-     * parses a donatable organ from a json string and inserts it into the Database
+     * parses a donatable organ from a json string and inserts it into the database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String response if the operation was successful
      */
     public String insertOrgan(Request request, Response response) {
@@ -101,9 +101,9 @@ public class OrgansController {
     }
 
     /**
-     * parses a donatable organ from a json string and removes it from the Database
+     * parses a donatable organ from a json string and removes it from the database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String response if the operation was successful
      */
     public String removeOrgan(Request request, Response response) {
@@ -127,9 +127,9 @@ public class OrgansController {
     }
 
     /**
-     * parses a donatable organ from a json string and updates it into the Database
+     * parses a donatable organ from a json string and updates it into the database
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String response if the operation was successful
      */
     public String updateOrgan(Request request, Response response) {

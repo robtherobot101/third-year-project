@@ -20,9 +20,9 @@ public abstract class HelperMethods {
     private static Random r = new Random();
 
     /**
-     * Create a test User with semi-random attributes
+     * Create a test user with semi-random attributes
      * @param generalUser Server access object
-     * @return The created User
+     * @return The created user
      * @throws SQLException
      */
     public static User insertUser(GeneralUser generalUser) throws SQLException {
@@ -34,9 +34,9 @@ public abstract class HelperMethods {
     }
 
     /**
-     * Create a test Admin with semi-random attributes
+     * Create a test admin with semi-random attributes
      * @param generalAdmin Server access object
-     * @return The created Admin
+     * @return The created admin
      * @throws SQLException
      */
     public static Admin insertAdmin(GeneralAdmin generalAdmin)  throws SQLException {
@@ -47,9 +47,9 @@ public abstract class HelperMethods {
     }
 
     /**
-     * Create a test Clinician with semi-random attributes
+     * Create a test clinician with semi-random attributes
      * @param generalClinician Server access object
-     * @return The created Clinician
+     * @return The created clinician
      * @throws SQLException
      */
     public static Clinician insertClinician(GeneralClinician generalClinician) throws SQLException {

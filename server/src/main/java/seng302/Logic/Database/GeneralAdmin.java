@@ -12,10 +12,10 @@ import java.util.ArrayList;
 public class GeneralAdmin {
 
     /**
-     * Takes a resultSet, pulls out an Admin instance, and returns it.
+     * Takes a resultSet, pulls out an admin instance, and returns it.
      * @param resultSet The resultSet
-     * @return An Admin
-     * @throws SQLException If there is an error communicating with the Database
+     * @return An admin
+     * @throws SQLException If there is an error communicating with the database
      */
     public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException {
         Admin admin = new Admin(
@@ -31,9 +31,9 @@ public class GeneralAdmin {
     }
 
     /**
-     * Takes an Admin instance and inserts it into the Admin table on the Database.
-     * @param admin The Admin which will be inserted into the Database.
-     * @throws SQLException If there is an error working with the Database
+     * Takes an admin instance and inserts it into the admin table on the database.
+     * @param admin The admin which will be inserted into the database.
+     * @throws SQLException If there is an error working with the database
      */
     public void insertAdmin(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -46,16 +46,16 @@ public class GeneralAdmin {
             statement.setString(3, admin.getName());
             statement.setString(4, admin.getWorkAddress());
             statement.setString(5, admin.getRegion());
-            System.out.println("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+            System.out.println("Inserting new admin -> Successful -> Rows Added: " + statement.executeUpdate());
         }
 
     }
 
     /**
-     * Returns the if of the Admin with the username which matches the one given.
+     * Returns the if of the admin with the username which matches the one given.
      * @param username The username to query
-     * @return The id of the matched Admin
-     * @throws SQLException If there is a problem working with the Database.
+     * @return The id of the matched admin
+     * @throws SQLException If there is a problem working with the database.
      */
     public int getAdminIdFromUsername(String username) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -69,11 +69,11 @@ public class GeneralAdmin {
     }
 
     /**
-     * Returns the Admin with the id which matches the one given. If no such Admin is fond,
+     * Returns the admin with the id which matches the one given. If no such admin is fond,
      * null is returned.
      * @param id The id which will be matched
-     * @return An Admin instance.
-     * @throws SQLException If there is a problem working with the Database.
+     * @return An admin instance.
+     * @throws SQLException If there is a problem working with the database.
      */
     public Admin getAdminFromId(int id) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -88,16 +88,16 @@ public class GeneralAdmin {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new Clinician Object with the fields from the Database
+                //If response is not empty then return a new clinician Object with the fields from the database
                 return getAdminFromResultSet(resultSet);
             }
         }
     }
 
     /**
-     * Returns an ArrayList of Admins from the Database.
-     * @return The ArrayList of Admins from the Database
-     * @throws SQLException If there is a problem working with the Database.
+     * Returns an ArrayList of Admins from the database.
+     * @return The ArrayList of Admins from the database
+     * @throws SQLException If there is a problem working with the database.
      */
     public ArrayList<Admin> getAllAdmins() throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -114,23 +114,23 @@ public class GeneralAdmin {
     }
 
     /**
-     * Removes the given Admin from the Database by matching their ID's
-     * @param admin The Admin which will be removed
-     * @throws SQLException If there is a problem working with the Database.
+     * Removes the given admin from the database by matching their ID's
+     * @param admin The admin which will be removed
+     * @throws SQLException If there is a problem working with the database.
      */
     public void removeAdmin(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM ADMIN WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, admin.getUsername());
-            System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+            System.out.println("Deletion of admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
 
     /**
-     * Updates the Admin on the Database with the same ID as the one given with the fields of the given Admin.
-     * @param admin The given Admin
-     * @throws SQLException If there is a problem working with the Database.
+     * Updates the admin on the database with the same ID as the one given with the fields of the given admin.
+     * @param admin The given admin
+     * @throws SQLException If there is a problem working with the database.
      */
     public void updateAdminDetails(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -141,7 +141,7 @@ public class GeneralAdmin {
             statement.setString(2, admin.getWorkAddress());
             statement.setString(3, admin.getRegion());
             statement.setString(4, admin.getUsername());
-            System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+            System.out.println("Update admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
 
     }

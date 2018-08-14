@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Class for handling all history details of a User
+ * Class for handling all history details of a user
  */
 public class HistoryItem {
     private LocalDateTime dateTime;
@@ -13,7 +13,7 @@ public class HistoryItem {
     private int id;
 
     /**
-     * constructor method to create a new history item object that has been pulled from the Database
+     * constructor method to create a new history item object that has been pulled from the database
      * @param dateTime LocalDateTime the time of the action
      * @param action String the action that occurred
      * @param description String the description of the action

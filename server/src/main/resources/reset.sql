@@ -376,10 +376,10 @@ ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
 
 --
--- Create default Clinician and Admin
+-- Create default clinician and admin
 --
 
-INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('Admin', 'default', 'default', 'default', 'default', 'default');
+INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', 'default', 'default', 'default', 'default', 'default');
 
 INSERT INTO TOKEN(id, token, access_level) VALUES(0, 'masterToken', 2);
 

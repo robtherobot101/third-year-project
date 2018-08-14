@@ -19,7 +19,7 @@ public class UserProceduresTest extends GenericTest {
     private UserProcedures userProcedures = new UserProcedures();
 
     /**
-     * Test getting all procedures for a User
+     * Test getting all procedures for a user
      * @throws SQLException
      */
     @Test
@@ -38,7 +38,7 @@ public class UserProceduresTest extends GenericTest {
     }
 
     /**
-     * Test inserting a new procedure item into the Database
+     * Test inserting a new procedure item into the database
      * @throws SQLException
      */
     @Test
@@ -97,7 +97,7 @@ public class UserProceduresTest extends GenericTest {
     }
 
     /**
-     * Test the removal of a procedure item from the Database
+     * Test the removal of a procedure item from the database
      * @throws SQLException
      */
     @Test

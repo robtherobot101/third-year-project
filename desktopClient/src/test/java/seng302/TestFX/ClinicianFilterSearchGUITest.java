@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
@@ -83,7 +83,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             WindowManager.getDataManager().getUsers().insertUser(testUserAndy);
             WindowManager.getDataManager().getUsers().insertUser(testUserTest);
         } catch (HttpResponseException e) {
-            Debugger.error("Failed to post User to the server.");
+            Debugger.error("Failed to post user to the server.");
         }
 
 
@@ -163,7 +163,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
     }
 
     /**
-     * Checks if the users shown in the table view are correct based on different inputs in the User type combo box.
+     * Checks if the users shown in the table view are correct based on different inputs in the user type combo box.
      */
     @Ignore
     @Test

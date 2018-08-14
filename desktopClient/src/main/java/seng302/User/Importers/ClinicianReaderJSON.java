@@ -2,7 +2,7 @@ package seng302.User.Importers;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import seng302.Generic.Debugger;
+import seng302.generic.Debugger;
 import seng302.User.Clinician;
 
 import java.io.*;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ClinicianReaderJSON implements ProfileReader<Clinician> {
 
     /**
-     * gets Clinician profiles from a json file
+     * gets clinician profiles from a json file
      * @param path the path to the json file
      * @return returns the imported profiles
      */

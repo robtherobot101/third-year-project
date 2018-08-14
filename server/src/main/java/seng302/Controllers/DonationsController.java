@@ -26,8 +26,8 @@ public class DonationsController {
     /**
      * method to process the request for getting all of one users donations
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
-     * @return Json object containing all the User donation details, or an error message
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return Json object containing all the user donation details, or an error message
      */
     public String getAllUserDonations(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -52,7 +52,7 @@ public class DonationsController {
     /**
      * method to handle the adding of a new organ donation
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String response if the operation was successful
      */
     public String addDonation(Request request, Response response) {
@@ -80,7 +80,7 @@ public class DonationsController {
     /**
      * method to handle the request to get all donations
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return Json object containing all donations and their details
      */
     public String getAllDonations(Request request, Response response) {
@@ -103,9 +103,9 @@ public class DonationsController {
     }
 
     /**
-     * method to handle getting a single donation from one User
+     * method to handle getting a single donation from one user
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return Json object containing the donation information
      */
     public String getSingleUserDonationItem(Request request, Response response) {
@@ -126,7 +126,7 @@ public class DonationsController {
     /**
      * method to handle the deletion of a donation request
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String Whether the operation was successful or not
      */
     public String deleteUserDonationItem(Request request, Response response) {
@@ -150,9 +150,9 @@ public class DonationsController {
     }
 
     /**
-     * method to handle the deletion of all User donations (only when a death occurs)
+     * method to handle the deletion of all user donations (only when a death occurs)
      * @param request Java request object, used to invoke correct methods
-     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-Data to the runtime
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String whether the operation was successful or not
      */
     public String deleteAllUserDonations(Request request, Response response) {

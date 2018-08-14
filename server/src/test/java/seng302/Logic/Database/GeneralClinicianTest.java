@@ -47,7 +47,7 @@ public class GeneralClinicianTest extends GenericTest {
     }
 
     /**
-     * Test insertion of an Clinician with no username
+     * Test insertion of an clinician with no username
      * @throws SQLException
      */
     @Test(expected = Exception.class)
@@ -77,7 +77,7 @@ public class GeneralClinicianTest extends GenericTest {
 
 
     /**
-     * Test getting Clinician with id 1
+     * Test getting clinician with id 1
      * @throws SQLException
      */
     @Test
@@ -87,7 +87,7 @@ public class GeneralClinicianTest extends GenericTest {
     }
 
     /**
-     * Test getting Clinician with id 9999
+     * Test getting clinician with id 9999
      * @throws SQLException
      */
     @Test
