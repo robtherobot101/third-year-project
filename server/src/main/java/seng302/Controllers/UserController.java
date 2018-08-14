@@ -45,7 +45,7 @@ public class UserController {
     public String getUsers(Request request, Response response) {
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
-                "name","password","userType","age","gender","region","organ",
+                "name","password","userType","age","gender","region","country","organ",
                 "startIndex","count"
         ));
         for(String param:possibleParams){
@@ -261,7 +261,7 @@ public class UserController {
      * Checks for the validity of the request ID, and returns a user obj
      * @param request HTTP request
      * @param response HTTP response
-     * @return A valid User object if the user exists otherwise return null
+     * @return A valid user object if the user exists otherwise return null
      */
     private User queryUser(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -307,7 +307,7 @@ public class UserController {
         if (receivedUser == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing User Body";
+            return "Missing user Body";
         } else {
             //TODO make model.insertUser return token
             try {
@@ -391,7 +391,7 @@ public class UserController {
         User receivedUser = gson.fromJson(request.body(), User.class);
         if (receivedUser == null) {
             response.status(400);
-            return "Missing User Body";
+            return "Missing user Body";
         } else {
             try {
                 String token = request.headers("token");

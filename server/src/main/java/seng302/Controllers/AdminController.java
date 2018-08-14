@@ -24,10 +24,10 @@ public class AdminController {
     }
 
     /**
-     * Retrieves an Admin object from the HTTP request ":id" param
+     * Retrieves an admin object from the HTTP request ":id" param
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @return A valid Admin obj if the admin exists otherwise return null
+     * @return A valid admin obj if the admin exists otherwise return null
      */
     private Admin queryAdmin(Request request, Response response) {
         int requestedAdminId = Integer.parseInt(request.params(":id"));
@@ -96,7 +96,7 @@ public class AdminController {
         if (receivedAdmin == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing Admin Body";
+            return "Missing admin Body";
         } else {
             //TODO make model.insertAdmin return token
             try {
@@ -151,7 +151,7 @@ public class AdminController {
         Admin receivedAdmin = gson.fromJson(request.body(), Admin.class);
         if (receivedAdmin == null) {
             response.status(400);
-            return "Missing Admin Body";
+            return "Missing admin Body";
         } else {
             try {
                 model.updateAdminDetails(receivedAdmin);

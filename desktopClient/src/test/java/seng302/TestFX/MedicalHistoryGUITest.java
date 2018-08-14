@@ -5,7 +5,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.DataManager;
 import seng302.User.Disease;
 
 import java.sql.SQLException;
@@ -67,7 +66,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
         clickOn("#loginButton");
 
         System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
-        // Click on the Created User in clinician table and enter the medications panel.
+        // Click on the Created user in clinician table and enter the medications panel.
         doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();
 

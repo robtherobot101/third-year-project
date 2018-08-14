@@ -72,7 +72,7 @@ namespace mobileAppClient
 
             foreach (Disease item in UserController.Instance.LoggedInUser.currentDiseases)
             {
-                if (item.IsChronic)
+                if (item.isChronic)
                 {
                     chronicList.Add(item);
                 }
@@ -104,22 +104,22 @@ namespace mobileAppClient
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
 
             foreach(Disease item in UserController.Instance.LoggedInUser.currentDiseases) {
-                if(item.IsChronic) {
-                    item.CellText = item.Name + " (CHRONIC)";
+                if(item.isChronic) {
+                    item.CellText = item.name + " (CHRONIC)";
                     item.CellColour = Color.Red;
                 } else {
-                    item.CellText = item.Name;
+                    item.CellText = item.name;
                     item.CellColour = Color.Blue;
                 }
-                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.DiagnosisDate.month) + ", " + item.DiagnosisDate.year;
+                item.DiagnosisDateString = "Diagnosed on " + item.diagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.diagnosisDate.month) + ", " + item.diagnosisDate.year;
 
 
 
             }
             foreach (Disease item in UserController.Instance.LoggedInUser.curedDiseases)
             {
-                item.DiagnosisDateString = "Diagnosed on " + item.DiagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.DiagnosisDate.month) + ", " + item.DiagnosisDate.year;
-                item.CellText = item.Name;
+                item.DiagnosisDateString = "Diagnosed on " + item.diagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.diagnosisDate.month) + ", " + item.diagnosisDate.year;
+                item.CellText = item.name;
                 item.CellColour = Color.Blue;
             }
 
@@ -167,15 +167,15 @@ namespace mobileAppClient
                         List<Disease> nonChronicList = new List<Disease>();
 
                         foreach(Disease item in UserController.Instance.LoggedInUser.currentDiseases) {
-                            if(item.IsChronic) {
+                            if(item.isChronic) {
                                 chronicList.Add(item);
                             } else {
                                 nonChronicList.Add(item);
                             }
                         }
 
-                        List<Disease> sortedChronicList = chronicList.OrderBy(o => o.DiagnosisDate.ToDateTime()).ToList();
-                        List<Disease> sortedNonChronicList = nonChronicList.OrderBy(o => o.DiagnosisDate.ToDateTime()).ToList();
+                        List<Disease> sortedChronicList = chronicList.OrderBy(o => o.diagnosisDate.ToDateTime()).ToList();
+                        List<Disease> sortedNonChronicList = nonChronicList.OrderBy(o => o.diagnosisDate.ToDateTime()).ToList();
 
                         foreach(Disease item in sortedChronicList) {
                             finalList.Add(item);
@@ -191,7 +191,7 @@ namespace mobileAppClient
                     else
                     {
                         List<Disease> mylist = UserController.Instance.LoggedInUser.curedDiseases;
-                        List<Disease> SortedList = mylist.OrderBy(o => o.DiagnosisDate.ToDateTime()).ToList();
+                        List<Disease> SortedList = mylist.OrderBy(o => o.diagnosisDate.ToDateTime()).ToList();
                         DiseasesList.ItemsSource = SortedList;
                     }
                     AscendingDescendingPicker.IsVisible = true;
@@ -206,7 +206,7 @@ namespace mobileAppClient
 
                         foreach (Disease item in UserController.Instance.LoggedInUser.currentDiseases)
                         {
-                            if (item.IsChronic)
+                            if (item.isChronic)
                             {
                                 chronicList.Add(item);
                             }
@@ -216,8 +216,8 @@ namespace mobileAppClient
                             }
                         }
 
-                        List<Disease> sortedChronicList = chronicList.OrderBy(o => o.Name).ToList();
-                        List<Disease> sortedNonChronicList = nonChronicList.OrderBy(o => o.Name).ToList();
+                        List<Disease> sortedChronicList = chronicList.OrderBy(o => o.name).ToList();
+                        List<Disease> sortedNonChronicList = nonChronicList.OrderBy(o => o.name).ToList();
 
                         foreach (Disease item in sortedChronicList)
                         {
@@ -233,7 +233,7 @@ namespace mobileAppClient
                     else
                     {
                         List<Disease> mylist = UserController.Instance.LoggedInUser.curedDiseases;
-                        List<Disease> SortedList = mylist.OrderBy(o => o.Name).ToList();
+                        List<Disease> SortedList = mylist.OrderBy(o => o.name).ToList();
                         DiseasesList.ItemsSource = SortedList;
                     }
                     AscendingDescendingPicker.IsVisible = true;
@@ -275,7 +275,7 @@ namespace mobileAppClient
 
                             foreach (Disease item in currentList)
                             {
-                                if (item.IsChronic)
+                                if (item.isChronic)
                                 {
                                     chronicList.Add(item);
                                 }
@@ -285,8 +285,8 @@ namespace mobileAppClient
                                 }
                             }
 
-                            List<Disease> sortedChronicList = chronicList.OrderByDescending(o => o.DiagnosisDate.ToDateTime()).ToList();
-                            List<Disease> sortedNonChronicList = nonChronicList.OrderByDescending(o => o.DiagnosisDate.ToDateTime()).ToList();
+                            List<Disease> sortedChronicList = chronicList.OrderByDescending(o => o.diagnosisDate.ToDateTime()).ToList();
+                            List<Disease> sortedNonChronicList = nonChronicList.OrderByDescending(o => o.diagnosisDate.ToDateTime()).ToList();
 
                             foreach (Disease item in sortedChronicList)
                             {
@@ -308,7 +308,7 @@ namespace mobileAppClient
 
                             foreach (Disease item in currentList)
                             {
-                                if (item.IsChronic)
+                                if (item.isChronic)
                                 {
                                     chronicList.Add(item);
                                 }
@@ -318,8 +318,8 @@ namespace mobileAppClient
                                 }
                             }
 
-                            sortedChronicList = chronicList.OrderBy(o => o.DiagnosisDate.ToDateTime()).ToList();
-                            sortedNonChronicList = nonChronicList.OrderBy(o => o.DiagnosisDate.ToDateTime()).ToList();
+                            sortedChronicList = chronicList.OrderBy(o => o.diagnosisDate.ToDateTime()).ToList();
+                            sortedNonChronicList = nonChronicList.OrderBy(o => o.diagnosisDate.ToDateTime()).ToList();
 
                             foreach (Disease item in sortedChronicList)
                             {
@@ -350,7 +350,7 @@ namespace mobileAppClient
 
                             foreach (Disease item in currentList)
                             {
-                                if (item.IsChronic)
+                                if (item.isChronic)
                                 {
                                     chronicList.Add(item);
                                 }
@@ -360,8 +360,8 @@ namespace mobileAppClient
                                 }
                             }
 
-                            List<Disease> sortedChronicList = chronicList.OrderByDescending(o => o.Name).ToList();
-                            List<Disease> sortedNonChronicList = nonChronicList.OrderByDescending(o => o.Name).ToList();
+                            List<Disease> sortedChronicList = chronicList.OrderByDescending(o => o.name).ToList();
+                            List<Disease> sortedNonChronicList = nonChronicList.OrderByDescending(o => o.name).ToList();
 
                             foreach (Disease item in sortedChronicList)
                             {
@@ -382,7 +382,7 @@ namespace mobileAppClient
 
                             foreach (Disease item in currentList)
                             {
-                                if (item.IsChronic)
+                                if (item.isChronic)
                                 {
                                     chronicList.Add(item);
                                 }
@@ -392,8 +392,8 @@ namespace mobileAppClient
                                 }
                             }
 
-                            sortedChronicList = chronicList.OrderBy(o => o.Name).ToList();
-                            sortedNonChronicList = nonChronicList.OrderBy(o => o.Name).ToList();
+                            sortedChronicList = chronicList.OrderBy(o => o.name).ToList();
+                            sortedNonChronicList = nonChronicList.OrderBy(o => o.name).ToList();
 
                             foreach (Disease item in sortedChronicList)
                             {
