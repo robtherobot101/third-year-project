@@ -17,9 +17,11 @@ namespace mobileAppClient.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ClinicianOverviewPage : ContentPage
 	{
+        public ICommand OpenCommand { get; private set; }
         public ClinicianOverviewPage()
         {
             InitializeComponent();
+            OpenCommand = new Command<string>(OpenItem);
             fillFields();
             this.BindingContext = new
             {
@@ -44,10 +46,10 @@ namespace mobileAppClient.Views
             }
         }
 
-        public ICommand ClickFeedItem => new Command<string>((url) =>
+        void OpenItem(string url)
         {
             Console.WriteLine("Opening url");
             Device.OpenUri(new System.Uri(url));
-        });
+        }
     }
 }
