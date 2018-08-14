@@ -293,6 +293,9 @@ public class ClinicianController implements Initializable {
 
         countryComboBox.setValue("All Countries");
         setRegionControls("", "All Countries", regionComboBox, clinicianRegionField);
+
+        waitingListController.setup();
+
         updateDisplay();
     }
 
