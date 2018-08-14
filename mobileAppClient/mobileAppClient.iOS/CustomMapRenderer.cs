@@ -10,6 +10,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
+using System.Linq;
 
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
@@ -89,7 +90,7 @@ namespace CustomRenderer.iOS
             //Go back to Mobile App Clent and call show dialog event
             var customView = e.View as CustomMKAnnotationView;
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayUserDialog(customView.Url, customView.Id);
+            parent.displayUserDialog(customView.Url, customView.Url.Substring(customView.Url.Length - 1));
 
 
         }
@@ -101,6 +102,7 @@ namespace CustomRenderer.iOS
 
             //Set size of frame and add all photos from the custom pin image
             string[] organs = customView.Url.Split(',');
+            organs = organs.Take(organs.Length - 1).ToArray();
             int rectangleWidthInt = (organs.Length * 40) + (5 * (organs.Length + 1));
 
             customPinView.Frame = new CGRect(0, 0, rectangleWidthInt, 50);

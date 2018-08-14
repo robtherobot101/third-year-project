@@ -481,6 +481,49 @@ namespace mobileAppClient.odmsAPI
             return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.OK, resultMapObjects);
         }
 
+        /// <summary>
+        /// Fetches a single user with a given id
+        /// </summary>
+        /// <returns>
+        /// Tuple containing the HTTP return code and the User object
+        /// </returns>
+        public async Task<Tuple<HttpStatusCode, User>> GetSingleUser(string id)
+        {
+            // Check internet connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, User>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            String queries = null;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + id);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, User>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, User>(response.StatusCode, null);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            User resultUser = JsonConvert.DeserializeObject<User>(responseContent);
+            return new Tuple<HttpStatusCode, User>(HttpStatusCode.OK, resultUser);
+        }
+
 
     }
 }

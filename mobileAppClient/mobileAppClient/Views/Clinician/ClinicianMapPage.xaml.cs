@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using mobileAppClient.odmsAPI;
 using System.Net;
 using System.IO;
+using System.Linq;
 
 namespace mobileAppClient
 {
@@ -40,6 +41,7 @@ namespace mobileAppClient
 
         public async void displayUserDialog(string organString, string id) {
             string[] organList = organString.Split(',');
+            organList = organList.Take(organList.Length - 1).ToArray();
             List<string> finalList = new List<string>();
             string final;
             foreach(string item in organList) {
@@ -49,10 +51,36 @@ namespace mobileAppClient
             string listString = String.Join("", finalList);
             
             var answer = await DisplayAlert("Display User?", "This user is currently donating: \n" + listString + "Would you like to view their profile?", "Yes", "No");
-            //if(answer == true) {
-            //    UserAPI userAPI = new UserAPI();
-            //    User user = await userAPI.get
-            //}
+            if(answer == true) {
+                UserAPI userAPI = new UserAPI();
+                Tuple<HttpStatusCode, User> userTuple = await userAPI.GetSingleUser(id);
+                switch (userTuple.Item1)
+                {
+                    case HttpStatusCode.OK:
+                        UserController.Instance.LoggedInUser = userTuple.Item2;
+
+                        MainPage mainPage = new MainPage(true);
+                        mainPage.Title = String.Format("User Viewer: {1}, {0}", userTuple.Item2.name[0], userTuple.Item2.name[2]);
+
+                        await Navigation.PushAsync(mainPage);
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                        "Server unavailable, check connection",
+                        "OK");
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await DisplayAlert("",
+                        "Unauthorised to get profile",
+                        "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                        "Server error, please try again (500)",
+                        "OK");
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -84,6 +112,11 @@ namespace mobileAppClient
                                 organPosition = sequenceEnum.Current;
                             }
                         }
+                        Random rnd = new Random();
+                        double randomNumberLongitude = rnd.NextDouble() / 50.00;
+                        double randomNumberLatitude = rnd.NextDouble() / 50.00;
+                        Position finalPosition = new Position(organPosition.Latitude + randomNumberLatitude, organPosition.Longitude + randomNumberLongitude);
+
                         List<string> organIcons = new List<string>();
 
                         foreach(string organ in user.organs) {
@@ -121,9 +154,15 @@ namespace mobileAppClient
                                 case ("intestine"):
                                     imageString = "intestines_icon.png";
                                     break;
+                                case ("middle-ear"):
+                                    imageString = "ear_icon.png";
+                                    break;
                             }
                             organIcons.Add(imageString);
                         }
+
+                        //Used so that we can get the id when we want to view the user
+                        organIcons.Add(user.id.ToString());
 
                         //SET GENDER ICON
                         //Randomize man or woman photo
@@ -131,7 +170,6 @@ namespace mobileAppClient
                         //If none then also set to a pin
 
                         string genderIcon = "";
-                        Random rnd = new Random();
                         switch(user.gender) {
                             case("Male"):
                                 int number = rnd.Next(1, 15);
@@ -166,7 +204,7 @@ namespace mobileAppClient
                         var pin = new CustomPin
                         {
                             Type = PinType.Generic,
-                            Position = organPosition,
+                            Position = finalPosition,
                             Label = user.firstName + " " + user.middleName + " " + user.lastName,
                             Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
                             Id = user.id,
