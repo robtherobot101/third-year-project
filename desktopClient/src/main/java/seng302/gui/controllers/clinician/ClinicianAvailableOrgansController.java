@@ -20,6 +20,7 @@ import seng302.User.DonatableOrgan;
 import seng302.User.User;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -169,8 +170,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             TreeItem<Object> root = new TreeItem<>();
             for (DonatableOrgan organ : expiryList) {
                 TreeItem expiringOrganItem = new TreeItem<>(organ);
-                for (int receiverId : organ.getTopReceivers()) {
-                    User receiver = WindowManager.getDataManager().getUsers().getUser(receiverId, token);
+                for (User receiver : organ.getTopReceivers()) {
                     expiringOrganItem.getChildren().add(new TreeItem<>(receiver));
                 }
                 root.getChildren().add(expiringOrganItem);
@@ -288,7 +288,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
         WindowManager.setClinicianAvailableOrgansController(this);
 
         organsTreeTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-
 
 
         ObservableList<String> organSearchlist = FXCollections.observableArrayList();

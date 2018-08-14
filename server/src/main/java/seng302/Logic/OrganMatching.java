@@ -5,6 +5,7 @@ import seng302.Logic.Database.GeneralUser;
 import seng302.Model.DonatableOrgan;
 import seng302.Model.User;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -107,18 +108,26 @@ public class OrganMatching {
      * @param organ the organ to compare against
      * @return the list of users ids
      */
-    public List<Long> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
+    public List<User> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
         try {
             OrganMatching.organ = organ;
             User donor = model.getUserFromId((int) OrganMatching.organ.getDonorId());
             List<User> matches = getAllMatches(donor);
             matches = getBestMatches(donor.getRegionOfDeath(), matches);
-            List<Long> topMatches = new ArrayList<>();
+            List<User> topMatches = new ArrayList<>();
             for (User user : matches){
                 if(user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
-                    topMatches.add(user.getId());
+                    User u = new User("", LocalDate.now());
+                    u.setName(user.getName());
+                    u.setRegion(user.getRegion());
+                    u.setId(user.getId());
+                    topMatches.add(u);
                 } else if(user.getName() == null && user.getName().equals("")){
-                    topMatches.add(user.getId());
+                    User u = new User("", LocalDate.now());
+                    u.setName(user.getName());
+                    u.setRegion(user.getRegion());
+                    u.setId(user.getId());
+                    topMatches.add(u);
                 }
             }
             return topMatches;

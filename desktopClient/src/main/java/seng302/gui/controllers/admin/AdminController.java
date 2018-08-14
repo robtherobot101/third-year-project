@@ -281,7 +281,6 @@ public class AdminController implements Initializable {
         cliController.setToken(token);
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
-        availableOrgansController.updateOrgans();
 
         try {
             List<String> validCountries = new ArrayList<>();
@@ -748,7 +747,6 @@ public class AdminController implements Initializable {
         }
 
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));
 

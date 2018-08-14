@@ -263,7 +263,6 @@ public class ClinicianController implements Initializable {
         this.token = token;
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
-        availableOrgansController.updateOrgans();
 
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
@@ -639,7 +638,6 @@ public class ClinicianController implements Initializable {
         }
         System.out.println(searchMap);
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));
 
