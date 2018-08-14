@@ -65,6 +65,4 @@ public class OrgansDatabaseTest {
 
         assertTrue(organs.isEmpty());
     }
-
-
 }

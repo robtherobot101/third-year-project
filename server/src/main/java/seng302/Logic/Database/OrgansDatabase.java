@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
+import seng302.Model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OrgansDatabase {
 
@@ -30,6 +32,39 @@ public class OrgansDatabase {
             }
             return allOrgans;
         }
+    }
+
+
+    /**
+     * gets all the organs from the database
+     * @return returns a list of all the organs in the database
+     * @throws SQLException throws if cannot connect to the database
+     */
+    public List<DonatableOrgan> queryOrgans(Map<String, String> params) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            List<DonatableOrgan> allOrgans = new ArrayList<>();
+            String query = buildOrganQuery(params);
+            System.out.println(query);
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                allOrgans.add(getOrganFromResultSet(resultSet));
+            }
+            return allOrgans;
+        }
+    }
+
+    private String buildOrganQuery(Map<String, String> params) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfDeath IS NOT NULL ");
+        if(params.keySet().contains("userRegion")) {
+            queryBuilder.append("AND USER.regionOfDeath = '").append(params.get("userRegion")).append("' ");
+        }
+
+        if(params.keySet().contains("organ")) {
+            queryBuilder.append("AND DONATION_LIST_ITEM.name = '").append(params.get("organ")).append("' ");
+        }
+        return queryBuilder.toString();
     }
 
     /**

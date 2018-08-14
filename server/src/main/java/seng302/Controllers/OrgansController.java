@@ -3,13 +3,14 @@ package seng302.Controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.OrgansDatabase;
+import seng302.Logic.OrganMatching;
 import seng302.Model.DonatableOrgan;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 
 public class OrgansController {
 
@@ -40,6 +41,37 @@ public class OrgansController {
         response.type("application/json");
         response.status(200);
         return serializedOrgans;
+    }
+
+    public String queryOrgans(Request request, Response response) {
+        List<DonatableOrgan> allDonatableOrgans;
+        Map<String, String> params = new HashMap<String, String>();
+        List<String> possibleParams = new ArrayList<String>(Arrays.asList(
+                "userRegion","organ",
+                "startIndex","count"
+        ));
+        for(String param:possibleParams){
+            if(request.queryParams(param) != null){
+                params.put(param,request.queryParams(param));
+            }
+        }
+        try {
+            allDonatableOrgans = model.queryOrgans(params);
+            OrganMatching organMatching = new OrganMatching();
+            for(DonatableOrgan organ: allDonatableOrgans){
+                organ.setTopReceivers(organMatching.getTop5Matches(organ));
+            }
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String serializedOrgans = gson.toJson(allDonatableOrgans);
+            System.out.println(serializedOrgans);
+            response.type("application/json");
+            response.status(200);
+            return serializedOrgans;
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return e.getMessage();
+        }
     }
 
     /**

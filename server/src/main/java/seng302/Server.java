@@ -101,6 +101,7 @@ public class Server {
             });
 
             path("/users", () -> {
+                post( "/import",          userController::importUsers);
                 get("", (request, response) -> {
                     if (profileUtils.hasAccessToAllUsers(request, response)) {
                         return userController.getUsers(request, response);
@@ -200,7 +201,7 @@ public class Server {
             });
 
             path("/organs", () -> {
-                get("",     organsController::getAllDonatableOrgans);
+                get("",     organsController::queryOrgans);
                 post("",    organsController::insertOrgan);
                 delete("",  organsController::removeOrgan);
                 patch("",   organsController::updateOrgan);

@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 
 import java.time.Duration;
@@ -20,8 +20,7 @@ public class DonatableOrgan {
     private String receiverName;
     private String receiverDeathRegion;
     private double timePercent;
-    private boolean expired;
-
+    private int[] topReceivers;
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
         this.timeOfDeath = timeOfExpiry;
@@ -76,6 +75,10 @@ public class DonatableOrgan {
         this.timeOfDeath = timeOfExpiry;
     }
 
+    public int[] getTopReceivers() {
+        return topReceivers;
+    }
+    
     public Duration getTimeLeft(){
         return timeLeft;
     }
@@ -149,7 +152,6 @@ public class DonatableOrgan {
             case BONE:
                 duration = Duration.parse("P3650D");
                 break;
-
         }
         return duration;
     }

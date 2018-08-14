@@ -6,13 +6,15 @@ namespace mobileAppClient
      */
     public class WaitingListItem
     {
-        public string OrganType { get; set; }
-        public CustomDate OrganRegisteredDate { get; set; }
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public CustomDate OrganDeregisteredDate { get; set; }
-        public int OrganDeregisteredCode { get; set; }
+        public string organType { get; set; }
+        public CustomDate organRegisteredDate { get; set; }
+        public int id { get; set; }
+        public int userId { get; set; }
+        public CustomDate organDeregisteredDate { get; set; }
+        public int organDeregisteredCode { get; set; }
         public string DetailString { get; set; }
+        public Boolean isConflicting { get; set; }
+        public Xamarin.Forms.Color CellColour { get; set; }
 
         public WaitingListItem()
         {
