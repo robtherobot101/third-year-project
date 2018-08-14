@@ -57,10 +57,10 @@ import static seng302.Generic.IO.getJarPath;
  */
 public class WindowManager extends Application {
 
-    private static final int MAIN_WINDOW_MIN_WIDTH = 800;
-    private static final int MAIN_WINDOW_MIN_HEIGHT = 600;
-    private static final int MAIN_WINDOW_PREF_WIDTH = 1250;
-    private static final int MAIN_WINDOW_PREF_HEIGHT = 725;
+    public static final int MAIN_WINDOW_MIN_WIDTH = 800;
+    public static final int MAIN_WINDOW_MIN_HEIGHT = 600;
+    public static final int MAIN_WINDOW_PREF_WIDTH = 1250;
+    public static final int MAIN_WINDOW_PREF_HEIGHT = 725;
 
     private static Stage stage;
     private static HashMap<TFScene, Scene> scenes = new HashMap<>();
