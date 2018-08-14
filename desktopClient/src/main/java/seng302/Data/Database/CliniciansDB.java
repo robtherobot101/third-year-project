@@ -57,18 +57,17 @@ public class CliniciansDB implements CliniciansDAO {
      * gets all the clinicians in the database
      * @param token the users token
      * @return returns all the clinicians from the server
-     * @throws HttpResponseException throws if cannot connect to the server
      */
-    public ArrayList<Clinician> getAllClinicians(String token) throws HttpResponseException {
+    public ArrayList<Clinician> getAllClinicians(String token) {
         APIResponse response = server.getRequest(new HashMap<>(), token, "clinicians");
         if(response == null){
-            return new ArrayList<Clinician>();
+            return new ArrayList<>();
         }
         if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Clinician>>() {
             }.getType());
         } else {
-            return new ArrayList<Clinician>();
+            return new ArrayList<>();
         }
     }
 

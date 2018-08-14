@@ -8,10 +8,7 @@ import seng302.Generic.APIResponse;
 import seng302.Generic.APIServer;
 import seng302.Generic.Country;
 import seng302.Generic.Debugger;
-import seng302.User.Admin;
-import seng302.User.Clinician;
-import seng302.User.User;
-import seng302.User.WaitingListItem;
+import seng302.User.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,10 +61,9 @@ public class GeneralDB implements GeneralDAO {
     /**
      * logs out the user
      * @param token the users token
-     * @throws HttpResponseException throws if cannot connect to the server
      */
     @Override
-    public void logoutUser(String token) throws HttpResponseException {
+    public void logoutUser(String token) {
         server.postRequest(new JsonObject(), new HashMap<>(), token, "logout");
     }
 
@@ -98,9 +94,8 @@ public class GeneralDB implements GeneralDAO {
     /**
      * pings the server to check if reachable
      * @return returns true if the server can be reached
-     * @throws HttpResponseException throws if cannot connect to the server
      */
-    public boolean status() throws HttpResponseException {
+    public boolean status() {
         APIResponse response = server.getRequest(new HashMap<>(), null,"status");
         return response != null && response.getAsString().equals("DATABASE ONLINE");
     }
@@ -123,16 +118,12 @@ public class GeneralDB implements GeneralDAO {
      * checks if the username or email is unique
      * @param identifier the string to check
      * @return returns true if unique, otherwise false
-     * @throws HttpResponseException throws if cannot connect to the server
      */
-    public boolean isUniqueIdentifier(String identifier) throws HttpResponseException {
+    public boolean isUniqueIdentifier(String identifier) {
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", identifier);
         APIResponse response = server.getRequest(queryParameters, null, "unique");
-        if(response == null){
-            return false;
-        }
-        return response.getAsString().equalsIgnoreCase("true");
+        return response != null && response.getAsString().equalsIgnoreCase("true");
     }
 
     /**
@@ -166,9 +157,9 @@ public class GeneralDB implements GeneralDAO {
      */
     @Override
     public List<Country> getAllCountries(String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<String, String>(), token,"countries");
+        APIResponse response = server.getRequest(new HashMap<>(), token,"countries");
         if(response == null){
-            return new ArrayList<Country>();
+            return new ArrayList<>();
         }
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
@@ -176,7 +167,7 @@ public class GeneralDB implements GeneralDAO {
         if (response.isValidJson()) {
             return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Country>>(){}.getType());
         } else {
-            return new ArrayList<Country>();
+            return new ArrayList<>();
         }
     }
 
@@ -190,7 +181,33 @@ public class GeneralDB implements GeneralDAO {
     public void updateCountries(List<Country> countries, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         JsonArray userJson = jp.parse(new Gson().toJson(countries)).getAsJsonArray();
-        APIResponse response = server.patchRequest(userJson, new HashMap<String, String>(),token,"countries");
+        APIResponse response = server.patchRequest(userJson, new HashMap<>(),token,"countries");
         if(response == null) throw new HttpResponseException(0, "Could not access server");
+    }
+
+    /**
+     * gets all of the organs that are available to donate from the server
+     * @param token the users token
+     * @return returns a list of donatableOrgans
+     * @throws HttpResponseException throws if cannot connect to the server
+     */
+    @Override
+    public List<DonatableOrgan> getAllDonatableOrgans(HashMap filterParams, String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(filterParams, token, "organs");
+        if (response == null) {
+            return new ArrayList<>();
+        }
+        if (response.getStatusCode() != 200) {
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        if (response.isValidJson()) {
+            List<DonatableOrgan> organs = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
+            for(DonatableOrgan organ : organs) {
+                System.out.println("Top receivers: "+organ.getTopReceivers());
+            }
+            return organs;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

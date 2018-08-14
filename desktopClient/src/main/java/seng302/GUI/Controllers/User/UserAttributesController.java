@@ -77,7 +77,7 @@ public class UserAttributesController extends UserTabController implements Initi
 
     private Map<Organ, CheckBox> organTickBoxes;
 
-    private Boolean updatingFields = false;
+    private int updatingFields = 0;
 
     /**
      * Sets the current user and populates the fields
@@ -306,7 +306,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
-        updatingFields = true;
+        updatingFields++;
         boolean useCombo = false;
         if (country != null) {
             useCombo = country.equalsIgnoreCase("New Zealand");
@@ -324,7 +324,7 @@ public class UserAttributesController extends UserTabController implements Initi
         } else {
             setRegion("", regionComboBox, regionField);
         }
-        updatingFields = false;
+        updatingFields--;
     }
 
     /**
@@ -488,7 +488,7 @@ public class UserAttributesController extends UserTabController implements Initi
             return false;
         }
 
-        updatingFields = true;
+        updatingFields++;
 
         userController.addHistoryEntry("Updated attribute", "A user attribute was updated.");
         //Commit changes
@@ -537,7 +537,7 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        updatingFields = false;
+        updatingFields--;
         return true;
     }
 
@@ -546,7 +546,8 @@ public class UserAttributesController extends UserTabController implements Initi
      * takes all their attributes and populates the user attributes on the attributes pane accordingly.
      */
     public void populateUserFields() {
-        updatingFields = true;
+        Debugger.log("Repopulating user attributes page.");
+        updatingFields++;
         try {
             List<String> validCountries = new ArrayList<>();
             for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(userController.getToken())) {
@@ -558,34 +559,8 @@ public class UserAttributesController extends UserTabController implements Initi
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
         }
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
-        String[] splitNames = currentUser.getNameArray();
-        firstNameField.setText(splitNames[0]);
-        if (splitNames.length > 2) {
-            String[] middleName = new String[splitNames.length - 2];
-            System.arraycopy(splitNames, 1, middleName, 0, splitNames.length - 2);
-            middleNameField.setText(String.join(" ", middleName));
-            lastNameField.setText(splitNames[splitNames.length - 1]);
-        } else if (splitNames.length == 2) {
-            middleNameField.setText("");
-            lastNameField.setText(splitNames[1]);
-        } else {
-            middleNameField.setText("");
-            lastNameField.setText("");
-        }
-        String[] splitPreferredNames = currentUser.getPreferredNameArray();
-        preferredFirstNameField.setText(splitPreferredNames[0]);
-        if (splitPreferredNames.length > 2) {
-            String[] preferredMiddleName = new String[splitPreferredNames.length - 2];
-            System.arraycopy(splitPreferredNames, 1, preferredMiddleName, 0, splitPreferredNames.length - 2);
-            preferredMiddleNamesField.setText(String.join(" ", preferredMiddleName));
-            preferredLastNameField.setText(splitPreferredNames[splitPreferredNames.length - 1]);
-        } else if (splitPreferredNames.length == 2) {
-            preferredMiddleNamesField.setText("");
-            preferredLastNameField.setText(splitPreferredNames[1]);
-        } else {
-            preferredMiddleNamesField.setText("");
-            preferredLastNameField.setText("");
-        }
+        extractNames(currentUser.getNameArray(), firstNameField, middleNameField, lastNameField);
+        extractNames(currentUser.getPreferredNameArray(), preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField);
         addressField.setText(currentUser.getCurrentAddress());
 
         if(currentUser.getCountry() != null) {
@@ -631,7 +606,31 @@ public class UserAttributesController extends UserTabController implements Initi
         updateAge();
         updateBMI();
         highlightOrganCheckBoxes();
-        updatingFields = false;
+        updatingFields--;
+    }
+
+    /**
+     * Extracts first, middle, and last names from a name array, and sets text fields to match their values.
+     *
+     * @param splitNames The array of names.
+     * @param firstNameField The textfield for the first name
+     * @param middleNameField The textfield for the middle names
+     * @param lastNameField The textfield for the last name
+     */
+    private void extractNames(String[] splitNames, TextField firstNameField, TextField middleNameField, TextField lastNameField) {
+        firstNameField.setText(splitNames[0]);
+        if (splitNames.length > 2) {
+            String[] middleName = new String[splitNames.length - 2];
+            System.arraycopy(splitNames, 1, middleName, 0, splitNames.length - 2);
+            middleNameField.setText(String.join(" ", middleName));
+            lastNameField.setText(splitNames[splitNames.length - 1]);
+        } else if (splitNames.length == 2) {
+            middleNameField.setText("");
+            lastNameField.setText(splitNames[1]);
+        } else {
+            middleNameField.setText("");
+            lastNameField.setText("");
+        }
     }
 
 
@@ -639,7 +638,9 @@ public class UserAttributesController extends UserTabController implements Initi
      * Checks for any new updates when an attribute field loses focus, and appends to the attribute undo stack if there is new changes.
      */
     public void attributeFieldUnfocused() {
-        if (!updatingFields) {
+        if (updatingFields < 1) {
+            updatingFields++;
+            Debugger.log("running unfocused method");
             User oldFields = new User(currentUser);
             if (updateUser() && !currentUser.attributeFieldsEqual(oldFields)) {
                 addToUndoStack(oldFields);
@@ -647,6 +648,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 titleBar.saved(false);
                 statusIndicator.setStatus("Edited user details", false);
             }
+            updatingFields--;
         }
     }
 
@@ -853,7 +855,7 @@ public class UserAttributesController extends UserTabController implements Initi
 
         //Add listeners to correctly update BMI and blood pressure based on user input
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
-        weightField.textProperty().addListener((observable, oldVaqlue, newValue) -> updateBMI());
+        weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
     }
 
     /**
@@ -899,9 +901,5 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void setDeathControlsShown(boolean shown) {
         updateDeathDetailsButton.setVisible(shown);
-    }
-
-    public void setUpdatingFields(Boolean bool) {
-        updatingFields = bool;
     }
 }

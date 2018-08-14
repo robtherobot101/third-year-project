@@ -26,6 +26,7 @@ import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
 import seng302.Data.Interfaces.GeneralDAO;
+import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
 import seng302.GUI.Controllers.User.CreateUserController;
@@ -82,7 +83,7 @@ public class AdminController implements Initializable {
     @FXML
     private Label staffIDLabel, userDisplayText, adminNameLabel, adminAddressLabel;
     @FXML
-    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton;
+    private Button undoWelcomeButton,redoWelcomeButton, homeButton, transplantListButton, cliTabButton, availableOrgansButton;
     @FXML
     private GridPane mainPane;
     @FXML
@@ -100,11 +101,13 @@ public class AdminController implements Initializable {
     @FXML
     private StatusBar statusBar;
     @FXML
-    private AnchorPane cliPane, transplantListPane;
+    private AnchorPane cliPane, transplantListPane, organsPane;
     @FXML
     private AdminCliController cliController;
     @FXML
     private ClinicianWaitingListController waitingListController;
+    @FXML
+    private ClinicianAvailableOrgansController availableOrgansController;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
@@ -139,6 +142,7 @@ public class AdminController implements Initializable {
         this.token = token;
         cliController.setToken(token);
         waitingListController.setToken(token);
+        availableOrgansController.setToken(token);
         updateDisplay();
         refreshLatestProfiles();
     }
@@ -184,6 +188,7 @@ public class AdminController implements Initializable {
         } catch (HttpResponseException e) {
             Debugger.error("Failed to log out on server.");
         }
+
         this.token = null;
     }
 
@@ -196,6 +201,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
+            availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
@@ -519,7 +525,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * refreshes the list of users with a max ammount
+     * refreshes the list of users with a max amount
      */
     public void updateFoundUsers() {
         updateFoundUsers(resultsPerPage,false);
@@ -1019,10 +1025,12 @@ public class AdminController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
         setButtonSelected(cliTabButton, false);
+        setButtonSelected(availableOrgansButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
         cliPane.setVisible(false);
+        organsPane.setVisible(false);
         undoWelcomeButton.setDisable(true);
         redoWelcomeButton.setDisable(true);
     }
@@ -1036,10 +1044,9 @@ public class AdminController implements Initializable {
         mainPane.setVisible(true);
         undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
         redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
-
+        availableOrgansController.stopTimer();
         //Could be updated in the CLI
-        clinicianTableView.refresh();
-        userTableView.refresh();
+        refreshLatestProfiles();
     }
 
     /**
@@ -1050,8 +1057,21 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
+        availableOrgansController.stopTimer();
 
         WindowManager.updateTransplantWaitingList();
+    }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organsAvailable() {
+        hideAllTabs();
+        setButtonSelected(availableOrgansButton, true);
+        organsPane.setVisible(true);
+        availableOrgansController.startTimer();
+        WindowManager.updateAvailableOrgans();
     }
 
     /**
@@ -1060,6 +1080,7 @@ public class AdminController implements Initializable {
     public void viewCli() {
         hideAllTabs();
         setButtonSelected(cliTabButton, true);
+        availableOrgansController.stopTimer();
         cliPane.setVisible(true);
     }
 

@@ -28,7 +28,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
     @Before
     public void setup() throws HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset("masterToken");
+        //WindowManager.getDataManager().getGeneral().reset("masterToken");
         WindowManager.resetScene(TFScene.createAccount);
         //DataManager.users.clear();
     }

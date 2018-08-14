@@ -30,7 +30,7 @@ public class ProfileUtils {
         try {
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
                 PreparedStatement statement = connection.prepareStatement(
-                        "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 1 DAY))");
+                        "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < DATE_SUB(NOW(), INTERVAL 1 DAY)");
                 statement.execute();
 
                 statement = connection.prepareStatement(
@@ -47,9 +47,7 @@ public class ProfileUtils {
                     return -1;
                 }
             }
-        } catch (SQLException e) {
-            return -1;
-        } catch (NullPointerException npe) {
+        } catch (SQLException | NullPointerException e) {
             return -1;
         }
     }

@@ -104,7 +104,6 @@ public class User {
         this.id = 1;
     }
 
-
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;

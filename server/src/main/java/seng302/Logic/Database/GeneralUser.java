@@ -28,7 +28,7 @@ public class GeneralUser {
         UserDonations userDonations = new UserDonations();
         userDonations.removeAllUserDonations(userId);
         for (Organ organ: newDonations) {
-            userDonations.insertDonation(organ, userId);
+            userDonations.insertDonation(organ, userId, user.getDateOfDeath());
         }
 
         List<HistoryItem> newHistory = user.getUserHistory();
@@ -290,9 +290,6 @@ public class GeneralUser {
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
             }
-
-            System.out.println("thing size: " + users.size());
-
             return users;
         }
     }
@@ -758,7 +755,9 @@ public class GeneralUser {
                 if (proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
                     for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        procedureOrgans.add(Organ.parse(organ));
+                        if (!organ.isEmpty()) {
+                            procedureOrgans.add(Organ.parse(organ));
+                        }
                     }
                     user.getPendingProcedures().add(new Procedure(
                             proceduresResultSet.getString("summary"),
@@ -933,6 +932,26 @@ public class GeneralUser {
             ResultSet noUsers = statement.executeQuery();
             noUsers.next();
             return noUsers.getInt("count");
+        }
+    }
+
+    /**
+     * gets a list of user that are waiting for th given organ
+     * @param organ the organ to match with
+     * @return returns a list of users
+     * @throws SQLException If there is a problem working with the database.
+     */
+    public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
+            ArrayList<User> possibleMatches = new ArrayList<>();
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, organ.getOrganType().toString());
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                possibleMatches.add(getUserFromResultSet(resultSet));
+            }
+            return possibleMatches;
         }
     }
 
