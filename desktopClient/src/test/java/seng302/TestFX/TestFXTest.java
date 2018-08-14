@@ -37,7 +37,6 @@ abstract class TestFXTest extends ApplicationTest {
 
     private static final boolean runHeadless = true;
 
-
     @Override
     public void start(Stage stage) {
         Platform.runLater(() -> {
