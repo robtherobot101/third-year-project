@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -186,7 +186,7 @@ public class UserWaitingListController extends UserTabController implements Init
                         if (item != null && !empty) {
                             for(Organ o:currentUser.getOrgans()){
                                 if(o.equals(item.getOrganType()) && item.getStillWaitingOn()){
-                                    setTooltip(new Tooltip("User is currently donating this organ"));
+                                    setTooltip(new Tooltip("user is currently donating this organ"));
                                     if (!getStyleClass().contains("highlighted-row")) {
                                         getStyleClass().add("highlighted-row");
                                     }

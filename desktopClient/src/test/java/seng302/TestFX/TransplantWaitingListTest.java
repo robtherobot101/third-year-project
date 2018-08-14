@@ -14,7 +14,7 @@ import org.apache.http.client.HttpResponseException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.GUI.TFScene;
+import seng302.gui.TFScene;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;

@@ -95,7 +95,7 @@ public class Authorization {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new Admin Object with the fields from the database
+                //If response is not empty then return a new admin Object with the fields from the database
                 GeneralAdmin generalAdmin = new GeneralAdmin();
                 return generalAdmin.getAdminFromResultSet(resultSet);
             }

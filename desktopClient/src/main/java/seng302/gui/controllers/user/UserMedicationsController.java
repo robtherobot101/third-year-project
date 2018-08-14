@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import javafx.application.Platform;
@@ -120,7 +120,7 @@ public class UserMedicationsController extends UserTabController implements Init
      */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-        userNameLabel.setText("User: " + currentUser.getName());
+        userNameLabel.setText("user: " + currentUser.getName());
         addNewMedicationButton.setDisable(newMedicationField.getText().isEmpty());
 
         //Populate table for current medications

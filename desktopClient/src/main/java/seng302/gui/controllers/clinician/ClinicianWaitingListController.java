@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.Clinician;
+package seng302.gui.controllers.clinician;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
-import seng302.GUI.Controllers.User.UserController;
+import seng302.gui.controllers.user.UserController;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
@@ -35,7 +35,13 @@ public class ClinicianWaitingListController implements Initializable {
     @FXML
     private TableView transplantTable;
     @FXML
-    private TableColumn organColumn, nameColumn, dateColumn, regionColumn;
+    private TableColumn organColumn;
+    @FXML
+    private TableColumn nameColumn;
+    @FXML
+    private TableColumn dateColumn;
+    @FXML
+    private TableColumn regionColumn;
     @FXML
     private ComboBox organSearchComboBox;
     @FXML
@@ -46,6 +52,8 @@ public class ClinicianWaitingListController implements Initializable {
     private ObservableList<WaitingListItem> transplantList = FXCollections.observableArrayList();
 
     private String token;
+
+    private String failed = "Failed to de-register waiting list item.";
 
     /**
      * Closes the application
@@ -112,7 +120,7 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         try {
             transplantList.clear();
-            Map<String, String> params = new HashMap<String, String> ();
+            Map<String, String> params = new HashMap<> ();
             if(!organSearch.equals("None")) {
                 params.put("organ", organSearch);
             }
@@ -125,7 +133,6 @@ public class ClinicianWaitingListController implements Initializable {
                 }
             }
             deregisterReceiverButton.setDisable(true);
-            //transplantTable.refresh();
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve all users and filter transplant waiting list.");
         }
@@ -202,7 +209,7 @@ public class ClinicianWaitingListController implements Initializable {
             deregisterReceiverButton.setDisable(true);
 
         } catch (HttpResponseException e) {
-            Debugger.error("Failed to de-register waiting list item.");
+            Debugger.error(failed);
         }
     }
 
@@ -210,7 +217,6 @@ public class ClinicianWaitingListController implements Initializable {
      * Removes an organ from the transplant waiting list and writes it as an error to the history log.
      */
     private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) throws HttpResponseException {
-        Long userId = user.getId();
         deregisterWaitingListItem(selectedWaitingListItem,user,1);
     }
 
@@ -228,7 +234,7 @@ public class ClinicianWaitingListController implements Initializable {
             alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == buttonTypeOne) {
+            if (result.isPresent() && result.get() == buttonTypeOne) {
                 showDiseaseDeregisterDialog(selectedWaitingListItem, selectedUser);
             } else {
                 deregisterWaitingListItem(selectedWaitingListItem,selectedUser,2);
@@ -331,14 +337,14 @@ public class ClinicianWaitingListController implements Initializable {
                     try {
                         showDiseaseDeregisterDialog(selectedWaitingListItem, selectedUser);
                     } catch (HttpResponseException e) {
-                        Debugger.error("Failed to de-register waiting list item.");
+                        Debugger.error(failed);
                     }
                 }
             } else {
                 try {
                     confirmDiseaseCuring(selectedWaitingListItem, selectedUser);
                 } catch (HttpResponseException e) {
-                    Debugger.error("Failed to de-register waiting list item.");
+                    Debugger.error(failed);
                 }
             }
         });
@@ -399,7 +405,7 @@ public class ClinicianWaitingListController implements Initializable {
                     try {
                         showDeathDateDialog(selectedItem, user);
                     } catch (HttpResponseException e) {
-                        Debugger.error("Failed to de-register waiting list item.");
+                        Debugger.error(failed);
                     }
                 } else if (deathDatePicker.getValue().isAfter(LocalDate.now())) {
                     Alert alert = WindowManager.createAlert(Alert.AlertType.WARNING, "Invaild Date", "Date is in the future", "Please enter a date " +
@@ -408,13 +414,13 @@ public class ClinicianWaitingListController implements Initializable {
                     try {
                         showDeathDateDialog(selectedItem, user);
                     } catch (HttpResponseException e) {
-                        Debugger.error("Failed to de-register waiting list item.");
+                        Debugger.error(failed);
                     }
                 } else {
                     try {
                         deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
                     } catch (HttpResponseException e) {
-                        Debugger.error("Failed to de-register waiting list item.");
+                        Debugger.error(failed);
                     }
                 }
             }
@@ -465,7 +471,6 @@ public class ClinicianWaitingListController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("organRegisteredDate"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverRegion"));
 
-        //transplantTable.setItems(transplantList);
         transplantTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         deregisterReceiverButton.setDisable(true);
 
@@ -501,12 +506,10 @@ public class ClinicianWaitingListController implements Initializable {
                         super.updateItem(item, empty);
                         getStyleClass().remove("highlighted-row");
                         setTooltip(null);
-                        if (item != null && !empty) {
-                            if(item.isConflicting()) {
-                                setTooltip(new Tooltip("User is currently donating this organ"));
-                                if (!getStyleClass().contains("highlighted-row")) {
-                                    getStyleClass().add("highlighted-row");
-                                }
+                        if (item != null && !empty && item.isConflicting()) {
+                            setTooltip(new Tooltip("user is currently donating this organ"));
+                            if (!getStyleClass().contains("highlighted-row")) {
+                                getStyleClass().add("highlighted-row");
                             }
                         }
                     }

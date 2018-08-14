@@ -139,7 +139,7 @@ public class AdminCLITest extends TestFXTest {
     @Test
     public void cliInputIsRead() {
         clickOn("#commandInputField");
-        write("adduser \"Test,User\" 01/10/1998");
+        write("adduser \"Test,user\" 01/10/1998");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         try {
@@ -153,7 +153,7 @@ public class AdminCLITest extends TestFXTest {
     @Test
     public void cliOutputIsShown() {
         clickOn("#commandInputField");
-        write("adduser \"Test,User\" 01/10/1998");
+        write("adduser \"Test,user\" 01/10/1998");
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
         sleep(200);

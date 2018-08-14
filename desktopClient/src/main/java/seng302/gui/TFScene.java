@@ -1,9 +1,9 @@
-package seng302.GUI;
+package seng302.gui;
 
 import seng302.generic.WindowManager;
 
 /**
- * An enum to store constants that refer to each GUI window.
+ * An enum to store constants that refer to each gui window.
  */
 public enum TFScene {
     login("login", 600, 320),

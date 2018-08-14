@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.User;
+package seng302.gui.controllers.user;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -345,7 +345,7 @@ public class UserAttributesController extends UserTabController implements Initi
             for(WaitingListItem item: currentUser.getWaitingListItems()){
                 if(!organTickBoxes.get(organ).getStyleClass().contains("highlighted-checkbox") && item.getOrganType() == organ && organTickBoxes.get(organ).isSelected() && item.getStillWaitingOn()){
                     organTickBoxes.get(organ).getStyleClass().add("highlighted-checkbox");
-                    organTickBoxes.get(organ).setTooltip(new Tooltip("User is waiting to receive this organ"));
+                    organTickBoxes.get(organ).setTooltip(new Tooltip("user is waiting to receive this organ"));
                 }
             }
         }

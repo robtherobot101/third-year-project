@@ -1,4 +1,4 @@
-package seng302.GUI.Controllers.Clinician;
+package seng302.gui.controllers.clinician;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,11 +22,17 @@ import java.util.ResourceBundle;
 public class ClinicianSettingsController implements Initializable {
 
     @FXML
-    private TextField usernameField, passwordField;
+    private TextField usernameField;
     @FXML
-    private Button updateButton, cancelButton;
+    private TextField passwordField;
     @FXML
-    private Label userNameLabel, errorLabel;
+    private Button updateButton;
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private Label userNameLabel;
+    @FXML
+    private Label errorLabel;
     @FXML
     private AnchorPane background;
 
@@ -59,21 +65,11 @@ public class ClinicianSettingsController implements Initializable {
      * the account details of the user based on the current inputs.
      */
     public void updateAccountDetails() {
-//        for (Clinician user : DataManager.clinicians) {
-//            if (user != clinician) {
-//                if (!usernameField.getText().isEmpty() && usernameField.getText().equals(user.getUsername())) {
-//                    errorLabel.setText("That username is already taken.");
-//                    errorLabel.setVisible(true);
-//                    return;
-//                }
-//            }
-//        }
         try {
             // Display an error if the username is taken and the input has not been changed (The username can be taken by the clinician being modified).
             if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText()) && !(clinician.getUsername().equals(usernameField.getText()))) {
                 errorLabel.setText("That username is already taken.");
                 errorLabel.setVisible(true);
-                return;
             } else {
                 errorLabel.setVisible(false);
                 Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
@@ -82,7 +78,7 @@ public class ClinicianSettingsController implements Initializable {
 
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK) {
+                if (result.isPresent() && result.get() == ButtonType.OK) {
                     clinician.setUsername(usernameField.getText());
                     clinician.setPassword(passwordField.getText());
 

@@ -27,15 +27,15 @@ import seng302.data.local.AdminsM;
 import seng302.data.local.CliniciansM;
 import seng302.data.local.GeneralM;
 import seng302.data.local.UsersM;
-import seng302.GUI.Controllers.Admin.AdminController;
-import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
-import seng302.GUI.Controllers.Clinician.ClinicianController;
-import seng302.GUI.Controllers.Clinician.ClinicianSettingsController;
-import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
-import seng302.GUI.Controllers.LoginController;
-import seng302.GUI.Controllers.User.CreateUserController;
-import seng302.GUI.Controllers.User.UserController;
-import seng302.GUI.TFScene;
+import seng302.gui.controllers.admin.AdminController;
+import seng302.gui.controllers.clinician.ClinicianAvailableOrgansController;
+import seng302.gui.controllers.clinician.ClinicianController;
+import seng302.gui.controllers.clinician.ClinicianSettingsController;
+import seng302.gui.controllers.clinician.ClinicianWaitingListController;
+import seng302.gui.controllers.LoginController;
+import seng302.gui.controllers.user.CreateUserController;
+import seng302.gui.controllers.user.UserController;
+import seng302.gui.TFScene;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.Medication.InteractionApi;
@@ -177,7 +177,7 @@ public class WindowManager extends Application {
             newUserController.setTitleBar(stage);
 
             newUserController.setCurrentUser(user, token);
-            newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
+            newUserController.addHistoryEntry("clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
             newUserController.getAttributesController().setDeathControlsShown(true);
@@ -405,7 +405,7 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Run the GUI.
+     * Run the gui.
      *
      * @param args The command line arguments
      */
@@ -421,7 +421,7 @@ public class WindowManager extends Application {
             }
         } else {
             Debugger.log("Please either run using:" +
-                    "\nGUI mode: java -jar app-0.0.jar" +
+                    "\ngui mode: java -jar app-0.0.jar" +
                     "\nCommand line mode: java -jar app-0.0.jar -c.");
         }
 
@@ -513,9 +513,9 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Load in saved users and clinicians, and initialise the GUI.
+     * Load in saved users and clinicians, and initialise the gui.
      *
-     * @param stage The stage to set the GUI up on
+     * @param stage The stage to set the gui up on
      */
     @Override
     public void start(Stage stage) {
@@ -670,11 +670,11 @@ public class WindowManager extends Application {
     }
 
     /**
-     * Logs out from the server before exiting the GUI.
+     * Logs out from the server before exiting the gui.
      */
     @Override
     public void stop() {
-        Debugger.log("Exiting GUI");
+        Debugger.log("Exiting gui");
         clinicianClinicianAvailableOrgansController.stopTimer();
         if (userController != null && userController.hasToken()) {
             userController.serverLogout();

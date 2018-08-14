@@ -12,9 +12,9 @@ import java.util.ArrayList;
 public class GeneralAdmin {
 
     /**
-     * Takes a resultSet, pulls out an Admin instance, and returns it.
+     * Takes a resultSet, pulls out an admin instance, and returns it.
      * @param resultSet The resultSet
-     * @return An Admin
+     * @return An admin
      * @throws SQLException If there is an error communicating with the database
      */
     public Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException {
@@ -31,7 +31,7 @@ public class GeneralAdmin {
     }
 
     /**
-     * Takes an Admin instance and inserts it into the admin table on the database.
+     * Takes an admin instance and inserts it into the admin table on the database.
      * @param admin The admin which will be inserted into the database.
      * @throws SQLException If there is an error working with the database
      */
@@ -46,7 +46,7 @@ public class GeneralAdmin {
             statement.setString(3, admin.getName());
             statement.setString(4, admin.getWorkAddress());
             statement.setString(5, admin.getRegion());
-            System.out.println("Inserting new Admin -> Successful -> Rows Added: " + statement.executeUpdate());
+            System.out.println("Inserting new admin -> Successful -> Rows Added: " + statement.executeUpdate());
         }
 
     }
@@ -88,7 +88,7 @@ public class GeneralAdmin {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new Clinician Object with the fields from the database
+                //If response is not empty then return a new clinician Object with the fields from the database
                 return getAdminFromResultSet(resultSet);
             }
         }
@@ -123,7 +123,7 @@ public class GeneralAdmin {
             String update = "DELETE FROM ADMIN WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, admin.getUsername());
-            System.out.println("Deletion of Admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+            System.out.println("Deletion of admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
 
@@ -141,7 +141,7 @@ public class GeneralAdmin {
             statement.setString(2, admin.getWorkAddress());
             statement.setString(3, admin.getRegion());
             statement.setString(4, admin.getUsername());
-            System.out.println("Update Admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+            System.out.println("Update admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
 
     }

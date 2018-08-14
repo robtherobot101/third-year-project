@@ -67,7 +67,7 @@ public class AdminsM implements AdminsDAO {
                 return a;
             }
         }
-        Debugger.log("Admin with id: " + id + " not found. Returning null.");
+        Debugger.log("admin with id: " + id + " not found. Returning null.");
         return null;
     }
 

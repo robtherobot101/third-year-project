@@ -40,7 +40,7 @@ public class User {
     private String countryOfDeath;
 
     /**
-     * constructor method to create a new User object
+     * constructor method to create a new user object
      * @param firstName String the user first name
      * @param middleNames String[] the middle names of the user
      * @param lastName String the last name of the user
@@ -401,7 +401,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("User (ID %d) created at %s "
+        return String.format("user (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"
