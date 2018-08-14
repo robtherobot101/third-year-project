@@ -385,7 +385,7 @@ public class WindowManager extends Application {
      *
      * @param args The command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         TESTING = false;
         if (args.length == 0) {
             launch(args);
