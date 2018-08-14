@@ -13,8 +13,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Disease;
 import seng302.User.User;
 

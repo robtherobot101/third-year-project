@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.User;
 
 import java.sql.SQLException;

@@ -295,6 +295,42 @@
 	-fx-background-color: #DD0000;
 }
 
+.highlighted-row-organs-100 {
+	-fx-background-color: rgba(0, 221, 31, 0.25);
+}
+
+
+.highlighted-row-organs-100:selected {
+	-fx-background-color: rgb(0, 100, 26);
+}
+
+.highlighted-row-organs-75 {
+	-fx-background-color: rgba(255, 236, 0, 0.25);
+}
+
+
+.highlighted-row-organs-75:selected {
+	-fx-background-color: #857100;
+}
+
+.highlighted-row-organs-50 {
+	-fx-background-color: rgba(255, 114, 0, 0.25);
+}
+
+
+.highlighted-row-organs-50:selected {
+	-fx-background-color: #803900;
+}
+
+.highlighted-row-organs-25 {
+	-fx-background-color: rgba(221, 0, 0, 0.25);
+}
+
+
+.highlighted-row-organs-25:selected {
+	-fx-background-color: #6f0000;
+}
+
 .tab-header-background {
 	-fx-background-color: #2b506e;
 }

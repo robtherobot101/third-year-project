@@ -26,8 +26,8 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
@@ -36,8 +36,7 @@ import seng302.User.User;
 import java.net.URL;
 import java.util.*;
 
-import static seng302.Generic.WindowManager.setButtonSelected;
-import static seng302.Generic.WindowManager.updateTransplantWaitingList;
+import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
  * Class to control all the logic for the clinician interactions with the application.
@@ -69,6 +68,8 @@ public class ClinicianController implements Initializable {
     private StatusBar statusBar;
     @FXML
     private ClinicianWaitingListController waitingListController;
+    @FXML
+    private ClinicianAvailableOrgansController availableOrgansController;
 
     private FadeTransition fadeIn = new FadeTransition(
             Duration.millis(1000)
@@ -124,6 +125,7 @@ public class ClinicianController implements Initializable {
         this.clinician = clinician;
         this.token = token;
         waitingListController.setToken(token);
+        availableOrgansController.setToken(token);
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
         }
@@ -131,7 +133,7 @@ public class ClinicianController implements Initializable {
             clinician.setWorkAddress("");
         }
         updateDisplay();
-        updateTransplantWaitingList();
+        WindowManager.updateTransplantWaitingList();
     }
 
     public int getResultsPerPage() {
@@ -212,6 +214,7 @@ public class ClinicianController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
@@ -638,7 +641,14 @@ public class ClinicianController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newCliniciansUserWindow(row.getItem(), token);
+                        try{
+                            User latestCopy = WindowManager.getDataManager().getUsers().getUser((long)row.getItem().getId(), token);
+                            row.setItem(latestCopy);
+                            WindowManager.newCliniciansUserWindow(latestCopy, token);
+
+                        } catch (HttpResponseException e) {
+                            Debugger.error("Failed to open user window. User could not be fetched from the server.");
+                        }
                     }
                 });
                 return row;
@@ -654,6 +664,7 @@ public class ClinicianController implements Initializable {
     private void hideAllTabs() {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
+        setButtonSelected(organListButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
@@ -667,6 +678,7 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
+        availableOrgansController.stopTimer();
     }
 
     /**
@@ -677,6 +689,7 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
+        availableOrgansController.stopTimer();
 
         titleBar.setTitle(clinician.getName(), "Clinician", "Transplant Waiting List");
     }
@@ -689,7 +702,9 @@ public class ClinicianController implements Initializable {
         hideAllTabs();
         setButtonSelected(organListButton, true);
         organsPane.setVisible(true);
+        availableOrgansController.startTimer();
 
+        WindowManager.updateAvailableOrgans();
         titleBar.setTitle(clinician.getName(), "Clinician", "Available Organs");
     }
 }

@@ -3,6 +3,7 @@ package seng302.Model;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -100,6 +101,7 @@ public class User {
      * @param country String of the country of residence
      * @param countryOfDeath String of the country of death
      * @param regionOfDeath String of the region of death
+     * @param profileImageType The users profile image
      */
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath,
@@ -141,6 +143,12 @@ public class User {
         this.pendingProcedures = new ArrayList<>();
         this.previousProcedures = new ArrayList<>();
         this.profileImageType = profileImageType;
+    }
+
+    public double getAgeDouble() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        return days / 365.00;
+
     }
 
     public String getName() {

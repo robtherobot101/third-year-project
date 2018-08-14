@@ -1,6 +1,6 @@
 package seng302.GUI;
 
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 
 /**
  * An enum to store constants that refer to each GUI window.
@@ -8,9 +8,9 @@ import seng302.Generic.WindowManager;
 public enum TFScene {
     login("login", 600, 320),
     createAccount("user/createUser", 400, 450),
-    clinician("clinician/clinician", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight), //Don't reorder these
-    admin("admin/admin", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight),
-    userWindow("user/user", WindowManager.mainWindowPrefWidth, WindowManager.mainWindowPrefHeight);
+    clinician("clinician/clinician", WindowManager.MAIN_WINDOW_PREF_WIDTH, WindowManager.MAIN_WINDOW_PREF_HEIGHT), //Don't reorder these
+    admin("admin/admin", WindowManager.MAIN_WINDOW_PREF_WIDTH, WindowManager.MAIN_WINDOW_PREF_HEIGHT),
+    userWindow("user/user", WindowManager.MAIN_WINDOW_PREF_WIDTH, WindowManager.MAIN_WINDOW_PREF_HEIGHT);
 
     private int width, height;
     private String name;

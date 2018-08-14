@@ -12,8 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Procedure;
 import seng302.User.User;
@@ -390,6 +390,11 @@ public class UserProceduresController extends UserTabController implements Initi
         // Convert the result to a diseaseName-dateOfDiagnosis-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == updateButtonType) {
+                if (dateDue.getValue() == null){
+                    Debugger.log(selectedProcedure.getDate().toString());
+                } else {
+                    Debugger.log(dateDue.getValue());
+                }
                 String newSummary;
                 String newDescription;
                 String newDate = "";

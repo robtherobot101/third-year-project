@@ -25,14 +25,14 @@ import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
-import seng302.Data.Interfaces.GeneralDAO;
+import seng302.data.interfaces.GeneralDAO;
 import seng302.GUI.Controllers.Clinician.ClinicianAvailableOrgansController;
 import seng302.GUI.Controllers.Clinician.ClinicianWaitingListController;
 import seng302.GUI.Controllers.Clinician.CreateClinicianController;
 import seng302.GUI.Controllers.User.CreateUserController;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
-import seng302.Generic.*;
+import seng302.generic.*;
 import seng302.User.Admin;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
@@ -46,8 +46,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import static seng302.Generic.IO.getJarPath;
-import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.generic.IO.getJarPath;
+import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
  * Class to control all the logic for the currentAdmin interactions with the application.
@@ -107,7 +107,7 @@ public class AdminController implements Initializable {
     @FXML
     private ClinicianWaitingListController waitingListController;
     @FXML
-    private ClinicianAvailableOrgansController clinicianAvailableOrgansController;
+    private ClinicianAvailableOrgansController availableOrgansController;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
@@ -141,6 +141,7 @@ public class AdminController implements Initializable {
         this.token = token;
         cliController.setToken(token);
         waitingListController.setToken(token);
+        availableOrgansController.setToken(token);
         updateDisplay();
         refreshLatestProfiles();
         WindowManager.updateTransplantWaitingList();
@@ -187,6 +188,7 @@ public class AdminController implements Initializable {
         } catch (HttpResponseException e) {
             Debugger.error("Failed to log out on server.");
         }
+
         this.token = null;
     }
 
@@ -199,6 +201,7 @@ public class AdminController implements Initializable {
                 "Logging out without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.orElse(null) == ButtonType.OK) {
+            availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
@@ -317,7 +320,7 @@ public class AdminController implements Initializable {
 
         // Formats the initial load dialog window
         Alert loadDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        loadDialog.setTitle("Confirm Data Type");
+        loadDialog.setTitle("Confirm data Type");
         loadDialog.setHeaderText("Please Select the Profile Type to Import");
         loadDialog.setContentText("This will close other open ODMS windows.");
 
@@ -350,7 +353,9 @@ public class AdminController implements Initializable {
                             extension = fileToLoadPath.substring(i+1);
                         }
                         if (extension.equals("csv")) {
-                            loadSuccessful = IO.importUserCSV(fileToLoadPath, token);
+                            IO.importUserCSV(fileToLoadPath, token);
+                            return;
+                            // TODO something
                         } else if (extension.equals("json")) {
                             loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
                         } else {
@@ -482,7 +487,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * refreshes the list of users with a max ammount
+     * refreshes the list of users with a max amount
      */
     public void updateFoundUsers() {
         updateFoundUsers(resultsPerPage,false);
@@ -887,7 +892,13 @@ public class AdminController implements Initializable {
                 };
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
-                        WindowManager.newAdminsUserWindow(row.getItem(), token);
+                        try{
+                            User latestCopy = WindowManager.getDataManager().getUsers().getUser((long)row.getItem().getId(), token);
+                            row.setItem(latestCopy);
+                            WindowManager.newAdminsUserWindow(latestCopy, token);
+                        } catch (HttpResponseException e) {
+                            Debugger.error("Failed to open user window. User could not be fetched from the server.");
+                        }
                     }
                 });
                 return row;
@@ -1009,6 +1020,7 @@ public class AdminController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
         setButtonSelected(cliTabButton, false);
+        setButtonSelected(availableOrgansButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
@@ -1023,6 +1035,7 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
+        availableOrgansController.stopTimer();
     }
 
     /**
@@ -1033,6 +1046,7 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
+        availableOrgansController.stopTimer();
     }
 
     /**
@@ -1043,6 +1057,8 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(availableOrgansButton, true);
         organsPane.setVisible(true);
+        availableOrgansController.startTimer();
+        WindowManager.updateAvailableOrgans();
     }
 
     /**
@@ -1051,11 +1067,12 @@ public class AdminController implements Initializable {
     public void viewCli() {
         hideAllTabs();
         setButtonSelected(cliTabButton, true);
+        availableOrgansController.stopTimer();
         cliPane.setVisible(true);
     }
 
     /**
-     * Resets the database. Called by Database , then Reset
+     * Resets the database. Called by database , then Reset
      */
     public void databaseReset() {
 
@@ -1078,7 +1095,7 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * Resamples the database. Called by Database, then Resample
+     * Resamples the database. Called by database, then Resample
      */
     public void databaseResample() {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Confirm database reset",

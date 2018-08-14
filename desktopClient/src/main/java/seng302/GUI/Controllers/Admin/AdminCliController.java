@@ -8,7 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -119,13 +119,13 @@ public class AdminCliController implements Initializable {
                 capturedOutput.add(response);
             }
 
-
-
             commandInputHistory.add(commandInputField.getText());
             currentHistoryIndex = commandInputHistory.size();
             commandInputField.setText("TF > ");
             commandInputField.positionCaret(5);
             commandOutputView.scrollTo(capturedOutput.size() - 1);
+
+
         }
     }
 

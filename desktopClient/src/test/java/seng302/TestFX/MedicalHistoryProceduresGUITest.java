@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.WindowManager;
+import seng302.generic.WindowManager;
 import seng302.User.Procedure;
 import seng302.User.Attribute.Organ;
 import seng302.User.User;

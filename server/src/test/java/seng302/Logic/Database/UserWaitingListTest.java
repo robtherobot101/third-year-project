@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class UserWaitingListTest extends GenericTest {
 
         List<WaitingListItem> all = user1.getWaitingListItems();
         all.addAll(user2.getWaitingListItems());
-        assertTrue(HelperMethods.containsWaitingListItems(userWaitingList.getAllWaitingListItems(), all));
+        assertTrue(HelperMethods.containsWaitingListItems(userWaitingList.queryWaitingListItems(new HashMap<>()), all));
     }
 
     @Test
@@ -77,13 +78,13 @@ public class UserWaitingListTest extends GenericTest {
 
     @Test
     public void removeWaitingListItem() throws SQLException {
-        int beforeSize = userWaitingList.getAllWaitingListItems().size();
+        int beforeSize = userWaitingList.queryWaitingListItems(new HashMap<>()).size();
         User user1 = HelperMethods.insertUser(generalUser);
         WaitingListItem test = HelperMethods.makeWaitingListItems((int)user1.getId()).get(0);
         userWaitingList.insertWaitingListItem(test, (int)user1.getId());
         test = generalUser.getUserFromId((int)user1.getId()).getWaitingListItems().get(0);
         userWaitingList.removeWaitingListItem((int)user1.getId(), test.getId());
-        assertEquals(beforeSize, userWaitingList.getAllWaitingListItems().size());
+        assertEquals(beforeSize, userWaitingList.queryWaitingListItems(new HashMap<>()).size());
     }
 
     @Test

@@ -1,14 +1,13 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
-import seng302.Model.*;
 import seng302.Model.Attribute.*;
+import seng302.Model.*;
 import seng302.Model.Medication.Medication;
+import seng302.Server;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,7 +24,7 @@ public class GeneralUser {
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
         updateUserAttributes(user, userId);
 
-        new UserDonations().updateAllDonations(new HashSet<>(user.getOrgans()), userId);
+        new UserDonations().updateAllDonations(new HashSet<>(user.getOrgans()), userId, user.getDateOfDeath());
 
         new UserHistory().updateHistory(user.getUserHistory(), userId);
 
@@ -70,9 +69,6 @@ public class GeneralUser {
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
             }
-
-            System.out.println("thing size: " + users.size());
-
             return users;
         }
     }
@@ -269,6 +265,29 @@ public class GeneralUser {
         }
     }
 
+    private String createUserStatement(User user) {
+        StringBuilder sb = new StringBuilder();
+
+            String firstName = user.getNameArray()[0];
+            String middleNames = user.getNameArray().length > 2 ?
+            String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null;
+            String lastName = user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null;
+            String preferredName = user.getPreferredNameArray()[0];
+            String preferredMiddleNames = user.getPreferredNameArray().length > 2 ?
+                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null;
+            String preferredLastName = user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null;
+            LocalDateTime creationTime = user.getCreationTime();
+            LocalDateTime lastModified = user.getCreationTime();
+            String username = user.getUsername();
+            String email = user.getEmail();
+            String password = user.getPassword();
+            String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
+
+        return MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+                " email, password, date_of_birth) VALUES(\"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
+                firstName, middleNames, lastName, preferredName, preferredMiddleNames, preferredLastName, creationTime, lastModified, username, email, password, dateOfBirth);
+    }
+
     /**
      * Inserts the given user into the database.
      * @param user The given user which will be inserted.
@@ -277,23 +296,24 @@ public class GeneralUser {
     public void insertUser(User user) throws SQLException{
         User fromDb;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                    " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(insert);
-            statement.setString(1, user.getNameArray()[0]);
-            statement.setString(2, user.getNameArray().length > 2 ?
-                    String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
-            statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-            statement.setString(4, user.getPreferredNameArray()[0]);
-            statement.setString(5, user.getPreferredNameArray().length > 2 ?
-                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
-            statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
-            statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
-            statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
-            statement.setString(9, user.getUsername());
-            statement.setString(10, user.getEmail());
-            statement.setString(11, user.getPassword());
-            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
+//            String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+//                    " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//            PreparedStatement statement = connection.prepareStatement(insert);
+//            statement.setString(1, user.getNameArray()[0]);
+//            statement.setString(2, user.getNameArray().length > 2 ?
+//                    String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
+//            statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
+//            statement.setString(4, user.getPreferredNameArray()[0]);
+//            statement.setString(5, user.getPreferredNameArray().length > 2 ?
+//                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
+//            statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
+//            statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
+//            statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
+//            statement.setString(9, user.getUsername());
+//            statement.setString(10, user.getEmail());
+//            statement.setString(11, user.getPassword());
+//            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
+            PreparedStatement statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
 
             statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?");
@@ -309,8 +329,67 @@ public class GeneralUser {
                 fromDb = generalUser.getUserFromResultSet(resultSet);
             }
         }
-
         patchEntireUser(user, (int)fromDb.getId(), false);
+
+    }
+
+
+    private String getSingleUserStatement(User user) {
+        return String.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+                " email, password, date_of_birth) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                user.getNameArray()[0],
+                (user.getNameArray().length > 2 ?
+                        String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null),
+                (user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null),
+                (user.getPreferredNameArray()[0]),
+                (user.getPreferredNameArray().length > 2 ?
+                        String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null),
+                (user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null),
+                (java.sql.Timestamp.valueOf(user.getCreationTime())),
+                (java.sql.Timestamp.valueOf(user.getCreationTime())),
+                (user.getUsername()),
+                (user.getEmail()),
+                (user.getPassword()),
+                (java.sql.Date.valueOf(user.getDateOfBirth()))
+        );
+    }
+
+    /**
+     * Inserts the given users into the database.
+     * @param userList The given users which will be inserted.
+     * @throws SQLException If there is a problem working with the database.
+     */
+    public void insertUsers(List<User> userList) throws SQLException{
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            Statement stmt = connection.createStatement();
+            connection.setAutoCommit(false);
+
+            for (User foundUser: userList) {
+                if (foundUser.getUsername() == null) {
+                    System.out.println(foundUser);
+                }
+
+                stmt.addBatch(getSingleUserStatement(foundUser));
+            }
+
+            try {
+                // Batch is ready, execute it to insert the data
+                stmt.executeBatch();
+                connection.commit();
+            } catch (BatchUpdateException e) {
+                System.out.println("Error message: " + e.getMessage());
+
+                int failedInserts = 0;
+                for (int i = 0; i < e.getUpdateCounts().length; i++ ) {
+                    if (e.getUpdateCounts()[i] == Statement.EXECUTE_FAILED) {
+                        failedInserts++;
+                        Server.getInstance().log.debug("Failed to execute record at: " + i);
+                    }
+                }
+                Server.getInstance().log.debug("Total failed inserts: " + failedInserts);
+            }
+
+        }
     }
 
     /**
@@ -470,8 +549,8 @@ public class GeneralUser {
 
                 if (proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
                     ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                    if (!proceduresResultSet.getString("organs_affected").isEmpty()) {
-                        for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                    for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
+                        if (!organ.isEmpty()) {
                             procedureOrgans.add(Organ.parse(organ));
                         }
                     }
@@ -648,6 +727,36 @@ public class GeneralUser {
             ResultSet noUsers = statement.executeQuery();
             noUsers.next();
             return noUsers.getInt("count");
+        }
+    }
+
+    /**
+     * gets a list of user that are waiting for th given organ
+     * @param organ the organ to match with
+     * @return returns a list of users
+     * @throws SQLException If there is a problem working with the database.
+     */
+    public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
+            ArrayList<User> possibleMatches = new ArrayList<>();
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, organ.getOrganType().toString());
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                possibleMatches.add(getUserFromResultSet(resultSet));
+            }
+            return possibleMatches;
+        }
+    }
+
+    public void importUsers(List<User> users) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            for (User user : users) {
+                statement.addBatch(createUserStatement(user));
+            }
+            statement.executeBatch();
         }
     }
 }

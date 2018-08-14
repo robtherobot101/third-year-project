@@ -46,7 +46,7 @@ public class UserDonationsTest extends GenericTest {
     public void insertDonation() throws SQLException {
         User user = HelperMethods.insertUser(generalUser);
         user.getOrgans().add(Organ.BONE);
-        userDonations.insertDonation(Organ.BONE, (int)user.getId());
+        userDonations.insertDonation(Organ.BONE, (int)user.getId(), null);
         assertEquals(user.getOrgans(), userDonations.getAllUserDonations((int) user.getId()));
     }
 

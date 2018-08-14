@@ -13,8 +13,8 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import seng302.GUI.Controllers.User.UserController;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Disease;
 import seng302.User.User;
@@ -73,7 +73,7 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
-            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(token)) {
+            for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(new HashMap<>(), token)) {
                 if (item.getStillWaitingOn()) {
                     addUserInfo(item);
                     transplantList.add(item);
@@ -89,15 +89,17 @@ public class ClinicianWaitingListController implements Initializable {
      * adds the user info to a waiting list item
      * @param item the waiting list item to update
      */
-    public void addUserInfo(WaitingListItem item) {
+    public User addUserInfo(WaitingListItem item) {
         try{
             User user = WindowManager.getDataManager().getUsers().getUser(item.getUserId().intValue(), token);
             item.setReceiverName(user.getName());
             item.setReceiverRegion(user.getRegion());
+            return user;
         } catch (HttpResponseException e) {
             Debugger.error("Failed to retrieve user with ID: " + item.getUserId());
+            return null;
         } catch (NullPointerException e) {
-
+            return null;
         }
     }
 
@@ -110,24 +112,16 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
         try {
             transplantList.clear();
-            Collection<User> users = WindowManager.getDataManager().getUsers().getAllUsers(token);
-            for (User user : users) {
-                for (WaitingListItem item : user.getWaitingListItems()) {
-                    if (item.getStillWaitingOn()) {
-                        if (organSearch.equals("None") || organSearch.equals(item.getOrganType().toString())) {
-                            if(user.getOrgans().contains(item.getOrganType())){
-                                item.setIsConflicting(true);
-                            }
-
-                            if (regionSearch.equals("") && (user.getRegion() == null) && item.getStillWaitingOn()) {
-                                addUserInfo(item);
-                                transplantList.add(item);
-                            } else if ((user.getRegion() != null) && (user.getRegion().toLowerCase().contains(regionSearch.toLowerCase())) && item.getStillWaitingOn()) {
-                                addUserInfo(item);
-                                transplantList.add(item);
-                            }
-                        }
-                    }
+            Map<String, String> params = new HashMap<String, String> ();
+            if(!organSearch.equals("None")) {
+                params.put("organ", organSearch);
+            }
+            params.put("region", regionSearch);
+            List<WaitingListItem> items = WindowManager.getDataManager().getGeneral().getAllWaitingListItems(params, token);
+            for(WaitingListItem item : items) {
+                if(item.getStillWaitingOn()) {
+                    addUserInfo(item);
+                    transplantList.add(item);
                 }
             }
             deregisterReceiverButton.setDisable(true);
@@ -523,7 +517,7 @@ public class ClinicianWaitingListController implements Initializable {
                         try {
                             WindowManager.newAdminsUserWindow(WindowManager.getDataManager().getUsers().getUser(row.getItem().getUserId().intValue(), token), token);
                         } catch (HttpResponseException e) {
-                            Debugger.error("COuld not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
+                            Debugger.error("Could not open user window. Failed to fetch user with id: " + row.getItem().getUserId());
                         }
                     }
                 });

@@ -3,8 +3,8 @@ package seng302.User.Medication;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import seng302.Generic.Cache;
-import seng302.Generic.Debugger;
+import seng302.generic.Cache;
+import seng302.generic.Debugger;
 
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;

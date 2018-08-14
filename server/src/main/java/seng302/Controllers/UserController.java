@@ -1,9 +1,12 @@
 package seng302.Controllers;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
+import seng302.Model.UserCSVStorer;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -315,8 +318,38 @@ public class UserController {
                 response.status(500);
                 return "Internal Server Error";
             }
-
         }
+    }
+
+    /**
+     * method to process the add user request. parses the input to be in a better format
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was successful or not
+     */
+    public String importUsers(Request request, Response response) {
+        Gson gson = new Gson();
+        List<User> receivedUsers;
+        System.out.println("IMPORTING USERS");
+        // Attempt to parse received JSON
+        try {
+             receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
+        } catch (JsonSyntaxException jse) {
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+        System.out.println("Got " + receivedUsers.size() + " entries");
+        try {
+            model.importUsers(receivedUsers);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return "Internal Server Error";
+        }
+        response.status(200);
+        return "OK";
     }
 
     /**

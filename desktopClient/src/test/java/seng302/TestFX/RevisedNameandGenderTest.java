@@ -2,22 +2,6 @@ package seng302.TestFX;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-import java.sql.SQLException;
-import java.util.EnumSet;
-import java.util.concurrent.TimeoutException;
-import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.testfx.matcher.control.LabeledMatchers;
-import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
-import seng302.Generic.WindowManager;
-import seng302.User.Attribute.Organ;
-import seng302.User.User;
-
 public class RevisedNameandGenderTest extends TestFXTest {
 
 /*
@@ -211,7 +195,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
 
         enterAttributesPanel();
 
-        Assert.assertEquals(DataManager.users.get(0).getDateOfDeath(), null);
+        Assert.assertEquals(DataManager.users.get(0).getTimeOfDeath(), null);
 
         clickOn("#dateOfDeathPicker");
         doubleClickOn("#dateOfDeathPicker").write("01/05/1970");
@@ -219,7 +203,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
-        Assert.assertEquals(DataManager.users.get(0).getDateOfDeath().toString(), "1970-05-01");
+        Assert.assertEquals(DataManager.users.get(0).getTimeOfDeath().toString(), "1970-05-01");
 
         clickOn("#dateOfDeathPicker");
         push(KeyCode.CONTROL, KeyCode.A).push(KeyCode.BACK_SPACE);
@@ -228,7 +212,7 @@ public class RevisedNameandGenderTest extends TestFXTest {
         sleep(100);
         push(KeyCode.getKeyCode("Enter"));
 
-        Assert.assertEquals(DataManager.users.get(0).getDateOfDeath().toString(), "1997-07-10");
+        Assert.assertEquals(DataManager.users.get(0).getTimeOfDeath().toString(), "1997-07-10");
     }
 
     @Ignore

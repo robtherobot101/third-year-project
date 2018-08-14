@@ -1,18 +1,5 @@
 package seng302;
 
-import javafx.collections.FXCollections;
-import org.junit.Before;
-import org.junit.Test;
-import seng302.Generic.DataManager;
-import seng302.Generic.IO;
-import seng302.User.Attribute.Gender;
-import seng302.User.Attribute.ProfileType;
-import seng302.User.Attribute.Organ;
-import seng302.User.User;
-
-import java.io.File;
-import java.time.LocalDate;
-
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

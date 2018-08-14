@@ -18,15 +18,15 @@ import org.controlsfx.control.StatusBar;
 import seng302.GUI.StatusIndicator;
 import seng302.GUI.TFScene;
 import seng302.GUI.TitleBar;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.User;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static seng302.Generic.WindowManager.setButtonSelected;
+import static seng302.generic.WindowManager.setButtonSelected;
 
 /**
  * Class which handles all the logic for the User Window.
@@ -62,6 +62,8 @@ public class UserController implements Initializable {
     private UserWaitingListController waitingListController;
     @FXML
     private UserHistoryController historyController;
+
+
 
     public StatusIndicator statusIndicator = new StatusIndicator();
     private TitleBar titleBar;
@@ -555,6 +557,7 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             serverLogout();
+
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.userWindow);
         } else {
@@ -593,6 +596,6 @@ public class UserController implements Initializable {
         logoutMenuItem.setDisable(shown);
         logoutButton.setDisable(shown);
         waitingListButton.setVisible((currentUser != null && currentUser.isReceiver()) || shown);
-        attributesController.setDeathControlsShown(false);
+        attributesController.setDeathControlsShown(shown);
     }
 }

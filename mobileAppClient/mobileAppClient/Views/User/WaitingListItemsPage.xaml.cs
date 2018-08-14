@@ -26,9 +26,9 @@ namespace mobileAppClient
 
             foreach (WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
             {
-                item.DetailString = "Registered on " + item.OrganRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.OrganRegisteredDate.month) + ", " + item.OrganRegisteredDate.year;
-                if(item.OrganDeregisteredDate != null) {
-                    item.DetailString = "Deregistered on " + item.OrganDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.OrganDeregisteredDate.month) + ", " + item.OrganDeregisteredDate.year;
+                item.DetailString = "Registered on " + item.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organRegisteredDate.month) + ", " + item.organRegisteredDate.year;
+                if(item.organDeregisteredDate != null) {
+                    item.DetailString = "Deregistered on " + item.organDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organDeregisteredDate.month) + ", " + item.organDeregisteredDate.year;
                 } 
             }
 
@@ -52,8 +52,8 @@ namespace mobileAppClient
             {
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
-            var singleWaitingListItemPage = new SingleWaitingListItemPage((WaitingListItem)WaitingListItemsList.SelectedItem);
-            await Navigation.PushAsync(singleWaitingListItemPage);
+            var singleWaitingListItemPage = new SingleWaitingListItemPage((WaitingListItem)WaitingListItemsList.SelectedItem, false);
+            await Navigation.PushModalAsync(singleWaitingListItemPage);
         }
 
         /*
@@ -67,13 +67,13 @@ namespace mobileAppClient
             {
                 case "Organ":
                     
-                    List<WaitingListItem> SortedList = currentList.OrderBy(o => o.OrganType).ToList();
+                    List<WaitingListItem> SortedList = currentList.OrderBy(o => o.organType).ToList();
                     WaitingListItemsList.ItemsSource = SortedList;
 
                     AscendingDescendingPicker.IsVisible = true;
                     break;
                 case "Reg. Date":
-                    SortedList = currentList.OrderBy(o => o.OrganRegisteredDate.ToDateTime()).ToList();
+                    SortedList = currentList.OrderBy(o => o.organRegisteredDate.ToDateTime()).ToList();
                     WaitingListItemsList.ItemsSource = SortedList;
 
                     AscendingDescendingPicker.IsVisible = true;
@@ -86,7 +86,7 @@ namespace mobileAppClient
 
                     foreach (WaitingListItem item in currentList)
                     {
-                        if (item.OrganDeregisteredDate != null)
+                        if (item.organDeregisteredDate != null)
                         {
                             deregisteredList.Add(item);
                         }
@@ -96,7 +96,7 @@ namespace mobileAppClient
                         }
                     }
 
-                    List<WaitingListItem> sortedDeregisteredList = deregisteredList.OrderBy(o => o.OrganDeregisteredDate.ToDateTime()).ToList();
+                    List<WaitingListItem> sortedDeregisteredList = deregisteredList.OrderBy(o => o.organDeregisteredDate.ToDateTime()).ToList();
 
                     foreach (WaitingListItem item in sortedDeregisteredList)
                     {
@@ -112,7 +112,7 @@ namespace mobileAppClient
                     AscendingDescendingPicker.IsVisible = true;
                     break;
                 case "Dereg. Code":
-                    SortedList = currentList.OrderBy(o => o.OrganDeregisteredCode).ToList();
+                    SortedList = currentList.OrderBy(o => o.organDeregisteredCode).ToList();
                     WaitingListItemsList.ItemsSource = SortedList;
 
                     AscendingDescendingPicker.IsVisible = true;
@@ -140,11 +140,11 @@ namespace mobileAppClient
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":
-                            List<WaitingListItem> SortedList = currentList.OrderByDescending(o => o.OrganType).ToList();
+                            List<WaitingListItem> SortedList = currentList.OrderByDescending(o => o.organType).ToList();
                             WaitingListItemsList.ItemsSource = SortedList;
                             break;
                         case "⬇ (Ascending)":
-                            SortedList = currentList.OrderBy(o => o.OrganType).ToList();
+                            SortedList = currentList.OrderBy(o => o.organType).ToList();
                             WaitingListItemsList.ItemsSource = SortedList;
                             break;
                         case "Clear":
@@ -157,11 +157,11 @@ namespace mobileAppClient
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":
-                            List<WaitingListItem> SortedList = currentList.OrderByDescending(o => o.OrganRegisteredDate.ToDateTime()).ToList();
+                            List<WaitingListItem> SortedList = currentList.OrderByDescending(o => o.organRegisteredDate.ToDateTime()).ToList();
                             WaitingListItemsList.ItemsSource = SortedList;
                             break;
                         case "⬇ (Ascending)":
-                            SortedList = currentList.OrderBy(o => o.OrganRegisteredDate.ToDateTime()).ToList();
+                            SortedList = currentList.OrderBy(o => o.organRegisteredDate.ToDateTime()).ToList();
                             WaitingListItemsList.ItemsSource = SortedList;
                             break;
                         case "Clear":
@@ -181,7 +181,7 @@ namespace mobileAppClient
 
                             foreach (WaitingListItem item in currentList)
                             {
-                                if (item.OrganDeregisteredDate != null)
+                                if (item.organDeregisteredDate != null)
                                 {
                                     deregisteredList.Add(item);
                                 }
@@ -191,7 +191,7 @@ namespace mobileAppClient
                                 }
                             }
 
-                            List<WaitingListItem> sortedDeregisteredList = deregisteredList.OrderByDescending(o => o.OrganDeregisteredDate.ToDateTime()).ToList();
+                            List<WaitingListItem> sortedDeregisteredList = deregisteredList.OrderByDescending(o => o.organDeregisteredDate.ToDateTime()).ToList();
 
                             foreach (WaitingListItem item in sortedDeregisteredList)
                             {
@@ -212,7 +212,7 @@ namespace mobileAppClient
 
                             foreach (WaitingListItem item in currentList)
                             {
-                                if (item.OrganDeregisteredDate != null)
+                                if (item.organDeregisteredDate != null)
                                 {
                                     deregisteredList.Add(item);
                                 }
@@ -222,7 +222,7 @@ namespace mobileAppClient
                                 }
                             }
 
-                            sortedDeregisteredList = deregisteredList.OrderBy(o => o.OrganDeregisteredDate.ToDateTime()).ToList();
+                            sortedDeregisteredList = deregisteredList.OrderBy(o => o.organDeregisteredDate.ToDateTime()).ToList();
 
                             foreach (WaitingListItem item in sortedDeregisteredList)
                             {
@@ -247,11 +247,11 @@ namespace mobileAppClient
                     switch (AscendingDescendingPicker.SelectedItem)
                     {
                         case "⬆ (Descending)":
-                            List<WaitingListItem> SortedList = currentList.OrderByDescending(o => o.OrganDeregisteredCode).ToList();
+                            List<WaitingListItem> SortedList = currentList.OrderByDescending(o => o.organDeregisteredCode).ToList();
                             WaitingListItemsList.ItemsSource = SortedList;
                             break;
                         case "⬇ (Ascending)":
-                            SortedList = currentList.OrderBy(o => o.OrganDeregisteredCode).ToList();
+                            SortedList = currentList.OrderBy(o => o.organDeregisteredCode).ToList();
                             WaitingListItemsList.ItemsSource = SortedList;
                             break;
                         case "Clear":

@@ -62,12 +62,16 @@ namespace mobileAppClient
         {
             get
             {
-                return String.Format("{0} {1}", name[0], name[2]);
+                return String.Join(" ", name);
             }
         }
 
         public User(string email) {
             this.email = email;
+        }
+
+        public User()
+        {
         }
 
         public User ShallowCopy()

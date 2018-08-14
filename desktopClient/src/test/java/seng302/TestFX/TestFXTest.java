@@ -10,18 +10,18 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Data.Interfaces.AdminsDAO;
-import seng302.Data.Interfaces.CliniciansDAO;
-import seng302.Data.Interfaces.GeneralDAO;
-import seng302.Data.Interfaces.UsersDAO;
-import seng302.Data.Local.AdminsM;
-import seng302.Data.Local.CliniciansM;
-import seng302.Data.Local.GeneralM;
-import seng302.Data.Local.UsersM;
+import seng302.data.interfaces.AdminsDAO;
+import seng302.data.interfaces.CliniciansDAO;
+import seng302.data.interfaces.GeneralDAO;
+import seng302.data.interfaces.UsersDAO;
+import seng302.data.local.AdminsM;
+import seng302.data.local.CliniciansM;
+import seng302.data.local.GeneralM;
+import seng302.data.local.UsersM;
 import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.DataManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -53,8 +53,6 @@ abstract class TestFXTest extends ApplicationTest {
                 e.printStackTrace();
             }
         });
-
-
     }
 
     @After

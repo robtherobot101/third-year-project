@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.Debugger;
+import seng302.generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -74,6 +74,7 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length - 1] = lastNames;
         }
+        this.username = email;
 
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
@@ -102,7 +103,6 @@ public class User {
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
     }
-
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {

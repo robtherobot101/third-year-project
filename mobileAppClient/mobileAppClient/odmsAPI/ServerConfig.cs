@@ -15,7 +15,7 @@ namespace mobileAppClient.odmsAPI
     {
         public String serverAddress { get; set; }
 
-        public HttpClient client;
+		public HttpClient client;
 
         private static readonly Lazy<ServerConfig> lazy =
         new Lazy<ServerConfig>(() => new ServerConfig());
