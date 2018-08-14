@@ -392,5 +392,49 @@ namespace mobileAppClient.odmsAPI
             }
             return new Tuple<HttpStatusCode, bool>(HttpStatusCode.OK, isUnique);
         }
+
+        /// <summary>
+        /// Fetches a list of custom organ objects used for the map view
+        /// </summary>
+        /// <returns>
+        /// Tuple containing the HTTP return code and the list of Custom Organ objects
+        /// </returns>
+        public async Task<Tuple<HttpStatusCode, List<CustomMapObject>>> GetOrgansForMap()
+        {
+            // Check internet connection
+            List<CustomMapObject> resultMapObjects = new List<CustomMapObject>();
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.ServiceUnavailable, resultMapObjects);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/mapObjects");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.ServiceUnavailable, resultMapObjects);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, List<CustomMapObject>>(response.StatusCode, resultMapObjects);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            resultMapObjects = JsonConvert.DeserializeObject<List<CustomMapObject>>(responseContent);
+            return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.OK, resultMapObjects);
+        }
+
+
     }
 }

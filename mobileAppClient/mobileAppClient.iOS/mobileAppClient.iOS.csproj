@@ -98,6 +98,8 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="iOSCamera.cs" />
+    <Compile Include="CustomMapRenderer.cs" />
+    <Compile Include="CustomMKAnnotationView.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -186,5 +188,18 @@
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
     <BundleResource Include="Resources\map_icon.png" />
+    <BundleResource Include="Resources\pin.png" />
+    <BundleResource Include="Resources\xamarin.png" />
+    <BundleResource Include="Resources\bone_icon.png" />
+    <BundleResource Include="Resources\ear_icon.png" />
+    <BundleResource Include="Resources\eye_icon.png" />
+    <BundleResource Include="Resources\heart_icon.png" />
+    <BundleResource Include="Resources\intestines_icon.png" />
+    <BundleResource Include="Resources\kidney_icon.png" />
+    <BundleResource Include="Resources\liver_icon.png" />
+    <BundleResource Include="Resources\lungs_icon.png" />
+    <BundleResource Include="Resources\pancreas_icon.png" />
+    <BundleResource Include="Resources\skin_icon.png" />
+    <BundleResource Include="Resources\tissue_icon.png" />
   </ItemGroup>
 </Project>
