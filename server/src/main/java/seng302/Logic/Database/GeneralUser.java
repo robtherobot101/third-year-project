@@ -318,11 +318,12 @@ public class GeneralUser {
             String ageFilter = ageFilter(params);
             String genderFilter = matchFilter(params, "gender", false);
             String regionFilter = matchFilter(params, "region", false);
+            String countryFilter = matchFilter(params, "country", false);
             String organFilter = organFilter(params);
 
             List<String> filters = new ArrayList<String>();
             filters.addAll(Arrays.asList(
-                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
+                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,countryFilter,organFilter
             ));
 
             filters.removeIf((String filter) -> filter.equals(""));

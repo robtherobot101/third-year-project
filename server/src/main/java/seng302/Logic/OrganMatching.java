@@ -151,7 +151,7 @@ public class OrganMatching {
                 int comp = user1.getWaitingListItems().get(i).getOrganRegisteredDate().compareTo(user2.getWaitingListItems().get(j).getOrganRegisteredDate());;
                 return comp;
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("Avaliable organs comparator is broken");
+                System.out.println("Available organs comparator is broken");
                 return 0;
             }
         }
