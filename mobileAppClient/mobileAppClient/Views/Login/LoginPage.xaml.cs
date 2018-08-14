@@ -21,16 +21,36 @@ namespace mobileAppClient
      */ 
 	public partial class LoginPage : ContentPage
 	{
+	    private bool _IsLoading;
+	    public bool IsLoading
+	    {
+	        get { return _IsLoading; }
+	        set
+	        {
+	            _IsLoading = value;
+	            if (_IsLoading == true)
+	            {
+	                LoadingIndicator.IsVisible = true;
+	                LoadingIndicator.IsRunning = true;
+	            }
+	            else
+	            {
+	                LoadingIndicator.IsVisible = false;
+	                LoadingIndicator.IsRunning = false;
+	            }
+	        }
+	    }
         private bool loginClicked;
 
 		public LoginPage ()
 		{
 			InitializeComponent ();
             loginClicked = false;
+		    IsLoading = false;
+		    UserController.Instance.loginPageController = this;
+        }
 
-		}
-
-        /*
+	    /*
          * Called when the Sign Up button is pressed
          */
         async void SignUpButtonClicked(Object sender, EventArgs args)
@@ -52,7 +72,7 @@ namespace mobileAppClient
             {
                 loginClicked = true;
             }
-
+            IsLoading = true;
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
 
@@ -80,6 +100,7 @@ namespace mobileAppClient
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                     }
                     UserController.Instance.mainPageController.updateMenuPhoto();
+                    IsLoading = false;
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -142,9 +163,69 @@ namespace mobileAppClient
                 return;
             }
 
+            IsLoading = true;
             Device.OpenUri(new Uri(GoogleServices.GetLoginAddr()));
+        }
 
-            //await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this)));
+	    public async Task Handle_RedirectUriCaught(string code)
+	    {
+	        Tuple<User, string> parsedUser = await GoogleServices.GetUserProfile(code);
+
+	        await LoginAsGoogleUser(parsedUser);
+	    }
+
+	    private async Task LoginAsGoogleUser(Tuple<User, string> parsedUser)
+	    {
+	        User googleUser = parsedUser.Item1;
+	        string profileImageURL = parsedUser.Item2;
+	        string password = "password";
+
+            UserAPI userAPI = new UserAPI();
+            LoginAPI loginAPI = new LoginAPI();
+
+            //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
+            Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(googleUser.email);
+            if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
+            {
+                Console.WriteLine("Failed to connect to server for checking of unique email");
+            }
+
+            if (isUniqueEmailResult.Item2 == false)
+            {
+                HttpStatusCode statusCode = await loginAPI.LoginUser(googleUser.email, password);
+                switch (statusCode)
+                {
+                    case HttpStatusCode.OK:
+                        // Pop away login screen on successful login
+                        HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                        UserController.Instance.mainPageController.updateMenuPhoto();
+                        await Navigation.PopModalAsync();
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await DisplayAlert(
+                            "Failed to Login",
+                            "Incorrect username/password",
+                            "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert(
+                            "Failed to Login",
+                            "Server unavailable, check connection",
+                            "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert(
+                            "Failed to Login",
+                            "Server error",
+                            "OK");
+                        break;
+                }
+            }
+            else
+            {
+                await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL));
+            }
+	        IsLoading = false;
         }
     }
 }

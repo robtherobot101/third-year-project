@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace mobileAppClient.Google
 {
-    public static class GoogleServices
+    public class GoogleServices
     {
         private static HttpClient client;
         private static readonly string redirect_uri = "http://csse-s302g3.canterbury.ac.nz/oauth2redirect";
@@ -54,7 +54,12 @@ namespace mobileAppClient.Google
             return tokenData.access_token;
         }
 
-        public static async void GetUserProfile(string code)
+        /// <summary>
+        /// Returns the User object and profile image URL of the given authorization code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static async Task<Tuple<User, string>> GetUserProfile(string code)
         {
             client = ServerConfig.Instance.client;
 
@@ -75,7 +80,12 @@ namespace mobileAppClient.Google
             string firstName = foundProfile.name.givenName;
             string lastName = foundProfile.name.familyName;
             string email = foundProfile.emails[0].value;
+
+            // TODO update image
             string imageURL = foundProfile.image.url;
+
+            return new Tuple<User, string>(new User(
+                firstName, lastName, email), imageURL);
         }
     }
 }

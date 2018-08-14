@@ -4,6 +4,30 @@
              x:Class="mobileAppClient.GooglePage"
              Title = "Google Login">
     <ContentPage.Content>
+        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
+            <Image Source="google_logo.png" 
+                   WidthRequest="272"
+                   HeightRequest="92"
+            />
+            <Label Text="Please complete your donor profile"/>
+
+            <DatePicker x:Name="dobInput"
+                        Format="D"
+                        MinimumDate="01/01/1900"
+            />
+
+            <Picker Title ="Birth Gender" x:Name="BirthGenderInput">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Male</x:String>
+                        <x:String>Female</x:String>
+                        <x:String>Other</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Button Clicked="Button_OnClicked" Text="Continue"/>
+        </StackLayout>
     </ContentPage.Content>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Cancel"/>

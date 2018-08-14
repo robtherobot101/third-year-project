@@ -229,14 +229,14 @@ namespace mobileAppClient.Droid
         /// Captures the redirect URI from the Google login
         /// </summary>
         /// <param name="intent"></param>
-        protected override void OnNewIntent(Intent intent)
+        protected override async void OnNewIntent(Intent intent)
         {
             if (intent.Data != null)
             {
                 var data = intent.Data;
 
                 string queryParameter = data.GetQueryParameter("code");
-                App.GetTokenFromLogin(queryParameter);
+                await UserController.Instance.PassControlToLoginPage(queryParameter);
             }
         }
     }

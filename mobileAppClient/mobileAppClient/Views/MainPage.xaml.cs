@@ -15,13 +15,12 @@ namespace mobileAppClient
      */ 
     public partial class MainPage : MasterDetailPage
     {
-
         public ObservableCollection<MasterPageItem> menuList { get; set; }
-
+    
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
-         */ 
+         */
         public MainPage(bool isClinicianView)
         {
             InitializeComponent();

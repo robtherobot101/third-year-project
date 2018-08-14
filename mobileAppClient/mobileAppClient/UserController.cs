@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace mobileAppClient
 {
@@ -17,6 +18,7 @@ namespace mobileAppClient
 
         private List<UserObserver> userObservers;
         public MainPage mainPageController { get; set; }
+        public LoginPage loginPageController { get; set; }
         public bool isTestMode { get; set; }
 
         private static readonly Lazy<UserController> lazy =
@@ -46,6 +48,11 @@ namespace mobileAppClient
             {
                 this.mainPageController.userLoggedIn();
             }
+        }
+
+        public async Task PassControlToLoginPage(string code)
+        {
+            await loginPageController.Handle_RedirectUriCaught(code);
         }
 
         private UserController()
