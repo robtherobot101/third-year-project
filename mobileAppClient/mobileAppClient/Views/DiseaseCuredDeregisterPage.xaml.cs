@@ -113,7 +113,8 @@ namespace mobileAppClient.Views
                 }
                 Console.WriteLine("About to remove modal");
                 await Navigation.PopModalAsync();
-                await parentWaitingListItemPage.Navigation.PopModalAsync();
+                await parentWaitingListItemPage.Navigation.PopAsync();
+                MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
             }
             catch (HttpRequestException e)
             {

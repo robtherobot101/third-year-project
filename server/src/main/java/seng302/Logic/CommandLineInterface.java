@@ -629,14 +629,14 @@ public class CommandLineInterface {
                         wasSuccessful = false;
                     }
                     break;
-                case "dateofdeath":
+                case "datetimeofdeath":
                     try {
-                        toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateFormat));
+                        toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateTimeFormat));
 
                         outputString = ("New date of death set.");
                         wasSuccessful = true;
                     } catch (DateTimeException e) {
-                        outputString = ("Please enter a valid date in the format dd/mm/yyyy.");
+                        outputString = ("Please enter a valid date in the format: " + User.dateTimeFormat);
                         wasSuccessful = false;
                     }
                     break;
@@ -1094,7 +1094,7 @@ public class CommandLineInterface {
                             + "The syntax is: updateUser <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
-                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateOfDeath, gender, height, "
+                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateTimeOfDeath, gender, height, "
                             + "weight, bloodType, region, currentAddress\n"
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-The gender must be: male, female, or other\n"

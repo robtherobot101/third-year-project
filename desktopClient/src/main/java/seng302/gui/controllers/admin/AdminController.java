@@ -367,6 +367,7 @@ public class AdminController implements Initializable {
             availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
+            WindowManager.resetScene(TFScene.login);
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.admin);
         } else {
@@ -1208,6 +1209,10 @@ public class AdminController implements Initializable {
      * Sets the user Attribute pane as the visible pane.
      */
     public void showMainPane() {
+        if(!mainPane.isVisible()){
+            refreshLatestProfiles();
+            System.out.println("ping");
+        }
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);

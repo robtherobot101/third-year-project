@@ -38,6 +38,10 @@ namespace mobileAppClient.odmsAPI
             {
                 return new List<WaitingListItem>();
             }
+            catch(JsonReaderException) {
+                return new List<WaitingListItem>();
+
+            }
         }
 
         public async Task<HttpStatusCode> updateItem(WaitingListItem item)
@@ -84,6 +88,11 @@ namespace mobileAppClient.odmsAPI
             catch (JsonSerializationException jse)
             {
                 return new List<WaitingListItem>();
+            }
+            catch (JsonReaderException)
+            {
+                return new List<WaitingListItem>();
+
             }
         }
 

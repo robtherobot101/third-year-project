@@ -1,7 +1,7 @@
 package seng302.gui.controllers.clinician;
 
 import javafx.animation.FadeTransition;
-import javafx.beans.property.*;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,18 +11,18 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
-import seng302.generic.Country;
-import seng302.gui.StatusIndicator;
-import seng302.gui.TitleBar;
-import seng302.generic.Debugger;
-import seng302.generic.WindowManager;
 import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
 import seng302.User.DonatableOrgan;
 import seng302.User.User;
+import seng302.generic.Country;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TitleBar;
+
 import java.net.URL;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +51,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     @FXML
     TextField receiverNameTextField;
     @FXML
-    Label updateResultsLabel;
+    Label updateResultsLabel, refreshSuccessText;
     @FXML
     Button refreshOrganTable;
     @FXML
@@ -550,7 +550,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             }
         });
         focused = false;
-        fade.setNode(updateResultsLabel);
+        fade.setNode(refreshSuccessText);
         fade.setFromValue(1.0);
         fade.setToValue(0);
         fade.setCycleCount(1);
@@ -587,8 +587,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
         updated = false;
         WindowManager.updateAvailableOrgans();
         if (updated){
-            updateResultsLabel.setText("Updated successfully.");
-            updateResultsLabel.setVisible(true);
+            updateResultsLabel.setVisible(false);
+            refreshSuccessText.setText("Updated successfully.");
+            refreshSuccessText.setVisible(true);
             fade.playFromStart();
             filterApplied();
         }

@@ -742,7 +742,7 @@ public class GeneralUser {
     public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             ResultSet resultSet = statement.executeQuery();

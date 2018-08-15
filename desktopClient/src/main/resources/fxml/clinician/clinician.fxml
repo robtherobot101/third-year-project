@@ -248,6 +248,14 @@
                               <Insets bottom="6.0" left="15.0" />
                            </GridPane.margin>
                         </Label>
+                         <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="☤" GridPane.rowIndex="2">
+                             <font>
+                                 <Font size="35.0" />
+                             </font>
+                             <GridPane.margin>
+                                 <Insets bottom="6.0" left="18.0" />
+                             </GridPane.margin>
+                         </Label>
                      </children>
                   </GridPane>
                     </children>

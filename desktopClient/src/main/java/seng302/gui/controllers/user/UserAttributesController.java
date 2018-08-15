@@ -131,7 +131,6 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private Label cityOfDeath;
 
-
     private Map<Organ, CheckBox> organTickBoxes;
 
     private int updatingFields = 0;
@@ -173,8 +172,8 @@ public class UserAttributesController extends UserTabController implements Initi
         ComboBox popupCountryOfDeathComboBox = new ComboBox();
         popupCountryOfDeathComboBox.maxWidthProperty().bind(dialog.widthProperty());
 
-        ComboBox popopRegionOfDeathComboBox = new ComboBox();
-        popopRegionOfDeathComboBox.maxWidthProperty().bind(dialog.widthProperty());
+        ComboBox popupRegionOfDeathComboBox = new ComboBox();
+        popupRegionOfDeathComboBox.maxWidthProperty().bind(dialog.widthProperty());
         TextField popupRegionOfDeathField = new TextField();
         TextField popupCityOfDeathField = new TextField();
         Label errorLabel = new Label();
@@ -187,7 +186,7 @@ public class UserAttributesController extends UserTabController implements Initi
         grid.add(popupCountryOfDeathComboBox, 1, 1);
 
         grid.add(new Label("Region:"), 0, 2);
-        grid.add(popopRegionOfDeathComboBox, 1, 2);
+        grid.add(popupRegionOfDeathComboBox, 1, 2);
         grid.add(popupRegionOfDeathField, 1, 2);
 
         grid.add(new Label("City:"), 0, 3);
@@ -205,7 +204,6 @@ public class UserAttributesController extends UserTabController implements Initi
         AtomicBoolean regionIsValid = new AtomicBoolean(false);
         AtomicBoolean cityIsValid = new AtomicBoolean(false);
         AtomicBoolean inputIsValid = new AtomicBoolean(false);
-
 
         // Do some validation (using the Java 8 lambda syntax).
         popupDateOfDeathPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -225,27 +223,28 @@ public class UserAttributesController extends UserTabController implements Initi
                 errorLabel.setText("The date of death must be defined.");
                 dateIsValid.set(false);
             }
-
             inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
             updateButton.setDisable(!inputIsValid.get());
             errorLabel.setVisible(!dateIsValid.get());
         });
+
         popupCountryOfDeathComboBox.valueProperty().addListener((observable, oldValue, newValue)  -> {
             countryIsValid.set(!Objects.equals(newValue,""));
             inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
             updateButton.setDisable(!inputIsValid.get());
 
             // Setup listener on the countries combobox to switch the regions input type to ComboBox when selected country is "New Zealand"
-            setRegionControls(currentUser.getRegionOfDeath(), popupCountryOfDeathComboBox.getValue().toString(), popopRegionOfDeathComboBox, popupRegionOfDeathField);
+            setRegionControls(currentUser.getRegionOfDeath(), popupCountryOfDeathComboBox.getValue().toString(), popupRegionOfDeathComboBox, popupRegionOfDeathField);
         });
 
-        popopRegionOfDeathComboBox.valueProperty().addListener((observable, oldValue, newValue)  -> {
-            regionIsValid.set(!Objects.equals(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField),""));
+        popupRegionOfDeathComboBox.valueProperty().addListener((observable, oldValue, newValue)  -> {
+            regionIsValid.set(!Objects.equals(getRegion(popupCountryOfDeathComboBox, popupRegionOfDeathComboBox, popupRegionOfDeathField),""));
             inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
             updateButton.setDisable(!inputIsValid.get());
         });
+
         popupRegionOfDeathField.textProperty().addListener((observable, oldValue, newValue)  -> {
-            regionIsValid.set(!Objects.equals(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField),""));
+            regionIsValid.set(!Objects.equals(getRegion(popupCountryOfDeathComboBox, popupRegionOfDeathComboBox, popupRegionOfDeathField),""));
             inputIsValid.set(dateIsValid.get() && countryIsValid.get() && regionIsValid.get() && cityIsValid.get());
             updateButton.setDisable(!inputIsValid.get());
         });
@@ -269,28 +268,33 @@ public class UserAttributesController extends UserTabController implements Initi
         }
 
         // Populate regions combobox
-        popopRegionOfDeathComboBox.setItems(FXCollections.observableArrayList(
+        popupRegionOfDeathComboBox.setItems(FXCollections.observableArrayList(
                 Arrays.stream(NZRegion.values()).map(NZRegion::toString).collect(Collectors.toList())
         ));
 
         // If user death details have not been set, default the death location to user location. Set death date to now
         if(Objects.equals(dateOfDeath.getText().trim(),"")) {
+            System.out.println("Did the first one");
             popupDateOfDeathPicker.setDateTimeValue(LocalDateTime.now());
             if(popupCountryOfDeathComboBox.getItems().contains(countryComboBox.getValue())) {
                 popupCountryOfDeathComboBox.setValue(countryComboBox.getValue());
+            } else {
+                popupCountryOfDeathComboBox.setValue("");
             }
-            setRegion(getRegion(countryComboBox, regionComboBox, regionField), popopRegionOfDeathComboBox, popupRegionOfDeathField);
+            setRegion(getRegion(countryComboBox, regionComboBox, regionField), popupRegionOfDeathComboBox, popupRegionOfDeathField);
         } else { // Otherwise, populate death location and timestamp
             popupDateOfDeathPicker.setDateTimeValue(LocalDateTime.parse(dateOfDeath.getText()));
             if(popupCountryOfDeathComboBox.getItems().contains(countryOfDeath.getText())) {
                 popupCountryOfDeathComboBox.setValue(countryOfDeath.getText());
+            } else {
+                popupCountryOfDeathComboBox.setValue("");
             }
-            setRegion(regionOfDeath.getText(), popopRegionOfDeathComboBox, popupRegionOfDeathField);
+            setRegion(regionOfDeath.getText(), popupRegionOfDeathComboBox, popupRegionOfDeathField);
             popupCityOfDeathField.setText(cityOfDeath.getText());
         }
 
-        setRegionControls(getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField)
-                , currentUser.getCountryOfDeath(), popopRegionOfDeathComboBox, popupRegionOfDeathField);
+        setRegionControls(getRegion(popupCountryOfDeathComboBox, popupRegionOfDeathComboBox, popupRegionOfDeathField)
+                , popupCountryOfDeathComboBox.getValue().toString(), popupRegionOfDeathComboBox, popupRegionOfDeathField);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -303,7 +307,7 @@ public class UserAttributesController extends UserTabController implements Initi
                 return new ArrayList<Object>(Arrays.asList(
                         popupDateOfDeathPicker.getDateTimeValue(),
                         popupCountryOfDeathComboBox.getValue(),
-                        getRegion(popupCountryOfDeathComboBox, popopRegionOfDeathComboBox, popupRegionOfDeathField),
+                        getRegion(popupCountryOfDeathComboBox, popupRegionOfDeathComboBox, popupRegionOfDeathField),
                         popupCityOfDeathField.getText()
                 ));
             }
@@ -363,11 +367,22 @@ public class UserAttributesController extends UserTabController implements Initi
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
-        updatingFields++;
-        boolean useCombo = country != null && country.equalsIgnoreCase("New Zealand");
+        boolean useCombo = false;
+        if (country != null) {
+            useCombo = country.equalsIgnoreCase("New Zealand");
+        }
+
+        System.out.println("__________1___________");
+        System.out.println(userValue);
+        System.out.println(country);
+        System.out.println(regionComboBox.getValue());
+        System.out.println(regionField.getText());
+        System.out.println("__________2___________");
+
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
         boolean validNZRegion;
+
         try {
             validNZRegion = Arrays.asList(NZRegion.values()).contains(NZRegion.parse(userValue));
         } catch (IllegalArgumentException e) {
@@ -378,8 +393,9 @@ public class UserAttributesController extends UserTabController implements Initi
         } else {
             setRegion("", regionComboBox, regionField);
         }
-        updatingFields--;
     }
+
+
 
     /**
      * Updates the visibility of the region controls and updates the undo stack if changes were made
@@ -741,7 +757,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     private void deleteProfileImage() {
         try {
-            WindowManager.getDataManager().getUsers().deleteUserPhoto(currentUser.getId());
+            WindowManager.getDataManager().getUsers().deleteUserPhoto(currentUser.getId(), userController.getToken());
             //success catch, set to default photo
             Image profilePhoto = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId(), userController.getToken());
             profileImage.setImage(profilePhoto);
@@ -777,7 +793,7 @@ public class UserAttributesController extends UserTabController implements Initi
                     byte[] byteArrayImage = byteOutputStream.toByteArray();
 
                     String image = Base64.getEncoder().encodeToString(byteArrayImage);
-                    WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image);
+                    WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image, userController.getToken());
                     Image profileImg = SwingFXUtils.toFXImage(bImage, null);
                     if (profileImg.getWidth() == profileImg.getHeight()) {
                         profileImage.setImage(profileImg);
