@@ -66,6 +66,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     /**
      * Sets the initial time left values for all list items.
+     * @param expiryList A list of organs to be updated.
      */
     public void setInitTimeLeft(List<DonatableOrgan> expiryList){
 
@@ -286,7 +287,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     }
 
     /**
-     * Called when an organ passes the colour threshold eg 50% -> 49% and so needs to be updated.
+     * Called when an organ passes the colour threshold eg 50% to 49% and so needs to be updated.
      * Not using this calls updateOrgans() in the middle of the for loop (not ideal as throws concurrent mod. exceptions)
      * @param value the value of autoRefresh
      */

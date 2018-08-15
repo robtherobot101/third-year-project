@@ -20,6 +20,7 @@ public class GeneralUser {
      *
      * @param user The user to update
      * @param userId The id of the user to update
+     * @param canEditClinicianAttributes Whether the user has access to edit medications procedures etc
      * @throws SQLException If there is errors communicating with the database
      */
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {

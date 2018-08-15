@@ -100,6 +100,7 @@ public class User {
      * @param country String of the country of residence
      * @param countryOfDeath String of the country of death
      * @param regionOfDeath String of the region of death
+     * @param profileImageType String of the type of profile image
      */
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath,
