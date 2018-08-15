@@ -97,6 +97,15 @@ namespace mobileAppClient.Droid
                                 HandleBitmap(uri, orientation, fileName);
                             }
                         }
+                        else
+                        {
+                            string[] PermissionsStorage =
+                            {
+                                Manifest.Permission.ReadExternalStorage,
+                            };
+                            const int RequestStorageId = 0;
+                            RequestPermissions(PermissionsStorage, RequestStorageId);
+                        }
                     }
                 }
             }
