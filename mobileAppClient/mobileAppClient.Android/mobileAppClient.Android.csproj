@@ -49,6 +49,8 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <DefineConstants>
     </DefineConstants>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidSupportedAbis />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>

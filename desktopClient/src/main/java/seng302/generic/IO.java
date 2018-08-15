@@ -103,7 +103,7 @@ public class  IO {
     }
 
     /**
-     * Imports a JSON object of user or clinician information and replaces the information in the user/clinician list.
+     * Imports a JSON object of user or CLINICIAN information and replaces the information in the user/CLINICIAN list.
      *
      * @param path      path of the file.
      * @param profileType the account type of the users
@@ -317,7 +317,7 @@ public class  IO {
     }
 
     /**
-     * method to set the paths for the user, clinician and admin files
+     * method to set the paths for the user, CLINICIAN and ADMIN files
      *
      * @throws URISyntaxException Not used
      */

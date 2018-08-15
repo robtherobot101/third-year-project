@@ -16,8 +16,8 @@ public class CliniciansM implements CliniciansDAO {
     }
 
     /**
-     * inserts a clinician
-     * @param clinician the clinician to insert
+     * inserts a CLINICIAN
+     * @param clinician the CLINICIAN to insert
      * @param token the users token
      */
     @Override
@@ -33,8 +33,8 @@ public class CliniciansM implements CliniciansDAO {
     }
 
     /**
-     * updates a clinician
-     * @param clinician the clinician to update
+     * updates a CLINICIAN
+     * @param clinician the CLINICIAN to update
      * @param token the users token
      */
     @Override
@@ -54,10 +54,10 @@ public class CliniciansM implements CliniciansDAO {
     }
 
     /**
-     * gets a specific clinician
+     * gets a specific CLINICIAN
      * @param id the clinicians id
      * @param token the user token
-     * @return returns the clinician
+     * @return returns the CLINICIAN
      */
     @Override
     public Clinician getClinician(long id, String token) {
@@ -66,13 +66,13 @@ public class CliniciansM implements CliniciansDAO {
                 return a;
             }
         }
-        Debugger.log("clinician with id: " + id + " not found. Returning null.");
+        Debugger.log("CLINICIAN with id: " + id + " not found. Returning null.");
         return null;
     }
 
     /**
-     * removes a specific clinician
-     * @param id the id of the clinician
+     * removes a specific CLINICIAN
+     * @param id the id of the CLINICIAN
      * @param token the users token
      */
     @Override

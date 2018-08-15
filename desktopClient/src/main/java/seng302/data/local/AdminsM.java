@@ -19,8 +19,8 @@ public class AdminsM implements AdminsDAO {
     }
 
     /**
-     * Adds a new admin
-     * @param admin The admin which will be added
+     * Adds a new ADMIN
+     * @param admin The ADMIN which will be added
      */
     @Override
     public void insertAdmin(Admin admin, String token) {
@@ -35,8 +35,8 @@ public class AdminsM implements AdminsDAO {
     }
 
     /**
-     * Updates the given admin. The old admin with a matching ID is replaced.
-     * @param admin The admin which will replace the one with a matching ID
+     * Updates the given ADMIN. The old ADMIN with a matching ID is replaced.
+     * @param admin The ADMIN which will replace the one with a matching ID
      */
     @Override
     public void updateAdminDetails(Admin admin, String token) {
@@ -54,11 +54,11 @@ public class AdminsM implements AdminsDAO {
     }
 
     /**
-     * Returns the admin with the given ID. If no such admin exists, null is returned.
+     * Returns the ADMIN with the given ID. If no such ADMIN exists, null is returned.
      * If multiple admins have the given ID, the first one found is returned.
      *
-     * @param id The id of the requested admin.
-     * @return The admin which has the same ID
+     * @param id The id of the requested ADMIN.
+     * @return The ADMIN which has the same ID
      */
     @Override
     public Admin getAdmin(long id, String token) {
@@ -67,15 +67,15 @@ public class AdminsM implements AdminsDAO {
                 return a;
             }
         }
-        Debugger.log("admin with id: " + id + " not found. Returning null.");
+        Debugger.log("ADMIN with id: " + id + " not found. Returning null.");
         return null;
     }
 
     /**
-     * Removes the admin with the given ID if it exists.
+     * Removes the ADMIN with the given ID if it exists.
      * If multiple admins have the given ID, the first one found is removed.
      *
-     * @param id The id of the admin which will be removed.
+     * @param id The id of the ADMIN which will be removed.
      */
     @Override
     public void removeAdmin(long id, String token) {

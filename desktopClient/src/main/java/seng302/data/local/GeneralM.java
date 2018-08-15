@@ -46,7 +46,7 @@ public class GeneralM implements GeneralDAO {
                     return response;
                 }
             } catch (NullPointerException e) {
-                Debugger.error("NullPointerException while trying to login with user: " + u);
+                Debugger.error("NullPointerException while trying to LOGIN with user: " + u);
             }
         }
 
