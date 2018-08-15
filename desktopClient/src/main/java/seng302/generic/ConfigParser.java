@@ -1,4 +1,4 @@
-package seng302.Generic;
+package seng302.generic;
 
 import javafx.scene.control.Alert;
 import jdk.nashorn.internal.runtime.ParserException;
