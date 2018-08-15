@@ -52,7 +52,8 @@
 
                 <Button Text="Login with Google"
                     Clicked="Handle_LoginWithGoogleClicked" 
-                        Image=""/>
+                        Image=""
+                        x:Name="GoogleButton"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

@@ -18,7 +18,7 @@ namespace mobileAppClient.Droid
 {
     [Activity(Label = "mobileAppClient.Android", Icon = "@drawable/donationIcon", LaunchMode = LaunchMode.SingleInstance, Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 
-    [IntentFilter(new [] {Intent.ActionView}, Categories = new [] {Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "http", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirect")]
+    [IntentFilter(new [] {Intent.ActionView}, Categories = new [] {Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirect")]
 
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

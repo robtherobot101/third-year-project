@@ -12,7 +12,7 @@ namespace mobileAppClient.Google
     public class GoogleServices
     {
         private static HttpClient client;
-        private static readonly string redirect_uri = "http://csse-s302g3.canterbury.ac.nz/oauth2redirect";
+        private static readonly string redirect_uri = "https://csse-s302g3.canterbury.ac.nz/oauth2redirect";
         private static readonly string client_id = "990254303378-hompkeqv6gthfgaut6j0bipdu6bf9ef0.apps.googleusercontent.com";
         private static readonly string client_secret = "yHw2OvqSYK4ocE0SH5-AHfJc";
 
@@ -49,7 +49,7 @@ namespace mobileAppClient.Google
             response = await client.PostAsync(GetTokenAddr(code), content);
             string rawToken = await response.Content.ReadAsStringAsync();
 
-            dynamic tokenData = JsonConvert.DeserializeObject<dynamic>(rawToken);
+            GoogleTokenResponse tokenData = JsonConvert.DeserializeObject<GoogleTokenResponse>(rawToken);
 
             return tokenData.access_token;
         }
@@ -74,8 +74,9 @@ namespace mobileAppClient.Google
 
             }
             string rawProfile = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(rawProfile);
 
-            dynamic foundProfile = JsonConvert.DeserializeObject<dynamic>(rawProfile);
+            GoogleTokenResponse foundProfile = JsonConvert.DeserializeObject<GoogleTokenResponse>(rawProfile);
 
             string firstName = foundProfile.name.givenName;
             string lastName = foundProfile.name.familyName;

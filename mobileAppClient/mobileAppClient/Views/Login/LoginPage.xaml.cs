@@ -48,6 +48,10 @@ namespace mobileAppClient
             loginClicked = false;
 		    IsLoading = false;
 		    UserController.Instance.loginPageController = this;
+            //Temporary fix for the google login not working on iOS
+            if(Device.RuntimePlatform == Device.iOS) {
+                GoogleButton.IsVisible = false;
+            }
         }
 
 	    /*
