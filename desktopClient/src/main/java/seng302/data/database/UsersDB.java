@@ -173,17 +173,17 @@ public class UsersDB implements UsersDAO {
     }
 
     @Override
-    public void updateUserPhoto(long id, String image) throws HttpResponseException {
+    public void updateUserPhoto(long id, String image, String token) throws HttpResponseException {
         JsonParser jp = new JsonParser();
         PhotoStruct photoStruct = new PhotoStruct(image);
         JsonObject imageJson = jp.parse(new Gson().toJson(photoStruct)).getAsJsonObject();
-        APIResponse response = server.patchRequest(imageJson, new HashMap<>(), users, users, String.valueOf(id), photo);
+        APIResponse response = server.patchRequest(imageJson, new HashMap<>(), token, users, String.valueOf(id), photo);
         if(response == null) throw new HttpResponseException(0, unableTo);
     }
 
     @Override
-    public void deleteUserPhoto(long id) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<>(), users, users, String.valueOf(id), photo);
+    public void deleteUserPhoto(long id, String token) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<>(), token, users, String.valueOf(id), photo);
         if(response == null) throw new HttpResponseException(0, unableTo);
     }
 
