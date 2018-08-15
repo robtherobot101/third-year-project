@@ -295,7 +295,6 @@ public class ClinicianController implements Initializable {
         setRegionControls("", "All Countries", regionComboBox, clinicianRegionField);
 
         waitingListController.setup();
-        availableOrgansController.setup();
 
         updateDisplay();
     }
@@ -887,6 +886,7 @@ public class ClinicianController implements Initializable {
         setButtonSelected(organListButton, true);
         organsPane.setVisible(true);
         availableOrgansController.startTimer();
+        availableOrgansController.setup();
 
         WindowManager.updateAvailableOrgans();
         titleBar.setTitle(clinician.getName(), clinicianString, "Available Organs");

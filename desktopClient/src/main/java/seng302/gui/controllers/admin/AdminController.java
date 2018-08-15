@@ -1234,6 +1234,7 @@ public class AdminController implements Initializable {
         setButtonSelected(availableOrgansButton, true);
         organsPane.setVisible(true);
         availableOrgansController.startTimer();
+        availableOrgansController.setup();
         WindowManager.updateAvailableOrgans();
     }
 

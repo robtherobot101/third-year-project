@@ -442,10 +442,10 @@ public class WindowManager extends Application {
      */
     private static void showError(Thread t, Throwable e) {
         Debugger.log("Non-critical error caught, probably platform dependent.");
-        Debugger.log(e.getStackTrace());
-        Debugger.error(e.getStackTrace());
+        Debugger.log(e.getLocalizedMessage());
+        Debugger.error(e.getMessage());
         if (Platform.isFxApplicationThread()) {
-            Debugger.error(e.getStackTrace());
+            Debugger.error(e.getLocalizedMessage());
         } else {
             Debugger.error("An unexpected error occurred in " + t);
         }
