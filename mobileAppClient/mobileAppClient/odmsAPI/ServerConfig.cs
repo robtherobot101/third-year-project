@@ -15,7 +15,7 @@ namespace mobileAppClient.odmsAPI
     {
         public String serverAddress { get; set; }
 
-        public HttpClient client;
+		public HttpClient client;
 
         private static readonly Lazy<ServerConfig> lazy =
         new Lazy<ServerConfig>(() => new ServerConfig());
@@ -27,8 +27,9 @@ namespace mobileAppClient.odmsAPI
             client = new HttpClient();
 
             // Sets default address
-            serverAddress = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
+            serverAddress = "https://csse-s302g3.canterbury.ac.nz/api/v1";
             //serverAddress = "http://localhost:7015/api/v1";
+            //serverAddress = "http://10.0.2.2:7015/api/v1";
         }
 
         /*

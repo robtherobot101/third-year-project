@@ -46,11 +46,15 @@ namespace mobileAppClient
 		{
 			InitializeComponent ();
             loginClicked = false;
+
 		    IsLoading = false;
 		    UserController.Instance.loginPageController = this;
             //Temporary fix for the google login not working on iOS
             if(Device.RuntimePlatform == Device.iOS) {
                 GoogleButton.IsVisible = false;
+            }
+            if(Device.RuntimePlatform == Device.Android) {
+                FacebookButton.Image = null;
             }
         }
 
@@ -92,18 +96,18 @@ namespace mobileAppClient
 
             LoginAPI loginAPI = new LoginAPI();
             HttpStatusCode statusCode = await loginAPI.LoginUser(givenUsernameEmail, givenPassword);
+
             switch(statusCode)
             {
                 case HttpStatusCode.OK:
-                    // Pop away login screen on successful login
-                    UserAPI userAPI = new UserAPI();
-
                     // Fetch photo only on user login
                     if (!ClinicianController.Instance.isLoggedIn())
                     {
+                        UserAPI userAPI = new UserAPI();
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
+                        UserController.Instance.mainPageController.updateMenuPhoto();
                     }
-                    UserController.Instance.mainPageController.updateMenuPhoto();
+
                     IsLoading = false;
                     await Navigation.PopModalAsync();
                     break;
@@ -123,6 +127,12 @@ namespace mobileAppClient
                     await DisplayAlert(
                         "Failed to Login",
                         "Server error",
+                        "OK");
+                    break;
+                case HttpStatusCode.Conflict:
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "User is deceased. Please consult a Registered Clinician",
                         "OK");
                     break;
             }

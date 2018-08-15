@@ -23,7 +23,7 @@ public class ClinicianController {
     }
 
     /**
-     * Retrieves a Clinician object from the HTTP request ":id" param
+     * Retrieves a clinician object from the HTTP request ":id" param
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return A valid clinician obj if the clinician exists otherwise return null
@@ -96,7 +96,7 @@ public class ClinicianController {
         if (receivedClinician == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing Clinician Body";
+            return "Missing clinician Body";
         } else {
             try {
                 model.insertClinician(receivedClinician);
@@ -150,7 +150,7 @@ public class ClinicianController {
         Clinician receivedClinician = gson.fromJson(request.body(), Clinician.class);
         if (receivedClinician == null) {
             response.status(400);
-            return "Missing Clinician Body";
+            return "Missing clinician Body";
         } else {
             try {
                 model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")));

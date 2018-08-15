@@ -12,9 +12,9 @@ import java.util.ArrayList;
 public class GeneralClinician {
 
     /**
-     * Takes a resultsSet, pulls out a Clinician instance, and returns it.
+     * Takes a resultsSet, pulls out a clinician instance, and returns it.
      * @param resultSet The given resultSet
-     * @return A Clinician instance
+     * @return A clinician instance
      * @throws SQLException If there is a problem working with the database.
      */
     public Clinician getClinicianFromResultSet(ResultSet resultSet) throws SQLException {
@@ -31,9 +31,9 @@ public class GeneralClinician {
     }
 
     /**
-     * Returns the Clinician from the database whose ID matches the one given.
+     * Returns the clinician from the database whose ID matches the one given.
      * @param id The given id
-     * @return A Clinician instance with the same ID as the one given.
+     * @return A clinician instance with the same ID as the one given.
      * @throws SQLException If there is a problem working with the database.
      */
     public Clinician getClinicianFromId(int id) throws SQLException {
@@ -49,16 +49,16 @@ public class GeneralClinician {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new Clinician Object with the fields from the database
+                //If response is not empty then return a new clinician Object with the fields from the database
                 return getClinicianFromResultSet(resultSet);
             }
         }
     }
 
     /**
-     * Returns the Clinician from the database from the database whose username matches the one given.
+     * Returns the clinician from the database from the database whose username matches the one given.
      * @param username The given username.
-     * @return A Clinician instance.
+     * @return A clinician instance.
      * @throws SQLException If there is a problem working with the database.
      */
     public int getClinicianIdFromUsername(String username) throws SQLException{
@@ -73,8 +73,8 @@ public class GeneralClinician {
     }
 
     /**
-     * Inserts the given Clinician into the database.
-     * @param clinician The given Clinician which will be inserted
+     * Inserts the given clinician into the database.
+     * @param clinician The given clinician which will be inserted
      * @throws SQLException If there is a problem working with the database.
      */
     public void insertClinician(Clinician clinician) throws SQLException {
@@ -88,7 +88,7 @@ public class GeneralClinician {
             statement.setString(3, clinician.getName());
             statement.setString(4, clinician.getWorkAddress());
             statement.setString(5, clinician.getRegion());
-            System.out.println("Inserting new Clinician -> Successful -> Rows Added: " + statement.executeUpdate());
+            System.out.println("Inserting new clinician -> Successful -> Rows Added: " + statement.executeUpdate());
         }
 
     }
@@ -113,8 +113,8 @@ public class GeneralClinician {
     }
 
     /**
-     * Removes the Clinician from the database whose ID matches that of the Clinician given.
-     * @param clinician The given Clinician
+     * Removes the clinician from the database whose ID matches that of the clinician given.
+     * @param clinician The given clinician
      * @throws SQLException If there is a problem working with the database.
      */
     public void removeClinician(Clinician clinician) throws SQLException {
@@ -122,13 +122,13 @@ public class GeneralClinician {
             String update = "DELETE FROM CLINICIAN WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(update);
             statement.setString(1, clinician.getUsername());
-            System.out.println("Deletion of Clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+            System.out.println("Deletion of clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
 
     /**
-     * Updates the Clincian in the database whose ID matches the one given with the fields of the Clinician given.
-      *@param clinician The given Clinician
+     * Updates the Clincian in the database whose ID matches the one given with the fields of the clinician given.
+      *@param clinician The given clinician
      * @param clinicianId The ID of the
      * @throws SQLException If there is a problem working with the database.
      */
@@ -143,7 +143,7 @@ public class GeneralClinician {
             statement.setString(4, clinician.getUsername());
             statement.setString(5, clinician.getPassword());
             statement.setInt(6, clinicianId);
-            System.out.println("Update Clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+            System.out.println("Update clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
     }
 }

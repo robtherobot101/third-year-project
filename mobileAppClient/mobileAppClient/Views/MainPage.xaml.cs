@@ -70,6 +70,26 @@ namespace mobileAppClient
         }
 
         /*
+         * Method which is used when a user logs out, opening the login page again.
+         */
+        private async void LogoutClinician()
+        {
+            // Remove token from server
+            LoginAPI loginAPI = new LoginAPI();
+            await loginAPI.Logout(true);
+
+            // Clear any previously selected user
+            UserController.Instance.Logout();
+
+            // Logout clinician
+            ClinicianController.Instance.Logout();
+
+            // Open the login page
+            var loginPage = new LoginPage();
+            await Navigation.PushModalAsync(loginPage);
+        }
+
+        /*
          * Sets up the Main page for a user's view
          */
         public void userLoggedIn()
@@ -93,10 +113,12 @@ namespace mobileAppClient
             var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png",TargetType = typeof(WaitingListItemsPage) };
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
             var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
+            var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(attributesPage);
+            menuList.Add(livesSavedPage);
             menuList.Add(organsPage);
             menuList.Add(medicationsPage);
             menuList.Add(diseasesPage);
@@ -123,12 +145,16 @@ namespace mobileAppClient
             var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
             var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
+            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "attributes_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
+            var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(userSearchPage);
             menuList.Add(attributesPage);
+            menuList.Add(transplantListPage);
+            menuList.Add(mapPage);
             menuList.Add(logoutPage);
         }
 
@@ -151,6 +177,7 @@ namespace mobileAppClient
             var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
             var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png", TargetType = typeof(WaitingListItemsPage) };
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png", TargetType = typeof(MedicationsPage) };
+            
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -173,7 +200,14 @@ namespace mobileAppClient
             switch(page.Name)
             {
                 case "LoginPage":
-                    LogoutUser();
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        LogoutClinician();
+                    }
+                    else
+                    {
+                        LogoutUser();
+                    }
                     break;
                 default:
                     Detail = new NavigationPage((Page)Activator.CreateInstance(page));

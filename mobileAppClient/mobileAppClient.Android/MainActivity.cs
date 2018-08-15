@@ -13,6 +13,8 @@ using Android.Media;
 using Android.Graphics;
 using mobileAppClient.Google;
 using Xamarin.Forms;
+using Android.Support.V4.Content;
+using Android;
 
 namespace mobileAppClient.Droid
 {
@@ -34,15 +36,17 @@ namespace mobileAppClient.Droid
             global::Xamarin.Forms.Forms.Init(this, bundle);
             global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
+            global::Xamarin.FormsMaps.Init(this, bundle);
 
             ActivityContext = this;
-
+            
             LoadApplication(new App());
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
+
 
             //Since we set the request code to 1 for both the camera and photo gallery, that's what we need to check for
             if (requestCode == 0)
@@ -78,19 +82,33 @@ namespace mobileAppClient.Droid
                 {
                     if (data.Data != null)
                     {
-                        //Grab the Uri which is holding the path to the image
-                        Android.Net.Uri uri = data.Data;
 
-                        string fileName = null;
-
-                        if (App.ImageIdToSave != null)
+                        if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) == (int)Permission.Granted)
                         {
-                            fileName = App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString();
-                            var pathToImage = GetPathToImage(uri);
-                            var originalMetadata = new ExifInterface(pathToImage);
-                            int orientation = GetRotation(originalMetadata);
+                            
+                            //Grab the Uri which is holding the path to the image
+                            Android.Net.Uri uri = data.Data;
 
-                            HandleBitmap(uri, orientation, fileName);
+                            string fileName = null;
+
+                            if (App.ImageIdToSave != null)
+                            {
+                                fileName = App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString();
+                                var pathToImage = GetPathToImage(uri);
+                                var originalMetadata = new ExifInterface(pathToImage);
+                                int orientation = GetRotation(originalMetadata);
+
+                                HandleBitmap(uri, orientation, fileName);
+                            }
+                        }
+                        else
+                        {
+                            string[] PermissionsStorage =
+                            {
+                                Manifest.Permission.ReadExternalStorage,
+                            };
+                            const int RequestStorageId = 0;
+                            RequestPermissions(PermissionsStorage, RequestStorageId);
                         }
                     }
                 }

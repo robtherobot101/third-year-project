@@ -1,96 +1,46 @@
 package seng302.Logic.Database;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import seng302.Config.DatabaseConfiguration;
 import seng302.HelperMethods;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
-import seng302.Model.Attribute.Organ;
-import seng302.Model.Disease;
-import seng302.Model.Medication.Medication;
-import seng302.Model.Procedure;
 import seng302.Model.User;
-import seng302.Model.WaitingListItem;
 
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class GeneralUserTest extends GenericTest {
 
     private GeneralUser generalUser = new GeneralUser();
 
     @Test
-    public void patchEntireUser() {
+    public void getUsers() throws SQLException {
+        List<User> expected = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            expected.add(HelperMethods.insertUser(generalUser));
+        }
+        assertTrue(generalUser.getUsers(new HashMap<>()).containsAll(expected));
     }
 
     @Test
-    public void updateAllMedications() throws SQLException {
-        String[] ingredients = {"water", "Air"};
-        User user = HelperMethods.insertUser(generalUser);
-        List<Medication> medications = HelperMethods.makeMedications();
-        generalUser.updateAllMedications(medications, (int) user.getId());
-        assertEquals(medications, generalUser.getUserFromId((int) user.getId()).getCurrentMedications());
-    }
+    public void getUserFromId() throws SQLException {
+        User expected = HelperMethods.insertUser(generalUser);
 
-    @Test
-    public void updateAllProcedures() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-        ArrayList<Organ> organs = new ArrayList<Organ>();
-        organs.add(Organ.LUNG);
-        ArrayList<Procedure> procedures = new ArrayList<>();
-        procedures.add(new Procedure("Trachiotomy", "Removed oesophagus entirely", LocalDate.now(), organs, 1));
-        generalUser.updateAllProcedures(procedures, (int) user.getId());
-        User user2 = generalUser.getUserFromId((int) user.getId());
-        assertEquals(procedures, user2.getPreviousProcedures());
-    }
-
-    @Test
-    public void updateAllDiseases() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-
-        ArrayList<Disease> diseases = new ArrayList<>();
-        diseases.add(new Disease("Bronchitis", LocalDate.now(), false, false, 1));
-        generalUser.updateAllDiseases(diseases, (int) user.getId());
-
-        User user2 = generalUser.getUserFromId((int) user.getId());
-        assertEquals(diseases, user2.getCurrentDiseases());
-
-    }
-
-    @Test
-    public void updateWaitingListItems() throws SQLException {
-        User user = HelperMethods.insertUser(generalUser);
-
-        ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
-        WaitingListItem waitingListItem = new WaitingListItem(Organ.HEART, LocalDate.ofYearDay(2005, 100), 1, (int) user.getId(), null, 0);
-        waitingListItems.add(waitingListItem);
-
-        generalUser.updateWaitingListItems(waitingListItems, (int) user.getId());
-
-        User user2 = generalUser.getUserFromId((int) user.getId());
-        assertEquals(waitingListItems, user2.getWaitingListItems());
-    }
-
-    @Test
-    public void getUsers() {
-    }
-
-    @Test
-    public void buildUserQuery() {
-    }
-
-    @Test
-    public void getUserFromId() {
+        assertEquals(expected, generalUser.getUserFromId((int) expected.getId()));
     }
 
     @Test
@@ -100,12 +50,27 @@ public class GeneralUserTest extends GenericTest {
         assertEquals(user, user2);
     }
 
+    /**
+     * Test the function to get users from a raw resultset object from the database
+     * @throws SQLException
+     */
     @Test
-    public void getIdFromUser() {
-    }
+    public void getUserFromResultSet() throws SQLException {
 
-    @Test
-    public void getUserFromResultSet() {
+        User user = HelperMethods.insertUser(generalUser);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT * FROM USER WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setString(1, user.getUsername());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                assertEquals(user, generalUser.getUserFromResultSet(resultSet));
+                return;
+            }
+        }
+        fail();
     }
 
     @Test
