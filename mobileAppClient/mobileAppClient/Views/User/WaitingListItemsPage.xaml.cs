@@ -43,7 +43,24 @@ namespace mobileAppClient
                 SortingInput.IsVisible = false;
             }
 
+
+            if(ClinicianController.Instance.isLoggedIn())
+            {
+                RegisterButton.IsVisible = true;
+                OrganPicker.IsVisible = true;
+            } else
+            {
+                RegisterButton.IsVisible = false;
+                OrganPicker.IsVisible = false;
+            }
+
             WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
+        }
+
+        public void setupPage()
+        {
+            WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
+
         }
 
         public async void Handle_RegisterClicked(object sender, EventArgs args)
@@ -74,6 +91,7 @@ namespace mobileAppClient
                         await DisplayAlert("",
                             "User successfully updated",
                             "OK");
+                        WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
                         break;
                     case HttpStatusCode.BadRequest:
                         await DisplayAlert("",
@@ -105,14 +123,25 @@ namespace mobileAppClient
             {
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
-            var singleWaitingListItemPage = new SingleWaitingListItemPage((WaitingListItem)WaitingListItemsList.SelectedItem, false);
-            await Navigation.PushModalAsync(singleWaitingListItemPage);
+
+            Boolean showDeregisterButton = ClinicianController.Instance.isLoggedIn();
+            var singleWaitingListItemPage = new SingleWaitingListItemPage((WaitingListItem)WaitingListItemsList.SelectedItem, showDeregisterButton);
+            await Navigation.PushAsync(singleWaitingListItemPage);
         }
+
+        /* C:\Users\Krs19\Documents\SENG302\team-300\mobileAppClient\mobileAppClient\donationIcon.ico
+         * Refreshes the whole page whenever the page appears
+         */
+        protected override void OnAppearing()
+        {
+            setupPage();
+        }
+
 
         /*
          * Handles when a user selects a given attribute of the sorting dropdown 
          * to sort by, sorting the given items in the list view.
-         */ 
+         */
         void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             List<WaitingListItem> currentList = (System.Collections.Generic.List<WaitingListItem>)WaitingListItemsList.ItemsSource;

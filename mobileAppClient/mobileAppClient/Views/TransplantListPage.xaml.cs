@@ -144,7 +144,7 @@ namespace mobileAppClient
             WaitingListItem tapped = (WaitingListItem)TransplantList.SelectedItem;
             if(tapped != null)
             {
-                await Navigation.PushModalAsync(new SingleWaitingListItemPage(tapped, true));
+                await Navigation.PushAsync(new SingleWaitingListItemPage(tapped, true));
             }
         }
 

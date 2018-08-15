@@ -25,10 +25,11 @@ namespace mobileAppClient
         public SingleWaitingListItemPage(WaitingListItem waitingListItem, Boolean showDeregisterButton)
         {
             InitializeComponent();
+            Title = "Waiting list item";
             this.item = waitingListItem;
             OrganTypeEntry.Text = OrganExtensions.ToString(waitingListItem.organType);
             RegisteredDateEntry.Text = waitingListItem.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.organRegisteredDate.month) + ", " + waitingListItem.organRegisteredDate.year;
-            DeregisteredDateEntry.Text =
+            DeregisteredDateEntry.Text = 
                 waitingListItem.organDeregisteredDate != null ?
                                      waitingListItem.organDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.organDeregisteredDate.month) + ", " + waitingListItem.organDeregisteredDate.year
                                      : "N/A";
@@ -46,7 +47,7 @@ namespace mobileAppClient
          */ 
         async void BackButtonClicked(object sender, EventArgs args)
         {
-            await Navigation.PopModalAsync();
+            await Navigation.PopAsync();
         }
 
         /*
@@ -59,7 +60,7 @@ namespace mobileAppClient
             if (action == "1: Error while registering")
             {
                 deregister(item, 1);
-                await Navigation.PopModalAsync();
+                await Navigation.PopAsync();
             }
             else if (action == "2: Disease Cured")
             {
@@ -68,7 +69,7 @@ namespace mobileAppClient
                     User user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
                     if (user != null && user.currentDiseases.Count > 0)
                     {
-                        await Navigation.PushModalAsync(new DiseaseCuredDeregisterPage(item, this));
+                        await Navigation.PushAsync(new DiseaseCuredDeregisterPage(item, this));
                     }
                     else
                     {
@@ -85,12 +86,12 @@ namespace mobileAppClient
             }
             else if (action == "3: Receiver Deceased")
             {
-                await Navigation.PushModalAsync(new DeceasedDeregisterPage(item, this));
+                await Navigation.PushAsync(new DeceasedDeregisterPage(item, this));
             }
             else if (action == "4: Successful Transplant")
             {
                 deregister(item, 1);
-                await Navigation.PopModalAsync();
+                await Navigation.PopAsync();
             }
         }
 
@@ -129,6 +130,5 @@ namespace mobileAppClient
                    "OK");
             }
         }
-
     }
 }
