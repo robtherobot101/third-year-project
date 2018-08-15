@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using mobileAppClient;
 using mobileAppClient.odmsAPI;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace mobileAppClientUnitTests
 {

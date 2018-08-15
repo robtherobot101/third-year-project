@@ -43,12 +43,6 @@ namespace mobileAppClient.Views
                 if (user != null)
                 {
                     List<Disease> diseases = user.currentDiseases;
-                    foreach (Disease item in diseases)
-                    {
-                        item.CellText = item.name;
-                        item.CellColour = Color.Blue;
-                        item.DiagnosisDateString = "Diagnosed on " + item.diagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.diagnosisDate.month) + ", " + item.diagnosisDate.year;
-                    }
                     DiseasesList.ItemsSource = diseases;
                 }
             } catch (HttpRequestException e)
@@ -144,7 +138,7 @@ namespace mobileAppClient.Views
         {
             foreach(Disease d in user.currentDiseases)
             {
-                if(d.id == disease.id)
+                if(d.name == disease.name && d.diagnosisDate == disease.diagnosisDate)
                 {
                     d.isCured = true;
                 }

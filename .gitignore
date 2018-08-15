@@ -486,3 +486,4 @@ Thumbs.db
 # dotCover
 *.dotCover
 
+*config.txt

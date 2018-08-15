@@ -164,6 +164,8 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="iOSCamera.cs" />
+    <Compile Include="CustomMapRenderer.cs" />
+    <Compile Include="CustomMKAnnotationView.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -224,6 +226,9 @@
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
+      <Version>3.2.0.637442-pre1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms.Maps">
       <Version>3.1.0.697729</Version>
     </PackageReference>
   </ItemGroup>
@@ -248,5 +253,153 @@
     <BundleResource Include="Resources\settings_icon.png" />
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
+    <BundleResource Include="Resources\map_icon.png" />
+    <BundleResource Include="Resources\bone_icon.png" />
+    <BundleResource Include="Resources\ear_icon.png" />
+    <BundleResource Include="Resources\eye_icon.png" />
+    <BundleResource Include="Resources\heart_icon.png" />
+    <BundleResource Include="Resources\intestines_icon.png" />
+    <BundleResource Include="Resources\kidney_icon.png" />
+    <BundleResource Include="Resources\liver_icon.png" />
+    <BundleResource Include="Resources\lungs_icon.png" />
+    <BundleResource Include="Resources\pancreas_icon.png" />
+    <BundleResource Include="Resources\skin_icon.png" />
+    <BundleResource Include="Resources\tissue_icon.png" />
+    <BundleResource Include="Resources\man1.png" />
+    <BundleResource Include="Resources\man2.png" />
+    <BundleResource Include="Resources\man3.png" />
+    <BundleResource Include="Resources\man4.png" />
+    <BundleResource Include="Resources\man5.png" />
+    <BundleResource Include="Resources\man6.png" />
+    <BundleResource Include="Resources\man7.png" />
+    <BundleResource Include="Resources\man8.png" />
+    <BundleResource Include="Resources\man9.png" />
+    <BundleResource Include="Resources\man10.png" />
+    <BundleResource Include="Resources\man11.png" />
+    <BundleResource Include="Resources\man12.png" />
+    <BundleResource Include="Resources\man13.png" />
+    <BundleResource Include="Resources\man14.png" />
+    <BundleResource Include="Resources\woman1.png" />
+    <BundleResource Include="Resources\woman2.png" />
+    <BundleResource Include="Resources\woman3.png" />
+    <BundleResource Include="Resources\woman4.png" />
+    <BundleResource Include="Resources\woman5.png" />
+    <BundleResource Include="Resources\woman6.png" />
+    <BundleResource Include="Resources\woman7.png" />
+    <BundleResource Include="Resources\woman8.png" />
+    <BundleResource Include="Resources\woman9.png" />
+    <BundleResource Include="Resources\woman10.png" />
+    <BundleResource Include="Resources\woman11.png" />
+    <BundleResource Include="Resources\other.png" />
+    <BundleResource Include="Resources\users_icon.png" />
+    <BundleResource Include="Resources\add_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\score_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human35.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human9.png" />
   </ItemGroup>
 </Project>

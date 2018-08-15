@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:local="clr-namespace:mobileAppClient" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.SingleDiseasePage">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <Entry x:Name="NameEntry" IsEnabled="false" Placeholder="Name"/>
+
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Diagnosis Date" VerticalOptions="Center"/>
+                <DatePicker x:Name="DiagnosisDateEntry" IsEnabled="false" Format="D" MinimumDate="01/01/1900"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Is Cured?" VerticalOptions="Center"/>
+                <Switch x:Name="CuredEntry" IsEnabled="false" Toggled="CuredCheck"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Is Chronic?" VerticalOptions="Center"/>
+                <Switch x:Name="ChronicEntry" IsEnabled="false" Toggled="ChronicCheck"/>
+            </StackLayout>
+
+            <Button Text="Add Disease" x:Name="AddDiseaseButton" Clicked="AddDiseaseButton_OnClicked" IsVisible="False" VerticalOptions="End"/>
+            <Button Text="Edit Disease" x:Name="EditDiseaseButton" Clicked="EditDiseaseButton_OnClicked" IsVisible="False" VerticalOptions="End"/>
+            <Button Text="Save Disease" x:Name="SaveDiseaseButton" Clicked="SaveDiseaseButton_OnClicked" IsVisible="False" VerticalOptions="End"/>
+        </StackLayout>
+    </ContentPage.Content>
+    
+</ContentPage>
