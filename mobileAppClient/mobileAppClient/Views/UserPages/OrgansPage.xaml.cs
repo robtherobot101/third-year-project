@@ -68,7 +68,6 @@ namespace mobileAppClient
                     case Organ.TISSUE:
                         ConnectiveTissueCell.On = true;
                         break;
-                        
                 }
             }
 

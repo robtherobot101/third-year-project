@@ -27,6 +27,9 @@ namespace mobileAppClient
 		{
 			InitializeComponent ();
             loginClicked = false;
+            if(Device.RuntimePlatform == Device.Android) {
+                FacebookButton.Image = null;
+            }
 
 		}
 

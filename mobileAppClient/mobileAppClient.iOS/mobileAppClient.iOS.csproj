@@ -294,4 +294,112 @@
     <BundleResource Include="Resources\users_icon.png" />
     <BundleResource Include="Resources\add_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\score_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human35.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\human9.png" />
+  </ItemGroup>
 </Project>
