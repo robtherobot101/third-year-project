@@ -35,6 +35,7 @@ public class Server {
     private CLIController CLIController;
     private CountriesController countriesController;
     private OrgansController organsController;
+    private MapObjectController mapObjectController;
 
     private int port = 7015;
     private boolean testing = true;
@@ -196,6 +197,11 @@ public class Server {
                 get("",  waitingListController::getAllWaitingListItems);
             });
 
+            path("/mapObjects", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
+                get("",  mapObjectController::getAllMapObjects);
+            });
+
             path("/usercount", () -> {
                 before("",   profileUtils::hasAccessToAllUsers);
                 get("",      userController::countUsers);
@@ -268,6 +274,7 @@ public class Server {
         profileUtils = new ProfileUtils();
         CLIController = new CLIController();
         countriesController = new CountriesController();
+        mapObjectController = new MapObjectController();
         organsController = new OrgansController();
     }
 }

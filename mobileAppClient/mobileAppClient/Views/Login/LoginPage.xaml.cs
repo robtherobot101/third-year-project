@@ -101,6 +101,12 @@ namespace mobileAppClient
                         "Server error",
                         "OK");
                     break;
+                case HttpStatusCode.Conflict:
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "User is deceased. Please consult a Registered Clinician",
+                        "OK");
+                    break;
             }
             loginClicked = false;
 
