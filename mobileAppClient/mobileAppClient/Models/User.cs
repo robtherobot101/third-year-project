@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using mobileAppClient.Models;
+using Newtonsoft.Json;
+
 namespace mobileAppClient
 {
     /*
@@ -43,8 +46,7 @@ namespace mobileAppClient
         public string username { get; set; }
         public string password { get; set; }
 
-        public List<String> organs { get; set; }
-
+        public List<Organ> organs { get; set; }
         public List<Medication> currentMedications { get; set; }
         public List<Medication> historicMedications { get; set; }
 
@@ -58,6 +60,7 @@ namespace mobileAppClient
 
         public List<HistoryItem> userHistory { get; set; }
 
+        [JsonIgnore]
         public string FullName
         {
             get
@@ -74,6 +77,23 @@ namespace mobileAppClient
         {
         }
 
+        /// <summary>
+        /// Google Login User constructor
+        /// </summary>
+        public User(string firstName, string lastName, string email)
+        {
+            name = new List<string> { firstName, "", lastName };
+            preferredName = new List<string> { firstName, "", lastName };
+            this.email = email;
+            username = email;
+            password = "password";
+            creationTime = new CustomDateTime(DateTime.Now);
+
+            //Server requires to initialise the organs and user history items on creation
+            organs = new List<Organ>();
+            userHistory = new List<HistoryItem>();
+        }
+
         public User ShallowCopy()
         {
             return (User)this.MemberwiseClone();
@@ -82,6 +102,7 @@ namespace mobileAppClient
         /*
          * Simply calculates the user's age
          */
+        [JsonIgnore]
         public int Age
         {
             get {

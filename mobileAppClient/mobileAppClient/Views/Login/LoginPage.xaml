@@ -6,7 +6,7 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
-                
+                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
                 <Label Text="Welcome to Transcend"
                        HorizontalOptions="Center"
                        />
@@ -20,10 +20,10 @@
                        HeightRequest="120"
                        />
 
-                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email"                
+                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email" ReturnType="Next"               
                     />
 
-                <Entry x:Name="passwordInput" Placeholder="Password"
+                <Entry x:Name="passwordInput" Placeholder="Password" ReturnType="Go"
                     IsPassword="true"                
                     />
                 
@@ -50,9 +50,10 @@
                          x:Name="FacebookButton"
                          />
 
-                 <Button Text="Login with Google"
-                    Clicked="Handle_LoginWithGoogleClicked" />
-                    
+                <Button Text="Login with Google"
+                    Clicked="Handle_LoginWithGoogleClicked" 
+                        Image=""
+                        x:Name="GoogleButton"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

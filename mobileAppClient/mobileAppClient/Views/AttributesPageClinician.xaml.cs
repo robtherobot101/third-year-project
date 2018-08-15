@@ -37,7 +37,6 @@ namespace mobileAppClient
 
         /*
          * Converts any given string into having an uppercase first char with lowercase for the rest
-         * - Used for Pickers
          */
         private string FirstCharToUpper(string input)
         {
