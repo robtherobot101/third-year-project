@@ -1,8 +1,14 @@
-﻿using mobileAppClient.Models;
+﻿using CarouselView.FormsPlugin.Abstractions;
+using Microsoft.Toolkit.Parsers.Rss;
+using mobileAppClient.Models;
+using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,10 +17,16 @@ namespace mobileAppClient.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ClinicianOverviewPage : ContentPage
 	{
-		public ClinicianOverviewPage ()
-		{
-			InitializeComponent();
+        public ICommand OpenCommand { get; private set; }
+        public ClinicianOverviewPage()
+        {
+            InitializeComponent();
+            OpenCommand = new Command<string>(OpenItem);
             fillFields();
+            this.BindingContext = new
+            {
+                rss = (new NewsFeed()).rss
+            };
 		}
 
         private async void fillFields()
@@ -33,5 +45,11 @@ namespace mobileAppClient.Views
                 UserCountLabel.Text = String.Format("Failed to get result from database ({0})", userCountResult.Item1);
             }
         }
-	}
+
+        void OpenItem(string url)
+        {
+            Console.WriteLine("Opening url");
+            Device.OpenUri(new System.Uri(url));
+        }
+    }
 }
