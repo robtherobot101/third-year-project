@@ -51,7 +51,7 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
      * @param username    The username of the clinician
      * @param password    The clinician's password
@@ -70,7 +70,7 @@ public class Clinician {
     }
 
     /**
-     * Used by Admin to pick its own ID
+     * Used by admin to pick its own ID
      *
      * @param username    The username of the clinician
      * @param password    The clinician's password
@@ -207,7 +207,7 @@ public class Clinician {
             return String.format("%-8d | %s | %-22s | %10s    | %-10s    ", staffID,
                     name, workAddress,region, username);
         } else {
-                return String.format("Clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
+                return String.format("clinician (ID %d) Name: %s, Work address: %s, Region: %s, Username: %s.", staffID
                         , name, workAddress, region, username);
             }
     }
@@ -216,7 +216,7 @@ public class Clinician {
 
     @Override
     public String toString() {
-        return "Clinician{" +
+        return "clinician{" +
                 "name='" + name + '\'' +
                 ", staffID='" + staffID + '\'' +
                 ", workAddress='" + workAddress + '\'' +

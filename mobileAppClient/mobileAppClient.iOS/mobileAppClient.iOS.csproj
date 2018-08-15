@@ -248,5 +248,7 @@
     <BundleResource Include="Resources\settings_icon.png" />
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
+    <BundleResource Include="Resources\users_icon.png" />
+    <BundleResource Include="Resources\add_icon.png" />
   </ItemGroup>
 </Project>

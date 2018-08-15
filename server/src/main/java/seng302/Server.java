@@ -1,13 +1,17 @@
 package seng302;
 
+import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -37,10 +41,16 @@ public class Server {
 
     private ProfileUtils profileUtils;
 
-    private Server() {}
+    private Map<Object, Object> config = new ConfigParser().getConfig();
+
+    private Server() { }
 
     public static Server getInstance() {
         return INSTANCE;
+    }
+
+    public Map<Object, Object> getConfig() {
+        return config;
     }
 
     /**
@@ -124,7 +134,7 @@ public class Server {
                 });
 
                 path("/:id/medications", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     medicationsController::getAllMedications);
                     post("",                    medicationsController::addMedication);
                     get("/:medicationId",       medicationsController::getSingleMedication);
@@ -133,7 +143,7 @@ public class Server {
                 });
 
                 path("/:id/diseases", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     diseasesController::getAllDiseases);
                     post("",                    diseasesController::addDisease);
                     get("/:diseaseId",          diseasesController::getSingleDisease);
@@ -142,7 +152,7 @@ public class Server {
                 });
 
                 path("/:id/procedures", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     proceduresController::getAllProcedures);
                     post("",                    proceduresController::addProcedure);
                     get("/:procedureId",        proceduresController::getSingleProcedure);
@@ -151,13 +161,13 @@ public class Server {
                 });
 
                 path("/:id/history", () -> {
-                   before("",                   profileUtils::hasUserLevelAccess);
+                   before("",                   profileUtils::hasAccessToAllUsers);
                    get("",                      historyController::getUserHistoryItems);
                    post("",                     historyController::addUserHistoryItem);
                 });
 
                 path("/:id/donations", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     donationsController::getAllUserDonations);
                     post("",                    donationsController::addDonation);
                     delete("",                  donationsController::deleteAllUserDonations);
@@ -166,8 +176,9 @@ public class Server {
                 });
 
                 path("/:id/waitingListItems", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     waitingListController::getAllUserWaitingListItems);
+                    patch("",                   waitingListController::editAllWaitingListItems);
                     post("",                    waitingListController::addNewUserWaitingListItem);
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
                     patch("/:waitingListItemId", waitingListController::editWaitingListItem);
@@ -191,7 +202,6 @@ public class Server {
             });
 
             path("/countries", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
             });

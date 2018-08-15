@@ -4,7 +4,8 @@
              x:Class="mobileAppClient.MedicationsPage"
              xmlns:local="clr-namespace:mobileAppClient"
              Title="Medications" NavigationPage.HasNavigationBar="True"
-             xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
+             xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
+             >
     <ContentPage.Content>
          <StackLayout Orientation="Vertical">
 
@@ -23,9 +24,14 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-
+                             <ViewCell.ContextActions>
+                                    <MenuItem Clicked="Handle_MoveToClicked" CommandParameter="{Binding .}"
+                                       Text="Move" />
+                                    <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
+                                       Text="Delete" IsDestructive="True" />
+                             </ViewCell.ContextActions>
                             <StackLayout Orientation="Vertical" Padding="15, 0, 0, 0">
-                                <Label Text="{Binding Name}"
+                                <Label Text="{Binding name}"
                                 TextColor="Blue"
                                 FontSize="Default"
                                        />
@@ -50,4 +56,5 @@
             
         </StackLayout>
     </ContentPage.Content>
+    
 </ContentPage>

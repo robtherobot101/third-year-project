@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using System.Linq;
 using System.Globalization;
+using System.Net;
+using System.Windows.Input;
+using mobileAppClient.odmsAPI;
 
 namespace mobileAppClient
 {
@@ -14,6 +17,9 @@ namespace mobileAppClient
     public partial class DiseasesPage : ContentPage
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
+
+        public bool isClinicianAccessing;
+
         /*
          * Event handler to handle when a user switches between current and cured diseases
          * resetting the sorting and changing the listview items.
@@ -100,28 +106,7 @@ namespace mobileAppClient
         public DiseasesPage()
         {
             InitializeComponent();
-
-            //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
-
-            foreach(Disease item in UserController.Instance.LoggedInUser.currentDiseases) {
-                if(item.isChronic) {
-                    item.CellText = item.name + " (CHRONIC)";
-                    item.CellColour = Color.Red;
-                } else {
-                    item.CellText = item.name;
-                    item.CellColour = Color.Blue;
-                }
-                item.DiagnosisDateString = "Diagnosed on " + item.diagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.diagnosisDate.month) + ", " + item.diagnosisDate.year;
-
-
-
-            }
-            foreach (Disease item in UserController.Instance.LoggedInUser.curedDiseases)
-            {
-                item.DiagnosisDateString = "Diagnosed on " + item.diagnosisDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.diagnosisDate.month) + ", " + item.diagnosisDate.year;
-                item.CellText = item.name;
-                item.CellColour = Color.Blue;
-            }
+            CheckIfClinicianAccessing();
 
             if (UserController.Instance.LoggedInUser.currentDiseases.Count == 0)
             {
@@ -131,21 +116,71 @@ namespace mobileAppClient
             }
 
             DiseasesList.ItemsSource = returnCurrentDiseasesWithChronicAtTop();
-  
+        }
 
+        /**
+         * Checks if a clinician is viewing the user
+         */
+        private void CheckIfClinicianAccessing()
+        {
+            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
+
+            if (isClinicianAccessing)
+            {
+                var addItem = new ToolbarItem
+                {
+                    Command = OpenAddDisease,
+                    Icon = "add_icon.png"
+                };
+                
+                this.ToolbarItems.Add(addItem);
+            }
+        }
+
+        public void refreshDiseases(int pageToSelect)
+        {
+            if (pageToSelect != 1 && pageToSelect != 0)
+            {
+                return;
+            }
+
+            if (pageToSelect == 0)
+            {
+                SegControl.SelectedSegment = 1;
+            }
+            else
+            {
+                SegControl.SelectedSegment = 0;
+            }
+
+            SegControl.SelectedSegment = pageToSelect;
+        }
+
+        private ICommand OpenAddDisease
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    Console.WriteLine("Opening single procedure...");
+
+                    var singleDiseasePage = new SingleDiseasePage(this);
+                    Navigation.PushAsync(singleDiseasePage);
+                });
+            }
         }
 
         /*
          * Handles when a single disease it tapped, sending a user to the single disease page 
          * of that given disease.
-         */ 
+         */
         async void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if (e == null)
             {
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null
             }
-            var singleDiseasePage = new SingleDiseasePage((Disease)DiseasesList.SelectedItem);
+            var singleDiseasePage = new SingleDiseasePage(this, (Disease) DiseasesList.SelectedItem);
             await Navigation.PushAsync(singleDiseasePage);
         }
 
@@ -255,10 +290,56 @@ namespace mobileAppClient
             }
         }
 
+        async void Handle_DeleteClicked(object sender, System.EventArgs e)
+        {
+            var mi = ((MenuItem)sender);
+            Disease selectedDisease = mi.CommandParameter as Disease;
+            bool answer = await DisplayAlert("Are you sure?", "Do you want to remove '" + selectedDisease.name + "' from " + UserController.Instance.LoggedInUser.FullName + "?", "Yes", "No");
+            if (answer == true)
+            {
+                if (SegControl.SelectedSegment == 0)
+                {
+                    UserController.Instance.LoggedInUser.currentDiseases.Remove(selectedDisease);
+                    refreshDiseases(0);
+                }
+                else
+                {
+                    UserController.Instance.LoggedInUser.curedDiseases.Remove(selectedDisease);
+                    refreshDiseases(1);
+                }
+
+                UserAPI userAPI = new UserAPI();
+                HttpStatusCode userUpdated = await userAPI.UpdateUser(true);
+                switch (userUpdated)
+                {
+                    case HttpStatusCode.Created:
+                        await DisplayAlert("",
+                            "User procedure successfully removed",
+                            "OK");
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("",
+                            "User procedure deletion failed (400)",
+                            "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                            "Server unavailable, check connection",
+                            "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                            "Server error, please try again",
+                            "OK");
+                        break;
+                }
+            }
+        }
+
         /*
          * Handles when a user changes the orientation of the sorting to be either ascending or 
          * descending, changing the order in which items are sorted in the list view.
-         */ 
+         */
         void Handle_UpDownChanged(object sender, System.EventArgs e)
         {
             List<Disease> currentList = (System.Collections.Generic.List<Disease>)DiseasesList.ItemsSource;

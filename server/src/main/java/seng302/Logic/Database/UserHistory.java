@@ -2,13 +2,13 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.HistoryItem;
-import seng302.Model.Medication.Medication;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserHistory {
 
@@ -60,5 +60,30 @@ public class UserHistory {
                 historyItemsResultSet.getInt("id")
         );
 
+    }
+
+    /**
+     * Updates a user's history on the database to a new history list.
+     *
+     * @param newHistory The list of history to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is issues connecting to the database
+     */
+    public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
+        List<HistoryItem> oldHistory = getAllHistoryItems(userId);
+        int sameUntil = 0;
+        while (sameUntil < newHistory.size() && sameUntil < oldHistory.size() && newHistory.get(sameUntil).informationEqual(oldHistory.get(sameUntil))) {
+            sameUntil++;
+        }
+
+        newHistory = newHistory.subList(sameUntil, newHistory.size());
+        oldHistory = oldHistory.subList(sameUntil, oldHistory.size());
+
+        for (HistoryItem oldItem: oldHistory) {
+            removeHistoryItem(userId, oldItem.getId());
+        }
+        for (HistoryItem newItem: newHistory) {
+            insertHistoryItem(newItem, userId);
+        }
     }
 }
