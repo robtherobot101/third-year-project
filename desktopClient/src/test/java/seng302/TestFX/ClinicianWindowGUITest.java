@@ -14,15 +14,14 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import org.junit.*;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
@@ -251,7 +250,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
                 stage.showAndWait();
 
                 }catch (IOException e){
-                System.out.println(e);
             }
         });
 
@@ -265,7 +263,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
         write("newTestPassword");
 
         clickOn("Update");
-        System.out.println(Arrays.toString(this.listWindows().toArray()));
         pressDialogOKButtons();
         assertEquals("newTestUsername", testClinician.getUsername());
         assertEquals("newTestPassword", testClinician.getPassword());

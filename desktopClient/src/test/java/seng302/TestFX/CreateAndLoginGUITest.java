@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.GUI.TFScene;
-import seng302.Generic.WindowManager;
+import seng302.gui.TFScene;
+import seng302.generic.WindowManager;
 import seng302.User.User;
 
 import java.sql.SQLException;
@@ -28,7 +28,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
     @Before
     public void setup() throws HttpResponseException {
-        WindowManager.getDataManager().getGeneral().reset("masterToken");
+        //WindowManager.getDataManager().getGeneral().reset("masterToken");
         WindowManager.resetScene(TFScene.createAccount);
         //DataManager.users.clear();
     }
@@ -168,7 +168,7 @@ public class CreateAndLoginGUITest extends TestFXTest {
         textField = lookup("#passwordInput").query();
         textField.setText(testUser.getPassword());
         clickOn("#loginButton");
-        //Make sure that the user GUI is now showing
+        //Make sure that the user gui is now showing
         assertNotNull(lookup("#undoBannerButton").query());
     }
 
@@ -181,20 +181,20 @@ public class CreateAndLoginGUITest extends TestFXTest {
         clickOn("#passwordInput");
         write(testUser.getPassword().substring(0, 3));
         clickOn("#loginButton");
-        //Make sure that the user GUI is not showing
+        //Make sure that the user gui is not showing
         assertNull(lookup("#undoBannerButton").query());
 
         clickOn("#passwordInput");
         write(testUser.getPassword().substring(3));
         clickOn("#loginButton");
-        //Make sure that the user GUI is now showing
+        //Make sure that the user gui is now showing
         assertNotNull(lookup("#undoBannerButton").query());
     }
 
     @Test
     public void testLoginAsDefaultClinician() {
         loginAsDefaultClinician();
-        //Make sure that the clinician GUI is now showing
+        //Make sure that the clinician gui is now showing
         assertNotNull(lookup("#homeButton").query());
     }
 }

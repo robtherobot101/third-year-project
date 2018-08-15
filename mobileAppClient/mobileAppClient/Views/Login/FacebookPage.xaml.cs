@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using mobileAppClient.Models;
 using mobileAppClient.odmsAPI;
 using Xamarin.Forms;
 
@@ -100,7 +101,7 @@ namespace mobileAppClient
                     inputUser.gender = facebookProfile.Gender.ToUpper();
                     inputUser.region = facebookProfile.Location.Name;
                     //Server requires to initialise the organs and user history items on creation
-                    inputUser.organs = new List<string>();
+                    inputUser.organs = new List<Organ>();
                     inputUser.userHistory = new List<HistoryItem>();
 
                     HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-
+using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -103,7 +103,7 @@ namespace mobileAppClient
             inputUser.dateOfBirth = new CustomDate(dobInput.Date);
             inputUser.creationTime = new CustomDateTime(DateTime.Now);
             //Server requires to initialise the organs and user history items on creation
-            inputUser.organs = new List<string>();
+            inputUser.organs = new List<Organ>();
             inputUser.userHistory = new List<HistoryItem>();
 
             HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
@@ -122,7 +122,7 @@ namespace mobileAppClient
                 case HttpStatusCode.InternalServerError:
                     await DisplayAlert(
                         "Failed to Register",
-                        "Username/Email may be taken",
+                        "Server error, please try again",
                         "OK");
                     break;
             }

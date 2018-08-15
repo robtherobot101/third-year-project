@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
@@ -232,8 +232,6 @@ public class UserWaitingListGUITest extends TestFXTest {
 
     public WaitingListItem getTransplantListItem(TableView<WaitingListItem> table, Organ organ, String receiverName){
         for(WaitingListItem item:table.getItems()){
-            System.out.println("item name: "+item.getReceiverName());
-            System.out.println("item organ: "+item.getOrganType());
             if(item.getReceiverName().equals(receiverName) && item.getOrganType()==organ){
                 return item;
             }
@@ -288,7 +286,6 @@ public class UserWaitingListGUITest extends TestFXTest {
         usersTransplantWaitingListAsClinician();
         sleep(500);
 
-        System.out.println(waitingListItems().size());
         assertTrue(waitingListItems().size()==0);
     }
 }

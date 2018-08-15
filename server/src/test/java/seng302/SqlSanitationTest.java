@@ -30,13 +30,13 @@ public class SqlSanitationTest {
 
     @Test
     public void queryContainsDeleteMixedCaseTest(){
-        String result = sqlSanitation.sanitizeSqlString("Delete * From User Where id = 1");
+        String result = sqlSanitation.sanitizeSqlString("Delete * From user Where id = 1");
         assertEquals("You do not have permission to delete from the database.",result);
     }
 
     @Test
     public void queryContainsDropTest(){
-        String result = sqlSanitation.sanitizeSqlString("Drop User Where id = 1");
+        String result = sqlSanitation.sanitizeSqlString("Drop user Where id = 1");
         assertEquals("You do not have permission to drop in the database.",result);
     }
 
@@ -60,19 +60,19 @@ public class SqlSanitationTest {
 
     @Test
     public void queryContainsAlterTest(){
-        String result = sqlSanitation.sanitizeSqlString("ALTER TABLE User ADD column_name text; ");
+        String result = sqlSanitation.sanitizeSqlString("ALTER TABLE user ADD column_name text; ");
         assertEquals("You do not have permission to alter the database.",result);
     }
 
     @Test
     public void queryContainsPasswordTest(){
-        String result = sqlSanitation.sanitizeSqlString("Select password From User");
+        String result = sqlSanitation.sanitizeSqlString("Select password From user");
         assertEquals("You do not have permission to view the passwords of users in the database.",result);
     }
 
     @Test
     public void goodQueryTest(){
-        String result = sqlSanitation.sanitizeSqlString("select first_name, last_name from User where id = 5");
+        String result = sqlSanitation.sanitizeSqlString("select first_name, last_name from user where id = 5");
         assertEquals("",result);
     }
 

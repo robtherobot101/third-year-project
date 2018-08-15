@@ -3,6 +3,7 @@ package seng302.Model;
 import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +40,7 @@ public class User {
     private String countryOfDeath;
 
     /**
-     * constructor method to create a new User object
+     * constructor method to create a new user object
      * @param firstName String the user first name
      * @param middleNames String[] the middle names of the user
      * @param lastName String the last name of the user
@@ -100,7 +101,7 @@ public class User {
      * @param country String of the country of residence
      * @param countryOfDeath String of the country of death
      * @param regionOfDeath String of the region of death
-     * @param profileImageType The users profile image
+     * @param profileImageType String of the type of profile image
      */
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath,
@@ -142,6 +143,12 @@ public class User {
         this.pendingProcedures = new ArrayList<>();
         this.previousProcedures = new ArrayList<>();
         this.profileImageType = profileImageType;
+    }
+
+    public double getAgeDouble() {
+        long days = Duration.between(dateOfBirth.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays();
+        return days / 365.00;
+
     }
 
     public String getName() {
@@ -394,7 +401,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("User (ID %d) created at %s "
+        return String.format("user (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"

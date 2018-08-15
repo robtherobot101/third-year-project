@@ -1,0 +1,13 @@
+### This is the default configuration file
+
+# The address of the database where the data is stored
+database_address=http://csse-s302g3.canterbury.ac.nz/api/v1
+
+# The name of the Database
+database_name=seng302-2018-team300-prod
+
+# The username to access the database
+username=seng302-team300
+
+# The password to access the database
+password=WeldonAside5766
