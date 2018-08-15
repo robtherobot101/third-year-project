@@ -18,6 +18,7 @@ namespace mobileAppClient
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         WaitingListItem item;
+        User user;
         /*
          * Constructor which initialises the entries of the waiting list items listview.
          */ 
@@ -25,18 +26,26 @@ namespace mobileAppClient
         {
             InitializeComponent();
             this.item = waitingListItem;
+            
             OrganTypeEntry.Text = waitingListItem.organType;
             RegisteredDateEntry.Text = waitingListItem.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.organRegisteredDate.month) + ", " + waitingListItem.organRegisteredDate.year;
+            
             DeregisteredDateEntry.Text =
                 waitingListItem.organDeregisteredDate != null ?
                                      waitingListItem.organDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.organDeregisteredDate.month) + ", " + waitingListItem.organDeregisteredDate.year
                                      : "N/A";
-            //DeregisterCodeEntry.Text =
-            //waitingListItem.OrganDeregisteredCode != 0 ? waitingListItem.OrganDeregisteredCode.ToString() : "N/A";
-
+            DeregisterCodeEntry.Text = waitingListItem.organDeregisteredCode != 0 ? waitingListItem.deregisterReason() : "N/A";
             DeregisterButton.IsVisible = showDeregisterButton;
 
             IDEntry.Text = waitingListItem.id.ToString();
+
+
+        }
+
+        protected override async void OnAppearing()
+        {
+            user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
+            UserName.Text = user.FullName.ToString();
         }
 
         /*

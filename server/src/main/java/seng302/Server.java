@@ -1,13 +1,17 @@
 package seng302;
 
+import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -31,16 +35,23 @@ public class Server {
     private CLIController CLIController;
     private CountriesController countriesController;
     private OrgansController organsController;
+    private MapObjectController mapObjectController;
 
     private int port = 7015;
     private boolean testing = true;
 
     private ProfileUtils profileUtils;
 
-    private Server() {}
+    private Map<Object, Object> config = new ConfigParser().getConfig();
+
+    private Server() { }
 
     public static Server getInstance() {
         return INSTANCE;
+    }
+
+    public Map<Object, Object> getConfig() {
+        return config;
     }
 
     /**
@@ -186,6 +197,11 @@ public class Server {
                 get("",  waitingListController::getAllWaitingListItems);
             });
 
+            path("/mapObjects", () -> {
+                before("", profileUtils::hasAccessToAllUsers);
+                get("",  mapObjectController::getAllMapObjects);
+            });
+
             path("/usercount", () -> {
                 before("",   profileUtils::hasAccessToAllUsers);
                 get("",      userController::countUsers);
@@ -258,6 +274,7 @@ public class Server {
         profileUtils = new ProfileUtils();
         CLIController = new CLIController();
         countriesController = new CountriesController();
+        mapObjectController = new MapObjectController();
         organsController = new OrgansController();
     }
 }

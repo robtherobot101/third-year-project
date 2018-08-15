@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using mobileAppClient.Models;
+using Newtonsoft.Json;
+
 namespace mobileAppClient
 {
     /*
@@ -42,7 +45,6 @@ namespace mobileAppClient
         public string email { get; set; }
         public string username { get; set; }
         public string password { get; set; }
-        public int points { get; set; }
 
         public List<String> organs { get; set; }
         public List<Medication> currentMedications { get; set; }
@@ -58,6 +60,7 @@ namespace mobileAppClient
 
         public List<HistoryItem> userHistory { get; set; }
 
+        [JsonIgnore]
         public string FullName
         {
             get
@@ -70,8 +73,8 @@ namespace mobileAppClient
             this.email = email;
         }
 
-        public User()
-        {
+        public User(){
+
         }
 
         public User ShallowCopy()
@@ -82,6 +85,7 @@ namespace mobileAppClient
         /*
          * Simply calculates the user's age
          */
+        [JsonIgnore]
         public int Age
         {
             get {

@@ -54,8 +54,13 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding CellText}"
-                         Detail="{Binding DiagnosisDateString}"
-                         TextColor="{Binding CellColour}"/>
+                         Detail="{Binding DiagnosisDetailString}"
+                         TextColor="{Binding CellColour}">
+                            <TextCell.ContextActions>
+                                <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
+                                          Text="Delete" IsDestructive="True" />
+                            </TextCell.ContextActions>
+                        </TextCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -67,4 +72,6 @@
 
 
     </ContentPage.Content>
+    
+   
 </ContentPage>

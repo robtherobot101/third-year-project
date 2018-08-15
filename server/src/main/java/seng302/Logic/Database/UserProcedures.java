@@ -39,6 +39,9 @@ public class UserProcedures {
 
             String organsAffected = "";
             if (!procedure.getOrgansAffected().isEmpty()) {
+                System.out.println("**********************");
+                System.out.println(procedure.getOrgansAffected());
+                System.out.println("**********************");
                 for (Organ organ : procedure.getOrgansAffected()) {
                     organsAffected += organ.toString() + ",";
                 }
