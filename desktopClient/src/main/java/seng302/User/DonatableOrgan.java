@@ -5,7 +5,6 @@ import seng302.User.Attribute.Organ;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -16,7 +15,6 @@ public class DonatableOrgan {
     private long donorId;
     private int id;
     private Duration timeLeft;
-    private String timeLeftString;
     private String receiverName;
     private String receiverDeathRegion;
     private double timePercent;
@@ -80,24 +78,13 @@ public class DonatableOrgan {
         return timeLeft;
     }
 
-    public String getTimeLeftString(){return timeLeftString;}
-
     public void setTimeLeft(Duration time) {
         timeLeft = time;
-        setTimeLeftString(time);
         timePercent = (double) time.toMillis() / (double) getExpiryDuration(organType).toMillis();
-    }
-
-    private void setTimeLeftString(Duration time) {
-        long millis = time.toMillis();
-        timeLeftString = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
-                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
     }
 
     public void tickTimeLeft(){
         timeLeft = timeLeft.minus(1, SECONDS);
-        setTimeLeftString(timeLeft);
         double temp = (double) timeLeft.toMillis() /  (double) getExpiryDuration(organType).toMillis();
         if ((timePercent >= 0.75 && temp < 0.75) || (timePercent >= 0.5 && temp < 0.5) || (timePercent >= 0.25 && temp < 0.25)) {
             timePercent = temp;
@@ -137,7 +124,7 @@ public class DonatableOrgan {
                 duration = Duration.parse("P7D");
                 break;
             case EAR:
-                duration = Duration.parse("P3650D");//Todo this is unknown and is a place holder
+                duration = Duration.parse("P3650D"); //Confirmed by Fabian 14/08
                 break;
             case TISSUE:
                 duration = Duration.parse("P1825D");

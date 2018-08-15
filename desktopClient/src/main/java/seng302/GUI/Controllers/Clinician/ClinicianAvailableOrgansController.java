@@ -21,6 +21,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class ClinicianAvailableOrgansController implements Initializable{
@@ -77,16 +78,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
             Duration expiryDuration = organ.getExpiryDuration(organ.getOrganType());
             LocalDateTime expiryDate = deathDate.plus(expiryDuration);
 
-            if (now.isBefore(expiryDate) && expiryDate.isBefore(now.plusHours(100))){
-                // Set time remaining
-                //calculate the initial value of time remaining (if lower than 100 hours left)
-                Duration timeLeft = Duration.between(now, expiryDate);
-                organ.setTimeLeft(timeLeft);
-            } else {
-                Duration timeLeft = Duration.between(now, expiryDate);
-                organ.setTimeLeft(timeLeft);
-                //Either the organ shouldn't be displaying, or it should display <4 days or something
-            }
+            Duration timeLeft = Duration.between(now, expiryDate);
+            organ.setTimeLeft(timeLeft);
+
         }
     }
 
@@ -100,7 +94,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
         //set up the timer
         int delay = 1000;
         int period = 1000;
-        System.out.println("Initializing timer...");
         //time = new Timer(true);
         tick = new TimerTask() {
             public void run() {
@@ -183,7 +176,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("receiverName"));
-        countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeftString"));
+        countdownColumn.setCellValueFactory(new PropertyValueFactory<>("timeLeft"));
         dateOfDeathColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfDeath"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("receiverDeathRegion"));
 
@@ -191,6 +184,26 @@ public class ClinicianAvailableOrgansController implements Initializable{
         organsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         organsTable.setItems(expiryList);
+
+        countdownColumn.setCellFactory(column -> {
+            return new TableCell<DonatableOrgan, Duration>(){
+                @Override
+                protected void updateItem(Duration item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        Long millis = item.toMillis();
+                        setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)));
+
+                    }
+                }
+            };
+        });
 
         organsTable.setRowFactory(new Callback<TableView<DonatableOrgan>, TableRow<DonatableOrgan>>() {
             @Override
