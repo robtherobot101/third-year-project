@@ -28,7 +28,7 @@
                                     <MenuItem Clicked="Handle_MoveToClicked" CommandParameter="{Binding .}"
                                        Text="Move" />
                                     <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
-                                       Text="Delete" IsDestructive="True" />
+                                       Text="Delete" IsDestructive="true" />
                              </ViewCell.ContextActions>
                             <StackLayout Orientation="Vertical" Padding="15, 0, 0, 0">
                                 <Label Text="{Binding name}"
