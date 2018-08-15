@@ -31,7 +31,6 @@ namespace mobileAppClient.Droid
             global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
             global::Xamarin.FormsMaps.Init(this, bundle);
-            //global::Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, bundle);
 
             ActivityContext = this;
             

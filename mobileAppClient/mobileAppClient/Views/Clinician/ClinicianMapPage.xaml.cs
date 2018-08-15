@@ -102,6 +102,10 @@ namespace mobileAppClient
 
                     foreach (CustomMapObject user in users)
                     {
+                        if(user.organs.Count == 0) {
+                            continue;
+                        }
+
                         
                         IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath);
                         Position organPosition = new Position();
@@ -194,8 +198,15 @@ namespace mobileAppClient
                         Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(user.id);
                         if(photoResponse.Item1 != HttpStatusCode.OK) {
                             Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
-                            Byte[] bytes = File.ReadAllBytes("donationIcon.png");
-                            profilePhoto = Convert.ToBase64String(bytes);
+                            Byte[] bytes;
+                            if(Device.RuntimePlatform == Device.Android) {
+                                
+
+                            } else {
+                                bytes = File.ReadAllBytes("donationIcon.png");
+                                profilePhoto = Convert.ToBase64String(bytes);
+                            }
+
                         } else {
                             profilePhoto = photoResponse.Item2;
                         }
@@ -207,7 +218,7 @@ namespace mobileAppClient
                             Position = finalPosition,
                             Label = user.firstName + " " + user.middleName + " " + user.lastName,
                             Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
-                            Id = user.id,
+                            Id = "Xamarin",
                             Url = String.Join(",", organIcons),
                             genderIcon = genderIcon,
                             userPhoto = profilePhoto                         

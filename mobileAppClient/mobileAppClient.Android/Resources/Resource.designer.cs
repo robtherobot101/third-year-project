@@ -4580,26 +4580,26 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f020055
 			public const int avd_hide_password = 2130837589;
 			
-			// aapt resource value: 0x7f020157
-			public const int avd_hide_password_1 = 2130837847;
+			// aapt resource value: 0x7f020173
+			public const int avd_hide_password_1 = 2130837875;
 			
-			// aapt resource value: 0x7f020158
-			public const int avd_hide_password_2 = 2130837848;
+			// aapt resource value: 0x7f020174
+			public const int avd_hide_password_2 = 2130837876;
 			
-			// aapt resource value: 0x7f020159
-			public const int avd_hide_password_3 = 2130837849;
+			// aapt resource value: 0x7f020175
+			public const int avd_hide_password_3 = 2130837877;
 			
 			// aapt resource value: 0x7f020056
 			public const int avd_show_password = 2130837590;
 			
-			// aapt resource value: 0x7f02015a
-			public const int avd_show_password_1 = 2130837850;
+			// aapt resource value: 0x7f020176
+			public const int avd_show_password_1 = 2130837878;
 			
-			// aapt resource value: 0x7f02015b
-			public const int avd_show_password_2 = 2130837851;
+			// aapt resource value: 0x7f020177
+			public const int avd_show_password_2 = 2130837879;
 			
-			// aapt resource value: 0x7f02015c
-			public const int avd_show_password_3 = 2130837852;
+			// aapt resource value: 0x7f020178
+			public const int avd_show_password_3 = 2130837880;
 			
 			// aapt resource value: 0x7f020057
 			public const int common_full_open_on_phone = 2130837591;
@@ -5226,148 +5226,232 @@ namespace mobileAppClient.Droid
 			public const int ic_vol_type_tv_light = 2130837798;
 			
 			// aapt resource value: 0x7f020127
-			public const int logout_icon = 2130837799;
+			public const int info = 2130837799;
 			
 			// aapt resource value: 0x7f020128
-			public const int map_icon = 2130837800;
+			public const int layout_bg = 2130837800;
 			
 			// aapt resource value: 0x7f020129
-			public const int medications_icon = 2130837801;
+			public const int logout_icon = 2130837801;
 			
 			// aapt resource value: 0x7f02012a
-			public const int mr_button_connected_dark = 2130837802;
+			public const int man1 = 2130837802;
 			
 			// aapt resource value: 0x7f02012b
-			public const int mr_button_connected_light = 2130837803;
+			public const int man10 = 2130837803;
 			
 			// aapt resource value: 0x7f02012c
-			public const int mr_button_connecting_dark = 2130837804;
+			public const int man11 = 2130837804;
 			
 			// aapt resource value: 0x7f02012d
-			public const int mr_button_connecting_light = 2130837805;
+			public const int man12 = 2130837805;
 			
 			// aapt resource value: 0x7f02012e
-			public const int mr_button_dark = 2130837806;
+			public const int man13 = 2130837806;
 			
 			// aapt resource value: 0x7f02012f
-			public const int mr_button_light = 2130837807;
+			public const int man14 = 2130837807;
 			
 			// aapt resource value: 0x7f020130
-			public const int mr_dialog_close_dark = 2130837808;
+			public const int man2 = 2130837808;
 			
 			// aapt resource value: 0x7f020131
-			public const int mr_dialog_close_light = 2130837809;
+			public const int man3 = 2130837809;
 			
 			// aapt resource value: 0x7f020132
-			public const int mr_dialog_material_background_dark = 2130837810;
+			public const int man4 = 2130837810;
 			
 			// aapt resource value: 0x7f020133
-			public const int mr_dialog_material_background_light = 2130837811;
+			public const int man5 = 2130837811;
 			
 			// aapt resource value: 0x7f020134
-			public const int mr_group_collapse = 2130837812;
+			public const int man6 = 2130837812;
 			
 			// aapt resource value: 0x7f020135
-			public const int mr_group_expand = 2130837813;
+			public const int man7 = 2130837813;
 			
 			// aapt resource value: 0x7f020136
-			public const int mr_media_pause_dark = 2130837814;
+			public const int man8 = 2130837814;
 			
 			// aapt resource value: 0x7f020137
-			public const int mr_media_pause_light = 2130837815;
+			public const int man9 = 2130837815;
 			
 			// aapt resource value: 0x7f020138
-			public const int mr_media_play_dark = 2130837816;
+			public const int map_icon = 2130837816;
 			
 			// aapt resource value: 0x7f020139
-			public const int mr_media_play_light = 2130837817;
+			public const int medications_icon = 2130837817;
 			
 			// aapt resource value: 0x7f02013a
-			public const int mr_media_stop_dark = 2130837818;
+			public const int mr_button_connected_dark = 2130837818;
 			
 			// aapt resource value: 0x7f02013b
-			public const int mr_media_stop_light = 2130837819;
+			public const int mr_button_connected_light = 2130837819;
 			
 			// aapt resource value: 0x7f02013c
-			public const int mr_vol_type_audiotrack_dark = 2130837820;
+			public const int mr_button_connecting_dark = 2130837820;
 			
 			// aapt resource value: 0x7f02013d
-			public const int mr_vol_type_audiotrack_light = 2130837821;
+			public const int mr_button_connecting_light = 2130837821;
 			
 			// aapt resource value: 0x7f02013e
-			public const int navigation_empty_icon = 2130837822;
+			public const int mr_button_dark = 2130837822;
 			
 			// aapt resource value: 0x7f02013f
-			public const int notification_action_background = 2130837823;
+			public const int mr_button_light = 2130837823;
 			
 			// aapt resource value: 0x7f020140
-			public const int notification_bg = 2130837824;
+			public const int mr_dialog_close_dark = 2130837824;
 			
 			// aapt resource value: 0x7f020141
-			public const int notification_bg_low = 2130837825;
+			public const int mr_dialog_close_light = 2130837825;
 			
 			// aapt resource value: 0x7f020142
-			public const int notification_bg_low_normal = 2130837826;
+			public const int mr_dialog_material_background_dark = 2130837826;
 			
 			// aapt resource value: 0x7f020143
-			public const int notification_bg_low_pressed = 2130837827;
+			public const int mr_dialog_material_background_light = 2130837827;
 			
 			// aapt resource value: 0x7f020144
-			public const int notification_bg_normal = 2130837828;
+			public const int mr_group_collapse = 2130837828;
 			
 			// aapt resource value: 0x7f020145
-			public const int notification_bg_normal_pressed = 2130837829;
+			public const int mr_group_expand = 2130837829;
 			
 			// aapt resource value: 0x7f020146
-			public const int notification_icon_background = 2130837830;
-			
-			// aapt resource value: 0x7f020155
-			public const int notification_template_icon_bg = 2130837845;
-			
-			// aapt resource value: 0x7f020156
-			public const int notification_template_icon_low_bg = 2130837846;
+			public const int mr_media_pause_dark = 2130837830;
 			
 			// aapt resource value: 0x7f020147
-			public const int notification_tile_bg = 2130837831;
+			public const int mr_media_pause_light = 2130837831;
 			
 			// aapt resource value: 0x7f020148
-			public const int notify_panel_notification_icon_bg = 2130837832;
+			public const int mr_media_play_dark = 2130837832;
 			
 			// aapt resource value: 0x7f020149
-			public const int organs_icon = 2130837833;
+			public const int mr_media_play_light = 2130837833;
 			
 			// aapt resource value: 0x7f02014a
-			public const int overviewImage = 2130837834;
+			public const int mr_media_stop_dark = 2130837834;
 			
 			// aapt resource value: 0x7f02014b
-			public const int procedures_icon = 2130837835;
+			public const int mr_media_stop_light = 2130837835;
 			
 			// aapt resource value: 0x7f02014c
-			public const int segmented_control_background = 2130837836;
+			public const int mr_vol_type_audiotrack_dark = 2130837836;
 			
 			// aapt resource value: 0x7f02014d
-			public const int segmented_control_first_background = 2130837837;
+			public const int mr_vol_type_audiotrack_light = 2130837837;
 			
 			// aapt resource value: 0x7f02014e
-			public const int segmented_control_last_background = 2130837838;
+			public const int navigation_empty_icon = 2130837838;
 			
 			// aapt resource value: 0x7f02014f
-			public const int settings_icon = 2130837839;
+			public const int notification_action_background = 2130837839;
 			
 			// aapt resource value: 0x7f020150
-			public const int splash_background = 2130837840;
+			public const int notification_bg = 2130837840;
 			
 			// aapt resource value: 0x7f020151
-			public const int tooltip_frame_dark = 2130837841;
+			public const int notification_bg_low = 2130837841;
 			
 			// aapt resource value: 0x7f020152
-			public const int tooltip_frame_light = 2130837842;
+			public const int notification_bg_low_normal = 2130837842;
 			
 			// aapt resource value: 0x7f020153
-			public const int users_icon = 2130837843;
+			public const int notification_bg_low_pressed = 2130837843;
 			
 			// aapt resource value: 0x7f020154
-			public const int waitinglist_icon = 2130837844;
+			public const int notification_bg_normal = 2130837844;
+			
+			// aapt resource value: 0x7f020155
+			public const int notification_bg_normal_pressed = 2130837845;
+			
+			// aapt resource value: 0x7f020156
+			public const int notification_icon_background = 2130837846;
+			
+			// aapt resource value: 0x7f020171
+			public const int notification_template_icon_bg = 2130837873;
+			
+			// aapt resource value: 0x7f020172
+			public const int notification_template_icon_low_bg = 2130837874;
+			
+			// aapt resource value: 0x7f020157
+			public const int notification_tile_bg = 2130837847;
+			
+			// aapt resource value: 0x7f020158
+			public const int notify_panel_notification_icon_bg = 2130837848;
+			
+			// aapt resource value: 0x7f020159
+			public const int organs_icon = 2130837849;
+			
+			// aapt resource value: 0x7f02015a
+			public const int other = 2130837850;
+			
+			// aapt resource value: 0x7f02015b
+			public const int overviewImage = 2130837851;
+			
+			// aapt resource value: 0x7f02015c
+			public const int procedures_icon = 2130837852;
+			
+			// aapt resource value: 0x7f02015d
+			public const int segmented_control_background = 2130837853;
+			
+			// aapt resource value: 0x7f02015e
+			public const int segmented_control_first_background = 2130837854;
+			
+			// aapt resource value: 0x7f02015f
+			public const int segmented_control_last_background = 2130837855;
+			
+			// aapt resource value: 0x7f020160
+			public const int settings_icon = 2130837856;
+			
+			// aapt resource value: 0x7f020161
+			public const int splash_background = 2130837857;
+			
+			// aapt resource value: 0x7f020162
+			public const int tooltip_frame_dark = 2130837858;
+			
+			// aapt resource value: 0x7f020163
+			public const int tooltip_frame_light = 2130837859;
+			
+			// aapt resource value: 0x7f020164
+			public const int users_icon = 2130837860;
+			
+			// aapt resource value: 0x7f020165
+			public const int waitinglist_icon = 2130837861;
+			
+			// aapt resource value: 0x7f020166
+			public const int woman1 = 2130837862;
+			
+			// aapt resource value: 0x7f020167
+			public const int woman10 = 2130837863;
+			
+			// aapt resource value: 0x7f020168
+			public const int woman11 = 2130837864;
+			
+			// aapt resource value: 0x7f020169
+			public const int woman2 = 2130837865;
+			
+			// aapt resource value: 0x7f02016a
+			public const int woman3 = 2130837866;
+			
+			// aapt resource value: 0x7f02016b
+			public const int woman4 = 2130837867;
+			
+			// aapt resource value: 0x7f02016c
+			public const int woman5 = 2130837868;
+			
+			// aapt resource value: 0x7f02016d
+			public const int woman6 = 2130837869;
+			
+			// aapt resource value: 0x7f02016e
+			public const int woman7 = 2130837870;
+			
+			// aapt resource value: 0x7f02016f
+			public const int woman8 = 2130837871;
+			
+			// aapt resource value: 0x7f020170
+			public const int woman9 = 2130837872;
 			
 			static Drawable()
 			{
@@ -5390,6 +5474,18 @@ namespace mobileAppClient.Droid
 			
 			// aapt resource value: 0x7f0d003f
 			public const int FUNCTION = 2131558463;
+			
+			// aapt resource value: 0x7f0d00d9
+			public const int InfoWindowAddress = 2131558617;
+			
+			// aapt resource value: 0x7f0d00dc
+			public const int InfoWindowButton = 2131558620;
+			
+			// aapt resource value: 0x7f0d00db
+			public const int InfoWindowSubtitle = 2131558619;
+			
+			// aapt resource value: 0x7f0d00d7
+			public const int InfoWindowTitle = 2131558615;
 			
 			// aapt resource value: 0x7f0d0040
 			public const int META = 2131558464;
@@ -5664,8 +5760,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d006b
 			public const int list_item = 2131558507;
 			
-			// aapt resource value: 0x7f0d00d5
-			public const int masked = 2131558613;
+			// aapt resource value: 0x7f0d00de
+			public const int masked = 2131558622;
 			
 			// aapt resource value: 0x7f0d00c3
 			public const int media_actions = 2131558595;
@@ -5799,6 +5895,9 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d007f
 			public const int radio = 2131558527;
 			
+			// aapt resource value: 0x7f0d00d4
+			public const int relativeLayout1 = 2131558612;
+			
 			// aapt resource value: 0x7f0d0054
 			public const int right = 2131558484;
 			
@@ -5871,8 +5970,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0094
 			public const int select_dialog_listview = 2131558548;
 			
-			// aapt resource value: 0x7f0d00d6
-			public const int shape_id = 2131558614;
+			// aapt resource value: 0x7f0d00df
+			public const int shape_id = 2131558623;
 			
 			// aapt resource value: 0x7f0d007e
 			public const int shortcut = 2131558526;
@@ -5933,6 +6032,18 @@ namespace mobileAppClient.Droid
 			
 			// aapt resource value: 0x7f0d002b
 			public const int tabMode = 2131558443;
+			
+			// aapt resource value: 0x7f0d00d5
+			public const int tableLayout1 = 2131558613;
+			
+			// aapt resource value: 0x7f0d00d6
+			public const int tableRow1 = 2131558614;
+			
+			// aapt resource value: 0x7f0d00da
+			public const int tableRow2 = 2131558618;
+			
+			// aapt resource value: 0x7f0d00d8
+			public const int tableRow3 = 2131558616;
 			
 			// aapt resource value: 0x7f0d0019
 			public const int tag_transition_group = 2131558425;
@@ -6012,8 +6123,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0016
 			public const int view_offset_helper = 2131558422;
 			
-			// aapt resource value: 0x7f0d00d4
-			public const int visible = 2131558612;
+			// aapt resource value: 0x7f0d00dd
+			public const int visible = 2131558621;
 			
 			// aapt resource value: 0x7f0d00b5
 			public const int volume_item_container = 2131558581;
@@ -6323,6 +6434,9 @@ namespace mobileAppClient.Droid
 			
 			// aapt resource value: 0x7f040045
 			public const int tooltip = 2130968645;
+			
+			// aapt resource value: 0x7f040046
+			public const int XamarinMapInfoWindow = 2130968646;
 			
 			static Layout()
 			{
