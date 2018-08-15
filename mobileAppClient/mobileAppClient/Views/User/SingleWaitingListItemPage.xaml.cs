@@ -38,7 +38,8 @@ namespace mobileAppClient
             //DeregisterCodeEntry.Text =
             //waitingListItem.OrganDeregisteredCode != 0 ? waitingListItem.OrganDeregisteredCode.ToString() : "N/A";
 
-            DeregisterButton.IsVisible = showDeregisterButton;
+
+            DeregisterButton.IsVisible = showDeregisterButton && (waitingListItem.organDeregisteredDate == null);
 
             IDEntry.Text = waitingListItem.id.ToString();
         }
@@ -114,24 +115,22 @@ namespace mobileAppClient
          */
         public async Task deregister(WaitingListItem item, int reasonCode)
         {
+
+
             try
             {
-                foreach(WaitingListItem userItem in UserController.Instance.LoggedInUser.waitingListItems)
+                item.organDeregisteredDate = new CustomDate(DateTime.Now);
+                item.organDeregisteredCode = reasonCode;
+                //
+                HttpStatusCode code = await new TransplantListAPI().updateItem(item);
+                if (code != HttpStatusCode.Created)
                 {
-                    if(userItem.id == item.id)
-                    {
-                        userItem.organDeregisteredDate = new CustomDate(DateTime.Now);
-                        userItem.organDeregisteredCode = reasonCode;
-                        HttpStatusCode code = await new TransplantListAPI().updateItem(userItem);
-                        if (code != HttpStatusCode.Created)
-                        {
-                            await DisplayAlert(
-                                    "Failed to de-register item",
-                                    "Server error",
-                                    "OK");
-                        }
-                    }
+                    await DisplayAlert(
+                            "Failed to de-register item",
+                            "Server error",
+                            "OK");
                 }
+
             }
             catch (HttpRequestException e)
             {

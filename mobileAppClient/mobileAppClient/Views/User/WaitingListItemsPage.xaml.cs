@@ -100,12 +100,15 @@ namespace mobileAppClient
             WaitingListItemsList.ItemsSource = updatedItems;
         }
 
-        public Boolean alreadyRegistered(String organ)
+        public async Task<Boolean> alreadyRegistered(String organ)
         {
             foreach(WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
             {
                 if(item.organType.ToString() == OrganExtensions.ToOrgan(organ).ToString() && item.organDeregisteredDate == null)
                 {
+                    await DisplayAlert("",
+                           "This user has already registered a " + organ,
+                           "OK");
                     return true;
                 }
             }
@@ -115,7 +118,7 @@ namespace mobileAppClient
         public async void Handle_RegisterClicked(object sender, EventArgs args)
         {
             String selectedOrgan = (String)OrganPicker.SelectedItem;
-            if (selectedOrgan != null && !alreadyRegistered(selectedOrgan))
+            if (selectedOrgan != null && !(await alreadyRegistered(selectedOrgan)))
             {
                 User user = UserController.Instance.LoggedInUser;
                 WaitingListItem newItem = new WaitingListItem();
