@@ -47,7 +47,12 @@ public class LoginController implements Initializable {
             if (user != null) {
                 if (user instanceof User) {
                     Debugger.log("LoginController: Logging in as user...");
-                    loadUser((User)user, token);
+                    if (((User) user).getDateOfDeath() != null) {
+                        errorMessage.setText("User logging in is deceased. Please consult a registered clinician.");
+                        errorMessage.setVisible(true);
+                    } else {
+                        loadUser((User) user, token);
+                    }
                 } else if (user instanceof Admin) {
                     Debugger.log("LoginController: Logging in as admin...");
                     loadAdmin((Admin)user, token);
