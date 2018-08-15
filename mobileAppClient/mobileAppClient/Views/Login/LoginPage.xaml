@@ -46,12 +46,16 @@
                          Image="facebook_icon.png"
                          BackgroundColor="#39569A"
                          HeightRequest="50"
-                         WidthRequest="100"
+                         WidthRequest="90"
                          x:Name="FacebookButton"
                          />
 
                  <Button Text="Login with Google"
-                    Clicked="Handle_LoginWithGoogleClicked" />
+                    Clicked="Handle_LoginWithGoogleClicked"
+                         TextColor="White"
+                         BackgroundColor="#DD4B39"
+                         HeightRequest="50"
+                         WidthRequest="90"/>
                     
             </StackLayout>
         </ScrollView>
