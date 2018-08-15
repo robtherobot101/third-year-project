@@ -6,7 +6,6 @@
 	<!-- Allow the application to access Google web-based services. -->
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 	<!-- Google Maps for Android v2 will cache map tiles on external storage -->
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<!-- Google Maps for Android v2 needs this permission so that it may check the connection state as it must download data -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<!-- These are optional, but recommended. They will allow Maps to use the My Location provider. -->
@@ -17,7 +16,6 @@
 	<!-- Allow the application to access Google web-based services. -->
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 	<!-- Google Maps for Android v2 will cache map tiles on external storage -->
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<!-- Google Maps for Android v2 needs this permission so that it may check the connection state as it must download data -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<!-- Permission to receive remote notifications from Google Play Services -->
@@ -27,9 +25,10 @@
 	<!-- These are optional, but recommended. They will allow Maps to use the My Location provider. -->
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<application android:label="mobileAppClient.Android" android:icon="@drawable/donationIcon">
 		<provider android:name="android.support.v4.content.FileProvider" android:authorities="team300.mobileAppClient.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
