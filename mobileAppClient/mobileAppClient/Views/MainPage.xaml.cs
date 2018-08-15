@@ -71,6 +71,26 @@ namespace mobileAppClient
         }
 
         /*
+         * Method which is used when a user logs out, opening the login page again.
+         */
+        private async void LogoutClinician()
+        {
+            // Remove token from server
+            LoginAPI loginAPI = new LoginAPI();
+            await loginAPI.Logout(true);
+
+            // Clear any previously selected user
+            UserController.Instance.Logout();
+            
+            // Logout clinician
+            ClinicianController.Instance.Logout();
+
+            // Open the login page
+            var loginPage = new LoginPage();
+            await Navigation.PushModalAsync(loginPage);
+        }
+
+        /*
          * Sets up the Main page for a user's view
          */
         public void userLoggedIn()
@@ -176,7 +196,14 @@ namespace mobileAppClient
             switch(page.Name)
             {
                 case "LoginPage":
-                    LogoutUser();
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        LogoutClinician();
+                    }
+                    else
+                    {
+                        LogoutUser();
+                    }
                     break;
                 default:
                     Detail = new NavigationPage((Page)Activator.CreateInstance(page));
