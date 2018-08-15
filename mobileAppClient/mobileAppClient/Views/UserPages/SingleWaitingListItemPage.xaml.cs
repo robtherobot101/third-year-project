@@ -20,6 +20,7 @@ namespace mobileAppClient
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         WaitingListItem item;
+        User user;
         /*
          * Constructor which initialises the entries of the waiting list items listview.
          */ 
