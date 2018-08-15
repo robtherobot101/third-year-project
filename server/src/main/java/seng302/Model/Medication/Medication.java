@@ -4,6 +4,7 @@ import seng302.Model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -98,7 +99,7 @@ public class Medication {
             return false;
         }
         Medication that = (Medication) o;
-        return Objects.equals(name, that.name);
+        return Objects.equals(name, that.name) && Objects.equals(history, that.history) && Arrays.equals(activeIngredients, that.activeIngredients);
     }
 
     @Override

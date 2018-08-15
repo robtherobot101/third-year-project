@@ -5,7 +5,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Generic.DataManager;
 import seng302.User.Disease;
 
 import java.sql.SQLException;
@@ -43,7 +42,6 @@ public class MedicalHistoryGUITest extends TestFXTest {
         // Assumed that calling method is currently on login screen
 
         //DataManager.users.clear();
-//        System.out.println("MedicalHistoryGUITest: Test user not found -> adding test user");
 //        clickOn("#createAccountButton");
 //        clickOn("#usernameInput").write("buzz");
 //        clickOn("#emailInput").write("mkn29@uclive.ac.nz");
@@ -58,7 +56,6 @@ public class MedicalHistoryGUITest extends TestFXTest {
 //        // Logout to be able to login as a clinician
 //        clickOn("#logoutButton");
 //        clickOn("OK");
-//        System.out.println("MedicalHistoryGUITest: Logging in as default clinician");
         addTestUser();
         // Login as default clinician
         clickOn("#identificationInput");
@@ -66,7 +63,6 @@ public class MedicalHistoryGUITest extends TestFXTest {
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
 
-        System.out.println("MedicalHistoryGUITest: Selecting test user -> entering medical history");
         // Click on the Created User in clinician table and enter the medications panel.
         doubleClickOn("Bobby Dong Flame");
         WaitForAsyncUtils.waitForFxEvents();

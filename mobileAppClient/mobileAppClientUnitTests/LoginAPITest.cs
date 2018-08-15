@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ namespace mobileAppClientUnitTests
             Assert.AreEqual(HttpStatusCode.Unauthorized, result);
         }
 
-/*        [TestMethod]
+        [TestMethod]
         public async Task registerValidUser()
         {
             // Note: Input would be validated by the time it hits the LoginAPI method
@@ -87,9 +88,6 @@ namespace mobileAppClientUnitTests
             HttpStatusCode result = loginAPI.RegisterUser("Bobby", "LaFlame", email, username, 
                 "password", dob);
 
-            // TODO FIX THIS
-            // Works on a local server
-            // Temperamental on vm server
             Assert.AreEqual(HttpStatusCode.Created, result);
         }
 
@@ -105,7 +103,7 @@ namespace mobileAppClientUnitTests
                 "password", dob);
             HttpStatusCode response = await loginAPI.LoginUser(username, "password");
             Assert.AreEqual(HttpStatusCode.OK, response);
-        }*/
+        }
 
         /*
          * Returns a string of random alpha chars (upper + lowercase) of a certain length

@@ -14,7 +14,7 @@ namespace mobileAppClientUnitTests
     {
         public static async Task resetResample()
         {
-            HttpClient client = ServerConfig.Instance.client;
+			HttpClient client = new HttpClient();
             String url = ServerConfig.Instance.serverAddress;
 
             var resetRequest = new HttpRequestMessage(new HttpMethod("POST"), url + "/reset");

@@ -172,7 +172,7 @@ namespace mobileAppClient
                 List<string> waitingListItems = new List<string>();
                 foreach (WaitingListItem item in currentUser.waitingListItems)
                 {
-                    waitingListItems.Add(item.OrganType);
+                    waitingListItems.Add(item.organType);
                 }
                 waitingListItemsString = "Organs waiting on: \n" + String.Join(", ", waitingListItems);
             }
