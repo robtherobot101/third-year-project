@@ -8,13 +8,15 @@ namespace mobileAppClient
     /*
      * Class to handle the logged in user of the application.
      * Accessible using a singleton framework with a given instance.
-     */ 
+     */
     public sealed class UserController
     {
         public User LoggedInUser { get; set; }
         public string AuthToken { get; set; }
         public Photo photoObject { get; set; }
         public Xamarin.Forms.ImageSource ProfilePhotoSource { get; set; }
+        public string FacebookEmail { get; set; }
+        public string FacebookDateOfBirth { get; set; }
 
         private List<UserObserver> userObservers;
         public MainPage mainPageController { get; set; }

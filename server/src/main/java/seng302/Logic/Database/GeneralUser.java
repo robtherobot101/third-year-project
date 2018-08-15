@@ -368,9 +368,6 @@ public class GeneralUser {
             connection.setAutoCommit(false);
 
             for (User foundUser: userList) {
-                if (foundUser.getUsername() == null) {
-                    System.out.println(foundUser);
-                }
 
                 stmt.addBatch(getSingleUserStatement(foundUser));
             }
@@ -660,8 +657,6 @@ public class GeneralUser {
     public void updateUserAttributes(User user, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
-            System.out.println("__________________________________________");
-            System.out.println(user.getCountryOfDeath());
             //Attributes update
             String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +

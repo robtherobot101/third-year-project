@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using mobileAppClient.Models;
 using mobileAppClient.odmsAPI;
 using Xamarin.Forms;
@@ -47,6 +49,28 @@ namespace mobileAppClient
 
                 UserAPI userAPI = new UserAPI();
                 LoginAPI loginAPI = new LoginAPI();
+
+
+                //Check that the user inputted a birthday and email, if not then show a screen with the birthday and email inputs
+                if (facebookProfile.Birthday == null || facebookProfile.Email == null)
+                {
+                    await DisplayAlert(
+                         "Invalid Facebook Register",
+                         "Please ensure you have registered with an email and birthday",
+                         "OK");
+                    var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+                    var modalPage = new NavigationPage(new IncompleteFacebookDetailsPage(facebookProfile));
+                    modalPage.Disappearing += (sender2, e2) =>
+                    {
+                        waitHandle.Set();
+                    };
+
+
+                    await Navigation.PushModalAsync(modalPage);
+                    await Task.Run(() => waitHandle.WaitOne());
+                    facebookProfile.Email = UserController.Instance.FacebookEmail;
+                    facebookProfile.Birthday = UserController.Instance.FacebookDateOfBirth;
+                }
 
                 //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
                 Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(facebookProfile.Email);

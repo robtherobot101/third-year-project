@@ -142,10 +142,12 @@ public class UserWaitingListController extends UserTabController implements Init
                 if (waitingListItem.getOrganType() == type) {
                     if (waitingListItem.getStillWaitingOn()) {
                         toBeRemoved.add(type);
+                        break;
                     }
                 }
             }
         }
+
         toBeAdded.removeAll(toBeRemoved);
         organsInDropDown.removeAll();
         organsInDropDown.clear();
@@ -162,6 +164,7 @@ public class UserWaitingListController extends UserTabController implements Init
             waitingListItems.clear();
             waitingListItems.addAll(currentUser.getWaitingListItems());
             sortWaitingListItems();
+            populateOrgansComboBox();
         }
     }
 
