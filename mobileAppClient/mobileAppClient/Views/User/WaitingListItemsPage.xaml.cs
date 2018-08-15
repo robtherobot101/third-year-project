@@ -25,32 +25,59 @@ namespace mobileAppClient
         public WaitingListItemsPage()
         {
             InitializeComponent();
-            setupPage();
-
             MessagingCenter.Subscribe<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS", (sender) => {
                 setupPage();
             });
         }
 
-        public void setupPage()
+        protected override async void OnAppearing()
+        {
+            await setupPage();
+        }
+
+        public async Task setupPage()
         {
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
             Console.WriteLine("Calling setup page in WaitingListItemsPage");
-            foreach (WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
-            {
+            List<WaitingListItem> updatedItems;
 
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                int userId = UserController.Instance.LoggedInUser.id;
+                updatedItems = (await new UserAPI().getUser(userId, ClinicianController.Instance.AuthToken)).waitingListItems;
+            } else
+            {
+                updatedItems = UserController.Instance.LoggedInUser.waitingListItems;
+            }
+
+            UserController.Instance.LoggedInUser.waitingListItems = updatedItems;
+            Console.WriteLine(updatedItems.Count + " items fetched.");
+            foreach (WaitingListItem item in updatedItems)
+            {
                 foreach (Organ organ in UserController.Instance.LoggedInUser.organs)
                 {
-                    if (organ.ToString() == item.ToString())
+                    item.DetailString = "";
+                    if (organ.ToString() == item.organType.ToString())
                     {
-                        Console.WriteLine("Match on" + organ);
+                        item.CellColour = Color.Red;
+                        item.isConflicting = true;
                     }
                 }
-                item.DetailString = "Registered on " + item.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organRegisteredDate.month) + ", " + item.organRegisteredDate.year;
+
+                if (item.isConflicting == true)
+                {
+                    item.DetailString = "(Conflicting) Registered on " + item.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organRegisteredDate.month) + ", " + item.organRegisteredDate.year;
+                }
+                else
+                {
+                    item.DetailString = "Registered on " + item.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organRegisteredDate.month) + ", " + item.organRegisteredDate.year;
+                }
+
                 if (item.organDeregisteredDate != null)
                 {
                     item.DetailString = "Deregistered on " + item.organDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organDeregisteredDate.month) + ", " + item.organDeregisteredDate.year;
                 }
+                Console.WriteLine("Setting up " + item.organType + ". RegDate: " + item.organRegisteredDate + ". DeRegDate: " + item.organDeregisteredDate);
             }
 
             if (UserController.Instance.LoggedInUser.waitingListItems.Count == 0)
@@ -70,15 +97,26 @@ namespace mobileAppClient
                 RegisterButton.IsVisible = false;
                 OrganPicker.IsVisible = false;
             }
-            WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
+            WaitingListItemsList.ItemsSource = updatedItems;
+        }
+
+        public Boolean alreadyRegistered(String organ)
+        {
+            foreach(WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
+            {
+                if(item.organType.ToString() == OrganExtensions.ToOrgan(organ).ToString() && item.organDeregisteredDate == null)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async void Handle_RegisterClicked(object sender, EventArgs args)
         {
             String selectedOrgan = (String)OrganPicker.SelectedItem;
-            if (selectedOrgan != null)
+            if (selectedOrgan != null && !alreadyRegistered(selectedOrgan))
             {
-                
                 User user = UserController.Instance.LoggedInUser;
                 WaitingListItem newItem = new WaitingListItem();
                 String[] words = selectedOrgan.Split(' ');

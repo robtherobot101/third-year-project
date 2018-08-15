@@ -24,12 +24,15 @@ namespace mobileAppClient
          */
         public TransplantListPage ()
 		{
-            Console.WriteLine("About initialize component");
-
             InitializeComponent();
-            Console.WriteLine("About setup items");
 
             setupItems();
+
+
+            MessagingCenter.Subscribe<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS", (sender) => {
+               refreshPage();
+            });
+
 
         }
 
@@ -40,13 +43,10 @@ namespace mobileAppClient
          */
         public async Task setupItems()
         {
-            Console.WriteLine("About to prepare items");
             List<WaitingListItem> waitingOn = await prepareWaitingListItems();
 
-            Console.WriteLine("Items in list: " + waitingOn.Count);
             if (waitingOn.Count == 0)
             {
-                Console.WriteLine("No items, about to hide list.");
                 NoDataLabel.IsVisible = true;
                 TransplantList.IsVisible = false;
                 SortingInput.IsVisible = false;
@@ -58,7 +58,6 @@ namespace mobileAppClient
                 SortingInput.IsVisible = true;
                 AscendingDescendingPicker.IsVisible = true;
             }
-            Console.WriteLine("About to set ItemSource");
             TransplantList.ItemsSource = waitingOn;
         }
 
@@ -70,7 +69,6 @@ namespace mobileAppClient
             try
             {
                 String query = prepareQuery();
-                Console.WriteLine("About to query with: " + query);
                 List<WaitingListItem> items = await new TransplantListAPI().getItems(query);
                 items = waitingOn(items);
                 items = style(items);
@@ -83,14 +81,6 @@ namespace mobileAppClient
                                    "OK");
                 return new List<WaitingListItem>();
             }
-        }
-
-        /*
-         * Refreshes the whole page whenever the page appears
-         */
-        protected override void OnAppearing()
-        {
-            refreshPage();
         }
 
         /*

@@ -93,9 +93,9 @@ namespace mobileAppClient
             }
             else if (action == "4: Successful Transplant")
             {
-                deregister(item, 1);
-                MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
+                await deregister(item, 1);
                 await Navigation.PopAsync();
+                MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
             }
         }
 

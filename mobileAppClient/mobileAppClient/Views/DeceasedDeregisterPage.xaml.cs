@@ -110,6 +110,7 @@ namespace mobileAppClient.Views
 
                 await Navigation.PopModalAsync();
                 await parentWaitingListItemPage.Navigation.PopAsync();
+                MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
             }
             catch (HttpRequestException e)
             {
