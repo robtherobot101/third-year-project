@@ -90,7 +90,7 @@ namespace mobileAppClient
             creationTime = new CustomDateTime(DateTime.Now);
 
             //Server requires to initialise the organs and user history items on creation
-            organs = new List<string>();
+            organs = new List<Organ>();
             userHistory = new List<HistoryItem>();
         }
 

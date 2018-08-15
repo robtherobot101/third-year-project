@@ -137,6 +137,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
+                Image = "",
                 Footer = "  Logged in as CLINICIAN: " + ClinicianController.Instance.LoggedInClinician.name
             };
 
