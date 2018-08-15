@@ -4,6 +4,10 @@ using System.Linq;
 
 using Xamarin.Forms;
 using System.Globalization;
+using mobileAppClient.odmsAPI;
+using System.Threading.Tasks;
+using System.Net;
+using mobileAppClient.Models;
 
 namespace mobileAppClient
 {
@@ -41,6 +45,55 @@ namespace mobileAppClient
 
             WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
         }
+
+        public async void Handle_RegisterClicked(object sender, EventArgs args)
+        {
+            String selectedOrgan = (String)OrganPicker.SelectedItem;
+            if (selectedOrgan != null)
+            {
+                
+                User user = UserController.Instance.LoggedInUser;
+                WaitingListItem newItem = new WaitingListItem();
+                String[] words = selectedOrgan.Split(' ');
+                String organ = String.Join("-", words);
+                organ = organ.ToLower();
+
+
+                newItem.organType = OrganExtensions.ToOrgan(organ);
+                newItem.userId = user.id;
+                newItem.organRegisteredDate = new CustomDate(DateTime.Today);
+
+                user.waitingListItems.Add(newItem);
+
+                UserAPI userAPI = new UserAPI();
+                HttpStatusCode code = await userAPI.UpdateUser(user, ClinicianController.Instance.AuthToken);
+
+                switch (code)
+                {
+                    case HttpStatusCode.Created:
+                        await DisplayAlert("",
+                            "User successfully updated",
+                            "OK");
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("",
+                            "User update failed (400)",
+                            "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                            "Server unavailable, check connection",
+                            "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                            "Server error, please try again",
+                            "OK");
+                        break;
+                }
+            }
+        }
+
 
         /*
          * Handles when a single waiting list item is tapped, sending a user to the single waiting list item page 

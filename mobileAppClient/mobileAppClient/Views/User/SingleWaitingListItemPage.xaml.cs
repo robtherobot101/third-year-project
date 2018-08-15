@@ -7,6 +7,7 @@ using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using System.Net;
 using System.Net.Http;
+using mobileAppClient.Models;
 
 namespace mobileAppClient
 {
@@ -25,7 +26,7 @@ namespace mobileAppClient
         {
             InitializeComponent();
             this.item = waitingListItem;
-            OrganTypeEntry.Text = waitingListItem.organType;
+            OrganTypeEntry.Text = OrganExtensions.ToString(waitingListItem.organType);
             RegisteredDateEntry.Text = waitingListItem.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(waitingListItem.organRegisteredDate.month) + ", " + waitingListItem.organRegisteredDate.year;
             DeregisteredDateEntry.Text =
                 waitingListItem.organDeregisteredDate != null ?

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mobileAppClient.Models;
+using System;
 namespace mobileAppClient
 {
     /*
@@ -6,7 +7,7 @@ namespace mobileAppClient
      */
     public class WaitingListItem
     {
-        public string organType { get; set; }
+        public Organ organType { get; set; }
         public CustomDate organRegisteredDate { get; set; }
         public int id { get; set; }
         public int userId { get; set; }
