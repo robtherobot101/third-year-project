@@ -1,13 +1,17 @@
 package seng302;
 
+import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -37,10 +41,16 @@ public class Server {
 
     private ProfileUtils profileUtils;
 
-    private Server() {}
+    private Map<Object, Object> config = new ConfigParser().getConfig();
+
+    private Server() { }
 
     public static Server getInstance() {
         return INSTANCE;
+    }
+
+    public Map<Object, Object> getConfig() {
+        return config;
     }
 
     /**
