@@ -1,7 +1,6 @@
 package seng302.generic;
 
 import javafx.scene.control.Alert;
-import jdk.nashorn.internal.runtime.ParserException;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -17,12 +16,12 @@ public class ConfigParser {
     /**
      * The filename of the configuration file
      */
-    private final String FILENAME = "client_config.txt";
+    private static final String filename = "client_config.txt";
 
     /**
      * The required parameters for the config file.
      */
-    private final String[] PARAMETERS = {"server"};
+    private static final String[] parameters = {"server"};
 
     /**
      * A map containg the proprties
@@ -30,22 +29,22 @@ public class ConfigParser {
     private Properties properties = new Properties();
 
     public ConfigParser() {
-        File file = new File(FILENAME);
+        File file = new File(filename);
         try {
             // If the config file does not exist, create one with the default config.
             if (!file.exists()) {
-                Files.copy(getClass().getResourceAsStream("/" + FILENAME), file.toPath());
+                Files.copy(getClass().getResourceAsStream("/" + filename), file.toPath());
             }
             properties.load(new FileInputStream(file));
             // Recreate the config file if the current one is corrupt
-            for (String parameter : PARAMETERS) {
+            for (String parameter : parameters) {
                 if (!properties.containsKey(parameter)) {
                     Debugger.log("Invalid config file, backing up and reverting to default");
-                    File backup = new File(FILENAME + ".bak");
+                    File backup = new File(filename + ".bak");
                     backup.delete();
                     Files.copy(file.toPath(), backup.toPath());
                     file.delete();
-                    Files.copy(getClass().getResourceAsStream("/" + FILENAME), file.toPath());
+                    Files.copy(getClass().getResourceAsStream("/" + filename), file.toPath());
                     break;
                 }
             }
@@ -53,11 +52,11 @@ public class ConfigParser {
         } catch (FileNotFoundException e) {
             Alert a = new Alert(Alert.AlertType.ERROR, "Could not find or create config file");
             a.showAndWait();
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
         } catch (IOException e) {
             Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while loading configuration file.");
             a.showAndWait();
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
         }
 
     }

@@ -40,19 +40,19 @@ public class ResampleData {
     }
 
     /**
-     * adds the default clinician to the local data
+     * adds the default CLINICIAN to the local data
      * @return returns the clinicians
      */
     public static List<Clinician> clinicians() {
-        return Arrays.asList(new Clinician("default", "default","default clinician",ProfileType.CLINICIAN,1));
+        return Arrays.asList(new Clinician("default", "default","default CLINICIAN",ProfileType.CLINICIAN,1));
     }
 
     /**
-     * adds the default admin to the local data
-     * @return returns the admin
+     * adds the default ADMIN to the local data
+     * @return returns the ADMIN
      */
     public static List<Admin> admins() {
-        Admin defaultAdmin = new Admin("admin", "default","default admin");
+        Admin defaultAdmin = new Admin("ADMIN", "default","default ADMIN");
         defaultAdmin.setStaffID(1);
         return Arrays.asList(defaultAdmin);
     }
