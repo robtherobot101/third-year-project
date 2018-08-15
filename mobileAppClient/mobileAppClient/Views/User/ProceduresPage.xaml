@@ -11,14 +11,13 @@
         <StackLayout Orientation="Vertical">
 
             <controls:SegmentedControl x:Name="SegControl" 
-                                       TintColor="#007AFF" 
                                        SelectedSegment="0"
                                        ValueChanged="Handle_ProcedureChanged"
                                        HeightRequest="40">
-              <controls:SegmentedControl.Children>
-                <controls:SegmentedControlOption Text="Pending" />
-                <controls:SegmentedControlOption Text="Previous" />
-              </controls:SegmentedControl.Children>
+                <controls:SegmentedControl.Children>
+                    <controls:SegmentedControlOption Text="Pending" />
+                    <controls:SegmentedControlOption Text="Previous" />
+                </controls:SegmentedControl.Children>
             </controls:SegmentedControl>
 
             <StackLayout Orientation="Horizontal">
@@ -57,8 +56,13 @@
                       ItemTapped="Handle_ProcedureTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Summary}"
-                         Detail="{Binding DetailString}" />
+                        <TextCell Text="{Binding summary}"
+                         Detail="{Binding detailString}">
+                            <TextCell.ContextActions>
+                                <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
+                                          Text="Delete" IsDestructive="True" />
+                            </TextCell.ContextActions>
+                        </TextCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -66,7 +70,8 @@
 
             <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
         </StackLayout>
-
-        
     </ContentPage.Content>
+    <ContentPage.ToolbarItems >
+
+    </ContentPage.ToolbarItems>
 </ContentPage>

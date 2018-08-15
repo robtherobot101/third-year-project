@@ -125,7 +125,18 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns the status of updating a user object to the server
          */
-        public async Task<HttpStatusCode> UpdateUser(bool isClinician)
+        public async Task<HttpStatusCode> UpdateUser(bool isClinicianMakingUpdate)
+        {
+            if (isClinicianMakingUpdate) {
+                        return await UpdateUser(UserController.Instance.LoggedInUser,
+                            ClinicianController.Instance.AuthToken);
+            } else {
+                        return await UpdateUser(UserController.Instance.LoggedInUser,
+                            UserController.Instance.AuthToken);
+            }
+        }
+
+        public async Task<HttpStatusCode> UpdateUser(User user, String token)
         {
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -135,30 +146,23 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            String registerUserRequestBody = JsonConvert.SerializeObject(UserController.Instance.LoggedInUser);
+            //User History Items are not currently configured thus must send as an empty list.
+            //UserController.Instance.LoggedInUser.userHistory = new List<HistoryItem>();
+
+            String registerUserRequestBody = JsonConvert.SerializeObject(user);
             HttpContent body = new StringContent(registerUserRequestBody);
 
             Console.WriteLine(registerUserRequestBody);
 
-            int userId = UserController.Instance.LoggedInUser.id;
-
-            Console.WriteLine(UserController.Instance.AuthToken);
-
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + userId);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + user.id);
             request.Content = body;
 
-            if (isClinician)
-            {
-                request.Headers.Add("token", ClinicianController.Instance.AuthToken);
-            } else
-            {
-                request.Headers.Add("token", UserController.Instance.AuthToken);
-
-            }
+            request.Headers.Add("token", token);
 
             try
             {
                 var response = await client.SendAsync(request);
+                Console.Write("Update user response: " + response);
 
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
@@ -302,7 +306,7 @@ namespace mobileAppClient.odmsAPI
 
             queries = String.Format("?startIndex={0}&count={1}", startIndex, count);
             queries += processSearchQuery(searchQuery);
-            
+
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
@@ -344,11 +348,11 @@ namespace mobileAppClient.odmsAPI
             if (team300RegionList.Contains(query))
             {
                 return String.Format("&region={0}", query);
-            } else 
+            } else
             {
                 return String.Format("&name={0}", query);
             }
-            
+
         }
 
         /// <summary>
@@ -525,5 +529,26 @@ namespace mobileAppClient.odmsAPI
         }
 
 
+
+        public async Task<User> getUser(int userId, string token)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + userId);
+            request.Headers.Add("token", token);
+
+            var response = await client.SendAsync(request);
+            string body = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                return JsonConvert.DeserializeObject<User>(body);
+            }
+            catch (JsonSerializationException jse)
+            {
+                return null;
+            }
+        }
     }
 }

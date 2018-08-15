@@ -68,18 +68,19 @@ namespace mobileAppClient
 
             LoginAPI loginAPI = new LoginAPI();
             HttpStatusCode statusCode = await loginAPI.LoginUser(givenUsernameEmail, givenPassword);
+
             switch(statusCode)
             {
                 case HttpStatusCode.OK:
-                    // Pop away login screen on successful login
-                    UserAPI userAPI = new UserAPI();
-
                     // Fetch photo only on user login
                     if (!ClinicianController.Instance.isLoggedIn())
                     {
+                        UserAPI userAPI = new UserAPI();
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                         UserController.Instance.mainPageController.updateMenuPhoto();
                     }
+
+                    // Pop away login screen on successful login
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -98,6 +99,12 @@ namespace mobileAppClient
                     await DisplayAlert(
                         "Failed to Login",
                         "Server error",
+                        "OK");
+                    break;
+                case HttpStatusCode.Conflict:
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "User is deceased. Please consult a Registered Clinician",
                         "OK");
                     break;
             }

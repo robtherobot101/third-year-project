@@ -2,16 +2,16 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import seng302.Logic.Database.GeneralUser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import seng302.Logic.Database.UserWaitingList;
-import seng302.Model.Procedure;
 import seng302.Model.WaitingListItem;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.*;
 
 public class WaitingListController {
     private UserWaitingList model;
@@ -32,9 +32,20 @@ public class WaitingListController {
      */
     public String getAllWaitingListItems(Request request, Response response) {
 
-        ArrayList<WaitingListItem> queriedWaitingListItems;
+        Map<String, String> params = new HashMap<String, String>();
+        List<String> possibleParams = new ArrayList<String>(Arrays.asList(
+                "organ","region", "country"
+        ));
+
+        for(String param:possibleParams){
+            if(request.queryParams(param) != null){
+                params.put(param,request.queryParams(param));
+            }
+        }
+
+        List<WaitingListItem> queriedWaitingListItems;
         try {
-            queriedWaitingListItems = model.getAllWaitingListItems();
+            queriedWaitingListItems = model.queryWaitingListItems(params);
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
@@ -48,6 +59,8 @@ public class WaitingListController {
         response.status(200);
         return serialQueriedWaitingListItems;
     }
+
+
 
     /**
      * method to get all waiting list items of a single user
@@ -107,7 +120,6 @@ public class WaitingListController {
         int requestedUserId = Integer.parseInt(request.params(":id"));
 
         Gson gson = new Gson();
-
         WaitingListItem receivedWaitingListItem = gson.fromJson(request.body(), WaitingListItem.class);
         if (receivedWaitingListItem == null) {
             response.status(400);
@@ -122,6 +134,37 @@ public class WaitingListController {
                 return "Internal Server Error";
             }
 
+        }
+    }
+
+    /**
+     * Update a user's waiting list items list to a new list.
+     *
+     * @param request The Java request object, which should contain a list of waiting list items in the body
+     * @param response Used to set status code relevant to the operation outcome
+     * @return The response body
+     */
+    public String editAllWaitingListItems(Request request, Response response) {
+        int requestedUserId = Integer.parseInt(request.params(":id"));
+        List<WaitingListItem> waitingListItems;
+        try {
+            waitingListItems= new Gson().fromJson(request.body(), new TypeToken<List<WaitingListItem>>(){}.getType());
+        } catch (JsonSyntaxException e) {
+            response.status(400);
+            return "Malformed request body";
+        }
+        if (waitingListItems == null) {
+            response.status(400);
+            return "Missing body";
+        } else {
+            try {
+                model.updateAllWaitingListItems(waitingListItems, requestedUserId);
+                response.status(200);
+                return "Success";
+            } catch (SQLException e) {
+                response.status(500);
+                return "Internal Server Error";
+            }
         }
     }
 
@@ -156,7 +199,6 @@ public class WaitingListController {
                 response.status(500);
                 return "Internal Server Error";
             }
-
         }
     }
 

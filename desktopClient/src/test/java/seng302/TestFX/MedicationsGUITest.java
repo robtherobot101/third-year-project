@@ -10,8 +10,8 @@ import javafx.stage.Window;
 import junit.framework.TestCase;
 import org.apache.http.client.HttpResponseException;
 import org.junit.*;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
 import seng302.User.Medication.Medication;
 import seng302.User.User;
@@ -34,7 +34,6 @@ public class MedicationsGUITest extends TestFXTest {
     @Before
     public void setUp() throws SQLException {
         testUser = addTestUser();
-        System.out.println("PN"+testUser.getPreferredName());
         testUser.setGender(Gender.FEMALE);
         userWindowAsClinician(testUser);
         //loginAsDefaultClinician();
@@ -180,7 +179,7 @@ public class MedicationsGUITest extends TestFXTest {
             Debugger.error("Testing should use not use the server where possible. Failed to fetch clinician with id: 1");
         }
 
-        //Check if medication added is correct in the Medication Array List of the User.
+        //Check if medication added is correct in the Medication Array List of the user.
         TableView donorList = lookup("#profileTable").queryTableView();
         User topDonor = (User) donorList.getItems().get(0);
         assertTrue(topDonor.getCurrentMedications().get(0).getName().equalsIgnoreCase("Asacol"));
@@ -277,7 +276,7 @@ public class MedicationsGUITest extends TestFXTest {
         assertEquals("Cidofovir", ((Medication) currentMedicationList.getItems().get(0)).getName());
         assertEquals(0, historicMedicationList.getItems().size());
 
-        //The redo button should now be disabled and the GUI should not change when it is clicked
+        //The redo button should now be disabled and the gui should not change when it is clicked
         clickOn("#redoBannerButton");
         assertEquals(1, currentMedicationList.getItems().size());
         assertEquals("Cidofovir", ((Medication) currentMedicationList.getItems().get(0)).getName());

@@ -21,7 +21,6 @@ public class Authorization {
      * @throws SQLException If there is an error working with the database
      */
     public User loginUser(String usernameEmail, String password) throws SQLException{
-
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
@@ -96,7 +95,7 @@ public class Authorization {
             if (!resultSet.next()) {
                 return null;
             } else {
-                //If response is not empty then return a new Admin Object with the fields from the database
+                //If response is not empty then return a new admin Object with the fields from the database
                 GeneralAdmin generalAdmin = new GeneralAdmin();
                 return generalAdmin.getAdminFromResultSet(resultSet);
             }

@@ -5,19 +5,27 @@
              x:Class="mobileAppClient.SingleDiseasePage">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
+            <Entry x:Name="NameEntry" IsEnabled="false" Placeholder="Name"/>
 
-            <TableView Intent="Menu" >
-                <TableRoot>
-                    <TableSection Title="Disease Details">
-                        <EntryCell Label="Name" x:Name="NameEntry" IsEnabled="false"/>
-                        <EntryCell Label="Diagnosis Date" x:Name="DateEntry" IsEnabled="false"/>
-                        <EntryCell Label="Chronic?" x:Name="ChronicEntry" IsEnabled="false"/>
-                        <EntryCell Label="Cured?" x:Name="CuredEntry" IsEnabled="false"/>
-                        <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
-                    </TableSection>
-                </TableRoot>
-            </TableView>
-            
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Diagnosis Date" VerticalOptions="Center"/>
+                <DatePicker x:Name="DiagnosisDateEntry" IsEnabled="false" Format="D" MinimumDate="01/01/1900"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Is Cured?" VerticalOptions="Center"/>
+                <Switch x:Name="CuredEntry" IsEnabled="false" Toggled="CuredCheck"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
+                <Label Text="Is Chronic?" VerticalOptions="Center"/>
+                <Switch x:Name="ChronicEntry" IsEnabled="false" Toggled="ChronicCheck"/>
+            </StackLayout>
+
+            <Button Text="Add Disease" x:Name="AddDiseaseButton" Clicked="AddDiseaseButton_OnClicked" IsVisible="False" VerticalOptions="End"/>
+            <Button Text="Edit Disease" x:Name="EditDiseaseButton" Clicked="EditDiseaseButton_OnClicked" IsVisible="False" VerticalOptions="End"/>
+            <Button Text="Save Disease" x:Name="SaveDiseaseButton" Clicked="SaveDiseaseButton_OnClicked" IsVisible="False" VerticalOptions="End"/>
         </StackLayout>
     </ContentPage.Content>
+    
 </ContentPage>

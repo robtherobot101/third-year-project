@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.TransplantListPage"
+             Title="Transplant waiting list" NavigationPage.HasNavigationBar="True">
+    
+    <ContentPage.Content>
+
+        <StackLayout Orientation="Vertical">
+            <Grid Padding="15,0,15,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="Organ Filter: " Grid.Row="0" Grid.Column="0" VerticalOptions="CenterAndExpand"/>
+                <Picker Title="Organ filter: "
+                    x:Name="OrganFilter"
+                    SelectedIndexChanged="Handle_FilterChange"
+                    HorizontalOptions="FillAndExpand"
+                    Grid.Row="0" Grid.Column="1">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Any</x:String>
+                            <x:String>Liver</x:String>
+                            <x:String>Kidney</x:String>
+                            <x:String>Pancreas</x:String>
+                            <x:String>Heart</x:String>
+                            <x:String>Lung</x:String>
+                            <x:String>Intestine</x:String>
+                            <x:String>Cornea</x:String>
+                            <x:String>Middle Ear</x:String>
+                            <x:String>Skin</x:String>
+                            <x:String>Bone Marrow</x:String>
+                            <x:String>Connective Tissue</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                    <Picker.SelectedIndex>0</Picker.SelectedIndex>
+                </Picker>
+
+                <Label Text="Region Filter: " Grid.Row="1" Grid.Column="0" VerticalOptions="CenterAndExpand"/>
+                <Entry x:Name="RegionFilter" Text="" TextChanged="Handle_FilterChange"
+                       HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1" />
+
+            </Grid>
+            <StackLayout Orientation="Horizontal">
+                <Picker Title ="Sort by          " 
+                        x:Name="SortingInput" 
+                        SelectedIndexChanged="Handle_SelectedIndexChanged" 
+                        HorizontalOptions="Center"
+                        >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Organ</x:String>
+                            <x:String>Reg. Date</x:String>
+                            <x:String>Clear</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <Picker Title ="⬆/⬇ (Up or Down)" 
+                        x:Name="AscendingDescendingPicker" 
+                        SelectedIndexChanged="Handle_UpDownChanged" 
+                        HorizontalOptions="Center"
+                        IsVisible="false"
+                        >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>⬆ (Descending)</x:String>
+                            <x:String>⬇ (Ascending)</x:String>
+                            <x:String>Clear</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </StackLayout>
+
+            <ListView x:Name="TransplantList" 
+                      ItemTapped="Handle_ItemTapped"
+                      VerticalOptions="StartAndExpand">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding organType}"
+                         Detail="{Binding DetailString}" 
+                         TextColor="{Binding CellColour}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

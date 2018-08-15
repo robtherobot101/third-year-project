@@ -50,7 +50,7 @@
             <properties>
                 <!-- Optional URL to server. Default value is http://localhost:9000 -->
                 <sonar.host.url>
-                    http://csse-s302g3.canterbury.ac.nz:9000/
+                    http://csse-s302g3.canterbury.ac.nz:8080/sonarqube
                 </sonar.host.url>
             </properties>
         </profile>

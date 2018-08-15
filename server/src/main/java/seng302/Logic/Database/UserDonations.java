@@ -2,15 +2,18 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.WaitingListItem;
+import seng302.Model.DonatableOrgan;
 
+import java.sql.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class UserDonations {
@@ -44,21 +47,32 @@ public class UserDonations {
         }
     }
 
-    public void insertDonation(Organ organ, int userId) throws SQLException {
+    public void insertDonation(Organ organ, int userId, LocalDateTime deathDate) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id) " +
-                    "VALUES (?,?)";
+            String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id, timeOfDeath, expired) " +
+                    "VALUES (?,?,?,?)";
             PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
 
             insertDonationStatement.setString(1, organ.toString());
             insertDonationStatement.setInt(2, userId);
+            if (deathDate == null) {
+                insertDonationStatement.setNull(3, Types.BIGINT);
+                insertDonationStatement.setInt(4,0);
+            } else {
+                insertDonationStatement.setLong(3, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
+                if (deathDate.plus(getExpiryDuration(organ)).isBefore(LocalDateTime.now())){
+                    insertDonationStatement.setInt(4, 1);
+                } else {
+                    insertDonationStatement.setInt(4,0);
+                }
+            }
 
             System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
         }
     }
 
     public Organ getOrganFromResultSet(ResultSet resultSet) throws SQLException {
-        return Organ.valueOf(resultSet.getString("name").toUpperCase());
+        return Organ.parse(resultSet.getString("name").toUpperCase());
     }
 
     public Organ getDonationListItemFromName(String donationListItemName, int userId) throws SQLException {
@@ -100,5 +114,62 @@ public class UserDonations {
         }
     }
 
+    /**
+     * Replace a user's organ donation list with a new list of organs.
+     *
+     * @param newOrgans The list of organs to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllDonations(Set<Organ> newOrgans, int userId, LocalDateTime dateOfDeath) throws SQLException {
+        removeAllUserDonations(userId);
+        for (Organ organ: newOrgans) {
+            insertDonation(organ, userId, dateOfDeath);
+        }
+    }
+    /**
+     * Returns a duration of how long the organ will last based on the organ type entered.
+     * @param organType The organ type being donated
+     * @return How long the organ will last
+     */
+    public Duration getExpiryDuration(Organ organType) {
+        Duration duration = null;
+        switch(organType){
+            case LUNG:
+                duration = Duration.parse("PT6H");
+                break;
+            case HEART:
+                duration = Duration.parse("PT6H");
+                break;
+            case PANCREAS:
+                duration = Duration.parse("PT24H");
+                break;
+            case LIVER:
+                duration = Duration.parse("PT24H");
+                break;
+            case KIDNEY:
+                duration = Duration.parse("PT72H");
+                break;
+            case INTESTINE:
+                duration = Duration.parse("PT10H");
+                break;
+            case CORNEA:
+                duration = Duration.parse("P7D");
+                break;
+            case EAR:
+                duration = Duration.parse("P3650D");//Todo this is unknown and is a place holder
+                break;
+            case TISSUE:
+                duration = Duration.parse("P1825D");
+                break;
+            case SKIN:
+                duration = Duration.parse("P3650D");
+                break;
+            case BONE:
+                duration = Duration.parse("P3650D");
+                break;
 
+        }
+        return duration;
+    }
 }

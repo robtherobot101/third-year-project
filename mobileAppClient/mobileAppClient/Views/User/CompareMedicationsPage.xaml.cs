@@ -43,19 +43,19 @@ namespace mobileAppClient
             Medication selectedMedication = (Medication)MedicationsList.SelectedItem;
 
             if(selectedItem1.Text.Equals("")) {
-                selectedItem1.Text = selectedMedication.Name;
+                selectedItem1.Text = selectedMedication.name;
             } else if (selectedItem2.Text.Equals("")) {
-                selectedItem2.Text = selectedMedication.Name;
+                selectedItem2.Text = selectedMedication.name;
             } else {
                 Console.WriteLine(i);
                 i++;
                 if (i % 2 == 0)
                 {
-                    selectedItem1.Text = selectedMedication.Name;
+                    selectedItem1.Text = selectedMedication.name;
                 }
                 else
                 {
-                    selectedItem2.Text = selectedMedication.Name;
+                    selectedItem2.Text = selectedMedication.name;
                 }
             }
         }
