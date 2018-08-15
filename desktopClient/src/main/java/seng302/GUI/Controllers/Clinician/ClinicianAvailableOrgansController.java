@@ -52,6 +52,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
     private boolean focused;
     private boolean updated;
     private FadeTransition fade = new FadeTransition(javafx.util.Duration.millis(3500));
+    private boolean autoRefresh;
 
     public void setToken(String token) {
         this.token = token;
@@ -107,11 +108,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     if (organ.getTimeLeft().compareTo(Duration.ZERO) > 0){
                         //for each item set timeLeft -1
                         organ.tickTimeLeft();
+                    } else { //Organ has hit 0 so should be removed
+                        autoRefresh = true;
                     }
-                    organsTable.refresh();
                 }
-
-
+                if (autoRefresh){
+                    refreshTable();
+                }
+                organsTable.refresh();
+                autoRefresh = false;
             }
 
         };
