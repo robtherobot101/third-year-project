@@ -6,7 +6,6 @@ import seng302.User.DonatableOrgan;
 import seng302.User.WaitingListItem;
 
 import java.net.ConnectException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

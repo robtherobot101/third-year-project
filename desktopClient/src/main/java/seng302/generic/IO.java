@@ -163,14 +163,13 @@ public class  IO {
     /**
      * Imports users from csv file
      * @param path the path to the csv file
-     * @param token the users token
      */
-    public static void importUserCSV(String path, String token) {
-        Task taskToRun = runTestThread(path, token);
+    public static void importUserCSV(String path) {
+        Task taskToRun = runTestThread(path);
         new Thread(taskToRun).start();
     }
 
-    private static Task runTestThread(String path, String token) {
+    private static Task runTestThread(String path) {
         Task task = new Task<Void>() {
             @Override
             public Void call() {
@@ -324,8 +323,5 @@ public class  IO {
      */
     public static void setPaths() throws URISyntaxException {
         jarPath = new File(WindowManager.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
-        userPath = jarPath + File.separatorChar + "users.json";
-        clinicianPath = jarPath + File.separatorChar + "clinicians.json";
-        adminPath = jarPath + File.separatorChar + "admins.json";
     }
 }

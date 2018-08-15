@@ -48,6 +48,10 @@ public class UserWaitingList {
             queryBuilder.append("AND (USER.region LIKE '" + params.get("region") + "%' OR (USER.region IS NULL AND '" + params.get("region") +"' = '')) ");
         }
 
+        if(params.keySet().contains("country")) {
+            queryBuilder.append("AND USER.country = '" + params.get("country") + "' ");
+        }
+
         if(params.keySet().contains("organ")) {
             queryBuilder.append("AND WAITING_LIST_ITEM.organ_type = '" + params.get("organ") + "' ");
         }
@@ -98,7 +102,6 @@ public class UserWaitingList {
             return allWaitingListItems;
         }
     }
-
 
     public WaitingListItem getWaitingListItemFromId(int waitingListItemId, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {

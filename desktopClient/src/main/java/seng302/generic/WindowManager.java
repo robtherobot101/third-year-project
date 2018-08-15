@@ -437,10 +437,10 @@ public class WindowManager extends Application {
      */
     private static void showError(Thread t, Throwable e) {
         Debugger.log("Non-critical error caught, probably platform dependent.");
-        Debugger.log(e.getStackTrace());
-        Debugger.error(e.getStackTrace());
+        Debugger.log(e.getLocalizedMessage());
+        Debugger.error(e.getMessage());
         if (Platform.isFxApplicationThread()) {
-            Debugger.error(e.getStackTrace());
+            Debugger.error(e.getLocalizedMessage());
         } else {
             Debugger.error("An unexpected error occurred in " + t);
         }
@@ -467,7 +467,7 @@ public class WindowManager extends Application {
      * Creates a standard DataManager which manipulates the database via the API server.
      * @return A new DataManager instance
      */
-    public DataManager createDatabaseDataManager() {
+    private DataManager createDatabaseDataManager() {
         String localServer = "http://localhost:7015/api/v1";
         String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
         String testingServer = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
@@ -555,12 +555,12 @@ public class WindowManager extends Application {
                 stage.show();
 
             } catch (URISyntaxException e) {
-                Debugger.error("Unable to read jar path. Please run from a directory with a simpler path.");
-                Debugger.error(e.getLocalizedMessage());
+                System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
+                e.printStackTrace();
                 stop();
             } catch (IOException e) {
-                Debugger.error(unableTo);
-                Debugger.error(e.getLocalizedMessage());
+                System.err.println("Unable to load fxml or save file.");
+                e.printStackTrace();
                 stop();
             }
 
@@ -590,7 +590,7 @@ public class WindowManager extends Application {
     /**
      * Sets up a drug interaction cache
      */
-    public void setupDrugInteractionCache(){
+    private void setupDrugInteractionCache(){
         Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
@@ -605,8 +605,8 @@ public class WindowManager extends Application {
             scenes.put(scene, new Scene(FXMLLoader.load(WindowManager.class.getResource(scene.getPath())), MAIN_WINDOW_PREF_WIDTH,
                     MAIN_WINDOW_PREF_HEIGHT));
         } catch (IOException e) {
-            Debugger.error(unableTo);
-            Debugger.error(e.getLocalizedMessage());
+            System.err.println("Unable to load fxml or save file.");
+            e.printStackTrace();
         }
     }
 
@@ -634,7 +634,7 @@ public class WindowManager extends Application {
         stage.setScene(null);
         stage.setScene(scenes.get(scene));
 
-        if (scene.getWidth() != MAIN_WINDOW_PREF_WIDTH) {
+        if (!(scene.getWidth() == MAIN_WINDOW_PREF_WIDTH)) {
             stage.setResizable(false);
         }
     }

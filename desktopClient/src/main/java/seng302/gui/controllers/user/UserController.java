@@ -423,6 +423,7 @@ public class UserController implements Initializable {
             titleBar.setTitle(currentUser.getPreferredName(), "user");
             statusIndicator.setStatus("Saved", false);
 
+            System.out.println("Haven't fetched all users");
             WindowManager.updateFoundClinicianUsers();
             WindowManager.updateTransplantWaitingList();
         }

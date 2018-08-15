@@ -34,7 +34,7 @@ public class WaitingListController {
 
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
-                "organ","region"
+                "organ","region", "country"
         ));
 
         for(String param:possibleParams){

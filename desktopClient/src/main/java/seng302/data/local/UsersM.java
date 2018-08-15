@@ -44,6 +44,7 @@ public class UsersM implements UsersDAO {
         // does nothing on local
     }
 
+
     /**
      * updates a user
      * @param user the user to update
@@ -73,7 +74,7 @@ public class UsersM implements UsersDAO {
      */
     public List<User> getUsersByNameAlternative(String term) {
         if (term.equals("")) {
-            ArrayList<User> sorted = new ArrayList<>(users);
+            List<User> sorted = new ArrayList<>(users);
             sorted.sort(Comparator.comparing(User::getName));
             return sorted;
         }

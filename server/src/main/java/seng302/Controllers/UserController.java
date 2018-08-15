@@ -45,7 +45,7 @@ public class UserController {
     public String getUsers(Request request, Response response) {
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
-                "name","password","userType","age","gender","region","organ",
+                "name","password","userType","age","gender","region","country","organ",
                 "startIndex","count"
         ));
         for(String param:possibleParams){

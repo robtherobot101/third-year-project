@@ -15,7 +15,7 @@ public class DonatableOrgan {
     private long donorId;
     private int id;
     private Duration timeLeft;
-    private List<Long> topReceivers;
+    private List<User> topReceivers;
     private Boolean expired;
 
 
@@ -66,11 +66,11 @@ public class DonatableOrgan {
         timeLeft.minus(1, SECONDS);
     }
 
-    public List<Long> getTopReceivers() {
+    public List<User> getTopReceivers() {
         return topReceivers;
     }
 
-    public void setTopReceivers(List<Long> topReceivers) {
+    public void setTopReceivers(List<User> topReceivers) {
         this.topReceivers = topReceivers;
     }
 }

@@ -29,7 +29,6 @@ public class AdminWindowGUITest extends TestFXTest {
 
     @Before
     public void setupTest() throws SQLException {
-        useLocalStorage();
     }
 
 
@@ -197,17 +196,17 @@ public class AdminWindowGUITest extends TestFXTest {
     public void checkExistenceDefaultClinician() {
         loginAsDefaultAdmin();
         clickOn("#cliniciansTab");
-        clickOn("default clinician");
+        clickOn("default");
         refreshTableSelections();
-        assertEquals("default clinician", currentSelectedClinician.getName());
+        assertEquals("default", currentSelectedClinician.getName());
     }
 
     @Test
     public void checkExistenceDefaultAdmin() {
         loginAsDefaultAdmin();
         clickOn("#administratorsTab");
-        clickOn("default admin");
+        clickOn("default");
         refreshTableSelections();
-        assertEquals("default admin", currentSelectedAdmin.getName());
+        assertEquals("default", currentSelectedAdmin.getName());
     }
 }

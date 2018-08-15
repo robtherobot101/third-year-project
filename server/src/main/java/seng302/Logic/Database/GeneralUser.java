@@ -97,11 +97,12 @@ public class GeneralUser {
             String ageFilter = ageFilter(params);
             String genderFilter = matchFilter(params, "gender", false);
             String regionFilter = matchFilter(params, "region", false);
+            String countryFilter = matchFilter(params, "country", false);
             String organFilter = organFilter(params);
 
             List<String> filters = new ArrayList<String>();
             filters.addAll(Arrays.asList(
-                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,organFilter
+                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,countryFilter,organFilter
             ));
 
             filters.removeIf((String filter) -> filter.equals(""));
@@ -283,9 +284,10 @@ public class GeneralUser {
             String password = user.getPassword();
             String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
-        return MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                " email, password, date_of_birth) VALUES(\"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\", \"{5}\", \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
-                firstName, middleNames, lastName, preferredName, preferredMiddleNames, preferredLastName, creationTime, lastModified, username, email, password, dateOfBirth);
+        return   MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
+                " email, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
+                firstName, middleNames == null ? null : "\"" + middleNames +"\"", lastName == null ? null : "\"" + lastName + "\"", preferredName, preferredMiddleNames == null ? null : "\"" + preferredMiddleNames + "\"",
+                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, password, dateOfBirth);
     }
 
     /**
@@ -739,7 +741,7 @@ public class GeneralUser {
     public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ?";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             ResultSet resultSet = statement.executeQuery();

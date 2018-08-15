@@ -5,6 +5,7 @@ import seng302.User.Attribute.Organ;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -20,7 +21,7 @@ public class DonatableOrgan {
     private String receiverName;
     private String receiverDeathRegion;
     private double timePercent;
-    private int[] topReceivers;
+    private List<User> topReceivers;
 
     public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id){
         this.timeOfDeath = timeOfExpiry;
@@ -75,7 +76,7 @@ public class DonatableOrgan {
         this.timeOfDeath = timeOfExpiry;
     }
 
-    public int[] getTopReceivers() {
+    public List<User> getTopReceivers() {
         return topReceivers;
     }
     

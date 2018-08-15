@@ -12,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
+import seng302.User.Attribute.NZRegion;
+import seng302.generic.Country;
 import seng302.gui.controllers.user.UserController;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
@@ -45,9 +47,13 @@ public class ClinicianWaitingListController implements Initializable {
     @FXML
     private ComboBox organSearchComboBox;
     @FXML
+    private Button deregisterReceiverButton;
+    @FXML
     private TextField regionSearchTextField;
     @FXML
-    private Button deregisterReceiverButton;
+    private ComboBox countryComboBox;
+    @FXML
+    private ComboBox regionComboBox;
 
     private ObservableList<WaitingListItem> transplantList = FXCollections.observableArrayList();
 
@@ -74,6 +80,125 @@ public class ClinicianWaitingListController implements Initializable {
     public boolean hasToken() {
         return token != null;
     }
+
+
+    public void setup() {
+        try {
+            List<String> validCountries = new ArrayList<>();
+            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(token)) {
+                if(c.getValid())
+                    validCountries.add(c.getCountryName());
+            }
+            countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            countryComboBox.getItems().add("All Countries");
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
+        }
+
+        List<String> nzRegions = new ArrayList<>();
+        for(NZRegion r : NZRegion.values()) {
+            nzRegions.add(r.toString());
+        }
+        regionComboBox.setItems(FXCollections.observableArrayList(nzRegions));
+        regionComboBox.getItems().add("All Regions");
+
+
+        countryComboBox.setValue("All Countries");
+        setRegionControls("", "All Countries", regionComboBox, regionSearchTextField);
+
+    }
+
+
+    /**
+     * Gets the region from the regionComboBox or regionField. If New Zealand is the selected country in the
+     * given countryComboBox, then the value in the regionComboBox is returned, otherwise the value in
+     * the regionField is returned.
+     *
+     * @param countryComboBox The ComboBox of countries
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     * @return the value in the regionComboBox if New Zealand is the selected country, otherwise the value in the regionField.
+     */
+    public String getRegion(ComboBox<Country> countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean getFromComboBox = Objects.equals(countryComboBox.getValue(), "New Zealand");
+        if(getFromComboBox) {
+            return regionComboBox.getValue();
+        }
+        return regionField.getText();
+    }
+
+
+    /**
+     * Sets the current value of the given regionComboBox and regionField to the given value.
+     *
+     * @param value The value which the ComboBox and TextField will be set to
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     */
+    public void setRegion(String value, ComboBox countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        String country = countryComboBox.getValue().toString();
+        boolean useCombo = false;
+        if (country != null) {
+            useCombo = country.equalsIgnoreCase("New Zealand");
+        }
+        if(value == null) {
+            if(useCombo){
+                regionComboBox.getSelectionModel().select("All Regions");
+            } else {
+                regionField.setText("");
+            }
+        } else {
+            if(useCombo){
+                regionComboBox.getSelectionModel().select(value);
+            } else {
+                regionField.setText(value);
+            }
+        }
+    }
+
+
+
+    /**
+     * Sets the visibility of the given regionComboBox and regionField depending on the value of the given
+     * countryComboBox and userValue.
+     * If New Zealand is selected in the countryComboBox, the  regionComboBox is visible, otherwise the regionField is visible.
+     *
+     * @param userValue The region value of the user (Could be region, or regionOfDeath)
+     * @param country The country the user is from
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     */
+    public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean useCombo = false;
+        if (country != null) {
+            useCombo = country.equalsIgnoreCase("New Zealand");
+        }
+        regionComboBox.setVisible(useCombo);
+        regionField.setVisible(!useCombo);
+        boolean validNZRegion;
+        try {
+            validNZRegion = Arrays.asList(NZRegion.values()).contains(NZRegion.parse(userValue));
+        } catch (IllegalArgumentException e) {
+            validNZRegion = false;
+        }
+        if((useCombo && validNZRegion) || (!useCombo && !validNZRegion)) {
+            setRegion(userValue,countryComboBox, regionComboBox, regionField);
+        } else {
+            setRegion("", countryComboBox, regionComboBox, regionField);
+        }
+    }
+
+    /**
+     * Updates the visibility of the region controls and updates the undo stack if changes were made
+     */
+    public void countryChanged() {
+        String currentRegion = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+        setRegionControls(currentRegion, countryComboBox.getValue().toString(), regionComboBox, regionSearchTextField);
+        String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+        updateFoundUsersWithFiltering(countryComboBox.getValue().toString(), region, organSearchComboBox.getValue().toString());
+    }
+
+
 
     /**
      * Updates the transplant waiting list table and checks if receiver is waiting not complete
@@ -117,14 +242,22 @@ public class ClinicianWaitingListController implements Initializable {
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch  the organ to specifically search for given by a user.
      */
-    public void updateFoundUsersWithFiltering(String regionSearch, String organSearch) {
+    public void updateFoundUsersWithFiltering(String countrySearch, String regionSearch, String organSearch) {
         try {
             transplantList.clear();
             Map<String, String> params = new HashMap<> ();
             if(!organSearch.equals("None")) {
                 params.put("organ", organSearch);
             }
-            params.put("region", regionSearch);
+            String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+            if(!region.equals("") && !region.equals("All Regions")) {
+                params.put("region", region);
+            }
+
+            if (!countryComboBox.getValue().toString().equals("All Countries")) {
+                params.put("country", countryComboBox.getValue().toString());
+            }
+
             List<WaitingListItem> items = WindowManager.getDataManager().getGeneral().getAllWaitingListItems(params, token);
             for(WaitingListItem item : items) {
                 if(item.getStillWaitingOn()) {
@@ -144,7 +277,8 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateFoundUsersOnOrganChange() {
         Debugger.log(organSearchComboBox.getValue().toString());
         Debugger.log(regionSearchTextField.getText());
-        updateFoundUsersWithFiltering(regionSearchTextField.getText(), organSearchComboBox.getValue().toString());
+        String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+        updateFoundUsersWithFiltering(countryComboBox.getValue().toString(), region, organSearchComboBox.getValue().toString());
     }
 
     /**
@@ -205,7 +339,10 @@ public class ClinicianWaitingListController implements Initializable {
             }
 
             WindowManager.updateUserWaitingLists();
-            updateFoundUsersWithFiltering("", "None");
+
+            String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+            updateFoundUsersWithFiltering(countryComboBox.getValue().toString(), region, organSearchComboBox.getValue().toString());
+
             deregisterReceiverButton.setDisable(true);
 
         } catch (HttpResponseException e) {
@@ -417,11 +554,7 @@ public class ClinicianWaitingListController implements Initializable {
                         Debugger.error(failed);
                     }
                 } else {
-                    try {
-                        deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
-                    } catch (HttpResponseException e) {
-                        Debugger.error(failed);
-                    }
+                    deathDeregister(deathDatePicker.getDateTimeValue(), selectedItem, user);
                 }
             }
         });
@@ -441,7 +574,7 @@ public class ClinicianWaitingListController implements Initializable {
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
      */
-    private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
+    private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) {
         deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
         if (selectedUser.getWaitingListItems() != null) {
             for (WaitingListItem item : selectedUser.getWaitingListItems()) {
@@ -490,9 +623,17 @@ public class ClinicianWaitingListController implements Initializable {
         organSearchComboBox.setItems(organSearchlist);
         organSearchComboBox.setValue("None");
 
-        //listener for when text is input into the region search text box
-        regionSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> updateFoundUsersWithFiltering(newValue,
-                organSearchComboBox.getValue().toString()));
+
+        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+            updateFoundUsersWithFiltering(countryComboBox.getValue().toString(), region, organSearchComboBox.getValue().toString());
+        });
+
+        regionSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+            updateFoundUsersWithFiltering(countryComboBox.getValue().toString(), region, organSearchComboBox.getValue().toString());
+        });
+
 
         transplantTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> deregisterReceiverButton
                 .setDisable(false));
