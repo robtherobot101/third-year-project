@@ -81,7 +81,7 @@ namespace mobileAppClient
 
             // Clear any previously selected user
             UserController.Instance.Logout();
-            
+
             // Logout clinician
             ClinicianController.Instance.Logout();
 
@@ -146,12 +146,14 @@ namespace mobileAppClient
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "attributes_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
+            var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(userSearchPage);
             menuList.Add(attributesPage);
             menuList.Add(transplantListPage);
+            menuList.Add(mapPage);
             menuList.Add(logoutPage);
         }
 

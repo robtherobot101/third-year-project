@@ -85,7 +85,7 @@ namespace mobileAppClientUnitTests
             string email = String.Format("{0}@hotmale.com", getRandomString(6));
             string username = getRandomString(5);
             DateTime dob = new DateTime(1984, 5, 3);
-            HttpStatusCode result = loginAPI.RegisterUser("Bobby", "LaFlame", email, username, 
+            HttpStatusCode result = loginAPI.RegisterUser("Bobby", "LaFlame", email, username,
                 "password", dob);
 
             Assert.AreEqual(HttpStatusCode.Created, result);

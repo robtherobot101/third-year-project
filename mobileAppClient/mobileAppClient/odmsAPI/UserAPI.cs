@@ -77,6 +77,52 @@ namespace mobileAppClient.odmsAPI
         }
 
         /*
+         * Function which returns the string of the photo based on the users id
+         * to retrieve the user's profile photo.
+         * Used for maps.
+         */
+        public async Task<Tuple<HttpStatusCode, string>> GetUserPhotoForMapObjects(int id)
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, string>(HttpStatusCode.ServiceUnavailable, "");
+            }
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            //Create the request with token as a header
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + id + "/photo");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, string>(HttpStatusCode.ServiceUnavailable, "");
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine("Successfully received profile photo for user id " + id);
+                return new Tuple<HttpStatusCode, string>(HttpStatusCode.OK, responseContent);
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Failed to retrieve photo for user id ({0}) ({1})", id, response.StatusCode));
+                return new Tuple<HttpStatusCode, string>(response.StatusCode, "");
+            }
+
+        }
+
+        /*
          * Returns the status of updating a user object to the server
          */
         public async Task<HttpStatusCode> UpdateUser(bool isClinicianMakingUpdate)
@@ -396,6 +442,93 @@ namespace mobileAppClient.odmsAPI
             }
             return new Tuple<HttpStatusCode, bool>(HttpStatusCode.OK, isUnique);
         }
+
+        /// <summary>
+        /// Fetches a list of custom organ objects used for the map view
+        /// </summary>
+        /// <returns>
+        /// Tuple containing the HTTP return code and the list of Custom Organ objects
+        /// </returns>
+        public async Task<Tuple<HttpStatusCode, List<CustomMapObject>>> GetOrgansForMap()
+        {
+            // Check internet connection
+            List<CustomMapObject> resultMapObjects = new List<CustomMapObject>();
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.ServiceUnavailable, resultMapObjects);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/mapObjects");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.ServiceUnavailable, resultMapObjects);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, List<CustomMapObject>>(response.StatusCode, resultMapObjects);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            resultMapObjects = JsonConvert.DeserializeObject<List<CustomMapObject>>(responseContent);
+            return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.OK, resultMapObjects);
+        }
+
+        /// <summary>
+        /// Fetches a single user with a given id
+        /// </summary>
+        /// <returns>
+        /// Tuple containing the HTTP return code and the User object
+        /// </returns>
+        public async Task<Tuple<HttpStatusCode, User>> GetSingleUser(string id)
+        {
+            // Check internet connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, User>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            String queries = null;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + id);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, User>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, User>(response.StatusCode, null);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            User resultUser = JsonConvert.DeserializeObject<User>(responseContent);
+            return new Tuple<HttpStatusCode, User>(HttpStatusCode.OK, resultUser);
+        }
+
+
 
         public async Task<User> getUser(int userId, string token)
         {

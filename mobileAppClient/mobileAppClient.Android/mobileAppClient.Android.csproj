@@ -132,6 +132,7 @@
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AndroidCamera.cs" />
+    <Compile Include="CustomMapRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -169,6 +170,35 @@
     <AndroidResource Include="Resources\xml\file_paths.xml" />
     <AndroidResource Include="Resources\drawable\arrow_icon.png" />
     <AndroidResource Include="Resources\drawable\facebook_icon.png" />
+    <AndroidResource Include="Resources\drawable\map_icon.png" />
+    <AndroidResource Include="Resources\layout\XamarinMapInfoWindow.axml" />
+    <AndroidResource Include="Resources\drawable\man1.png" />
+    <AndroidResource Include="Resources\drawable\man2.png" />
+    <AndroidResource Include="Resources\drawable\man3.png" />
+    <AndroidResource Include="Resources\drawable\man4.png" />
+    <AndroidResource Include="Resources\drawable\man5.png" />
+    <AndroidResource Include="Resources\drawable\man6.png" />
+    <AndroidResource Include="Resources\drawable\man7.png" />
+    <AndroidResource Include="Resources\drawable\man8.png" />
+    <AndroidResource Include="Resources\drawable\man9.png" />
+    <AndroidResource Include="Resources\drawable\man10.png" />
+    <AndroidResource Include="Resources\drawable\man11.png" />
+    <AndroidResource Include="Resources\drawable\man12.png" />
+    <AndroidResource Include="Resources\drawable\man13.png" />
+    <AndroidResource Include="Resources\drawable\man14.png" />
+    <AndroidResource Include="Resources\drawable\woman1.png" />
+    <AndroidResource Include="Resources\drawable\woman2.png" />
+    <AndroidResource Include="Resources\drawable\woman3.png" />
+    <AndroidResource Include="Resources\drawable\woman4.png" />
+    <AndroidResource Include="Resources\drawable\woman5.png" />
+    <AndroidResource Include="Resources\drawable\woman6.png" />
+    <AndroidResource Include="Resources\drawable\woman7.png" />
+    <AndroidResource Include="Resources\drawable\woman8.png" />
+    <AndroidResource Include="Resources\drawable\woman9.png" />
+    <AndroidResource Include="Resources\drawable\woman10.png" />
+    <AndroidResource Include="Resources\drawable\woman11.png" />
+    <AndroidResource Include="Resources\drawable\other.png" />
+    <AndroidResource Include="Resources\drawable\info.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-hdpi\" />
