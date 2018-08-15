@@ -23,7 +23,7 @@ public class GeneralDB implements GeneralDAO {
     }
 
     /**
-     * LOGIN the user into the program
+     * login the user into the program
      * @param usernameEmail the username/email of the user
      * @param password the users password
      * @return returns the response from the server
@@ -36,7 +36,7 @@ public class GeneralDB implements GeneralDAO {
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("usernameEmail", usernameEmail);
         queryParameters.put("password", password);
-        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "LOGIN");
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
         if(response == null) return responseMap;
         if (response.isValidJson()) {
             JsonObject serverResponse = response.getAsJsonObject();

@@ -24,8 +24,8 @@ public class CliniciansDB implements CliniciansDAO {
     }
 
     /**
-     * Calls the server to add a new CLINICIAN
-     * @param clinician the CLINICIAN to add
+     * Calls the server to add a new clinician
+     * @param clinician the clinician to add
      * @param token the token of the user
      * @throws HttpResponseException throws if cannot connect to the server
      */
@@ -40,8 +40,8 @@ public class CliniciansDB implements CliniciansDAO {
     }
 
     /**
-     * Calls the server to update a CLINICIAN
-     * @param clinician the CLINICIAN to update
+     * Calls the server to update a clinician
+     * @param clinician the clinician to update
      * @param token the token of the user
      * @throws HttpResponseException throws if cannot connect to the server
      */
@@ -74,27 +74,27 @@ public class CliniciansDB implements CliniciansDAO {
     }
 
     /**
-     * Removes a CLINICIAN from the server
-     * @param id the id of the CLINICIAN to remove
+     * Removes a clinician from the server
+     * @param id the id of the clinician to remove
      * @param token the users token
      * @throws HttpResponseException throws if cannot connect to the server
      */
     public void removeClinician(long id, String token) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<>(), token, clinicians, String.valueOf(id));
+        APIResponse response = server.deleteRequest(new HashMap<>(), token, "clinicians", String.valueOf(id));
         if(response == null) throw new HttpResponseException(0, "Could not access server");
         if (response.getStatusCode() != 201)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
     /**
-     * gets a specific CLINICIAN
-     * @param id the id of the CLINICIAN
+     * gets a specific clinician
+     * @param id the id of the clinician
      * @param token the users token
-     * @return returns the CLINICIAN
+     * @return returns the clinician
      * @throws HttpResponseException throws if cannot connect to the server
      */
     public Clinician getClinician(long id, String token) throws HttpResponseException {
-        APIResponse response = server.getRequest(new HashMap<>(), token, clinicians, String.valueOf(id));
+        APIResponse response = server.getRequest(new HashMap<>(), token, "clinicians", String.valueOf(id));
         if(response == null){
             return null;
         }
