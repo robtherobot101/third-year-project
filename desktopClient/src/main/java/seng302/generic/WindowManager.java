@@ -97,6 +97,8 @@ public class WindowManager extends Application {
 
     private static String unableTo = "Unable to load fxml or save file.";
 
+    private static Map<Object, Object> config = new ConfigParser().getConfig();
+
     /**
      * Returns the program icon.
      *
@@ -450,6 +452,10 @@ public class WindowManager extends Application {
         return testing;
     }
 
+    public static Map<Object, Object> getConfig() {
+        return config;
+    }
+
 
     /**
      * Creates an internal, non-persistant DataManager (For testing and debugging)
@@ -468,13 +474,10 @@ public class WindowManager extends Application {
      * @return A new DataManager instance
      */
     private DataManager createDatabaseDataManager() {
-        String localServer = "http://localhost:7015/api/v1";
-        String properServer = "http://csse-s302g3.canterbury.ac.nz:80/api/v1";
-        String testingServer = "http://csse-s302g3.canterbury.ac.nz:80/testing/api/v1";
+        String serverAddress = (String) config.get("server");
+        if(testing) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
 
-        APIServer server;
-        if(testing) server = new APIServer(testingServer);
-        else server = new APIServer(properServer);
+        APIServer server = new APIServer(serverAddress);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
