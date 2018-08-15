@@ -46,7 +46,7 @@ namespace mobileAppClient
         public string username { get; set; }
         public string password { get; set; }
 
-        public List<String> organs { get; set; }
+        public List<Organ> organs { get; set; }
         public List<Medication> currentMedications { get; set; }
         public List<Medication> historicMedications { get; set; }
 

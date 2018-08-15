@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-
+using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -79,15 +79,15 @@ namespace mobileAppClient
             
             if (!allOrgansDonated)
             {
-                recommendationsList.Add("You could donate more organs");
+                recommendationsList.Add("Donate more organs");
             }
             
             if (UserController.Instance.photoObject == null)
             {
-                recommendationsList.Add("You could add a profile photo");
+                recommendationsList.Add("Add a profile photo");
             }
             
-            recommendationsList.Add("You could add in more details about yourself");
+            recommendationsList.Add("Add in more details about yourself");
 
             savedLivesText.Text = String.Format("You could save {0} lives", calculateSavedLives());
             helpedLivesText.Text = String.Format("and you could also help {0} lives", calculateHelpedLives());
@@ -100,26 +100,26 @@ namespace mobileAppClient
         private int calculateSavedLives()
         {
             int savedLives = 0;
-            foreach (string item in UserController.Instance.LoggedInUser.organs)
+            foreach (Organ item in UserController.Instance.LoggedInUser.organs)
             {
                 switch (item)
                 {
-                    case "LIVER":
+                    case Organ.LIVER:
                         savedLives++;
                         break;
-                    case "KIDNEY":
+                    case Organ.KIDNEY:
                         savedLives++;
                         break;
-                    case "PANCREAS":
+                    case Organ.PANCREAS:
                         savedLives++;
                         break;
-                    case "HEART":
+                    case Organ.HEART:
                         savedLives++;
                         break;
-                    case "LUNG":
+                    case Organ.LUNG:
                         savedLives++;
                         break;
-                    case "INTESTINE":
+                    case Organ.INTESTINE:
                         savedLives++;
                         break;
                 }
@@ -134,23 +134,23 @@ namespace mobileAppClient
         private int calculateHelpedLives()
         {
             int helpedLives = 0;
-            foreach (string item in UserController.Instance.LoggedInUser.organs)
+            foreach (Organ item in UserController.Instance.LoggedInUser.organs)
             {
                 switch (item)
                 {
-                    case "CORNEA":
+                    case Organ.CORNEA:
                         helpedLives++;
                         break;
-                    case "EAR":
+                    case Organ.EAR:
                         helpedLives++;
                         break;
-                    case "SKIN":
+                    case Organ.SKIN:
                         helpedLives++;
                         break;
-                    case "BONE":
+                    case Organ.BONE:
                         helpedLives++;
                         break;
-                    case "TISSUE":
+                    case Organ.TISSUE:
                         helpedLives++;
                         break;
                 }
