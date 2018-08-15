@@ -271,4 +271,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
             fade.playFromStart();
         }
     }
+
+    /**
+     * Called when an organ passes the colour threshold eg 50% -> 49% and so needs to be updated.
+     * Not using this calls updateOrgans() in the middle of the for loop (not ideal as throws concurrent mod. exceptions)
+     * @param value the value of autoRefresh
+     */
+    public void setAutoRefresh(boolean value){
+        autoRefresh = value;
+    }
 }

@@ -101,7 +101,7 @@ public class DonatableOrgan {
         double temp = (double) timeLeft.toMillis() /  (double) getExpiryDuration(organType).toMillis();
         if ((timePercent >= 0.75 && temp < 0.75) || (timePercent >= 0.5 && temp < 0.5) || (timePercent >= 0.25 && temp < 0.25)) {
             timePercent = temp;
-            WindowManager.updateAvailableOrgans();
+            WindowManager.updateAvailableOrgansAutoRefresh(true);
         }
         timePercent = temp;
     }
