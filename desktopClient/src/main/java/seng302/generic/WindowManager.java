@@ -292,6 +292,20 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Calls for an auto refresh of the avaliable organs table after the next tick.
+     * @param value the bool value. T = refresh F = no refresh
+     */
+    public static void updateAvailableOrgansAutoRefresh(boolean value) {
+        if (clinicianClinicianAvailableOrgansController.hasToken()) {
+            clinicianClinicianAvailableOrgansController.setAutoRefresh(true);
+        }
+        if (adminClinicianAvailableController.hasToken()) {
+            adminClinicianAvailableController.setAutoRefresh(true);
+        }
+
+    }
+
+    /**
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician
@@ -477,7 +491,10 @@ public class WindowManager extends Application {
         String serverAddress = (String) config.get("server");
         if(testing) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
 
-        APIServer server = new APIServer(serverAddress);
+        APIServer server;
+        if(TESTING) server = new APIServer(testingServer);
+        else server = new APIServer(localServer);
+
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
@@ -690,4 +707,5 @@ public class WindowManager extends Application {
         }
         Platform.exit();
     }
+
 }

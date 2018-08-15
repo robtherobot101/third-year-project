@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -8,6 +13,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -119,6 +127,16 @@
          <GridPane.margin>
             <Insets left="40.0" right="400.0" />
          </GridPane.margin>
+       </AnchorPane>
+       <AnchorPane layoutX="556.0" layoutY="77.0" prefHeight="20.0" prefWidth="230.0" AnchorPane.rightAnchor="14.0">
+           <children>
+               <Label layoutX="153.0" layoutY="1.0" prefHeight="17.0" prefWidth="59.0" text="Expired" />
+               <Label layoutY="2.0" text="Healthy" />
+               <ListView focusTraversable="false" layoutX="65.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-100" />
+               <ListView focusTraversable="false" layoutX="85.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-75" />
+               <ListView focusTraversable="false" layoutX="105.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-50" />
+               <ListView focusTraversable="false" layoutX="125.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-25" />
+           </children>
        </AnchorPane>
       <Button fx:id="refreshOrganTable" mnemonicParsing="false" onAction="#refreshTable" text="Update Results" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
          <GridPane.margin>
