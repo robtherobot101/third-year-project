@@ -136,8 +136,10 @@ public class WindowManager extends Application {
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
 
-            newUserController.setCurrentUser(user, token);
-            newUserController.addHistoryEntry("clinician opened", "A clinician opened this profile to view and/or edit information.");
+            User latest = WindowManager.getDataManager().getUsers().getUser((int)user.getId(), token);
+            latest = latest == null ? user : latest;
+            newUserController.setCurrentUser(latest, token);
+            newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
 
             newUserController.setControlsShown(true);
             cliniciansUserWindows.put(stage, newUserController);
@@ -146,6 +148,7 @@ public class WindowManager extends Application {
             Scene newScene = new Scene(root, MAIN_WINDOW_PREF_WIDTH, MAIN_WINDOW_PREF_HEIGHT);
             stage.setScene(newScene);
             stage.show();
+            newUserController.setRefreshEvent();
         } catch (IOException | NullPointerException e) {
             Debugger.error(unableTo);
             Debugger.error(e.getLocalizedMessage());
@@ -184,6 +187,7 @@ public class WindowManager extends Application {
             Scene newScene = new Scene(root, MAIN_WINDOW_PREF_WIDTH, MAIN_WINDOW_PREF_HEIGHT);
             stage.setScene(newScene);
             stage.show();
+            newUserController.setRefreshEvent();
         } catch (IOException | NullPointerException e) {
             Debugger.error(unableTo);
             Debugger.error(e.getLocalizedMessage());
@@ -200,7 +204,6 @@ public class WindowManager extends Application {
      */
     public static void setCurrentClinician(Clinician clinician, String token) {
         clinicianController.setClinician(clinician, token);
-        clinicianController.updateDisplay();
         clinicianController.updateFoundUsers();
     }
 
@@ -371,14 +374,6 @@ public class WindowManager extends Application {
         if (adminController.hasToken()) {
             adminController.updateFoundUsers();
         }
-    }
-
-    /**
-     * refreshes the admin
-     */
-    private static void refreshAdmin() {
-        adminController.refreshLatestProfiles();
-        adminController.updateFoundUsers();
     }
 
     /**
@@ -573,15 +568,18 @@ public class WindowManager extends Application {
                 if (event.getCode() == KeyCode.F5) {
                     updateTransplantWaitingList();
                     updateUserWaitingLists();
-                    refreshAdmin();
                 }
             });
 
             getScene(TFScene.admin).setOnKeyReleased(event -> {
                 if (event.getCode() == KeyCode.F5) {
-                    updateTransplantWaitingList();
-                    updateUserWaitingLists();
+                    adminController.refresh();
+                }
+            });
 
+            getScene(TFScene.userWindow).setOnKeyReleased(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    userController.refresh();
                 }
             });
         } else {

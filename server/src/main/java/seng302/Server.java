@@ -124,7 +124,7 @@ public class Server {
                 });
 
                 path("/:id/medications", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     medicationsController::getAllMedications);
                     post("",                    medicationsController::addMedication);
                     get("/:medicationId",       medicationsController::getSingleMedication);
@@ -133,7 +133,7 @@ public class Server {
                 });
 
                 path("/:id/diseases", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     diseasesController::getAllDiseases);
                     post("",                    diseasesController::addDisease);
                     get("/:diseaseId",          diseasesController::getSingleDisease);
@@ -142,7 +142,7 @@ public class Server {
                 });
 
                 path("/:id/procedures", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     proceduresController::getAllProcedures);
                     post("",                    proceduresController::addProcedure);
                     get("/:procedureId",        proceduresController::getSingleProcedure);
@@ -151,13 +151,13 @@ public class Server {
                 });
 
                 path("/:id/history", () -> {
-                   before("",                   profileUtils::hasUserLevelAccess);
+                   before("",                   profileUtils::hasAccessToAllUsers);
                    get("",                      historyController::getUserHistoryItems);
                    post("",                     historyController::addUserHistoryItem);
                 });
 
                 path("/:id/donations", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     donationsController::getAllUserDonations);
                     post("",                    donationsController::addDonation);
                     delete("",                  donationsController::deleteAllUserDonations);
@@ -166,8 +166,9 @@ public class Server {
                 });
 
                 path("/:id/waitingListItems", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     waitingListController::getAllUserWaitingListItems);
+                    patch("",                   waitingListController::editAllWaitingListItems);
                     post("",                    waitingListController::addNewUserWaitingListItem);
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
                     patch("/:waitingListItemId", waitingListController::editWaitingListItem);
@@ -191,7 +192,6 @@ public class Server {
             });
 
             path("/countries", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
             });

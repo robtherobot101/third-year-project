@@ -9,6 +9,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,7 +72,7 @@ public class UserDonations {
     }
 
     public Organ getOrganFromResultSet(ResultSet resultSet) throws SQLException {
-        return Organ.valueOf(resultSet.getString("name").toUpperCase());
+        return Organ.parse(resultSet.getString("name").toUpperCase());
     }
 
     public Organ getDonationListItemFromName(String donationListItemName, int userId) throws SQLException {
@@ -110,6 +114,19 @@ public class UserDonations {
         }
     }
 
+    /**
+     * Replace a user's organ donation list with a new list of organs.
+     *
+     * @param newOrgans The list of organs to update to
+     * @param userId The id of the user to update
+     * @throws SQLException If there is errors communicating with the database
+     */
+    public void updateAllDonations(Set<Organ> newOrgans, int userId, LocalDateTime dateOfDeath) throws SQLException {
+        removeAllUserDonations(userId);
+        for (Organ organ: newOrgans) {
+            insertDonation(organ, userId, dateOfDeath);
+        }
+    }
     /**
      * Returns a duration of how long the organ will last based on the organ type entered.
      * @param organType The organ type being donated

@@ -364,10 +364,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
         updatingFields++;
-        boolean useCombo = false;
-        if (country != null) {
-            useCombo = country.equalsIgnoreCase("New Zealand");
-        }
+        boolean useCombo = country != null && country.equalsIgnoreCase("New Zealand");
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);
         boolean validNZRegion;
@@ -388,8 +385,7 @@ public class UserAttributesController extends UserTabController implements Initi
      * Updates the visibility of the region controls and updates the undo stack if changes were made
      */
     public void countryChanged() {
-        setRegionControls(currentUser.getRegion(), countryComboBox.getValue().toString(), regionComboBox, regionField);
-        System.out.println("Country changed");
+        setRegionControls(currentUser.getRegion(), countryComboBox.getValue() != null ? countryComboBox.getValue().toString() : "", regionComboBox, regionField);
         attributeFieldUnfocused();
     }
 
@@ -614,6 +610,7 @@ public class UserAttributesController extends UserTabController implements Initi
             }
             countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
         } catch (HttpResponseException e) {
+            e.printStackTrace();
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
         }
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
@@ -621,21 +618,13 @@ public class UserAttributesController extends UserTabController implements Initi
         extractNames(currentUser.getPreferredNameArray(), preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField);
         addressField.setText(currentUser.getCurrentAddress());
 
-        if(currentUser.getCountry() != null) {
-            countryComboBox.getSelectionModel().select(currentUser.getCountry());
-        }
+        countryComboBox.getSelectionModel().select(currentUser.getCountry());
 
         setRegion(currentUser.getRegion(), regionComboBox, regionField);
 
         countryOfDeath.setText(currentUser.getCountryOfDeath());
         regionOfDeath.setText(currentUser.getRegionOfDeath());
         cityOfDeath.setText(currentUser.getCityOfDeath());
-
-
-        if(currentUser.getCountry() != null) {
-            countryComboBox.getSelectionModel().select(currentUser.getCountry());
-        }
-
 
         dateOfBirthPicker.setValue(currentUser.getDateOfBirth());
         dateOfDeath.setText(currentUser.getDateOfDeath() == null ? "" : currentUser.getDateOfDeath().toString());
@@ -910,6 +899,12 @@ public class UserAttributesController extends UserTabController implements Initi
             }
         });
 
+        regionField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
+        });
+
         //Add listeners to correctly update BMI and blood pressure based on user input
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
@@ -919,21 +914,17 @@ public class UserAttributesController extends UserTabController implements Initi
      * undos the last change
      */
     public void undo(){
-        Debugger.log("Size of undo stack before afu: " + undoStack.size());
+        updatingFields++;
         attributeFieldUnfocused();
-        Debugger.log("Size of undo stack after afu: " + undoStack.size());
-
         //Add the current fields to the redo stack
         redoStack.add(new User(currentUser));
         //Copy the attribute information from the top element of the undo stack
         currentUser.copyFieldsFrom(undoStack.getLast());
         //Remove the top element of the undo stack
         undoStack.removeLast();
-        Debugger.log("Size of undo stack before puf: " + undoStack.size());
-
         populateUserFields();
-        Debugger.log("Size of undo stack after puf: " + undoStack.size());
-
+        countryChanged();
+        updatingFields--;
     }
 
     /**
@@ -941,6 +932,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     @Override
     public void redo() {
+        updatingFields++;
         attributeFieldUnfocused();
         //Add the current fields to the undo stack
         undoStack.add(new User(currentUser));
@@ -949,6 +941,8 @@ public class UserAttributesController extends UserTabController implements Initi
         //Remove the top element of the redo stack
         redoStack.removeLast();
         populateUserFields();
+        countryChanged();
+        updatingFields--;
     }
 
 

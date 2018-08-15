@@ -116,6 +116,8 @@ public class AdminController implements Initializable {
     @FXML
     private Button availableOrgansButton;
     @FXML
+    private Button refreshButton;
+    @FXML
     private GridPane mainPane;
     @FXML
     private TextField profileSearchTextField;
@@ -153,8 +155,6 @@ public class AdminController implements Initializable {
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
-    private LinkedList<Admin> adminUndoStack = new LinkedList<>();
-    private LinkedList<Admin> adminRedoStack = new LinkedList<>();
 
     private Admin currentAdmin;
 
@@ -307,6 +307,7 @@ public class AdminController implements Initializable {
 
         updateDisplay();
         refreshLatestProfiles();
+        WindowManager.updateTransplantWaitingList();
     }
 
     /**
@@ -379,8 +380,6 @@ public class AdminController implements Initializable {
      * reflect those of the values in the displayed TextFields
      */
     public void updateAdminPopUp() {
-        addAdminToUndoStack(currentAdmin);
-
         // Create the custom dialog.
         Dialog<ArrayList<String>> dialog = new Dialog<>();
         dialog.setTitle("Update admin");
@@ -639,35 +638,6 @@ public class AdminController implements Initializable {
     }
 
     /**
-     * The main admin undo function. Called from the button press, reads from the undo stack and then updates the gui accordingly.
-     */
-    public void undo() {
-        try {
-            WindowManager.getDataManager().getGeneral().reset(token);
-        } catch (HttpResponseException e) {
-            Debugger.error("Failed to reset the database.");
-        }
-    }
-
-    /**
-     * The main admin redo function. Called from the button press, reads from the redo stack and then updates the gui accordingly.
-     */
-    public void redo() {
-    }
-
-    /**
-     * Creates a deep copy of the current currentAdmin and adds that copy to the undo stack. Then updates the gui button to be usable.
-     *
-     * @param admin the currentAdmin object being copied.
-     */
-    private void addAdminToUndoStack(Admin admin) {
-        adminUndoStack.add(new Admin(admin));
-        if (undoWelcomeButton.isDisable()) {
-            undoWelcomeButton.setDisable(false);
-        }
-    }
-
-    /**
      * Clears the filter fields of the advanced filters
      */
     public void clearFilter() {
@@ -762,6 +732,44 @@ public class AdminController implements Initializable {
         }
     }
 
+    /**
+     * Refresh the items in the search table, waiting list table, and the current admin's attributes.
+     */
+    public void refresh() {
+        refresh(true);
+    }
+
+    /**
+     * Refresh the items in the search table, waiting list table, and the current admin's attributes.
+     */
+    public void refresh(boolean ask) {
+        Alert alert = null;
+        Optional<ButtonType> result = Optional.empty();
+        if (ask) {
+            alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
+                    "Refreshing will update your admin attributes to the latest version from the server, as well as updating the search table and the waiting list item table.");
+            result = alert.showAndWait();
+        }
+        boolean fail = false;
+        if (!ask || (result != null && result.isPresent() && result.get() == ButtonType.OK)) {
+            try {
+                Admin latest = WindowManager.getDataManager().getAdmins().getAdmin((int) currentAdmin.getStaffID(), token);
+                setAdmin(latest, token);
+            } catch (HttpResponseException e) {
+                Debugger.error("Failed to fetch admin with id: " + currentAdmin.getStaffID());
+                fail = true;
+            }
+        }
+
+        if (ask) {
+            alert.close();
+            if (fail) {
+                alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Refresh Failed", "Refresh failed",
+                        "Admin data could not be refreshed because there was an error contacting the server.");
+                alert.showAndWait();
+            }
+        }
+    }
 
     /**
      * Checks whether this admin has an API token.
@@ -1194,8 +1202,6 @@ public class AdminController implements Initializable {
         transplantListPane.setVisible(false);
         cliPane.setVisible(false);
         organsPane.setVisible(false);
-        undoWelcomeButton.setDisable(true);
-        redoWelcomeButton.setDisable(true);
     }
 
     /**
@@ -1205,11 +1211,7 @@ public class AdminController implements Initializable {
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);
-        undoWelcomeButton.setDisable(adminUndoStack.isEmpty());
-        redoWelcomeButton.setDisable(adminRedoStack.isEmpty());
         availableOrgansController.stopTimer();
-        //Could be updated in the CLI
-        refreshLatestProfiles();
     }
 
     /**
@@ -1221,8 +1223,6 @@ public class AdminController implements Initializable {
         setButtonSelected(transplantListButton, true);
         transplantListPane.setVisible(true);
         availableOrgansController.stopTimer();
-
-        WindowManager.updateTransplantWaitingList();
     }
 
     /**
@@ -1282,6 +1282,7 @@ public class AdminController implements Initializable {
             Debugger.log("DB resample called");
             try {
                 WindowManager.getDataManager().getGeneral().resample(token);
+                refresh(false);
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to resample the database.");
             }

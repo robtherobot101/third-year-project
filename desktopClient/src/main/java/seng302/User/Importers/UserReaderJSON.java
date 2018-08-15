@@ -4,6 +4,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import seng302.generic.Debugger;
 import seng302.User.User;
+import seng302.User.Importers.JSONParser;
 
 import java.io.*;
 import java.lang.reflect.Type;
