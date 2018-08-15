@@ -1,10 +1,9 @@
-﻿using mobileAppClient.Models.CustomObjects;
+﻿
+
+using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
