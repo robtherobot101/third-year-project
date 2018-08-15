@@ -15,9 +15,7 @@ import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -50,6 +48,22 @@ public class UserWaitingListController extends UserTabController implements Init
         transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
+    public void sortWaitingListItems(){
+        System.out.println(Arrays.toString(waitingListItems.toArray()));
+
+        waitingListItems.sort((o1, o2) -> {
+            if(o1.getStillWaitingOn() && !o2.getStillWaitingOn()) {
+                return -1;
+            } else if(!o1.getStillWaitingOn() && o2.getStillWaitingOn()) {
+                return 1;
+            }else{
+                return o1.getOrganRegisteredDate().compareTo(o2.getOrganRegisteredDate());
+            }
+        });
+
+        System.out.println(Arrays.toString(waitingListItems.toArray()));
+    }
+
     /**
      * If there is an Organ type selected in the combobox, a new ReceiverWaitingListItem
      * is added to the user's profile.
@@ -66,10 +80,7 @@ public class UserWaitingListController extends UserTabController implements Init
                 userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
                 statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
 
-                // Slow boi
-                Platform.runLater(() -> {
-                    populateWaitingList();
-                });
+                populateWaitingList();
             } else {
                 Alert alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Error", "Failed to de-register", "New items cannot be added after a users's death.");
                 alert.show();
@@ -150,6 +161,7 @@ public class UserWaitingListController extends UserTabController implements Init
         if (currentUser != null){
             waitingListItems.clear();
             waitingListItems.addAll(currentUser.getWaitingListItems());
+            sortWaitingListItems();
         }
     }
 
