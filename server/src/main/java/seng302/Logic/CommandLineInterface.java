@@ -7,6 +7,7 @@ import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -620,10 +621,16 @@ public class CommandLineInterface {
                     break;
                 case "dateofbirth":
                     try {
-                        toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
+                        LocalDate dob = LocalDate.parse(value, User.dateFormat);
+                        if(!dob.isAfter(LocalDate.now())){
+                            toSet.setDateOfBirth(dob);
 
-                        outputString = ("New date of birth set.");
-                        wasSuccessful = true;
+                            outputString = ("New date of birth set.");
+                            wasSuccessful = true;
+                        } else {
+                            outputString = ("The date of birth cannot be after the current date.");
+                            wasSuccessful = false;
+                        }
                     } catch (DateTimeException e) {
                         outputString = ("Please enter a valid date in the format dd/mm/yyyy.");
                         wasSuccessful = false;
@@ -631,12 +638,26 @@ public class CommandLineInterface {
                     break;
                 case "datetimeofdeath":
                     try {
-                        toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateTimeFormat));
+                        LocalDateTime dod = LocalDateTime.parse(value, User.dateTimeFormat);
 
-                        outputString = ("New date of death set.");
-                        wasSuccessful = true;
+                        if(toSet.getDateOfBirth() != null) {
+                            if(dod.toLocalDate().isBefore(toSet.getDateOfBirth())) {
+                                outputString = "The date of death cannot be before the date of birth (" + User.dateFormat.format(toSet.getDateOfBirth()) + ")";
+                                wasSuccessful = false;
+                            }
+                            toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateTimeFormat));
+                            outputString = ("New date and time of death set.");
+                            wasSuccessful = true;
+                        } else if(dod.toLocalDate().isAfter(LocalDate.now())) {
+                            outputString = ("The date and time of death cannot be after now.");
+                            wasSuccessful = false;
+                        } else {
+                            toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateTimeFormat));
+                            outputString = ("New date and time of death set.");
+                            wasSuccessful = true;
+                        }
                     } catch (DateTimeException e) {
-                        outputString = ("Please enter a valid date in the format: " + User.dateTimeFormat);
+                        outputString = ("Please enter a valid date and time in the format: dd/MM/yyyy, HH:mm:ss");
                         wasSuccessful = false;
                     }
                     break;
@@ -728,7 +749,7 @@ public class CommandLineInterface {
                     break;
 
                 default:
-                    outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
+                    outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateTimeOfDeath, gender, height, weight, " +
                             "bloodType, region, or currentAddress.");
                     wasSuccessful = false;
                     break;
