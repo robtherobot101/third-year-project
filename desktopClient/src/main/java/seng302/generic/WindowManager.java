@@ -491,16 +491,14 @@ public class WindowManager extends Application {
         String serverAddress = (String) config.get("server");
         if(testing) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
 
-        APIServer server;
-        if(TESTING) server = new APIServer(testingServer);
-        else server = new APIServer(localServer);
-
+        APIServer server = new APIServer(serverAddress);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
         GeneralDAO general = new GeneralDB(server);
         return new DataManager(users,clinicians,admins,general);
     }
+
 
     /**
      * checks the connection to the server.

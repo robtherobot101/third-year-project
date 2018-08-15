@@ -22,26 +22,24 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
-<GridPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.clinician.ClinicianAvailableOrgansController">
+<GridPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.clinician.ClinicianAvailableOrgansController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints maxHeight="464.0" minHeight="62.0" prefHeight="62.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="464.0" minHeight="38.0" prefHeight="38.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="464.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="464.0" minHeight="40.0" prefHeight="42.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="541.0" minHeight="100.0" prefHeight="422.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label fx:id="updateResultsLabel" alignment="CENTER_RIGHT" contentDisplay="TOP" prefHeight="18.0" prefWidth="222.0" text="Updated successfully." textAlignment="CENTER" visible="false" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+      <Label fx:id="updateResultsLabel" alignment="CENTER_RIGHT" contentDisplay="TOP" prefHeight="18.0" prefWidth="222.0" text="Updated successfully." textAlignment="CENTER" visible="false" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets right="40.0" />
+            <Insets bottom="10.0" right="40.0" />
          </GridPane.margin>
       </Label>
-      <TreeTableView fx:id="organsTreeTable" maxWidth="1.7976931348623157E308" prefHeight="434.0" prefWidth="720.0" GridPane.rowIndex="4">
+      <TreeTableView fx:id="organsTreeTable" maxWidth="1.7976931348623157E308" prefHeight="434.0" prefWidth="720.0" GridPane.rowIndex="3">
         <columns>
             <TreeTableColumn fx:id="regionColumn1" prefWidth="112.0" text="Organ">
                <columns>
@@ -71,10 +69,10 @@
             <Insets />
          </opaqueInsets>
          <GridPane.margin>
-            <Insets left="40.0" top="30.0" />
+            <Insets bottom="10.0" left="40.0" top="30.0" />
          </GridPane.margin>
            </Label>
-      <GridPane prefHeight="31.0" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+      <GridPane prefHeight="31.0" GridPane.halignment="CENTER" GridPane.rowIndex="2">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="175.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="154.0" />
@@ -111,37 +109,39 @@
             <Insets bottom="10.0" left="40.0" right="40.0" top="10.0" />
          </GridPane.margin>
       </GridPane>
-       <AnchorPane maxWidth="1.7976931348623157E308" minWidth="100.0" prefHeight="22.0" prefWidth="464.0" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-           <children>
-               <Label layoutX="153.0" layoutY="1.0" prefHeight="17.0" prefWidth="96.0" text="Expired" />
-               <Label layoutY="3.0" text="Healthy">
-               <padding>
-                  <Insets right="10.0" />
-               </padding>
-            </Label>
-               <ListView focusTraversable="false" layoutX="61.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-100" />
-               <ListView focusTraversable="false" layoutX="81.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-75" />
-               <ListView focusTraversable="false" layoutX="101.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-50" />
-               <ListView focusTraversable="false" layoutX="121.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-25" />
-           </children>
-         <GridPane.margin>
-            <Insets left="40.0" right="400.0" />
-         </GridPane.margin>
-       </AnchorPane>
-       <AnchorPane layoutX="556.0" layoutY="77.0" prefHeight="20.0" prefWidth="230.0" AnchorPane.rightAnchor="14.0">
-           <children>
-               <Label layoutX="153.0" layoutY="1.0" prefHeight="17.0" prefWidth="59.0" text="Expired" />
-               <Label layoutY="2.0" text="Healthy" />
-               <ListView focusTraversable="false" layoutX="65.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-100" />
-               <ListView focusTraversable="false" layoutX="85.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-75" />
-               <ListView focusTraversable="false" layoutX="105.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-50" />
-               <ListView focusTraversable="false" layoutX="125.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-25" />
-           </children>
-       </AnchorPane>
-      <Button fx:id="refreshOrganTable" mnemonicParsing="false" onAction="#refreshTable" text="Update Results" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets right="40.0" />
-         </GridPane.margin>
-      </Button>
+      <GridPane GridPane.rowIndex="1">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+             <AnchorPane maxWidth="1.7976931348623157E308" minWidth="100.0" prefHeight="22.0" prefWidth="464.0" GridPane.halignment="LEFT">
+                 <children>
+                     <Label layoutX="153.0" layoutY="1.0" prefHeight="17.0" prefWidth="96.0" text="Expired" />
+                     <Label layoutY="3.0" text="Healthy">
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
+                  </Label>
+                     <ListView focusTraversable="false" layoutX="61.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-100" />
+                     <ListView focusTraversable="false" layoutX="81.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-75" />
+                     <ListView focusTraversable="false" layoutX="101.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-50" />
+                     <ListView focusTraversable="false" layoutX="121.0" prefHeight="20.0" prefWidth="20.0" styleClass="highlighted-row-organs-25" />
+                 </children>
+               <GridPane.margin>
+                  <Insets left="40.0" right="400.0" />
+               </GridPane.margin>
+             </AnchorPane>
+            <Button fx:id="refreshOrganTable" mnemonicParsing="false" onAction="#refreshTable" text="Update Results" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+               <GridPane.margin>
+                  <Insets right="40.0" />
+               </GridPane.margin>
+            </Button>
+         </children>
+      </GridPane>
    </children>
 </GridPane>
