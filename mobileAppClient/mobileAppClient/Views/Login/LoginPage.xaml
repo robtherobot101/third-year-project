@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.LoginPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
+                
+                <Label Text="Welcome to Transcend"
+                       HorizontalOptions="Center"
+                       />
+
+                <Label Text="Your Ultimate Donating App"
+                       HorizontalOptions="Center"
+                       />
+
+                <Image Source="donationIcon.png" 
+                       WidthRequest="120"
+                       HeightRequest="120"
+                       />
+
+                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email" ReturnType="Next"               
+                    />
+
+                <Entry x:Name="passwordInput" Placeholder="Password" ReturnType="Go"
+                    IsPassword="true"                
+                    />
+                
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Login"
+                    HorizontalOptions="Center"
+                    VerticalOptions="StartAndExpand"
+                    Clicked="LoginButtonClicked" />
+
+                    <Button Text="Sign Up"
+                    HorizontalOptions="EndAndExpand"
+                    VerticalOptions="CenterAndExpand"
+                    Clicked="SignUpButtonClicked" />
+
+                </StackLayout>
+
+                 <Button Text="Login with Facebook"
+                    Clicked="Handle_LoginWithFacebookClicked" 
+                         TextColor="White"
+                         Image="facebook_icon.png"
+                         BackgroundColor="#39569A"
+                         HeightRequest="50"
+                         WidthRequest="100"
+                         x:Name="FacebookButton"
+                         />
+
+                 <Button Text="Login with Google"
+                    Clicked="Handle_LoginWithGoogleClicked" />
+                    
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

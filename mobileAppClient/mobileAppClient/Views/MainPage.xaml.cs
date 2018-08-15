@@ -71,6 +71,26 @@ namespace mobileAppClient
         }
 
         /*
+         * Method which is used when a user logs out, opening the login page again.
+         */
+        private async void LogoutClinician()
+        {
+            // Remove token from server
+            LoginAPI loginAPI = new LoginAPI();
+            await loginAPI.Logout(true);
+
+            // Clear any previously selected user
+            UserController.Instance.Logout();
+            
+            // Logout clinician
+            ClinicianController.Instance.Logout();
+
+            // Open the login page
+            var loginPage = new LoginPage();
+            await Navigation.PushModalAsync(loginPage);
+        }
+
+        /*
          * Sets up the Main page for a user's view
          */
         public void userLoggedIn()
@@ -79,6 +99,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
+                Image = UserController.Instance.ProfilePhotoSource,
                 Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
 
@@ -123,12 +144,14 @@ namespace mobileAppClient
             var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
             var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
+            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "attributes_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(userSearchPage);
             menuList.Add(attributesPage);
+            menuList.Add(transplantListPage);
             menuList.Add(logoutPage);
         }
 
@@ -173,13 +196,29 @@ namespace mobileAppClient
             switch(page.Name)
             {
                 case "LoginPage":
-                    LogoutUser();
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        LogoutClinician();
+                    }
+                    else
+                    {
+                        LogoutUser();
+                    }
                     break;
                 default:
                     Detail = new NavigationPage((Page)Activator.CreateInstance(page));
                     IsPresented = false;
                     break;
             }
+        }
+
+        public void updateMenuPhoto() {
+            this.BindingContext = new
+            {
+                Header = "  SENG302 - Team300",
+                Image = UserController.Instance.ProfilePhotoSource,
+                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
+            };
         }
     }
 }

@@ -16,7 +16,13 @@
                     </TableSection>
                 </TableRoot>
             </TableView>
-            
+
+            <Button x:Name="DeregisterButton"
+                    Text="De-register"
+                    HorizontalOptions="CenterAndExpand"
+                    VerticalOptions="End"
+                    Clicked="DeregisterButtonClicked"/>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

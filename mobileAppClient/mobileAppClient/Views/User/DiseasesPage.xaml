@@ -9,7 +9,6 @@
         <StackLayout Orientation="Vertical">
 
             <controls:SegmentedControl x:Name="SegControl" 
-                                       TintColor="#007AFF" 
                                        SelectedSegment="0"
                                        ValueChanged="Handle_ValueChanged"
                                        HeightRequest="40">
@@ -55,8 +54,13 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding CellText}"
-                         Detail="{Binding DiagnosisDateString}"
-                         TextColor="{Binding CellColour}"/>
+                         Detail="{Binding DiagnosisDetailString}"
+                         TextColor="{Binding CellColour}">
+                            <TextCell.ContextActions>
+                                <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
+                                          Text="Delete" IsDestructive="True" />
+                            </TextCell.ContextActions>
+                        </TextCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

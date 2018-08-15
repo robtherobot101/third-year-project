@@ -23,15 +23,15 @@ namespace mobileAppClient
 
         public AttributesPage()
         {
+            InitializeComponent();
             if (ClinicianController.Instance.isLoggedIn())
             {
+                hasDiedSwitch.IsEnabled = true;
                 isClinicianEditing = true;
             } else
             {
                 isClinicianEditing = false;
             }
-
-            InitializeComponent();
 
             dateOfDeathShowing = false;
             dobInput.MaximumDate = DateTime.Today;

@@ -61,7 +61,7 @@
                              />
                         </StackLayout>
                     </ViewCell>
-                    <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="dateOfDeathSwitchChanged"/>
+                    <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="dateOfDeathSwitchChanged" IsEnabled="False"/>
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" IsVisible="False" Padding="15,0,0,0">
                             <Label Text="Date of Death" VerticalOptions="Center"/>
@@ -70,7 +70,7 @@
                                 MinimumDate="01/01/1900"
                              />
                         </StackLayout>
-                        </ViewCell>
+                    </ViewCell>
                 </TableSection>
                 <TableSection Title="Physical Attributes">
                     <EntryCell Keyboard="Numeric" Label="Height (cm)" x:Name="HeightInput"/>

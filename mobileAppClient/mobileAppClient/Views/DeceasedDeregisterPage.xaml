@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="mobileAppClient.Views.DeceasedDeregisterPage"
+             Title="Receiver deceased">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Grid Padding="15,15,15,15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="PressMeButton" Text="Back" Pressed="BackButtonClicked"
+                        Grid.Column="0" Grid.Row="0"/>
+                <Button Text="Confirm" HorizontalOptions="FillAndExpand" VerticalOptions="Start" Clicked="ConfirmButtonClicked"
+                        Grid.Column="1" Grid.Row="0"/>
+            </Grid>
+            
+            <Label Text="Date and time of death"
+                   FontSize="18" HorizontalOptions="Center"/>
+            <BoxView HeightRequest="2" />
+
+            <DatePicker x:Name="DeathDatePicker"
+                        VerticalOptions="Start"/>
+            <TimePicker x:Name="DeathTimePicker"
+                        VerticalOptions="Start"/>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

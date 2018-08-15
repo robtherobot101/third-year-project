@@ -1,16 +1,11 @@
 package seng302.Logic.Database;
 
-import com.mchange.util.AssertException;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import seng302.Config.DatabaseConfiguration;
 import seng302.HelperMethods;
 import seng302.Model.Admin;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -19,8 +14,26 @@ public class GeneralAdminTest extends GenericTest {
 
     private GeneralAdmin generalAdmin = new GeneralAdmin();
 
+    /**
+     * Test the function to get admins from a raw resultset object from the database
+     * @throws SQLException
+     */
     @Test
-    public void getAdminFromResultSet() {
+    public void getAdminFromResultSet() throws SQLException {
+        Admin admin = HelperMethods.insertAdmin(generalAdmin);
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT * FROM ADMIN WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setString(1, admin.getUsername());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                assertEquals(admin, generalAdmin.getAdminFromResultSet(resultSet));
+                return;
+            }
+        }
+        fail();
     }
 
     /**

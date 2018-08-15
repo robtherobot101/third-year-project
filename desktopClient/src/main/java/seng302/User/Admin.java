@@ -64,7 +64,7 @@ public class Admin extends Clinician {
      */
     @Override
     public String toString() {
-        return "Admin{" +
+        return "admin{" +
                 "name='" + getName() + '\'' +
                 ", staffID='" + getStaffID() + '\'' +
                 ", username='" + getUsername() + '\'' +

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using mobileAppClient.Models;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -49,7 +49,7 @@ namespace mobileAppClient
             }
             else
             {
-                organsString = "Currently donating: \n" + String.Join(", ", currentUser.organs);
+                organsString = "Currently donating: \n" + String.Join(", ", currentUser.organs.ToList().ConvertAll(x => OrganExtensions.ToString(x)));
             }
             OrgansLabel.Text = organsString;
 
@@ -66,7 +66,7 @@ namespace mobileAppClient
                 List<string> currentMedications = new List<string>();
                 foreach (Medication item in currentUser.currentMedications)
                 {
-                    currentMedications.Add(item.Name);
+                    currentMedications.Add(item.name);
                 }
                 currentMedicationsString = "Currently taking: \n" + String.Join(", ", currentMedications);
             }
@@ -81,7 +81,7 @@ namespace mobileAppClient
                 List<string> historicMedications = new List<string>();
                 foreach (Medication item in currentUser.historicMedications)
                 {
-                    historicMedications.Add(item.Name);
+                    historicMedications.Add(item.name);
                 }
                 historicMedicationsString = "Has taken: \n" + String.Join(", ", historicMedications);
             }
@@ -101,7 +101,7 @@ namespace mobileAppClient
                 List<string> currentDiseases = new List<string>();
                 foreach (Disease item in currentUser.currentDiseases)
                 {
-                    currentDiseases.Add(item.Name);
+                    currentDiseases.Add(item.name);
                 }
                 currentDiseasesString = "Currently suffering from: \n" + String.Join(", ", currentDiseases);
             }
@@ -116,7 +116,7 @@ namespace mobileAppClient
                 List<string> curedDiseases = new List<string>();
                 foreach (Disease item in currentUser.curedDiseases)
                 {
-                    curedDiseases.Add(item.Name);
+                    curedDiseases.Add(item.name);
                 }
                 curedDiseasesString = "Has suffered from: \n" + String.Join(", ", curedDiseases);
             }
@@ -137,7 +137,7 @@ namespace mobileAppClient
                 List<string> pendingProcedures = new List<string>();
                 foreach (Procedure item in currentUser.pendingProcedures)
                 {
-                    pendingProcedures.Add(item.Summary);
+                    pendingProcedures.Add(item.summary);
                 }
                 pendingProceduresString = "Procedures due for: \n" + String.Join(", ", pendingProcedures);
             }
@@ -152,7 +152,7 @@ namespace mobileAppClient
                 List<string> previousProcedures = new List<string>();
                 foreach (Procedure item in currentUser.previousProcedures)
                 {
-                    previousProcedures.Add(item.Summary);
+                    previousProcedures.Add(item.summary);
                 }
                 previousProceduresString = "Has had the following procedures: \n" + String.Join(", ", previousProcedures);
             }
@@ -172,7 +172,7 @@ namespace mobileAppClient
                 List<string> waitingListItems = new List<string>();
                 foreach (WaitingListItem item in currentUser.waitingListItems)
                 {
-                    waitingListItems.Add(item.OrganType);
+                    waitingListItems.Add(item.organType);
                 }
                 waitingListItemsString = "Organs waiting on: \n" + String.Join(", ", waitingListItems);
             }

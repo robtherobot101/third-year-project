@@ -69,7 +69,9 @@ public class HistoryItem {
      * @return Whether the information is equal
      */
     public boolean informationEqual(HistoryItem other) {
-        return (this.action.equals(other.action) && this.description.equals(other.description) && this.dateTime.equals(other.dateTime));
+        return (Objects.equals(this.action,other.action)
+                && Objects.equals(this.description,other.description)
+                && Objects.equals(this.dateTime,other.description));
     }
 
     /**

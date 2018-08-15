@@ -56,5 +56,6 @@ namespace mobileAppClient
         {
             // Handle when your app resumes
         }
+
     }
 }
