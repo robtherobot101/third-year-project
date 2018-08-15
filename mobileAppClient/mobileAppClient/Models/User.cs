@@ -73,8 +73,25 @@ namespace mobileAppClient
             this.email = email;
         }
 
-        public User(){
+        public User()
+        {
+        }
 
+        /// <summary>
+        /// Google Login User constructor
+        /// </summary>
+        public User(string firstName, string lastName, string email)
+        {
+            name = new List<string> { firstName, "", lastName };
+            preferredName = new List<string> { firstName, "", lastName };
+            this.email = email;
+            username = email;
+            password = "password";
+            creationTime = new CustomDateTime(DateTime.Now);
+
+            //Server requires to initialise the organs and user history items on creation
+            organs = new List<Organ>();
+            userHistory = new List<HistoryItem>();
         }
 
         public User ShallowCopy()

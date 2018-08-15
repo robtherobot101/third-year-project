@@ -15,13 +15,12 @@ namespace mobileAppClient
      */ 
     public partial class MainPage : MasterDetailPage
     {
-
         public ObservableCollection<MasterPageItem> menuList { get; set; }
-
+    
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
-         */ 
+         */
         public MainPage(bool isClinicianView)
         {
             InitializeComponent();
@@ -138,6 +137,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
+                Image = "",
                 Footer = "  Logged in as CLINICIAN: " + ClinicianController.Instance.LoggedInClinician.name
             };
 
