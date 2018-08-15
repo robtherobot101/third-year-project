@@ -37,6 +37,7 @@ namespace mobileAppClient
             var stack = new StackLayout { Spacing = 0 };
             stack.Children.Add(customMap);
             Content = stack;
+            Title = "Available Donor Map";
         }
 
         public async void displayUserDialog(string organString, string id) {
