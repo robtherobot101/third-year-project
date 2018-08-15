@@ -47,7 +47,7 @@ public class OrgansController {
         List<DonatableOrgan> allDonatableOrgans;
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
-                "userRegion","organ","receiverName",
+                "userRegion","organ","receiverName","country",
                 "startIndex","count"
         ));
         for(String param:possibleParams){

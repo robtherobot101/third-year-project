@@ -25,6 +25,7 @@ import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.StatusBar;
+import seng302.User.Attribute.NZRegion;
 import seng302.data.interfaces.GeneralDAO;
 import seng302.gui.controllers.clinician.ClinicianAvailableOrgansController;
 import seng302.gui.controllers.clinician.ClinicianWaitingListController;
@@ -119,8 +120,6 @@ public class AdminController implements Initializable {
     @FXML
     private TextField profileSearchTextField;
     @FXML
-    private TextField adminRegionField;
-    @FXML
     private TextField adminAgeField;
     @FXML
     private ComboBox<Gender> adminGenderComboBox;
@@ -144,6 +143,13 @@ public class AdminController implements Initializable {
     private ClinicianWaitingListController waitingListController;
     @FXML
     private ClinicianAvailableOrgansController availableOrgansController;
+
+    @FXML
+    private TextField adminRegionField;
+    @FXML
+    private ComboBox countryComboBox;
+    @FXML
+    private ComboBox<String> regionComboBox;
 
     private StatusIndicator statusIndicator = new StatusIndicator();
     private List<User> usersFound = new ArrayList<>();
@@ -174,6 +180,96 @@ public class AdminController implements Initializable {
     private String region = "region";
     private String unableTo = "Unable to load fxml or save file.";
 
+
+
+    /**
+     * Gets the region from the regionComboBox or regionField. If New Zealand is the selected country in the
+     * given countryComboBox, then the value in the regionComboBox is returned, otherwise the value in
+     * the regionField is returned.
+     *
+     * @param countryComboBox The ComboBox of countries
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     * @return the value in the regionComboBox if New Zealand is the selected country, otherwise the value in the regionField.
+     */
+    public String getRegion(ComboBox<Country> countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean getFromComboBox = Objects.equals(countryComboBox.getValue(), "New Zealand");
+        if(getFromComboBox) {
+            return regionComboBox.getValue();
+        }
+        return regionField.getText();
+    }
+
+
+    /**
+     * Sets the current value of the given regionComboBox and regionField to the given value.
+     *
+     * @param value The value which the ComboBox and TextField will be set to
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     */
+    public void setRegion(String value, ComboBox countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        String country = countryComboBox.getValue().toString();
+        boolean useCombo = false;
+        if (country != null) {
+            useCombo = country.equalsIgnoreCase("New Zealand");
+        }
+        if(value == null) {
+            if(useCombo){
+                regionComboBox.getSelectionModel().select("All Regions");
+            } else {
+                regionField.setText("");
+            }
+        } else {
+            if(useCombo){
+                regionComboBox.getSelectionModel().select(value);
+            } else {
+                regionField.setText(value);
+            }
+        }
+    }
+
+
+
+    /**
+     * Sets the visibility of the given regionComboBox and regionField depending on the value of the given
+     * countryComboBox and userValue.
+     * If New Zealand is selected in the countryComboBox, the  regionComboBox is visible, otherwise the regionField is visible.
+     *
+     * @param userValue The region value of the user (Could be region, or regionOfDeath)
+     * @param country The country the user is from
+     * @param regionComboBox The ComboBox of New Zealand regions
+     * @param regionField The TextField for regions outside of New Zealand
+     */
+    public void setRegionControls(String userValue, String country, ComboBox<String> regionComboBox, TextField regionField) {
+        boolean useCombo = false;
+        if (country != null) {
+            useCombo = country.equalsIgnoreCase("New Zealand");
+        }
+        regionComboBox.setVisible(useCombo);
+        regionField.setVisible(!useCombo);
+        boolean validNZRegion;
+        try {
+            validNZRegion = Arrays.asList(NZRegion.values()).contains(NZRegion.parse(userValue));
+        } catch (IllegalArgumentException e) {
+            validNZRegion = false;
+        }
+        if((useCombo && validNZRegion) || (!useCombo && !validNZRegion)) {
+            setRegion(userValue,countryComboBox, regionComboBox, regionField);
+        } else {
+            setRegion("", countryComboBox, regionComboBox, regionField);
+        }
+    }
+
+    /**
+     * Updates the visibility of the region controls and updates the undo stack if changes were made
+     */
+    public void countryChanged() {
+        String currentRegion = getRegion(countryComboBox, regionComboBox, adminRegionField);
+        setRegionControls(currentRegion, countryComboBox.getValue().toString(), regionComboBox, adminRegionField);
+        updateFoundUsers(resultsPerPage,false);
+    }
+
     /**
      * Sets the current currentAdmin
      * @param currentAdmin The currentAdmin to se as the current
@@ -185,7 +281,30 @@ public class AdminController implements Initializable {
         cliController.setToken(token);
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
-        availableOrgansController.updateOrgans();
+
+        try {
+            List<String> validCountries = new ArrayList<>();
+            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(token)) {
+                if(c.getValid())
+                    validCountries.add(c.getCountryName());
+            }
+            countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            countryComboBox.getItems().add("All Countries");
+        } catch (HttpResponseException e) {
+            Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
+        }
+
+        List<String> nzRegions = new ArrayList<>();
+        for(NZRegion r : NZRegion.values()) {
+            nzRegions.add(r.toString());
+        }
+        regionComboBox.setItems(FXCollections.observableArrayList(nzRegions));
+        regionComboBox.getItems().add("All Regions");
+
+
+        countryComboBox.setValue("All Countries");
+        setRegionControls("", "All Countries", regionComboBox, adminRegionField);
+
         updateDisplay();
         refreshLatestProfiles();
     }
@@ -557,6 +676,8 @@ public class AdminController implements Initializable {
         adminGenderComboBox.setValue(null);
         adminOrganComboBox.setValue(null);
         adminUserTypeComboBox.setValue(null);
+        countryComboBox.setValue("All Countries");
+        setRegion(null, countryComboBox, regionComboBox,adminRegionField);
     }
 
     /**
@@ -586,8 +707,15 @@ public class AdminController implements Initializable {
 
         //Add in check for region
 
-        if (!searchRegionTerm.equals("")) {
-            searchMap.put(region, searchRegionTerm);
+        String region = getRegion(countryComboBox, regionComboBox, adminRegionField);
+        if(!region.equals("") && !region.equals("All Regions")) {
+            searchMap.put("region", region);
+        }
+
+        //Add in check for country
+
+        if (!countryComboBox.getValue().toString().equals("All Countries")) {
+            searchMap.put("country", countryComboBox.getValue().toString());
         }
 
         //Add in check for age
@@ -619,7 +747,6 @@ public class AdminController implements Initializable {
         }
 
         try {
-            searchMap.put("count", String.valueOf(WindowManager.getDataManager().getUsers().count(token)));
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));
 
@@ -860,9 +987,12 @@ public class AdminController implements Initializable {
             updateFoundUsers();
         });
 
+        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateFoundUsers(resultsPerPage,false);
+        });
+
         adminRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchRegionTerm = newValue;
-            updateFoundUsers();
+            updateFoundUsers(resultsPerPage,false);
         });
 
         adminAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
