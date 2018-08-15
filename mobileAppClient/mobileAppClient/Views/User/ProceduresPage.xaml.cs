@@ -245,12 +245,6 @@ namespace mobileAppClient
                     break;
             }
         }
-        async void Handle_EditClicked(object sender, System.EventArgs e)
-        {
-            var mi = ((MenuItem)sender);
-            Procedure selectedProcedure = mi.CommandParameter as Procedure;
-            Console.WriteLine("Not implemented");
-        }
 
         async void Handle_DeleteClicked(object sender, System.EventArgs e)
         {

@@ -24,17 +24,19 @@ namespace mobileAppClient
         private CustomObservableCollection<String> organsAvailable;
 
         private ProceduresPage proceduresPageController;
+
         /*
+         * Used when viewing -> editing an existing procedure
          * Constructor which initialises the entries of the procedures listview.
          */ 
         public SingleProcedurePage(Procedure procedure, ProceduresPage proceduresPageController)
         {
-            Title = "View Procedure";
             InitializeComponent();
-            affectedOrganStack.IsVisible = false;
-
             currentProcedure = procedure;
             this.proceduresPageController = proceduresPageController;
+            Title = "View Procedure";
+
+            affectedOrganStack.IsVisible = false;
 
             organsAffected = new CustomObservableCollection<string>();
             organsAffectedList.ItemsSource = organsAffected;
@@ -57,9 +59,9 @@ namespace mobileAppClient
          */
         public SingleProcedurePage(ProceduresPage proceduresPageController)
         {
-            Title = "Add New Procedure";
             InitializeComponent();
             this.proceduresPageController = proceduresPageController;
+            Title = "Add New Procedure";
 
             organsAvailable = new CustomObservableCollection<string>
             {
