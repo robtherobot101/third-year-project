@@ -42,7 +42,6 @@ namespace mobileAppClient
 
         [JsonIgnore]
         public Color CellColour {
-
             get
             {
                 if (this.isChronic)
