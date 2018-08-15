@@ -81,7 +81,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> UpdateUser(bool isClinicianMakingUpdate)
         {
-            if(isClinician) {
+            if (isClinicianMakingUpdate) {
                         return await UpdateUser(UserController.Instance.LoggedInUser,
                             ClinicianController.Instance.AuthToken);
             } else {
