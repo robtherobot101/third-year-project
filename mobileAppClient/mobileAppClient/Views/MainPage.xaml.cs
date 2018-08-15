@@ -94,18 +94,18 @@ namespace mobileAppClient
             var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png",TargetType = typeof(WaitingListItemsPage) };
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
             var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
-            var pointsPage = new MasterPageItem() { Title = "Points", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
+            var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(attributesPage);
+            menuList.Add(livesSavedPage);
             menuList.Add(organsPage);
             menuList.Add(medicationsPage);
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
             menuList.Add(waitingListItemsPage);
             menuList.Add(userSettingsPage);
-            menuList.Add(pointsPage);
             menuList.Add(logoutPage);
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,13 +17,21 @@ namespace mobileAppClient
         private CustomObservableCollection<String> recommendationsList;
         private int savedLives;
         private int helpedLives;
+	    private List<Image> people;
 
 		public PointsPage ()
 		{
 			InitializeComponent ();
             recommendationsList = new CustomObservableCollection<string>();
             RecommendationsList.ItemsSource = recommendationsList;
-            
+		    people = new List<Image>();
+
+//		    for (int i = 1; i < 36; i++)
+//		    {
+//		        
+//
+//                people.Add(image);
+//		    }
 
             savedLivesText.Text = String.Format("You could save {0} lives", calculateSavedLives());
             helpedLivesText.Text = String.Format("and you could also help {0} lives", calculateHelpedLives());
@@ -38,7 +47,29 @@ namespace mobileAppClient
             bool allOrgansDonated = false;
             savedLives = calculateSavedLives();
             helpedLives = calculateHelpedLives();
-            
+
+            savedPeopleGrid.Children.Clear();
+            helpedPeopleGrid.Children.Clear();
+
+            Random rnd = new Random();
+            for (int i = 0; i < savedLives; i++)
+            {
+                int humanToChoose = rnd.Next(1, 35);
+                var image = new Image { Source = $"human{humanToChoose}.png" };
+                image.Scale = 0.5;
+
+                savedPeopleGrid.Children.Add(image);
+            }
+
+            for (int i = 0; i < helpedLives; i++)
+            {
+                int humanToChoose = rnd.Next(1, 35);
+                var image = new Image { Source = $"human{humanToChoose}.png" };
+                image.Scale = 0.5;
+
+                helpedPeopleGrid.Children.Add(image);
+            }
+
             if (savedLives + helpedLives == 11)
             {
                 allOrgansDonated = true;
@@ -57,6 +88,9 @@ namespace mobileAppClient
             }
             
             recommendationsList.Add("You could add in more details about yourself");
+
+            savedLivesText.Text = String.Format("You could save {0} lives", calculateSavedLives());
+            helpedLivesText.Text = String.Format("and you could also help {0} lives", calculateHelpedLives());
         }
 
         /// <summary>

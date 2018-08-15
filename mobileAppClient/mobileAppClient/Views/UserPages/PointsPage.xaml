@@ -5,17 +5,25 @@
              Title="Lives Saved" NavigationPage.HasNavigationBar="True">
     <ContentPage.Content>
         <StackLayout>
+            <StackLayout Padding="0, 15, 0, 15"/>
             <Label x:Name="savedLivesText"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand"
+                FontSize="Large"/>
+            <StackLayout Orientation="Horizontal" x:Name="savedPeopleGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 0"/>
             <Label x:Name="helpedLivesText"
-                   VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand"
+                FontSize="Large"/>
+            <StackLayout Orientation="Horizontal" x:Name="helpedPeopleGrid" HeightRequest="70" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 0"/>
 
-            <Label Text="Recommendations"/>
+            <StackLayout Padding="0, 15, 0, 15"/>
+            <Label Text="   Recommendations"/>
             <ListView x:Name="RecommendationsList" ItemTapped="RecommendationsList_ItemTapped">
                 
             </ListView>
+
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
