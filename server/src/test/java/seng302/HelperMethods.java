@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
 
 public abstract class HelperMethods {
@@ -103,6 +104,18 @@ public abstract class HelperMethods {
     }
 
     /**
+     * Create a list of waiting list items
+     * @return A list of waiting list items objects
+     */
+    public static ArrayList<WaitingListItem> makeWaitingListItems(int userid) {
+        ArrayList<WaitingListItem> waitingListItems = new ArrayList<>();
+        waitingListItems.add(new WaitingListItem(Organ.HEART, LocalDate.of(2013 + r.nextInt(10), 3, 14), 0, userid, null, 0));
+        waitingListItems.add(new WaitingListItem(Organ.BONE, LocalDate.of(2013 + r.nextInt(10), 3, 14), 0, userid, null, 0));
+        waitingListItems.add(new WaitingListItem(Organ.SKIN, LocalDate.of(2013 + r.nextInt(10), 3, 14), 0, userid, null, 0));
+        return waitingListItems;
+    }
+
+    /**
      * Create a list of random country names
      * @return A list of procedure objects
      */
@@ -126,5 +139,61 @@ public abstract class HelperMethods {
             history.add(h);
         }
         return history;
+    }
+
+    public static boolean containsWaitingListItems(Collection<WaitingListItem> superset, Collection<WaitingListItem> contained) {
+        boolean found;
+        for (WaitingListItem w1: contained) {
+            found = false;
+            for (WaitingListItem w2: superset) {
+                if (waitingListItemsEqual(w1, w2)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean waitingListItemsEqual(WaitingListItem w1, WaitingListItem w2) {
+        if (w1.getUserId() != w2.getUserId()) {
+            return false;
+        }
+        if (w1.getOrganDeregisteredCode() != w2.getOrganDeregisteredCode()) {
+            return false;
+        }
+        if (w1.getOrganType() != w2.getOrganType()) {
+            return false;
+        }
+        if (w1.getOrganRegisteredDate() == null) {
+            if (w2.getOrganRegisteredDate() != null) {
+                return false;
+            }
+        } else {
+            if (w2.getOrganRegisteredDate() == null) {
+                return false;
+            } else {
+                if (!w1.getOrganRegisteredDate().equals(w2.getOrganRegisteredDate())) {
+                    return false;
+                }
+            }
+        }
+        if (w1.getOrganDeregisteredDate() == null) {
+            if (w2.getOrganDeregisteredDate() != null) {
+                return false;
+            }
+        } else {
+            if (w2.getOrganDeregisteredDate() == null) {
+                return false;
+            } else {
+                if (!w1.getOrganDeregisteredDate().equals(w2.getOrganDeregisteredDate())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

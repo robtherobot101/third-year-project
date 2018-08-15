@@ -30,6 +30,7 @@ public class Server {
     private WaitingListController waitingListController;
     private CLIController CLIController;
     private CountriesController countriesController;
+    private OrgansController organsController;
 
     private int port = 7015;
     private boolean testing = true;
@@ -100,6 +101,7 @@ public class Server {
             });
 
             path("/users", () -> {
+                post( "/import",          userController::importUsers);
                 get("", (request, response) -> {
                     if (profileUtils.hasAccessToAllUsers(request, response)) {
                         return userController.getUsers(request, response);
@@ -122,7 +124,7 @@ public class Server {
                 });
 
                 path("/:id/medications", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     medicationsController::getAllMedications);
                     post("",                    medicationsController::addMedication);
                     get("/:medicationId",       medicationsController::getSingleMedication);
@@ -131,7 +133,7 @@ public class Server {
                 });
 
                 path("/:id/diseases", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     diseasesController::getAllDiseases);
                     post("",                    diseasesController::addDisease);
                     get("/:diseaseId",          diseasesController::getSingleDisease);
@@ -140,7 +142,7 @@ public class Server {
                 });
 
                 path("/:id/procedures", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     proceduresController::getAllProcedures);
                     post("",                    proceduresController::addProcedure);
                     get("/:procedureId",        proceduresController::getSingleProcedure);
@@ -149,13 +151,13 @@ public class Server {
                 });
 
                 path("/:id/history", () -> {
-                   before("",                   profileUtils::hasUserLevelAccess);
+                   before("",                   profileUtils::hasAccessToAllUsers);
                    get("",                      historyController::getUserHistoryItems);
                    post("",                     historyController::addUserHistoryItem);
                 });
 
                 path("/:id/donations", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     donationsController::getAllUserDonations);
                     post("",                    donationsController::addDonation);
                     delete("",                  donationsController::deleteAllUserDonations);
@@ -164,8 +166,9 @@ public class Server {
                 });
 
                 path("/:id/waitingListItems", () -> {
-                    before("",                  profileUtils::hasUserLevelAccess);
+                    before("",                  profileUtils::hasAccessToAllUsers);
                     get("",                     waitingListController::getAllUserWaitingListItems);
+                    patch("",                   waitingListController::editAllWaitingListItems);
                     post("",                    waitingListController::addNewUserWaitingListItem);
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
                     patch("/:waitingListItemId", waitingListController::editWaitingListItem);
@@ -189,13 +192,19 @@ public class Server {
             });
 
             path("/countries", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
             });
 
             path("/unique", () -> {
                 get("",    profileUtils::isUniqueIdentifier);
+            });
+
+            path("/organs", () -> {
+                get("",     organsController::queryOrgans);
+                post("",    organsController::insertOrgan);
+                delete("",  organsController::removeOrgan);
+                patch("",   organsController::updateOrgan);
             });
         });
     }
@@ -249,5 +258,6 @@ public class Server {
         profileUtils = new ProfileUtils();
         CLIController = new CLIController();
         countriesController = new CountriesController();
+        organsController = new OrgansController();
     }
 }

@@ -12,7 +12,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.Views
 {
-
+    /// <summary>
+    /// Clinician only page that contains a Listview of users alongside searching functionality
+    /// </summary>
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UserSearchPage : ContentPage
     {
@@ -52,6 +54,7 @@ namespace mobileAppClient.Views
             UserListView.ItemsSource = UserList;
             UserListView.RefreshCommand = RefreshCommand;
             UserSearchBar.SearchCommand = SearchCommand;
+            UserSearchBar.TextChanged += UserSearchBar_TextChanged;
 
             UserListView.ItemAppearing += (sender, e) =>
             {
@@ -66,6 +69,25 @@ namespace mobileAppClient.Views
             };
 
             LoadItems();
+        }
+
+        /// <summary>
+        /// Method that is called EVERY time the text within the UserSearchBox is changed
+        /// - Updates the current search query
+        /// - Calls a reset when the search is cleared
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UserSearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Update the current search param
+            searchQuery = InputValidation.Trim(e.NewTextValue);
+
+            // Has input been cleared?
+            if (string.IsNullOrEmpty(e.NewTextValue))
+            {
+                ResetItemsQuiet();
+            }
         }
 
         /*
@@ -143,7 +165,7 @@ namespace mobileAppClient.Views
             {
                 return new Command(async () =>
                 {
-                    searchQuery = InputValidation.Trim(UserSearchBar.Text);
+                    ResetItemsQuiet();
                 });
             }
         }

@@ -79,6 +79,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
+                Image = UserController.Instance.ProfilePhotoSource,
                 Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
             };
 
@@ -109,7 +110,7 @@ namespace mobileAppClient
         }
 
         /*
-         * Sets up the Main page for a user's view
+         * Sets up the Main page for a clinician's view
          */
         public void clinicianLoggedIn()
         {
@@ -124,11 +125,16 @@ namespace mobileAppClient
 
             var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
             var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
-
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
+            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "attributes_icon.png", TargetType = typeof(TransplantListPage) };
+            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
             menuList.Add(userSearchPage);
+            menuList.Add(attributesPage);
+            menuList.Add(transplantListPage);
+            menuList.Add(logoutPage);
         }
 
         public void clinicianViewingUser()
@@ -180,6 +186,15 @@ namespace mobileAppClient
                     IsPresented = false;
                     break;
             }
+        }
+
+        public void updateMenuPhoto() {
+            this.BindingContext = new
+            {
+                Header = "  SENG302 - Team300",
+                Image = UserController.Instance.ProfilePhotoSource,
+                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
+            };
         }
     }
 }

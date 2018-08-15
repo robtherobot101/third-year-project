@@ -81,6 +81,17 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> UpdateUser(bool isClinician)
         {
+            if(isClinician) {
+                        return await UpdateUser(UserController.Instance.LoggedInUser,
+                            ClinicianController.Instance.AuthToken);
+            } else {
+                        return await UpdateUser(UserController.Instance.LoggedInUser,
+                            UserController.Instance.AuthToken);
+            }
+        }
+
+        public async Task<HttpStatusCode> UpdateUser(User user, String token)
+        {
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
@@ -89,30 +100,23 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            String registerUserRequestBody = JsonConvert.SerializeObject(UserController.Instance.LoggedInUser);
+            //User History Items are not currently configured thus must send as an empty list.
+            //UserController.Instance.LoggedInUser.userHistory = new List<HistoryItem>();
+
+            String registerUserRequestBody = JsonConvert.SerializeObject(user);
             HttpContent body = new StringContent(registerUserRequestBody);
 
             Console.WriteLine(registerUserRequestBody);
 
-            int userId = UserController.Instance.LoggedInUser.id;
-
-            Console.WriteLine(UserController.Instance.AuthToken);
-
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + userId);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + user.id);
             request.Content = body;
 
-            if (isClinician)
-            {
-                request.Headers.Add("token", ClinicianController.Instance.AuthToken);
-            } else
-            {
-                request.Headers.Add("token", UserController.Instance.AuthToken);
-
-            }
+            request.Headers.Add("token", token);
 
             try
             {
                 var response = await client.SendAsync(request);
+                Console.Write("Update user response: " + response);
 
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
@@ -255,12 +259,7 @@ namespace mobileAppClient.odmsAPI
             String queries = null;
 
             queries = String.Format("?startIndex={0}&count={1}", startIndex, count);
-
-            // Add the name search query if given
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                queries += String.Format("&name={0}", searchQuery);
-            }
+            queries += processSearchQuery(searchQuery);
 
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users" + queries);
@@ -283,6 +282,31 @@ namespace mobileAppClient.odmsAPI
             string responseContent = await response.Content.ReadAsStringAsync();
             resultUsers = JsonConvert.DeserializeObject<List<User>>(responseContent);
             return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.OK, resultUsers);
+        }
+
+        /// <summary>
+        /// Parses and checks the string search query and adapts the query for region or name
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        private string processSearchQuery(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return "";
+            }
+
+            query = query.ToLower();
+            List<string> team300RegionList = new List<string>(new string[] { "auckland", "northland", "waikato", "bay of plenty", "bop"});
+
+            if (team300RegionList.Contains(query))
+            {
+                return String.Format("&region={0}", query);
+            } else
+            {
+                return String.Format("&name={0}", query);
+            }
+
         }
 
         /// <summary>
@@ -371,6 +395,27 @@ namespace mobileAppClient.odmsAPI
                 isUnique = true;
             }
             return new Tuple<HttpStatusCode, bool>(HttpStatusCode.OK, isUnique);
+        }
+
+        public async Task<User> getUser(int userId, string token)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + userId);
+            request.Headers.Add("token", token);
+
+            var response = await client.SendAsync(request);
+            string body = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                return JsonConvert.DeserializeObject<User>(body);
+            }
+            catch (JsonSerializationException jse)
+            {
+                return null;
+            }
         }
     }
 }

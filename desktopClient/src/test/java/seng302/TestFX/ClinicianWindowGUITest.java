@@ -14,15 +14,14 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.http.client.HttpResponseException;
 import org.junit.*;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Clinician;
 import seng302.User.User;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 import static junit.framework.TestCase.assertTrue;
@@ -85,7 +84,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
         for(int i = 0; i < resultsPerPage-1; i++)
             WindowManager.getDataManager().getUsers().insertUser(new User("A" + i, LocalDate.now()));
         clickOn("#profileSearchTextField").write("A");
-        waitForNodeEnabled(10,"#profileTable");
+        waitForNodeEnabled("#profileTable");
         Node displayNCombobox = lookup("#numberOfResultsToDisplay").queryComboBox();
         assertTrue(displayNCombobox.isDisable());
 
@@ -98,7 +97,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
         for(int i = 0; i < resultsPerPage+1; i++)
             WindowManager.getDataManager().getUsers().insertUser(new User("A" + i, LocalDate.now()));
         clickOn("#profileSearchTextField").write("A");
-        waitForNodeEnabled(10,"#profileTable");
+        waitForNodeEnabled("#profileTable");
         sleep(500);
         ComboBox displayNCombobox = lookup("#numberOfResultsToDisplay").queryComboBox();
         assertEquals(2,displayNCombobox.getItems().size());
@@ -112,7 +111,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
         for(i = 0; i < numberXOfResults+1; i++)
             WindowManager.getDataManager().getUsers().insertUser(new User("A" + i, LocalDate.now()));
         clickOn("#profileSearchTextField").write("A");
-        waitForNodeEnabled(10,"#profileTable");
+        waitForNodeEnabled("#profileTable");
         ComboBox displayNCombobox = lookup("#numberOfResultsToDisplay").queryComboBox();
         assertEquals(3,displayNCombobox.getItems().size());
         assertTrue(((String)displayNCombobox.getItems().get(1)).matches("Top [0-9]* results"));
@@ -144,7 +143,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
         WindowManager.getDataManager().getUsers().insertUser(u4);
         WindowManager.getDataManager().getUsers().insertUser(u5);
         clickOn("#profileSearchTextField").write("Abby");
-        waitForNodeEnabled(10,"#profileTable");
+        waitForNodeEnabled("#profileTable");
         TableView profileTable = lookup("#profileTable").queryTableView();
         assertEquals(3,profileTable.getItems().size());
         assertTrue(profileTable.getItems().contains(u5));
@@ -159,7 +158,7 @@ public class ClinicianWindowGUITest extends TestFXTest {
         for(i = 0; i < numberXOfResults*2; i++)
             WindowManager.getDataManager().getUsers().insertUser(new User("A" + i, LocalDate.now()));
         clickOn("#profileSearchTextField").write("A");
-        waitForNodeEnabled(10,"#profileTable");
+        waitForNodeEnabled("#profileTable");
         TableView profileTable = lookup("#profileTable").queryTableView();
         changeNumberOfResultsToDisplay("Top [0-9]* results");
         assertEquals(numberXOfResults,profileTable.getItems().size());
@@ -251,7 +250,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
                 stage.showAndWait();
 
                 }catch (IOException e){
-                System.out.println(e);
             }
         });
 
@@ -265,7 +263,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
         write("newTestPassword");
 
         clickOn("Update");
-        System.out.println(Arrays.toString(this.listWindows().toArray()));
         pressDialogOKButtons();
         assertEquals("newTestUsername", testClinician.getUsername());
         assertEquals("newTestPassword", testClinician.getPassword());

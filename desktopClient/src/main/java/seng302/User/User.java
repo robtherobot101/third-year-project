@@ -1,6 +1,6 @@
 package seng302.User;
 
-import seng302.Generic.Debugger;
+import seng302.generic.Debugger;
 import seng302.User.Attribute.*;
 import seng302.User.Medication.Medication;
 
@@ -74,6 +74,7 @@ public class User {
         if (isLastName == 1) {
             this.name[this.name.length - 1] = lastNames;
         }
+        this.username = email;
 
         this.preferredName = this.name;
         this.dateOfBirth = dateOfBirth;
@@ -102,7 +103,6 @@ public class User {
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
     }
-
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
                 double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
@@ -564,7 +564,7 @@ public class User {
         } else {
             weightString = String.format("%.2f", weight);
         }
-        return String.format("User (ID %d) created at %s "
+        return String.format("user (ID %d) created at %s "
                 + "\n-Name: %s"
                 + "\n-Preferred Name: %s"
                 + "\n-Date of Birth: %s"
@@ -652,7 +652,7 @@ public class User {
     }
 
     /**
-     * Only called by the Admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
+     * Only called by the admin role via the CLI. Removes the waiting list item with code 5, which indicates that it was removed by an administrator.
      * @param toRemove The organ being removed from the waiting list.
      */
     public void removeWaitingListItem(Organ toRemove) {

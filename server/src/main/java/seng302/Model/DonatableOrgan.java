@@ -2,31 +2,40 @@ package seng302.Model;
 
 import seng302.Model.Attribute.Organ;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class DonatableOrgan {
 
-    private LocalDateTime dateOfDeath;
+    private LocalDateTime timeOfDeath;
     private Organ organType;
     private long donorId;
     private int id;
+    private Duration timeLeft;
+    private List<User> topReceivers;
+    private Boolean expired;
 
 
-    public DonatableOrgan(LocalDateTime dateOfDeath, Organ organType, long donorId, int id){
-        this.dateOfDeath = dateOfDeath;
+    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId, int id, boolean expired){
+        this.timeOfDeath = timeOfDeath;
         this.donorId = donorId;
         this.organType = organType;
         this.id = id;
+        this.expired = expired;
     }
 
-    public DonatableOrgan(LocalDateTime dateOfDeath, Organ organType, long donorId){
-        this.dateOfDeath = dateOfDeath;
+    public DonatableOrgan(LocalDateTime timeOfDeath, Organ organType, long donorId, boolean expired){
+        this.timeOfDeath = timeOfDeath;
         this.donorId = donorId;
         this.organType = organType;
+        this.expired = expired;
     }
 
-    public LocalDateTime getDateOfDeath() {
-        return dateOfDeath;
+    public LocalDateTime getTimeOfDeath() {
+        return timeOfDeath;
     }
 
     public long getDonorId() {
@@ -41,7 +50,28 @@ public class DonatableOrgan {
         return id;
     }
 
-    public void setDateOfDeath(LocalDateTime dateOfDeath) {
-        this.dateOfDeath = dateOfDeath;
+    public void setTimeOfDeath(LocalDateTime timeOfDeath) {
+        this.timeOfDeath = timeOfDeath;
+    }
+
+    public Duration getTimeLeft(){
+        return timeLeft;
+    }
+
+    public void setTimeLeft(Duration time) {
+        timeLeft = time;
+    }
+
+    public void tickTimeLeft(){
+        timeLeft.minus(1, SECONDS);
+    }
+
+    public List<User> getTopReceivers() {
+        return topReceivers;
+    }
+
+    public void setTopReceivers(List<User> topReceivers) {
+        this.topReceivers = topReceivers;
     }
 }
+

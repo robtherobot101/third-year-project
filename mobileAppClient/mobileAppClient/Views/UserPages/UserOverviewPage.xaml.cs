@@ -33,9 +33,9 @@ namespace mobileAppClient
            
             //Attributes Pane 
             //---------------------------------------------------------------------------
-            double age = currentUser.getAge();
+            int age = currentUser.Age;
 
-            string attributesString = "Name: " + String.Join(" ", currentUser.name) + "\nAge: " + String.Format("{0:0.00}", age) + " years old";
+            string attributesString = "Name: " + String.Join(" ", currentUser.name) + "\nAge: " +  age + " years old";
             if (currentUser.currentAddress != null) attributesString += "\nCurrent Address: " + currentUser.currentAddress;
             if (currentUser.gender != null) attributesString += "\nBirth Gender: " + currentUser.gender.ToString();
             AttributesLabel.Text = attributesString;
@@ -101,7 +101,7 @@ namespace mobileAppClient
                 List<string> currentDiseases = new List<string>();
                 foreach (Disease item in currentUser.currentDiseases)
                 {
-                    currentDiseases.Add(item.Name);
+                    currentDiseases.Add(item.name);
                 }
                 currentDiseasesString = "Currently suffering from: \n" + String.Join(", ", currentDiseases);
             }
@@ -116,7 +116,7 @@ namespace mobileAppClient
                 List<string> curedDiseases = new List<string>();
                 foreach (Disease item in currentUser.curedDiseases)
                 {
-                    curedDiseases.Add(item.Name);
+                    curedDiseases.Add(item.name);
                 }
                 curedDiseasesString = "Has suffered from: \n" + String.Join(", ", curedDiseases);
             }
@@ -172,7 +172,7 @@ namespace mobileAppClient
                 List<string> waitingListItems = new List<string>();
                 foreach (WaitingListItem item in currentUser.waitingListItems)
                 {
-                    waitingListItems.Add(item.OrganType);
+                    waitingListItems.Add(item.organType);
                 }
                 waitingListItemsString = "Organs waiting on: \n" + String.Join(", ", waitingListItems);
             }
