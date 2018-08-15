@@ -75,7 +75,7 @@
                       ItemTapped="Handle_WaitingListItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding OrganType}"
+                        <TextCell Text="{Binding organType}"
                          Detail="{Binding DetailString}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>

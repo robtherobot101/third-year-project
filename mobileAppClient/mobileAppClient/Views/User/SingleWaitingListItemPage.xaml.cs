@@ -8,6 +8,7 @@ using mobileAppClient.Views;
 using System.Net;
 using System.Net.Http;
 using mobileAppClient.Models;
+using System.Threading.Tasks;
 
 namespace mobileAppClient
 {
@@ -19,6 +20,7 @@ namespace mobileAppClient
     {
         DateTimeFormatInfo dateTimeFormat = new DateTimeFormatInfo();
         WaitingListItem item;
+        
         /*
          * Constructor which initialises the entries of the waiting list items listview.
          */ 
@@ -59,8 +61,9 @@ namespace mobileAppClient
             var action = await DisplayActionSheet("Select the reason code: ", "Cancel", "", "1: Error while registering", "2: Disease Cured", "3: Receiver Deceased", "4: Successful Transplant");
             if (action == "1: Error while registering")
             {
-                deregister(item, 1);
+                await deregister(item, 1);
                 await Navigation.PopAsync();
+                MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
             }
             else if (action == "2: Disease Cured")
             {
@@ -69,7 +72,7 @@ namespace mobileAppClient
                     User user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
                     if (user != null && user.currentDiseases.Count > 0)
                     {
-                        await Navigation.PushAsync(new DiseaseCuredDeregisterPage(item, this));
+                        await Navigation.PushModalAsync(new DiseaseCuredDeregisterPage(item, this));
                     }
                     else
                     {
@@ -86,11 +89,12 @@ namespace mobileAppClient
             }
             else if (action == "3: Receiver Deceased")
             {
-                await Navigation.PushAsync(new DeceasedDeregisterPage(item, this));
+                await Navigation.PushModalAsync(new DeceasedDeregisterPage(item, this));
             }
             else if (action == "4: Successful Transplant")
             {
                 deregister(item, 1);
+                MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
                 await Navigation.PopAsync();
             }
         }
@@ -108,19 +112,25 @@ namespace mobileAppClient
          * De-registers the given WaitingListItem and saves the changes
          * to the server.
          */
-        public async void deregister(WaitingListItem item, int reasonCode)
+        public async Task deregister(WaitingListItem item, int reasonCode)
         {
             try
             {
-                item.organDeregisteredDate = new CustomDate(DateTime.Now);
-                item.organDeregisteredCode = reasonCode;
-                HttpStatusCode code = await new TransplantListAPI().updateItem(item);
-                if (code != HttpStatusCode.Created)
+                foreach(WaitingListItem userItem in UserController.Instance.LoggedInUser.waitingListItems)
                 {
-                    await DisplayAlert(
-                            "Failed to de-register item",
-                            "Server error",
-                            "OK");
+                    if(userItem.id == item.id)
+                    {
+                        userItem.organDeregisteredDate = new CustomDate(DateTime.Now);
+                        userItem.organDeregisteredCode = reasonCode;
+                        HttpStatusCode code = await new TransplantListAPI().updateItem(userItem);
+                        if (code != HttpStatusCode.Created)
+                        {
+                            await DisplayAlert(
+                                    "Failed to de-register item",
+                                    "Server error",
+                                    "OK");
+                        }
+                    }
                 }
             }
             catch (HttpRequestException e)

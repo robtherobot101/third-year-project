@@ -25,15 +25,32 @@ namespace mobileAppClient
         public WaitingListItemsPage()
         {
             InitializeComponent();
+            setupPage();
 
+            MessagingCenter.Subscribe<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS", (sender) => {
+                setupPage();
+            });
+        }
+
+        public void setupPage()
+        {
             //FOR SOME REASON IT DOESNT WORK IF I HAVE THESE IN THE CONSTRUCTORS??
-
+            Console.WriteLine("Calling setup page in WaitingListItemsPage");
             foreach (WaitingListItem item in UserController.Instance.LoggedInUser.waitingListItems)
             {
+
+                foreach (Organ organ in UserController.Instance.LoggedInUser.organs)
+                {
+                    if (organ.ToString() == item.ToString())
+                    {
+                        Console.WriteLine("Match on" + organ);
+                    }
+                }
                 item.DetailString = "Registered on " + item.organRegisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organRegisteredDate.month) + ", " + item.organRegisteredDate.year;
-                if(item.organDeregisteredDate != null) {
+                if (item.organDeregisteredDate != null)
+                {
                     item.DetailString = "Deregistered on " + item.organDeregisteredDate.day + " of " + dateTimeFormat.GetAbbreviatedMonthName(item.organDeregisteredDate.month) + ", " + item.organDeregisteredDate.year;
-                } 
+                }
             }
 
             if (UserController.Instance.LoggedInUser.waitingListItems.Count == 0)
@@ -43,24 +60,17 @@ namespace mobileAppClient
                 SortingInput.IsVisible = false;
             }
 
-
-            if(ClinicianController.Instance.isLoggedIn())
+            if (ClinicianController.Instance.isLoggedIn())
             {
                 RegisterButton.IsVisible = true;
                 OrganPicker.IsVisible = true;
-            } else
+            }
+            else
             {
                 RegisterButton.IsVisible = false;
                 OrganPicker.IsVisible = false;
             }
-
             WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
-        }
-
-        public void setupPage()
-        {
-            WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
-
         }
 
         public async void Handle_RegisterClicked(object sender, EventArgs args)
@@ -80,10 +90,12 @@ namespace mobileAppClient
                 newItem.userId = user.id;
                 newItem.organRegisteredDate = new CustomDate(DateTime.Today);
 
-                user.waitingListItems.Add(newItem);
+                UserController.Instance.LoggedInUser.waitingListItems.Add(newItem);
+
 
                 UserAPI userAPI = new UserAPI();
                 HttpStatusCode code = await userAPI.UpdateUser(user, ClinicianController.Instance.AuthToken);
+
 
                 switch (code)
                 {
@@ -91,7 +103,8 @@ namespace mobileAppClient
                         await DisplayAlert("",
                             "User successfully updated",
                             "OK");
-                        WaitingListItemsList.ItemsSource = UserController.Instance.LoggedInUser.waitingListItems;
+                        await resetWaitingListItems();
+                        setupPage();
                         break;
                     case HttpStatusCode.BadRequest:
                         await DisplayAlert("",
@@ -113,6 +126,14 @@ namespace mobileAppClient
         }
 
 
+        public async Task resetWaitingListItems()
+        {
+            Console.WriteLine("Refreshing waiting list items");
+            int userId = UserController.Instance.LoggedInUser.id;
+            User updated = await new UserAPI().getUser(userId, ClinicianController.Instance.AuthToken);
+            UserController.Instance.LoggedInUser.waitingListItems = updated.waitingListItems;
+        }
+
         /*
          * Handles when a single waiting list item is tapped, sending a user to the single waiting list item page 
          * of that given waiting list item.
@@ -128,15 +149,6 @@ namespace mobileAppClient
             var singleWaitingListItemPage = new SingleWaitingListItemPage((WaitingListItem)WaitingListItemsList.SelectedItem, showDeregisterButton);
             await Navigation.PushAsync(singleWaitingListItemPage);
         }
-
-        /* C:\Users\Krs19\Documents\SENG302\team-300\mobileAppClient\mobileAppClient\donationIcon.ico
-         * Refreshes the whole page whenever the page appears
-         */
-        protected override void OnAppearing()
-        {
-            setupPage();
-        }
-
 
         /*
          * Handles when a user selects a given attribute of the sorting dropdown 

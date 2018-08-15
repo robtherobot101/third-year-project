@@ -113,7 +113,7 @@ namespace mobileAppClient.Views
                 }
                 Console.WriteLine("About to remove modal");
                 await Navigation.PopModalAsync();
-                await parentWaitingListItemPage.Navigation.PopModalAsync();
+                await parentWaitingListItemPage.Navigation.PopAsync();
             }
             catch (HttpRequestException e)
             {

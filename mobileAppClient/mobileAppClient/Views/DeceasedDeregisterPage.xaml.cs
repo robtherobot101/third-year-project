@@ -109,7 +109,7 @@ namespace mobileAppClient.Views
                 }
 
                 await Navigation.PopModalAsync();
-                await parentWaitingListItemPage.Navigation.PopModalAsync();
+                await parentWaitingListItemPage.Navigation.PopAsync();
             }
             catch (HttpRequestException e)
             {
