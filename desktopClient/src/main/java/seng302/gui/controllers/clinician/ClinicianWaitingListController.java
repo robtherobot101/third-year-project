@@ -219,8 +219,9 @@ public class ClinicianWaitingListController implements Initializable {
     }
 
     /**
-     * adds the user info to a waiting list item
-     * @param item the waiting list item to update
+     * Adds the user info to a waiting list item
+     * @param item the waiting list item to update.
+     * @return the user retrieved from the server to reduce further server calls.
      */
     public User addUserInfo(WaitingListItem item) {
         try{

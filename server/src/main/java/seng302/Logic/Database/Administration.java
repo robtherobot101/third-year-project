@@ -2,14 +2,12 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Config.SqlFileParser;
-import seng302.Controllers.CLIController;
-import seng302.Model.User;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Administration {
 
@@ -30,6 +28,7 @@ public class Administration {
     /**
      * method to resample the database with default entries
      * @throws SQLException when the connection to te database has an error
+     * @throws IOException when the resource name has an error
      */
     public void resample() throws SQLException, IOException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -40,6 +39,7 @@ public class Administration {
     /**
      * method to empty the database tables with no values
      * @throws SQLException when the connection to te database has an error
+     * @throws IOException when the resource name has an error
      */
     public void reset() throws SQLException, IOException {
 

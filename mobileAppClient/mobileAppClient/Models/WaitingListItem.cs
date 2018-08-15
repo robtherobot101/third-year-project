@@ -20,5 +20,27 @@ namespace mobileAppClient
         public WaitingListItem()
         {
         }
+
+        public String deregisterReason()
+        {
+            String output;
+            if (this.organDeregisteredCode == 1)
+            {
+                output = "Error Registering";
+            }
+            else if (this.organDeregisteredCode == 2)
+            {
+                output = "Disease Cured";
+            }
+            else if (this.organDeregisteredCode == 3)
+            {
+                output = "Receiver Deceased";
+            }
+            else
+            {
+                output = "Successful Transplant";
+            }
+            return output;
+        }
     }
 }

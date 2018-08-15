@@ -510,6 +510,9 @@ public class ClinicianController implements Initializable {
 
     /**
      * Saves the clinician ArrayList to a JSON file. Used for updating attributes only
+     * @param newName the updated Clinicians name.
+     * @param newAddress the updated Clinicians address.
+     * @param newRegion the updated Clinicians region.
      */
     public void save(String newName, String newAddress, String newRegion) {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure,

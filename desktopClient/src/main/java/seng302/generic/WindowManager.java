@@ -292,6 +292,20 @@ public class WindowManager extends Application {
     }
 
     /**
+     * Calls for an auto refresh of the avaliable organs table after the next tick.
+     * @param value the bool value. T = refresh F = no refresh
+     */
+    public static void updateAvailableOrgansAutoRefresh(boolean value) {
+        if (clinicianClinicianAvailableOrgansController.hasToken()) {
+            clinicianClinicianAvailableOrgansController.setAutoRefresh(true);
+        }
+        if (adminClinicianAvailableController.hasToken()) {
+            adminClinicianAvailableController.setAutoRefresh(true);
+        }
+
+    }
+
+    /**
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician
@@ -484,6 +498,7 @@ public class WindowManager extends Application {
         GeneralDAO general = new GeneralDB(server);
         return new DataManager(users,clinicians,admins,general);
     }
+
 
     /**
      * checks the connection to the server.
@@ -690,4 +705,5 @@ public class WindowManager extends Application {
         }
         Platform.exit();
     }
+
 }
