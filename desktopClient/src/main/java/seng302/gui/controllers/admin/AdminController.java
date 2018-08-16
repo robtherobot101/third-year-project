@@ -756,6 +756,7 @@ public class AdminController implements Initializable {
             try {
                 Admin latest = WindowManager.getDataManager().getAdmins().getAdmin((int) currentAdmin.getStaffID(), token);
                 setAdmin(latest, token);
+                WindowManager.updateAvailableOrgans();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to fetch admin with id: " + currentAdmin.getStaffID());
                 fail = true;
