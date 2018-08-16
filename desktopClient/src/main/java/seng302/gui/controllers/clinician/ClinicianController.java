@@ -377,6 +377,7 @@ public class ClinicianController implements Initializable {
             availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
+            WindowManager.resetScene(TFScene.login);
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.clinician);
         } else {
