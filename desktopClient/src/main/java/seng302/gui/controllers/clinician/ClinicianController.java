@@ -353,6 +353,7 @@ public class ClinicianController implements Initializable {
                 setClinician(latest, token);
                 updateFoundUsers();
                 WindowManager.updateTransplantWaitingList();
+                WindowManager.updateAvailableOrgans();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to fetch admin with id: " + clinician.getStaffID());
                 e.printStackTrace();
@@ -377,6 +378,7 @@ public class ClinicianController implements Initializable {
             availableOrgansController.stopTimer();
             serverLogout();
             WindowManager.closeAllChildren();
+            WindowManager.resetScene(TFScene.login);
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.clinician);
         } else {

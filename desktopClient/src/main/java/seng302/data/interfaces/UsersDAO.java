@@ -23,9 +23,9 @@ public interface UsersDAO {
 
     Image getUserPhoto(long id, String token);
 
-    void updateUserPhoto(long id, String image) throws HttpResponseException;
+    void updateUserPhoto(long id, String image, String token) throws HttpResponseException;
 
-    void deleteUserPhoto(long id) throws HttpResponseException;
+    void deleteUserPhoto(long id, String token) throws HttpResponseException;
 
     // Now uses API server!
     Collection<User> getAllUsers(String token) throws HttpResponseException;

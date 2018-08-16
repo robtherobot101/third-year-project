@@ -558,7 +558,7 @@ public class UserController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             serverLogout();
-
+            WindowManager.resetScene(TFScene.login);
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.userWindow);
         } else {

@@ -3,6 +3,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
+using mobileAppClient.Google;
 using Newtonsoft.Json;
 using mobileAppClient.odmsAPI;
 
@@ -29,8 +30,12 @@ namespace mobileAppClient
             // Ensure config is set
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
-
             MainPage = new MainPage(false);
+        }
+
+        public static async void ProcessGoogleLogin(string code)
+        {
+            await GoogleServices.GetUserProfile(code);
         }
 
         protected override void OnStart()
@@ -38,9 +43,10 @@ namespace mobileAppClient
             // Handle when your app starts
         }
 
-        protected override void OnSleep()
+        async protected override void OnSleep()
         {
             // Handle when your app sleeps
+
         }
 
         protected override void OnResume()

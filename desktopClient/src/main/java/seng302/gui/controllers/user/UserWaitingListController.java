@@ -1,5 +1,6 @@
 package seng302.gui.controllers.user;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,20 +57,28 @@ public class UserWaitingListController extends UserTabController implements Init
     public void registerOrgan() {
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
-            userController.addCurrentUserToUndoStack();
+            if(currentUser.getDateOfDeath() == null) {
+                userController.addCurrentUserToUndoStack();
 
-            WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
+                WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
 
-            currentUser.getWaitingListItems().add(newWaitingListItem);
-            userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
-            populateWaitingList();
-            statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
+                currentUser.getWaitingListItems().add(newWaitingListItem);
+                userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
+                statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
+
+                // Slow boi
+                Platform.runLater(() -> {
+                    populateWaitingList();
+                });
+            } else {
+                Alert alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Error", "Failed to de-register", "New items cannot be added after a users's death.");
+                alert.show();
+            }
         }
         populateOrgansComboBox();
         userController.populateUserAttributes();
         WindowManager.updateTransplantWaitingList();
     }
-
 
     /**
      * Removes the selected item from the user's waiting list and refreshes

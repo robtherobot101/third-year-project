@@ -15,13 +15,12 @@ namespace mobileAppClient
      */ 
     public partial class MainPage : MasterDetailPage
     {
-
         public ObservableCollection<MasterPageItem> menuList { get; set; }
-
+    
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
-         */ 
+         */
         public MainPage(bool isClinicianView)
         {
             InitializeComponent();
@@ -138,6 +137,7 @@ namespace mobileAppClient
             this.BindingContext = new
             {
                 Header = "  SENG302 - Team300",
+                Image = "",
                 Footer = "  Logged in as CLINICIAN: " + ClinicianController.Instance.LoggedInClinician.name
             };
 
@@ -146,7 +146,7 @@ namespace mobileAppClient
             var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
             var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
-            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "attributes_icon.png", TargetType = typeof(TransplantListPage) };
+            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
 
