@@ -349,31 +349,31 @@ ALTER TABLE `DISEASE`
 -- Constraints for table `DONATION_LIST_ITEM`
 --
 ALTER TABLE `DONATION_LIST_ITEM`
-  ADD CONSTRAINT `User_id_foreign_key2` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key2` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `HISTORY_ITEM`
 --
 ALTER TABLE `HISTORY_ITEM`
-  ADD CONSTRAINT `HISTORY_ITEM_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `HISTORY_ITEM_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `MEDICATION`
 --
 ALTER TABLE `MEDICATION`
-  ADD CONSTRAINT `User_id_foreign_key3` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key3` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `PROCEDURES`
 --
 ALTER TABLE `PROCEDURES`
-  ADD CONSTRAINT `User_id_foreign_key4` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key4` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `WAITING_LIST_ITEM`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
-  ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Create default clinician and admin

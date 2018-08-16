@@ -268,7 +268,8 @@ public class ClinicianController implements Initializable {
 
         try {
             List<String> validCountries = new ArrayList<>();
-            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(token)) {
+            List<Country> allCountries = WindowManager.getDataManager().getGeneral().getAllCountries(token);
+            for(Country c : allCountries) {
                 if(c.getValid())
                     validCountries.add(c.getCountryName());
             }
@@ -376,8 +377,8 @@ public class ClinicianController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             availableOrgansController.stopTimer();
             serverLogout();
-            WindowManager.closeAllChildren();
             WindowManager.resetScene(TFScene.login);
+            WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.clinician);
         } else {
