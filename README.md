@@ -1,16 +1,27 @@
-Default clinician login: username: default, password: default
 
-Default administrator login: admin, password: default
 
+DESKTOP CLIENT
 How to run the program:
 Navigate a shell (cmd or bash) to the same directory of the jar file, and then execute the command "java -jar app0.0.jar"
-
 
 Dependencies:
 Java Runtime Environment at least version 8
 
 
-Available commands:
+MOBILE CLIENT
+How to install:
+Navigate to http://csse-s302g3.canterbury.ac.nz/ on browser and download the releases.apk file.
+Install to an android device of version 4.1 (API 16) or higher
+App should be in the device app list.
+
+Dependencies:
+Android 4.1 (API 16) or higher
+Storage and Map Permisions.
+
+
+----------------------------------------------------------
+
+Available CLI commands:
 
 addUser
 This command adds a new donor with a name and date of birth.  
