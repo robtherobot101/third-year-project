@@ -10,7 +10,16 @@
                    HeightRequest="92"
             />
             <Label Text="Please complete your donor profile" HorizontalTextAlignment="Center"/>
+            
+            <Entry x:Name="firstNameInput" Placeholder="First Name"
+                   VerticalOptions="CenterAndExpand"
+                   IsVisible="False"
+            />
 
+            <Entry x:Name="lastNameInput" Placeholder="Last Name"
+                   VerticalOptions="CenterAndExpand"
+                   IsVisible="False"
+            />
             <DatePicker x:Name="dobInput"
                         Format="D"
                         MinimumDate="01/01/1900"

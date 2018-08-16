@@ -16,12 +16,27 @@ namespace mobileAppClient
         private User googleUser;
         private string profileImageURL;
 
+        private bool firstNameNeeded;
+        private bool lastNameNeeded;
+
         public GooglePage(LoginPage loginPage, User googleUser, string profileImageURL)
         {
             InitializeComponent();
             this.googleUser = googleUser;
             this.profileImageURL = profileImageURL;
             this.parentLoginPage = loginPage;
+
+            if (String.IsNullOrEmpty(googleUser.name[0]))
+            {
+                firstNameInput.IsVisible = true;
+                firstNameNeeded = true;
+            }
+
+            if (String.IsNullOrEmpty(googleUser.name[2]))
+            {
+                lastNameInput.IsVisible = true;
+                lastNameNeeded = true;
+            }
         }
 
         async void Handle_CancelClicked(object sender, System.EventArgs e)
@@ -63,7 +78,6 @@ namespace mobileAppClient
                             {
                                 Console.WriteLine("Error uploading facebook photo to the server");
                             }
-                            Console.WriteLine("PHOTO STATUS---------------------------" + photoUpdated);
                             await Navigation.PopModalAsync();
                             await parentLoginPage.Navigation.PopModalAsync();
                             break;
@@ -107,6 +121,46 @@ namespace mobileAppClient
             if (BirthGenderInput.SelectedItem == null)
             {
                 await DisplayAlert("", "Please enter a gender", "OK");
+                return;
+            }
+
+            if (firstNameNeeded)
+            {
+                if (!InputValidation.IsValidTextInput(firstNameInput.Text, false, false))
+                {
+                    await DisplayAlert("",
+                        "Please enter a valid first name",
+                        "OK");
+                    return;
+                }
+                else
+                {
+                    googleUser.name[0] = firstNameInput.Text;
+                    googleUser.preferredName[0] = firstNameInput.Text;
+                }
+            }
+
+            if (lastNameNeeded)
+            {
+                if (!InputValidation.IsValidTextInput(lastNameInput.Text, false, false))
+                {
+                    await DisplayAlert("",
+                        "Please enter a valid last name",
+                        "OK");
+                    return;
+                }
+                else
+                {
+                    googleUser.name[2] = lastNameInput.Text;
+                    googleUser.preferredName[2] = lastNameInput.Text;
+                }
+            }
+
+            if (!InputValidation.IsValidTextInput(lastNameInput.Text, false, false))
+            {
+                await DisplayAlert("",
+                    "Please enter a valid last name",
+                    "OK");
                 return;
             }
             googleUser.gender = BirthGenderInput.SelectedItem.ToString().ToUpper();
