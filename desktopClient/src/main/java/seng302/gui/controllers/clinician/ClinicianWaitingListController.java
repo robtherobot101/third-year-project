@@ -206,9 +206,17 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
+            User lastUser = null;
             for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(new HashMap<>(), token)) {
                 if (item.getStillWaitingOn()) {
-                    addUserInfo(item);
+                    if(lastUser == null){
+                        lastUser = addUserInfo(item);
+                    } if (item.getUserId() == lastUser.getId()){
+                        item.setReceiverName(lastUser.getName());
+                        item.setReceiverRegion(lastUser.getRegion());
+                    } else {
+                        lastUser = addUserInfo(item);
+                    }
                     transplantList.add(item);
                 }
             }
