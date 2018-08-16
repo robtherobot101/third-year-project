@@ -285,7 +285,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
 
             filterParams.put("receiverName", receiverNameTextField.getText());
-            System.out.println(filterParams);
+
             List<DonatableOrgan> temp = new ArrayList<>(WindowManager.getDataManager().getGeneral().getAllDonatableOrgans(filterParams, token));
             setInitTimeLeft(temp);
 

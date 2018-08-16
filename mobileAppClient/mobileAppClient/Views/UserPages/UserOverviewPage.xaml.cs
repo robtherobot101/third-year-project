@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using mobileAppClient.Models;
 using Xamarin.Forms;
 
@@ -14,12 +15,18 @@ namespace mobileAppClient
      */ 
     public partial class UserOverviewPage : ContentPage
     {
+        public ICommand OpenCommand { get; private set; }
         public UserOverviewPage()
         {
             InitializeComponent();
             if (UserController.Instance.LoggedInUser != null)
             {
+                OpenCommand = new Command<string>(OpenItem);
                 fillFields();
+                this.BindingContext = new
+                {
+                    rss = (new NewsFeed(UserController.Instance.LoggedInUser.region)).rss
+                };
             }
         }
 
@@ -180,6 +187,11 @@ namespace mobileAppClient
             WaitingListLabel.Text = waitingListItemsString;
 
         
+        }
+        void OpenItem(string url)
+        {
+            Console.WriteLine("Opening url");
+            Device.OpenUri(new System.Uri(url));
         }
     }
 }

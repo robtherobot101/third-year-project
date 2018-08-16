@@ -67,15 +67,12 @@ public class UserWaitingListController extends UserTabController implements Init
                 statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
 
                 // Slow boi
-                Platform.runLater(() -> {
-                    populateWaitingList();
-                });
+                Platform.runLater(this::populateWaitingList);
             } else {
                 Alert alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Error", "Failed to de-register", "New items cannot be added after a users's death.");
                 alert.show();
             }
         }
-        populateOrgansComboBox();
         userController.populateUserAttributes();
         WindowManager.updateTransplantWaitingList();
     }
@@ -92,7 +89,7 @@ public class UserWaitingListController extends UserTabController implements Init
             statusIndicator.setStatus("De-registered " + waitingListItemSelected.getOrganType(), false);
             populateWaitingList();
         }
-        populateOrgansComboBox();
+
         userController.populateUserAttributes();
     }
 
@@ -131,10 +128,12 @@ public class UserWaitingListController extends UserTabController implements Init
                 if (waitingListItem.getOrganType() == type) {
                     if (waitingListItem.getStillWaitingOn()) {
                         toBeRemoved.add(type);
+                        break;
                     }
                 }
             }
         }
+
         toBeAdded.removeAll(toBeRemoved);
         organsInDropDown.removeAll();
         organsInDropDown.clear();
@@ -150,6 +149,7 @@ public class UserWaitingListController extends UserTabController implements Init
         if (currentUser != null){
             waitingListItems.clear();
             waitingListItems.addAll(currentUser.getWaitingListItems());
+            populateOrgansComboBox();
         }
     }
 
