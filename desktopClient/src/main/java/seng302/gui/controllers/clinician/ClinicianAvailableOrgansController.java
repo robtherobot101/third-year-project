@@ -486,7 +486,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     setStyle("");
                 } else {
                     Long millis = item.toMillis();
-                    setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                    setText(String.format("%dd %02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(millis),
+                            TimeUnit.MILLISECONDS.toHours(millis) % TimeUnit.DAYS.toHours(1),
                             TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                             TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)));
 
