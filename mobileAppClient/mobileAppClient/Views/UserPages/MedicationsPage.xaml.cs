@@ -57,9 +57,6 @@ namespace mobileAppClient
             }
         }
 
-
-
-
         /*
          * Constructor which sets the detail strings for each medication and also sets
          * the visibility of the no data label and compare medications button.

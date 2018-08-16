@@ -43,9 +43,18 @@ namespace mobileAppClient
             // Handle when your app starts
         }
 
-        protected override void OnSleep()
+        async protected override void OnSleep()
         {
             // Handle when your app sleeps
+            if (ClinicianController.Instance.LoggedInClinician != null)
+            {
+                LoginAPI loginAPI = new LoginAPI();
+                await loginAPI.Logout(true);
+            } else
+            {
+                LoginAPI loginAPI = new LoginAPI();
+                await loginAPI.Logout(false);
+            }
         }
 
         protected override void OnResume()
