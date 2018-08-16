@@ -1,5 +1,6 @@
 package seng302.gui.controllers.user;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,9 +15,7 @@ import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -49,6 +48,22 @@ public class UserWaitingListController extends UserTabController implements Init
         transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
+    public void sortWaitingListItems(){
+        System.out.println(Arrays.toString(waitingListItems.toArray()));
+
+        waitingListItems.sort((o1, o2) -> {
+            if(o1.getStillWaitingOn() && !o2.getStillWaitingOn()) {
+                return -1;
+            } else if(!o1.getStillWaitingOn() && o2.getStillWaitingOn()) {
+                return 1;
+            }else{
+                return o1.getOrganRegisteredDate().compareTo(o2.getOrganRegisteredDate());
+            }
+        });
+
+        System.out.println(Arrays.toString(waitingListItems.toArray()));
+    }
+
     /**
      * If there is an Organ type selected in the combobox, a new ReceiverWaitingListItem
      * is added to the user's profile.
@@ -56,20 +71,25 @@ public class UserWaitingListController extends UserTabController implements Init
     public void registerOrgan() {
         Organ organTypeSelected = organTypeComboBox.getSelectionModel().getSelectedItem();
         if (organTypeSelected != null) {
-            userController.addCurrentUserToUndoStack();
+            if(currentUser.getDateOfDeath() == null) {
+                userController.addCurrentUserToUndoStack();
 
-            WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
+                WaitingListItem newWaitingListItem = new WaitingListItem(currentUser.getName(), currentUser.getRegion(), currentUser.getId(), organTypeSelected);
 
-            currentUser.getWaitingListItems().add(newWaitingListItem);
-            userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
-            populateWaitingList();
-            statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
+                currentUser.getWaitingListItems().add(newWaitingListItem);
+                userController.addHistoryEntry("Waiting list item added", "A new waiting list item (" + newWaitingListItem.getOrganType() + ") was added.");
+                statusIndicator.setStatus("Registered " + newWaitingListItem.getOrganType(), false);
+
+                populateWaitingList();
+            } else {
+                Alert alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Error", "Failed to de-register", "New items cannot be added after a users's death.");
+                alert.show();
+            }
         }
         populateOrgansComboBox();
         userController.populateUserAttributes();
         WindowManager.updateTransplantWaitingList();
     }
-
 
     /**
      * Removes the selected item from the user's waiting list and refreshes
@@ -122,10 +142,12 @@ public class UserWaitingListController extends UserTabController implements Init
                 if (waitingListItem.getOrganType() == type) {
                     if (waitingListItem.getStillWaitingOn()) {
                         toBeRemoved.add(type);
+                        break;
                     }
                 }
             }
         }
+
         toBeAdded.removeAll(toBeRemoved);
         organsInDropDown.removeAll();
         organsInDropDown.clear();
@@ -141,6 +163,8 @@ public class UserWaitingListController extends UserTabController implements Init
         if (currentUser != null){
             waitingListItems.clear();
             waitingListItems.addAll(currentUser.getWaitingListItems());
+            sortWaitingListItems();
+            populateOrgansComboBox();
         }
     }
 

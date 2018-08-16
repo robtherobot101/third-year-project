@@ -27,6 +27,10 @@ namespace mobileAppClient.iOS
             global::Xamarin.Forms.Forms.Init();
             global::SegmentedControl.FormsPlugin.iOS.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.iOS.TintedImageRenderer.Init();
+            global::Xamarin.FormsMaps.Init();
+            global::CarouselView.FormsPlugin.iOS.CarouselViewRenderer.Init();
+
+
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

@@ -18,22 +18,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
-import seng302.User.Attribute.NZRegion;
-import seng302.generic.Country;
-import seng302.gui.StatusIndicator;
-import seng302.gui.TFScene;
-import seng302.gui.TitleBar;
-import seng302.generic.Debugger;
-import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.generic.Country;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TFScene;
+import seng302.gui.TitleBar;
 
 import java.net.URL;
 import java.util.*;
@@ -269,7 +268,8 @@ public class ClinicianController implements Initializable {
 
         try {
             List<String> validCountries = new ArrayList<>();
-            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(token)) {
+            List<Country> allCountries = WindowManager.getDataManager().getGeneral().getAllCountries(token);
+            for(Country c : allCountries) {
                 if(c.getValid())
                     validCountries.add(c.getCountryName());
             }
@@ -353,6 +353,7 @@ public class ClinicianController implements Initializable {
                 setClinician(latest, token);
                 updateFoundUsers();
                 WindowManager.updateTransplantWaitingList();
+                WindowManager.updateAvailableOrgans();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to fetch admin with id: " + clinician.getStaffID());
                 e.printStackTrace();
@@ -376,6 +377,7 @@ public class ClinicianController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             availableOrgansController.stopTimer();
             serverLogout();
+            WindowManager.resetScene(TFScene.login);
             WindowManager.closeAllChildren();
             WindowManager.setScene(TFScene.login);
             WindowManager.resetScene(TFScene.clinician);
@@ -510,6 +512,9 @@ public class ClinicianController implements Initializable {
 
     /**
      * Saves the clinician ArrayList to a JSON file. Used for updating attributes only
+     * @param newName the updated Clinicians name.
+     * @param newAddress the updated Clinicians address.
+     * @param newRegion the updated Clinicians region.
      */
     public void save(String newName, String newAddress, String newRegion) {
         Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure,
@@ -630,7 +635,7 @@ public class ClinicianController implements Initializable {
             }
             searchMap.put("userType", searchUserTypeTerm);
         }
-        System.out.println(searchMap);
+
         try {
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));

@@ -19,6 +19,7 @@ public class GeneralUser {
      *
      * @param user The user to update
      * @param userId The id of the user to update
+     * @param canEditClinicianAttributes Whether the user has access to edit medications procedures etc
      * @throws SQLException If there is errors communicating with the database
      */
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
@@ -367,9 +368,6 @@ public class GeneralUser {
             connection.setAutoCommit(false);
 
             for (User foundUser: userList) {
-                if (foundUser.getUsername() == null) {
-                    System.out.println(foundUser);
-                }
 
                 stmt.addBatch(getSingleUserStatement(foundUser));
             }
@@ -659,8 +657,6 @@ public class GeneralUser {
     public void updateUserAttributes(User user, int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
-            System.out.println("__________________________________________");
-            System.out.println(user.getCountryOfDeath());
             //Attributes update
             String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
@@ -741,7 +737,7 @@ public class GeneralUser {
     public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             ResultSet resultSet = statement.executeQuery();

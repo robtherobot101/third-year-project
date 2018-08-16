@@ -7,6 +7,7 @@ import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -620,8 +621,8 @@ public class CommandLineInterface {
                     break;
                 case "dateofbirth":
                     try {
-                        toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
-
+                        LocalDate dob = LocalDate.parse(value, User.dateFormat);
+                        toSet.setDateOfBirth(dob);
                         outputString = ("New date of birth set.");
                         wasSuccessful = true;
                     } catch (DateTimeException e) {
@@ -629,14 +630,13 @@ public class CommandLineInterface {
                         wasSuccessful = false;
                     }
                     break;
-                case "dateofdeath":
+                case "datetimeofdeath":
                     try {
-                        toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateFormat));
-
-                        outputString = ("New date of death set.");
+                        LocalDateTime dod = LocalDateTime.parse(value, User.dateTimeFormat);
+                        outputString = ("New date and time of death set.");
                         wasSuccessful = true;
                     } catch (DateTimeException e) {
-                        outputString = ("Please enter a valid date in the format dd/mm/yyyy.");
+                        outputString = ("Please enter a valid date and time in the format: dd/MM/yyyy, HH:mm:ss");
                         wasSuccessful = false;
                     }
                     break;
@@ -728,7 +728,7 @@ public class CommandLineInterface {
                     break;
 
                 default:
-                    outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
+                    outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateTimeOfDeath, gender, height, weight, " +
                             "bloodType, region, or currentAddress.");
                     wasSuccessful = false;
                     break;
@@ -1094,7 +1094,7 @@ public class CommandLineInterface {
                             + "The syntax is: updateUser <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
-                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateOfDeath, gender, height, "
+                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateTimeOfDeath, gender, height, "
                             + "weight, bloodType, region, currentAddress\n"
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-The gender must be: male, female, or other\n"

@@ -6,7 +6,7 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
-                
+                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
                 <Label Text="Welcome to Transcend"
                        HorizontalOptions="Center"
                        />
@@ -46,12 +46,17 @@
                          Image="facebook_icon.png"
                          BackgroundColor="#39569A"
                          HeightRequest="50"
-                         WidthRequest="100"
+                         WidthRequest="90"
                          x:Name="FacebookButton"
                          />
 
                  <Button Text="Login with Google"
-                    Clicked="Handle_LoginWithGoogleClicked" />
+                    Clicked="Handle_LoginWithGoogleClicked"
+                         TextColor="White"
+                         BackgroundColor="#DD4B39"
+                         HeightRequest="50"
+                         WidthRequest="90"
+                         x:Name="GoogleButton"/>
                     
             </StackLayout>
         </ScrollView>

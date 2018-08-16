@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using Android;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Provider;
 using Android.Support.V4.Content;
 using Xamarin.Forms;
@@ -59,16 +61,19 @@ namespace mobileAppClient.Droid
 
         public void LaunchGallery(FileFormatEnum fileType, string imageId)
         {
-            var imageIntent = new Intent();
-            imageIntent.SetType("image/*");
 
-            if (imageId != null)
-            {
-                imageIntent.PutExtra("fileName", imageId + "." + fileType.ToString());
-            }
-            imageIntent.SetAction(Intent.ActionGetContent);
+                var imageIntent = new Intent();
+                imageIntent.SetType("image/*");
 
-            ((Activity)MainActivity.ActivityContext).StartActivityForResult(Intent.CreateChooser(imageIntent, "Select photo"), 1);
+                if (imageId != null)
+                {
+                    imageIntent.PutExtra("fileName", imageId + "." + fileType.ToString());
+                }
+                imageIntent.SetAction(Intent.ActionGetContent);
+
+                ((Activity)MainActivity.ActivityContext).StartActivityForResult(Intent.CreateChooser(imageIntent, "Select photo"), 1);
+
+
         }
     }
 }

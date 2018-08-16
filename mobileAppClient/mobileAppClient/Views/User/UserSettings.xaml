@@ -11,7 +11,7 @@
             <TableView Intent="Menu" >
                 <TableRoot>
                     <TableSection Title="Profile">
-                        <TextCell Text="Account Details" TextColor="Black" x:Name="AccountDetailsListItem"/>
+                        <!--<TextCell Text="Account Details" TextColor="Black" x:Name="AccountDetailsListItem"/>-->
                         <ViewCell x:Name="PhotoListItem"  Tapped="Handle_Tapped">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
                                 <Label Text="Photo" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>

@@ -206,9 +206,17 @@ public class ClinicianWaitingListController implements Initializable {
     public void updateTransplantList() {
         try {
             transplantList.clear();
+            User lastUser = null;
             for(WaitingListItem item : WindowManager.getDataManager().getGeneral().getAllWaitingListItems(new HashMap<>(), token)) {
                 if (item.getStillWaitingOn()) {
-                    addUserInfo(item);
+                    if(lastUser == null){
+                        lastUser = addUserInfo(item);
+                    } if (item.getUserId() == lastUser.getId()){
+                        item.setReceiverName(lastUser.getName());
+                        item.setReceiverRegion(lastUser.getRegion());
+                    } else {
+                        lastUser = addUserInfo(item);
+                    }
                     transplantList.add(item);
                 }
             }
@@ -219,8 +227,9 @@ public class ClinicianWaitingListController implements Initializable {
     }
 
     /**
-     * adds the user info to a waiting list item
-     * @param item the waiting list item to update
+     * Adds the user info to a waiting list item
+     * @param item the waiting list item to update.
+     * @return the user retrieved from the server to reduce further server calls.
      */
     public User addUserInfo(WaitingListItem item) {
         try{
