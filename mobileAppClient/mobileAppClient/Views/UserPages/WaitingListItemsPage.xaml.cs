@@ -144,6 +144,9 @@ namespace mobileAppClient
                         await DisplayAlert("",
                             "User successfully updated",
                             "OK");
+                        NoDataLabel.IsVisible = false;
+                        WaitingListItemsList.IsVisible = true;
+                        SortingInput.IsVisible = true;
                         await resetWaitingListItems();
                         await setupPage();
                         break;
