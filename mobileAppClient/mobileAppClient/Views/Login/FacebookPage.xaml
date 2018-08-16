@@ -4,6 +4,7 @@
              x:Class="mobileAppClient.FacebookPage"
              Title = "Facebook Login">
     <ContentPage.Content>
+        
     </ContentPage.Content>
     <ContentPage.ToolbarItems> 
         <ToolbarItem Text="Cancel" Clicked="Handle_CancelClicked"/>
