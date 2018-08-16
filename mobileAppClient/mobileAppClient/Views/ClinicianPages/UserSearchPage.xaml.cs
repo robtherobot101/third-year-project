@@ -196,7 +196,7 @@ namespace mobileAppClient.Views
             UserController.Instance.LoggedInUser = tappedUser;
 
             MainPage mainPage = new MainPage(true);
-            mainPage.Title = String.Format("User Viewer: {1}, {0}", tappedUser.name[0], tappedUser.name[2]);
+            mainPage.Title = String.Format("User Viewer: {0}", tappedUser.FullName);
 
             await Navigation.PushAsync(mainPage);
         }

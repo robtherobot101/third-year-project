@@ -155,6 +155,9 @@ namespace mobileAppClient
             MedicationsList.IsVisible = true;
             observableMedicationList.Clear();
             observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
+            if(UserController.Instance.LoggedInUser.currentMedications.Count + UserController.Instance.LoggedInUser.historicMedications.Count >= 2) {
+                CompareButton.IsVisible = true;
+            }
         }
 
         async void Handle_MoveToClicked(object sender, System.EventArgs e)

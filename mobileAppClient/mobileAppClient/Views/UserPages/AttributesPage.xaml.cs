@@ -46,13 +46,30 @@ namespace mobileAppClient
         private void FillFields()
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
-            FirstNameInput.Text = loggedInUser.name[0];
-            MiddleNameInput.Text = loggedInUser.name[1];
-            LastNameInput.Text = loggedInUser.name[2];
 
-            PrefFirstNameInput.Text = loggedInUser.preferredName[0];
-            PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
-            PrefLastNameInput.Text = loggedInUser.preferredName[2];
+            if(loggedInUser.name.Count == 2) {
+                FirstNameInput.Text = loggedInUser.name[0];
+                MiddleNameInput.Text = "";
+                LastNameInput.Text = loggedInUser.name[1];
+            } else {
+                FirstNameInput.Text = loggedInUser.name[0];
+                MiddleNameInput.Text = loggedInUser.name[1];
+                LastNameInput.Text = loggedInUser.name[2];
+            }
+
+            if(loggedInUser.preferredName.Count == 2) {
+                PrefFirstNameInput.Text = loggedInUser.preferredName[0];
+                PrefMiddleNameInput.Text = "";
+                PrefLastNameInput.Text = loggedInUser.preferredName[1];
+            } else {
+                PrefFirstNameInput.Text = loggedInUser.preferredName[0];
+                PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
+                PrefLastNameInput.Text = loggedInUser.preferredName[2];
+            }
+
+  
+
+
 
             BirthGenderInput.SelectedItem = FirstCharToUpper(loggedInUser.gender);
             GenderIdentityInput.SelectedItem = FirstCharToUpper(loggedInUser.genderIdentity);

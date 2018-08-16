@@ -67,15 +67,22 @@ namespace mobileAppClient
         /**
          * Fill the image carousel with images and captions
          */
-        private void fillFeed(IEnumerable<string> feeds)
+        private async void fillFeed(IEnumerable<string> feeds)
         {
-            getFeed("https://www.twitrss.me/twitter_user_to_rss/?user=minhealthnz");
-            // For each source
-            foreach (String feed in feeds)
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
-                getFeed(feed);
+                return;
+                
+            } else {
+                getFeed("https://www.twitrss.me/twitter_user_to_rss/?user=minhealthnz");
+                // For each source
+                foreach (String feed in feeds)
+                {
+                    getFeed(feed);
+                }
+                rss.OrderByDescending(r => r.PublishDate);
             }
-            rss.OrderByDescending(r => r.PublishDate);
+
         }
     }
 }

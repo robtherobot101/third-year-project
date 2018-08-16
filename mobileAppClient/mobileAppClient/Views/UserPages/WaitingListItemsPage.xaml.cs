@@ -145,7 +145,7 @@ namespace mobileAppClient
                             "User successfully updated",
                             "OK");
                         await resetWaitingListItems();
-                        setupPage();
+                        await setupPage();
                         break;
                     case HttpStatusCode.BadRequest:
                         await DisplayAlert("",
