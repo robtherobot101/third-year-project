@@ -18,22 +18,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
-import seng302.User.Attribute.NZRegion;
-import seng302.generic.Country;
-import seng302.gui.StatusIndicator;
-import seng302.gui.TFScene;
-import seng302.gui.TitleBar;
-import seng302.generic.Debugger;
-import seng302.generic.WindowManager;
 import seng302.User.Attribute.Gender;
+import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
 import seng302.User.Clinician;
 import seng302.User.User;
+import seng302.generic.Country;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
+import seng302.gui.StatusIndicator;
+import seng302.gui.TFScene;
+import seng302.gui.TitleBar;
 
 import java.net.URL;
 import java.util.*;
@@ -634,7 +633,7 @@ public class ClinicianController implements Initializable {
             }
             searchMap.put("userType", searchUserTypeTerm);
         }
-        System.out.println(searchMap);
+
         try {
             int totalNumberOfResults = WindowManager.getDataManager().getUsers().count(token);
             searchMap.put("count", String.valueOf(count));

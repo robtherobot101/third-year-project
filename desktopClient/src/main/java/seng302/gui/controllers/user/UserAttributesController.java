@@ -274,7 +274,7 @@ public class UserAttributesController extends UserTabController implements Initi
 
         // If user death details have not been set, default the death location to user location. Set death date to now
         if(Objects.equals(dateOfDeath.getText().trim(),"")) {
-            System.out.println("Did the first one");
+
             popupDateOfDeathPicker.setDateTimeValue(LocalDateTime.now());
             if(popupCountryOfDeathComboBox.getItems().contains(countryComboBox.getValue())) {
                 popupCountryOfDeathComboBox.setValue(countryComboBox.getValue());
@@ -371,13 +371,6 @@ public class UserAttributesController extends UserTabController implements Initi
         if (country != null) {
             useCombo = country.equalsIgnoreCase("New Zealand");
         }
-
-        System.out.println("__________1___________");
-        System.out.println(userValue);
-        System.out.println(country);
-        System.out.println(regionComboBox.getValue());
-        System.out.println(regionField.getText());
-        System.out.println("__________2___________");
 
         regionComboBox.setVisible(useCombo);
         regionField.setVisible(!useCombo);

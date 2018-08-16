@@ -1211,7 +1211,6 @@ public class AdminController implements Initializable {
     public void showMainPane() {
         if(!mainPane.isVisible()){
             refreshLatestProfiles();
-            System.out.println("ping");
         }
         hideAllTabs();
         setButtonSelected(homeButton, true);
