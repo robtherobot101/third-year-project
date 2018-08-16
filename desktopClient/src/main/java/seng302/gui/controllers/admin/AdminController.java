@@ -1208,6 +1208,10 @@ public class AdminController implements Initializable {
      * Sets the user Attribute pane as the visible pane.
      */
     public void showMainPane() {
+        if(!mainPane.isVisible()){
+            refreshLatestProfiles();
+            System.out.println("ping");
+        }
         hideAllTabs();
         setButtonSelected(homeButton, true);
         mainPane.setVisible(true);

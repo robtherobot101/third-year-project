@@ -436,12 +436,12 @@ public class UsersM implements UsersDAO {
     }
 
     @Override
-    public void updateUserPhoto(long id, String image) {
+    public void updateUserPhoto(long id, String image, String token) {
         // does nothing on local
     }
 
     @Override
-    public void deleteUserPhoto(long id) {
+    public void deleteUserPhoto(long id, String token) {
         // does nothing on local
     }
 

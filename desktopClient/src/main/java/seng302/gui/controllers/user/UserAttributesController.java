@@ -741,7 +741,7 @@ public class UserAttributesController extends UserTabController implements Initi
      */
     private void deleteProfileImage() {
         try {
-            WindowManager.getDataManager().getUsers().deleteUserPhoto(currentUser.getId());
+            WindowManager.getDataManager().getUsers().deleteUserPhoto(currentUser.getId(), userController.getToken());
             //success catch, set to default photo
             Image profilePhoto = WindowManager.getDataManager().getUsers().getUserPhoto(currentUser.getId(), userController.getToken());
             profileImage.setImage(profilePhoto);
@@ -777,7 +777,7 @@ public class UserAttributesController extends UserTabController implements Initi
                     byte[] byteArrayImage = byteOutputStream.toByteArray();
 
                     String image = Base64.getEncoder().encodeToString(byteArrayImage);
-                    WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image);
+                    WindowManager.getDataManager().getUsers().updateUserPhoto(currentUser.getId(), image, userController.getToken());
                     Image profileImg = SwingFXUtils.toFXImage(bImage, null);
                     if (profileImg.getWidth() == profileImg.getHeight()) {
                         profileImage.setImage(profileImg);
