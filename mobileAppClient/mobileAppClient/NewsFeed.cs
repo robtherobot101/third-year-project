@@ -74,7 +74,7 @@ namespace mobileAppClient
                 return;
                 
             } else {
-                getFeed("https://www.twitrss.me/twitter_user_to_rss/?user=minhealthnz");
+                getFeed("http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom");
                 // For each source
                 foreach (String feed in feeds)
                 {

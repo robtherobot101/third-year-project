@@ -42,6 +42,7 @@ namespace mobileAppClient
 
         public async void displayUserDialog(string organString, string id) {
             string[] organList = organString.Split(',');
+            id = organList[organList.Length - 1];
             organList = organList.Take(organList.Length - 1).ToArray();
             List<string> finalList = new List<string>();
             string final;
@@ -61,7 +62,7 @@ namespace mobileAppClient
                         UserController.Instance.LoggedInUser = userTuple.Item2;
 
                         MainPage mainPage = new MainPage(true);
-                        mainPage.Title = String.Format("User Viewer: {1}, {0}", userTuple.Item2.name[0], userTuple.Item2.name[2]);
+                        mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
 
                         await Navigation.PushAsync(mainPage);
                         break;
