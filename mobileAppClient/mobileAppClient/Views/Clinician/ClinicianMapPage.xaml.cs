@@ -19,25 +19,7 @@ namespace mobileAppClient
         public ClinicianMapPage()
         {
 
-            customMap = new CustomMap
-            {
-                MapType = MapType.Street,
-                WidthRequest = 100,
-                HeightRequest = 100
-            };
 
-
-            customMap.CustomPins = new List<CustomPin> { };
-
-
-            customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                new Position(-41.626217, 172.361873), Distance.FromMiles(350.0)));
-
-
-            var stack = new StackLayout { Spacing = 0 };
-            stack.Children.Add(customMap);
-            Content = stack;
-            Title = "Available Donor Map";
         }
 
         public async void displayUserDialog(string organString, string id) {
@@ -90,6 +72,27 @@ namespace mobileAppClient
         /// </summary>
         protected override async void OnAppearing()
         {
+
+            customMap = new CustomMap
+            {
+                MapType = MapType.Street,
+                WidthRequest = 100,
+                HeightRequest = 100
+            };
+
+
+            customMap.CustomPins = new List<CustomPin> { };
+
+
+            customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
+                new Position(-41.626217, 172.361873), Distance.FromMiles(350.0)));
+
+
+            var stack = new StackLayout { Spacing = 0 };
+            stack.Children.Add(customMap);
+            Content = stack;
+            Title = "Available Donor Map";
+
             //Get all the organs from the database
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();
