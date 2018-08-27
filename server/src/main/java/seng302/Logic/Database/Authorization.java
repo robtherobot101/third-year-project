@@ -24,7 +24,7 @@ public class Authorization {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-            String query = "SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?";
+            String query = "SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?) AND password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, usernameEmail);

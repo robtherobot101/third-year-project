@@ -25,9 +25,9 @@ public class AuthorizationController {
      */
     public String login(Request request, Response response) {
 
-        String usernameEmail = request.queryParams("usernameEmail");
+        String identifier = request.queryParams("identifier");
         String password = request.queryParams("password");
-        if(usernameEmail == null || password == null) {
+        if(identifier == null || password == null) {
             response.status(400);
             return "Missing Parameters";
         }
@@ -41,7 +41,7 @@ public class AuthorizationController {
 
         // Check for a user match
         try {
-            currentUser = model.loginUser(usernameEmail, password);
+            currentUser = model.loginUser(identifier, password);
             if (currentUser != null) {
                 loginToken = model.generateToken((int) currentUser.getId(), 0);
                 typeMatched = ProfileType.USER;
@@ -54,7 +54,7 @@ public class AuthorizationController {
         if (loginToken == null) { //if user login was unsuccessful
             // Check for a clinician match
             try {
-                currentClinician = model.loginClinician(usernameEmail, password);
+                currentClinician = model.loginClinician(identifier, password);
                 if (currentClinician != null) {
                     loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
                     typeMatched = ProfileType.CLINICIAN;
@@ -68,7 +68,7 @@ public class AuthorizationController {
         if (loginToken == null) { //if user login and clinician login was unsuccessful
             // Check for an admin match
             try {
-                currentAdmin = model.loginAdmin(usernameEmail, password);
+                currentAdmin = model.loginAdmin(identifier, password);
                 if (currentAdmin != null) {
                     loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
                     typeMatched = ProfileType.ADMIN;
