@@ -29,7 +29,8 @@ public class Authorization {
 
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
-            statement.setString(3, password);
+            statement.setString(3, usernameEmail);
+            statement.setString(4, password);
             ResultSet resultSet = statement.executeQuery();
 
             //If response is empty then return null
