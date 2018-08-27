@@ -205,6 +205,7 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `region` text,
   `username` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `nhi` varchar(7) DEFAULT NULL,
   `password` text NOT NULL,
   `blood_pressure` text,
   `smoker_status` text,
@@ -277,6 +278,7 @@ ALTER TABLE `PROCEDURES`
 ALTER TABLE `USER`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `nhi` (`nhi`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
