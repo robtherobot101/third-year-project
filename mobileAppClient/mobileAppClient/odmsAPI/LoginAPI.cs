@@ -38,7 +38,7 @@ namespace mobileAppClient.odmsAPI
             
             String queries = null;
 
-            queries = $"?usernameEmail={usernameEmail}&password={password}";
+            queries = $"?identifier={usernameEmail}&password={password}";
 
             HttpContent content = new StringContent("");
             HttpResponseMessage response;
