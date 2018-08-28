@@ -307,11 +307,16 @@ public class CommandLineInterface {
     private CommandLineResponse addUser(String[] nextCommand) {
         if (nextCommand.length == 5) {
             try {
-                User insertUser = new User(nextCommand[3].replace("\"", ""), LocalDate.parse(nextCommand[4], User.dateFormat));
-                insertUser.setUsername(nextCommand[1]);
-                insertUser.setPassword(nextCommand[2]);
-                new GeneralUser().insertUser(insertUser);
-                return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), insertUser.getPassword()).getId());
+                LocalDate dob = LocalDate.parse(nextCommand[4], User.dateFormat);
+                if(dob.isBefore(LocalDate.now())) {
+                    User insertUser = new User(nextCommand[3].replace("\"", ""), dob);
+                    insertUser.setUsername(nextCommand[1]);
+                    insertUser.setPassword(nextCommand[2]);
+                    new GeneralUser().insertUser(insertUser);
+                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), insertUser.getPassword()).getId());
+                } else {
+                    return new CommandLineResponse(false, "Date of birth must not be in the future.");
+                }
             } catch (DateTimeException e) {
                 return new CommandLineResponse(false, "Please enter a valid date of birth in the format dd/mm/yyyy.");
             } catch (SQLException e) {
@@ -622,9 +627,19 @@ public class CommandLineInterface {
                 case "dateofbirth":
                     try {
                         LocalDate dob = LocalDate.parse(value, User.dateFormat);
-                        toSet.setDateOfBirth(dob);
-                        outputString = ("New date of birth set.");
-                        wasSuccessful = true;
+                        if(dob.isBefore(LocalDate.now())) {
+                            if(toSet.getDateOfDeath() == null || dob.isBefore(toSet.getDateOfDeath().toLocalDate())) {
+                                toSet.setDateOfBirth(dob);
+                                outputString = ("New date of birth set.");
+                                wasSuccessful = true;
+                            } else {
+                                outputString = (String.format("Date of birth cannot after the date and time of death (" + User.dateTimeFormat.format(toSet.getDateOfDeath()) + ")"));
+                                wasSuccessful = false;
+                            }
+                        } else {
+                            outputString = ("Date of birth cannot be in the future.");
+                            wasSuccessful = false;
+                        }
                     } catch (DateTimeException e) {
                         outputString = ("Please enter a valid date in the format dd/mm/yyyy.");
                         wasSuccessful = false;
@@ -633,8 +648,20 @@ public class CommandLineInterface {
                 case "datetimeofdeath":
                     try {
                         LocalDateTime dod = LocalDateTime.parse(value, User.dateTimeFormat);
-                        outputString = ("New date and time of death set.");
-                        wasSuccessful = true;
+                        if(dod.isBefore(LocalDateTime.now())) {
+                            if(toSet.getDateOfBirth() == null || dod.isAfter(toSet.getDateOfBirth().atStartOfDay())) {
+                                toSet.setDateOfDeath(dod);
+                                outputString = ("New date and time of death set.");
+                                wasSuccessful = true;
+                            } else {
+                                outputString = ("Date and time of death cannot be before the date of birth (" + User.dateFormat.format(toSet.getDateOfBirth()) + ")");
+                                wasSuccessful = false;
+                            }
+                        } else {
+                            outputString = ("Date and time of death cannot be in the future.");
+                            wasSuccessful = false;
+
+                        }
                     } catch (DateTimeException e) {
                         outputString = ("Please enter a valid date and time in the format: dd/MM/yyyy, HH:mm:ss");
                         wasSuccessful = false;
@@ -1100,7 +1127,8 @@ public class CommandLineInterface {
                             + "-The gender must be: male, female, or other\n"
                             + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
                             + "-The height and weight must be numbers that are larger than 0\n"
-                            + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
+                            + "-The date of birth values must be entered in the format: dd/mm/yyyy\n"
+                            + "-The date/time of death values must be entered in the format: \"dd/mm/yyyy, HH:mm:ss\"\n"
                             + "Example valid usage: updateUser 2 bloodtype ab+");
                 case "describeuser":
                     return new CommandLineResponse(false, "This command searches users and displays information about them. To find the id of a user, use the listUsers "

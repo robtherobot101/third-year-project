@@ -43,13 +43,6 @@ namespace mobileAppClient
             // Initial navigation, this can be used for our home page
 
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
-            this.BindingContext = new
-            {
-                Header = "",
-                Image = "",
-                Footer = "      Welcome To SENG302     "
-            };
-
         }
 
         /*
@@ -95,12 +88,7 @@ namespace mobileAppClient
         public void userLoggedIn()
         {
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
-            this.BindingContext = new
-            {
-                Header = "  SENG302 - Team300",
-                Image = UserController.Instance.ProfilePhotoSource,
-                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
-            };
+            updateUserProfileBar();
 
             menuList.Clear();
 
@@ -134,12 +122,7 @@ namespace mobileAppClient
         public void clinicianLoggedIn()
         {
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(ClinicianOverviewPage)));
-            this.BindingContext = new
-            {
-                Header = "  SENG302 - Team300",
-                Image = "",
-                Footer = "  Logged in as CLINICIAN: " + ClinicianController.Instance.LoggedInClinician.name
-            };
+            updateClinicianProfileBar();
 
             menuList.Clear();
 
@@ -162,12 +145,7 @@ namespace mobileAppClient
         public void clinicianViewingUser()
         {
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
-            BindingContext = new
-            {
-                Header = "  SENG302 - Team300",
-                Image = UserController.Instance.ProfilePhotoSource,
-                Footer = "  Viewing user " + UserController.Instance.LoggedInUser.name[0]
-            };
+            updateUserProfileBar();
 
             menuList.Clear();
 
@@ -217,13 +195,62 @@ namespace mobileAppClient
             }
         }
 
+        /// <summary>
+        /// Public accessor for updating the menu bar
+        /// </summary>
         public void updateMenuPhoto() {
-            this.BindingContext = new
+            updateUserProfileBar();
+        }
+
+        private void updateUserProfileBar()
+        {
+            // Update for a logged in user
+            string profileImagePath;
+            if (UserController.Instance.ProfilePhotoSource == null)
             {
-                Header = "  SENG302 - Team300",
-                Image = UserController.Instance.ProfilePhotoSource,
-                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
+                // No photo provided, use default
+                profileImagePath = "default_user_photo.png";
+            }
+            else
+            {
+                // Use photo from server
+                profileImagePath = UserController.Instance.ProfilePhotoSource.ToString();
+            }
+
+            BindingContext = new
+            {
+                ProfileImage = profileImagePath,
+                FullName = UserController.Instance.LoggedInUser.FullName,
+                BorderColor = "White"
             };
+            
+        }
+
+        private void updateClinicianProfileBar()
+        {
+            // Update for a logged in clinician
+            BindingContext = new
+            {
+                ProfileImage = "default_clinician_photo.png",
+                FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name.Trim(),
+                BorderColor = "White"
+            };
+        }
+
+        /// <summary>
+        /// Activated when the profile photo is tapped -> opens profile photo settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        async void OnProfilePhotoTapped(object sender, EventArgs args)
+        {
+            // Do nothing if it is a clinician
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                return;
+            }
+
+            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage()));
         }
     }
 }

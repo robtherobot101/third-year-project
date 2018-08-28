@@ -156,13 +156,6 @@ namespace mobileAppClient
                 }
             }
 
-            if (!InputValidation.IsValidTextInput(lastNameInput.Text, false, false))
-            {
-                await DisplayAlert("",
-                    "Please enter a valid last name",
-                    "OK");
-                return;
-            }
             googleUser.gender = BirthGenderInput.SelectedItem.ToString().ToUpper();
             googleUser.dateOfBirth = new CustomDate(dobInput.Date);
             await RegisterNewUser();
