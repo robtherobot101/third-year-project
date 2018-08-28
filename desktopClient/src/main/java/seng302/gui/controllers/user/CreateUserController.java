@@ -16,6 +16,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 /**
  * A controller class for the create account screen.
@@ -26,6 +27,8 @@ public class CreateUserController implements Initializable {
     private TextField usernameInput;
     @FXML
     private TextField emailInput;
+    @FXML
+    private TextField nhiInput;
     @FXML
     private TextField passwordConfirmInput;
     @FXML
@@ -76,6 +79,21 @@ public class CreateUserController implements Initializable {
     }
 
     /**
+     * Checks an NHI is of the correct format:
+     *      Starts with 3rd, 6th, 9th... letter of the alphabet
+     *      Is of the format cde1234
+     * @param nhi A National Health Index number
+     */
+    private boolean checkNhi(String nhi){
+        nhi = nhi.toLowerCase();
+        // Character 'c' has ASCII value 99
+        if ((int) nhi.charAt(0) % 3 == 0) {
+            return Pattern.matches("[a-z][a-z][a-z]\\d\\d\\d\\d", nhi);
+        }
+        else return false;
+    }
+
+    /**
      * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
      *
      * @return The created user
@@ -90,6 +108,10 @@ public class CreateUserController implements Initializable {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;
+            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(nhiInput.getText())) {
+                errorText.setText("There is already a user account with that NHII.");
+                errorText.setVisible(true);
+                return null;
             }
         } catch (HttpResponseException e) {
             Debugger.error("Failed to check uniqueness of new user.");
@@ -102,13 +124,18 @@ public class CreateUserController implements Initializable {
             errorText.setText("Date of birth is in the future");
             errorText.setVisible(true);
             return null;
+        } else if (!checkNhi(nhiInput.getText())) {
+            errorText.setText("NHI is not valid");
+            errorText.setVisible(true);
+            return null;
         } else {
             errorText.setVisible(false);
             String username = usernameInput.getText().isEmpty() ? null : usernameInput.getText();
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
+            String nhi = nhiInput.getText().isEmpty() ? null : nhiInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
-                    dateOfBirthInput.getValue(), username, email, passwordInput.getText());
+                    dateOfBirthInput.getValue(), username, email, nhi, passwordInput.getText());
             user.addHistoryEntry("Created", "This profile was created.");
             user.addHistoryEntry("Logged in", "This profile was logged in to.");
 

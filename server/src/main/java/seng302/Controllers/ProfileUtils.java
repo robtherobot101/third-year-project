@@ -258,7 +258,7 @@ public class ProfileUtils {
      * @return Whether the identifier is unique
      */
     public boolean isUniqueIdentifier(Request request, Response response) {
-        String usernameEmail = request.queryParams("usernameEmail");
+        String usernameEmail = request.queryParams("identifier");
         if (usernameEmail == null || usernameEmail.isEmpty()) {
             Server.getInstance().log.warn("Received unique identifier request that did not contain an identifier to check.");
             halt(400, "Bad Request");
@@ -267,9 +267,10 @@ public class ProfileUtils {
 
         try {
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ? OR nhi = ?");
                 statement.setString(1, usernameEmail);
                 statement.setString(2, usernameEmail);
+                statement.setString(3, usernameEmail);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
                     response.status(200);

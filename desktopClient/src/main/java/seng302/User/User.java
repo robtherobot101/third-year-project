@@ -22,6 +22,7 @@ public class User {
     private double height = -1, weight = -1;
     private BloodType bloodType = null;
     private long id;
+    private String nhi;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
     private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "", profileImageType = "";
@@ -46,7 +47,7 @@ public class User {
         this.id = 1;
     }
 
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String password) {
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi, String password) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
         this.name[0] = firstName;
@@ -62,12 +63,13 @@ public class User {
         this.password = password;
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
+        this.nhi = nhi;
     }
 
     // Used by CSV import to form profiles
     public User(String firstName, String lastNames, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender,
                 Gender genderIdentity, BloodType bloodType, int height, int weight, String address, String region,
-                String city, int zipCode, String country, String homePhone, String mobilePhone, String email) {
+                String city, int zipCode, String country, String homePhone, String mobilePhone, String email, String nhi) {
         int isLastName = lastNames == null || lastNames.isEmpty() ? 0 : 1;
         this.name = new String[1 + isLastName];
         this.name[0] = firstName;
@@ -102,10 +104,11 @@ public class User {
         this.password = "password";
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
+        this.nhi= nhi;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -129,6 +132,7 @@ public class User {
         this.creationTime = LocalDateTime.now();
         this.username = username;
         this.email = email;
+        this.nhi = nhi;
         this.password = password;
         this.country = country;
         this.cityOfDeath = cityOfDeath;
@@ -166,6 +170,7 @@ public class User {
         this.currentAddress = user.currentAddress;
         this.creationTime = user.creationTime;
         this.id = user.id;
+        this.nhi = user.nhi;
         this.smokerStatus = user.smokerStatus;
         this.bloodPressure = user.bloodPressure;
         this.alcoholConsumption = user.alcoholConsumption;
@@ -184,6 +189,7 @@ public class User {
     }
 
     public void copyFieldsFrom(User user) {
+        nhi = user.getNhi();
         name = user.getNameArray();
         preferredName = user.getPreferredNameArray();
         dateOfBirth = user.getDateOfBirth();
@@ -709,5 +715,7 @@ public class User {
     }
 
 
-
+    public String getNhi() {
+        return nhi;
+    }
 }

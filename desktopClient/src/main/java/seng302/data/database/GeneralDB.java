@@ -122,7 +122,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public boolean isUniqueIdentifier(String identifier) {
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("usernameEmail", identifier);
+        queryParameters.put("identifier", identifier);
         APIResponse response = server.getRequest(queryParameters, null, "unique");
         return response != null && response.getAsString().equalsIgnoreCase("true");
     }
