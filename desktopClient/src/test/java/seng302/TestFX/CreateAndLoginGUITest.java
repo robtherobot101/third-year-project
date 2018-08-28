@@ -41,6 +41,8 @@ public class CreateAndLoginGUITest extends TestFXTest {
         write("buzz");
         clickOn("#emailInput");
         write("mkn29@uclive.ac.nz");
+        clickOn("#nhiInput");
+        write("lsm4962");
         clickOn("#passwordInput");
         write("password123");
         clickOn("#passwordConfirmInput");
@@ -97,6 +99,8 @@ public class CreateAndLoginGUITest extends TestFXTest {
         write("Matthew");
         clickOn("#emailInput");
         write("mkn29@uclive.ac.nz");
+        clickOn("#nhiInput");
+        write("lsm4962");
         clickOn("#dateOfBirthInput");
         write("12/06/1997");
         clickOn("#passwordInput");
@@ -131,6 +135,8 @@ public class CreateAndLoginGUITest extends TestFXTest {
 
         clickOn("#usernameInput");
         write(testUser.getUsername());
+        clickOn("#nhiInput");
+        write("lsm4962");
         clickOn("#firstNameInput");
         write("Matthew");
         clickOn("#dateOfBirthInput");
