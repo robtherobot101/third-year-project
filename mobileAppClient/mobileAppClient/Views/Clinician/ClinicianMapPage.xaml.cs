@@ -201,8 +201,7 @@ namespace mobileAppClient
                             Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
                             Byte[] bytes;
                             if(Device.RuntimePlatform == Device.Android) {
-                                
-
+                             
                             } else {
                                 bytes = File.ReadAllBytes("donationIcon.png");
                                 profilePhoto = Convert.ToBase64String(bytes);
@@ -224,8 +223,8 @@ namespace mobileAppClient
                             genderIcon = genderIcon,
                             userPhoto = profilePhoto                         
                         };
-                        customMap.Pins.Add(pin);
                         customMap.CustomPins.Add(pin);
+                        customMap.Pins.Add(pin);
 
 
                     }
