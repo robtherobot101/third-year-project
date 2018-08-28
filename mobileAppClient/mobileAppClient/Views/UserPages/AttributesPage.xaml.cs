@@ -1,12 +1,16 @@
 ﻿using mobileAppClient.odmsAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-
+using Xamarin.Forms.Maps;
 
 namespace mobileAppClient
 {
@@ -27,6 +31,10 @@ namespace mobileAppClient
             if (ClinicianController.Instance.isLoggedIn())
             {
                 hasDiedSwitch.IsEnabled = true;
+                dateOfDeathCombo.IsEnabled = true;
+                DODCityInput.IsEnabled = true;
+                dateOfDeathRegion.IsEnabled = true;
+                dateOfDeathCountry.IsEnabled = true;
                 isClinicianEditing = true;
             } else
             {
@@ -68,14 +76,14 @@ namespace mobileAppClient
             }
 
   
-
-
-
             BirthGenderInput.SelectedItem = FirstCharToUpper(loggedInUser.gender);
             GenderIdentityInput.SelectedItem = FirstCharToUpper(loggedInUser.genderIdentity);
 
+            //Geolocate
             AddressInput.Text = loggedInUser.currentAddress;
-            RegionInput.Text = loggedInUser.region;
+
+            RegionInput.SelectedItem = loggedInUser.region;
+            CountryInput.SelectedItem = loggedInUser.country;
 
             dobInput.Date = loggedInUser.dateOfBirth.ToDateTime();
             // Check if the user is dead
@@ -83,6 +91,13 @@ namespace mobileAppClient
             {
                 hasDiedSwitch.On = true;
                 dodInput.Date = loggedInUser.dateOfDeath.date.ToDateTime();
+
+                //Geolocate
+                DODCityInput.Text = loggedInUser.cityOfDeath;
+
+
+                DODRegionInput.SelectedItem = loggedInUser.regionOfDeath;
+                DODCountryInput.SelectedItem = loggedInUser.countryOfDeath;
             }
 
             HeightInput.Text = loggedInUser.height.ToString();
@@ -123,7 +138,7 @@ namespace mobileAppClient
             string givenPrefLastName = InputValidation.Trim(PrefLastNameInput.Text);
 
             string givenAddress = InputValidation.Trim(AddressInput.Text);
-            string givenRegion = InputValidation.Trim(RegionInput.Text);
+            //string givenRegion = InputValidation.Trim(RegionInput.Text);
 
             string givenHeight = InputValidation.Trim(HeightInput.Text);
             string givenWeight = InputValidation.Trim(WeightInput.Text);
@@ -212,7 +227,7 @@ namespace mobileAppClient
             loggedInUser.genderIdentity = GenderIdentityInput.SelectedItem.ToString().ToUpper();
 
             loggedInUser.currentAddress = givenAddress;
-            loggedInUser.region = givenRegion;
+            //loggedInUser.region = givenRegion;
 
             loggedInUser.dateOfBirth = new CustomDate(dobInput.Date);
 
@@ -271,7 +286,17 @@ namespace mobileAppClient
         {
             dateOfDeathShowing = !dateOfDeathShowing;
             dateOfDeathCombo.IsVisible = dateOfDeathShowing;
+            DODCityInput.IsEnabled = dateOfDeathShowing;
+            dateOfDeathRegion.IsVisible = dateOfDeathShowing;
+            dateOfDeathCountry.IsVisible = dateOfDeathShowing;
             dateOfDeathCombo.ForceLayout();
         }
+
+        async void Handle_ValueChanged(object sender, Syncfusion.SfAutoComplete.XForms.ValueChangedEventArgs e)
+        {
+
+        }
+
+
     }
 }

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:local="clr-namespace:mobileAppClient" 
              x:Class="mobileAppClient.AttributesPage" 
-             Title="Attributes" NavigationPage.HasNavigationBar="True">
+             Title="Attributes" NavigationPage.HasNavigationBar="True"
+             xmlns:autocomplete="clr-namespace:Syncfusion.SfAutoComplete.XForms;assembly=Syncfusion.SfAutoComplete.XForms">
     <StackLayout>
         <TableView Intent="Menu" >
             <TableRoot>
@@ -48,8 +49,36 @@
                     </ViewCell>
                 </TableSection>
                 <TableSection Title="Address">
+
                     <EntryCell Label="Address" x:Name="AddressInput"/>
-                    <EntryCell Label="Region" x:Name="RegionInput"/>
+
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" x:Name="RegionLayout" Padding="15,0,0,0">
+                            <Label Text="Region" VerticalOptions="Center"/>
+                            <Picker Title ="Region" x:Name="RegionInput">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Northland</x:String>
+                                        <x:String>Auckland</x:String>
+                                        <x:String>Waikato</x:String>
+                                        <x:String>Bay of Plenty</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" x:Name="CountryLayout" Padding="15,0,0,0">
+                            <Label Text="Country" VerticalOptions="Center"/>
+                            <Picker Title ="Country" x:Name="CountryInput">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>New Zealand</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
                 </TableSection>
                 <TableSection Title="Age">
                     <ViewCell>
@@ -63,7 +92,7 @@
                     </ViewCell>
                     <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="dateOfDeathSwitchChanged" IsEnabled="False"/>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" IsVisible="False" Padding="15,0,0,0">
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" Padding="15,0,0,0" IsEnabled="False" IsVisible="false">
                             <Label Text="Date of Death" VerticalOptions="Center"/>
                             <DatePicker x:Name="dodInput"
                                 Format="D"
@@ -71,6 +100,37 @@
                              />
                         </StackLayout>
                     </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCountry" Padding="15,0,0,0" IsEnabled="False" IsVisible="false">
+                            <Label Text="Country" VerticalOptions="Center"/>
+                            <Picker Title ="Country" x:Name="DODCountryInput">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>New Zealand</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathRegion" Padding="15,0,0,0" IsEnabled="False" IsVisible="false">
+                            <Label Text="Region" VerticalOptions="Center"/>
+                            <Picker Title ="Region" x:Name="DODRegionInput">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Northland</x:String>
+                                        <x:String>Auckland</x:String>
+                                        <x:String>Waikato</x:String>
+                                        <x:String>Bay of Plenty</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+
+                    <EntryCell Label="City" x:Name="DODCityInput"/>
+
+
                 </TableSection>
                 <TableSection Title="Physical Attributes">
                     <EntryCell Keyboard="Numeric" Label="Height (cm)" x:Name="HeightInput"/>
