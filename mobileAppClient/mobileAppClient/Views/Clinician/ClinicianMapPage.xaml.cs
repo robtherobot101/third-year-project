@@ -19,29 +19,12 @@ namespace mobileAppClient
         public ClinicianMapPage()
         {
 
-            customMap = new CustomMap
-            {
-                MapType = MapType.Street,
-                WidthRequest = 100,
-                HeightRequest = 100
-            };
 
-
-            customMap.CustomPins = new List<CustomPin> { };
-
-
-            customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                new Position(-41.626217, 172.361873), Distance.FromMiles(350.0)));
-
-
-            var stack = new StackLayout { Spacing = 0 };
-            stack.Children.Add(customMap);
-            Content = stack;
-            Title = "Available Donor Map";
         }
 
         public async void displayUserDialog(string organString, string id) {
             string[] organList = organString.Split(',');
+            id = organList[organList.Length - 1];
             organList = organList.Take(organList.Length - 1).ToArray();
             List<string> finalList = new List<string>();
             string final;
@@ -61,7 +44,7 @@ namespace mobileAppClient
                         UserController.Instance.LoggedInUser = userTuple.Item2;
 
                         MainPage mainPage = new MainPage(true);
-                        mainPage.Title = String.Format("User Viewer: {1}, {0}", userTuple.Item2.name[0], userTuple.Item2.name[2]);
+                        mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
 
                         await Navigation.PushAsync(mainPage);
                         break;
@@ -89,6 +72,27 @@ namespace mobileAppClient
         /// </summary>
         protected override async void OnAppearing()
         {
+
+            customMap = new CustomMap
+            {
+                MapType = MapType.Street,
+                WidthRequest = 100,
+                HeightRequest = 100
+            };
+
+
+            customMap.CustomPins = new List<CustomPin> { };
+
+
+            customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
+                new Position(-41.626217, 172.361873), Distance.FromMiles(350.0)));
+
+
+            var stack = new StackLayout { Spacing = 0 };
+            stack.Children.Add(customMap);
+            Content = stack;
+            Title = "Available Donor Map";
+
             //Get all the organs from the database
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();

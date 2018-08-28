@@ -15,6 +15,7 @@ using mobileAppClient.Google;
 using Xamarin.Forms;
 using Android.Support.V4.Content;
 using Android;
+using ImageCircle.Forms.Plugin.Droid;
 
 namespace mobileAppClient.Droid
 {
@@ -39,7 +40,11 @@ namespace mobileAppClient.Droid
             global::Xamarin.FormsMaps.Init(this, bundle);
 
             ActivityContext = this;
-            
+
+            // For circular images (on menu drawer)
+            ImageCircleRenderer.Init();
+
+
             LoadApplication(new App());
         }
 

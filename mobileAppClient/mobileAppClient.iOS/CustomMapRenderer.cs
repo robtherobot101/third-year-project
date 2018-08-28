@@ -90,7 +90,7 @@ namespace CustomRenderer.iOS
             //Go back to Mobile App Clent and call show dialog event
             var customView = e.View as CustomMKAnnotationView;
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayUserDialog(customView.Url, customView.Url.Substring(customView.Url.Length - 1));
+            parent.displayUserDialog(customView.Url, customView.Url[customView.Url.Length - 1].ToString());
 
 
         }

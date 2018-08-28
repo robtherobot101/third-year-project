@@ -5,6 +5,7 @@ using SegmentedControl;
 using Plugin.CrossPlatformTintedImage;
 
 using Foundation;
+using ImageCircle.Forms.Plugin.iOS;
 using UIKit;
 
 namespace mobileAppClient.iOS
@@ -32,6 +33,9 @@ namespace mobileAppClient.iOS
 
 
             LoadApplication(new App());
+
+            // For circular images (on menu drawer)
+            ImageCircleRenderer.Init();
 
             return base.FinishedLaunching(app, options);
         }
