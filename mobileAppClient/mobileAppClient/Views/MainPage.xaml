@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms" 
                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-                  xmlns:local="clr-namespace:mobileAppClient" 
+                  xmlns:local="clr-namespace:mobileAppClient"
+                  xmlns:abstractions="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
                   x:Class="mobileAppClient.MainPage">
 
     <MasterDetailPage.Master>
         <ContentPage Title="Menu"
                  BackgroundColor="#e8e8e8">
 
-            <StackLayout Orientation="Vertical" Padding="0, 20, 0, 0">
-
-                <!-- 
-             This StackLayout you can use for other
-             data that you want to have in your menu drawer
-        -->
-                <StackLayout.Children>
-                    <Label Text="{Binding Header}" />
-
-                    <Image Source="{Binding Image}" Aspect="AspectFit"/>
-
-                    <Label Text="{Binding Footer}" />
-                </StackLayout.Children>
+            <StackLayout Orientation="Vertical">
+                <Grid HeightRequest="200">
+                    <Image Source="profile_photo_bg.png" Aspect="AspectFill" />
+                    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                        <abstractions:CircleImage Source="{Binding ProfileImage}" Aspect="AspectFill" BorderColor="{Binding BorderColor}" BorderThickness="2" WidthRequest="90" HeightRequest="90">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnProfilePhotoTapped"
+                                />
+                            </Image.GestureRecognizers>
+                        </abstractions:CircleImage>
+                        <Label Text="{Binding FullName}" TextColor="White" FontSize="Large" />
+                    </StackLayout>
+                </Grid>
 
                 <ListView x:Name="navigationDrawerList"
                   RowHeight="55"
@@ -46,7 +48,8 @@
                                         <Label Text="{Binding Title}"
                              FontSize="Small"
                              VerticalOptions="End"
-                             TextColor="Black"/>
+                             TextColor="Black"
+                             HorizontalOptions="Center"/>
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>
