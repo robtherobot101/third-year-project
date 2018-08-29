@@ -71,184 +71,184 @@ namespace mobileAppClient
         ///// <summary>
         ///// Activated whenever focus is on this page
         ///// </summary>
-        //protected override async void OnAppearing()
-        //{
+        protected override async void OnAppearing()
+        {
 
-        //    customMap = new CustomMap
-        //    {
-        //        MapType = MapType.Street,
-        //        WidthRequest = 100,
-        //        HeightRequest = 100
-        //    };
-
-
-        //    customMap.CustomPins = new List<CustomPin> { };
+            customMap = new CustomMap
+            {
+                MapType = MapType.Street,
+                WidthRequest = 100,
+                HeightRequest = 100
+            };
 
 
-        //    customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-        //        new Position(-41.626217, 172.361873), Distance.FromMiles(2000.0)));
+            customMap.CustomPins = new List<CustomPin> { };
 
 
-        //    var stack = new StackLayout { Spacing = 0 };
-        //    stack.Children.Add(customMap);
-        //    Content = stack;
-        //    Title = "Available Donor Map";
+            customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
+                new Position(-41.626217, 172.361873), Distance.FromMiles(2000.0)));
 
-        //    //Get all the organs from the database
-        //    //Create pins for every organ
-        //    UserAPI userAPI = new UserAPI();
-        //    Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
-        //    switch (tuple.Item1)
-        //    {
-        //        case HttpStatusCode.OK:
-        //            Console.WriteLine("Organ Map Objects Successfully received");
-        //            users = tuple.Item2;
 
-        //            Geocoder geocoder = new Geocoder();
+            var stack = new StackLayout { Spacing = 0 };
+            stack.Children.Add(customMap);
+            Content = stack;
+            Title = "Available Donor Map";
 
-        //            foreach (CustomMapObject user in users)
-        //            {
-        //                if(user.organs.Count == 0) {
-        //                    continue;
-        //                }
+            //Get all the organs from the database
+            //Create pins for every organ
+            UserAPI userAPI = new UserAPI();
+            Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
+            switch (tuple.Item1)
+            {
+                case HttpStatusCode.OK:
+                    Console.WriteLine("Organ Map Objects Successfully received");
+                    users = tuple.Item2;
+
+                    Geocoder geocoder = new Geocoder();
+
+                    foreach (CustomMapObject user in users)
+                    {
+                        if(user.organs.Count == 0) {
+                            continue;
+                        }
 
                         
-        //                IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath);
-        //                Position organPosition = new Position();
-        //                using (var sequenceEnum = position.GetEnumerator())
-        //                {
-        //                    while (sequenceEnum.MoveNext())
-        //                    {
-        //                        organPosition = sequenceEnum.Current;
-        //                    }
-        //                }
-        //                Random rnd = new Random();
-        //                double randomNumberLongitude = rnd.NextDouble() / 50.00;
-        //                double randomNumberLatitude = rnd.NextDouble() / 50.00;
-        //                Position finalPosition = new Position(organPosition.Latitude + randomNumberLatitude, organPosition.Longitude + randomNumberLongitude);
+                        IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath);
+                        Position organPosition = new Position();
+                        using (var sequenceEnum = position.GetEnumerator())
+                        {
+                            while (sequenceEnum.MoveNext())
+                            {
+                                organPosition = sequenceEnum.Current;
+                            }
+                        }
+                        Random rnd = new Random();
+                        double randomNumberLongitude = rnd.NextDouble() / 50.00;
+                        double randomNumberLatitude = rnd.NextDouble() / 50.00;
+                        Position finalPosition = new Position(organPosition.Latitude + randomNumberLatitude, organPosition.Longitude + randomNumberLongitude);
 
-        //                List<string> organIcons = new List<string>();
+                        List<string> organIcons = new List<string>();
 
-        //                foreach(string organ in user.organs) {
+                        foreach(string organ in user.organs) {
 
-        //                    string imageString = "";
-        //                    switch (organ)
-        //                    {
-        //                        case ("pancreas"):
-        //                            imageString = "pancreas_icon.png";
-        //                            break;
-        //                        case ("heart"):
-        //                            imageString = "heart_icon.png";
-        //                            break;
-        //                        case ("liver"):
-        //                            imageString = "liver_icon.png";
-        //                            break;
-        //                        case ("connective-tissue"):
-        //                            imageString = "tissue_icon.png";
-        //                            break;
-        //                        case ("bone-marrow"):
-        //                            imageString = "bone_icon.png";
-        //                            break;
-        //                        case ("skin"):
-        //                            imageString = "skin_icon.png";
-        //                            break;
-        //                        case ("lung"):
-        //                            imageString = "lungs_icon.png";
-        //                            break;
-        //                        case ("cornea"):
-        //                            imageString = "eye_icon.png";
-        //                            break;
-        //                        case ("kidney"):
-        //                            imageString = "kidney_icon.png";
-        //                            break;
-        //                        case ("intestine"):
-        //                            imageString = "intestines_icon.png";
-        //                            break;
-        //                        case ("middle-ear"):
-        //                            imageString = "ear_icon.png";
-        //                            break;
-        //                    }
-        //                    organIcons.Add(imageString);
-        //                }
+                            string imageString = "";
+                            switch (organ)
+                            {
+                                case ("pancreas"):
+                                    imageString = "pancreas_icon.png";
+                                    break;
+                                case ("heart"):
+                                    imageString = "heart_icon.png";
+                                    break;
+                                case ("liver"):
+                                    imageString = "liver_icon.png";
+                                    break;
+                                case ("connective-tissue"):
+                                    imageString = "tissue_icon.png";
+                                    break;
+                                case ("bone-marrow"):
+                                    imageString = "bone_icon.png";
+                                    break;
+                                case ("skin"):
+                                    imageString = "skin_icon.png";
+                                    break;
+                                case ("lung"):
+                                    imageString = "lungs_icon.png";
+                                    break;
+                                case ("cornea"):
+                                    imageString = "eye_icon.png";
+                                    break;
+                                case ("kidney"):
+                                    imageString = "kidney_icon.png";
+                                    break;
+                                case ("intestine"):
+                                    imageString = "intestines_icon.png";
+                                    break;
+                                case ("middle-ear"):
+                                    imageString = "ear_icon.png";
+                                    break;
+                            }
+                            organIcons.Add(imageString);
+                        }
 
-        //                //Used so that we can get the id when we want to view the user
-        //                organIcons.Add(user.id.ToString());
+                        //Used so that we can get the id when we want to view the user
+                        organIcons.Add(user.id.ToString());
 
-        //                //SET GENDER ICON
-        //                //Randomize man or woman photo
-        //                //If other then set to a pin
-        //                //If none then also set to a pin
+                        //SET GENDER ICON
+                        //Randomize man or woman photo
+                        //If other then set to a pin
+                        //If none then also set to a pin
 
-        //                string genderIcon = "";
-        //                switch(user.gender) {
-        //                    case("Male"):
-        //                        int number = rnd.Next(1, 15);
-        //                        genderIcon = "man" + number + ".png";
-        //                        break;
-        //                    case("Female"):
-        //                        number = rnd.Next(1, 12);
-        //                        genderIcon = "woman" + number + ".png";
-        //                        break;
-        //                    case("Other"):
-        //                        genderIcon = "other.png";
-        //                        break;
-        //                    default:
-        //                        genderIcon = "other.png";
-        //                        break;
-        //                }
+                        string genderIcon = "";
+                        switch(user.gender) {
+                            case("Male"):
+                                int number = rnd.Next(1, 15);
+                                genderIcon = "man" + number + ".png";
+                                break;
+                            case("Female"):
+                                number = rnd.Next(1, 12);
+                                genderIcon = "woman" + number + ".png";
+                                break;
+                            case("Other"):
+                                genderIcon = "other.png";
+                                break;
+                            default:
+                                genderIcon = "other.png";
+                                break;
+                        }
 
-        //                //SET PROFILE PHOTO
-        //                //Get profile photo from users uploaded photo (if there is one)
+                        //SET PROFILE PHOTO
+                        //Get profile photo from users uploaded photo (if there is one)
 
-        //                string profilePhoto = "";
-        //                Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(user.id);
-        //                if(photoResponse.Item1 != HttpStatusCode.OK) {
-        //                    Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
-        //                    Byte[] bytes;
-        //                    if(Device.RuntimePlatform == Device.Android) {
+                        string profilePhoto = "";
+                        Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(user.id);
+                        if(photoResponse.Item1 != HttpStatusCode.OK) {
+                            Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
+                            Byte[] bytes;
+                            if(Device.RuntimePlatform == Device.Android) {
                              
-        //                    } else {
-        //                        bytes = File.ReadAllBytes("donationIcon.png");
-        //                        profilePhoto = Convert.ToBase64String(bytes);
-        //                    }
+                            } else {
+                                bytes = File.ReadAllBytes("donationIcon.png");
+                                profilePhoto = Convert.ToBase64String(bytes);
+                            }
 
-        //                } else {
-        //                    profilePhoto = photoResponse.Item2;
-        //                }
-
-
-        //                var pin = new CustomPin
-        //                {
-        //                    Type = PinType.Generic,
-        //                    Position = finalPosition,
-        //                    Label = user.firstName + " " + user.middleName + " " + user.lastName,
-        //                    Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
-        //                    Id = "Xamarin",
-        //                    Url = String.Join(",", organIcons),
-        //                    genderIcon = genderIcon,
-        //                    userPhoto = profilePhoto                         
-        //                };
-        //                customMap.CustomPins.Add(pin);
-        //                customMap.Pins.Add(pin);
+                        } else {
+                            profilePhoto = photoResponse.Item2;
+                        }
 
 
-        //            }
+                        var pin = new CustomPin
+                        {
+                            Type = PinType.Generic,
+                            Position = finalPosition,
+                            Label = user.firstName + " " + user.middleName + " " + user.lastName,
+                            Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
+                            Id = "Xamarin",
+                            Url = String.Join(",", organIcons),
+                            genderIcon = genderIcon,
+                            userPhoto = profilePhoto                         
+                        };
+                        customMap.CustomPins.Add(pin);
+                        customMap.Pins.Add(pin);
 
-        //            break;
-        //        case HttpStatusCode.ServiceUnavailable:
-        //            await DisplayAlert("",
-        //            "Server unavailable, check connection",
-        //            "OK");
-        //            break;
-        //        case HttpStatusCode.InternalServerError:
-        //            await DisplayAlert("",
-        //            "Server error retrieving organs, please try again (500)",
-        //            "OK");
-        //            break;
-        //    }
+
+                    }
+
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error retrieving organs, please try again (500)",
+                    "OK");
+                    break;
+            }
 
 
-        //}
+        }
 
 
     }

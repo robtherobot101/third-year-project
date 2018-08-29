@@ -167,8 +167,11 @@
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
     <Compile Include="MapViewController.cs" />
-    <Compile Include="BottomSheetViewController.cs" />
     <Compile Include="MapEntryClass.cs" />
+    <Compile Include="BottomSheetViewController.cs" />
+    <Compile Include="BottomSheetViewController.designer.cs">
+      <DependentUpon>BottomSheetViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -217,6 +220,7 @@
     <ImageAsset Include="Assets.xcassets\LaunchImage.launchimage\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+    <InterfaceDefinition Include="BottomSheetViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
