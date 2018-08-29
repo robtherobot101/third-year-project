@@ -95,7 +95,6 @@ namespace mobileAppClient
                 //Geolocate
                 DODCityInput.Text = loggedInUser.cityOfDeath;
 
-
                 DODRegionInput.SelectedItem = loggedInUser.regionOfDeath;
                 DODCountryInput.SelectedItem = loggedInUser.countryOfDeath;
             }
@@ -206,15 +205,6 @@ namespace mobileAppClient
                 return;
             }
 
-            //if (loggedInUser.dateOfDeath.ToDateTime() < loggedInUser.dateOfBirth.ToDateTime())
-            //{
-            //    await DisplayAlert("",
-            //    "Please enter a valid date of death",
-            //    "OK");
-            //    return;
-            //}
-
-            // Set user attributes to the new fields
             loggedInUser.name[0] = givenFirstName;
             loggedInUser.name[1] = givenMiddleName;
             loggedInUser.name[2] = givenLastName;
@@ -234,10 +224,16 @@ namespace mobileAppClient
             if (hasDiedSwitch.On)
             {
                 loggedInUser.dateOfDeath = new CustomDateTime(dodInput.Date);
-                //loggedInUser.dateOfDeath.date = new CustomDate(dodInput.Date);
-            } else
+                loggedInUser.countryOfDeath = DODCountryInput.SelectedItem.ToString();
+                loggedInUser.regionOfDeath = DODRegionInput.SelectedItem.ToString();
+                loggedInUser.cityOfDeath = DODCityInput.Text;
+            }
+            else
             {
                 loggedInUser.dateOfDeath = null;
+                loggedInUser.countryOfDeath = "";
+                loggedInUser.regionOfDeath = "";
+                loggedInUser.cityOfDeath = "";
             }
 
             // Don't worry about conversion exceptions -> this was checked with InputValidation
