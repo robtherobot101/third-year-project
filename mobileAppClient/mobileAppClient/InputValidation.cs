@@ -110,6 +110,21 @@ namespace mobileAppClient
         }
 
         /*
+         * Checks whether a string is a valid NHI number
+         */
+
+            public static bool IsValidNhiInput(string nhi)
+        {
+            nhi = nhi.ToLower();
+            // Every third letter has ASCII value divisible by three
+            if ((int)nhi.ToCharArray()[0] % 3 == 0)
+            {
+                return Regex.IsMatch(nhi, "[a-z][a-z][a-z]\\d\\d\\d\\d");
+            }
+            else return false;
+        }
+
+        /*
          * Trims the whitespace of a given string, can handle null strings unlike String.Trim()
          */
         public static string Trim(this string value)
