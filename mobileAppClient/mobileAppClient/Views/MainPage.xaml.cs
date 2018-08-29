@@ -2,6 +2,7 @@
 using mobileAppClient.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -30,6 +31,7 @@ namespace mobileAppClient
             // If a clinician is entering into a user's view
             if (isClinicianView)
             {
+                ClinicianController.Instance.mainPageController = this;
                 clinicianViewingUser();
             } else
             {
@@ -145,7 +147,8 @@ namespace mobileAppClient
         public void clinicianViewingUser()
         {
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
-            updateUserProfileBar();
+            updateUserViewerProfileBar();
+           
 
             menuList.Clear();
 
@@ -189,7 +192,9 @@ namespace mobileAppClient
                     }
                     break;
                 default:
-                    Detail = new NavigationPage((Page)Activator.CreateInstance(page));
+                    NavigationPage content = new NavigationPage((Page) Activator.CreateInstance(page));
+
+                    Detail = content;
                     IsPresented = false;
                     break;
             }
@@ -202,6 +207,15 @@ namespace mobileAppClient
             updateUserProfileBar();
         }
 
+        private void updateUserViewerProfileBar()
+        {
+            BindingContext = new
+            {
+                ProfileImage = "",
+                FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
+                BorderColor = "White"
+            };
+        }
         private void updateUserProfileBar()
         {
             // Update for a logged in user

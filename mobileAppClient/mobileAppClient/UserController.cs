@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace mobileAppClient
 {
@@ -14,11 +15,9 @@ namespace mobileAppClient
         public User LoggedInUser { get; set; }
         public string AuthToken { get; set; }
         public Photo photoObject { get; set; }
-        public Xamarin.Forms.ImageSource ProfilePhotoSource { get; set; }
+        public ImageSource ProfilePhotoSource { get; set; }
         public string FacebookEmail { get; set; }
         public string FacebookDateOfBirth { get; set; }
-
-        private List<UserObserver> userObservers;
         public MainPage mainPageController { get; set; }
         public LoginPage loginPageController { get; set; }
         public bool isTestMode { get; set; }
@@ -52,6 +51,11 @@ namespace mobileAppClient
             }
         }
 
+        /// <summary>
+        /// Used to return control to the Login page after a Google login
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task PassControlToLoginPage(string code)
         {
             await loginPageController.Handle_RedirectUriCaught(code);

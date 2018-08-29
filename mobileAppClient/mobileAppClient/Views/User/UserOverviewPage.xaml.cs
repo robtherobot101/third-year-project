@@ -23,10 +23,16 @@ namespace mobileAppClient
             {
                 OpenCommand = new Command<string>(OpenItem);
                 fillFields();
-                this.BindingContext = new
+
+                if (!ClinicianController.Instance.isLoggedIn())
                 {
-                    rss = (new NewsFeed(UserController.Instance.LoggedInUser.region)).rss
-                };
+                    RssCarousel.IsVisible = true;
+                    this.BindingContext = new
+                    {
+                        rss = (new NewsFeed(UserController.Instance.LoggedInUser.region)).rss
+                    };
+                }
+                
             }
         }
 
