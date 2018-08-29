@@ -11,7 +11,7 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
-
+using CoreLocation;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
@@ -45,6 +45,12 @@ namespace CustomRenderer.iOS
                 nativeMap.CalloutAccessoryControlTapped += OnCalloutAccessoryControlTapped;
                 nativeMap.DidSelectAnnotationView += OnDidSelectAnnotationView;
                 nativeMap.DidDeselectAnnotationView += OnDidDeselectAnnotationView;
+                const double lat = -41.62621;
+                const double lon = 172.361873;
+                var mapCenter = new CLLocationCoordinate2D(lat, lon);
+                var circleOverlay = MKCircle.Circle(mapCenter, 2000);
+                nativeMap.AddOverlay(circleOverlay);
+
             }
         }
 
@@ -121,6 +127,7 @@ namespace CustomRenderer.iOS
 
             customPinView.Center = new CGPoint(0, -(e.View.Frame.Height + 20));
 
+
             e.View.AddSubview(customPinView);
             
         }
@@ -147,5 +154,7 @@ namespace CustomRenderer.iOS
             }
             return null;
         }
+
+
     }
 }
