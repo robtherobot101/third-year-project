@@ -1,6 +1,6 @@
 package seng302.Model;
 
-import seng302.Model.Attribute.*;
+import seng302.User.Attribute.*;
 import seng302.Model.Medication.Medication;
 
 import java.time.Duration;
@@ -79,6 +79,30 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.creationTime = LocalDateTime.now();
     }
+
+    public void copyFieldsFrom(seng302.User.User user) {
+        name = user.getNameArray();
+        preferredName = user.getPreferredNameArray();
+        dateOfBirth = user.getDateOfBirth();
+        dateOfDeath = user.getDateOfDeath();
+        gender = user.getGender();
+        genderIdentity = user.getGenderIdentity();
+        bloodType = user.getBloodType();
+        height = user.getHeight();
+        weight = user.getWeight();
+        region = user.getRegion();
+        country = user.getCountry();
+        currentAddress = user.getCurrentAddress();
+        smokerStatus = user.getSmokerStatus();
+        bloodPressure = user.getBloodPressure();
+        alcoholConsumption = user.getAlcoholConsumption();
+        organs.clear();
+        organs.addAll(user.getOrgans());
+        countryOfDeath = user.getCountryOfDeath();
+        regionOfDeath = user.getRegionOfDeath();
+        cityOfDeath = user.getCityOfDeath();
+    }
+
 
     /**
      * constructor method to create a user object from the database

@@ -1,7 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
-import seng302.Model.Attribute.*;
+import seng302.User.Attribute.*;
 import seng302.Model.*;
 import seng302.Model.Medication.Medication;
 import seng302.Server;
@@ -25,7 +25,7 @@ public class GeneralUser {
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
         updateUserAttributes(user, userId);
 
-        new UserDonations().updateAllDonations(new HashSet<>(user.getOrgans()), userId, user.getDateOfDeath());
+        new UserDonations().updateAllDonations(new HashSet<Organ>(user.getOrgans()), userId, user.getDateOfDeath());
 
         new UserHistory().updateHistory(user.getUserHistory(), userId);
 
@@ -486,7 +486,7 @@ public class GeneralUser {
             ResultSet organsResultSet = organsStatement.executeQuery();
 
             while (organsResultSet.next()) {
-                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
+                user.getOrgans().add(seng302.User.Attribute.Organ.parse(organsResultSet.getString("name")));
             }
 
             //Get all the medications for the given user

@@ -1,8 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
-import seng302.Model.Attribute.Organ;
-import seng302.Model.DonatableOrgan;
+import seng302.User.Attribute.Organ;
 
 import java.sql.*;
 import java.time.Duration;

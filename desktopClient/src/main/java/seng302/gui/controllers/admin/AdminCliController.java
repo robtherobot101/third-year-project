@@ -8,11 +8,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import seng302.User.Attribute.ProfileType;
+import seng302.User.Importers.ProfileReader;
+import seng302.User.Importers.UserReaderJSON;
+import seng302.User.User;
+import seng302.generic.IO;
 import seng302.generic.WindowManager;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdminCliController implements Initializable {
@@ -136,7 +144,7 @@ public class AdminCliController implements Initializable {
      * @return boolean if it is an instruction
      */
     private boolean isInstruction(String response){
-        return Collections.singletonList("CLEAR").contains(response);
+        return response == "CLEAR" || response.matches("IMPORT .*");
     }
 
     /**
@@ -146,6 +154,35 @@ public class AdminCliController implements Initializable {
     private void executeInstruction(String response){
         if (response.equalsIgnoreCase("CLEAR")) {
             capturedOutput.clear();
+        } else if(response.matches("IMPORT (.)*")) {
+            importUsers(response.substring(7));
+        }
+    }
+
+    public void importUsers(String filepath) {
+        boolean loadSuccessful;
+        String extension = "";
+
+        int i = filepath.lastIndexOf('.');
+        if (i > 0) {
+            extension = filepath.substring(i + 1);
+        }
+
+        capturedOutput.add("Attempting to import user list. This could take a few minutes.");
+
+        if (extension.equals("csv")) {
+            IO.importUserCSV(filepath);
+            loadSuccessful = true;
+        } else if (extension.equals("json")) {
+            loadSuccessful = IO.importProfiles(filepath, ProfileType.USER, token);
+        } else {
+            loadSuccessful = false;
+        }
+
+        if(loadSuccessful) {
+            capturedOutput.add("Import was successful.");
+        } else {
+            capturedOutput.add("Import failed. Ensure the filepath is correct and the list is valid.");
         }
     }
 }

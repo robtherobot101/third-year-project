@@ -2,7 +2,7 @@ package seng302.Logic.Database;
 
 import org.junit.Test;
 import seng302.HelperMethods;
-import seng302.Model.Attribute.Organ;
+import seng302.User.Attribute.Organ;
 import seng302.Model.Procedure;
 import seng302.Model.User;
 

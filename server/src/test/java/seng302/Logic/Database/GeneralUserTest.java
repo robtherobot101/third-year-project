@@ -3,8 +3,8 @@ package seng302.Logic.Database;
 import org.junit.Test;
 import seng302.Config.DatabaseConfiguration;
 import seng302.HelperMethods;
-import seng302.Model.Attribute.BloodType;
-import seng302.Model.Attribute.Gender;
+import seng302.User.Attribute.BloodType;
+import seng302.User.Attribute.Gender;
 import seng302.Model.User;
 
 import java.sql.Connection;

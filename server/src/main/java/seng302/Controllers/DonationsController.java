@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import seng302.Logic.Database.UserDonations;
-import seng302.Model.Attribute.Organ;
+import seng302.User.Attribute.Organ;
 import seng302.Server;
 import spark.Request;
 import spark.Response;

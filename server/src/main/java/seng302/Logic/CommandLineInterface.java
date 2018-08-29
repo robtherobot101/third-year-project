@@ -4,7 +4,10 @@ import seng302.Logic.Database.*;
 import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
-import seng302.Model.Attribute.Organ;
+import seng302.User.Attribute.Organ;
+import seng302.User.Importers.ProfileReader;
+import seng302.User.Importers.UserReaderJSON;
+import seng302.generic.WindowManager;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -669,7 +672,7 @@ public class CommandLineInterface {
                     break;
                 case "gender":
                     try {
-                        toSet.setGender(Gender.parse(value));
+                        toSet.setGender(seng302.User.Attribute.Gender.parse(value));
 
                         outputString = ("New gender set.");
                         wasSuccessful = true;
@@ -716,7 +719,7 @@ public class CommandLineInterface {
                     break;
                 case "bloodtype":
                     try {
-                        toSet.setBloodType(BloodType.parse(value));
+                        toSet.setBloodType(seng302.User.Attribute.BloodType.parse(value));
 
                         outputString = ("New blood type set.");
                         wasSuccessful = true;
@@ -949,7 +952,7 @@ public class CommandLineInterface {
                 if (new GeneralClinician().getAllClinicians().size() > 0) {
                     outputString = (Clinician.tableHeader);
                     for (Clinician clinician : new GeneralClinician().getAllClinicians()) {
-                        outputString = outputString + (clinician.getString(true)) + "\n";
+                        outputString = outputString + (clinician.getString(false)) + "\n";
                     }
                     return new CommandLineResponse(true, outputString);
                 } else {
@@ -1007,8 +1010,11 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private CommandLineResponse importUsers(String[] nextCommand) {
-        // TODO Implement this. Hookup with Buzz's csv work for the GUI
-        return new CommandLineResponse(false, "no u");
+        if(nextCommand.length == 2) {
+            return new CommandLineResponse(true, "IMPORT " + nextCommand[1]);
+        } else {
+            return new CommandLineResponse(false, "Failed to import users. The given file is invalid.");
+        }
     }
 
 
@@ -1037,7 +1043,7 @@ public class CommandLineInterface {
                     + "\n\t-removeWaitingListOrgan <id> <organ>"
                     + "\n\t-updateClinician <id> <attribute> <value>"
                     + "\n\t-updateUser <id> <attribute> <value>"
-                    + "\n\t-import <profiletype> <filename>"
+                    + "\n\t-import <filename>"
                     + "\n\t-clear"
                     + "\n\t-help [<command>]"
                     + "\n\t-sql <command>");
@@ -1165,14 +1171,13 @@ public class CommandLineInterface {
                             + "not yet offering any organs are not shown.\n"
                             + "Example valid usage: listOrgans");
                 case "import":
-                    return new CommandLineResponse(false, "This command replaces all user data in the system with an imported JSON object.\n"
-                            + "The syntax is: import [-r] <filename>\n"
+                    return new CommandLineResponse(false, "This command imports users from a JSON or CSV file.\n"
+                            + "The syntax is: import <filename>\n"
                             + "Rules:\n"
-                            + "-If the -r flag is present, the filepath will be interpreted as relative\n"
                             + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
                             + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
                             + "-The file must be of the same format as those saved from this application\n"
-                            + "Example valid usage: import -r ../user_list_FINAL.txt");
+                            + "Example valid usage: import /user_list_FINAL.csv");
                 case "save":
                     return new CommandLineResponse(false, "This command saves the current user database to a file in JSON format.\n"
                             + "The syntax is: save [-r] <type> <filepath>\n"
