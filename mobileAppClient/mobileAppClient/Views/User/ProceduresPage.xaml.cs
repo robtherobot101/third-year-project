@@ -92,17 +92,10 @@ namespace mobileAppClient
          */
         private void CheckIfClinicianAccessing()
         {
-            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
-
-            if (isClinicianAccessing)
+            if (ClinicianController.Instance.isLoggedIn())
             {
-                var addItem = new ToolbarItem
-                {
-                    Command = OpenAddProcedure,
-                    Icon = "add_icon.png",
-                };
-
-                this.ToolbarItems.Add(addItem);
+                isClinicianAccessing = true;
+                AddProcedureButton.IsVisible = true;
             }
         }
 
@@ -123,14 +116,6 @@ namespace mobileAppClient
             }
 
             SegControl.SelectedSegment = pageToSelect;
-        }
-
-        private ICommand OpenAddProcedure
-        {
-            get
-            {
-                return new Command(() => { Navigation.PushAsync(new SingleProcedurePage(this)); });
-            }
         }
 
         /*
@@ -290,6 +275,16 @@ namespace mobileAppClient
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Opens a single disease adding page when the Add Disease button is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void AddProcedure_OnClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SingleProcedurePage(this));
         }
     }
 }

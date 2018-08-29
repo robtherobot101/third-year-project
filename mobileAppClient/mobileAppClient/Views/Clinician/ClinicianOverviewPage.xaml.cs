@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -23,11 +24,12 @@ namespace mobileAppClient.Views
             InitializeComponent();
             OpenCommand = new Command<string>(OpenItem);
             fillFields();
+
             this.BindingContext = new
             {
-                rss = (new NewsFeed()).rss
+                rss = new NewsFeed().rss
             };
-		}
+        }
 
         private async void fillFields()
         {

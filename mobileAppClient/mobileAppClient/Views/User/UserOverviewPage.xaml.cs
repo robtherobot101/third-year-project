@@ -23,10 +23,20 @@ namespace mobileAppClient
             {
                 OpenCommand = new Command<string>(OpenItem);
                 fillFields();
-                this.BindingContext = new
+
+                // Activate RSS feed only if user is viewing
+                if (ClinicianController.Instance.isLoggedIn())
                 {
-                    rss = (new NewsFeed(UserController.Instance.LoggedInUser.region)).rss
-                };
+                    RssCarousel.IsVisible = false;
+                }
+                else
+                {
+                    this.BindingContext = new
+                    {
+                        rss = new NewsFeed().rss
+                    };
+                }
+                
             }
         }
 
