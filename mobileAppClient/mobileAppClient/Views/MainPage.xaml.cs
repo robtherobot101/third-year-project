@@ -37,14 +37,7 @@ namespace mobileAppClient
             {
                 UserController.Instance.mainPageController = this;
                 ClinicianController.Instance.mainPageController = this;
-                LogoutUser();
             }
-
-            // Setting our list to be ItemSource for ListView in MainPage.xaml
-
-            // Initial navigation, this can be used for our home page
-
-            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
         }
 
         /*
@@ -61,7 +54,7 @@ namespace mobileAppClient
 
             // Open the login page
             var loginPage = new LoginPage();
-            await Navigation.PushModalAsync(loginPage);
+            await Navigation.PopModalAsync(true);
         }
 
         /*
@@ -81,7 +74,7 @@ namespace mobileAppClient
 
             // Open the login page
             var loginPage = new LoginPage();
-            await Navigation.PushModalAsync(loginPage);
+            await Navigation.PopModalAsync(true);
         }
 
         /*
@@ -169,6 +162,15 @@ namespace mobileAppClient
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
             menuList.Add(waitingListItemsPage);
+        }
+
+        /*
+         * Function used to Stops the back button from working and 
+         * opening the main view without a logged in user
+         */
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
 
         /*

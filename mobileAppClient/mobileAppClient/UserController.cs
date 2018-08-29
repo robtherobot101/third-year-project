@@ -20,7 +20,6 @@ namespace mobileAppClient
         public string FacebookDateOfBirth { get; set; }
         public MainPage mainPageController { get; set; }
         public LoginPage loginPageController { get; set; }
-        public bool isTestMode { get; set; }
 
         private static readonly Lazy<UserController> lazy =
         new Lazy<UserController>(() => new UserController());
@@ -45,10 +44,6 @@ namespace mobileAppClient
         {
             this.LoggedInUser = loggedInUser;
             this.AuthToken = authToken;
-            if (!isTestMode)
-            {
-                this.mainPageController.userLoggedIn();
-            }
         }
 
         /// <summary>
@@ -63,7 +58,6 @@ namespace mobileAppClient
 
         private UserController()
         {
-            isTestMode = false;
         }
     }
 }

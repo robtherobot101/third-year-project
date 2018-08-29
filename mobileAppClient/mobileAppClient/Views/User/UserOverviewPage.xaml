@@ -8,7 +8,7 @@
              x:Name="content">
     
          <StackLayout >
-        <controls:CarouselViewControl x:Name="RssCarousel" ItemsSource="{Binding rss}" Orientation="Horizontal" InterPageSpacing="10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="300" IsVisible="False">
+        <controls:CarouselViewControl x:Name="RssCarousel" ItemsSource="{Binding rss}" Orientation="Horizontal" InterPageSpacing="10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="300">
             <controls:CarouselViewControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>

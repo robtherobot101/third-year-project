@@ -30,12 +30,22 @@ namespace mobileAppClient
 	            _IsLoading = value;
 	            if (_IsLoading == true)
 	            {
+	                usernameEmailInput.IsEnabled = false;
+	                passwordInput.IsEnabled = false;
+	                LoginButton.IsEnabled = false;
+	                SignUpButton.IsEnabled = false;
+
 	                LoadingIndicator.IsVisible = true;
 	                LoadingIndicator.IsRunning = true;
 	            }
 	            else
 	            {
-	                LoadingIndicator.IsVisible = false;
+	                usernameEmailInput.IsEnabled = true;
+	                passwordInput.IsEnabled = true;
+	                LoginButton.IsEnabled = true;
+	                SignUpButton.IsEnabled = true;
+
+                    LoadingIndicator.IsVisible = false;
 	                LoadingIndicator.IsRunning = false;
 	            }
 	        }
@@ -49,16 +59,18 @@ namespace mobileAppClient
 
 		    IsLoading = false;
 		    UserController.Instance.loginPageController = this;
-            //Temporary fix for the google login not working on iOS
+
+            // Temporary fix for the google login not working on iOS
             if(Device.RuntimePlatform == Device.iOS) {
                 GoogleButton.IsVisible = false;
             }
+
             if(Device.RuntimePlatform == Device.Android) {
                 FacebookButton.Image = null;
             }
         }
 
-	    /*
+        /*
          * Called when the Sign Up button is pressed
          */
         async void SignUpButtonClicked(Object sender, EventArgs args)
@@ -104,11 +116,27 @@ namespace mobileAppClient
                     if (!ClinicianController.Instance.isLoggedIn())
                     {
                         UserAPI userAPI = new UserAPI();
-                        HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
-                        UserController.Instance.mainPageController.updateMenuPhoto();
+                        await userAPI.GetUserPhoto();
                     }
+
+                    MainPage baseMainPage = new MainPage(false);
+
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        baseMainPage.clinicianLoggedIn();
+                    }
+                    else
+                    {
+                        baseMainPage.userLoggedIn();
+                    }
+
                     IsLoading = false;
-                    await Navigation.PopModalAsync();
+
+                    usernameEmailInput.Text = "";
+                    passwordInput.Text = "";
+
+                    await Navigation.PushModalAsync(baseMainPage);
+
                     break;
                 case HttpStatusCode.Unauthorized:
                     IsLoading = false;
@@ -215,7 +243,11 @@ namespace mobileAppClient
                         // Pop away login screen on successful login
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                         UserController.Instance.mainPageController.updateMenuPhoto();
-                        await Navigation.PopModalAsync();
+
+                        MainPage baseMainPage = new MainPage(false);
+                        baseMainPage.userLoggedIn();
+                        await Navigation.PushModalAsync(baseMainPage);
+
                         break;
                     case HttpStatusCode.Unauthorized:
                         await DisplayAlert(

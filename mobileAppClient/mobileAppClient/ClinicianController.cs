@@ -14,7 +14,6 @@ namespace mobileAppClient
         public Clinician LoggedInClinician { get; set; }
         public string AuthToken { get; set; }
         public MainPage mainPageController { get; set; } 
-        public bool isTestMode { get; set; }
 
         private static readonly Lazy<ClinicianController> lazy =
         new Lazy<ClinicianController>(() => new ClinicianController());
@@ -48,15 +47,10 @@ namespace mobileAppClient
         {
             this.LoggedInClinician = loggedInClinician;
             this.AuthToken = authToken;
-            if (!isTestMode)
-            {
-                this.mainPageController.clinicianLoggedIn();
-            }
         }
 
         private ClinicianController()
         {
-            isTestMode = false;
         }
     }
 }

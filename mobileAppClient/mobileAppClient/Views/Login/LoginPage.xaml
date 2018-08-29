@@ -25,12 +25,14 @@
                     <Button Text="Login"
                     HorizontalOptions="Center"
                     VerticalOptions="StartAndExpand"
-                    Clicked="LoginButtonClicked" />
+                    Clicked="LoginButtonClicked"
+                            x:Name="LoginButton"/>
 
                     <Button Text="Sign Up"
                     HorizontalOptions="EndAndExpand"
                     VerticalOptions="CenterAndExpand"
-                    Clicked="SignUpButtonClicked" />
+                    Clicked="SignUpButtonClicked"
+                            x:Name="SignUpButton"/>
 
                 </StackLayout>
 
