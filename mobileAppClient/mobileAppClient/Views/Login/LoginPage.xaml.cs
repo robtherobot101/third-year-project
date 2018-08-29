@@ -107,29 +107,32 @@ namespace mobileAppClient
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                         UserController.Instance.mainPageController.updateMenuPhoto();
                     }
-
                     IsLoading = false;
                     await Navigation.PopModalAsync();
                     break;
                 case HttpStatusCode.Unauthorized:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "Incorrect username/password",
                         "OK");
                     break;
                 case HttpStatusCode.ServiceUnavailable:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "Server unavailable, check connection",
                         "OK");
                     break;
                 case HttpStatusCode.InternalServerError:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "Server error",
                         "OK");
                     break;
                 case HttpStatusCode.Conflict:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "User is deceased. Please consult a Registered Clinician",
@@ -137,8 +140,7 @@ namespace mobileAppClient
                     break;
             }
             loginClicked = false;
-
-
+            
         }
 
         /*
