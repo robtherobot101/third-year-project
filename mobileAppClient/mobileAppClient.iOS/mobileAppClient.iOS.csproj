@@ -166,6 +166,9 @@
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
+    <Compile Include="MapViewController.cs" />
+    <Compile Include="BottomSheetViewController.cs" />
+    <Compile Include="MapEntryClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
