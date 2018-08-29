@@ -1,45 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="25px"
-    android:minHeight="25px"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="35dp"
     android:id="@+id/relativeLayout1">
     <TableLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tableLayout1">
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_height="21.0dp">
-            <TextView
-                android:id="@+id/InfoWindowTitle"
-                android:text="InfoWindowTitle"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_column="0" />
+        android:id="@+id/tableLayout2">
+        <TableRow>
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:id="@+id/OrganFrame" />
         </TableRow>
-        <TableRow
-            android:id="@+id/tableRow3">
-            <TextView
-                android:id="@+id/InfoWindowAddress"
-                android:text="InfoWindowAddress"
-                android:textColor="@android:color/black" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/tableRow2">
-            <TextView
-                android:id="@+id/InfoWindowSubtitle"
-                android:text="InfoWindowSubtitle"
-                android:textColor="@android:color/black" />
+        <TableRow>
+            <LinearLayout
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/relativeLayout1">
+                <LinearLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/relative">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:scaleType="fitCenter"
+                        android:id="@+id/ImageFrame"
+                        android:paddingRight="10dp" />
+                </LinearLayout>
+                <TableLayout
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tableLayout1">
+                    <TableRow
+                        android:id="@+id/tableRow1"
+                        android:layout_height="21.0dp">
+                        <TextView
+                            android:id="@+id/InfoWindowTitle"
+                            android:text="InfoWindowTitle"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold"
+                            android:layout_column="0" />
+                    </TableRow>
+                    <TableRow
+                        android:id="@+id/tableRow3">
+                        <TextView
+                            android:id="@+id/InfoWindowAddress"
+                            android:text="InfoWindowAddress"
+                            android:textColor="@android:color/black" />
+                    </TableRow>
+                </TableLayout>
+                <ImageButton
+                    android:id="@+id/InfoWindowButton"
+                    android:src="@drawable/info"
+                    android:layout_height="20dp"
+                    android:layout_width="30dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginVertical="10dp"
+                    android:background="@android:color/white"
+                    android:paddingLeft="10dp" />
+            </LinearLayout>
         </TableRow>
     </TableLayout>
-    <ImageButton
-        android:id="@+id/InfoWindowButton"
-        android:src="@drawable/info"
-        android:layout_height="50.0dp"
-        android:layout_width="50.5dp"
-        android:scaleType="fitCenter" />
 </LinearLayout>
