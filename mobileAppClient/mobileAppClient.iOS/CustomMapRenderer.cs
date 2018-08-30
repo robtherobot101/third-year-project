@@ -123,11 +123,19 @@ namespace CustomRenderer.iOS
 
 
             e.View.AddSubview(customPinView);
-            
+
+            //Do a search to get the current pin
+            CustomPin pin = customPins[0];
+
+            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+            parent.displayBottomSheet(pin);
+
         }
 
         void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
+ 
+
             if (!e.View.Selected)
             {
                 customPinView.RemoveFromSuperview();

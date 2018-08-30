@@ -3,7 +3,7 @@ namespace mobileAppClient.Maps
 {
     public interface BottomSheetMapInterface
     {
-		void addSlideUpSheet();
+        void addSlideUpSheet(CustomPin pin);
 
     }
 }

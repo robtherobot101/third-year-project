@@ -166,12 +166,12 @@
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
-    <Compile Include="MapViewController.cs" />
     <Compile Include="MapEntryClass.cs" />
     <Compile Include="BottomSheetViewController.cs" />
     <Compile Include="BottomSheetViewController.designer.cs">
       <DependentUpon>BottomSheetViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="TableSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

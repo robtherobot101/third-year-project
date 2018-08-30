@@ -19,8 +19,13 @@ namespace mobileAppClient
 
         public ClinicianMapPage()
         {
-            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet();
+            //DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet();
 
+        }
+
+        public async void displayBottomSheet(CustomPin pin) {
+
+            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin);
         }
 
         public async void displayUserDialog(string organString, string id) {
