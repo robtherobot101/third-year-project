@@ -1,7 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
-import seng302.User.Attribute.*;
+import seng302.Model.Attribute.*;
 import seng302.Model.*;
 import seng302.Model.Medication.Medication;
 import seng302.Server;
@@ -486,7 +486,7 @@ public class GeneralUser {
             ResultSet organsResultSet = organsStatement.executeQuery();
 
             while (organsResultSet.next()) {
-                user.getOrgans().add(seng302.User.Attribute.Organ.parse(organsResultSet.getString("name")));
+                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
             }
 
             //Get all the medications for the given user

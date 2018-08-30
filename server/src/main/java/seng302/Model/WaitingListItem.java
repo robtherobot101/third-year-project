@@ -1,6 +1,6 @@
 package seng302.Model;
 
-import seng302.User.Attribute.Organ;
+import seng302.Model.Attribute.Organ;
 
 import java.time.LocalDate;
 import java.util.Objects;

@@ -144,7 +144,7 @@ public class AdminCliController implements Initializable {
      * @return boolean if it is an instruction
      */
     private boolean isInstruction(String response){
-        return response == "CLEAR" || response.matches("IMPORT .*");
+        return response == "CLEAR";
     }
 
     /**
@@ -154,35 +154,6 @@ public class AdminCliController implements Initializable {
     private void executeInstruction(String response){
         if (response.equalsIgnoreCase("CLEAR")) {
             capturedOutput.clear();
-        } else if(response.matches("IMPORT (.)*")) {
-            importUsers(response.substring(7));
-        }
-    }
-
-    public void importUsers(String filepath) {
-        boolean loadSuccessful;
-        String extension = "";
-
-        int i = filepath.lastIndexOf('.');
-        if (i > 0) {
-            extension = filepath.substring(i + 1);
-        }
-
-        capturedOutput.add("Attempting to import user list. This could take a few minutes.");
-
-        if (extension.equals("csv")) {
-            IO.importUserCSV(filepath);
-            loadSuccessful = true;
-        } else if (extension.equals("json")) {
-            loadSuccessful = IO.importProfiles(filepath, ProfileType.USER, token);
-        } else {
-            loadSuccessful = false;
-        }
-
-        if(loadSuccessful) {
-            capturedOutput.add("Import was successful.");
-        } else {
-            capturedOutput.add("Import failed. Ensure the filepath is correct and the list is valid.");
         }
     }
 }

@@ -4,7 +4,7 @@ import seng302.Logic.Database.GeneralAdmin;
 import seng302.Logic.Database.GeneralClinician;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.*;
-import seng302.User.Attribute.Organ;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.Medication.Medication;
 
 import java.sql.Array;

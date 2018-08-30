@@ -68,6 +68,16 @@
             <artifactId>desktopClient</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>seng302</groupId>
+            <artifactId>desktopClient</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>seng302</groupId>
+            <artifactId>desktopClient</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
 
     </dependencies>

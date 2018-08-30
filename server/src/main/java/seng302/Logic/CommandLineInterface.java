@@ -4,10 +4,7 @@ import seng302.Logic.Database.*;
 import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
-import seng302.User.Attribute.Organ;
-import seng302.User.Importers.ProfileReader;
-import seng302.User.Importers.UserReaderJSON;
-import seng302.generic.WindowManager;
+import seng302.Model.Attribute.Organ;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -223,9 +220,6 @@ public class CommandLineInterface {
                     break;
                 case "listorgans":
                     response = listOrgans(nextCommand);
-                    break;
-                case "import":
-                    response = importUsers(nextCommand);
                     break;
                 case "clear":
                     // TODO make sure that this works (history)
@@ -672,7 +666,7 @@ public class CommandLineInterface {
                     break;
                 case "gender":
                     try {
-                        toSet.setGender(seng302.User.Attribute.Gender.parse(value));
+                        toSet.setGender(Gender.parse(value));
 
                         outputString = ("New gender set.");
                         wasSuccessful = true;
@@ -719,7 +713,7 @@ public class CommandLineInterface {
                     break;
                 case "bloodtype":
                     try {
-                        toSet.setBloodType(seng302.User.Attribute.BloodType.parse(value));
+                        toSet.setBloodType(BloodType.parse(value));
 
                         outputString = ("New blood type set.");
                         wasSuccessful = true;
@@ -929,7 +923,7 @@ public class CommandLineInterface {
                     }
                     return new CommandLineResponse(true, outputString);
                 } else {
-                    return new CommandLineResponse(true, "There are no users to list. Please add or import some before using listUsers.");
+                    return new CommandLineResponse(true, "There are no users to list. Please add some before using listUsers.");
                 }
             } catch (SQLException e) {
                 return new CommandLineResponse(false, "Could not list all users. An error occurred on the server.");
@@ -956,7 +950,7 @@ public class CommandLineInterface {
                     }
                     return new CommandLineResponse(true, outputString);
                 } else {
-                    return new CommandLineResponse(true, "There are no clinicians to list. Please add or import some before using list.");
+                    return new CommandLineResponse(true, "There are no clinicians to list. Please add some before using list.");
                 }
             } catch (SQLException e) {
                 return new CommandLineResponse(false, "Could not list all clinicians. An error occurred on the server.");
@@ -1003,20 +997,6 @@ public class CommandLineInterface {
         return null;
     }
 
-    /**
-     * Clear the user list and load a new one from a file.
-     *
-     * @param nextCommand The command entered by the user
-     * @return Whether the command was executed
-     */
-    private CommandLineResponse importUsers(String[] nextCommand) {
-        if(nextCommand.length == 2) {
-            return new CommandLineResponse(true, "IMPORT " + nextCommand[1]);
-        } else {
-            return new CommandLineResponse(false, "Failed to import users. The given file is invalid.");
-        }
-    }
-
 
     /**
      * Shows help either about which commands are available or about a specific command's usage.
@@ -1043,7 +1023,6 @@ public class CommandLineInterface {
                     + "\n\t-removeWaitingListOrgan <id> <organ>"
                     + "\n\t-updateClinician <id> <attribute> <value>"
                     + "\n\t-updateUser <id> <attribute> <value>"
-                    + "\n\t-import <filename>"
                     + "\n\t-clear"
                     + "\n\t-help [<command>]"
                     + "\n\t-sql <command>");
@@ -1170,14 +1149,6 @@ public class CommandLineInterface {
                     return new CommandLineResponse(false, "This command displays all of the organs that are currently offered by each user. user that are "
                             + "not yet offering any organs are not shown.\n"
                             + "Example valid usage: listOrgans");
-                case "import":
-                    return new CommandLineResponse(false, "This command imports users from a JSON or CSV file.\n"
-                            + "The syntax is: import <filename>\n"
-                            + "Rules:\n"
-                            + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
-                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "-The file must be of the same format as those saved from this application\n"
-                            + "Example valid usage: import /user_list_FINAL.csv");
                 case "save":
                     return new CommandLineResponse(false, "This command saves the current user database to a file in JSON format.\n"
                             + "The syntax is: save [-r] <type> <filepath>\n"
@@ -1196,7 +1167,7 @@ public class CommandLineInterface {
                             + "The syntax is: help OR help <command>\n"
                             + "Rules:\n"
                             + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, updateUser, describeUser, "
-                            + "describeOrgans, listUsers, listOrgans, import, save, help, or quit.\n"
+                            + "describeOrgans, listUsers, listOrgans, save, help, or quit.\n"
                             + "Example valid usage: help help");
                 case "sql":
                     return new CommandLineResponse(false, "This command can be used to query sql select commands to the database.\n"

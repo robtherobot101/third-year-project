@@ -1,6 +1,6 @@
 package seng302.Model;
 
-import seng302.User.Attribute.*;
+import seng302.Model.Attribute.*;
 import seng302.Model.Medication.Medication;
 
 import java.time.Duration;
@@ -80,7 +80,7 @@ public class User {
         this.creationTime = LocalDateTime.now();
     }
 
-    public void copyFieldsFrom(seng302.User.User user) {
+    public void copyFieldsFrom(User user) {
         name = user.getNameArray();
         preferredName = user.getPreferredNameArray();
         dateOfBirth = user.getDateOfBirth();
