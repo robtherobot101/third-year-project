@@ -54,11 +54,6 @@
             <version>0.9.5.2</version>
         </dependency>
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>seng302</groupId>
             <artifactId>desktopClient</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -195,6 +190,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-
 </project>
