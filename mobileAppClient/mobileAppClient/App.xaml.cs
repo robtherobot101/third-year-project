@@ -30,7 +30,10 @@ namespace mobileAppClient
             // Ensure config is set
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
-            MainPage = new MainPage(false);
+
+            MainPage = new LoginPage();
+
+            //MainPage = new MainPage(false);
         }
 
         public static async void ProcessGoogleLogin(string code)

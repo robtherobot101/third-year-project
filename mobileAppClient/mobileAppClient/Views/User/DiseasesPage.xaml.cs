@@ -5,8 +5,10 @@ using Xamarin.Forms;
 using System.Linq;
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using System.Windows.Input;
 using mobileAppClient.odmsAPI;
+using Xamarin.Forms.Internals;
 
 namespace mobileAppClient
 {
@@ -123,20 +125,17 @@ namespace mobileAppClient
          */
         private void CheckIfClinicianAccessing()
         {
-            isClinicianAccessing = ClinicianController.Instance.isLoggedIn();
-
-            if (isClinicianAccessing)
+            if (ClinicianController.Instance.isLoggedIn())
             {
-                var addItem = new ToolbarItem
-                {
-                    Command = OpenAddDisease,
-                    Icon = "add_icon.png"
-                };
-                
-                this.ToolbarItems.Add(addItem);
+                isClinicianAccessing = true;
+                AddDiseaseButton.IsVisible = true;
             }
         }
 
+        /// <summary>
+        /// Changes the selected tab to pageToSelect and ensures the view is refreshed
+        /// </summary>
+        /// <param name="pageToSelect"></param>
         public void refreshDiseases(int pageToSelect)
         {
             if (pageToSelect != 1 && pageToSelect != 0)
@@ -154,20 +153,6 @@ namespace mobileAppClient
             }
 
             SegControl.SelectedSegment = pageToSelect;
-        }
-
-        private ICommand OpenAddDisease
-        {
-            get
-            {
-                return new Command(() =>
-                {
-                    Console.WriteLine("Opening single procedure...");
-
-                    var singleDiseasePage = new SingleDiseasePage(this);
-                    Navigation.PushAsync(singleDiseasePage);
-                });
-            }
         }
 
         /*
@@ -494,6 +479,18 @@ namespace mobileAppClient
                     }
                     break;
             }
+        }
+
+        /// <summary>
+        /// Opens a single disease adding page when the Add Disease button is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void AddDisease_OnClicked(object sender, EventArgs e)
+        {
+            Console.WriteLine("Opening single procedure...");
+            var singleDiseasePage = new SingleDiseasePage(this);
+            await Navigation.PushAsync(singleDiseasePage);
         }
     }
 }
