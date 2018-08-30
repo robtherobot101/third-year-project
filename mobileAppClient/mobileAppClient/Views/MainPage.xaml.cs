@@ -31,12 +31,10 @@ namespace mobileAppClient
             // If a clinician is entering into a user's view
             if (isClinicianView)
             {
-                ClinicianController.Instance.mainPageController = this;
                 clinicianViewingUser();
             } else
             {
                 UserController.Instance.mainPageController = this;
-                ClinicianController.Instance.mainPageController = this;
             }
         }
 

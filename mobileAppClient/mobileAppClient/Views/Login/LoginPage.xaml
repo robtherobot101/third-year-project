@@ -31,8 +31,13 @@
                     VerticalOptions="CenterAndExpand"
                     Clicked="SignUpButtonClicked"
                             x:Name="SignUpButton"/>
-
                 </StackLayout>
+
+                <StackLayout Orientation="Horizontal" Margin="0, 0, 0, 50">
+                    <Label Text="Remember me?" Margin="0, 0, 30, 0"/>
+                    <Switch x:Name="RememberMeSwitch"/>
+                </StackLayout>
+                
 
                  <Button Text="Login with Facebook"
                     Clicked="Handle_LoginWithFacebookClicked" 

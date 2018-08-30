@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using mobileAppClient.Google;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -34,6 +35,7 @@ namespace mobileAppClient
 	                passwordInput.IsEnabled = false;
 	                LoginButton.IsEnabled = false;
 	                SignUpButton.IsEnabled = false;
+	                RememberMeSwitch.IsEnabled = false;
 
 	                LoadingIndicator.IsVisible = true;
 	                LoadingIndicator.IsRunning = true;
@@ -44,17 +46,21 @@ namespace mobileAppClient
 	                passwordInput.IsEnabled = true;
 	                LoginButton.IsEnabled = true;
 	                SignUpButton.IsEnabled = true;
+	                RememberMeSwitch.IsEnabled = true;
 
                     LoadingIndicator.IsVisible = false;
 	                LoadingIndicator.IsRunning = false;
 	            }
 	        }
 	    }
+        private bool loginClicked;
 
-		public LoginPage ()
+	    public bool rememberLogin;
+
+		public LoginPage()
 		{
 			InitializeComponent ();
-
+		    
 		    IsLoading = false;
 		    UserController.Instance.loginPageController = this;
 
@@ -68,6 +74,34 @@ namespace mobileAppClient
                 FacebookButton.Image = null;
             }
         }
+
+	    /// <summary>
+	    /// Activated whenever focus is on this page
+	    /// </summary>
+	    protected override async void OnAppearing()
+	    {
+	        RememberMeSwitch.IsToggled = false;
+            // Check for previously stored login details
+            try
+	        {
+	            var usernameEmail = await SecureStorage.GetAsync("usernameEmail");
+	            var password = await SecureStorage.GetAsync("password");
+
+	            if (usernameEmail != null && password != null)
+	            {
+	                RememberMeSwitch.IsToggled = true;
+	                usernameEmailInput.Text = usernameEmail;
+	                passwordInput.Text = password;
+
+                    LoginStoredUser(usernameEmail, password);
+	            }
+	        }
+	        catch (Exception)
+	        {
+	            // Possible that device doesn't support secure storage on device.
+	        }
+        }
+
 
         /*
          * Called when the Sign Up button is pressed
@@ -83,6 +117,16 @@ namespace mobileAppClient
          */
         async void LoginButtonClicked(object sender, EventArgs args)
         {
+            rememberLogin = RememberMeSwitch.IsToggled;
+
+            // Prevents multiple presses of the login button
+            if (loginClicked)
+            {
+                return;
+            } else
+            {
+                loginClicked = true;
+            }
             IsLoading = true;
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
@@ -158,11 +202,107 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+            loginClicked = false;
+            
+        }
+
+        /// <summary>
+        /// Logs in as a previously logged in user who did not log out
+        /// </summary>
+        /// <param name="usernameEmail"></param>
+        /// <param name="password"></param>
+        async void LoginStoredUser(string usernameEmail, string password)
+        {
+            IsLoading = true;
+            string givenUsernameEmail = usernameEmail;
+            string givenPassword = password;
+
+
+            if (!InputValidation.IsValidTextInput(givenUsernameEmail, true, false) || !InputValidation.IsValidTextInput(givenPassword, true, false))
+            {
+                await DisplayAlert("",
+                    "Username/email and password is invalid",
+                    "OK");
+                return;
+            }
+
+            LoginAPI loginAPI = new LoginAPI();
+            HttpStatusCode statusCode = await loginAPI.LoginUser(givenUsernameEmail, givenPassword);
+
+            switch (statusCode)
+            {
+                case HttpStatusCode.OK:
+                    // Fetch photo only on user login
+                    if (!ClinicianController.Instance.isLoggedIn())
+                    {
+                        UserAPI userAPI = new UserAPI();
+                        await userAPI.GetUserPhoto();
+                    }
+
+                    MainPage baseMainPage = new MainPage(false);
+
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        baseMainPage.clinicianLoggedIn();
+                    }
+                    else
+                    {
+                        baseMainPage.userLoggedIn();
+                    }
+
+                    await Navigation.PushModalAsync(baseMainPage);
+
+                    IsLoading = false;
+
+                    usernameEmailInput.Text = "";
+                    passwordInput.Text = "";
+
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Incorrect username/password",
+                        "OK");
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Server unavailable, check connection",
+                        "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Server error",
+                        "OK");
+                    break;
+                case HttpStatusCode.Conflict:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "User is deceased. Please consult a Registered Clinician",
+                        "OK");
+                    break;
+            }
+            loginClicked = false;
+
+        }
+
+        /*
+         * Function used to Stops the back button from working and 
+         * opening the main view without a logged in user
+         */
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
 
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
-
+            rememberLogin = RememberMeSwitch.IsToggled;
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
@@ -178,6 +318,7 @@ namespace mobileAppClient
 
         async void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
+            rememberLogin = RememberMeSwitch.IsToggled;
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
