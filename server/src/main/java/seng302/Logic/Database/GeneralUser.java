@@ -421,7 +421,7 @@ public class GeneralUser {
             User user = new User(
                     resultSet.getInt("id"),
                     resultSet.getString("first_name"),
-                    resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : null,
+                    resultSet.getString("middle_names") != null ? resultSet.getString("middle_names").split(",") : "",
                     resultSet.getString("last_name"),
                     resultSet.getDate("date_of_birth").toLocalDate(),
                     resultSet.getTimestamp("date_of_death") != null ? resultSet.getTimestamp("date_of_death").toLocalDateTime() : null,
