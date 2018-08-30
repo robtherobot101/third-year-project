@@ -13,7 +13,7 @@
                 <Grid HeightRequest="200">
                     <Image Source="profile_photo_bg.png" Aspect="AspectFill" />
                     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                        <abstractions:CircleImage Source="{Binding ProfileImage}" Aspect="AspectFill" BorderColor="{Binding BorderColor}" BorderThickness="2" WidthRequest="90" HeightRequest="90">
+                        <abstractions:CircleImage Source="{Binding ProfileImage}" Aspect="AspectFit" BorderColor="{Binding BorderColor}" BorderThickness="2" WidthRequest="90" HeightRequest="90">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnProfilePhotoTapped"

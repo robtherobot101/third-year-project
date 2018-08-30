@@ -412,9 +412,12 @@
     <BundleResource Include="Resources\profile_photo_bg.png" />
   </ItemGroup>
   <ItemGroup>
+    <BundleResource Include="Resources\default_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
     <BundleResource Include="Resources\default_clinician_photo.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\default_user_photo.png" />
+    <BundleResource Include="Resources\viewing_user_photo.png" />
   </ItemGroup>
 </Project>

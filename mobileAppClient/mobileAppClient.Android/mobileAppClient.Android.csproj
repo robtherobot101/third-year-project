@@ -368,10 +368,13 @@
     <AndroidResource Include="Resources\drawable\profile_photo_bg.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\default_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\default_clinician_photo.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\default_user_photo.png" />
+    <AndroidResource Include="Resources\drawable\viewing_user_photo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
