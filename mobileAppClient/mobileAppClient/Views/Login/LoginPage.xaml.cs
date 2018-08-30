@@ -50,22 +50,21 @@ namespace mobileAppClient
 	            }
 	        }
 	    }
-        private bool loginClicked;
 
 		public LoginPage ()
 		{
 			InitializeComponent ();
-            loginClicked = false;
 
 		    IsLoading = false;
 		    UserController.Instance.loginPageController = this;
 
-            // Temporary fix for the google login not working on iOS
-            if(Device.RuntimePlatform == Device.iOS) {
+            // Temporary fix for the Google login not working on iOS
+            if (Device.RuntimePlatform == Device.iOS) {
                 GoogleButton.IsVisible = false;
             }
 
-            if(Device.RuntimePlatform == Device.Android) {
+            // Hide the poorly sized Facebook logo on Android
+            if (Device.RuntimePlatform == Device.Android) {
                 FacebookButton.Image = null;
             }
         }
@@ -84,14 +83,6 @@ namespace mobileAppClient
          */
         async void LoginButtonClicked(object sender, EventArgs args)
         {
-            // Prevents multiple presses of the login button
-            if (loginClicked)
-            {
-                return;
-            } else
-            {
-                loginClicked = true;
-            }
             IsLoading = true;
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
@@ -102,7 +93,7 @@ namespace mobileAppClient
                 await DisplayAlert("",
                     "Please enter a valid username/email and password",
                     "OK");
-                loginClicked = false;
+                IsLoading = false;
                 return;
             }
 
@@ -130,12 +121,12 @@ namespace mobileAppClient
                         baseMainPage.userLoggedIn();
                     }
 
+                    await Navigation.PushModalAsync(baseMainPage);
+
                     IsLoading = false;
 
                     usernameEmailInput.Text = "";
                     passwordInput.Text = "";
-
-                    await Navigation.PushModalAsync(baseMainPage);
 
                     break;
                 case HttpStatusCode.Unauthorized:
@@ -167,17 +158,6 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
-            loginClicked = false;
-            
-        }
-
-        /*
-         * Function used to Stops the back button from working and 
-         * opening the main view without a logged in user
-         */
-        protected override bool OnBackButtonPressed()
-        {
-            return true;
         }
 
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
