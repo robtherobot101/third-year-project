@@ -91,7 +91,7 @@ namespace mobileAppClient
 
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                new Position(-41.626217, 172.361873), Distance.FromMiles(2000.0)));
+                new Position(-41.626217, 172.361873), Distance.FromMiles(500.0)));
 
 
             var stack = new StackLayout { Spacing = 0 };
