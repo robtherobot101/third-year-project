@@ -121,6 +121,23 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `HOSPITAL`
+--
+DROP TABLE IF EXISTS `HOSPITAL`;
+CREATE TABLE IF NOT EXISTS `HOSPITAL` (
+  `hospital_id` bigint(20) NOT NULL,
+  `name` text NOT NULL,
+  `address` text NOT NULL,
+  `region` text NOT NULL,
+  `city` text NOT NULL,
+  `country` text NOT NULL,
+  `latitude` float(10,6) NOT NULL,
+  `longitude` float(10,6) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `MEDICATION`
 --
 
@@ -256,6 +273,12 @@ ALTER TABLE `DONATION_LIST_ITEM`
 ALTER TABLE `HISTORY_ITEM`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  ADD PRIMARY KEY (`hospital_id`);
 
 --
 -- Indexes for table `MEDICATION`
