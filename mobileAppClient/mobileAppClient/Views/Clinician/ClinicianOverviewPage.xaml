@@ -40,7 +40,7 @@
                         <TextCell Text="Database Details" x:Name="DatabaseCell"/>
                         <ViewCell IsEnabled="false" >
                             <StackLayout Padding="15, 0, 0, 0">
-                                <Label Text="Hello hello" LineBreakMode="WordWrap" x:Name="UserCountLabel"/>
+                                <Label Text="Loading..." LineBreakMode="WordWrap" x:Name="UserCountLabel"/>
                             </StackLayout>
                         </ViewCell>
                     </TableSection>

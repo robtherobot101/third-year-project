@@ -20,7 +20,7 @@
                                 />
                             </Image.GestureRecognizers>
                         </abstractions:CircleImage>
-                        <Label Text="{Binding FullName}" TextColor="White" FontSize="Large" />
+                        <Label Text="{Binding FullName}" TextColor="White" FontSize="Large" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </Grid>
 
@@ -40,12 +40,12 @@
                              Padding="20,10,0,10"
                              Spacing="20">
 
-                                        <Image Source="{Binding Icon}"
+                                    <Image Source="{Binding Icon}"
                              WidthRequest="40"
                              HeightRequest="40"
                              VerticalOptions="Start" />
 
-                                        <Label Text="{Binding Title}"
+                                    <Label Text="{Binding Title}"
                              FontSize="Small"
                              VerticalOptions="End"
                              TextColor="Black"
@@ -57,7 +57,6 @@
                 </ListView>
 
             </StackLayout>
-
         </ContentPage>
     </MasterDetailPage.Master>
 

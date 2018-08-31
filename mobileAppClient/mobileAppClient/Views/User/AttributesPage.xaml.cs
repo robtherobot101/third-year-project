@@ -1,4 +1,4 @@
-﻿using mobileAppClient.odmsAPI;
+using mobileAppClient.odmsAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,8 +89,7 @@ namespace mobileAppClient
             WeightInput.Text = loggedInUser.weight.ToString();
 
             BloodPressureInput.Text = loggedInUser.bloodPressure;
-
-            BloodTypeInput.SelectedItem = FirstCharToUpper(loggedInUser.bloodType);
+            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(loggedInUser.bloodType));
             SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
@@ -229,8 +228,7 @@ namespace mobileAppClient
             loggedInUser.height = Convert.ToDouble(givenHeight);
             loggedInUser.weight = Convert.ToDouble(givenWeight);
             loggedInUser.bloodPressure = givenBloodPressure;
-
-            loggedInUser.bloodType = BloodTypeInput.SelectedItem.ToString().ToUpper();
+            loggedInUser.bloodType = BloodTypeExtensions.ToBloodType(BloodTypeInput.SelectedItem.ToString().ToUpper()).ToString();
             loggedInUser.smokerStatus = SmokerStatusInput.SelectedItem.ToString().ToUpper();
             loggedInUser.alcoholConsumption = AlcoholConsumptionInput.SelectedItem.ToString().ToUpper();
 

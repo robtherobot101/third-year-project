@@ -49,6 +49,10 @@
 
             <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
 
+            <StackLayout VerticalOptions="EndAndExpand">
+                <Button x:Name="AddMedicationButton" Text="Add Medication" Clicked="AddMedicationButton_OnClicked" IsVisible="False"/>
+            </StackLayout>
+
             <Button x:Name="CompareButton"
             Text="COMPARE"
             Pressed="Handle_CompareButtonPressed"
