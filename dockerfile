@@ -11,7 +11,7 @@ WORKDIR /code/server
 ADD pom.xml /code/pom.xml
 ADD server /code/server
 
-#RUN ["mvn", "dependency:resolve"]
+RUN ["mvn", "dependency:resolve"]
 RUN ["mvn", "verify", "-DskipTests"]
 
 RUN ["mvn", "package", "-DskipTests"]
