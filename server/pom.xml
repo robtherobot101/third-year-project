@@ -19,6 +19,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>spring.io</id>
+            <url>http://repo.spring.io/plugins-release/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -52,6 +59,12 @@
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.5.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.windowsazure/Notification-Hubs-java-sdk -->
+        <dependency>
+            <groupId>com.windowsazure</groupId>
+            <artifactId>Notification-Hubs-java-sdk</artifactId>
+            <version>0.0.4</version>
         </dependency>
 
 
