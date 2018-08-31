@@ -101,6 +101,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Cocosw.BottomSheet.Xamarin.Android">
+      <Version>1.1.1</Version>
+    </PackageReference>
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
       <Version>3.0.0.5</Version>
     </PackageReference>
@@ -128,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BottomSheetFragment.cs" />
+    <Compile Include="BottomSheetListActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
