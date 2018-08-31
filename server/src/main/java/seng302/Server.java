@@ -1,10 +1,12 @@
 package seng302;
 
+import com.windowsazure.messaging.NotificationHubsException;
 import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
+import seng302.NotificationManager.Manager;
 import spark.Request;
 import spark.Response;
 
@@ -231,6 +233,11 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        try {
+            Manager.test();
+        } catch (NotificationHubsException e) {
+            e.printStackTrace();
+        }
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
