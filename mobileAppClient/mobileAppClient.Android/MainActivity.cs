@@ -3,20 +3,16 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using System.Threading.Tasks;
 using System.IO;
 using Android.Media;
 using Android.Graphics;
-using mobileAppClient.Google;
 using Xamarin.Forms;
 using Android.Support.V4.Content;
 using Android;
 using ImageCircle.Forms.Plugin.Droid;
-using Android.Gms.Common;
+
 using Firebase.Messaging;
 using Firebase.Iid;
 using Android.Util;
@@ -29,6 +25,12 @@ namespace mobileAppClient.Droid
 
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+
+        //static readonly string TAG = "MainActivity";
+
+        internal static readonly string CHANNEL_ID = "my_notification_channel";
+        internal static readonly int NOTIFICATION_ID = 100;
+
         internal static Context ActivityContext { get; private set; }
 
         protected override void OnCreate(Bundle bundle)
@@ -42,6 +44,8 @@ namespace mobileAppClient.Droid
             global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
             global::Xamarin.FormsMaps.Init(this, bundle);
+
+            CreateNotificationChannel();
 
             ActivityContext = this;
 
@@ -265,6 +269,30 @@ namespace mobileAppClient.Droid
                 string queryParameter = data.GetQueryParameter("code");
                 await UserController.Instance.PassControlToLoginPage(queryParameter);
             }
+        }
+        /*
+         * Create a channel for notifications
+         */
+        void CreateNotificationChannel()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+            {
+                // Notification channels are new in API 26 (and not a part of the
+                // support library). There is no need to create a notification
+                // channel on older versions of Android.
+                return;
+            }
+
+            var channel = new NotificationChannel(MainActivity.CHANNEL_ID,
+                                                  "FCM Notifications",
+                                                  NotificationImportance.Default)
+            {
+
+                Description = "Firebase Cloud Messages appear in this channel"
+            };
+
+            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            notificationManager.CreateNotificationChannel(channel);
         }
     }
 }
