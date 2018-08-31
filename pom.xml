@@ -55,7 +55,6 @@
     <modules>
         <module>desktopClient</module>
         <module>server</module>
-        <module>azure-notificationhubs-java-backend/NotificationHubs</module>
     </modules>
 
     <profiles>
