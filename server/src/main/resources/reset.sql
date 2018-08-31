@@ -118,7 +118,6 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- --------------------------------------------------------
 
 --
