@@ -53,12 +53,13 @@
             <artifactId>c3p0</artifactId>
             <version>0.9.5.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.windowsazure/Notification-Hubs-java-sdk -->
         <dependency>
             <groupId>com.windowsazure</groupId>
-            <artifactId>NotificationHubs</artifactId>
+            <artifactId>Notification-Hubs-java-sdk</artifactId>
             <version>0.0.4</version>
-            <scope>compile</scope>
         </dependency>
+
 
 
     </dependencies>

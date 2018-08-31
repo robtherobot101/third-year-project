@@ -1,3 +1,0 @@
-[submodule "azure-notificationhubs-java-backend"]
-	path = azure-notificationhubs-java-backend
-	url = https://github.com/Azure/azure-notificationhubs-java-backend
