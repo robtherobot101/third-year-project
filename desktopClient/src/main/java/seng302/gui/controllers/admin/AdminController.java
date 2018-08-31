@@ -940,7 +940,7 @@ public class AdminController implements Initializable {
                 Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
                 if (selectedClinician != null) {
                     // Check if this is the default clinician
-                    if (selectedClinician.getStaffID() == 1) {
+                    if (selectedClinician.getStaffID() == 0) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default clinician");
                     } else {
@@ -959,7 +959,7 @@ public class AdminController implements Initializable {
                 Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
                 if (selectedAdmin != null) {
                     // Check if this is the default clinician
-                    if (selectedAdmin.getStaffID() == 1) {
+                    if (selectedAdmin.getStaffID() == 0) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default admin");
                     } else {
