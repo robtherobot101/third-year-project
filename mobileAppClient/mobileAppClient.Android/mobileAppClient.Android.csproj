@@ -107,6 +107,9 @@
     <PackageReference Include="Xamarin.Essentials">
       <Version>0.10.0-preview</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Firebase.Messaging">
+      <Version>60.1142.1</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms">
       <Version>3.2.0.637442-pre1</Version>
     </PackageReference>
@@ -128,6 +131,9 @@
     <PackageReference Include="Xamarin.Forms">
       <Version>3.2.0.637442-pre1</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Base">
+      <Version>60.1142.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -140,6 +146,7 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
+    <AndroidResource Include="Resources\google-services.json" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.axml" />

@@ -16,6 +16,10 @@ using Xamarin.Forms;
 using Android.Support.V4.Content;
 using Android;
 using ImageCircle.Forms.Plugin.Droid;
+using Android.Gms.Common;
+using Firebase.Messaging;
+using Firebase.Iid;
+using Android.Util;
 
 namespace mobileAppClient.Droid
 {
