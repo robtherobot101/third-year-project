@@ -2,6 +2,9 @@
 using Android.App;
 using Firebase.Iid;
 using Android.Util;
+using System.Threading.Tasks;
+using Microsoft.WindowsAzure.MobileServices;
+using mobileAppClient.Notifications;
 
 namespace mobileAppClient.Droid.Notification
 {
@@ -20,6 +23,10 @@ namespace mobileAppClient.Droid.Notification
         {
             // Add custom implementation, as needed.
             // This is where we send the token to our server
+            Task.Run(async () =>
+            {
+                await AzureNotificationHubService.RegisterAsync(Azure.Instance.CurrentClient.GetPush(), token);
+            });
         }
     }
 }

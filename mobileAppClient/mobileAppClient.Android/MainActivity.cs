@@ -26,7 +26,7 @@ namespace mobileAppClient.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
 
-        //static readonly string TAG = "MainActivity";
+        static readonly string TAG = "MainActivity";
 
         internal static readonly string CHANNEL_ID = "my_notification_channel";
         internal static readonly int NOTIFICATION_ID = 100;
