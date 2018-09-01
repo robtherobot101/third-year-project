@@ -293,6 +293,7 @@ namespace mobileAppClient.Droid
 
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.CreateNotificationChannel(channel);
+            Log.Debug(TAG, "Firebase Token: " + Notification.MyFirebaseIIDService.GetToken());
         }
     }
 }

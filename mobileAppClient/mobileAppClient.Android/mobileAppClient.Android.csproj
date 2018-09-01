@@ -101,6 +101,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Mobile.Client">
+      <Version>4.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
       <Version>3.0.0.5</Version>
     </PackageReference>
@@ -138,6 +141,7 @@
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
     <Compile Include="Notification\AzureNotificationHubService.cs" />
+    <Compile Include="Notification\FirebaseNotificationService.cs" />
     <Compile Include="Notification\MyFirebaseIIDService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

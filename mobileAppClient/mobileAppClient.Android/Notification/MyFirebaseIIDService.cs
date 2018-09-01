@@ -13,6 +13,7 @@ namespace mobileAppClient.Droid.Notification
     public class MyFirebaseIIDService : FirebaseInstanceIdService
     {
         const string TAG = "MyFirebaseIIDService";
+
         public override void OnTokenRefresh()
         {
             var refreshedToken = FirebaseInstanceId.Instance.Token;
@@ -27,6 +28,10 @@ namespace mobileAppClient.Droid.Notification
             {
                 await AzureNotificationHubService.RegisterAsync(Azure.Instance.CurrentClient.GetPush(), token);
             });
+        }
+        public static string GetToken()
+        {
+            return FirebaseInstanceId.Instance.Token;
         }
     }
 }
