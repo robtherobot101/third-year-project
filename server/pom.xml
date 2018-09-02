@@ -60,13 +60,23 @@
             <artifactId>c3p0</artifactId>
             <version>0.9.5.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.windowsazure/Notification-Hubs-java-sdk -->
         <dependency>
-            <groupId>com.windowsazure</groupId>
-            <artifactId>Notification-Hubs-java-sdk</artifactId>
-            <version>0.0.4</version>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client</artifactId>
+            <version>1.23.0</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.google.api.client/google-api-client-json -->
+        <dependency>
+            <groupId>com.google.api.client</groupId>
+            <artifactId>google-api-client-json</artifactId>
+            <version>1.2.3-alpha</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client-jackson -->
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson</artifactId>
+            <version>1.25.0</version>
+        </dependency>
 
 
     </dependencies>

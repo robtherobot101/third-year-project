@@ -1,12 +1,10 @@
 package seng302;
 
-import com.windowsazure.messaging.NotificationHubsException;
-import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
-import seng302.NotificationManager.Manager;
+import seng302.NotificationManager.PushAPI;
 import spark.Request;
 import spark.Response;
 
@@ -233,9 +231,10 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        PushAPI pushAPI = new PushAPI("jma326", new String[] {"transcend-Android", "transcend-iOS"}, (String) Server.getInstance().getConfig().get("vs_token"));
         try {
-            Manager.test();
-        } catch (NotificationHubsException e) {
+            pushAPI.sendNotification("Test", "This is a test notification from java!");
+        } catch (IOException e) {
             e.printStackTrace();
         }
         INSTANCE.testing = false;
