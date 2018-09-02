@@ -35,10 +35,9 @@
 		</provider>
 		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAydo-_tG10jYCRTSdBWelhTXHmR_LK6VE" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-
     <receiver
-    android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver"
-    android:exported="false" />
+        android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver"
+        android:exported="false" />
     <receiver
         android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
         android:exported="true"
