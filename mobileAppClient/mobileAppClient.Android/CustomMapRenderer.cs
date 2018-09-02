@@ -16,6 +16,7 @@ using Cocosw.BottomSheetActions;
 using Android.Support.V4.Graphics.Drawable;
 using Android.Support.V4.App;
 using Android.App;
+using FragmentManager = Android.Support.V4.App.FragmentManager;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -170,19 +171,20 @@ namespace CustomRenderer.Droid
                 throw new Exception("Custom pin not found");
             }
 
-            Activity ac = (Activity)Context.ApplicationContext;
+
+            MapActivity mapActivity = new MapActivity();
+            mapActivity.InitializeMap();
+
+            //Context ac = Context.ApplicationContext;
             //@ Andy peek here. The way the Bsheet works is that it creates a fragment. 
             // It then calls the show() method, which requires some form of fragmentmanager, which you get from a context/activity. There is an activity file which I was meddling with in here, but didn't reallly work
             // I used the github link in discord as reference. 
             // One of the biggest hurdles is that fragments are now deprecated and so need the Android.Support.V4.xxx to work with this library.
             // If you're confused would recommend loading up his sample project and deploying it.
 
-            BottomSheetFragment fragment = BottomSheetFragment.NewInstance(0, "test");
-            
-            //fragment.Show(this.SupportFragmentManager, "Wow");
-            
+            //BottomSheetFragment fragment = BottomSheetFragment.NewInstance(0, "test");
 
-//            fragment.Show(this.SupportFragmentManager, "dialog");
+            //fragment.Show(ac., "dialog");
             //ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
             //parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
         }
