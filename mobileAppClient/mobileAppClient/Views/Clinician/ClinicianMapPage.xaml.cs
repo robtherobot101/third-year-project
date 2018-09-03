@@ -235,7 +235,8 @@ namespace mobileAppClient
                             Id = "Xamarin",
                             Url = String.Join(",", organIcons),
                             genderIcon = genderIcon,
-                            userPhoto = profilePhoto                         
+                            userPhoto = profilePhoto,
+                            userId = user.id
                         };
                         customMap.CustomPins.Add(pin.Position, pin);
                         customMap.Pins.Add(pin);

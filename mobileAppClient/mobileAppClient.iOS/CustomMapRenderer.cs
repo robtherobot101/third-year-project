@@ -20,6 +20,7 @@ namespace CustomRenderer.iOS
         UIView customPinView;
         Dictionary<Position, CustomPin> customPins;
         CustomMap formsMap;
+        CustomPin currentPin;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
@@ -60,7 +61,7 @@ namespace CustomRenderer.iOS
             {
                 throw new Exception("Custom pin not found");
             }
-
+            
             annotationView = mapView.DequeueReusableAnnotation(customPin.Id.ToString());
             if (annotationView == null)
             {
@@ -102,6 +103,8 @@ namespace CustomRenderer.iOS
 
             //Set size of frame and add all photos from the custom pin image
             string[] organs = customView.Url.Split(',');
+            int userId = Int32.Parse(organs[organs.Length - 1]);
+
             organs = organs.Take(organs.Length - 1).ToArray();
             int rectangleWidthInt = (organs.Length * 40) + (5 * (organs.Length + 1));
 
@@ -124,11 +127,16 @@ namespace CustomRenderer.iOS
 
             e.View.AddSubview(customPinView);
 
-            //Do a search to get the current pin
-            CustomPin pin = customPins.Values.First();
+            //Do a search to get the current custom pin
+            foreach(CustomPin item in customPins) {
+                if(item.userId == userId) {
+                    currentPin = item;
+                }
+            }
 
+            //Dismiss the previous One as well
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayBottomSheet(pin);
+            parent.displayBottomSheet(currentPin);
 
         }
 

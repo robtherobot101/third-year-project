@@ -1,6 +1,8 @@
 ﻿using System;
 using CoreGraphics;
 using Foundation;
+using iAd;
+using ObjCRuntime;
 using UIKit;
 
 namespace mobileAppClient.iOS
@@ -47,7 +49,7 @@ namespace mobileAppClient.iOS
 
             View.InsertSubview(bluredView, 0); 
         }
-
+        
         public override void ViewWillAppear(bool animated)
         {
             base.ViewWillAppear(animated);
@@ -74,14 +76,10 @@ namespace mobileAppClient.iOS
         }
 
 
-        public void rightButton() {
-            Console.WriteLine("ooooo click me!");
-        }
-
         public void close() {
-            UIView.Animate(0.3, new Action(() => {
+            UIView.Animate(1, new Action(() => {
                 var frame = this.View.Frame;
-                this.View.Frame = new CGRect(0, this.partialView, frame.Width, frame.Height);
+                this.View.Frame = new CGRect(frame.X, frame.Y, 0, frame.Height);
             }));
         }
 
@@ -95,8 +93,6 @@ namespace mobileAppClient.iOS
             roundViews();
 
             prepareSheetDetails();
-
-            //OrgansTableView.Delegate = this;
 
         }
 
