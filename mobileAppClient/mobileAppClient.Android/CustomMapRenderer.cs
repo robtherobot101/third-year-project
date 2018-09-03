@@ -8,6 +8,7 @@ using Android.Widget;
 using CustomRenderer.Droid;
 using mobileAppClient;
 using mobileAppClient.Droid;
+using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
@@ -17,7 +18,7 @@ namespace CustomRenderer.Droid
 {
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
-        List<CustomPin> customPins;
+        private Dictionary<Position, CustomPin> customPins;
         CustomMap formsMap;
 
         public CustomMapRenderer(Context context) : base(context)
@@ -49,7 +50,12 @@ namespace CustomRenderer.Droid
             NativeMap.SetInfoWindowAdapter(this);
         }
 
-        protected override MarkerOptions CreateMarker(Pin pin)
+        /// <summary>
+        /// Generates marker options for a pin that contains information about a donor
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        private MarkerOptions CreateDonorMarker(Pin pin)
         {
             var marker = new MarkerOptions();
             marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
@@ -147,13 +153,62 @@ namespace CustomRenderer.Droid
             if (customPin.genderIcon.Equals("other.png"))
             {
                 resizedBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
-            } else
+            }
+            else
             {
                 resizedBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 120, 120, false);
             }
             marker.SetIcon(BitmapDescriptorFactory.FromBitmap(resizedBitmap));
 
             return marker;
+        }
+
+        /// <summary>
+        /// Generates marker options for a pin that contains information about a hospital
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        private MarkerOptions CreateHospitalMarker(Pin pin)
+        {
+            // Create basic options
+            var marker = new MarkerOptions();
+            marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
+            marker.SetTitle(pin.Label);
+            marker.SetSnippet(pin.Address);
+
+            // Create the image
+            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.hospital_icon);
+
+            // Scale the image
+            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
+
+            marker.SetIcon(BitmapDescriptorFactory.FromBitmap(imageBitmap));
+
+            return marker;
+        }
+
+        /// <summary>
+        /// Creates a MarkerOptions for a new pin on the map
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        protected override MarkerOptions CreateMarker(Pin pin)
+        {
+            MarkerOptions markerToAddOptions = null;
+
+            // Find the correlating custom pin to get our extra parameters
+            CustomPin foundCustomPin = GetCustomPin(pin);
+
+            switch (foundCustomPin.CustomType)
+            {
+                case ODMSPinType.DONOR:
+                    markerToAddOptions = CreateDonorMarker(pin);
+                    break;
+                case ODMSPinType.HOSPITAL:
+                    markerToAddOptions = CreateHospitalMarker(pin);
+                    break;
+            }
+            return markerToAddOptions;
         }
 
         void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
@@ -177,6 +232,12 @@ namespace CustomRenderer.Droid
                 if (customPin == null)
                 {
                     throw new Exception("Custom pin not found");
+                }
+
+                if (customPin.CustomType == ODMSPinType.HOSPITAL)
+                {
+                    // Hospital pop-up dialog not yet implemented
+                    return null;
                 }
 
 
@@ -272,26 +333,29 @@ namespace CustomRenderer.Droid
 
         CustomPin GetCustomPin(Marker annotation)
         {
-            var position = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-            foreach (var pin in customPins)
+            Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
+            if (customPins.TryGetValue(key, out CustomPin foundPin))
             {
-                if (pin.Position == position)
-                {
-                    return pin;
-                }
+                return foundPin;
+            }
+            return null;
+        }
+
+        CustomPin GetCustomPin(Pin pin)
+        {
+            if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+            {
+                return foundPin;
             }
             return null;
         }
 
         CustomPin GetCustomPin(MarkerOptions annotation)
         {
-            var position = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-            foreach (var pin in customPins)
+            Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
+            if (customPins.TryGetValue(key, out CustomPin foundPin))
             {
-                if (pin.Position == position)
-                {
-                    return pin;
-                }
+                return foundPin;
             }
             return null;
         }

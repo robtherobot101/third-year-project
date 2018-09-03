@@ -424,4 +424,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\default_user_photo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\hospital_icon.png" />
+  </ItemGroup>
 </Project>

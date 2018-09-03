@@ -9,12 +9,15 @@ using System.Net;
 using System.IO;
 using System.Linq;
 using mobileAppClient.Maps;
+using mobileAppClient.Models;
 
 namespace mobileAppClient
 {
     public partial class ClinicianMapPage : ContentPage
     {
         List<CustomMapObject> users;
+        List<Hospital> hospitals;
+
         CustomMap customMap;
 
         public ClinicianMapPage()
@@ -87,7 +90,7 @@ namespace mobileAppClient
             };
 
 
-            customMap.CustomPins = new List<CustomPin> { };
+            customMap.CustomPins = new Dictionary<Position, CustomPin> { };
 
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
@@ -103,6 +106,7 @@ namespace mobileAppClient
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
+            await InitialiseHospitals();
             switch (tuple.Item1)
             {
                 case HttpStatusCode.OK:
@@ -224,7 +228,7 @@ namespace mobileAppClient
 
                         var pin = new CustomPin
                         {
-                            Type = PinType.Generic,
+                            CustomType = ODMSPinType.HOSPITAL,
                             Position = finalPosition,
                             Label = user.firstName + " " + user.middleName + " " + user.lastName,
                             Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
@@ -233,7 +237,7 @@ namespace mobileAppClient
                             genderIcon = genderIcon,
                             userPhoto = profilePhoto                         
                         };
-                        customMap.CustomPins.Add(pin);
+                        customMap.CustomPins.Add(pin.Position, pin);
                         customMap.Pins.Add(pin);
 
 
@@ -255,6 +259,47 @@ namespace mobileAppClient
 
         }
 
+        private async Task InitialiseHospitals()
+        {
+            ClinicianAPI clinicianApi = new ClinicianAPI();
+            Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();
+            switch (tuple.Item1)
+            {
+                case HttpStatusCode.OK:
+                    Console.WriteLine("Organ map hospitals retrieved successfully");
+                    hospitals = tuple.Item2;
 
+                    foreach (Hospital currentHospital in hospitals)
+                    {
+                        Position finalPosition = new Position(currentHospital.latitude, currentHospital.longitude);
+
+                        var pin = new CustomPin
+                        {
+                            CustomType = ODMSPinType.HOSPITAL,
+                            Position = finalPosition,
+                            Label = currentHospital.name,
+                            Address = currentHospital.address,
+                        };
+
+                        // We add to this list to track our pins with additional information (like hospital or donor)
+                        customMap.CustomPins.Add(pin.Position, pin);
+
+                        // This list actually adds the pin to the MapRenderer
+                        customMap.Pins.Add(pin);
+                    }
+
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error retrieving hospitals, please try again (500)",
+                    "OK");
+                    break;
+            }
+        }
     }
 }

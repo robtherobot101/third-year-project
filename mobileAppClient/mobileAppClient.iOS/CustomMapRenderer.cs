@@ -18,7 +18,7 @@ namespace CustomRenderer.iOS
     public class CustomMapRenderer : MapRenderer
     {
         UIView customPinView;
-        List<CustomPin> customPins;
+        Dictionary<Position, CustomPin> customPins;
         CustomMap formsMap;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
@@ -125,7 +125,7 @@ namespace CustomRenderer.iOS
             e.View.AddSubview(customPinView);
 
             //Do a search to get the current pin
-            CustomPin pin = customPins[0];
+            CustomPin pin = customPins.Values.First();
 
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
             parent.displayBottomSheet(pin);
@@ -134,8 +134,6 @@ namespace CustomRenderer.iOS
 
         void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
- 
-
             if (!e.View.Selected)
             {
                 customPinView.RemoveFromSuperview();
@@ -146,17 +144,12 @@ namespace CustomRenderer.iOS
 
         CustomPin GetCustomPin(MKPointAnnotation annotation)
         {
-            var position = new Position(annotation.Coordinate.Latitude, annotation.Coordinate.Longitude);
-            foreach (var pin in customPins)
+            Position key = new Position(annotation.Coordinate.Latitude, annotation.Coordinate.Longitude);
+            if (customPins.TryGetValue(key, out CustomPin foundPin))
             {
-                if (pin.Position == position)
-                {
-                    return pin;
-                }
+                return foundPin;
             }
             return null;
         }
-
-
     }
 }
