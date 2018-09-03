@@ -246,8 +246,7 @@ namespace CustomRenderer.Droid
 
         public Android.Views.View GetInfoContents(Marker marker)
         {
-            var inflater = Android.App.Application.Context.GetSystemService(Context.LayoutInflaterService) as Android.Views.LayoutInflater;
-            if (inflater != null)
+            if (Android.App.Application.Context.GetSystemService(Context.LayoutInflaterService) is Android.Views.LayoutInflater inflater)
             {
                 Android.Views.View view;
                 var customPin = GetCustomPin(marker);
@@ -270,10 +269,10 @@ namespace CustomRenderer.Droid
                 var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
                 var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
                 var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
-                
-                
-              
-               
+
+
+
+
 
                 if (infoTitle != null)
                 {
@@ -341,11 +340,11 @@ namespace CustomRenderer.Droid
                         organImage.SetAdjustViewBounds(true);
                         organImage.SetMaxHeight(80);
                         organImage.SetMaxWidth(80);
-                        organImage.SetPadding(5,0,5,0);
+                        organImage.SetPadding(5, 0, 5, 0);
                         organFrame.AddView(organImage);
                     }
                 }
-                        
+
 
                 return view;
             }

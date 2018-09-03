@@ -228,11 +228,10 @@ namespace mobileAppClient
 
                         var pin = new CustomPin
                         {
-                            CustomType = ODMSPinType.HOSPITAL,
+                            CustomType = ODMSPinType.DONOR,
                             Position = finalPosition,
                             Label = user.firstName + " " + user.middleName + " " + user.lastName,
                             Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
-                            Id = "Xamarin",
                             Url = String.Join(",", organIcons),
                             genderIcon = genderIcon,
                             userPhoto = profilePhoto,
@@ -256,12 +255,16 @@ namespace mobileAppClient
                     "OK");
                     break;
             }
-
-
         }
 
         private async Task InitialiseHospitals()
         {
+            // Temporary workaround as the server is currently not offering the hospital endpoint (only locally from the branch jar)
+            if (ServerConfig.Instance.serverAddress != "http://10.0.2.2:7015/api/v1")
+            {
+                return;
+            }
+
             ClinicianAPI clinicianApi = new ClinicianAPI();
             Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();
             switch (tuple.Item1)

@@ -99,9 +99,9 @@ namespace CustomRenderer.iOS
         void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             var customView = e.View as CustomMKAnnotationView;
-            customPinView = new UIView();
 
-            //Set size of frame and add all photos from the custom pin image
+            // Set size of frame and add all photos from the custom pin image
+            // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
             string[] organs = customView.Url.Split(',');
             int userId = Int32.Parse(organs[organs.Length - 1]);
 
@@ -127,14 +127,11 @@ namespace CustomRenderer.iOS
 
             e.View.AddSubview(customPinView);
 
-            //Do a search to get the current custom pin
-            foreach(CustomPin item in customPins) {
-                if(item.userId == userId) {
-                    currentPin = item;
-                }
-            }
+            
+            // Do a search to get the current custom pin (gets the first)
+            currentPin = customPins.Values.First();
 
-            //Dismiss the previous One as well
+            // Dismiss the previous One as well
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
             parent.displayBottomSheet(currentPin);
 
