@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
+import seng302.NotificationManager.Notification;
 import seng302.NotificationManager.PushAPI;
 import spark.Request;
 import spark.Response;
@@ -231,12 +232,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        PushAPI pushAPI = new PushAPI("jma326", new String[] {"transcend-Android", "transcend-iOS"}, (String) Server.getInstance().getConfig().get("vs_token"));
-        try {
-            pushAPI.sendNotification("Test", "This is a test notification from java!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        PushAPI.getInstance().sendNotification(new Notification("Test", "Test notification from Java!", "Device_UUID"));
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
