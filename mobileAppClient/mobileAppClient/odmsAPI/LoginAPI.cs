@@ -1,4 +1,4 @@
-﻿using mobileAppClient.Models;
+using mobileAppClient.Models;
 using mobileAppClient.odmsAPI.RequestFormat;
 using Newtonsoft.Json;
 using System;

@@ -1,4 +1,4 @@
-﻿using mobileAppClient.odmsAPI;
+using mobileAppClient.odmsAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,29 +46,33 @@ namespace mobileAppClient
         private void FillFields()
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
+            // Name
+            FirstNameInput.Text = loggedInUser.name[0];
+            MiddleNameInput.Text = "";
+            LastNameInput.Text = "";
 
-            if(loggedInUser.name.Count == 2) {
-                FirstNameInput.Text = loggedInUser.name[0];
-                MiddleNameInput.Text = "";
-                LastNameInput.Text = loggedInUser.name[1];
-            } else {
-                FirstNameInput.Text = loggedInUser.name[0];
-                MiddleNameInput.Text = loggedInUser.name[1];
-                LastNameInput.Text = loggedInUser.name[2];
+            // If the user has at least a last name
+            if (loggedInUser.name.Count > 1)
+            {
+                // Set the last name to the last element in the name array
+                LastNameInput.Text = loggedInUser.name.Last();
+                // Set the middle name to everything in between the first and last element
+                MiddleNameInput.Text = String.Join(" ", loggedInUser.name.GetRange(1, loggedInUser.name.Count - 2).ToArray());
             }
 
-            if(loggedInUser.preferredName.Count == 2) {
-                PrefFirstNameInput.Text = loggedInUser.preferredName[0];
-                PrefMiddleNameInput.Text = "";
-                PrefLastNameInput.Text = loggedInUser.preferredName[1];
-            } else {
-                PrefFirstNameInput.Text = loggedInUser.preferredName[0];
-                PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
-                PrefLastNameInput.Text = loggedInUser.preferredName[2];
+            // Preferred Name
+            PrefFirstNameInput.Text = loggedInUser.preferredName[0];
+            PrefMiddleNameInput.Text = "";
+            PrefLastNameInput.Text = "";
+
+            // If the user has at least a last name
+            if (loggedInUser.preferredName.Count > 1)
+            {
+                // Set the last name to the last element in the name array
+                PrefLastNameInput.Text = loggedInUser.preferredName.Last();
+                // Set the middle name to everything in between the first and last element
+                PrefMiddleNameInput.Text = String.Join(" ", loggedInUser.preferredName.GetRange(1, loggedInUser.preferredName.Count - 2));
             }
-
-  
-
 
 
             BirthGenderInput.SelectedItem = FirstCharToUpper(loggedInUser.gender);
@@ -89,8 +93,7 @@ namespace mobileAppClient
             WeightInput.Text = loggedInUser.weight.ToString();
 
             BloodPressureInput.Text = loggedInUser.bloodPressure;
-
-            BloodTypeInput.SelectedItem = FirstCharToUpper(loggedInUser.bloodType);
+            BloodTypeInput.SelectedItem = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(loggedInUser.bloodType));
             SmokerStatusInput.SelectedItem = FirstCharToUpper(loggedInUser.smokerStatus);
             AlcoholConsumptionInput.SelectedItem = FirstCharToUpper(loggedInUser.alcoholConsumption);
         }
@@ -200,13 +203,17 @@ namespace mobileAppClient
             //}
 
             // Set user attributes to the new fields
-            loggedInUser.name[0] = givenFirstName;
-            loggedInUser.name[1] = givenMiddleName;
-            loggedInUser.name[2] = givenLastName;
+            List<string> name = new List<string>();
+            name.Add(givenFirstName);
+            name.AddRange(givenMiddleName.Split(' '));
+            name.Add(givenLastName);
+            loggedInUser.name = name;
 
-            loggedInUser.preferredName[0] = givenPrefFirstName;
-            loggedInUser.preferredName[1] = givenPrefMiddleName;
-            loggedInUser.preferredName[2] = givenPrefLastName;
+            List<string> prefName = new List<string>();
+            prefName.Add(givenPrefFirstName);
+            prefName.AddRange(givenPrefMiddleName.Split(' '));
+            prefName.Add(givenPrefLastName);
+            loggedInUser.preferredName = prefName;
 
             loggedInUser.gender = BirthGenderInput.SelectedItem.ToString().ToUpper();
             loggedInUser.genderIdentity = GenderIdentityInput.SelectedItem.ToString().ToUpper();
@@ -229,8 +236,7 @@ namespace mobileAppClient
             loggedInUser.height = Convert.ToDouble(givenHeight);
             loggedInUser.weight = Convert.ToDouble(givenWeight);
             loggedInUser.bloodPressure = givenBloodPressure;
-
-            loggedInUser.bloodType = BloodTypeInput.SelectedItem.ToString().ToUpper();
+            loggedInUser.bloodType = BloodTypeExtensions.ToBloodType(BloodTypeInput.SelectedItem.ToString().ToUpper()).ToString();
             loggedInUser.smokerStatus = SmokerStatusInput.SelectedItem.ToString().ToUpper();
             loggedInUser.alcoholConsumption = AlcoholConsumptionInput.SelectedItem.ToString().ToUpper();
 

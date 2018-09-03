@@ -91,28 +91,12 @@ namespace mobileAppClient
 
             observableMedicationList.AddRange(UserController.Instance.LoggedInUser.currentMedications);
 
-            if(isClinicianAccessing) {
-                var addItem = new ToolbarItem
-                {
-                    Command = addNewMedication,
-                    Icon = "add_icon.png"
-                };
-                this.ToolbarItems.Add(addItem);
-
-            }
-
-
-        }
-
-        public ICommand addNewMedication
-        {
-            get
+            if (isClinicianAccessing)
             {
-                return new Command(async () =>
-                {
-                    await Navigation.PushAsync(new SingleMedicationPage(this, SegControl.SelectedSegment));
-                });
+                AddMedicationButton.IsVisible = true;
             }
+
+
         }
 
         /**
@@ -275,6 +259,11 @@ namespace mobileAppClient
                 }
 
             }
+        }
+
+        private async void AddMedicationButton_OnClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SingleMedicationPage(this, SegControl.SelectedSegment));
         }
     }
 }
