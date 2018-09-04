@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using CoreGraphics;
 using Foundation;
 using UIKit;
 
@@ -33,6 +34,7 @@ namespace mobileAppClient.iOS
 
             string photoItem = organs[indexPath.Row];
             string item = organs[indexPath.Row].Replace("_icon.png", "");
+            item = char.ToUpper(item[0]) + item.Substring(1);
 
             //---- if there are no cells to reuse, create a new one
             if (cell == null)
@@ -43,6 +45,8 @@ namespace mobileAppClient.iOS
             cell.TextLabel.TextColor = UIColor.White;
             cell.ImageView.Image = UIImage.FromFile(photoItem);
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
+            cell.DetailTextLabel.Text = "INSERT COUNTDOWN HERE";
+            cell.DetailTextLabel.TextColor = UIColor.Red;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
 
             return cell;
@@ -50,10 +54,27 @@ namespace mobileAppClient.iOS
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
-            UIAlertController okAlertController = UIAlertController.Create("Row Selected", organs[indexPath.Row], UIAlertControllerStyle.Alert);
-            okAlertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
-            owner.PresentViewController(okAlertController, true, null);
-            tableView.DeselectRow(indexPath, true);
+            //Do API call to get all recipients
+
+            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin);
+            
+            var window = UIApplication.SharedApplication.KeyWindow;
+
+            var rootVC = window.RootViewController;
+
+            owner.View.RemoveFromSuperview();
+
+            rootVC.AddChildViewController(potentialRecipientsController);
+            rootVC.View.AddSubview(potentialRecipientsController.View);
+            potentialRecipientsController.DidMoveToParentViewController(rootVC);
+
+            var height = window.Frame.Height;
+            var width = window.Frame.Width;
+            potentialRecipientsController.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
+
+
+
+
         }
     }
 }

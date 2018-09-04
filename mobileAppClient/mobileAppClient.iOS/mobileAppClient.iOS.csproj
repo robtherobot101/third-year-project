@@ -27,8 +27,8 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer: frerew101@hotmail.com (XN6SRTVC6K)</CodesignKey>
-    <CodesignProvision>iOS Team Provisioning Profile: team300.mobileAppClient</CodesignProvision>
+    <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
+    <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -172,6 +172,10 @@
       <DependentUpon>BottomSheetViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="TableSource.cs" />
+    <Compile Include="PotentialMatchesBottomSheetViewController.cs" />
+    <Compile Include="PotentialMatchesBottomSheetViewController.designer.cs">
+      <DependentUpon>PotentialMatchesBottomSheetViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -221,6 +225,7 @@
       <Visible>false</Visible>
     </ImageAsset>
     <InterfaceDefinition Include="BottomSheetViewController.xib" />
+    <InterfaceDefinition Include="PotentialMatchesBottomSheetViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
