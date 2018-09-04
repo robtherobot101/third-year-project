@@ -7,15 +7,17 @@ public enum Organ {
     BONE("bone-marrow"), TISSUE("connective-tissue"),  CORNEA("cornea"), HEART("heart"), INTESTINE("intestine"), KIDNEY("kidney"), LIVER("liver"), LUNG("lung"),
     EAR("middle-ear"), PANCREAS("pancreas"),  SKIN("skin");
 
-    private String organ;
+    private String organType;
 
     Organ(String organ) {
-        this.organ = organ;
+        this.organType = organ;
     }
 
+    @Override
     public String toString() {
-        return organ;
+        return organType;
     }
+
 
     /**
      * Converts a string to its corresponding organ enum value. Throws an IllegalArgumentException if the string does not match any organ.
