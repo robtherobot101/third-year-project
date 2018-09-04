@@ -12,6 +12,7 @@ using System.IO;
 
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
+using MapKit;
 
 namespace mobileAppClient.Views.Clinician
 {
@@ -26,6 +27,12 @@ namespace mobileAppClient.Views.Clinician
         public ClinicianMapPage()
         {
             this.SlideMenu = new SlideUpMenuView();
+
+        }
+
+        public async void displayBottomSheet(CustomPin pin, CustomMap map, MKMapView nativeMap) {
+
+            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map, nativeMap);
         }
 
         public async void displayUserDialog(string organString, string id)
@@ -96,16 +103,18 @@ namespace mobileAppClient.Views.Clinician
             {
                 MapType = MapType.Street,
                 WidthRequest = 100,
-                HeightRequest = 100
+                HeightRequest = 100,
             };
 
 
             customMap.CustomPins = new Dictionary<Position, CustomPin> { };
 
+            var centerPosition = new Position(-41.626217, 172.361873);
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                new Position(-41.626217, 172.361873), Distance.FromMiles(500.0)));
+                centerPosition, Distance.FromMiles(500.0)));
 
+          
 
             var stack = new StackLayout { Spacing = 0 };
             stack.Children.Add(customMap);

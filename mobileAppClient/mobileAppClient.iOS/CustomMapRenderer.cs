@@ -11,6 +11,9 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
+using ObjCRuntime;
+using mobileAppClient.iOS;
+using mobileAppClient.Views.Clinician;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
@@ -21,6 +24,8 @@ namespace CustomRenderer.iOS
         Dictionary<Position, CustomPin> customPins;
         CustomMap formsMap;
         CustomPin currentPin;
+        MKCircleRenderer circleRenderer;
+        MKMapView nativeMap;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
@@ -29,6 +34,12 @@ namespace CustomRenderer.iOS
             if (e.OldElement != null)
             {
                 var nativeMap = Control as MKMapView;
+                if (nativeMap != null && nativeMap.Overlays != null)
+                {
+                    nativeMap.RemoveOverlays(nativeMap.Overlays);
+                    nativeMap.OverlayRenderer = null;
+                    circleRenderer = null;
+                }
                 nativeMap.GetViewForAnnotation = null;
                 nativeMap.CalloutAccessoryControlTapped -= OnCalloutAccessoryControlTapped;
                 nativeMap.DidSelectAnnotationView -= OnDidSelectAnnotationView;
@@ -38,7 +49,17 @@ namespace CustomRenderer.iOS
             if (e.NewElement != null)
             {
                 formsMap = (CustomMap)e.NewElement;
-                var nativeMap = Control as MKMapView;
+                nativeMap = Control as MKMapView;
+                //var circle = formsMap.Circle;
+
+                nativeMap.OverlayRenderer = GetOverlayRenderer;
+
+                //if(circle != null) {
+                //    var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(circle.Position.Latitude, circle.Position.Longitude), circle.Radius);
+                //    nativeMap.AddOverlay(circleOverlay);
+                //}
+
+
                 customPins = formsMap.CustomPins;
 
                 nativeMap.GetViewForAnnotation = GetViewForAnnotation;
@@ -47,6 +68,20 @@ namespace CustomRenderer.iOS
                 nativeMap.DidDeselectAnnotationView += OnDidDeselectAnnotationView;
 
             }
+        }
+
+        MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
+        {
+            if (circleRenderer == null && !Equals(overlayWrapper, null))
+            {
+                var overlay = Runtime.GetNSObject(overlayWrapper.Handle) as IMKOverlay;
+                circleRenderer = new MKCircleRenderer(overlay as MKCircle)
+                {
+                    FillColor = UIColor.Black,
+                    Alpha = 0.4f
+                };
+            }
+            return circleRenderer;
         }
 
         protected override MKAnnotationView GetViewForAnnotation(MKMapView mapView, IMKAnnotation annotation)
@@ -61,11 +96,12 @@ namespace CustomRenderer.iOS
             {
                 throw new Exception("Custom pin not found");
             }
+
             
             annotationView = mapView.DequeueReusableAnnotation(customPin.Id.ToString());
             if (annotationView == null)
             {
-                
+
                 annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
                 annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70,70));
                 annotationView.CalloutOffset = new CGPoint(0, 0);
@@ -99,6 +135,7 @@ namespace CustomRenderer.iOS
         void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             var customView = e.View as CustomMKAnnotationView;
+            customPinView = new UIView();
 
             // Set size of frame and add all photos from the custom pin image
             // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
@@ -127,23 +164,50 @@ namespace CustomRenderer.iOS
 
             e.View.AddSubview(customPinView);
 
-            
-            // Do a search to get the current custom pin (gets the first)
-            currentPin = customPins.Values.First();
 
-            // Dismiss the previous One as well
+            // Do a search to get the current custom pin (gets the first)
+            //currentPin = customPins.Values.First();
+            foreach (CustomPin item in customPins.Values)
+            {
+                if (item.userId == userId)
+                {
+                    currentPin = item;
+                }
+            }
+
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayBottomSheet(currentPin);
+            parent.displayBottomSheet(currentPin, formsMap, nativeMap);
 
         }
 
-        void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
+        async void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             if (!e.View.Selected)
             {
                 customPinView.RemoveFromSuperview();
                 customPinView.Dispose();
                 customPinView = null;
+                var window = UIApplication.SharedApplication.KeyWindow;
+                var rootVC = window.RootViewController;
+                var number = rootVC.ChildViewControllers;
+                var menuPopUp = rootVC.ChildViewControllers[1];
+                if(menuPopUp is BottomSheetViewController) {
+                    BottomSheetViewController bottomSheet = (BottomSheetViewController)rootVC.ChildViewControllers[1];
+                    await bottomSheet.closeMenu();
+                    bottomSheet.View.RemoveFromSuperview();
+                    bottomSheet.View.Dispose();
+                    bottomSheet.View = null;
+                    bottomSheet.RemoveFromParentViewController();
+                } else {
+                    PotentialMatchesBottomSheetViewController matchesSheet = (PotentialMatchesBottomSheetViewController)rootVC.ChildViewControllers[1];
+                    await matchesSheet.closeMenu();
+                    matchesSheet.View.RemoveFromSuperview();
+                    matchesSheet.View.Dispose();
+                    matchesSheet.View = null;
+                    matchesSheet.RemoveFromParentViewController();
+                }
+
+
             }
         }
 
