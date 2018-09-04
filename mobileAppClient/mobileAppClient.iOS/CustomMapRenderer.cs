@@ -18,8 +18,9 @@ namespace CustomRenderer.iOS
     public class CustomMapRenderer : MapRenderer
     {
         UIView customPinView;
-        List<CustomPin> customPins;
+        Dictionary<Position, CustomPin> customPins;
         CustomMap formsMap;
+        CustomPin currentPin;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
@@ -60,7 +61,7 @@ namespace CustomRenderer.iOS
             {
                 throw new Exception("Custom pin not found");
             }
-
+            
             annotationView = mapView.DequeueReusableAnnotation(customPin.Id.ToString());
             if (annotationView == null)
             {
@@ -98,10 +99,12 @@ namespace CustomRenderer.iOS
         void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             var customView = e.View as CustomMKAnnotationView;
-            customPinView = new UIView();
 
-            //Set size of frame and add all photos from the custom pin image
+            // Set size of frame and add all photos from the custom pin image
+            // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
             string[] organs = customView.Url.Split(',');
+            int userId = Int32.Parse(organs[organs.Length - 1]);
+
             organs = organs.Take(organs.Length - 1).ToArray();
             int rectangleWidthInt = (organs.Length * 40) + (5 * (organs.Length + 1));
 
@@ -124,18 +127,18 @@ namespace CustomRenderer.iOS
 
             e.View.AddSubview(customPinView);
 
-            //Do a search to get the current pin
-            CustomPin pin = customPins[0];
+            
+            // Do a search to get the current custom pin (gets the first)
+            currentPin = customPins.Values.First();
 
+            // Dismiss the previous One as well
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayBottomSheet(pin);
+            parent.displayBottomSheet(currentPin);
 
         }
 
         void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
- 
-
             if (!e.View.Selected)
             {
                 customPinView.RemoveFromSuperview();
@@ -146,17 +149,12 @@ namespace CustomRenderer.iOS
 
         CustomPin GetCustomPin(MKPointAnnotation annotation)
         {
-            var position = new Position(annotation.Coordinate.Latitude, annotation.Coordinate.Longitude);
-            foreach (var pin in customPins)
+            Position key = new Position(annotation.Coordinate.Latitude, annotation.Coordinate.Longitude);
+            if (customPins.TryGetValue(key, out CustomPin foundPin))
             {
-                if (pin.Position == position)
-                {
-                    return pin;
-                }
+                return foundPin;
             }
             return null;
         }
-
-
     }
 }
