@@ -31,7 +31,7 @@ namespace mobileAppClient.Views
 
         private async void fillFields()
         {
-            Clinician currentClinician = ClinicianController.Instance.LoggedInClinician;
+            Models.Clinician currentClinician = ClinicianController.Instance.LoggedInClinician;
 
             // Database Pane
             UserAPI userAPI = new UserAPI();

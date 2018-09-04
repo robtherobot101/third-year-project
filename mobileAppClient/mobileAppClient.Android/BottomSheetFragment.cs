@@ -29,25 +29,24 @@ namespace mobileAppClient.Droid
         private string name;
         private int action;
 
-        public static BottomSheetFragment NewInstance(int action, string title)
+        public static BottomSheetFragment NewInstance()
         {
             BottomSheetFragment frag = new BottomSheetFragment();
             Bundle args = new Bundle();
-            args.PutString("title", title);
-            args.PutInt("action", action);
+           // args.PutString("title", title);
+        //    args.PutInt("action", action);
             frag.Arguments = args;
             return frag;
         }
         
         public override Dialog OnCreateDialog(Bundle savedInstanceState)
         {
-            this.name = this.Arguments.GetString("title");
-            this.action = this.Arguments.GetInt("action");
+           // this.name = this.Arguments.GetString("title");
+          //  this.action = this.Arguments.GetInt("action");
 
             BottomSheet sheet = new BottomSheet.Builder(this.Activity)
                 .Icon(this.GetRoundedBitmap(Resource.Drawable.default_user_photo))
-                .Title(String.Format("To {0}", this.name))
-                .Listener((IDialogInterfaceOnClickListener)this.Activity)
+   //             .Listener((IDialogInterfaceOnClickListener)this.Activity)
                 .Build();
 
             //@ Andy the below commented stuff is from the sample project. Various ways to show bottom sheets. Also has functionality such that if we can just get the sheet to show we can modify it to our hearts desire and get exactly what we need

@@ -1,5 +1,6 @@
 ﻿using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
+using mobileAppClient.Views.Clinician;
 using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;

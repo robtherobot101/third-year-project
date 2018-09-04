@@ -20,9 +20,9 @@ namespace mobileAppClient.Droid
     [Activity]
     public class BottomSheetListActivity : AppCompatActivity
     {
-        private int action;
-        private ArrayAdapter<String> adapter;
-        private int selectedPosition;
+       // private int action;
+       // private ArrayAdapter<String> adapter;
+      //  private int selectedPosition;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -32,13 +32,13 @@ namespace mobileAppClient.Droid
             //}
 
             base.OnCreate(bundle);
-            SetContentView(Resource.Layout.BottomSheet);
+            //SetContentView(Resource.Layout.BottomSheet);
 
-            SupportActionBar.SetDisplayHomeAsUpEnabled(true);
-            SupportActionBar.SetDisplayShowHomeEnabled(true);
+           // SupportActionBar.SetDisplayHomeAsUpEnabled(true);
+          //  SupportActionBar.SetDisplayShowHomeEnabled(true);
 
-            this.Title = Intent.GetStringExtra("title");
-            this.action = Intent.GetIntExtra("action", 0);
+            //this.Title = Intent.GetStringExtra("title");
+           // this.action = Intent.GetIntExtra("action", 0);
 
             //String[] items = new String[] { "Miguel de Icaza", "Nat Friedman", "James Montemagno", "Joseph Hill", "Stephanie Schatz\n" };
 
@@ -67,7 +67,7 @@ namespace mobileAppClient.Droid
         public void ShowBottomSheet()
         {
             BottomSheetFragment fragment =
-                BottomSheetFragment.NewInstance(this.action, "test");
+                BottomSheetFragment.NewInstance();
 
             fragment.Show(this.SupportFragmentManager, "dialog");
 
