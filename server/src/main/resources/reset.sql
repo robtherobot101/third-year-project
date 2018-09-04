@@ -235,6 +235,18 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `profile_image_type` varchar(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `WAITING_LIST_ITEM`
+--
+
+DROP TABLE IF EXISTS `PUSH_DEVICE`;
+CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
+  `device_id` text NOT NULL,
+  `user_id` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -308,6 +320,13 @@ ALTER TABLE `USER`
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD PRIMARY KEY (`id`),
   ADD KEY `User_id_foreign_key5` (`user_id`);
+
+--
+-- Indexes for table `WAITING_LIST_ITEM`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD PRIMARY KEY (`device_id`),
+  ADD KEY `User_id_foreign_key6` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
