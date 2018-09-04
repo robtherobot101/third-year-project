@@ -138,6 +138,18 @@ CREATE TABLE IF NOT EXISTS `HOSPITAL` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `WAITING_LIST_ITEM`
+--
+
+DROP TABLE IF EXISTS `PUSH_DEVICE`;
+CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
+  `device_id` varchar(64) NOT NULL,
+  `user_id` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `MEDICATION`
 --
 
@@ -233,18 +245,6 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `countryOfDeath` text,
   `country` text,
   `profile_image_type` varchar(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `WAITING_LIST_ITEM`
---
-
-DROP TABLE IF EXISTS `PUSH_DEVICE`;
-CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
-  `device_id` varchar(64) NOT NULL,
-  `user_id` bigint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
