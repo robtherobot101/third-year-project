@@ -176,6 +176,7 @@
     <Compile Include="PotentialMatchesBottomSheetViewController.designer.cs">
       <DependentUpon>PotentialMatchesBottomSheetViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="RecipientsTableSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

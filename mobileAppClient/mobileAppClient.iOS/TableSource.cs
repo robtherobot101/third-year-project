@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
@@ -14,14 +15,17 @@ namespace mobileAppClient.iOS
         BottomSheetViewController owner;
         CustomPin pin;
         string[] organs;
+        int userId;
 
         public TableSource(CustomPin pin, BottomSheetViewController owner)
         {
             this.pin = pin;
             this.owner = owner;
             organs = pin.Url.Split(',');
+            userId = Int32.Parse(organs[organs.Length - 1]);
             organs = organs.Take(organs.Length - 1).ToArray();
         }
+
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {
@@ -45,18 +49,19 @@ namespace mobileAppClient.iOS
             cell.TextLabel.TextColor = UIColor.White;
             cell.ImageView.Image = UIImage.FromFile(photoItem);
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-            cell.DetailTextLabel.Text = "INSERT COUNTDOWN HERE";
-            cell.DetailTextLabel.TextColor = UIColor.Red;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
+            cell.DetailTextLabel.Text = "INSERT COUNTDOWN HERE";
+            //Change colour based on severity
+            cell.DetailTextLabel.TextColor = UIColor.Red;
 
             return cell;
         }
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
-            //Do API call to get all recipients
+            string organ = organs[indexPath.Row].Replace("_icon.png", "");
 
-            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin);
+            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin, organ);
             
             var window = UIApplication.SharedApplication.KeyWindow;
 

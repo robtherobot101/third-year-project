@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CoreGraphics;
 using UIKit;
 
@@ -9,9 +10,11 @@ namespace mobileAppClient.iOS
         public nfloat fullView;
         public nfloat partialView;
         public CustomPin customPin;
+        public string organName;
 
-        public PotentialMatchesBottomSheetViewController(CustomPin pin) : base("PotentialMatchesBottomSheetViewController", null)
+        public PotentialMatchesBottomSheetViewController(CustomPin pin, string organ) : base("PotentialMatchesBottomSheetViewController", null)
         {
+            this.organName = organ;
             this.customPin = pin;
             holdView = new UIView();
             fullView = 400;
@@ -22,14 +25,17 @@ namespace mobileAppClient.iOS
         public void prepareSheetDetails()
         {
 
-            //NameLabel.Text = pin.Label;
-            //AddressLabel.Text = pin.Address;
-            //var imageBytes = Convert.FromBase64String(pin.userPhoto);
-            //var imageData = NSData.FromArray(imageBytes);
-            //ProfilePhotoImageView.Image = UIImage.LoadFromData(imageData);
+            organNameLabel.Text = "Organ: " + organName;
+            //SET THE TEXT DETAIL TO BE THE COUNTDOWN
+            timeRemainingLabel.Text = "INSERT COUNTDOWN HERE";
+            //Change colour based on severity
+            timeRemainingLabel.TextColor = UIColor.Red;
+            organImageView.Image = UIImage.FromFile(organName + "_icon.png");
 
-            ////string[] tableItems = new string[] { "Vegetables", "Fruits", "Flower Buds", "Legumes", "Bulbs", "Tubers" };
-            //OrgansTableView.Source = new TableSource(pin, this);
+            //DO API CALL HERE TO RETRIEVE ALL RECIPIENTS
+
+            List<string> tableItems = new List<string> { "Vegetables", "Fruits", "Flower Buds", "Legumes", "Bulbs", "Tubers" };
+            potentialRecipientsTableView.Source = new RecipientsTableSource(tableItems, this);
 
         }
 
