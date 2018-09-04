@@ -243,8 +243,8 @@ CREATE TABLE IF NOT EXISTS `USER` (
 
 DROP TABLE IF EXISTS `PUSH_DEVICE`;
 CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
-  `device_id` text NOT NULL,
-  `user_id` text NOT NULL
+  `device_id` varchar(64) NOT NULL,
+  `user_id` bigint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
