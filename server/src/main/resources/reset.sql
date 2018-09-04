@@ -422,6 +422,13 @@ ALTER TABLE `PROCEDURES`
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
+
+--
+-- Constraints for table `PUSH_DEVICE`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD CONSTRAINT `User_id_foreign_key6` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
+
 --
 -- Create default clinician and admin
 --
