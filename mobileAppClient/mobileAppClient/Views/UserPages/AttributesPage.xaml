@@ -6,7 +6,7 @@
              Title="Attributes" NavigationPage.HasNavigationBar="True"
              xmlns:autocomplete="clr-namespace:Syncfusion.SfAutoComplete.XForms;assembly=Syncfusion.SfAutoComplete.XForms">
     <StackLayout>
-        <TableView Intent="Menu" >
+        <TableView Intent="Menu" HasUnevenRows="True" x:Name="AttributesTableView">
             <TableRoot>
                 <TableSection Title="Name">
                     <EntryCell Label="First Name" x:Name="FirstNameInput"/>
@@ -49,9 +49,22 @@
                     </ViewCell>
                 </TableSection>
                 <TableSection Title="Address">
+                    
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" x:Name="CountryLayout" Padding="15,0,0,0">
+                            <Label Text="Country" VerticalOptions="Center"/>
+                            <Picker Title ="Country" x:Name="CountryInput">
 
-                    <EntryCell Label="Address" x:Name="AddressInput"/>
+                                <Picker.ItemsSource>
 
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>New Zealand</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+                    
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="RegionLayout" Padding="15,0,0,0">
                             <Label Text="Region" VerticalOptions="Center"/>
@@ -67,18 +80,17 @@
                             </Picker>
                         </StackLayout>
                     </ViewCell>
-                    <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="CountryLayout" Padding="15,0,0,0">
-                            <Label Text="Country" VerticalOptions="Center"/>
-                            <Picker Title ="Country" x:Name="CountryInput">
-                                <Picker.ItemsSource>
-                                    <x:Array Type="{x:Type x:String}">
-                                        <x:String>New Zealand</x:String>
-                                    </x:Array>
-                                </Picker.ItemsSource>
-                            </Picker>
+
+                    <EntryCell Label="Address" x:Name="AddressInput" PropertyChanged="Handle_StreetAutoCompleteValueChanged"/>
+                    <EntryCell Label="" Placeholder="Line 2" x:Name="AddressLine2Input" PropertyChanged="Handle_StreetAutoCompleteValueChanged"/>
+
+                    <ViewCell x:Name="StreetAutoCompeleteTableCell" Tapped="Handle_StreetAutoCompleteItemTapped">
+                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" BackgroundColor="LightBlue" x:Name="StreetAutoCompeleteLayout">
+                            <Label  TextColor="DeepPink" FontAttributes="Bold" x:Name="StreetAutoCompleteStAddr"/>
+                            <Label TextColor="Pink" x:Name="StreetAutoCompleteLocation"/>
                         </StackLayout>
                     </ViewCell>
+
                 </TableSection>
                 <TableSection Title="Age">
                     <ViewCell>
@@ -92,18 +104,19 @@
                     </ViewCell>
                     <SwitchCell Text="Deceased" x:Name="hasDiedSwitch" OnChanged="dateOfDeathSwitchChanged" IsEnabled="False"/>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" Padding="15,0,0,0" IsEnabled="False" IsVisible="false">
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCombo" Padding="15,0,0,0">
                             <Label Text="Date of Death" VerticalOptions="Center"/>
                             <DatePicker x:Name="dodInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
+                                IsVisible="False"
                              />
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCountry" Padding="15,0,0,0" IsEnabled="False" IsVisible="false">
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCountry" Padding="15,0,0,0">
                             <Label Text="Country" VerticalOptions="Center"/>
-                            <Picker Title ="Country" x:Name="DODCountryInput">
+                            <Picker Title ="Country" x:Name="DODCountryInput" IsVisible="False">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>New Zealand</x:String>
@@ -113,9 +126,9 @@
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathRegion" Padding="15,0,0,0" IsEnabled="False" IsVisible="false">
+                        <StackLayout Orientation="Horizontal" x:Name="dateOfDeathRegion" Padding="15,0,0,0">
                             <Label Text="Region" VerticalOptions="Center"/>
-                            <Picker Title ="Region" x:Name="DODRegionInput">
+                            <Picker Title ="Region" x:Name="DODRegionInput" IsVisible="False">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Northland</x:String>
@@ -128,8 +141,13 @@
                         </StackLayout>
                     </ViewCell>
 
-                    <EntryCell Label="City" x:Name="DODCityInput"/>
+                    <EntryCell x:Name="DODCityInput" Label="City" PropertyChanged="Handle_DODCityAutoCompleteValueChanged" IsEnabled="False"/>
 
+                    <ViewCell x:Name="DODCityAutoCompeleteTableCell" Tapped="Handle_DODCityAutoCompleteItemTapped" >
+                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" BackgroundColor="LightBlue" x:Name="DODCityAutoCompleteLayout">
+                            <Label  TextColor="DeepPink" FontAttributes="Bold" x:Name="DODCityAutoCompleteLabel"/>
+                        </StackLayout>
+                    </ViewCell>
 
                 </TableSection>
                 <TableSection Title="Physical Attributes">
@@ -188,9 +206,14 @@
                             </Picker>
                         </StackLayout>
                     </ViewCell>
+                    
                 </TableSection>
             </TableRoot>
         </TableView>
+
+
+
+
         <Button Text="Save" Clicked="SaveClicked"/>
     </StackLayout>
 </ContentPage>

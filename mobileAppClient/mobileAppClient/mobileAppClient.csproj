@@ -39,7 +39,6 @@
     <Folder Include="MenuItems\" />
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
-    <Folder Include="Google\" />
     <Folder Include="Maps\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,18 @@
-﻿using mobileAppClient.odmsAPI;
+﻿using mobileAppClient.Google;
+using mobileAppClient.odmsAPI;
 using Newtonsoft.Json;
+using Syncfusion.SfAutoComplete.XForms;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -21,9 +25,11 @@ namespace mobileAppClient
     public partial class AttributesPage : ContentPage
     {
         // Whether the date of death input is visible
-        private bool dateOfDeathShowing;
 
         private bool isClinicianEditing;
+
+        Boolean updatingAutoComplete;
+        Boolean AutoCompleteitemTapped;
 
         public AttributesPage()
         {
@@ -31,21 +37,26 @@ namespace mobileAppClient
             if (ClinicianController.Instance.isLoggedIn())
             {
                 hasDiedSwitch.IsEnabled = true;
-                dateOfDeathCombo.IsEnabled = true;
-                DODCityInput.IsEnabled = true;
-                dateOfDeathRegion.IsEnabled = true;
-                dateOfDeathCountry.IsEnabled = true;
                 isClinicianEditing = true;
-            } else
+            }
+            else
             {
+                hasDiedSwitch.IsEnabled = false;
                 isClinicianEditing = false;
             }
 
-            dateOfDeathShowing = false;
+            hasDiedSwitch.On = UserController.Instance.LoggedInUser.dateOfDeath != null;
+
             dobInput.MaximumDate = DateTime.Today;
             dodInput.MaximumDate = DateTime.Today;
 
             FillFields();
+
+            StreetAutoCompeleteLayout.IsVisible = false;
+
+            DODCityAutoCompleteLayout.IsVisible = false;
+
+            updatingAutoComplete = false;
         }
 
         /*
@@ -55,48 +66,70 @@ namespace mobileAppClient
         {
             User loggedInUser = UserController.Instance.LoggedInUser;
 
-            if(loggedInUser.name.Count == 2) {
+            if (loggedInUser.name.Count == 2)
+            {
                 FirstNameInput.Text = loggedInUser.name[0];
                 MiddleNameInput.Text = "";
                 LastNameInput.Text = loggedInUser.name[1];
-            } else {
+            }
+            else
+            {
                 FirstNameInput.Text = loggedInUser.name[0];
                 MiddleNameInput.Text = loggedInUser.name[1];
                 LastNameInput.Text = loggedInUser.name[2];
             }
 
-            if(loggedInUser.preferredName.Count == 2) {
+            if (loggedInUser.preferredName.Count == 2)
+            {
                 PrefFirstNameInput.Text = loggedInUser.preferredName[0];
                 PrefMiddleNameInput.Text = "";
                 PrefLastNameInput.Text = loggedInUser.preferredName[1];
-            } else {
+                PrefLastNameInput.Text = loggedInUser.preferredName[1];
+            }
+            else
+            {
                 PrefFirstNameInput.Text = loggedInUser.preferredName[0];
                 PrefMiddleNameInput.Text = loggedInUser.preferredName[1];
                 PrefLastNameInput.Text = loggedInUser.preferredName[2];
             }
 
-  
             BirthGenderInput.SelectedItem = FirstCharToUpper(loggedInUser.gender);
             GenderIdentityInput.SelectedItem = FirstCharToUpper(loggedInUser.genderIdentity);
 
-            //Geolocate
-            AddressInput.Text = loggedInUser.currentAddress;
+            if(loggedInUser.currentAddress != null)
+            {
+                DisplayAddress(loggedInUser.currentAddress);
+            }
 
             RegionInput.SelectedItem = loggedInUser.region;
             CountryInput.SelectedItem = loggedInUser.country;
 
             dobInput.Date = loggedInUser.dateOfBirth.ToDateTime();
             // Check if the user is dead
-            if (loggedInUser.dateOfDeath != null)
+            if (hasDiedSwitch.On)
             {
-                hasDiedSwitch.On = true;
                 dodInput.Date = loggedInUser.dateOfDeath.date.ToDateTime();
 
-                //Geolocate
                 DODCityInput.Text = loggedInUser.cityOfDeath;
 
                 DODRegionInput.SelectedItem = loggedInUser.regionOfDeath;
                 DODCountryInput.SelectedItem = loggedInUser.countryOfDeath;
+
+
+                dodInput.IsVisible = true;
+                DODCountryInput.IsVisible = true;
+                DODRegionInput.IsVisible = true;
+
+                DODCityInput.IsEnabled = true;
+                DODCityInput.Text = UserController.Instance.LoggedInUser.cityOfDeath;
+            } else
+            {
+                dodInput.IsVisible = false;
+                DODCountryInput.IsVisible = false;
+                DODRegionInput.IsVisible = false;
+
+                DODCityInput.IsEnabled = false;
+                DODCityInput.Text = "";
             }
 
             HeightInput.Text = loggedInUser.height.ToString();
@@ -136,20 +169,37 @@ namespace mobileAppClient
             string givenPrefMiddleName = InputValidation.Trim(PrefMiddleNameInput.Text);
             string givenPrefLastName = InputValidation.Trim(PrefLastNameInput.Text);
 
-            string givenAddress = InputValidation.Trim(AddressInput.Text);
-            //string givenRegion = InputValidation.Trim(RegionInput.Text);
+
+            String addressLine1 = AddressInput.Text;
+            String addressLine2 = AddressLine2Input.Text;
+            List<String> addressLines = new List<String>();
+            if(addressLine1 != "")
+            {
+                addressLines.Add(addressLine1);
+            }
+
+            if (addressLine2 != "")
+            {
+                addressLines.Add(addressLine2);
+            }
+
+            string givenAddress = InputValidation.Trim(String.Join(", ", addressLines));
+
+            string givenRegion = InputValidation.Trim(RegionInput.SelectedItem == null ? "" : RegionInput.SelectedItem.ToString());
 
             string givenHeight = InputValidation.Trim(HeightInput.Text);
             string givenWeight = InputValidation.Trim(WeightInput.Text);
             string givenBloodPressure = InputValidation.Trim(BloodPressureInput.Text);
 
             // Birth names
-            if (!InputValidation.IsValidTextInput(givenFirstName, false, false)) {
+            if (!InputValidation.IsValidTextInput(givenFirstName, false, false))
+            {
                 await DisplayAlert("", "Please enter a valid first name", "OK");
                 return;
-            } 
+            }
 
-            if (!InputValidation.IsValidTextInput(givenMiddleName, false, true)) {
+            if (!InputValidation.IsValidTextInput(givenMiddleName, false, true))
+            {
                 await DisplayAlert("", "Please enter a valid middle name", "OK");
                 return;
             }
@@ -176,13 +226,6 @@ namespace mobileAppClient
             if (!InputValidation.IsValidTextInput(givenPrefLastName, false, true))
             {
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
-                return;
-            }
-
-            // Address
-            if (!InputValidation.IsValidTextInput(givenAddress, true, true))
-            {
-                await DisplayAlert("", "Please enter a valid address", "OK");
                 return;
             }
 
@@ -224,8 +267,8 @@ namespace mobileAppClient
             if (hasDiedSwitch.On)
             {
                 loggedInUser.dateOfDeath = new CustomDateTime(dodInput.Date);
-                loggedInUser.countryOfDeath = DODCountryInput.SelectedItem.ToString();
-                loggedInUser.regionOfDeath = DODRegionInput.SelectedItem.ToString();
+                loggedInUser.countryOfDeath = DODCountryInput.SelectedItem == null ? "" : DODCountryInput.SelectedItem.ToString();
+                loggedInUser.regionOfDeath = DODRegionInput.SelectedItem == null ? "" : DODRegionInput.SelectedItem.ToString();
                 loggedInUser.cityOfDeath = DODCityInput.Text;
             }
             else
@@ -279,20 +322,137 @@ namespace mobileAppClient
         }
 
         private void dateOfDeathSwitchChanged(object sender, ToggledEventArgs e)
-        {
-            dateOfDeathShowing = !dateOfDeathShowing;
-            dateOfDeathCombo.IsVisible = dateOfDeathShowing;
-            DODCityInput.IsEnabled = dateOfDeathShowing;
-            dateOfDeathRegion.IsVisible = dateOfDeathShowing;
-            dateOfDeathCountry.IsVisible = dateOfDeathShowing;
+        {            
+            dodInput.IsVisible = e.Value;
+            DODCountryInput.IsVisible = e.Value;
+            DODRegionInput.IsVisible = e.Value;
+
+            DODCityInput.IsEnabled = e.Value;
+            DODCityInput.Text = e.Value ? UserController.Instance.LoggedInUser.cityOfDeath : "";
+
             dateOfDeathCombo.ForceLayout();
         }
 
-        async void Handle_ValueChanged(object sender, Syncfusion.SfAutoComplete.XForms.ValueChangedEventArgs e)
-        {
 
+        void Handle_StreetAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        {
+            if(StreetAutoCompleteStAddr.Text != "")
+            {
+                AutoCompleteitemTapped = true;
+                DisplayAddress(StreetAutoCompleteStAddr.Text);
+                StreetAutoCompleteStAddr.Text = "";
+                StreetAutoCompleteLocation.Text = "";
+                StreetAutoCompeleteLayout.IsVisible = false;
+            }
         }
 
 
+
+        async void Handle_StreetAutoCompleteValueChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if(args.PropertyName != EntryCell.TextProperty.PropertyName)
+            {
+                return;
+            }
+
+            if (updatingAutoComplete == false && AutoCompleteitemTapped == false)
+            {
+                updatingAutoComplete = true;
+
+                List<String> tokens = new List<String>();
+                foreach (Object item in new List<Object>() { CountryInput.SelectedItem, RegionInput.SelectedItem, ((EntryCell)sender).Text })
+                {
+                    if(item != null && item.ToString() != "")
+                    {
+                        tokens.Add(item.ToString());
+                    }
+                }
+
+                List<String> autoCompleteTypes = new List<String>() { "street_address", "intersection", "route" };
+                List<Tuple<String, String>> data = await new GooglePlacesAPI().AddressAutocomplete(tokens, autoCompleteTypes);
+
+                if (data.Count == 0)
+                {
+                    StreetAutoCompleteStAddr.Text = "";
+                    StreetAutoCompleteLocation.Text = "";
+                    StreetAutoCompeleteLayout.IsVisible = false;
+                }
+                else
+                {
+                    StreetAutoCompleteStAddr.Text = data[0].Item1;
+                    StreetAutoCompleteLocation.Text = data[0].Item2;
+                    StreetAutoCompeleteLayout.IsVisible = true;
+                }
+                updatingAutoComplete = false;
+            }
+
+            if (AutoCompleteitemTapped == true)
+            {
+                AutoCompleteitemTapped = false;
+            }
+        }
+
+        void Handle_DODCityAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        {
+            if(DODCityAutoCompleteLabel.Text != "" && hasDiedSwitch.On)
+            {
+                AutoCompleteitemTapped = true;
+                DODCityInput.Text = DODCityAutoCompleteLabel.Text;
+
+                DODCityAutoCompleteLabel.Text = "";
+                DODCityAutoCompleteLayout.IsVisible = false;
+            }
+        }
+
+        public void DisplayAddress(String address)
+        {
+            List<String> tokens = address.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            String line1 = tokens.Count > 0 ? tokens[0] : "";
+            String line2 = tokens.Count > 0 ? String.Join(", ", tokens.GetRange(1, tokens.Count - 1)) : "";
+            AddressInput.Text = line1;
+            AddressLine2Input.Text = line2;
+        }
+
+        async void Handle_DODCityAutoCompleteValueChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != EntryCell.TextProperty.PropertyName)
+            {
+                return;
+            }
+
+            if (updatingAutoComplete == false && AutoCompleteitemTapped == false)
+            {
+                updatingAutoComplete = true;
+
+                List<String> tokens = new List<String>();
+                foreach (Object item in new List<Object>() { DODCountryInput.SelectedItem, DODRegionInput.SelectedItem, DODCityInput.Text })
+                {
+                    if (item != null && item.ToString() != "")
+                    {
+                        tokens.Add(item.ToString());
+                    }
+                }
+
+                List<Tuple<String,String>> data = await new GooglePlacesAPI().CityAutocomplete(tokens, new List<String>() { "locality" });
+
+                if (data.Count == 0)
+                {
+                    DODCityAutoCompleteLabel.Text = "";
+                    DODCityAutoCompleteLayout.IsVisible = false;
+                }
+                else
+                {
+                    DODCityAutoCompleteLabel.Text = data[0].Item1;
+                    DODCityAutoCompleteLayout.IsVisible = true;
+
+                }
+                updatingAutoComplete = false;
+            }
+           
+            if (AutoCompleteitemTapped == true)
+            {
+                AutoCompleteitemTapped = false;
+            }
+        }
     }
 }
