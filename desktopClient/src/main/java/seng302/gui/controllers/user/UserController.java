@@ -592,6 +592,7 @@ public class UserController implements Initializable {
     public void setControlsShown(Boolean shown) {
         waitingListController.setControlsShown(shown);
         proceduresController.setControlsShown(shown);
+        attributesController.setControlsShown(shown);
         diseasesController.setControlsShown(shown);
         medicationsController.setControlsShown(shown);
         logoutMenuItem.setDisable(shown);

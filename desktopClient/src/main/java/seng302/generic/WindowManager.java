@@ -621,6 +621,11 @@ public class WindowManager extends Application {
             scenes.remove(scene);
             scenes.put(scene, new Scene(FXMLLoader.load(WindowManager.class.getResource(scene.getPath())), MAIN_WINDOW_PREF_WIDTH,
                     MAIN_WINDOW_PREF_HEIGHT));
+            if (scene == TFScene.login) {
+                loginController.setEnterEvent();
+            } else if (scene == TFScene.createAccount) {
+                createUserController.setEnterEvent();
+            }
         } catch (IOException e) {
             System.err.println("Unable to load fxml or save file.");
             e.printStackTrace();

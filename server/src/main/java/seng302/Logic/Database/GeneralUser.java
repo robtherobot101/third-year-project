@@ -282,13 +282,14 @@ public class GeneralUser {
             LocalDateTime lastModified = user.getCreationTime();
             String username = user.getUsername();
             String email = user.getEmail();
+            String nhi = user.getNhi();
             String password = user.getPassword();
             String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
         return   MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                " email, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
+                " email, nhi, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\", \"{12}\")",
                 firstName, middleNames == null ? null : "\"" + middleNames +"\"", lastName == null ? null : "\"" + lastName + "\"", preferredName, preferredMiddleNames == null ? null : "\"" + preferredMiddleNames + "\"",
-                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, password, dateOfBirth);
+                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, nhi, password, dateOfBirth);
     }
 
     /**
@@ -319,10 +320,11 @@ public class GeneralUser {
             PreparedStatement statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
 
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?");
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?) AND password = ?");
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPassword());
+            statement.setString(3, user.getNhi());
+            statement.setString(4, user.getPassword());
             ResultSet resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {

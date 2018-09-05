@@ -7,7 +7,7 @@ import seng302.generic.WindowManager;
  */
 public enum TFScene {
     login("login", 600, 320),
-    createAccount("user/createUser", 400, 450),
+    createAccount("user/createUser", 400, 470),
     clinician("clinician/clinician", WindowManager.MAIN_WINDOW_PREF_WIDTH, WindowManager.MAIN_WINDOW_PREF_HEIGHT), //Don't reorder these
     admin("admin/admin", WindowManager.MAIN_WINDOW_PREF_WIDTH, WindowManager.MAIN_WINDOW_PREF_HEIGHT),
     userWindow("user/user", WindowManager.MAIN_WINDOW_PREF_WIDTH, WindowManager.MAIN_WINDOW_PREF_HEIGHT);
