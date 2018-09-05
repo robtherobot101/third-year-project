@@ -6,11 +6,10 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
-                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
-
                 <Image Source="donationIcon.png" 
                        WidthRequest="150"
                        HeightRequest="150"
+                       Margin="0, 0, 0, 30"
                        />
 
                 <Entry x:Name="usernameEmailInput" Placeholder="Username/Email" ReturnType="Next"               
@@ -24,14 +23,21 @@
                     <Button Text="Login"
                     HorizontalOptions="Center"
                     VerticalOptions="StartAndExpand"
-                    Clicked="LoginButtonClicked" />
+                    Clicked="LoginButtonClicked"
+                            x:Name="LoginButton"/>
 
                     <Button Text="Sign Up"
                     HorizontalOptions="EndAndExpand"
                     VerticalOptions="CenterAndExpand"
-                    Clicked="SignUpButtonClicked" />
-
+                    Clicked="SignUpButtonClicked"
+                            x:Name="SignUpButton"/>
                 </StackLayout>
+
+                <StackLayout Orientation="Horizontal" Margin="0, 0, 0, 50">
+                    <Label Text="Remember me?" Margin="0, 0, 30, 0"/>
+                    <Switch x:Name="RememberMeSwitch"/>
+                </StackLayout>
+                
 
                  <Button Text="Login with Facebook"
                     Clicked="Handle_LoginWithFacebookClicked" 
@@ -50,6 +56,7 @@
                          HeightRequest="50"
                          WidthRequest="90"
                          x:Name="GoogleButton"/>
+                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
                     
             </StackLayout>
         </ScrollView>

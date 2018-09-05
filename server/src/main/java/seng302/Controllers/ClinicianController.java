@@ -165,7 +165,7 @@ public class ClinicianController {
     }
 
     /**
-     * method to process the deletion of a clinican
+     * method to process the deletion of a clinician
      * @param request Java request object, used to invoke correct methods
      * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String whether or not the clinician was deleted or not

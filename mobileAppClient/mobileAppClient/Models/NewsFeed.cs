@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 
 namespace mobileAppClient
@@ -52,7 +53,17 @@ namespace mobileAppClient
 
         private async void getFeed(String feedUrl)
         {
-            string rssString = await ServerConfig.Instance.client.GetStringAsync(feedUrl);
+            string rssString = null;
+            try
+            {
+                rssString = await ServerConfig.Instance.client.GetStringAsync(feedUrl);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("RSS FEED ERROR: " + e.InnerException.Message);
+                return;
+            }
+            
             foreach (RssSchema element in rssParser.Parse(rssString))
             {
                 // If the item does not include an image, use a default one
@@ -72,8 +83,9 @@ namespace mobileAppClient
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 return;
-                
-            } else {
+            }
+            else
+            {
                 getFeed("http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom");
                 // For each source
                 foreach (String feed in feeds)

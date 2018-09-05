@@ -2,6 +2,7 @@
 using mobileAppClient.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -34,15 +35,7 @@ namespace mobileAppClient
             } else
             {
                 UserController.Instance.mainPageController = this;
-                ClinicianController.Instance.mainPageController = this;
-                LogoutUser();
             }
-
-            // Setting our list to be ItemSource for ListView in MainPage.xaml
-
-            // Initial navigation, this can be used for our home page
-
-            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
         }
 
         /*
@@ -59,7 +52,7 @@ namespace mobileAppClient
 
             // Open the login page
             var loginPage = new LoginPage();
-            await Navigation.PushModalAsync(loginPage);
+            await Navigation.PopModalAsync(true);
         }
 
         /*
@@ -79,7 +72,7 @@ namespace mobileAppClient
 
             // Open the login page
             var loginPage = new LoginPage();
-            await Navigation.PushModalAsync(loginPage);
+            await Navigation.PopModalAsync(true);
         }
 
         /*
@@ -145,7 +138,8 @@ namespace mobileAppClient
         public void clinicianViewingUser()
         {
             Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
-            updateUserProfileBar();
+            updateUserViewerProfileBar();
+           
 
             menuList.Clear();
 
@@ -169,6 +163,15 @@ namespace mobileAppClient
         }
 
         /*
+         * Function used to Stops the back button from working and 
+         * opening the main view without a logged in user
+         */
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
+
+        /*
          * Handles when a given page is selected in the menu slider and sends the user to that page.
          */
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -189,7 +192,9 @@ namespace mobileAppClient
                     }
                     break;
                 default:
-                    Detail = new NavigationPage((Page)Activator.CreateInstance(page));
+                    NavigationPage content = new NavigationPage((Page) Activator.CreateInstance(page));
+
+                    Detail = content;
                     IsPresented = false;
                     break;
             }
@@ -202,6 +207,15 @@ namespace mobileAppClient
             updateUserProfileBar();
         }
 
+        private void updateUserViewerProfileBar()
+        {
+            BindingContext = new
+            {
+                ProfileImage = "viewing_user_photo.png",
+                FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
+                BorderColor = "White"
+            };
+        }
         private void updateUserProfileBar()
         {
             // Update for a logged in user
@@ -232,7 +246,7 @@ namespace mobileAppClient
             BindingContext = new
             {
                 ProfileImage = "default_clinician_photo.png",
-                FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name.Trim(),
+                FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name,
                 BorderColor = "White"
             };
         }

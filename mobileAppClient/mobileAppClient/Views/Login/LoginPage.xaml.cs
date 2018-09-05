@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using mobileAppClient.Google;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -30,35 +31,79 @@ namespace mobileAppClient
 	            _IsLoading = value;
 	            if (_IsLoading == true)
 	            {
+	                usernameEmailInput.IsEnabled = false;
+	                passwordInput.IsEnabled = false;
+	                LoginButton.IsEnabled = false;
+	                SignUpButton.IsEnabled = false;
+	                RememberMeSwitch.IsEnabled = false;
+
 	                LoadingIndicator.IsVisible = true;
 	                LoadingIndicator.IsRunning = true;
 	            }
 	            else
 	            {
-	                LoadingIndicator.IsVisible = false;
+	                usernameEmailInput.IsEnabled = true;
+	                passwordInput.IsEnabled = true;
+	                LoginButton.IsEnabled = true;
+	                SignUpButton.IsEnabled = true;
+	                RememberMeSwitch.IsEnabled = true;
+
+                    LoadingIndicator.IsVisible = false;
 	                LoadingIndicator.IsRunning = false;
 	            }
 	        }
 	    }
         private bool loginClicked;
 
-		public LoginPage ()
+	    public bool rememberLogin;
+
+		public LoginPage()
 		{
 			InitializeComponent ();
-            loginClicked = false;
-
+		    
 		    IsLoading = false;
 		    UserController.Instance.loginPageController = this;
-            //Temporary fix for the google login not working on iOS
-            if(Device.RuntimePlatform == Device.iOS) {
+
+            // Temporary fix for the Google login not working on iOS
+            if (Device.RuntimePlatform == Device.iOS) {
                 GoogleButton.IsVisible = false;
             }
-            if(Device.RuntimePlatform == Device.Android) {
+
+            // Hide the poorly sized Facebook logo on Android
+            if (Device.RuntimePlatform == Device.Android) {
                 FacebookButton.Image = null;
             }
         }
 
-	    /*
+	    /// <summary>
+	    /// Activated whenever focus is on this page
+	    /// </summary>
+	    protected override async void OnAppearing()
+	    {
+	        RememberMeSwitch.IsToggled = false;
+            // Check for previously stored login details
+            try
+	        {
+	            var usernameEmail = await SecureStorage.GetAsync("usernameEmail");
+	            var password = await SecureStorage.GetAsync("password");
+
+	            if (usernameEmail != null && password != null)
+	            {
+	                RememberMeSwitch.IsToggled = true;
+	                usernameEmailInput.Text = usernameEmail;
+	                passwordInput.Text = password;
+
+                    LoginStoredUser(usernameEmail, password);
+	            }
+	        }
+	        catch (Exception)
+	        {
+	            // Possible that device doesn't support secure storage on device.
+	        }
+        }
+
+
+        /*
          * Called when the Sign Up button is pressed
          */
         async void SignUpButtonClicked(Object sender, EventArgs args)
@@ -72,6 +117,8 @@ namespace mobileAppClient
          */
         async void LoginButtonClicked(object sender, EventArgs args)
         {
+            rememberLogin = RememberMeSwitch.IsToggled;
+
             // Prevents multiple presses of the login button
             if (loginClicked)
             {
@@ -90,7 +137,7 @@ namespace mobileAppClient
                 await DisplayAlert("",
                     "Please enter a valid username/email and password",
                     "OK");
-                loginClicked = false;
+                IsLoading = false;
                 return;
             }
 
@@ -104,32 +151,51 @@ namespace mobileAppClient
                     if (!ClinicianController.Instance.isLoggedIn())
                     {
                         UserAPI userAPI = new UserAPI();
-                        HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
-                        UserController.Instance.mainPageController.updateMenuPhoto();
+                        await userAPI.GetUserPhoto();
                     }
 
+                    MainPage baseMainPage = new MainPage(false);
+
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        baseMainPage.clinicianLoggedIn();
+                    }
+                    else
+                    {
+                        baseMainPage.userLoggedIn();
+                    }
+
+                    await Navigation.PushModalAsync(baseMainPage);
+
                     IsLoading = false;
-                    await Navigation.PopModalAsync();
+
+                    usernameEmailInput.Text = "";
+                    passwordInput.Text = "";
+
                     break;
                 case HttpStatusCode.Unauthorized:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "Incorrect username/password",
                         "OK");
                     break;
                 case HttpStatusCode.ServiceUnavailable:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "Server unavailable, check connection",
                         "OK");
                     break;
                 case HttpStatusCode.InternalServerError:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "Server error",
                         "OK");
                     break;
                 case HttpStatusCode.Conflict:
+                    IsLoading = false;
                     await DisplayAlert(
                         "Failed to Login",
                         "User is deceased. Please consult a Registered Clinician",
@@ -137,7 +203,91 @@ namespace mobileAppClient
                     break;
             }
             loginClicked = false;
+            
+        }
 
+        /// <summary>
+        /// Logs in as a previously logged in user who did not log out
+        /// </summary>
+        /// <param name="usernameEmail"></param>
+        /// <param name="password"></param>
+        async void LoginStoredUser(string usernameEmail, string password)
+        {
+            IsLoading = true;
+            string givenUsernameEmail = usernameEmail;
+            string givenPassword = password;
+
+
+            if (!InputValidation.IsValidTextInput(givenUsernameEmail, true, false) || !InputValidation.IsValidTextInput(givenPassword, true, false))
+            {
+                await DisplayAlert("",
+                    "Username/email and password is invalid",
+                    "OK");
+                return;
+            }
+
+            LoginAPI loginAPI = new LoginAPI();
+            HttpStatusCode statusCode = await loginAPI.LoginUser(givenUsernameEmail, givenPassword);
+
+            switch (statusCode)
+            {
+                case HttpStatusCode.OK:
+                    // Fetch photo only on user login
+                    if (!ClinicianController.Instance.isLoggedIn())
+                    {
+                        UserAPI userAPI = new UserAPI();
+                        await userAPI.GetUserPhoto();
+                    }
+
+                    MainPage baseMainPage = new MainPage(false);
+
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        baseMainPage.clinicianLoggedIn();
+                    }
+                    else
+                    {
+                        baseMainPage.userLoggedIn();
+                    }
+
+                    await Navigation.PushModalAsync(baseMainPage);
+
+                    IsLoading = false;
+
+                    usernameEmailInput.Text = "";
+                    passwordInput.Text = "";
+
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Incorrect username/password",
+                        "OK");
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Server unavailable, check connection",
+                        "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Server error",
+                        "OK");
+                    break;
+                case HttpStatusCode.Conflict:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "User is deceased. Please consult a Registered Clinician",
+                        "OK");
+                    break;
+            }
+            loginClicked = false;
 
         }
 
@@ -152,7 +302,7 @@ namespace mobileAppClient
 
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
-
+            rememberLogin = RememberMeSwitch.IsToggled;
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
@@ -168,6 +318,7 @@ namespace mobileAppClient
 
         async void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
+            rememberLogin = RememberMeSwitch.IsToggled;
             if (!await ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
@@ -213,7 +364,11 @@ namespace mobileAppClient
                         // Pop away login screen on successful login
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                         UserController.Instance.mainPageController.updateMenuPhoto();
-                        await Navigation.PopModalAsync();
+
+                        MainPage baseMainPage = new MainPage(false);
+                        baseMainPage.userLoggedIn();
+                        await Navigation.PushModalAsync(baseMainPage);
+
                         break;
                     case HttpStatusCode.Unauthorized:
                         await DisplayAlert(

@@ -25,7 +25,7 @@ public class GeneralUser {
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
         updateUserAttributes(user, userId);
 
-        new UserDonations().updateAllDonations(new HashSet<>(user.getOrgans()), userId, user.getDateOfDeath());
+        new UserDonations().updateAllDonations(new HashSet<Organ>(user.getOrgans()), userId, user.getDateOfDeath());
 
         new UserHistory().updateHistory(user.getUserHistory(), userId);
 

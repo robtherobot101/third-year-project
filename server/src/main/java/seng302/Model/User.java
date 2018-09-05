@@ -80,6 +80,30 @@ public class User {
         this.creationTime = LocalDateTime.now();
     }
 
+    public void copyFieldsFrom(User user) {
+        name = user.getNameArray();
+        preferredName = user.getPreferredNameArray();
+        dateOfBirth = user.getDateOfBirth();
+        dateOfDeath = user.getDateOfDeath();
+        gender = user.getGender();
+        genderIdentity = user.getGenderIdentity();
+        bloodType = user.getBloodType();
+        height = user.getHeight();
+        weight = user.getWeight();
+        region = user.getRegion();
+        country = user.getCountry();
+        currentAddress = user.getCurrentAddress();
+        smokerStatus = user.getSmokerStatus();
+        bloodPressure = user.getBloodPressure();
+        alcoholConsumption = user.getAlcoholConsumption();
+        organs.clear();
+        organs.addAll(user.getOrgans());
+        countryOfDeath = user.getCountryOfDeath();
+        regionOfDeath = user.getRegionOfDeath();
+        cityOfDeath = user.getCityOfDeath();
+    }
+
+
     /**
      * constructor method to create a user object from the database
      * @param id int the id of the user

@@ -6,14 +6,15 @@ package seng302.User.Attribute;
 public enum Gender {
     NONBINARY("Non-Binary"), FEMALE("Female"), MALE("Male");
 
-    private String gender;
+    private String userGender;
 
     Gender(String gender) {
-        this.gender = gender;
+        this.userGender = gender;
     }
 
+    @Override
     public String toString() {
-        return gender;
+        return userGender;
     }
 
     /**
