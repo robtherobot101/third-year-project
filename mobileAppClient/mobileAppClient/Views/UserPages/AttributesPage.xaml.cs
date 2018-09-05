@@ -117,17 +117,17 @@ namespace mobileAppClient
                 DODCountryInput.SelectedItem = loggedInUser.countryOfDeath;
 
 
-                dodInput.IsVisible = true;
-                DODCountryInput.IsVisible = true;
-                DODRegionInput.IsVisible = true;
+                dodInput.IsEnabled = true;
+                DODCountryInput.IsEnabled = true;
+                DODRegionInput.IsEnabled = true;
 
                 DODCityInput.IsEnabled = true;
                 DODCityInput.Text = UserController.Instance.LoggedInUser.cityOfDeath;
             } else
             {
-                dodInput.IsVisible = false;
-                DODCountryInput.IsVisible = false;
-                DODRegionInput.IsVisible = false;
+                dodInput.IsEnabled = false;
+                DODCountryInput.IsEnabled = false;
+                DODRegionInput.IsEnabled = false;
 
                 DODCityInput.IsEnabled = false;
                 DODCityInput.Text = "";
@@ -327,12 +327,24 @@ namespace mobileAppClient
          */
         private void dateOfDeathSwitchChanged(object sender, ToggledEventArgs e)
         {            
-            dodInput.IsVisible = e.Value;
-            DODCountryInput.IsVisible = e.Value;
-            DODRegionInput.IsVisible = e.Value;
+            dodInput.IsEnabled = e.Value;
+            DODCountryInput.IsEnabled = e.Value;
+            DODRegionInput.IsEnabled = e.Value;
 
             DODCityInput.IsEnabled = e.Value;
-            DODCityInput.Text = e.Value ? UserController.Instance.LoggedInUser.cityOfDeath : "";
+
+            if (e.Value)
+            {
+                DODCountryInput.SelectedItem = UserController.Instance.LoggedInUser.country;
+                DODRegionInput.SelectedItem = UserController.Instance.LoggedInUser.region;
+
+            } else
+            {
+                DODCountryInput.SelectedItem = UserController.Instance.LoggedInUser.country;
+                DODRegionInput.SelectedItem = UserController.Instance.LoggedInUser.region;
+            }
+
+            DODCityInput.Text = "";
 
             dateOfDeathCombo.ForceLayout();
         }
