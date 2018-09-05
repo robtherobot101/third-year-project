@@ -105,6 +105,7 @@ namespace mobileAppClient
             CountryInput.SelectedItem = loggedInUser.country;
 
             dobInput.Date = loggedInUser.dateOfBirth.ToDateTime();
+            
             // Check if the user is dead
             if (hasDiedSwitch.On)
             {
@@ -321,6 +322,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Updates the state of the death detail fields when the death switch is changed
+         */
         private void dateOfDeathSwitchChanged(object sender, ToggledEventArgs e)
         {            
             dodInput.IsVisible = e.Value;
@@ -333,7 +337,9 @@ namespace mobileAppClient
             dateOfDeathCombo.ForceLayout();
         }
 
-
+        /*
+         * Fills the address entry with the value in the autocomplete field when it is tapped
+         */
         void Handle_StreetAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if(StreetAutoCompleteStAddr.Text != "")
@@ -347,7 +353,10 @@ namespace mobileAppClient
         }
 
 
-
+        /*
+         * Queries the google places autocomplete api and populates the autocomplete cell
+         * when the address field is changed
+         */
         async void Handle_StreetAutoCompleteValueChanged(object sender, PropertyChangedEventArgs args)
         {
             if(args.PropertyName != EntryCell.TextProperty.PropertyName)
@@ -392,6 +401,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Fills the city of death entry with the value in the autocomplete field when it is tapped
+         */
         void Handle_DODCityAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if(DODCityAutoCompleteLabel.Text != "" && hasDiedSwitch.On)
@@ -404,6 +416,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Breaks the given address into two lines and displays it in two fields
+         */
         public void DisplayAddress(String address)
         {
             List<String> tokens = address.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -413,6 +428,10 @@ namespace mobileAppClient
             AddressLine2Input.Text = line2;
         }
 
+        /*
+         * Queries the google places autocomplete api and populates the autocomplete cell
+         * when the address field is changed
+         */
         async void Handle_DODCityAutoCompleteValueChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName != EntryCell.TextProperty.PropertyName)

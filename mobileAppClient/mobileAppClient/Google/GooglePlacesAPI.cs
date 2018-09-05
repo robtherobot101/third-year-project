@@ -14,7 +14,10 @@ namespace mobileAppClient.Google
     {
         String apiKey = "AIzaSyD7DEH6Klk3ZyduVyqbaVEyTscj4sp48PQ";
         String autoCompleteEndPoint = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json";
-
+        
+        /*
+         * Sends a request to the Google Places API and returns the JSON result as a String
+         */
         private async Task<String> AutoCompleteRequest(String input, String type)
         {
             HttpClient client = ServerConfig.Instance.client;
@@ -50,6 +53,10 @@ namespace mobileAppClient.Google
             }
         }
 
+        /*
+         * Queries the Google Places autocomplete API and returns a list of tuples with the parts of the address split
+         * into two parts
+         */
         public async Task<List<Tuple<String, String>>> AddressAutocomplete(List<String> tokens, List<String> acceptedPlaceTypes)
         {
             if (tokens.Count < 3)
@@ -132,8 +139,9 @@ namespace mobileAppClient.Google
             }
         }
 
-        
-
+        /*
+         * Returns the subset of searchTokens which do not appear in secondaryText
+         */
         private List<String> unMatchedTokens(String secondaryText, List<String> searchTokens)
         {
 
@@ -158,7 +166,10 @@ namespace mobileAppClient.Google
             return unMatched;
         }
 
-
+        /*
+         * Queries the Google Places autocomplete API for a city and returns a list of tuples with the 
+         * city name in the firt position, and the rest of the area location in the second (...,region, country)
+         */
         public async Task<List<Tuple<String, String>>> CityAutocomplete(List<String> tokens, List<String> acceptedPlaceTypes)
         {
             if(tokens.Count < 3)
