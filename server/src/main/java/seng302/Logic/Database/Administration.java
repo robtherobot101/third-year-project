@@ -69,7 +69,6 @@ public class Administration {
                 sb.append(result.getString(1)).append("\n");
             }
             sb.append("SET FOREIGN_KEY_CHECKS = 1;");
-            System.out.println(sb.toString());
             SqlFileParser.parse(connection, new ByteArrayInputStream(sb.toString().getBytes())).executeBatch();
         }
     }
