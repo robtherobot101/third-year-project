@@ -48,6 +48,14 @@ public class DatabaseConfiguration {
     }
 
     /**
+     * Get the name of the connected database
+     * @return A string of the connected database
+     */
+    public String getDatabaseName() {
+        return connectDatabase;
+    }
+
+    /**
      * method to get the current database instance
      * @return The current database configuration object
      */

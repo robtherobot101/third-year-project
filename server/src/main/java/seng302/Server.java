@@ -9,7 +9,6 @@ import seng302.NotificationManager.PushAPI;
 import spark.Request;
 import spark.Response;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,7 @@ public class Server {
     private CountriesController countriesController;
     private OrgansController organsController;
     private MapObjectController mapObjectController;
+    private HospitalController hospitalController;
 
     private int port = 7015;
     private boolean testing = true;
@@ -223,6 +223,10 @@ public class Server {
                 delete("",  organsController::removeOrgan);
                 patch("",   organsController::updateOrgan);
             });
+
+            path("/hospitals", () -> {
+                get("", hospitalController::getHospitals);
+            });
         });
     }
 
@@ -278,5 +282,6 @@ public class Server {
         countriesController = new CountriesController();
         mapObjectController = new MapObjectController();
         organsController = new OrgansController();
+        hospitalController = new HospitalController();
     }
 }
