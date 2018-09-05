@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using mobileAppClient.Models;
+using Newtonsoft.Json;
+
 namespace mobileAppClient
 {
     /*
@@ -12,13 +15,13 @@ namespace mobileAppClient
 
         public string gender { get; set; }
         public string genderIdentity { get; set; }
-        public string bloodType { get; set; }
+        public String bloodType { get; set; }
         //Could change to Enums however C# doesnt allow for string value Enums. Thoughts??
         public string smokerStatus { get; set; }
         public string alcoholConsumption { get; set; }
 
         public CustomDate dateOfBirth { get; set; }
-        public CustomDate dateOfDeath { get; set; }
+        public CustomDateTime dateOfDeath { get; set; }
         public CustomDateTime creationTime { get; set; }
         public CustomDateTime lastModified { get; set; }
 
@@ -43,8 +46,7 @@ namespace mobileAppClient
         public string username { get; set; }
         public string password { get; set; }
 
-        public List<String> organs { get; set; }
-
+        public List<Organ> organs { get; set; }
         public List<Medication> currentMedications { get; set; }
         public List<Medication> historicMedications { get; set; }
 
@@ -58,24 +60,61 @@ namespace mobileAppClient
 
         public List<HistoryItem> userHistory { get; set; }
 
+        [JsonIgnore]
+        public string FullName
+        {
+            get
+            {
+                return String.Join(" ", name);
+            }
+        }
+
         public User(string email) {
             this.email = email;
         }
+
+        public User()
+        {
+        }
+
+        /// <summary>
+        /// Google Login User constructor
+        /// </summary>
+        public User(string firstName, string lastName, string email)
+        {
+            name = new List<string> { firstName, "", lastName };
+            preferredName = new List<string> { firstName, "", lastName };
+            this.email = email;
+            username = email;
+            password = "password";
+            creationTime = new CustomDateTime(DateTime.Now);
+
+            //Server requires to initialise the organs and user history items on creation
+            organs = new List<Organ>();
+            userHistory = new List<HistoryItem>();
+        }
+
+        public User ShallowCopy()
+        {
+            return (User)this.MemberwiseClone();
+        }
+
         /*
          * Simply calculates the user's age
-         */ 
-        public double getAge()
+         */
+        [JsonIgnore]
+        public int Age
         {
-            double age;
-            if (this.dateOfDeath == null)
-            {
-                age = (DateTime.Now - this.dateOfBirth.ToDateTime()).Days / 365.00;
+            get {
+                DateTime today = DateTime.Today;
+                DateTime dob = this.dateOfBirth.ToDateTime();
+                int age = today.Year - dob.Year;
+
+                if (dob > today.AddYears(-age))
+                    age--;
+
+                return age;
             }
-            else
-            {
-                age = (this.dateOfDeath.ToDateTime() - this.dateOfBirth.ToDateTime()).Days / 365.00;
-            }
-            return age;
         }
     }
 }

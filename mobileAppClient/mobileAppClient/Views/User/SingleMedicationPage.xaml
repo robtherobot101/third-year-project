@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.SingleMedicationPage"
+             xmlns:local="clr-namespace:mobileAppClient">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Vertical" x:Name="UserViewLayout">
+
+
+                <TableView Intent="Menu" >
+                    <TableRoot>
+                        <TableSection Title="Medication Details">
+                            <EntryCell Label="Name" x:Name="NameEntry" IsEnabled="false"/>
+                            <EntryCell Label="ID" x:Name="IDEntry" IsEnabled="false"/>
+                         </TableSection>
+                        <TableSection Title="Active Ingredients" x:Name="activeIngredientsTableSection">
+                                                       
+                        </TableSection>
+                        <TableSection Title="History" x:Name="historyTableSection">
+                                                       
+                        </TableSection>
+                    </TableRoot>
+                </TableView>
+
+            </StackLayout>
+
+            <StackLayout Orientation="Vertical" x:Name="AddMedicationLayout">
+
+                <SearchBar x:Name="MedicationSearchBar" Placeholder="Search for a medication..." SearchButtonPressed="Handle_SearchButtonPressed"/>
+                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
+
+
+                <ListView x:Name="MedicationsList"
+                          ItemTapped="Handle_MedicationTapped"
+                          >
+                </ListView>
+
+            </StackLayout>
+        </StackLayout>
+        
+    </ContentPage.Content>
+</ContentPage>

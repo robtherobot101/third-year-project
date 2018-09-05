@@ -99,8 +99,9 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `name` text NOT NULL,
   `id` int(11) NOT NULL,
   `user_id` bigint(11) NOT NULL,
-  `timeOfDeath` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `timeOfDeath` bigint(20) DEFAULT NULL,
+  `expired` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -116,6 +117,23 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
   `user_id` bigint(11) NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `HOSPITAL`
+--
+DROP TABLE IF EXISTS `HOSPITAL`;
+CREATE TABLE IF NOT EXISTS `HOSPITAL` (
+  `hospital_id` bigint(20) NOT NULL,
+  `name` text NOT NULL,
+  `address` text NOT NULL,
+  `region` text NOT NULL,
+  `city` text NOT NULL,
+  `country` text NOT NULL,
+  `latitude` float(10,6) NOT NULL,
+  `longitude` float(10,6) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -158,7 +176,8 @@ DROP TABLE IF EXISTS `TOKEN`;
 CREATE TABLE IF NOT EXISTS `TOKEN` (
   `id` int(11) NOT NULL,
   `token` text NOT NULL,
-  `access_level` int(11) NOT NULL
+  `access_level` int(11) NOT NULL,
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -256,6 +275,12 @@ ALTER TABLE `HISTORY_ITEM`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  ADD PRIMARY KEY (`hospital_id`);
+
+--
 -- Indexes for table `MEDICATION`
 --
 ALTER TABLE `MEDICATION`
@@ -314,6 +339,11 @@ ALTER TABLE `DONATION_LIST_ITEM`
 ALTER TABLE `HISTORY_ITEM`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  MODIFY `hospital_id` bigint(20) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `MEDICATION`
 --
 ALTER TABLE `MEDICATION`
@@ -347,31 +377,31 @@ ALTER TABLE `DISEASE`
 -- Constraints for table `DONATION_LIST_ITEM`
 --
 ALTER TABLE `DONATION_LIST_ITEM`
-  ADD CONSTRAINT `User_id_foreign_key2` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key2` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `HISTORY_ITEM`
 --
 ALTER TABLE `HISTORY_ITEM`
-  ADD CONSTRAINT `HISTORY_ITEM_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `HISTORY_ITEM_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `MEDICATION`
 --
 ALTER TABLE `MEDICATION`
-  ADD CONSTRAINT `User_id_foreign_key3` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key3` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `PROCEDURES`
 --
 ALTER TABLE `PROCEDURES`
-  ADD CONSTRAINT `User_id_foreign_key4` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key4` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `WAITING_LIST_ITEM`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
-  ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`);
+  ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Create default clinician and admin

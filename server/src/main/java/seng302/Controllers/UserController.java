@@ -1,9 +1,12 @@
 package seng302.Controllers;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
+import seng302.Model.UserCSVStorer;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -14,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -41,7 +45,7 @@ public class UserController {
     public String getUsers(Request request, Response response) {
         Map<String, String> params = new HashMap<String, String>();
         List<String> possibleParams = new ArrayList<String>(Arrays.asList(
-                "name","password","userType","age","gender","region","organ",
+                "name","password","userType","age","gender","region","country","organ",
                 "startIndex","count"
         ));
         for(String param:possibleParams){
@@ -257,7 +261,7 @@ public class UserController {
      * Checks for the validity of the request ID, and returns a user obj
      * @param request HTTP request
      * @param response HTTP response
-     * @return A valid User object if the user exists otherwise return null
+     * @return A valid user object if the user exists otherwise return null
      */
     private User queryUser(Request request, Response response) {
         int requestedUserId = Integer.parseInt(request.params(":id"));
@@ -303,20 +307,49 @@ public class UserController {
         if (receivedUser == null) {
             Server.getInstance().log.warn("Empty request body");
             response.status(400);
-            return "Missing User Body";
+            return "Missing user Body";
         } else {
-            //TODO make model.insertUser return token
             try {
                 model.insertUser(receivedUser);
                 response.status(201);
-                return "placeholder token";
+                return "Success";
             } catch (SQLException e) {
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }
-
         }
+    }
+
+    /**
+     * method to process the add user request. parses the input to be in a better format
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String output whether the request was successful or not
+     */
+    public String importUsers(Request request, Response response) {
+        Gson gson = new Gson();
+        List<User> receivedUsers;
+        System.out.println("IMPORTING USERS");
+        // Attempt to parse received JSON
+        try {
+             receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
+        } catch (JsonSyntaxException jse) {
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+        System.out.println("Got " + receivedUsers.size() + " entries");
+        try {
+            model.importUsers(receivedUsers);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return "Internal Server Error";
+        }
+        response.status(200);
+        return "OK";
     }
 
     /**
@@ -355,14 +388,15 @@ public class UserController {
 
         Gson gson = new Gson();
         User receivedUser = gson.fromJson(request.body(), User.class);
-        System.out.println(receivedUser.getCityOfDeath());
         if (receivedUser == null) {
             response.status(400);
-            return "Missing User Body";
+            return "Missing user Body";
         } else {
             try {
-                //model.updateUserAttributes(receivedUser, Integer.parseInt(request.params(":id")));
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id"))); //this version patches all user information
+                String token = request.headers("token");
+                ProfileUtils profileUtils = new ProfileUtils();
+                int accessLevel = profileUtils.checkToken(token);
+                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
@@ -400,18 +434,17 @@ public class UserController {
     }
 
 
-    public String getUserPhoto(Request request, Response response) {
+    public String getUserPhoto(Request request, Response response) throws URISyntaxException {
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){
             return response.body();
         }
 
-        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+        String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+        String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
 
         File file = new File(filepath);
-        System.out.println(file.exists());
-
         if (!file.isFile()){
             response.status(404);
             return "Photo does not exist.";
@@ -437,7 +470,7 @@ public class UserController {
 
     }
 
-    public String editUserPhoto(Request request, Response response){
+    public String   editUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){
@@ -470,10 +503,11 @@ public class UserController {
                 BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
                 // Ensure directory exists
-                Files.createDirectories(Paths.get("home/serverImages/user/"));
+                String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+                Files.createDirectories(Paths.get(path + "/home/serverImages/user/"));
 
                 // Set filepath
-                String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+                String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
 
                 // Write the file
                 File outputfile = new File(filepath);
@@ -483,19 +517,23 @@ public class UserController {
             }  catch (IOException e) {
                 System.out.println(e);
                 return "Internal Server Error";
+            } catch (URISyntaxException el) {
+                el.printStackTrace();
+                return "URI Error";
             }
         }
     }
 
 
-    public String deleteUserPhoto(Request request, Response response){
+    public String deleteUserPhoto(Request request, Response response) throws URISyntaxException {
         User queriedUser = queryUser(request, response);
         if (queriedUser == null){
             return response.body();
         }
 
         //Find filepath in DB
-        String filepath = "home/serverImages/user/" + queriedUser.getId() + ".png";
+        String path = new File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getAbsolutePath();
+        String filepath = path + "/home/serverImages/user/" + queriedUser.getId() + ".png";
 
         //Delete file from storage
         File file = new File(filepath);

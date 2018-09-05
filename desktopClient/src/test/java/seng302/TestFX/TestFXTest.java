@@ -10,23 +10,21 @@ import org.junit.After;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
-import seng302.Data.Interfaces.AdminsDAO;
-import seng302.Data.Interfaces.CliniciansDAO;
-import seng302.Data.Interfaces.GeneralDAO;
-import seng302.Data.Interfaces.UsersDAO;
-import seng302.Data.Local.AdminsM;
-import seng302.Data.Local.CliniciansM;
-import seng302.Data.Local.GeneralM;
-import seng302.Data.Local.UsersM;
-import seng302.GUI.TFScene;
-import seng302.Generic.DataManager;
-import seng302.Generic.Debugger;
-import seng302.Generic.WindowManager;
+import seng302.data.interfaces.AdminsDAO;
+import seng302.data.interfaces.CliniciansDAO;
+import seng302.data.interfaces.GeneralDAO;
+import seng302.data.interfaces.UsersDAO;
+import seng302.data.local.AdminsM;
+import seng302.data.local.CliniciansM;
+import seng302.data.local.GeneralM;
+import seng302.data.local.UsersM;
+import seng302.gui.TFScene;
+import seng302.generic.DataManager;
+import seng302.generic.Debugger;
+import seng302.generic.WindowManager;
 import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
-
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -37,14 +35,12 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 abstract class TestFXTest extends ApplicationTest {
 
-    protected static final boolean runHeadless = true;
-
+    private static final boolean runHeadless = true;
 
     @Override
-    public void start(Stage stage) throws HttpResponseException {
+    public void start(Stage stage) {
         Platform.runLater(() -> {
-
-            try{
+            try {
                 WindowManager.resetScene(TFScene.userWindow);
                 WindowManager mainGUI = new WindowManager();
                 mainGUI.start(stage);
@@ -53,15 +49,13 @@ abstract class TestFXTest extends ApplicationTest {
                 WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"), "masterToken");
                 WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"), "masterToken");
             } catch (HttpResponseException e) {
-
+                e.printStackTrace();
             }
         });
-
-
     }
 
     @After
-    public void tearDown() throws TimeoutException, SQLException, HttpResponseException {
+    public void tearDown() throws TimeoutException, HttpResponseException {
         WindowManager.getDataManager().getGeneral().reset("masterToken");
         WindowManager.getDataManager().getGeneral().resample("masterToken");
 
@@ -70,7 +64,7 @@ abstract class TestFXTest extends ApplicationTest {
         release(new MouseButton[]{});
     }
 
-    protected void useLocalStorage() {
+    void useLocalStorage() {
         UsersDAO users = new UsersM();
         CliniciansDAO clinicians = new CliniciansM();
         AdminsDAO admins = new AdminsM();
@@ -91,7 +85,7 @@ abstract class TestFXTest extends ApplicationTest {
         registerPrimaryStage();
     }
 
-    protected User addTestUser() throws SQLException {
+    protected User addTestUser() {
         User testUser = new User(
                 "Bobby", new String[]{"Dong"}, "Flame",
                 LocalDate.of(1969, 8, 4),
@@ -106,13 +100,13 @@ abstract class TestFXTest extends ApplicationTest {
         return testUser;
     }
 
-    protected void loginAsDefaultAdmin() {
+    void loginAsDefaultAdmin() {
         clickOn("#identificationInput").write("admin");
         clickOn("#passwordInput").write("default");
         clickOn("#loginButton");
     }
 
-    protected void userWindow(User user) {
+    void userWindow(User user) {
         Platform.runLater(() -> {
             WindowManager.setCurrentUser(user, null);
             WindowManager.setScene(TFScene.userWindow);
@@ -120,32 +114,24 @@ abstract class TestFXTest extends ApplicationTest {
         waitForFxEvents();
     }
 
-    public void userWindowAsClinician(User user) {
-        Platform.runLater(() -> {
-            WindowManager.newCliniciansUserWindow(user, null);
-        });
+    void userWindowAsClinician(User user) {
+        Platform.runLater(() -> WindowManager.newAdminsUserWindow(user, null));
         waitForFxEvents();
     }
 
 
-    protected void openUserAsClinician(String name) {
+    void openUserAsClinician(String name) {
         Node row = from(lookup("#profileTable")).lookup(name).query();
         doubleClickOn(row);
     }
 
-    protected void waitForEnabled(int timeout, String cssID) throws TimeoutException {
-        Callable<Boolean> callable = () -> {
-            if (lookup(cssID).query() == null) {
-                return false;
-            } else {
-                return !lookup(cssID).query().isDisable();
-            }
-        };
+    void waitForEnabled(int timeout, String cssID) throws TimeoutException {
+        Callable<Boolean> callable = () -> lookup(cssID).query() != null && !lookup(cssID).query().isDisable();
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
 
-    protected void loginAsDefaultClinician() {
+    void loginAsDefaultClinician() {
         clickOn("#identificationInput");
         write("default");
         clickOn("#passwordInput");
@@ -154,7 +140,7 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
 
-    public void openClinicianWindow(Clinician testClinician){
+    void openClinicianWindow(Clinician testClinician){
         Platform.runLater(() ->{
             WindowManager.setCurrentClinician(testClinician, null);
             WindowManager.setScene(TFScene.clinician);
@@ -163,14 +149,14 @@ abstract class TestFXTest extends ApplicationTest {
     }
 
 
-    protected void waitForNodeVisible(int timeout, String id) throws TimeoutException {
+    void waitForNodeVisible(int timeout, String id) throws TimeoutException {
         Callable<Boolean> callable = () -> {
             Node nodeFound = lookup(id).query();
             if (nodeFound == null) {
                 return false;
             } else {
                 if (nodeFound.isVisible()) {
-                    //Let the GUI skin catchup to the controller state
+                    //Let the gui skin catchup to the controller state
                     waitForFxEvents();
                     return true;
                 } else {
@@ -181,14 +167,14 @@ abstract class TestFXTest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
     }
 
-    protected void waitForNodeEnabled(int timeout, String id) throws TimeoutException {
+    void waitForNodeEnabled(String id) throws TimeoutException {
         Callable<Boolean> callable = () -> {
             Node nodeFound = lookup(id).query();
             if (nodeFound == null) {
                 return false;
             } else {
                 if (!nodeFound.isDisable()) {
-                    //Let the GUI skin catchup to the controller state
+                    //Let the gui skin catchup to the controller state
                     waitForFxEvents();
                     return true;
                 } else {
@@ -196,6 +182,6 @@ abstract class TestFXTest extends ApplicationTest {
                 }
             }
         };
-        WaitForAsyncUtils.waitFor(timeout, TimeUnit.SECONDS, callable);
+        WaitForAsyncUtils.waitFor(10, TimeUnit.SECONDS, callable);
     }
 }

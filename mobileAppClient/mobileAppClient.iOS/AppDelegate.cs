@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using SegmentedControl;
+using Plugin.CrossPlatformTintedImage;
 
 using Foundation;
+using ImageCircle.Forms.Plugin.iOS;
 using UIKit;
 
 namespace mobileAppClient.iOS
@@ -25,7 +27,15 @@ namespace mobileAppClient.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             global::SegmentedControl.FormsPlugin.iOS.SegmentedControlRenderer.Init();
+            global::Plugin.CrossPlatformTintedImage.iOS.TintedImageRenderer.Init();
+            global::Xamarin.FormsMaps.Init();
+            global::CarouselView.FormsPlugin.iOS.CarouselViewRenderer.Init();
+
+
             LoadApplication(new App());
+
+            // For circular images (on menu drawer)
+            ImageCircleRenderer.Init();
 
             return base.FinishedLaunching(app, options);
         }

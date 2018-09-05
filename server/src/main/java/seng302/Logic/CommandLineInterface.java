@@ -7,6 +7,7 @@ import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -220,9 +221,6 @@ public class CommandLineInterface {
                 case "listorgans":
                     response = listOrgans(nextCommand);
                     break;
-                case "import":
-                    response = importUsers(nextCommand);
-                    break;
                 case "clear":
                     // TODO make sure that this works (history)
                     response = new CommandLineResponse(true, "CLEAR");
@@ -253,7 +251,7 @@ public class CommandLineInterface {
         try {
             Clinician toDescribe = new GeneralClinician().getClinicianFromId(Integer.parseInt(idString));
             if (toDescribe == null) {
-                return new CommandLineResponse(true, String.format("Clinician with ID %s not found.", idString));
+                return new CommandLineResponse(true, String.format("clinician with ID %s not found.", idString));
             } else {
                 return new CommandLineResponse(true, toDescribe.getString(false));
             }
@@ -306,18 +304,23 @@ public class CommandLineInterface {
     private CommandLineResponse addUser(String[] nextCommand) {
         if (nextCommand.length == 5) {
             try {
-                User insertUser = new User(nextCommand[3].replace("\"", ""), LocalDate.parse(nextCommand[4], User.dateFormat));
-                insertUser.setUsername(nextCommand[1]);
-                insertUser.setPassword(nextCommand[2]);
-                new GeneralUser().insertUser(insertUser);
-                return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), insertUser.getPassword()).getId());
+                LocalDate dob = LocalDate.parse(nextCommand[4], User.dateFormat);
+                if(dob.isBefore(LocalDate.now())) {
+                    User insertUser = new User(nextCommand[3].replace("\"", ""), dob);
+                    insertUser.setUsername(nextCommand[1]);
+                    insertUser.setPassword(nextCommand[2]);
+                    new GeneralUser().insertUser(insertUser);
+                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), insertUser.getPassword()).getId());
+                } else {
+                    return new CommandLineResponse(false, "Date of birth must not be in the future.");
+                }
             } catch (DateTimeException e) {
                 return new CommandLineResponse(false, "Please enter a valid date of birth in the format dd/mm/yyyy.");
             } catch (SQLException e) {
                 return new CommandLineResponse(false, "An error occurred creating this user. This username may already be taken");
             }
         } else {
-            return new CommandLineResponse(false, getIncorrectUsageString("addUser", 2, "\"name part 1,name part 2\" <date of birth>"));
+            return new CommandLineResponse(false, getIncorrectUsageString("addUser", 4, "<username> <password> \"name part 1,name part 2\" <date of birth>"));
         }
     }
 
@@ -361,10 +364,10 @@ public class CommandLineInterface {
         }
 
         if (toSet == null) {
-            return new CommandLineResponse(false, String.format("User with ID %s not found.", nextCommand[1]));
+            return new CommandLineResponse(false, String.format("user with ID %s not found.", nextCommand[1]));
         }
         try {
-            new UserDonations().insertDonation(Organ.parse(nextCommand[2]), (int) toSet.getId());
+            new UserDonations().insertDonation(Organ.parse(nextCommand[2]), (int) toSet.getId(), toSet.getDateOfDeath());
             return new CommandLineResponse(true, "Successful update of Organs", toSet.getId());
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false, "Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, " +
@@ -396,7 +399,7 @@ public class CommandLineInterface {
         }
 
         if (toSet == null) {
-            return new CommandLineResponse(false, String.format("User with ID %s not found.", nextCommand[1]));
+            return new CommandLineResponse(false, String.format("user with ID %s not found.", nextCommand[1]));
         }
         try {
             WaitingListItem item = new WaitingListItem(Organ.parse(nextCommand[2]), LocalDate.now(), -1, (int) toSet.getId(), null, 0);
@@ -421,7 +424,7 @@ public class CommandLineInterface {
                 int id = Integer.parseInt(nextCommand[1]);
                 User user = new GeneralUser().getUserFromId((int) id);
                 if (user == null) {
-                    return new CommandLineResponse(false, String.format("User with ID %d not found.", id));
+                    return new CommandLineResponse(false, String.format("user with ID %d not found.", id));
                 } else {
                     deleteCommand = nextCommand;
                     isDeleting = true;
@@ -447,10 +450,10 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 int id = Integer.parseInt(nextCommand[1]);
-                if (id != 1) {
+                if (id != 0) {
                     Clinician clinician = new GeneralClinician().getClinicianFromId(id);
                     if (clinician == null) {
-                        return new CommandLineResponse(false, String.format("Clinician with staff ID %d not found.", id));
+                        return new CommandLineResponse(false, String.format("clinician with staff ID %d not found.", id));
                     } else {
                         deleteCommand = nextCommand;
                         isDeleting = true;
@@ -486,7 +489,7 @@ public class CommandLineInterface {
                     new GeneralClinician().removeClinician(clinicianToDelete);
                     isDeleting = false;
                     clinicianToDelete = null;
-                    return new CommandLineResponse(true, "Clinician removed");
+                    return new CommandLineResponse(true, "clinician removed");
                 } catch (SQLException e) {
                     return new CommandLineResponse(false, "Could not remove clinician. An error occurred on the database.");
                 }
@@ -495,7 +498,7 @@ public class CommandLineInterface {
                     new GeneralUser().removeUser(userToDelete);
                     isDeleting = false;
                     userToDelete = null;
-                    return new CommandLineResponse(true, "User removed");
+                    return new CommandLineResponse(true, "user removed");
                 } catch (SQLException e) {
                     return new CommandLineResponse(false, "Could not remove user. An error occurred on the database.");
                 }
@@ -529,7 +532,7 @@ public class CommandLineInterface {
         }
 
         if (toSet == null) {
-            return new CommandLineResponse(false, String.format("User with ID %s not found.", nextCommand[1]));
+            return new CommandLineResponse(false, String.format("user with ID %s not found.", nextCommand[1]));
         }
         try {
             new UserDonations().removeDonationListItem((int) toSet.getId(), nextCommand[2]);
@@ -564,7 +567,7 @@ public class CommandLineInterface {
         }
 
         if (toSet == null) {
-            return new CommandLineResponse(false, String.format("User with ID %s not found.", nextCommand[1]));
+            return new CommandLineResponse(false, String.format("user with ID %s not found.", nextCommand[1]));
         }
         try {
             new UserWaitingList().removeWaitingListItem((int) toSet.getId(), Organ.parse(nextCommand[2]));
@@ -604,7 +607,7 @@ public class CommandLineInterface {
         try {
             toSet = new GeneralUser().getUserFromId((int) id);
             if (toSet == null) {
-                return new CommandLineResponse(false, String.format("User with ID %d not found.", id));
+                return new CommandLineResponse(false, String.format("user with ID %d not found.", id));
             }
             switch (attribute.toLowerCase()) {
                 case "name":
@@ -620,23 +623,44 @@ public class CommandLineInterface {
                     break;
                 case "dateofbirth":
                     try {
-                        toSet.setDateOfBirth(LocalDate.parse(value, User.dateFormat));
-
-                        outputString = ("New date of birth set.");
-                        wasSuccessful = true;
+                        LocalDate dob = LocalDate.parse(value, User.dateFormat);
+                        if(dob.isBefore(LocalDate.now())) {
+                            if(toSet.getDateOfDeath() == null || dob.isBefore(toSet.getDateOfDeath().toLocalDate())) {
+                                toSet.setDateOfBirth(dob);
+                                outputString = ("New date of birth set.");
+                                wasSuccessful = true;
+                            } else {
+                                outputString = (String.format("Date of birth cannot after the date and time of death (" + User.dateTimeFormat.format(toSet.getDateOfDeath()) + ")"));
+                                wasSuccessful = false;
+                            }
+                        } else {
+                            outputString = ("Date of birth cannot be in the future.");
+                            wasSuccessful = false;
+                        }
                     } catch (DateTimeException e) {
                         outputString = ("Please enter a valid date in the format dd/mm/yyyy.");
                         wasSuccessful = false;
                     }
                     break;
-                case "dateofdeath":
+                case "datetimeofdeath":
                     try {
-                        toSet.setDateOfDeath(LocalDateTime.parse(value, User.dateFormat));
+                        LocalDateTime dod = LocalDateTime.parse(value, User.dateTimeFormat);
+                        if(dod.isBefore(LocalDateTime.now())) {
+                            if(toSet.getDateOfBirth() == null || dod.isAfter(toSet.getDateOfBirth().atStartOfDay())) {
+                                toSet.setDateOfDeath(dod);
+                                outputString = ("New date and time of death set.");
+                                wasSuccessful = true;
+                            } else {
+                                outputString = ("Date and time of death cannot be before the date of birth (" + User.dateFormat.format(toSet.getDateOfBirth()) + ")");
+                                wasSuccessful = false;
+                            }
+                        } else {
+                            outputString = ("Date and time of death cannot be in the future.");
+                            wasSuccessful = false;
 
-                        outputString = ("New date of death set.");
-                        wasSuccessful = true;
+                        }
                     } catch (DateTimeException e) {
-                        outputString = ("Please enter a valid date in the format dd/mm/yyyy.");
+                        outputString = ("Please enter a valid date and time in the format: dd/MM/yyyy, HH:mm:ss");
                         wasSuccessful = false;
                     }
                     break;
@@ -728,14 +752,14 @@ public class CommandLineInterface {
                     break;
 
                 default:
-                    outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateOfDeath, gender, height, weight, " +
+                    outputString = ("Attribute '" + attribute + "' not recognised. Try name, dateOfBirth, dateTimeOfDeath, gender, height, weight, " +
                             "bloodType, region, or currentAddress.");
                     wasSuccessful = false;
                     break;
             }
             new GeneralUser().updateUserAttributes(toSet, (int) toSet.getId());
         } catch (SQLException e) {
-            return new CommandLineResponse(false, "User could not be updated. An error occurred on the server.");
+            return new CommandLineResponse(false, "user could not be updated. An error occurred on the server.");
         }
 
 
@@ -764,7 +788,7 @@ public class CommandLineInterface {
         try {
             toSet = new GeneralClinician().getClinicianFromId((int) id);
             if (toSet == null) {
-                return new CommandLineResponse(false, String.format("Clinician with staff ID %d not found.", id));
+                return new CommandLineResponse(false, String.format("clinician with staff ID %d not found.", id));
             }
 
             switch (attribute.toLowerCase()) {
@@ -800,7 +824,7 @@ public class CommandLineInterface {
             }
             new GeneralClinician().updateClinicianDetails(toSet, (int)toSet.getStaffID());
         } catch (SQLException e) {
-            return new CommandLineResponse(false, "Clinician could not be updated. An error occurred on the server.");
+            return new CommandLineResponse(false, "clinician could not be updated. An error occurred on the server.");
 
         }
 
@@ -827,7 +851,7 @@ public class CommandLineInterface {
         try {
             User toDescribe = new GeneralUser().getUserFromId((int) Long.parseLong(idString));
             if (toDescribe == null) {
-                return new CommandLineResponse(false, String.format("User with ID %s not found.", idString));
+                return new CommandLineResponse(false, String.format("user with ID %s not found.", idString));
             } else {
                 return new CommandLineResponse(true, toDescribe.toString());
             }
@@ -867,7 +891,7 @@ public class CommandLineInterface {
             try {
                 User user = new GeneralUser().getUserFromId(Integer.parseInt(nextCommand[1]));
                 if (user == null) {
-                    return new CommandLineResponse(false, String.format("User with ID %s not found.", nextCommand[1]));
+                    return new CommandLineResponse(false, String.format("user with ID %s not found.", nextCommand[1]));
                 } else if (!user.getOrgans().isEmpty()) {
                     return new CommandLineResponse(true, user.getName() + ": " + user.getOrgans());
                 } else {
@@ -899,7 +923,7 @@ public class CommandLineInterface {
                     }
                     return new CommandLineResponse(true, outputString);
                 } else {
-                    return new CommandLineResponse(true, "There are no users to list. Please add or import some before using listUsers.");
+                    return new CommandLineResponse(true, "There are no users to list. Please add some before using listUsers.");
                 }
             } catch (SQLException e) {
                 return new CommandLineResponse(false, "Could not list all users. An error occurred on the server.");
@@ -922,11 +946,11 @@ public class CommandLineInterface {
                 if (new GeneralClinician().getAllClinicians().size() > 0) {
                     outputString = (Clinician.tableHeader);
                     for (Clinician clinician : new GeneralClinician().getAllClinicians()) {
-                        outputString = outputString + (clinician.getString(true)) + "\n";
+                        outputString = outputString + (clinician.getString(false)) + "\n";
                     }
                     return new CommandLineResponse(true, outputString);
                 } else {
-                    return new CommandLineResponse(true, "There are no clinicians to list. Please add or import some before using list.");
+                    return new CommandLineResponse(true, "There are no clinicians to list. Please add some before using list.");
                 }
             } catch (SQLException e) {
                 return new CommandLineResponse(false, "Could not list all clinicians. An error occurred on the server.");
@@ -973,17 +997,6 @@ public class CommandLineInterface {
         return null;
     }
 
-    /**
-     * Clear the user list and load a new one from a file.
-     *
-     * @param nextCommand The command entered by the user
-     * @return Whether the command was executed
-     */
-    private CommandLineResponse importUsers(String[] nextCommand) {
-        // TODO Implement this. Hookup with Buzz's csv work for the GUI
-        return new CommandLineResponse(false, "no u");
-    }
-
 
     /**
      * Shows help either about which commands are available or about a specific command's usage.
@@ -1010,21 +1023,19 @@ public class CommandLineInterface {
                     + "\n\t-removeWaitingListOrgan <id> <organ>"
                     + "\n\t-updateClinician <id> <attribute> <value>"
                     + "\n\t-updateUser <id> <attribute> <value>"
-                    + "\n\t-import <profiletype> <filename>"
                     + "\n\t-clear"
                     + "\n\t-help [<command>]"
                     + "\n\t-sql <command>");
         } else if (nextCommand.length == 2) {
             switch (nextCommand[1].toLowerCase()) {
                 case "adduser":
-                    return new CommandLineResponse(false, "This command adds a new user with a name and date of birth.\n"
+                    return new CommandLineResponse(false, "This command adds a new user with a username, password, name and date of birth.\n"
                             + "The syntax is: addUser <name> <date of birth>\n"
                             + "Rules:\n"
                             + "-The names must be comma separated without a space around the comma (eg. Andrew,Neil,Davidson)\n"
                             + "-If there are any spaces in the name, the name must be enclosed in quotation marks (\")\n"
                             + "-The date of birth must be entered in the format: dd/mm/yyyy\n"
-                            + "Example valid usage: add \"Test,User with,SpacesIn Name\" 01/05/1994");
-
+                            + "Example valid usage: add my_username my_password \"Test,user with,SpacesIn Name\" 01/05/1994");
                 case "addclinician":
                     return new CommandLineResponse(false, "This command adds a new clinician with a username, password, and name.\n"
                             + "The syntax is: addClinician <username> <password> <name> \n"
@@ -1095,13 +1106,14 @@ public class CommandLineInterface {
                             + "The syntax is: updateUser <id> <attribute> <value>\n"
                             + "Rules:\n"
                             + "-The id number must be a number that is 0 or larger\n"
-                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateOfDeath, gender, height, "
+                            + "-The attribute must be one of the following (case insensitive): name, prefname, dateOfBirth, dateTimeOfDeath, gender, height, "
                             + "weight, bloodType, region, currentAddress\n"
                             + "-If a name or names are used, all users whose names contain the input names in order will be returned as matches\n"
                             + "-The gender must be: male, female, or other\n"
                             + "-The bloodType must be: A-, A+, B-, B+, AB-, AB+, O-, or O+\n"
                             + "-The height and weight must be numbers that are larger than 0\n"
-                            + "-The date of birth and date of death values must be entered in the format: dd/mm/yyyy\n"
+                            + "-The date of birth values must be entered in the format: dd/mm/yyyy\n"
+                            + "-The date/time of death values must be entered in the format: \"dd/mm/yyyy, HH:mm:ss\"\n"
                             + "Example valid usage: updateUser 2 bloodtype ab+");
                 case "describeuser":
                     return new CommandLineResponse(false, "This command searches users and displays information about them. To find the id of a user, use the listUsers "
@@ -1134,18 +1146,9 @@ public class CommandLineInterface {
                     return new CommandLineResponse(false, "This command lists all information about all clinicians in a table.\n"
                             + "Example valid usage: listClinicians");
                 case "listorgans":
-                    return new CommandLineResponse(false, "This command displays all of the organs that are currently offered by each user. User that are "
+                    return new CommandLineResponse(false, "This command displays all of the organs that are currently offered by each user. user that are "
                             + "not yet offering any organs are not shown.\n"
                             + "Example valid usage: listOrgans");
-                case "import":
-                    return new CommandLineResponse(false, "This command replaces all user data in the system with an imported JSON object.\n"
-                            + "The syntax is: import [-r] <filename>\n"
-                            + "Rules:\n"
-                            + "-If the -r flag is present, the filepath will be interpreted as relative\n"
-                            + "-If the filepath has spaces in it, it must be enclosed with quotation marks (\")\n"
-                            + "-Forward slashes (/) should be used regardless of operating system. Double backslashes may also be used on Windows\n"
-                            + "-The file must be of the same format as those saved from this application\n"
-                            + "Example valid usage: import -r ../user_list_FINAL.txt");
                 case "save":
                     return new CommandLineResponse(false, "This command saves the current user database to a file in JSON format.\n"
                             + "The syntax is: save [-r] <type> <filepath>\n"
@@ -1164,7 +1167,7 @@ public class CommandLineInterface {
                             + "The syntax is: help OR help <command>\n"
                             + "Rules:\n"
                             + "-If the command argument is passed, the command must be: add, addDonationOrgan, delete, removeDonationOrgan, updateUser, describeUser, "
-                            + "describeOrgans, listUsers, listOrgans, import, save, help, or quit.\n"
+                            + "describeOrgans, listUsers, listOrgans, save, help, or quit.\n"
                             + "Example valid usage: help help");
                 case "sql":
                     return new CommandLineResponse(false, "This command can be used to query sql select commands to the database.\n"

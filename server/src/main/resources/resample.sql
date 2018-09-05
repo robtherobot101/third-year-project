@@ -7,3 +7,10 @@ INSERT INTO `USER` (`first_name`, `middle_names`, `last_name`, `preferred_name`,
 ('Nicky', 'The Dark Horse', 'Zohrab-Henricks', 'Nicky', 'The Dark Horse', 'Zohrab-Henricks', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 6, NULL, NULL, 'nicky', 'nicky@nicky.com', 'nicky', NULL, NULL, NULL, '2018-07-19', NULL),
 ('Kyran', 'Playing Fortnite', 'Stagg', 'Kyran', 'Playing Fortnite', 'Stagg', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, 'kyran', 'kyran@kyran.com', 'fortnite', NULL, NULL, NULL, '2018-07-19', NULL),
 ('Andrew', 'Daveo', 'Davidson', 'Andrew', 'Daveo', 'Davidson', '2018-07-19 04:38:50', '2018-07-19 04:38:50', NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, 'andrew', 'andrew@andrew.com', 'andrew', NULL, NULL, NULL, '2018-07-19', NULL);
+
+
+INSERT INTO `HOSPITAL` (`name`, `address`, `region`, `city`, `country`, `latitude`, `longitude`) VALUES
+('Auckland City Hospital', '2 Park Rd', 'Auckland', 'Auckland', 'New Zealand', -36.859901, 174.769897),
+('Tauranga Hospital', '829 Cameron Rd', 'Bay of Plenty', 'Tauranga', 'New Zealand', -37.707912, 176.147919),
+('Whangarei Hospital', 'Maunu Rd', 'Northland', 'Whangarei', 'New Zealand', -35.735023, 174.303146),
+('Waikato District Health Board', 'Pembroke Street', 'Waikato', 'Hamilton', 'New Zealand', -37.804897, 175.282059);

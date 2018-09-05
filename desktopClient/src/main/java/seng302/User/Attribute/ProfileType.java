@@ -4,7 +4,7 @@ package seng302.User.Attribute;
  * This enum represents the different types of possible logins.
  */
 public enum ProfileType {
-    USER("User"), CLINICIAN("Clinician"), ADMIN("Admin");
+    USER("user"), CLINICIAN("clinician"), ADMIN("admin");
 
     private String type;
 
@@ -17,6 +17,7 @@ public enum ProfileType {
         this.type = type;
     }
 
+    @Override
     public String toString() {
         return type;
     }

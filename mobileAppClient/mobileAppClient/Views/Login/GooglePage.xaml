@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.GooglePage"
+             Title = "Google Login">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
+            <Image Source="google_logo.png" 
+                   WidthRequest="272"
+                   HeightRequest="92"
+            />
+            <Label Text="Please complete your donor profile" HorizontalTextAlignment="Center"/>
+            
+            <Entry x:Name="firstNameInput" Placeholder="First Name"
+                   VerticalOptions="CenterAndExpand"
+                   IsVisible="False"
+            />
+
+            <Entry x:Name="lastNameInput" Placeholder="Last Name"
+                   VerticalOptions="CenterAndExpand"
+                   IsVisible="False"
+            />
+            <DatePicker x:Name="dobInput"
+                        Format="D"
+                        MinimumDate="01/01/1900"
+            />
+
+            <Picker Title ="Birth Gender" x:Name="BirthGenderInput">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Male</x:String>
+                        <x:String>Female</x:String>
+                        <x:String>Other</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Button Clicked="Button_OnClicked" Text="Continue"/>
+        </StackLayout>
+    </ContentPage.Content>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Cancel"/>
+    </ContentPage.ToolbarItems>
+</ContentPage>

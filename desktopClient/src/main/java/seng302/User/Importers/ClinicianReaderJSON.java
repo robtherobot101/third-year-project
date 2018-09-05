@@ -2,7 +2,7 @@ package seng302.User.Importers;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import seng302.Generic.Debugger;
+import seng302.generic.Debugger;
 import seng302.User.Clinician;
 
 import java.io.*;

@@ -16,11 +16,6 @@ import org.junit.Test;
 import seng302.User.Attribute.Gender;
 import seng302.User.User;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.concurrent.TimeoutException;
-
 import static org.junit.Assert.assertEquals;
 
 public class DrugInteractionGUITest extends TestFXTest {
@@ -81,14 +76,14 @@ public class DrugInteractionGUITest extends TestFXTest {
     private void compareMedications(String drugA, String drugB) throws TimeoutException {
         Node drugARow = from(lookup("#historyListView").query(), lookup("#currentListView").query()).lookup(drugA).query();
         clickOn(drugARow);
-        waitForNodeEnabled(10, "#compareButton");
+        waitForNodeEnabled("#compareButton");
         clickOn("#compareButton");
 
         Node drugBRow = from(lookup("#historyListView").query(), lookup("#currentListView").query()).lookup(drugB).query();
         clickOn(drugBRow);
-        waitForNodeEnabled(10, "#compareButton");
+        waitForNodeEnabled("#compareButton");
         clickOn("#compareButton");
-        waitForNodeEnabled(10, "#compareButton");
+        waitForNodeEnabled("#compareButton");
     }
 
     /**
@@ -140,11 +135,11 @@ public class DrugInteractionGUITest extends TestFXTest {
         addValidMedication(testDrugB);
 
         clickOn(testDrugA);
-        waitForNodeEnabled(10, "#moveToHistoryButton");
+        waitForNodeEnabled("#moveToHistoryButton");
         clickOn("#moveToHistoryButton");
 
         clickOn(testDrugB);
-        waitForNodeEnabled(10, "#moveToHistoryButton");
+        waitForNodeEnabled("#moveToHistoryButton");
         clickOn("#moveToHistoryButton");
 
         compareMedications(testDrugA, testDrugB);
@@ -155,7 +150,7 @@ public class DrugInteractionGUITest extends TestFXTest {
     @Test
     public void compareDrugsWhichHaveNoInteractionsForUser_noResults() throws TimeoutException {
         addAndCompare("Marinol", "Codeine sulfate");
-        waitForNodeEnabled(10, "#compareButton");
+        waitForNodeEnabled("#compareButton");
 
         HashSet<String> expected = new HashSet<>();
         expected.add("No interactions.");
@@ -166,7 +161,7 @@ public class DrugInteractionGUITest extends TestFXTest {
     @Test
     public void compareDrugsWithoutInformation_noResultsAndUserNotified() throws TimeoutException {
         addAndCompare("Selsun", "Inversine");
-        waitForNodeEnabled(10, "#compareButton");
+        waitForNodeEnabled("#compareButton");
 
         HashSet<String> expected = new HashSet<>();
         expected.add("Could not retrieve interaction symptoms (no information available).");
@@ -177,7 +172,7 @@ public class DrugInteractionGUITest extends TestFXTest {
     @Test
     public void compareDrugsWhichCauseInternalServerError_noResultsAndUserNotified() throws TimeoutException {
         addAndCompare("Codeine sulfate", "Maxolon");
-        waitForNodeEnabled(10, "#compareButton");
+        waitForNodeEnabled("#compareButton");
 
         HashSet<String> expected = new HashSet<>(Arrays.asList(
             "Could not retrieve interaction symptoms (an error occurred on the server)."

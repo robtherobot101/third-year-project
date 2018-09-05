@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.LoginPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
+                <Image Source="donationIcon.png" 
+                       WidthRequest="150"
+                       HeightRequest="150"
+                       Margin="0, 0, 0, 30"
+                       />
+
+                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email" ReturnType="Next"               
+                    />
+
+                <Entry x:Name="passwordInput" Placeholder="Password" ReturnType="Go"
+                    IsPassword="true"                
+                    />
+                
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Login"
+                    HorizontalOptions="Center"
+                    VerticalOptions="StartAndExpand"
+                    Clicked="LoginButtonClicked"
+                            x:Name="LoginButton"/>
+
+                    <Button Text="Sign Up"
+                    HorizontalOptions="EndAndExpand"
+                    VerticalOptions="CenterAndExpand"
+                    Clicked="SignUpButtonClicked"
+                            x:Name="SignUpButton"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" Margin="0, 0, 0, 50">
+                    <Label Text="Remember me?" Margin="0, 0, 30, 0"/>
+                    <Switch x:Name="RememberMeSwitch"/>
+                </StackLayout>
+                
+
+                 <Button Text="Login with Facebook"
+                    Clicked="Handle_LoginWithFacebookClicked" 
+                         TextColor="White"
+                         Image="facebook_icon.png"
+                         BackgroundColor="#39569A"
+                         HeightRequest="50"
+                         WidthRequest="90"
+                         x:Name="FacebookButton"
+                         />
+
+                 <Button Text="Login with Google"
+                    Clicked="Handle_LoginWithGoogleClicked"
+                         TextColor="White"
+                         BackgroundColor="#DD4B39"
+                         HeightRequest="50"
+                         WidthRequest="90"
+                         x:Name="GoogleButton"/>
+                <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

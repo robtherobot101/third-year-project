@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Globalization;
+using Newtonsoft.Json;
+using Xamarin.Forms;
+
 namespace mobileAppClient
 {
     /*
@@ -6,19 +10,57 @@ namespace mobileAppClient
      */ 
     public class Disease
     {
-        public string Name { get; set; }
-        public CustomDate DiagnosisDate { get; set; }
-        public bool IsChronic { get; set; }
-        public bool IsCured { get; set; }
-        public int Id { get; set; }
-        public string DiagnosisDateString { get; set; }
-        public string CellText { get; set; }
-        public Xamarin.Forms.Color CellColour { get; set; }
+        public string name { get; set; }
+        public CustomDate diagnosisDate { get; set; }
+        public bool isChronic { get; set; }
+        public bool isCured { get; set; }
 
-        public Disease(string name, int id)
+        [JsonIgnore]
+        public string DiagnosisDetailString
         {
-            this.Name = name;
-            this.Id = id;
+            get
+            {
+                return "Diagnosed on " + this.diagnosisDate.day + " of " + new DateTimeFormatInfo().GetAbbreviatedMonthName(this.diagnosisDate.month) + ", " + this.diagnosisDate.year;
+            }
+        } 
+
+
+        [JsonIgnore]
+        public string CellText {
+            get
+            {
+                if (this.isChronic)
+                {
+                    return this.name + " (CHRONIC)";
+                }
+                else
+                {
+                    return this.name;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public Color CellColour {
+            get
+            {
+                if (this.isChronic)
+                {
+                    return Color.Red;
+                }
+                else
+                {
+                    return Color.Blue;
+                }
+            }
+        } 
+
+        public Disease(string name, CustomDate date, bool Chronic, bool Cured)
+        {
+            this.name = name;
+            this.diagnosisDate = date;
+            this.isChronic = Chronic;
+            this.isCured = Cured;
         }
     }
 }

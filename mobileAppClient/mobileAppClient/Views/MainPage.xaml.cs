@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using mobileAppClient.odmsAPI;
+using mobileAppClient.Views;
+using System;
+using System.Collections.ObjectModel;
+using System.Reflection;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -14,32 +14,143 @@ namespace mobileAppClient
      * Class to handle all functionality regarding the main menu slider for 
      * displaying all user navigation options.
      */ 
-    public partial class MainPage : MasterDetailPage, UserObserver
+    public partial class MainPage : MasterDetailPage
     {
-
-        public List<MasterPageItem> menuList { get; set; }
-
+        public ObservableCollection<MasterPageItem> menuList { get; set; }
+    
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
-         */ 
-        public MainPage()
+         */
+        public MainPage(bool isClinicianView)
         {
-            OpenLogin();
             InitializeComponent();
-            UserController.Instance.addUserObserver(this);
+            menuList = new ObservableCollection<MasterPageItem>();
+            navigationDrawerList.ItemsSource = menuList;
 
-            menuList = new List<MasterPageItem>();
+            // If a clinician is entering into a user's view
+            if (isClinicianView)
+            {
+                clinicianViewingUser();
+            } else
+            {
+                UserController.Instance.mainPageController = this;
+            }
+        }
 
-            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(OverviewPage) };
+        /*
+         * Method which is used when a user logs out, opening the login page again.
+         */
+        private async void LogoutUser()
+        {
+            // Remove token from server
+            LoginAPI loginAPI = new LoginAPI();
+            await loginAPI.Logout(false);
+
+            // Logout any currently stored user
+            UserController.Instance.Logout();
+
+            // Open the login page
+            var loginPage = new LoginPage();
+            await Navigation.PopModalAsync(true);
+        }
+
+        /*
+         * Method which is used when a user logs out, opening the login page again.
+         */
+        private async void LogoutClinician()
+        {
+            // Remove token from server
+            LoginAPI loginAPI = new LoginAPI();
+            await loginAPI.Logout(true);
+
+            // Clear any previously selected user
+            UserController.Instance.Logout();
+
+            // Logout clinician
+            ClinicianController.Instance.Logout();
+
+            // Open the login page
+            var loginPage = new LoginPage();
+            await Navigation.PopModalAsync(true);
+        }
+
+        /*
+         * Sets up the Main page for a user's view
+         */
+        public void userLoggedIn()
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
+            updateUserProfileBar();
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(UserOverviewPage) };
             var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
             var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
-            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png" ,TargetType = typeof(LoginPage) };
-            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png",TargetType = typeof(DiseasesPage) };
+            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png", TargetType = typeof(DiseasesPage) };
             var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
             var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png",TargetType = typeof(WaitingListItemsPage) };
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
+            var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
+            var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
 
+            // Adding menu items to menuList
+            menuList.Add(overviewPage);
+            menuList.Add(attributesPage);
+            menuList.Add(livesSavedPage);
+            menuList.Add(organsPage);
+            menuList.Add(medicationsPage);
+            menuList.Add(diseasesPage);
+            menuList.Add(proceduresPage);
+            menuList.Add(waitingListItemsPage);
+            menuList.Add(userSettingsPage);
+            menuList.Add(logoutPage);
+        }
+
+        /*
+         * Sets up the Main page for a clinician's view
+         */
+        public void clinicianLoggedIn()
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(ClinicianOverviewPage)));
+            updateClinicianProfileBar();
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(ClinicianOverviewPage) };
+            var userSearchPage = new MasterPageItem() { Title = "User Search", Icon = "users_icon.png", TargetType = typeof(UserSearchPage) };
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPageClinician) };
+            var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
+            var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
+            var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
+
+            // Adding menu items to menuList
+            menuList.Add(overviewPage);
+            menuList.Add(userSearchPage);
+            menuList.Add(attributesPage);
+            menuList.Add(transplantListPage);
+            menuList.Add(mapPage);
+            menuList.Add(logoutPage);
+        }
+
+        public void clinicianViewingUser()
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(UserOverviewPage)));
+            updateUserViewerProfileBar();
+           
+
+            menuList.Clear();
+
+            var overviewPage = new MasterPageItem() { Title = "Overview", Icon = "home_icon.png", TargetType = typeof(UserOverviewPage) };
+            var attributesPage = new MasterPageItem() { Title = "Attributes", Icon = "attributes_icon.png", TargetType = typeof(AttributesPage) };
+            var organsPage = new MasterPageItem() { Title = "Organs", Icon = "organs_icon.png", TargetType = typeof(OrgansPage) };
+            var diseasesPage = new MasterPageItem() { Title = "Diseases", Icon = "diseases_icon.png", TargetType = typeof(DiseasesPage) };
+            var proceduresPage = new MasterPageItem() { Title = "Procedures", Icon = "procedures_icon.png", TargetType = typeof(ProceduresPage) };
+            var waitingListItemsPage = new MasterPageItem() { Title = "Waiting List", Icon = "waitinglist_icon.png", TargetType = typeof(WaitingListItemsPage) };
+            var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png", TargetType = typeof(MedicationsPage) };
+            
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -49,50 +160,20 @@ namespace mobileAppClient
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
             menuList.Add(waitingListItemsPage);
-            menuList.Add(logoutPage);
-
-            // Setting our list to be ItemSource for ListView in MainPage.xaml
-            navigationDrawerList.ItemsSource = menuList;
-            // Initial navigation, this can be used for our home page
-            Detail = new NavigationPage((Page)Activator.CreateInstance(typeof(OverviewPage)));
-            this.BindingContext = new
-            {
-                Header = "",
-                Image = "",
-                Footer = "      Welcome To SENG302     "
-            };
-            
         }
 
         /*
-         * Method which is used when a user logs out, opening the login page again.
-         */ 
-        private async void OpenLogin()
+         * Function used to Stops the back button from working and 
+         * opening the main view without a logged in user
+         */
+        protected override bool OnBackButtonPressed()
         {
-            // Logout any currently stored user
-            UserController.Instance.Logout();
-
-            // Open the login page
-            var loginPage = new LoginPage();
-            await Navigation.PushModalAsync(loginPage);
-        }
-
-        /*
-         * Observer class method to handle when a user is updated, 
-         * in this case updating the Details of the Menu Slider.
-         */ 
-        public void updateUser()
-        {
-            this.BindingContext = new
-            {
-                Header = "  SENG302 - Team300",
-                Footer = "  Logged in as " + UserController.Instance.LoggedInUser.name[0]
-            };
+            return true;
         }
 
         /*
          * Handles when a given page is selected in the menu slider and sends the user to that page.
-         */ 
+         */
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = (MasterPageItem)e.SelectedItem;
@@ -101,14 +182,89 @@ namespace mobileAppClient
             switch(page.Name)
             {
                 case "LoginPage":
-                    OpenLogin();
+                    if (ClinicianController.Instance.isLoggedIn())
+                    {
+                        LogoutClinician();
+                    }
+                    else
+                    {
+                        LogoutUser();
+                    }
                     break;
                 default:
-                    updateUser();
-                    Detail = new NavigationPage((Page)Activator.CreateInstance(page));
+                    NavigationPage content = new NavigationPage((Page) Activator.CreateInstance(page));
+
+                    Detail = content;
                     IsPresented = false;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Public accessor for updating the menu bar
+        /// </summary>
+        public void updateMenuPhoto() {
+            updateUserProfileBar();
+        }
+
+        private void updateUserViewerProfileBar()
+        {
+            BindingContext = new
+            {
+                ProfileImage = "viewing_user_photo.png",
+                FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
+                BorderColor = "White"
+            };
+        }
+        private void updateUserProfileBar()
+        {
+            // Update for a logged in user
+            string profileImagePath;
+            if (UserController.Instance.ProfilePhotoSource == null)
+            {
+                // No photo provided, use default
+                profileImagePath = "default_user_photo.png";
+            }
+            else
+            {
+                // Use photo from server
+                profileImagePath = UserController.Instance.ProfilePhotoSource.ToString();
+            }
+
+            BindingContext = new
+            {
+                ProfileImage = profileImagePath,
+                FullName = UserController.Instance.LoggedInUser.FullName,
+                BorderColor = "White"
+            };
+            
+        }
+
+        private void updateClinicianProfileBar()
+        {
+            // Update for a logged in clinician
+            BindingContext = new
+            {
+                ProfileImage = "default_clinician_photo.png",
+                FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name,
+                BorderColor = "White"
+            };
+        }
+
+        /// <summary>
+        /// Activated when the profile photo is tapped -> opens profile photo settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        async void OnProfilePhotoTapped(object sender, EventArgs args)
+        {
+            // Do nothing if it is a clinician
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                return;
+            }
+
+            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage()));
         }
     }
 }
