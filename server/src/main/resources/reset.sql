@@ -121,6 +121,35 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `HOSPITAL`
+--
+DROP TABLE IF EXISTS `HOSPITAL`;
+CREATE TABLE IF NOT EXISTS `HOSPITAL` (
+  `hospital_id` bigint(20) NOT NULL,
+  `name` text NOT NULL,
+  `address` text NOT NULL,
+  `region` text NOT NULL,
+  `city` text NOT NULL,
+  `country` text NOT NULL,
+  `latitude` float(10,6) NOT NULL,
+  `longitude` float(10,6) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `WAITING_LIST_ITEM`
+--
+
+DROP TABLE IF EXISTS `PUSH_DEVICE`;
+CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
+  `device_id` varchar(64) NOT NULL,
+  `user_token` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `MEDICATION`
 --
 
@@ -258,6 +287,12 @@ ALTER TABLE `HISTORY_ITEM`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  ADD PRIMARY KEY (`hospital_id`);
+
+--
 -- Indexes for table `MEDICATION`
 --
 ALTER TABLE `MEDICATION`
@@ -285,6 +320,13 @@ ALTER TABLE `USER`
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD PRIMARY KEY (`id`),
   ADD KEY `User_id_foreign_key5` (`user_id`);
+
+--
+-- Indexes for table `WAITING_LIST_ITEM`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD PRIMARY KEY (`device_id`),
+  ADD KEY `User_id_foreign_key6` (`user_token`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -315,6 +357,11 @@ ALTER TABLE `DONATION_LIST_ITEM`
 --
 ALTER TABLE `HISTORY_ITEM`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  MODIFY `hospital_id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `MEDICATION`
 --
@@ -374,6 +421,13 @@ ALTER TABLE `PROCEDURES`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
+
+
+--
+-- Constraints for table `PUSH_DEVICE`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD CONSTRAINT `User_id_foreign_key6` FOREIGN KEY (`user_token`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
 -- Create default clinician and admin
