@@ -50,17 +50,17 @@ public class Notifications {
 
     /**
      * Get all the devices on which a user is registered to receive push notifications
-     * @param token The login token of the user
+     * @param user_id The id of the user
      * @return A list of the device UUIDs on which the user has logged in
      * @throws SQLException When something goes wrong
      */
-    public List<String> getDevices(String token) throws SQLException {
+    public List<String> getDevices(String user_id) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //
-            String query = "SELECT device_id FROM PUSH_DEVICE WHERE user_token = ?";
+            String query = "SELECT device_id FROM PUSH_DEVICE JOIN TOKEN WHERE id = ? AND user_token=token";
             PreparedStatement statement = connection.prepareStatement(query);
 
-            statement.setString(1, token);
+            statement.setString(1, user_id);
             ResultSet resultSet = statement.executeQuery();
             List<String> devices = new ArrayList<>();
             while(resultSet.next()) {

@@ -236,7 +236,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        PushAPI.getInstance().sendNotification(new Notification("Test", "Test notification from Java!", "Device_UUID"));
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
