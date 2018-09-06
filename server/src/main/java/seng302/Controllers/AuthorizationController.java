@@ -8,6 +8,7 @@ import seng302.Model.Admin;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.NotificationManager.Notification;
 import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
@@ -49,7 +50,6 @@ public class AuthorizationController {
             if (currentUser != null) {
                 loginToken = model.generateToken((int) currentUser.getId(), 0);
                 typeMatched = ProfileType.USER;
-                notifications.register(request.headers("device_id"), String.valueOf(currentUser.getId()));
                 System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
@@ -63,7 +63,6 @@ public class AuthorizationController {
                 if (currentClinician != null) {
                     loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
                     typeMatched = ProfileType.CLINICIAN;
-                    notifications.register(request.headers("device_id"), String.valueOf(currentClinician.getStaffID()));
                     System.out.println("LoginController: Logging in as clinician...");
                 }
             } catch (SQLException e) {
@@ -87,8 +86,10 @@ public class AuthorizationController {
 
         if (typeMatched != null) {
             try {
+                Server.getInstance().log.debug("Registering device for notifications");
                 notifications.register(request.headers("device_id"), loginToken);
             } catch (SQLException e) {
+                Server.getInstance().log.error("Could not register device!");
                 e.printStackTrace();
             }
             switch (typeMatched) {
