@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class PushAPI {
     /**
@@ -48,8 +49,16 @@ public class PushAPI {
      * @param notification The notification object containing title, message etc.
      * @param user_id      The ID of the user to which the notification is being sent
      */
-    public void sendNotification(Notification notification, String user_id) throws SQLException {
-        List<String> devices = notificationsDatabase.getDevices(user_id);
+    public void sendNotification(Notification notification, String user_id) {
+        List<String> devices;
+        try {
+            Server.getInstance().log.info("Getting devices logged in by user with id " + user_id);
+            devices = notificationsDatabase.getDevices(user_id);
+        } catch (SQLException e) {
+            Server.getInstance().log.info("Failed to get devices");
+            e.printStackTrace();
+            return;
+        }
         for (String url : urls) {
             // Convert notification to JSON
             HttpContent content = constructNotificationJson(devices, notification);

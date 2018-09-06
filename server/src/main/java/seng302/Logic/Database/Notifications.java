@@ -20,8 +20,9 @@ public class Notifications {
     public void register(String device_id, String token) throws SQLException {
         if(device_id == null) return;
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            //
-            String query = "INSERT INTO PUSH_DEVICE (device_id, user_token) VALUES(?, ?) ON DUPLICATE KEY UPDATE user_id=?";
+            System.out.println(device_id);
+            System.out.println(token);
+            String query = "INSERT INTO PUSH_DEVICE (device_id, user_token) VALUES(?, ?) ON DUPLICATE KEY UPDATE user_token=?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, device_id);
             statement.setString(2, token);
