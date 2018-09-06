@@ -3,10 +3,13 @@ package seng302.Controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.Authorization;
+import seng302.Logic.Database.Notifications;
 import seng302.Model.Admin;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.NotificationManager.PushAPI;
+import seng302.Server;
 import spark.Request;
 import spark.Response;
 
@@ -15,6 +18,7 @@ import java.sql.SQLException;
 public class AuthorizationController {
 
     Authorization model = new Authorization();
+    Notifications notifications = new Notifications();
 
 
     /**
@@ -45,6 +49,7 @@ public class AuthorizationController {
             if (currentUser != null) {
                 loginToken = model.generateToken((int) currentUser.getId(), 0);
                 typeMatched = ProfileType.USER;
+                notifications.register(request.headers("device_id"), String.valueOf(currentUser.getId()));
                 System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
@@ -58,6 +63,7 @@ public class AuthorizationController {
                 if (currentClinician != null) {
                     loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
                     typeMatched = ProfileType.CLINICIAN;
+                    notifications.register(request.headers("device_id"), String.valueOf(currentClinician.getStaffID()));
                     System.out.println("LoginController: Logging in as clinician...");
                 }
             } catch (SQLException e) {
@@ -80,6 +86,11 @@ public class AuthorizationController {
         }
 
         if (typeMatched != null) {
+            try {
+                notifications.register(request.headers("device_id"), loginToken);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             switch (typeMatched) {
                 case ADMIN:
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -127,6 +138,7 @@ public class AuthorizationController {
                 return "Invalid: logout with no token";
             } else {
                 model.logout(token);
+                notifications.unregister(request.headers("device_id"));
                 response.status(200);
                 return "Logged out successfully";
             }
