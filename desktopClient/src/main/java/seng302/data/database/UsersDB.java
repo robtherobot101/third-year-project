@@ -207,7 +207,7 @@ public class UsersDB implements UsersDAO {
 
     /**
      * removes a user from the server
-     * @param id the id of the users to remove
+     * @param username the id of the users to remove
      * @param token the users token
      * @throws HttpResponseException throws if cannot connect to the server
      */

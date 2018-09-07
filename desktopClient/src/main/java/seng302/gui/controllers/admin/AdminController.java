@@ -874,11 +874,12 @@ public class AdminController implements Initializable {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Confirm profile deletion",
                     "Are you sure you want to delete this profile? This cannot be undone.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.orElse(null) == ButtonType.OK) {
+            if (result.get() == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
                     Debugger.log("Deleting user: " + selectedUser);
                     try {
+                        System.out.println(selectedUser.getId());
                         WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
@@ -929,6 +930,7 @@ public class AdminController implements Initializable {
                 User selectedUser = userTableView.getSelectionModel().getSelectedItem();
                 // No need to check for default user
                 if (selectedUser != null) {
+                    editClinician.setVisible(false);
                     deleteProfile.setText(delete + selectedUser.getName());
                     profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
                 }
@@ -943,6 +945,8 @@ public class AdminController implements Initializable {
                     if (selectedClinician.getStaffID() == 0) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default clinician");
+                        editClinician.setVisible(true);
+                        editClinician.setText("Edit " + selectedClinician.getName());
                     } else {
                         deleteProfile.setDisable(false);
                         deleteProfile.setText(delete + selectedClinician.getName());
@@ -966,6 +970,7 @@ public class AdminController implements Initializable {
                         deleteProfile.setDisable(false);
                         deleteProfile.setText(delete + selectedAdmin.getName());
                     }
+                    editClinician.setVisible(false);
                     profileMenu.show(adminTableView, event.getScreenX(), event.getScreenY());
                 }
             }

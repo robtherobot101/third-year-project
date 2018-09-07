@@ -706,9 +706,9 @@ public class GeneralUser {
      */
     public void removeUser(User user) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "DELETE FROM USER WHERE username = ?";
+            String update = "DELETE FROM USER WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(update);
-            statement.setString(1, user.getUsername());
+            statement.setLong(1, user.getId());
             System.out.println("Deletion of user: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
     }
