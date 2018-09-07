@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class PushAPI {
     /**
@@ -50,37 +49,35 @@ public class PushAPI {
      * @param user_id      The ID of the user to which the notification is being sent
      */
     public void sendNotification(Notification notification, String user_id) {
-        List<String> devices;
+        // Get the devices on which the user is logged on
+        List<String> devices = getDevices(user_id);
+        if(devices != null) {
+            for (String url : urls) {
+                // Convert notification to JSON
+                HttpContent content = constructNotificationJson(devices, notification);
+                // Create a request
+                HttpRequest request = createRequest(content, token, url);
+                // Execute the request
+                if (request != null) {
+                    executeRequest(request).start();
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets a list of device ids on which a user is logged in
+     * @param user_id The ID of the user
+     * @return A list of Strings representing the IDs of each device the user with the given ID is logged in on
+     */
+    private List<String> getDevices(String user_id) {
         try {
             Server.getInstance().log.info("Getting devices logged in by user with id " + user_id);
-            devices = notificationsDatabase.getDevices(user_id);
+            return notificationsDatabase.getDevices(user_id);
         } catch (SQLException e) {
             Server.getInstance().log.info("Failed to get devices");
             e.printStackTrace();
-            return;
-        }
-        for (String url : urls) {
-            // Convert notification to JSON
-            HttpContent content = constructNotificationJson(devices, notification);
-            HttpRequest request;
-            try {
-                request = requestFactory.buildPostRequest(new GenericUrl(url), content);
-            } catch (IOException e) {
-                Server.getInstance().log.error("Could not create API request");
-                Server.getInstance().log.error(e.toString());
-                return;
-            }
-            request.getHeaders().put("X-API-Token", token);
-            // Execute the request on a seperate thread
-            new Thread(() -> {
-                try {
-                    Server.getInstance().log.info("Notification sent: " + request.execute().parseAsString());
-                } catch (IOException e) {
-                    Server.getInstance().log.error("Could not send push notification");
-                    Server.getInstance().log.error(e.toString());
-
-                }
-            }).start();
+            return null;
         }
     }
 
@@ -98,5 +95,42 @@ public class PushAPI {
         targetMap.put("devices", devices.toArray());
         notificationMap.put("notification_target", targetMap);
         return new JsonHttpContent(new JacksonFactory(), notificationMap).setMediaType(new HttpMediaType("text/json"));
+    }
+
+    /**
+     * Create an HTTP POST request to the push API with the given content. Adds the API token.
+     * @param content The JSON content of the notification
+     * @param token The Push API authorisation token
+     * @param url The url of the Push API (with app and user name)
+     * @return An HTTP request to the API to send the notification
+     */
+    private HttpRequest createRequest(HttpContent content, String token, String url) {
+        try {
+            HttpRequest request = requestFactory.buildPostRequest(new GenericUrl(url), content);
+            request.getHeaders().put("X-API-Token", token);
+            return request;
+        } catch (IOException e) {
+            Server.getInstance().log.error("Could not create API request");
+            Server.getInstance().log.error(e.toString());
+            return null;
+        }
+    }
+
+
+    /**
+     * Creates a thread on which to execute an HTTP request
+     * @param request The POST request to be sent
+     * @return The thread to be started
+     */
+    private Thread executeRequest(HttpRequest request) {
+        return new Thread(() -> {
+            try {
+                Server.getInstance().log.info("Notification sent: " + request.execute().parseAsString());
+            } catch (IOException e) {
+                Server.getInstance().log.error("Could not send push notification");
+                Server.getInstance().log.error(e.toString());
+
+            }
+        });
     }
 }
