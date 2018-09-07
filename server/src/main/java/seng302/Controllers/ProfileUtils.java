@@ -1,5 +1,6 @@
 package seng302.Controllers;
 
+import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Server;
@@ -17,8 +18,6 @@ import static spark.Spark.halt;
  * Utility class for profiles
  */
 public class ProfileUtils {
-
-
 
     /**
      * Checks the authorisation level of a token.
@@ -38,15 +37,18 @@ public class ProfileUtils {
                         "SELECT access_level FROM TOKEN WHERE token = ?");
                 statement.setString(1, token);
                 ResultSet resultSet = statement.executeQuery();
+                int accessLevel = -1;
                 if (resultSet.next()) {
                     statement = connection.prepareStatement(
                             "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
                     statement.setString(1, token);
                     statement.execute();
-                    return resultSet.getInt("access_level");
-                } else {
-                    return -1;
+                    accessLevel = resultSet.getInt("access_level");
                 }
+
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(statement);
+                return accessLevel;
             }
         } catch (SQLException | NullPointerException e) {
             return -1;
@@ -81,7 +83,10 @@ public class ProfileUtils {
                 statement.setInt(3, id);
 
                 ResultSet resultSet = statement.executeQuery();
-                return resultSet.next();
+                boolean hasNext = resultSet.next();
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(statement);
+                return hasNext;
             }
         } catch (SQLException e) {
             return false;
@@ -265,37 +270,53 @@ public class ProfileUtils {
             return false;
         }
 
-        try {
-            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ? OR nhi = ?");
-                statement.setString(1, usernameEmail);
-                statement.setString(2, usernameEmail);
-                statement.setString(3, usernameEmail);
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    response.status(200);
-                    return false;
-                }
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        boolean found = false;
+        boolean error = false;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ? OR nhi = ?");
+            statement.setString(1, usernameEmail);
+            statement.setString(2, usernameEmail);
+            statement.setString(3, usernameEmail);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                found = true;
+            }
+            DbUtils.closeQuietly(resultSet);
+            DbUtils.closeQuietly(statement);
+
+            if (!found) {
                 statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
                 statement.setString(1, usernameEmail);
                 resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    response.status(200);
-                    return false;
+                    found = true;
                 }
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(statement);
+            }
+
+            if (!found) {
                 statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
                 statement.setString(1, usernameEmail);
                 resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    response.status(200);
-                    return false;
+                    found = true;
                 }
-                response.status(200);
-                return true;
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(statement);
             }
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
+        } finally {
+            DbUtils.closeQuietly(resultSet);
+            DbUtils.closeQuietly(statement);
+        }
+        if (error) {
             halt(500, "Internal server error");
             return false;
         }
+        response.status(200);
+        return !found;
     }
 }
