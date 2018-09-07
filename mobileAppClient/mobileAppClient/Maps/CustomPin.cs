@@ -10,6 +10,5 @@ namespace mobileAppClient
         public string genderIcon { get; set; }
         public string userPhoto { get; set; }
 
-
     }
 }
