@@ -9,6 +9,6 @@ namespace mobileAppClient.Models
     /// </summary>
     public enum ODMSPinType
     {
-        DONOR, HOSPITAL
+        DONOR, HOSPITAL, HELICOPTER
     }
 }

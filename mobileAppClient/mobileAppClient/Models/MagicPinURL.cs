@@ -29,6 +29,4 @@ namespace mobileAppClient.Models
             return JsonConvert.DeserializeObject<MagicPinURL>(magicPinUrlToUnpack);
         }
     }
-
-
 }

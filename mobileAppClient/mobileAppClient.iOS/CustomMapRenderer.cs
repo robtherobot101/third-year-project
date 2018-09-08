@@ -11,6 +11,7 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
+using mobileAppClient.Maps;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS

@@ -8,6 +8,7 @@ using mobileAppClient.odmsAPI;
 using System.Net;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
 
@@ -91,6 +92,7 @@ namespace mobileAppClient
 
 
             customMap.CustomPins = new Dictionary<Position, CustomPin> { };
+            customMap.HelicopterPins = new Dictionary<String, CustomPin> { };
 
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
@@ -106,7 +108,11 @@ namespace mobileAppClient
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
+
             await InitialiseHospitals();
+
+            AddHelicopter();
+
             switch (tuple.Item1)
             {
                 case HttpStatusCode.OK:
@@ -238,21 +244,28 @@ namespace mobileAppClient
                             userId = user.id
                         };
                         customMap.CustomPins.Add(pin.Position, pin);
-                        customMap.Pins.Add(pin);
 
-
+                        lock (customMap.Pins)
+                        {
+                            customMap.Pins.Add(pin);
+                        }
+                        
                     }
 
+                    StartTimer(200);
                     break;
+
                 case HttpStatusCode.ServiceUnavailable:
                     await DisplayAlert("",
                     "Server unavailable, check connection",
                     "OK");
+                    StartTimer(200);
                     break;
                 case HttpStatusCode.InternalServerError:
                     await DisplayAlert("",
                     "Server error retrieving organs, please try again (500)",
                     "OK");
+                    StartTimer(200);
                     break;
             }
         }
@@ -288,8 +301,10 @@ namespace mobileAppClient
                         // We add to this list to track our pins with additional information (like hospital or donor)
                         customMap.CustomPins.Add(pin.Position, pin);
 
-                        // This list actually adds the pin to the MapRenderer
-                        customMap.Pins.Add(pin);
+                        lock (customMap.Pins)
+                        {
+                            customMap.Pins.Add(pin);
+                        }
                     }
 
                     break;
@@ -303,6 +318,68 @@ namespace mobileAppClient
                     "Server error retrieving hospitals, please try again (500)",
                     "OK");
                     break;
+            }
+        }
+
+        private void AddHelicopter()
+        {
+            // TESTING
+            Position start = new Position(-37.9061137, 176.2050742);
+            Position end = new Position(-36.8613687, 174.7676895);
+
+            Helicopter heli = new Helicopter()
+            {
+                startPosition = start,
+                destinationPosition = end
+            };
+
+            CustomPin heliPin = new CustomPin
+            {
+                CustomType = ODMSPinType.HELICOPTER,
+                Label = "Heli",
+                HelicopterDetails = heli,
+                Position = heli.startPosition,
+                Address = "1"
+            };
+
+            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
+            customMap.Pins.Add(heliPin);
+        }
+
+        /// <summary>
+        /// Starts the helicopter refresh timer
+        /// </summary>
+        /// <param name="interval"> Time between refreshes in milliseconds </param>
+        public void StartTimer(int interval)
+        {
+            Timer t = new Timer(RefreshHelipcopterPositions, null, 5000, interval);
+        }
+
+        private void RefreshHelipcopterPositions(object o)
+        {
+            Dictionary<String, CustomPin> intermediateHeliPins = new Dictionary<String, CustomPin>();
+
+            foreach (var singleHelicopterPin in customMap.HelicopterPins.Values)
+            {
+                Position currentPosition = singleHelicopterPin.Position;
+ 
+                intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
+                intermediateHeliPins[singleHelicopterPin.Address].Position = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+            }
+
+            customMap.HelicopterPins = new Dictionary<String, CustomPin>(intermediateHeliPins);
+
+            foreach (var singleHelicopterPin in intermediateHeliPins.Values)
+            {
+                Device.BeginInvokeOnMainThread(() => { customMap.Pins.Remove(singleHelicopterPin); });
+                if (!(singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
+                {
+                    Device.BeginInvokeOnMainThread(() => { customMap.Pins.Add(singleHelicopterPin); });
+                }
+                else
+                {
+                    customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                }
             }
         }
     }
