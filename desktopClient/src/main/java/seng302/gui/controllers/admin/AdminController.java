@@ -1099,7 +1099,7 @@ public class AdminController implements Initializable {
         Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
-        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Update clinician");
         dialog.setHeaderText("Update clinician Details");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
@@ -1150,40 +1150,34 @@ public class AdminController implements Initializable {
         // Request focus on the username field by default.
         Platform.runLater(clinicianName::requestFocus);
 
-        dialog.setResultConverter(dialogButton -> {
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.get() == updateButtonType){
             String newName = "";
             String newAddress = "";
             String newRegion = "";
-            if (dialogButton == updateButtonType) {
 
-                if (clinicianName.getText().equals("")) {
-                    newName = clinician.getName();
-                } else {
-                    newName = clinicianName.getText();
-                }
-
-                if (clinicianAddress.getText().equals("")) {
-                    newAddress = clinician.getWorkAddress();
-                } else {
-                    newAddress = clinicianAddress.getText();
-                }
-
-                if (clinicianRegion.getText().equals("")) {
-                    newRegion = clinician.getRegion();
-                } else {
-                    newRegion = clinicianRegion.getText();
-                }
+            if (clinicianName.getText().equals("")) {
+                newName = clinician.getName();
+            } else {
+                newName = clinicianName.getText();
             }
-            return new ArrayList<>(Arrays.asList(newName, newAddress, newRegion));
-        });
 
-        Optional<ArrayList<String>> result = dialog.showAndWait();
-        result.ifPresent(newClinicianDetails -> {
-            Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
-                    .get(2));
-            clinician.setName(newClinicianDetails.get(0));
-            clinician.setWorkAddress(newClinicianDetails.get(1));
-            clinician.setRegion(newClinicianDetails.get(2));
+            if (clinicianAddress.getText().equals("")) {
+                newAddress = clinician.getWorkAddress();
+            } else {
+                newAddress = clinicianAddress.getText();
+            }
+
+            if (clinicianRegion.getText().equals("")) {
+                newRegion = clinician.getRegion();
+            } else {
+                newRegion = clinicianRegion.getText();
+            }
+
+            Debugger.log("Name=" + newName + ", Address=" + newAddress + ", Region=" + newRegion);
+            clinician.setName(newName);
+            clinician.setWorkAddress(newAddress);
+            clinician.setRegion(newRegion);
             try {
                 WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
                 refreshLatestProfiles();
@@ -1192,7 +1186,7 @@ public class AdminController implements Initializable {
             }
 
 
-        });
+        }
     }
 
 
