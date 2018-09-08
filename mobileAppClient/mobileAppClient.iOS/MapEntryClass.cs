@@ -1,5 +1,6 @@
 ﻿using System;
 using CoreGraphics;
+using MapKit;
 using mobileAppClient.Maps;
 using UIKit;
 using Xamarin.Forms;
@@ -13,10 +14,10 @@ namespace mobileAppClient.iOS
         {
         }
 
-        public void addSlideUpSheet(CustomPin pin) {
+        public void addSlideUpSheet(CustomPin pin, CustomMap map, MKMapView nativeMap) {
             //Get the current UI Window
             var window = UIApplication.SharedApplication.KeyWindow;
-            var bottomSheetVC = new BottomSheetViewController(pin);
+            var bottomSheetVC = new BottomSheetViewController(pin, map, nativeMap);
 
             var rootVC = window.RootViewController;
 

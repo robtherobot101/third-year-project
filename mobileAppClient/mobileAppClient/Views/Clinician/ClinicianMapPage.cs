@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Text;
+using SlideOverKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using System.Threading.Tasks;
@@ -11,11 +13,13 @@ using System.Linq;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
+using MapKit;
 
-namespace mobileAppClient
+namespace mobileAppClient.Views.Clinician
 {
-    public partial class ClinicianMapPage : ContentPage
-    {
+	public class ClinicianMapPage : MenuContainerPage
+	{
+
         List<CustomMapObject> users;
         List<Hospital> hospitals;
 
@@ -23,56 +27,68 @@ namespace mobileAppClient
 
         public ClinicianMapPage()
         {
-            //DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet();
+            this.SlideMenu = new SlideUpMenuView();
 
         }
 
-        public async void displayBottomSheet(CustomPin pin) {
+        public async void displayBottomSheet(CustomPin pin, CustomMap map, MKMapView nativeMap) {
 
-            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin);
+            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map, nativeMap);
         }
 
-        public async void displayUserDialog(string organString, string id) {
-            string[] organList = organString.Split(',');
-            id = organList[organList.Length - 1];
-            organList = organList.Take(organList.Length - 1).ToArray();
-            List<string> finalList = new List<string>();
-            string final;
-            foreach(string item in organList) {
-                final = item.Replace("_icon.png", "");
-                finalList.Add("- " + final + "\n");
+        public async void displayUserDialog(string organString, string id)
+        {
+            //if Android, use the SlideOverKit stuff
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                ShowMenu();
             }
-            string listString = String.Join("", finalList);
-            
-            var answer = await DisplayAlert("Display User?", "This user is currently donating: \n" + listString + "Would you like to view their profile?", "Yes", "No");
-            if(answer == true) {
-                UserAPI userAPI = new UserAPI();
-                Tuple<HttpStatusCode, User> userTuple = await userAPI.GetSingleUser(id);
-                switch (userTuple.Item1)
+            //otherwise iPhone or something
+            else
+            {
+                string[] organList = organString.Split(',');
+                id = organList[organList.Length - 1];
+                organList = organList.Take(organList.Length - 1).ToArray();
+                List<string> finalList = new List<string>();
+                string final;
+                foreach (string item in organList)
                 {
-                    case HttpStatusCode.OK:
-                        UserController.Instance.LoggedInUser = userTuple.Item2;
+                    final = item.Replace("_icon.png", "");
+                    finalList.Add("- " + final + "\n");
+                }
+                string listString = String.Join("", finalList);
 
-                        MainPage mainPage = new MainPage(true);
-                        mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
+                var answer = await DisplayAlert("Display User?", "This user is currently donating: \n" + listString + "Would you like to view their profile?", "Yes", "No");
+                if (answer == true)
+                {
+                    UserAPI userAPI = new UserAPI();
+                    Tuple<HttpStatusCode, User> userTuple = await userAPI.GetSingleUser(id);
+                    switch (userTuple.Item1)
+                    {
+                        case HttpStatusCode.OK:
+                            UserController.Instance.LoggedInUser = userTuple.Item2;
 
-                        await Navigation.PushAsync(mainPage);
-                        break;
-                    case HttpStatusCode.ServiceUnavailable:
-                        await DisplayAlert("",
-                        "Server unavailable, check connection",
-                        "OK");
-                        break;
-                    case HttpStatusCode.Unauthorized:
-                        await DisplayAlert("",
-                        "Unauthorised to get profile",
-                        "OK");
-                        break;
-                    case HttpStatusCode.InternalServerError:
-                        await DisplayAlert("",
-                        "Server error, please try again (500)",
-                        "OK");
-                        break;
+                            MainPage mainPage = new MainPage(true);
+                            mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
+
+                            await Navigation.PushAsync(mainPage);
+                            break;
+                        case HttpStatusCode.ServiceUnavailable:
+                            await DisplayAlert("",
+                            "Server unavailable, check connection",
+                            "OK");
+                            break;
+                        case HttpStatusCode.Unauthorized:
+                            await DisplayAlert("",
+                            "Unauthorised to get profile",
+                            "OK");
+                            break;
+                        case HttpStatusCode.InternalServerError:
+                            await DisplayAlert("",
+                            "Server error, please try again (500)",
+                            "OK");
+                            break;
+                    }
                 }
             }
         }
@@ -82,22 +98,25 @@ namespace mobileAppClient
         ///// </summary>
         protected override async void OnAppearing()
         {
+            this.SlideMenu = new SlideUpMenuView();
 
             customMap = new CustomMap
             {
                 MapType = MapType.Street,
                 WidthRequest = 100,
-                HeightRequest = 100
+                HeightRequest = 100,
             };
 
 
             customMap.CustomPins = new Dictionary<Position, CustomPin> { };
             customMap.HelicopterPins = new Dictionary<String, CustomPin> { };
 
+            var centerPosition = new Position(-41.626217, 172.361873);
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                new Position(-41.626217, 172.361873), Distance.FromMiles(500.0)));
+                centerPosition, Distance.FromMiles(500.0)));
 
+          
 
             var stack = new StackLayout { Spacing = 0 };
             stack.Children.Add(customMap);
@@ -123,11 +142,12 @@ namespace mobileAppClient
 
                     foreach (CustomMapObject user in users)
                     {
-                        if(user.organs.Count == 0) {
+                        if (user.organs.Count == 0)
+                        {
                             continue;
                         }
 
-                        
+
                         IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath);
                         Position organPosition = new Position();
                         using (var sequenceEnum = position.GetEnumerator())
@@ -144,7 +164,8 @@ namespace mobileAppClient
 
                         List<string> organIcons = new List<string>();
 
-                        foreach(string organ in user.organs) {
+                        foreach (string organ in user.organs)
+                        {
 
                             string imageString = "";
                             switch (organ)
@@ -195,16 +216,17 @@ namespace mobileAppClient
                         //If none then also set to a pin
 
                         string genderIcon = "";
-                        switch(user.gender) {
-                            case("Male"):
+                        switch (user.gender)
+                        {
+                            case ("Male"):
                                 int number = rnd.Next(1, 15);
                                 genderIcon = "man" + number + ".png";
                                 break;
-                            case("Female"):
+                            case ("Female"):
                                 number = rnd.Next(1, 12);
                                 genderIcon = "woman" + number + ".png";
                                 break;
-                            case("Other"):
+                            case ("Other"):
                                 genderIcon = "other.png";
                                 break;
                             default:
@@ -217,17 +239,23 @@ namespace mobileAppClient
 
                         string profilePhoto = "";
                         Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(user.id);
-                        if(photoResponse.Item1 != HttpStatusCode.OK) {
+                        if (photoResponse.Item1 != HttpStatusCode.OK)
+                        {
                             Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
                             Byte[] bytes;
-                            if(Device.RuntimePlatform == Device.Android) {
-                             
-                            } else {
+                            if (Device.RuntimePlatform == Device.Android)
+                            {
+
+                            }
+                            else
+                            {
                                 bytes = File.ReadAllBytes("donationIcon.png");
                                 profilePhoto = Convert.ToBase64String(bytes);
                             }
 
-                        } else {
+                        }
+                        else
+                        {
                             profilePhoto = photoResponse.Item2;
                         }
 

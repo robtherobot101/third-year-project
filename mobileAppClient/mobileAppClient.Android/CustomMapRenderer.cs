@@ -18,7 +18,9 @@ using Cocosw.BottomSheetActions;
 using Android.Support.V4.Graphics.Drawable;
 using Android.Support.V4.App;
 using Android.App;
+using SlideOverKit;
 using FragmentManager = Android.Support.V4.App.FragmentManager;
+using mobileAppClient.Views.Clinician;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -259,8 +261,8 @@ namespace CustomRenderer.Droid
             }
 
 
-            MapActivity mapActivity = new MapActivity();
-            mapActivity.InitializeMap();
+            //MapActivity mapActivity = new MapActivity();
+            //mapActivity.InitializeMap();
 
             //Context ac = Context.ApplicationContext;
             //@ Andy peek here. The way the Bsheet works is that it creates a fragment. 
@@ -272,8 +274,8 @@ namespace CustomRenderer.Droid
             //BottomSheetFragment fragment = BottomSheetFragment.NewInstance(0, "test");
 
             //fragment.Show(ac., "dialog");
-            //ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            //parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
+            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+            parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
         }
 
         public Android.Views.View GetInfoContents(Marker marker)

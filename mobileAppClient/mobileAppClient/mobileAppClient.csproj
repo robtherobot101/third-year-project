@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SlideOverKit" Version="2.1.6.2" />
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle" Version="3.0.0.5" />
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
     <PackageReference Include="CarouselView.FormsPlugin" Version="5.2.0" />
@@ -72,6 +73,9 @@
     <Compile Update="Views\AttributesPageClinician.xaml.cs">
       <DependentUpon>AttributesPageClinician.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Clinician\SlideUpMenuView.xaml.cs">
+      <DependentUpon>SlideUpMenuView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -102,6 +106,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Clinician\ClinicianOverviewPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Clinician\SlideUpMenuView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">

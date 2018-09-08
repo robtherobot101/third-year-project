@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using CoreGraphics;
+using MapKit;
+using mobileAppClient.Models;
 using UIKit;
+using Xamarin.Forms.Maps;
 
 namespace mobileAppClient.iOS
 {
@@ -10,10 +15,14 @@ namespace mobileAppClient.iOS
         public nfloat fullView;
         public nfloat partialView;
         public CustomPin customPin;
+        public CustomMap map;
         public string organName;
+        public MKMapView nativeMap;
 
-        public PotentialMatchesBottomSheetViewController(CustomPin pin, string organ) : base("PotentialMatchesBottomSheetViewController", null)
+        public PotentialMatchesBottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, string organ) : base("PotentialMatchesBottomSheetViewController", null)
         {
+            this.nativeMap = nativeMap;
+            this.map = map;
             this.organName = organ;
             this.customPin = pin;
             holdView = new UIView();
@@ -24,8 +33,7 @@ namespace mobileAppClient.iOS
 
         public void prepareSheetDetails()
         {
-
-            organNameLabel.Text = "Organ: " + organName;
+            organNameLabel.Text = "Organ: " + char.ToUpper(organName[0]) + organName.Substring(1);
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
             timeRemainingLabel.Text = "INSERT COUNTDOWN HERE";
             //Change colour based on severity
@@ -42,11 +50,14 @@ namespace mobileAppClient.iOS
         void BackButton_TouchUpInside(object sender, EventArgs e)
         {
             var window = UIApplication.SharedApplication.KeyWindow;
-            var bottomSheetVC = new BottomSheetViewController(customPin);
+            var bottomSheetVC = new BottomSheetViewController(customPin, map, nativeMap);
 
             var rootVC = window.RootViewController;
 
             this.View.RemoveFromSuperview();
+            this.View.Dispose();
+            this.View = null;
+            this.RemoveFromParentViewController();
 
             rootVC.AddChildViewController(bottomSheetVC);
             rootVC.View.AddSubview(bottomSheetVC.View);
@@ -55,6 +66,42 @@ namespace mobileAppClient.iOS
             var height = window.Frame.Height;
             var width = window.Frame.Width;
             bottomSheetVC.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
+
+        }
+
+        public async Task closeMenu()
+        {
+            await UIView.AnimateAsync(0.5, new Action(() => {
+                var frame = this.View.Frame;
+                var yComponent = UIScreen.MainScreen.Bounds.Height;
+                this.View.Frame = new CGRect(frame.X, yComponent, frame.Width, frame.Height);
+            }));
+        }
+
+        void prepareRecipientsOnMap() {
+            //TODO CENTER THE MAP ON THE CIRCLE
+            map.Circle = new CustomCircle
+            {
+                Position = new Position(-41.626217, 172.361873),
+                Radius = 10000
+            };
+            var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
+            nativeMap.AddOverlay(circleOverlay);
+            //var bytes = File.ReadAllBytes("donationIcon.png");
+            //var profilePhoto = Convert.ToBase64String(bytes);
+            //var pin = new CustomPin
+            //{
+            //    CustomType = ODMSPinType.DONOR,
+            //    Position = new Position(-41.626217, 172.361873),
+            //    Label = "TEST",
+            //    Address = "TEST",
+            //    Url = "700",
+            //    genderIcon = "other.png",
+            //    userPhoto = profilePhoto,
+            //    userId = 700
+            //};
+            //map.CustomPins.Add(pin.Position, pin);
+            //map.Pins.Add(pin);
 
         }
 
@@ -100,6 +147,7 @@ namespace mobileAppClient.iOS
 
             prepareSheetDetails();
             backButton.TouchUpInside += BackButton_TouchUpInside;
+            prepareRecipientsOnMap();
 
         }
 

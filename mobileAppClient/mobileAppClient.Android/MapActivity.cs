@@ -13,6 +13,7 @@ namespace mobileAppClient.Droid
     public class MapActivity : AppCompatActivity
     {
         Context context = Android.App.Application.Context;
+        Android.Views.View view;
 
         public MapActivity()
         {
@@ -21,15 +22,15 @@ namespace mobileAppClient.Droid
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            SetContentView(Resource.Layout.BottomSheet);
+            //SetContentView();
         }
 
         public void InitializeMap() {
-            Intent intent = new Intent(context, typeof(BottomSheetListActivity));
-            intent.PutExtra("action", 3);
-            intent.PutExtra("title", "Andy");
+            //Intent intent = new Intent(this, typeof(BottomSheetListActivity));
+           // intent.PutExtra("action", 3);
+           // intent.PutExtra("title", "Andy");
             //intent.PutExtra("style", (e.Position == 5));
-            StartActivity(intent);
+           // StartActivity(intent);
         }
     }
 }
