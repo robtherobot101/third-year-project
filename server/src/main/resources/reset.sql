@@ -183,6 +183,34 @@ CREATE TABLE IF NOT EXISTS `TOKEN` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `MESSAGE`
+--
+
+DROP TABLE IF EXISTS `MESSAGE`;
+CREATE TABLE IF NOT EXISTS `MESSAGE` (
+  `id` int(11) NOT NULL,
+  `conversation_id` text NOT NULL,
+  `text` text NOT NULL,
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CONVERSATION`
+--
+
+DROP TABLE IF EXISTS `CONVERSATION`;
+CREATE TABLE IF NOT EXISTS `CONVERSATION` (
+  `id` int(11) NOT NULL,
+  `user_id` text NOT NULL,
+  `clinician_id` text NOT NULL,
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `WAITING_LIST_ITEM`
 --
 

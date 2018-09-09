@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
+import seng302.Model.Attribute.ProfileType;
 import spark.Request;
 import spark.Response;
 
@@ -35,6 +36,7 @@ public class Server {
     private OrgansController organsController;
     private MapObjectController mapObjectController;
     private HospitalController hospitalController;
+    private ConversationsController conversationsController;
 
     private int port = 7015;
     private boolean testing = true;
@@ -108,6 +110,18 @@ public class Server {
                 get( "/:id",        clinicianController::getClinician);
                 delete( "/:id",     clinicianController::deleteClinician);
                 patch( "/:id",      clinicianController::editClinician);
+
+                path("/:id/conversations", () -> {
+                    before("",          profileUtils::isSpecificUser);
+                    get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.CLINICIAN));
+                    post("", (request, response) -> conversationsController.addConversation(request, response, ProfileType.CLINICIAN));
+                    delete("", (request, response) -> conversationsController.removeConversation(request, response, ProfileType.CLINICIAN));
+
+                    path("/:conversationId", () -> {
+                        get("", (request, response) -> conversationsController.getSingleConversation(request, response, ProfileType.CLINICIAN));
+                        post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.CLINICIAN));
+                    });
+                });
             });
 
             path("/users", () -> {
@@ -183,6 +197,16 @@ public class Server {
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
                     patch("/:waitingListItemId", waitingListController::editWaitingListItem);
                     delete("/:waitingListItemId", waitingListController::deleteWaitingListItem);
+                });
+
+                path("/:id/conversations", () -> {
+                    before("",                  profileUtils::isSpecificUser);
+                    get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.USER));
+
+                    path("/:conversationId", () -> {
+                        get("", (request, response) -> conversationsController.getSingleConversation(request, response, ProfileType.USER));
+                        post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.USER));
+                    });
                 });
             });
 
@@ -280,5 +304,6 @@ public class Server {
         mapObjectController = new MapObjectController();
         organsController = new OrgansController();
         hospitalController = new HospitalController();
+        conversationsController = new ConversationsController();
     }
 }

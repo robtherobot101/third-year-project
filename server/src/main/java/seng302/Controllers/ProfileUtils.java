@@ -89,6 +89,63 @@ public class ProfileUtils {
     }
 
     /**
+     * Checks whether the accessor is the same user/clinician/admin they are trying to access.
+     *
+     * @param request Spark HTTP request obj
+     * @param response Spark HTTP response obj
+     * @return Whether they are authorised
+     */
+    public boolean isSpecificUser(Request request, Response response) {
+        String failure = "Unauthorised: access denied to specific user ";
+
+        String token = request.headers("token");
+        int accessLevel = checkToken(token);
+        int id = getId(request.params(":id"));
+        if (id == -1) {
+            Server.getInstance().log.warn(failure + "(invalid id supplied)");
+            halt(401, "Unauthorized");
+            return false;
+        }
+
+        switch (accessLevel) {
+            case -1:
+                Server.getInstance().log.warn(failure + "(token not found)");
+                halt(401, "Unauthorized");
+                return false; //Token was not found
+            case 0:
+                return checkIdMatch(failure + "(token does not match user id)", ProfileType.USER, token, id);
+            case 1:
+                return checkIdMatch(failure + "(token does not match clinician id)", ProfileType.CLINICIAN, token, id);
+            case 2:
+                return checkIdMatch(failure + "(token does not match admin id)", ProfileType.ADMIN, token, id);
+            default:
+                Server.getInstance().log.warn(failure + "(access attempt with malformed access level)");
+                halt(401, "Unauthorized");
+                return false;
+        }
+    }
+
+    /**
+     * Checks if a user/clinician/admin with a specified id and profile type matches a token. Halts and sets status to
+     * 401 unauthorized if there is no match.
+     *
+     * @param failure The server log failure message to display if there is no match
+     * @param profileType The profile type of the user to check
+     * @param token The token to check against
+     * @param id The id of the user/clinician/admin to check
+     * @return Whether there was a match
+     */
+    private boolean checkIdMatch(String failure, ProfileType profileType, String token, int id) {
+        if (checkTokenId(token, profileType, id)) {
+            return true; //user is logged on and supplied their token
+        } else {
+            Server.getInstance().log.warn(failure);
+            halt(401, "Unauthorized");
+            return false;
+        }
+    }
+
+    /**
      * Checks if the requester is authorized to access all users.
      *
      * @param request Spark HTTP request obj
@@ -136,13 +193,7 @@ public class ProfileUtils {
                 halt(401, "Unauthorized");
                 return false;
             }
-            if (checkTokenId(token, ProfileType.USER, id)) {
-                return true; //user is logged on and supplied their token
-            } else {
-                Server.getInstance().log.warn(failure + "(token does not match user id)");
-                halt(401, "Unauthorized");
-                return false;
-            }
+            return checkIdMatch(failure, ProfileType.USER, token, id);
         } else {
             return true; //user has clinician or admin level access
         }
@@ -175,13 +226,7 @@ public class ProfileUtils {
                 halt(401, "Unauthorized");
                 return false;
             }
-            if (checkTokenId(token, ProfileType.CLINICIAN, id)) {
-                return true; //user is logged on and supplied their token
-            } else {
-                Server.getInstance().log.warn(failure + "(token does not match clinician id)");
-                halt(401, "Unauthorized");
-                return false;
-            }
+            return checkIdMatch(failure + "(token does not match clinician id)", ProfileType.CLINICIAN, token, id);
         } else {
             return true; //user has clinician or admin level access
         }
