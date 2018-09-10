@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace mobileAppClient
@@ -35,6 +36,8 @@ namespace mobileAppClient
             this.AuthToken = null;
             this.photoObject = null;
             this.ProfilePhotoSource = null;
+
+            SecureStorage.RemoveAll();
         }
 
         /*
@@ -44,6 +47,12 @@ namespace mobileAppClient
         {
             this.LoggedInUser = loggedInUser;
             this.AuthToken = authToken;
+
+            if (Instance.loginPageController.rememberLogin)
+            {
+                SecureStorage.SetAsync("usernameEmail", loggedInUser.email);
+                SecureStorage.SetAsync("password", loggedInUser.password);
+            }           
         }
 
         /// <summary>

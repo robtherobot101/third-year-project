@@ -20,7 +20,7 @@ public class UserProceduresTest extends GenericTest {
 
     /**
      * Test inserting a new procedure item into the database
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void insertProcedure() throws SQLException {
@@ -34,7 +34,7 @@ public class UserProceduresTest extends GenericTest {
 
     /**
      * Test getting a procedure for a given id
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void getProcedureFromId() throws SQLException {
@@ -49,7 +49,7 @@ public class UserProceduresTest extends GenericTest {
 
     /**
      * Test trying to get a procedure with a made up id
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void badDiseaseId() throws SQLException {
@@ -59,7 +59,7 @@ public class UserProceduresTest extends GenericTest {
 
     /**
      * Test updating the attributes of a procedure
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void updateProcedure() throws SQLException {
@@ -79,7 +79,7 @@ public class UserProceduresTest extends GenericTest {
 
     /**
      * Test the removal of a procedure item from the database
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void removeProcedure() throws SQLException {
@@ -94,7 +94,7 @@ public class UserProceduresTest extends GenericTest {
 
     /**
      * Test getting all procedures for a user
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void getAllProcedures() throws SQLException {

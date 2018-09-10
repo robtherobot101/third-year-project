@@ -49,6 +49,7 @@ public class UserWaitingListGUITest extends TestFXTest {
     /**
      * Logs into the test user's account and navigates to the transplant waiting list.
      * This method should only be run from the main login screen.
+     * @throws TimeoutException catch time outs on requests
      */
     public void usersTransplantWaitingListAsUser() throws TimeoutException{
         userWindow(user);
@@ -61,6 +62,7 @@ public class UserWaitingListGUITest extends TestFXTest {
      * opens the test user's profile, and then navigates to the
      * transplant waiting list.
      * This method should only be run from the main login screen.
+     * @throws TimeoutException catch time outs on requests
      */
     public void usersTransplantWaitingListAsClinician() throws TimeoutException {
         userWindowAsClinician(user);

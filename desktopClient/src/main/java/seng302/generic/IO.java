@@ -221,7 +221,7 @@ public class  IO {
         return task;
     }
 
-    private static void runImportCSVThread(String path) {
+    public static void runImportCSVThread(String path) {
         Thread t = new Thread((Runnable) () -> {
             // Start the timer
             long importTimeTaken = System.nanoTime();

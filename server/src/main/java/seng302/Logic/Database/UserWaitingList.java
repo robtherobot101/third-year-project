@@ -17,6 +17,7 @@ public class UserWaitingList {
 
     /**
      * gets all the organs from the database
+     * @param params the parameters of the query
      * @return returns a list of all the organs in the database
      * @throws SQLException throws if cannot connect to the database
      */

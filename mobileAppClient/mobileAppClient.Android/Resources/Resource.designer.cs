@@ -6845,26 +6845,26 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f020056
 			public const int avd_hide_password = 2130837590;
 			
-			// aapt resource value: 0x7f0201aa
-			public const int avd_hide_password_1 = 2130837930;
-			
 			// aapt resource value: 0x7f0201ab
-			public const int avd_hide_password_2 = 2130837931;
+			public const int avd_hide_password_1 = 2130837931;
 			
 			// aapt resource value: 0x7f0201ac
-			public const int avd_hide_password_3 = 2130837932;
+			public const int avd_hide_password_2 = 2130837932;
+			
+			// aapt resource value: 0x7f0201ad
+			public const int avd_hide_password_3 = 2130837933;
 			
 			// aapt resource value: 0x7f020057
 			public const int avd_show_password = 2130837591;
 			
-			// aapt resource value: 0x7f0201ad
-			public const int avd_show_password_1 = 2130837933;
-			
 			// aapt resource value: 0x7f0201ae
-			public const int avd_show_password_2 = 2130837934;
+			public const int avd_show_password_1 = 2130837934;
 			
 			// aapt resource value: 0x7f0201af
-			public const int avd_show_password_3 = 2130837935;
+			public const int avd_show_password_2 = 2130837935;
+			
+			// aapt resource value: 0x7f0201b0
+			public const int avd_show_password_3 = 2130837936;
 			
 			// aapt resource value: 0x7f020058
 			public const int bone_icon = 2130837592;
@@ -7775,11 +7775,11 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f020186
 			public const int notification_icon_background = 2130837894;
 			
-			// aapt resource value: 0x7f0201a8
-			public const int notification_template_icon_bg = 2130837928;
-			
 			// aapt resource value: 0x7f0201a9
-			public const int notification_template_icon_low_bg = 2130837929;
+			public const int notification_template_icon_bg = 2130837929;
+			
+			// aapt resource value: 0x7f0201aa
+			public const int notification_template_icon_low_bg = 2130837930;
 			
 			// aapt resource value: 0x7f020187
 			public const int notification_tile_bg = 2130837895;
@@ -7845,40 +7845,43 @@ namespace mobileAppClient.Droid
 			public const int users_icon = 2130837915;
 			
 			// aapt resource value: 0x7f02019c
-			public const int waitinglist_icon = 2130837916;
+			public const int viewing_user_photo = 2130837916;
 			
 			// aapt resource value: 0x7f02019d
-			public const int woman1 = 2130837917;
+			public const int waitinglist_icon = 2130837917;
 			
 			// aapt resource value: 0x7f02019e
-			public const int woman10 = 2130837918;
+			public const int woman1 = 2130837918;
 			
 			// aapt resource value: 0x7f02019f
-			public const int woman11 = 2130837919;
+			public const int woman10 = 2130837919;
 			
 			// aapt resource value: 0x7f0201a0
-			public const int woman2 = 2130837920;
+			public const int woman11 = 2130837920;
 			
 			// aapt resource value: 0x7f0201a1
-			public const int woman3 = 2130837921;
+			public const int woman2 = 2130837921;
 			
 			// aapt resource value: 0x7f0201a2
-			public const int woman4 = 2130837922;
+			public const int woman3 = 2130837922;
 			
 			// aapt resource value: 0x7f0201a3
-			public const int woman5 = 2130837923;
+			public const int woman4 = 2130837923;
 			
 			// aapt resource value: 0x7f0201a4
-			public const int woman6 = 2130837924;
+			public const int woman5 = 2130837924;
 			
 			// aapt resource value: 0x7f0201a5
-			public const int woman7 = 2130837925;
+			public const int woman6 = 2130837925;
 			
 			// aapt resource value: 0x7f0201a6
-			public const int woman8 = 2130837926;
+			public const int woman7 = 2130837926;
 			
 			// aapt resource value: 0x7f0201a7
-			public const int woman9 = 2130837927;
+			public const int woman8 = 2130837927;
+			
+			// aapt resource value: 0x7f0201a8
+			public const int woman9 = 2130837928;
 			
 			static Drawable()
 			{

@@ -37,6 +37,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Method that can be called to path correctly to the stage to be tested.
+     * @throws SQLException catch sql execution exceptions
      */
     private void enterMedicalHistoryView() throws SQLException {
         // Assumed that calling method is currently on login screen
@@ -79,6 +80,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a completely valid disease
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -100,6 +102,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a disease with an empty diagnosis but valid date
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -114,6 +117,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a disease with both cured and chronic marked
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -132,6 +136,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a disease with an empty date of diagnosis but valid diagnosis
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -147,6 +152,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a disease with a valid diagnosis with date in future
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -162,6 +168,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a valid disease, then check if the chronic toggle updates the disease and gives visual feedback
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -194,6 +201,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Add a disease with a valid diagnosis with date in future
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -232,6 +240,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Checks when a cured disease is marked as chronic that it is moved to current
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
@@ -262,6 +271,7 @@ public class MedicalHistoryGUITest extends TestFXTest {
 
     /**
      * Checks when a disease is updated, changes are reflected appropriately
+     * @throws SQLException catch sql execution exceptions
      */
     @Ignore
     @Test
