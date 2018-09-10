@@ -173,7 +173,7 @@ public class AdminController {
      */
     public String deleteAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
-
+        System.out.println(queriedAdmin.getUsername() + queriedAdmin.getStaffID());
         if (queriedAdmin == null) {
             return response.body();
         }

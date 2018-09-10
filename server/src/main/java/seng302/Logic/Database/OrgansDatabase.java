@@ -38,6 +38,7 @@ public class OrgansDatabase {
     /**
      * gets all the organs from the database
      * @return returns a list of all the organs in the database
+     * @param params the params :\
      * @throws SQLException throws if cannot connect to the database
      */
     public List<DonatableOrgan> queryOrgans(Map<String, String> params) throws SQLException{
