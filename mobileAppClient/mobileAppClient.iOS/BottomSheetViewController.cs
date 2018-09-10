@@ -25,7 +25,7 @@ namespace mobileAppClient.iOS
             this.pin = pin;
             holdView = new UIView();
             fullView = 300;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 60;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 70;
         }
 
         public void prepareSheetDetails() {
@@ -38,6 +38,7 @@ namespace mobileAppClient.iOS
 
             //string[] tableItems = new string[] { "Vegetables", "Fruits", "Flower Buds", "Legumes", "Bulbs", "Tubers" };
             OrgansTableView.Source = new TableSource(pin, map, nativeMap, this);
+            OrgansTableView.ScrollEnabled = true;
         }
 
         public async Task closeMenu() {

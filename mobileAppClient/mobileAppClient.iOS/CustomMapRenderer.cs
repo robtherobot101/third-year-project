@@ -14,6 +14,7 @@ using System.Linq;
 using ObjCRuntime;
 using mobileAppClient.iOS;
 using mobileAppClient.Views.Clinician;
+using mobileAppClient.Models;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
@@ -22,6 +23,7 @@ namespace CustomRenderer.iOS
     {
         UIView customPinView;
         Dictionary<Position, CustomPin> customPins;
+        Dictionary<String, CustomPin> helicopterPins;
         CustomMap formsMap;
         CustomPin currentPin;
         MKCircleRenderer circleRenderer;
@@ -50,17 +52,10 @@ namespace CustomRenderer.iOS
             {
                 formsMap = (CustomMap)e.NewElement;
                 nativeMap = Control as MKMapView;
-                //var circle = formsMap.Circle;
-
                 nativeMap.OverlayRenderer = GetOverlayRenderer;
 
-                //if(circle != null) {
-                //    var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(circle.Position.Latitude, circle.Position.Longitude), circle.Radius);
-                //    nativeMap.AddOverlay(circleOverlay);
-                //}
-
-
                 customPins = formsMap.CustomPins;
+                helicopterPins = formsMap.HelicopterPins;
 
                 nativeMap.GetViewForAnnotation = GetViewForAnnotation;
                 nativeMap.CalloutAccessoryControlTapped += OnCalloutAccessoryControlTapped;
@@ -101,22 +96,57 @@ namespace CustomRenderer.iOS
             annotationView = mapView.DequeueReusableAnnotation(customPin.Id.ToString());
             if (annotationView == null)
             {
+                switch (customPin.CustomType)
+                {
+                    case ODMSPinType.DONOR:
+                        annotationView = CreateDonorPin(annotationView, customPin, annotation);
+                        break;
+                    case ODMSPinType.HOSPITAL:
+                        annotationView = CreateHospitalPin(annotationView, customPin, annotation);
+                        break;
+                    case ODMSPinType.HELICOPTER:
+                        annotationView = CreateHelicopterPin(annotationView, customPin, annotation);
+                        break;
+                }
 
-                annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
-                annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70,70));
-                annotationView.CalloutOffset = new CGPoint(0, 0);
-                //Set image to profile photo
 
-                var imageBytes = Convert.FromBase64String(customPin.userPhoto);
-                var imageData = NSData.FromArray(imageBytes);
-
-                annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.LoadFromData(imageData).Scale(new CGSize(40, 40)));
-                annotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
-                ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
-                ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
             }
             annotationView.CanShowCallout = true;
 
+            return annotationView;
+        }
+
+        private MKAnnotationView CreateHelicopterPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile("helicopter_icon.png").Scale(new CGSize(45, 45));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
+            return annotationView;
+        }
+
+        private MKAnnotationView CreateHospitalPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile("hospital_icon.png").Scale(new CGSize(45, 45));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
+            return annotationView;
+        }
+
+        private MKAnnotationView CreateDonorPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70, 70));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            //Set image to profile photo
+
+            var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+            var imageData = NSData.FromArray(imageBytes);
+
+            annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.LoadFromData(imageData).Scale(new CGSize(40, 40)));
+            annotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
             return annotationView;
         }
 
@@ -134,8 +164,16 @@ namespace CustomRenderer.iOS
 
         void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
+
             var customView = e.View as CustomMKAnnotationView;
             customPinView = new UIView();
+
+            if(customView.Url == null) {
+                return;
+            }
+
+            //Remove all overlays on map
+            removeOverlays();
 
             // Set size of frame and add all photos from the custom pin image
             // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
@@ -187,6 +225,16 @@ namespace CustomRenderer.iOS
                 customPinView.RemoveFromSuperview();
                 customPinView.Dispose();
                 customPinView = null;
+
+                //Handle Helicopters and Hospitals
+                var customView = e.View as CustomMKAnnotationView;
+                if (customView.Url == null) {
+                    return;
+                }
+
+                removeOverlays();
+
+
                 var window = UIApplication.SharedApplication.KeyWindow;
                 var rootVC = window.RootViewController;
                 var number = rootVC.ChildViewControllers;
@@ -211,10 +259,27 @@ namespace CustomRenderer.iOS
             }
         }
 
+        public void removeOverlays() {
+            if(nativeMap.Overlays != null && nativeMap.Overlays.Length > 0) {
+                nativeMap.Overlays[0].Dispose();
+                nativeMap.RemoveOverlay(nativeMap.Overlays[0]);
+
+            }
+
+        }
+
         CustomPin GetCustomPin(MKPointAnnotation annotation)
         {
             Position key = new Position(annotation.Coordinate.Latitude, annotation.Coordinate.Longitude);
+
+            //Search Donor Pins
             if (customPins.TryGetValue(key, out CustomPin foundPin))
+            {
+                return foundPin;
+            }
+            Console.WriteLine(annotation.Subtitle);
+            // Search helicopter pins
+            if (helicopterPins.TryGetValue(annotation.Subtitle, out foundPin))
             {
                 return foundPin;
             }

@@ -26,7 +26,7 @@ namespace mobileAppClient.iOS
             this.organName = organ;
             this.customPin = pin;
             holdView = new UIView();
-            fullView = 400;
+            fullView = 360;
             partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 60;
 
         }
@@ -44,6 +44,7 @@ namespace mobileAppClient.iOS
 
             List<string> tableItems = new List<string> { "Vegetables", "Fruits", "Flower Buds", "Legumes", "Bulbs", "Tubers" };
             potentialRecipientsTableView.Source = new RecipientsTableSource(tableItems, this);
+            potentialRecipientsTableView.ScrollEnabled = true;
 
         }
 
@@ -78,15 +79,19 @@ namespace mobileAppClient.iOS
             }));
         }
 
-        void prepareRecipientsOnMap() {
-            //TODO CENTER THE MAP ON THE CIRCLE
+        void prepareRecipientsOnMap(Position position) {
             map.Circle = new CustomCircle
             {
-                Position = new Position(-41.626217, 172.361873),
-                Radius = 10000
+                Position = position,
+                Radius = 100000
             };
             var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
             nativeMap.AddOverlay(circleOverlay);
+            Position mapCenter = new Position(position.Latitude - 1, position.Longitude);
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                mapCenter, Distance.FromMiles(100.0)));
+
+            //Add all other user objects around the user
             //var bytes = File.ReadAllBytes("donationIcon.png");
             //var profilePhoto = Convert.ToBase64String(bytes);
             //var pin = new CustomPin
@@ -147,7 +152,7 @@ namespace mobileAppClient.iOS
 
             prepareSheetDetails();
             backButton.TouchUpInside += BackButton_TouchUpInside;
-            prepareRecipientsOnMap();
+            prepareRecipientsOnMap(customPin.Position);
 
         }
 

@@ -111,6 +111,8 @@ namespace mobileAppClient.Views.Clinician
             customMap.CustomPins = new Dictionary<Position, CustomPin> { };
             customMap.HelicopterPins = new Dictionary<String, CustomPin> { };
 
+            //Center on New Zealand
+
             var centerPosition = new Position(-41.626217, 172.361873);
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
@@ -300,11 +302,6 @@ namespace mobileAppClient.Views.Clinician
 
         private async Task InitialiseHospitals()
         {
-            // Temporary workaround as the server is currently not offering the hospital endpoint (only locally from the branch jar)
-            if (ServerConfig.Instance.serverAddress != "http://10.0.2.2:7015/api/v1")
-            {
-                return;
-            }
 
             ClinicianAPI clinicianApi = new ClinicianAPI();
             Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();

@@ -60,8 +60,21 @@ namespace mobileAppClient.iOS
             return cell;
         }
 
+        public void removeOverlays()
+        {
+            if (nativeMap.Overlays != null && nativeMap.Overlays.Length > 0)
+            {
+                nativeMap.Overlays[0].Dispose();
+                nativeMap.RemoveOverlay(nativeMap.Overlays[0]);
+
+            }
+
+        }
+
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
+            removeOverlays();
+
             string organ = organs[indexPath.Row].Replace("_icon.png", "");
 
             var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin, map, nativeMap, organ);
