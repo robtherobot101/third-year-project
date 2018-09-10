@@ -80,7 +80,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test getting an ID for an invalid username
-     * @throws SQLExceptioncatch sql execution exceptions
+     * @throws SQLException catch sql execution exceptions
      */
     @Test(expected = Exception.class)
     public void getClinicianIdFromBadUsername() throws SQLException {
