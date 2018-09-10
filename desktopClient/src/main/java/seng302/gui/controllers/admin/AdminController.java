@@ -205,6 +205,7 @@ public class AdminController implements Initializable {
      * Sets the current value of the given regionComboBox and regionField to the given value.
      *
      * @param value The value which the ComboBox and TextField will be set to
+     * @param countryComboBox The combo box of countries
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
@@ -742,6 +743,7 @@ public class AdminController implements Initializable {
 
     /**
      * Refresh the items in the search table, waiting list table, and the current admin's attributes.
+     * @param ask if the program should ask to refresh
      */
     public void refresh(boolean ask) {
         Alert alert = null;

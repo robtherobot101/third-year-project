@@ -18,7 +18,7 @@ public class UserMedicationsTest extends GenericTest {
 
     /**
      * Test getting all medications for a user
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void getAllMedications() throws SQLException {
@@ -41,7 +41,7 @@ public class UserMedicationsTest extends GenericTest {
 
     /**
      * Test inserting a new medication item into the database
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void insertMedication() throws SQLException {
@@ -55,7 +55,7 @@ public class UserMedicationsTest extends GenericTest {
 
     /**
      * Test getting a medication for a given id
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void getMedicationFromId() throws SQLException {
@@ -70,7 +70,7 @@ public class UserMedicationsTest extends GenericTest {
 
     /**
      * Test trying to get a medication with a made up id
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void badDiseaseId() throws SQLException {
@@ -80,7 +80,7 @@ public class UserMedicationsTest extends GenericTest {
 
     /**
      * Test updating the attributes of a medication
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void updateMedication() throws SQLException {
@@ -99,7 +99,7 @@ public class UserMedicationsTest extends GenericTest {
 
     /**
      * Test the removal of a medication item from the database
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void removeMedication() throws SQLException {

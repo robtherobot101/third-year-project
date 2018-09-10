@@ -16,7 +16,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test the function to get clinicians from a raw resultset object from the database
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getClinicianFromResultSet() throws SQLException {
@@ -38,7 +38,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test insertion of a valid Clinicianistrator
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void insertClinician() throws SQLException {
@@ -48,7 +48,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test insertion of an cliniciand with a non-unique username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test(expected = SQLIntegrityConstraintViolationException.class)
     public void insertDuplicateClinician() throws SQLException {
@@ -60,7 +60,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test insertion of an clinician with no username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test(expected = Exception.class)
     public void insertClinicianNoUsername() throws SQLException {
@@ -70,7 +70,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test getting an ID for a valid username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getClinicianIdFromUsername() throws SQLException {
@@ -80,7 +80,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test getting an ID for an invalid username
-     * @throws SQLException
+     * @throws SQLExceptioncatch sql execution exceptions
      */
     @Test(expected = Exception.class)
     public void getClinicianIdFromBadUsername() throws SQLException {
@@ -90,7 +90,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test getting clinician with id 1
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getClinicianFromId() throws SQLException {
@@ -100,7 +100,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test getting clinician with id 9999
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getClinicianFromBadId() throws SQLException {
@@ -110,7 +110,7 @@ public class GeneralClinicianTest extends GenericTest {
 
     /**
      * Test the getAllClinicians method
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getAllClinicians() throws SQLException {

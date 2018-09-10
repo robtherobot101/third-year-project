@@ -38,6 +38,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     /**
      * Adds three new users to be used for all of the tests.
+     * @throws SQLException for sql connection errors
      */
     @Before
     public void setUp() throws SQLException {
