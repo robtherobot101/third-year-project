@@ -11,9 +11,7 @@ import seng302.Server;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PushAPI {
     /**
@@ -46,12 +44,12 @@ public class PushAPI {
      * Sends a notification to each device on which the user with the given IF is logged in
      *
      * @param notification The notification object containing title, message etc.
-     * @param user_id      The ID of the user to which the notification is being sent
+     * @param user_ids      The IDs of the users to which the notification is being sent
      */
-    public void sendNotification(Notification notification, String user_id) {
-        // Get the devices on which the user is logged on
-        List<String> devices = getDevices(user_id);
-        if(devices != null) {
+    public void sendNotification(Notification notification, List<String> user_ids) {
+        // Get the devices on which the users are logged on
+        List<String> devices = getDevices(user_ids);
+        if(devices.size() > 0) {
             for (String url : urls) {
                 // Convert notification to JSON
                 HttpContent content = constructNotificationJson(devices, notification);
@@ -70,18 +68,18 @@ public class PushAPI {
     }
 
     /**
-     * Gets a list of device ids on which a user is logged in
-     * @param user_id The ID of the user
+     * Gets a list of device ids on which the given users are logged in
+     * @param user_ids The IDs of the users
      * @return A list of Strings representing the IDs of each device the user with the given ID is logged in on
      */
-    private List<String> getDevices(String user_id) {
+    private List<String> getDevices(List<String> user_ids) {
         try {
-            Server.getInstance().log.info("Getting devices logged in by user with id " + user_id);
-            return notificationsDatabase.getDevices(user_id);
+            Server.getInstance().log.info("Getting devices logged in by users with ids " + user_ids.toString());
+            return notificationsDatabase.getDevices(user_ids);
         } catch (SQLException e) {
             Server.getInstance().log.info("Failed to get devices");
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 
