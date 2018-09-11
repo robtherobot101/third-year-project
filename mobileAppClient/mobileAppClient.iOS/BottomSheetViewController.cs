@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CoreGraphics;
 using Foundation;
 using iAd;
+using MapKit;
 using ObjCRuntime;
 using UIKit;
 
@@ -13,14 +15,17 @@ namespace mobileAppClient.iOS
         public nfloat fullView;
         public nfloat partialView;
         public CustomPin pin;
-        
+        public CustomMap map;
+        public MKMapView nativeMap;
 
-        public BottomSheetViewController(CustomPin pin) : base("BottomSheetViewController", null)
+        public BottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap) : base("BottomSheetViewController", null)
         {
+            this.nativeMap = nativeMap;
+            this.map = map;
             this.pin = pin;
             holdView = new UIView();
             fullView = 300;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 60;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 70;
         }
 
         public void prepareSheetDetails() {
@@ -32,9 +37,16 @@ namespace mobileAppClient.iOS
             ProfilePhotoImageView.Image = UIImage.LoadFromData(imageData);
             
             //string[] tableItems = new string[] { "Vegetables", "Fruits", "Flower Buds", "Legumes", "Bulbs", "Tubers" };
-            OrgansTableView.Source = new TableSource(pin, this);
+            OrgansTableView.Source = new TableSource(pin, map, nativeMap, this);
+            OrgansTableView.ScrollEnabled = true;
+        }
 
-
+        public async Task closeMenu() {
+            await UIView.AnimateAsync(0.5, new Action(() => {
+                var frame = this.View.Frame;
+                var yComponent = UIScreen.MainScreen.Bounds.Height;
+                this.View.Frame = new CGRect(frame.X, yComponent, frame.Width, frame.Height);
+            }));
         }
 
 
@@ -73,14 +85,6 @@ namespace mobileAppClient.iOS
         {
             base.DidReceiveMemoryWarning();
             // Dispose of any resources that can be recreated.
-        }
-
-
-        public void close() {
-            UIView.Animate(1, new Action(() => {
-                var frame = this.View.Frame;
-                this.View.Frame = new CGRect(frame.X, frame.Y, 0, frame.Height);
-            }));
         }
 
         public override void ViewDidLoad()

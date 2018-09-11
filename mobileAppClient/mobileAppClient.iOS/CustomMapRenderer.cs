@@ -11,6 +11,10 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
+using ObjCRuntime;
+using mobileAppClient.iOS;
+using mobileAppClient.Views.Clinician;
+using mobileAppClient.Models;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
@@ -19,8 +23,11 @@ namespace CustomRenderer.iOS
     {
         UIView customPinView;
         Dictionary<Position, CustomPin> customPins;
+        Dictionary<String, CustomPin> helicopterPins;
         CustomMap formsMap;
         CustomPin currentPin;
+        MKCircleRenderer circleRenderer;
+        MKMapView nativeMap;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
@@ -29,6 +36,12 @@ namespace CustomRenderer.iOS
             if (e.OldElement != null)
             {
                 var nativeMap = Control as MKMapView;
+                if (nativeMap != null && nativeMap.Overlays != null)
+                {
+                    nativeMap.RemoveOverlays(nativeMap.Overlays);
+                    nativeMap.OverlayRenderer = null;
+                    circleRenderer = null;
+                }
                 nativeMap.GetViewForAnnotation = null;
                 nativeMap.CalloutAccessoryControlTapped -= OnCalloutAccessoryControlTapped;
                 nativeMap.DidSelectAnnotationView -= OnDidSelectAnnotationView;
@@ -38,8 +51,11 @@ namespace CustomRenderer.iOS
             if (e.NewElement != null)
             {
                 formsMap = (CustomMap)e.NewElement;
-                var nativeMap = Control as MKMapView;
+                nativeMap = Control as MKMapView;
+                nativeMap.OverlayRenderer = GetOverlayRenderer;
+
                 customPins = formsMap.CustomPins;
+                helicopterPins = formsMap.HelicopterPins;
 
                 nativeMap.GetViewForAnnotation = GetViewForAnnotation;
                 nativeMap.CalloutAccessoryControlTapped += OnCalloutAccessoryControlTapped;
@@ -47,6 +63,20 @@ namespace CustomRenderer.iOS
                 nativeMap.DidDeselectAnnotationView += OnDidDeselectAnnotationView;
 
             }
+        }
+
+        MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
+        {
+            if (circleRenderer == null && !Equals(overlayWrapper, null))
+            {
+                var overlay = Runtime.GetNSObject(overlayWrapper.Handle) as IMKOverlay;
+                circleRenderer = new MKCircleRenderer(overlay as MKCircle)
+                {
+                    FillColor = UIColor.Black,
+                    Alpha = 0.4f
+                };
+            }
+            return circleRenderer;
         }
 
         protected override MKAnnotationView GetViewForAnnotation(MKMapView mapView, IMKAnnotation annotation)
@@ -61,26 +91,62 @@ namespace CustomRenderer.iOS
             {
                 throw new Exception("Custom pin not found");
             }
+
             
             annotationView = mapView.DequeueReusableAnnotation(customPin.Id.ToString());
             if (annotationView == null)
             {
-                
-                annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
-                annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70,70));
-                annotationView.CalloutOffset = new CGPoint(0, 0);
-                //Set image to profile photo
+                switch (customPin.CustomType)
+                {
+                    case ODMSPinType.DONOR:
+                        annotationView = CreateDonorPin(annotationView, customPin, annotation);
+                        break;
+                    case ODMSPinType.HOSPITAL:
+                        annotationView = CreateHospitalPin(annotationView, customPin, annotation);
+                        break;
+                    case ODMSPinType.HELICOPTER:
+                        annotationView = CreateHelicopterPin(annotationView, customPin, annotation);
+                        break;
+                }
 
-                var imageBytes = Convert.FromBase64String(customPin.userPhoto);
-                var imageData = NSData.FromArray(imageBytes);
 
-                annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.LoadFromData(imageData).Scale(new CGSize(40, 40)));
-                annotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
-                ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
-                ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
             }
             annotationView.CanShowCallout = true;
 
+            return annotationView;
+        }
+
+        private MKAnnotationView CreateHelicopterPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile("helicopter_icon.png").Scale(new CGSize(45, 45));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
+            return annotationView;
+        }
+
+        private MKAnnotationView CreateHospitalPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile("hospital_icon.png").Scale(new CGSize(45, 45));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
+            return annotationView;
+        }
+
+        private MKAnnotationView CreateDonorPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70, 70));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            //Set image to profile photo
+
+            var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+            var imageData = NSData.FromArray(imageBytes);
+
+            annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.LoadFromData(imageData).Scale(new CGSize(40, 40)));
+            annotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
             return annotationView;
         }
 
@@ -98,7 +164,16 @@ namespace CustomRenderer.iOS
 
         void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
+
             var customView = e.View as CustomMKAnnotationView;
+            customPinView = new UIView();
+
+            if(customView.Url == null) {
+                return;
+            }
+
+            //Remove all overlays on map
+            removeOverlays();
 
             // Set size of frame and add all photos from the custom pin image
             // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
@@ -127,30 +202,84 @@ namespace CustomRenderer.iOS
 
             e.View.AddSubview(customPinView);
 
-            
-            // Do a search to get the current custom pin (gets the first)
-            currentPin = customPins.Values.First();
 
-            // Dismiss the previous One as well
+            // Do a search to get the current custom pin (gets the first)
+            //currentPin = customPins.Values.First();
+            foreach (CustomPin item in customPins.Values)
+            {
+                if (item.userId == userId)
+                {
+                    currentPin = item;
+                }
+            }
+
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayBottomSheet(currentPin);
+            parent.displayBottomSheet(currentPin, formsMap, nativeMap);
 
         }
 
-        void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
+        async void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             if (!e.View.Selected)
             {
                 customPinView.RemoveFromSuperview();
                 customPinView.Dispose();
                 customPinView = null;
+
+                //Handle Helicopters and Hospitals
+                var customView = e.View as CustomMKAnnotationView;
+                if (customView.Url == null) {
+                    return;
+                }
+
+                removeOverlays();
+
+
+                var window = UIApplication.SharedApplication.KeyWindow;
+                var rootVC = window.RootViewController;
+                var number = rootVC.ChildViewControllers;
+                var menuPopUp = rootVC.ChildViewControllers[1];
+                if(menuPopUp is BottomSheetViewController) {
+                    BottomSheetViewController bottomSheet = (BottomSheetViewController)rootVC.ChildViewControllers[1];
+                    await bottomSheet.closeMenu();
+                    bottomSheet.View.RemoveFromSuperview();
+                    bottomSheet.View.Dispose();
+                    bottomSheet.View = null;
+                    bottomSheet.RemoveFromParentViewController();
+                } else {
+                    PotentialMatchesBottomSheetViewController matchesSheet = (PotentialMatchesBottomSheetViewController)rootVC.ChildViewControllers[1];
+                    await matchesSheet.closeMenu();
+                    matchesSheet.View.RemoveFromSuperview();
+                    matchesSheet.View.Dispose();
+                    matchesSheet.View = null;
+                    matchesSheet.RemoveFromParentViewController();
+                }
+
+
             }
+        }
+
+        public void removeOverlays() {
+            if(nativeMap.Overlays != null && nativeMap.Overlays.Length > 0) {
+                nativeMap.Overlays[0].Dispose();
+                nativeMap.RemoveOverlay(nativeMap.Overlays[0]);
+
+            }
+
         }
 
         CustomPin GetCustomPin(MKPointAnnotation annotation)
         {
             Position key = new Position(annotation.Coordinate.Latitude, annotation.Coordinate.Longitude);
+
+            //Search Donor Pins
             if (customPins.TryGetValue(key, out CustomPin foundPin))
+            {
+                return foundPin;
+            }
+            Console.WriteLine(annotation.Subtitle);
+            // Search helicopter pins
+            if (helicopterPins.TryGetValue(annotation.Subtitle, out foundPin))
             {
                 return foundPin;
             }

@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
+using MapKit;
 using UIKit;
 
 namespace mobileAppClient.iOS
 {
     public class TableSource : UITableViewSource
     {
-
-
         string CellIdentifier = "TableCell";
         BottomSheetViewController owner;
         CustomPin pin;
         string[] organs;
         int userId;
+        CustomMap map;
+        MKMapView nativeMap;
 
-        public TableSource(CustomPin pin, BottomSheetViewController owner)
+        public TableSource(CustomPin pin, CustomMap map, MKMapView nativeMap, BottomSheetViewController owner)
         {
+            this.nativeMap = nativeMap;
+            this.map = map;
             this.pin = pin;
             this.owner = owner;
             organs = pin.Url.Split(',');
@@ -57,17 +60,33 @@ namespace mobileAppClient.iOS
             return cell;
         }
 
+        public void removeOverlays()
+        {
+            if (nativeMap.Overlays != null && nativeMap.Overlays.Length > 0)
+            {
+                nativeMap.Overlays[0].Dispose();
+                nativeMap.RemoveOverlay(nativeMap.Overlays[0]);
+
+            }
+
+        }
+
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
+            removeOverlays();
+
             string organ = organs[indexPath.Row].Replace("_icon.png", "");
 
-            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin, organ);
+            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin, map, nativeMap, organ);
             
             var window = UIApplication.SharedApplication.KeyWindow;
 
             var rootVC = window.RootViewController;
 
             owner.View.RemoveFromSuperview();
+            owner.View.Dispose();
+            owner.View = null;
+            owner.RemoveFromParentViewController();
 
             rootVC.AddChildViewController(potentialRecipientsController);
             rootVC.View.AddSubview(potentialRecipientsController.View);
@@ -76,9 +95,6 @@ namespace mobileAppClient.iOS
             var height = window.Frame.Height;
             var width = window.Frame.Width;
             potentialRecipientsController.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
-
-
-
 
         }
     }

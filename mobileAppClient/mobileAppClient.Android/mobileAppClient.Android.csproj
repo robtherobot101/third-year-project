@@ -397,5 +397,8 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\container_dropshadow.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

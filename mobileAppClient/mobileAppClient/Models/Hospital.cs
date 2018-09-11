@@ -4,7 +4,7 @@ using System.Text;
 
 namespace mobileAppClient.Models
 {
-    class Hospital
+    public class Hospital
     {
         public string name { get; set; }
         public string address { get; set; }

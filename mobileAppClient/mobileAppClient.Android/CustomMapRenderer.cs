@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Android.Content;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
@@ -30,12 +31,15 @@ namespace CustomRenderer.Droid
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
         private Dictionary<Position, CustomPin> customPins;
+        private Dictionary<String, CustomPin> helicopterPins;
         CustomMap formsMap;
 
         public CustomMapRenderer(Context context) : base(context)
         {
-            
+
         }
+
+
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
         {
@@ -50,6 +54,8 @@ namespace CustomRenderer.Droid
             {
                 formsMap = (CustomMap)e.NewElement;
                 customPins = formsMap.CustomPins;
+                helicopterPins = formsMap.HelicopterPins;
+
                 Control.GetMapAsync(this);
             }
         }
@@ -67,16 +73,15 @@ namespace CustomRenderer.Droid
         /// </summary>
         /// <param name="pin"></param>
         /// <returns></returns>
-        private MarkerOptions CreateDonorMarker(Pin pin)
+        private MarkerOptions CreateDonorMarker(CustomPin pin)
         {
             var marker = new MarkerOptions();
             marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
             marker.SetTitle(pin.Label);
             marker.SetSnippet(pin.Address);
-            var customPin = GetCustomPin(marker);
             Bitmap imageBitmap;
 
-            switch (customPin.genderIcon)
+            switch (pin.genderIcon)
             {
                 case "man1.png":
                     imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man1);
@@ -162,7 +167,7 @@ namespace CustomRenderer.Droid
 
             }
             Bitmap resizedBitmap;
-            if (customPin.genderIcon.Equals("other.png"))
+            if (pin.genderIcon.Equals("other.png"))
             {
                 resizedBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
             }
@@ -180,7 +185,7 @@ namespace CustomRenderer.Droid
         /// </summary>
         /// <param name="pin"></param>
         /// <returns></returns>
-        private MarkerOptions CreateHospitalMarker(Pin pin)
+        private MarkerOptions CreateHospitalMarker(CustomPin pin)
         {
             // Create basic options
             var marker = new MarkerOptions();
@@ -190,6 +195,29 @@ namespace CustomRenderer.Droid
 
             // Create the image
             Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.hospital_icon);
+
+            // Scale the image
+            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
+
+            marker.SetIcon(BitmapDescriptorFactory.FromBitmap(imageBitmap));
+
+            return marker;
+        }
+
+        /// <summary>
+        /// Generates marker options for a pin that contains information about a hospital
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        private MarkerOptions CreateHelicopterMarker(CustomPin pin)
+        {
+            // Create basic options
+            var marker = new MarkerOptions();
+            marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
+            marker.SetTitle(pin.Label);
+
+            // Create the image
+            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_icon);
 
             // Scale the image
             imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
@@ -214,10 +242,13 @@ namespace CustomRenderer.Droid
             switch (foundCustomPin.CustomType)
             {
                 case ODMSPinType.DONOR:
-                    markerToAddOptions = CreateDonorMarker(pin);
+                    markerToAddOptions = CreateDonorMarker(foundCustomPin);
                     break;
                 case ODMSPinType.HOSPITAL:
-                    markerToAddOptions = CreateHospitalMarker(pin);
+                    markerToAddOptions = CreateHospitalMarker(foundCustomPin);
+                    break;
+                case ODMSPinType.HELICOPTER:
+                    markerToAddOptions = CreateHelicopterMarker(foundCustomPin);
                     break;
             }
             return markerToAddOptions;
@@ -246,10 +277,10 @@ namespace CustomRenderer.Droid
                 var customPin = GetCustomPin(marker);
                 if (customPin == null)
                 {
-                    throw new Exception("Custom pin not found");
+                    return null;
                 }
 
-                if (customPin.CustomType == ODMSPinType.HOSPITAL)
+                if (customPin.CustomType == ODMSPinType.HOSPITAL || customPin.CustomType == ODMSPinType.HELICOPTER)
                 {
                     // Hospital pop-up dialog not yet implemented
                     return null;
@@ -350,33 +381,43 @@ namespace CustomRenderer.Droid
                     return null;
                 }
 
-                CustomPin GetCustomPin(Marker annotation)
-                {
-                    Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-                    if (customPins.TryGetValue(key, out CustomPin foundPin))
-                    {
-                        return foundPin;
-                    }
-                    return null;
-                }
+        /// <summary>
+        /// Gets custom pin based on a marker
+        /// NOT FOR HELICOPTERS!!!
+        /// </summary>
+        /// <param name="annotation"></param>
+        /// <returns></returns>
+        CustomPin GetCustomPin(Marker annotation)
+        {
+            Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
 
-                CustomPin GetCustomPin(Pin pin)
-                {
-                    if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
-                    {
-                        return foundPin;
-                    }
-                    return null;
-                }
-
-                CustomPin GetCustomPin(MarkerOptions annotation)
-                {
-                    Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-                    if (customPins.TryGetValue(key, out CustomPin foundPin))
-                    {
-                        return foundPin;
-                    }
-                    return null;
-                }
+            // Search custom pins
+            if (customPins.TryGetValue(key, out CustomPin foundPin))
+            {
+                return foundPin;
             }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets custom pin based on pin
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        CustomPin GetCustomPin(Pin pin)
+        {
+            // Search custom pins
+            if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+            {
+                return foundPin;
+            }
+
+            // Search helicopter pins
+            if (helicopterPins.TryGetValue(pin.Address, out foundPin))
+            {
+                return foundPin;
+            }
+            return null;
+        }
+    }
 }
