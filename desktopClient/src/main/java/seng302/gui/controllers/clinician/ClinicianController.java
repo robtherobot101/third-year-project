@@ -168,6 +168,7 @@ public class ClinicianController implements Initializable {
      * Sets the current value of the given regionComboBox and regionField to the given value.
      *
      * @param value The value which the ComboBox and TextField will be set to
+     * @param countryComboBox The combobox of the countries
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */

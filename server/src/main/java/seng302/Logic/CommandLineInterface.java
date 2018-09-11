@@ -269,6 +269,7 @@ public class CommandLineInterface {
      * @param command The command name
      * @param argc    The argument count
      * @param args    The arguments
+     * @return String  string explaining how to format a command correctly.
      */
     private String getIncorrectUsageString(String command, int argc, String args) {
         switch (argc) {
@@ -417,6 +418,7 @@ public class CommandLineInterface {
      * Finds out which user the user wants to delete, and ask for confirmation.
      *
      * @param nextCommand The command entered by the user
+     * @return CommandLineResponse a response to say if a command was successful or not
      */
     private CommandLineResponse deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
@@ -445,6 +447,7 @@ public class CommandLineInterface {
      * Finds out which user the user wants to delete, and ask for confirmation.
      *
      * @param nextCommand The command entered by the user
+     * @return CommandLineResponse a response to say if the command was successful or not
      */
     private CommandLineResponse deleteClinician(String[] nextCommand) {
         if (nextCommand.length == 2) {

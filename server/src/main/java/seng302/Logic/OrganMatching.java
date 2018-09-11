@@ -55,7 +55,9 @@ public class OrganMatching {
 
     /**
      * Gets all of the matches between an organ and receivers
+     * @param donor the user donating
      * @return a list of matched users
+     * @throws SQLException catch sql execution errors
      */
     private List<User> getAllMatches(User donor) throws SQLException{
         List<User> matches = new ArrayList<>();
@@ -103,6 +105,7 @@ public class OrganMatching {
     /**
      * returns a list of the top 5 users ids
      * @param organ the organ to compare against
+     * @param receiverNameQuery the user who is receiving
      * @return the list of users ids
      */
     public List<User> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
