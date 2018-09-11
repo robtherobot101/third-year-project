@@ -17,6 +17,9 @@
                     <EntryCell Label="Middle Name" x:Name="PrefMiddleNameInput"/>
                     <EntryCell Label="Last Name" x:Name="PrefLastNameInput"/>
                 </TableSection>
+                <TableSection Title="Identification">
+                    <EntryCell Label="NHI Number" x:Name="NHIInput"/>
+                </TableSection>
                 <TableSection Title="Gender">
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="15,0,0,0">

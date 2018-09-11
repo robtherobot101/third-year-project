@@ -37,6 +37,9 @@
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <Debugger>Xamarin</Debugger>
     <LangVersion>default</LangVersion>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

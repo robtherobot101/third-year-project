@@ -33,6 +33,8 @@ namespace mobileAppClient
                 isClinicianEditing = false;
             }
 
+            NHIInput.IsEnabled = isClinicianEditing;
+
             dateOfDeathShowing = false;
             dobInput.MaximumDate = DateTime.Today;
             dodInput.MaximumDate = DateTime.Today;
@@ -59,6 +61,8 @@ namespace mobileAppClient
                 // Set the middle name to everything in between the first and last element
                 MiddleNameInput.Text = String.Join(" ", loggedInUser.name.GetRange(1, loggedInUser.name.Count - 2).ToArray());
             }
+
+            NHIInput.Text = loggedInUser.nhi;
 
             // Preferred Name
             PrefFirstNameInput.Text = loggedInUser.preferredName[0];
@@ -125,6 +129,8 @@ namespace mobileAppClient
             string givenPrefMiddleName = InputValidation.Trim(PrefMiddleNameInput.Text);
             string givenPrefLastName = InputValidation.Trim(PrefLastNameInput.Text);
 
+            string givenNHINumber = InputValidation.Trim(NHIInput.Text);
+
             string givenAddress = InputValidation.Trim(AddressInput.Text);
             string givenRegion = InputValidation.Trim(RegionInput.Text);
 
@@ -167,6 +173,15 @@ namespace mobileAppClient
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
                 return;
             }
+
+
+            if (!InputValidation.IsValidNhiInput(givenNHINumber))
+            {
+                await DisplayAlert("", "Please enter a valid NHI number", "OK");
+                return;
+            }
+
+
 
             // Address
             if (!InputValidation.IsValidTextInput(givenAddress, true, true))
