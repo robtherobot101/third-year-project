@@ -65,6 +65,10 @@ public class PushAPI {
         }
     }
 
+    public void sendMessage(Message message, int conversationId) {
+        //sendNotification(message);
+    }
+
     /**
      * Gets a list of device ids on which a user is logged in
      * @param user_id The ID of the user
