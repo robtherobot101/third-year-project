@@ -201,6 +201,7 @@
     <AndroidResource Include="Resources\drawable\other.png" />
     <AndroidResource Include="Resources\drawable\info.png" />
     <AndroidResource Include="Resources\drawable\facebook_icon.png" />
+    <AndroidResource Include="Resources\drawable\messages_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-hdpi\" />

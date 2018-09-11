@@ -125,6 +125,7 @@ namespace mobileAppClient
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(ClinicianMessagingPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -132,6 +133,7 @@ namespace mobileAppClient
             menuList.Add(attributesPage);
             menuList.Add(transplantListPage);
             menuList.Add(mapPage);
+            menuList.Add(messagesPage);
             menuList.Add(logoutPage);
         }
 

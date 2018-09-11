@@ -166,6 +166,18 @@
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
+    <Compile Include="Messaging\ChatSource.cs" />
+    <Compile Include="Messaging\Cells\BubbleCell.cs" />
+    <Compile Include="Messaging\Cells\IncomingCell.cs" />
+    <Compile Include="Messaging\Cells\OutgoingCell.cs" />
+    <Compile Include="Messaging\ChatInput\ChatInputView.cs" />
+    <Compile Include="Messaging\Model\Message.cs" />
+    <Compile Include="Messaging\Model\MessageType.cs" />
+    <Compile Include="Messaging\MessagingEntryClass.cs" />
+    <Compile Include="Messaging\ChatViewController.cs" />
+    <Compile Include="Messaging\ChatViewController.designer.cs">
+      <DependentUpon>ChatViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -214,6 +226,15 @@
     <ImageAsset Include="Assets.xcassets\LaunchImage.launchimage\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular.png" />
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular%402x.png" />
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular%403x.png" />
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular.png" />
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular%402x.png" />
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular%403x.png" />
+    <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -302,6 +323,7 @@
     <BundleResource Include="Resources\other.png" />
     <BundleResource Include="Resources\users_icon.png" />
     <BundleResource Include="Resources\add_icon.png" />
+    <BundleResource Include="Resources\messages_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\score_icon.png" />
@@ -422,5 +444,11 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\viewing_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messaging\" />
+    <Folder Include="Messaging\Cells\" />
+    <Folder Include="Messaging\ChatInput\" />
+    <Folder Include="Messaging\Model\" />
   </ItemGroup>
 </Project>
