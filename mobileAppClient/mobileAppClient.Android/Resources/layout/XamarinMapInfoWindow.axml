@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="35dp"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
     android:id="@+id/relativeLayout1">
+	<!--
     <TableLayout
         android:minWidth="25px"
         android:minHeight="25px"
@@ -76,4 +78,59 @@
             </LinearLayout>
         </TableRow>
     </TableLayout>
+	-->
+		
+<!-- Sliding panel -->
+	<cheesebaron.slidinguppanel.SlidingUpPanelLayout
+		android:id="@+id/sliding_layout"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:gravity="bottom"
+		app:collapsedHeight="68dp"
+		app:shadowHeight="4dp"
+		app:dragView="@+id/infobox">
+		<LinearLayout
+		 android:layout_width="match_parent"
+		 android:layout_height="match_parent"
+		 android:orientation="vertical"
+		 android:clickable="true"
+		  android:focusable="false">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:background="@drawable/container_dropshadow"
+            android:id="@+id/infobox">
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textSize="24sp"
+                android:text="WHAT UP"
+                android:paddingLeft="10dp" />
+            <ImageView
+                android:id="@+id/follow"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_alignParentRight="true"
+                android:padding="8dp"
+                android:scaleType="fitStart"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#fff"
+            android:padding="8dp">
+            <TextView
+                android:id="@+id/more_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Free yeets"
+                android:textSize="14sp" />
+        </RelativeLayout>
+    </LinearLayout>
+	</cheesebaron.slidinguppanel.SlidingUpPanelLayout>
 </LinearLayout>

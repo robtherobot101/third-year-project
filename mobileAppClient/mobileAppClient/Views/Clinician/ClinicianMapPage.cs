@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using mobileAppClient.odmsAPI;
 using System.Net;
 using System.IO;
-
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
 
@@ -20,12 +19,15 @@ namespace mobileAppClient.Views.Clinician
 
         List<CustomMapObject> users;
         List<Hospital> hospitals;
+        SlideUpMenuView menu;
 
         CustomMap customMap;
 
         public ClinicianMapPage()
         {
-            this.SlideMenu = new SlideUpMenuView();
+            menu = new SlideUpMenuView();
+            
+            this.SlideMenu = menu;
         }
 
         public async void displayUserDialog(string organString, string id)
@@ -33,7 +35,13 @@ namespace mobileAppClient.Views.Clinician
             //if Android, use the SlideOverKit stuff
             if (Device.RuntimePlatform == Device.Android)
             {
+                //menu = new SlideUpMenuView();
+                
+                
+                System.Diagnostics.Debug.WriteLine(id);
                 ShowMenu();
+                
+                
             }
             //otherwise iPhone or something
             else
@@ -85,12 +93,15 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
+    
+
         ///// <summary>
         ///// Activated whenever focus is on this page
         ///// </summary>
         protected override async void OnAppearing()
         {
-            this.SlideMenu = new SlideUpMenuView();
+            menu = new SlideUpMenuView();
+            //menu.Init("organs here", "Billll");
 
             customMap = new CustomMap
             {

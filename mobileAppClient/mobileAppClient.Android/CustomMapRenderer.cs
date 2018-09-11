@@ -20,6 +20,8 @@ using Android.App;
 using SlideOverKit;
 using FragmentManager = Android.Support.V4.App.FragmentManager;
 using mobileAppClient.Views.Clinician;
+using Cheesebaron.SlidingUpPanel;
+using Resource = mobileAppClient.Droid.Resource;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -32,6 +34,7 @@ namespace CustomRenderer.Droid
 
         public CustomMapRenderer(Context context) : base(context)
         {
+            
         }
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
@@ -227,22 +230,11 @@ namespace CustomRenderer.Droid
             {
                 throw new Exception("Custom pin not found");
             }
-
-
-            //MapActivity mapActivity = new MapActivity();
-            //mapActivity.InitializeMap();
-
-            //Context ac = Context.ApplicationContext;
-            //@ Andy peek here. The way the Bsheet works is that it creates a fragment. 
-            // It then calls the show() method, which requires some form of fragmentmanager, which you get from a context/activity. There is an activity file which I was meddling with in here, but didn't reallly work
-            // I used the github link in discord as reference. 
-            // One of the biggest hurdles is that fragments are now deprecated and so need the Android.Support.V4.xxx to work with this library.
-            // If you're confused would recommend loading up his sample project and deploying it.
-
-            //BottomSheetFragment fragment = BottomSheetFragment.NewInstance(0, "test");
-
-            //fragment.Show(ac., "dialog");
+            
+           
+    
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+
             parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
         }
 
@@ -267,85 +259,85 @@ namespace CustomRenderer.Droid
                 view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);
 
 
-                var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
-                var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
-                var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
-                var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
+                //        var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
+                //        var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
+                //        var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
+                //        var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
 
 
 
 
 
-                if (infoTitle != null)
-                {
-                    infoTitle.Text = customPin.Label;
-                }
-                if (infoAddress != null)
-                {
-                    infoAddress.Text = customPin.Address;
-                }
-                if (imageFrame != null)
-                {
-                    if (customPin.userPhoto.Length == 0)
-                    {
-                        imageFrame.SetImageResource(Resource.Drawable.donationIcon);
-                    }
-                    else
-                    {
-                        var imageBytes = Convert.FromBase64String(customPin.userPhoto);
-                        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
-                        imageFrame.SetImageBitmap(imageData);
-                    }
-                }
-                if (organFrame != null)
-                {
-                    var organs = customPin.Url.Split(',');
-                    foreach (var organ in organs)
-                    {
-                        var organImage = new ImageView(Context.ApplicationContext);
-                        switch (organ)
-                        {
-                            case "bone_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.bone_icon);
-                                break;
-                            case "ear_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.ear_icon);
-                                break;
-                            case "eye_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.eye_icon);
-                                break;
-                            case "heart_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.heart_icon);
-                                break;
-                            case "intestines_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.intestines_icon);
-                                break;
-                            case "kidney_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.kidney_icon);
-                                break;
-                            case "liver_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.liver_icon);
-                                break;
-                            case "lungs_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.lungs_icon);
-                                break;
-                            case "pancreas_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.pancreas_icon);
-                                break;
-                            case "skin_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.skin_icon);
-                                break;
-                            case "tissue_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.tissue_icon);
-                                break;
-                        }
-                        organImage.SetAdjustViewBounds(true);
-                        organImage.SetMaxHeight(80);
-                        organImage.SetMaxWidth(80);
-                        organImage.SetPadding(5, 0, 5, 0);
-                        organFrame.AddView(organImage);
-                    }
-                }
+                //        if (infoTitle != null)
+                //        {
+                //            infoTitle.Text = customPin.Label;
+                //        }
+                //        if (infoAddress != null)
+                //        {
+                //            infoAddress.Text = customPin.Address;
+                //        }
+                //        if (imageFrame != null)
+                //        {
+                //            if (customPin.userPhoto.Length == 0)
+                //            {
+                //                imageFrame.SetImageResource(Resource.Drawable.donationIcon);
+                //            }
+                //            else
+                //            {
+                //                var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+                //                var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                //                imageFrame.SetImageBitmap(imageData);
+                //            }
+                //        }
+                //        if (organFrame != null)
+                //        {
+                //            var organs = customPin.Url.Split(',');
+                //            foreach (var organ in organs)
+                //            {
+                //                var organImage = new ImageView(Context.ApplicationContext);
+                //                switch (organ)
+                //                {
+                //                    case "bone_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.bone_icon);
+                //                        break;
+                //                    case "ear_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.ear_icon);
+                //                        break;
+                //                    case "eye_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.eye_icon);
+                //                        break;
+                //                    case "heart_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.heart_icon);
+                //                        break;
+                //                    case "intestines_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.intestines_icon);
+                //                        break;
+                //                    case "kidney_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.kidney_icon);
+                //                        break;
+                //                    case "liver_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.liver_icon);
+                //                        break;
+                //                    case "lungs_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.lungs_icon);
+                //                        break;
+                //                    case "pancreas_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.pancreas_icon);
+                //                        break;
+                //                    case "skin_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.skin_icon);
+                //                        break;
+                //                    case "tissue_icon.png":
+                //                        organImage.SetImageResource(Resource.Drawable.tissue_icon);
+                //                        break;
+                //                }
+                //                organImage.SetAdjustViewBounds(true);
+                //                organImage.SetMaxHeight(80);
+                //                organImage.SetMaxWidth(80);
+                //                organImage.SetPadding(5, 0, 5, 0);
+                //                organFrame.AddView(organImage);
+                //            }
+                //        }
 
 
                 return view;
@@ -354,37 +346,37 @@ namespace CustomRenderer.Droid
         }
 
         public Android.Views.View GetInfoWindow(Marker marker)
-        {
-            return null;
-        }
+                {
+                    return null;
+                }
 
-        CustomPin GetCustomPin(Marker annotation)
-        {
-            Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-            if (customPins.TryGetValue(key, out CustomPin foundPin))
-            {
-                return foundPin;
-            }
-            return null;
-        }
+                CustomPin GetCustomPin(Marker annotation)
+                {
+                    Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
+                    if (customPins.TryGetValue(key, out CustomPin foundPin))
+                    {
+                        return foundPin;
+                    }
+                    return null;
+                }
 
-        CustomPin GetCustomPin(Pin pin)
-        {
-            if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
-            {
-                return foundPin;
-            }
-            return null;
-        }
+                CustomPin GetCustomPin(Pin pin)
+                {
+                    if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+                    {
+                        return foundPin;
+                    }
+                    return null;
+                }
 
-        CustomPin GetCustomPin(MarkerOptions annotation)
-        {
-            Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-            if (customPins.TryGetValue(key, out CustomPin foundPin))
-            {
-                return foundPin;
+                CustomPin GetCustomPin(MarkerOptions annotation)
+                {
+                    Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
+                    if (customPins.TryGetValue(key, out CustomPin foundPin))
+                    {
+                        return foundPin;
+                    }
+                    return null;
+                }
             }
-            return null;
-        }
-    }
 }
