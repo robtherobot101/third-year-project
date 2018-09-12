@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class GeneralAdmin {
+public class GeneralAdmin extends  DatabaseMethods {
 
     /**
      * Takes a resultSet, pulls out an admin instance, and returns it.
@@ -39,7 +39,7 @@ public class GeneralAdmin {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insert = "INSERT INTO ADMIN(username, password, name, work_address, region) " +
                     "VALUES(?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(insert);
+            statement = connection.prepareStatement(insert);
 
             statement.setString(1, admin.getUsername());
             statement.setString(2, admin.getPassword());
@@ -48,7 +48,9 @@ public class GeneralAdmin {
             statement.setString(5, admin.getRegion());
             System.out.println("Inserting new admin -> Successful -> Rows Added: " + statement.executeUpdate());
         }
-
+        finally {
+            close();
+        }
     }
 
     /**
@@ -60,11 +62,14 @@ public class GeneralAdmin {
     public int getAdminIdFromUsername(String username) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT staff_id FROM ADMIN WHERE username = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             resultSet.next();
             return resultSet.getInt("staff_id");
+        }
+        finally {
+            close();
         }
     }
 
@@ -79,10 +84,10 @@ public class GeneralAdmin {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM ADMIN id = id;
             String query = "SELECT * FROM ADMIN WHERE staff_id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -91,6 +96,9 @@ public class GeneralAdmin {
                 //If response is not empty then return a new clinician Object with the fields from the database
                 return getAdminFromResultSet(resultSet);
             }
+        }
+        finally {
+            close();
         }
     }
 
@@ -103,13 +111,16 @@ public class GeneralAdmin {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Admin> allAdmins = new ArrayList<>();
             String query = "SELECT * FROM ADMIN";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 allAdmins.add(getAdminFromResultSet(resultSet));
             }
 
             return allAdmins;
+        }
+        finally {
+            close();
         }
     }
 
@@ -121,9 +132,12 @@ public class GeneralAdmin {
     public void removeAdmin(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM ADMIN WHERE username = ?";
-            PreparedStatement statement = connection.prepareStatement(update);
+            statement = connection.prepareStatement(update);
             statement.setString(1, admin.getUsername());
             System.out.println("Deletion of admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 

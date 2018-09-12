@@ -85,7 +85,7 @@ public class AdminController {
         Gson gson = new Gson();
         Admin receivedAdmin;
 
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
             receivedAdmin = gson.fromJson(request.body(), Admin.class);
         } catch (JsonSyntaxException jse) {
@@ -173,7 +173,6 @@ public class AdminController {
      */
     public String deleteAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
-        System.out.println(queriedAdmin.getUsername() + queriedAdmin.getStaffID());
         if (queriedAdmin == null) {
             return response.body();
         }

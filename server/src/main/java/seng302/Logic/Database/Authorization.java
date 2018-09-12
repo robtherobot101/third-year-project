@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class Authorization {
+public class Authorization extends DatabaseMethods {
 
     /**
      * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
@@ -25,12 +25,12 @@ public class Authorization {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
             String query = "SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
             statement.setString(3, password);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -40,6 +40,9 @@ public class Authorization {
                 GeneralUser generalUser = new GeneralUser();
                 return generalUser.getUserFromResultSet(resultSet);
             }
+        }
+        finally {
+            close();
         }
 
     }
@@ -56,10 +59,10 @@ public class Authorization {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
             String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -70,7 +73,9 @@ public class Authorization {
                 return generalClinician.getClinicianFromResultSet(resultSet);
             }
         }
-
+        finally {
+            close();
+        }
     }
 
 
@@ -85,11 +90,11 @@ public class Authorization {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
             String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, username);
             statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -99,6 +104,9 @@ public class Authorization {
                 GeneralAdmin generalAdmin = new GeneralAdmin();
                 return generalAdmin.getAdminFromResultSet(resultSet);
             }
+        }
+        finally {
+            close();
         }
     }
 
@@ -113,11 +121,14 @@ public class Authorization {
     public String generateToken(int id, int accessLevel) throws SQLException {
         String token = UUID.randomUUID().toString();
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO TOKEN(id, token, access_level) VALUES (?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO TOKEN(id, token, access_level) VALUES (?, ?, ?)");
             statement.setInt(1, id);
             statement.setString(2, token);
             statement.setInt(3, accessLevel);
             statement.execute();
+        }
+        finally {
+            close();
         }
         return token;
     }
@@ -129,9 +140,12 @@ public class Authorization {
      */
     public void logout(String token) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM TOKEN WHERE token = ?");
+            statement = connection.prepareStatement("DELETE FROM TOKEN WHERE token = ?");
             statement.setString(1, token);
             statement.execute();
+        }
+        finally {
+            close();
         }
     }
 }
