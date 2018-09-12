@@ -17,6 +17,47 @@ public class AuthorizationController {
 
     Authorization model = new Authorization();
 
+    public String checkPassword(Request request, Response response) {
+        String password = request.queryParams("password");
+        System.out.println(password);
+        Long id = Long.parseLong(request.queryParams("id"));
+        if (password == null || id == null) {
+            response.status(400);
+            return "Missing Parameters";
+        }
+
+        String hash = null;
+        boolean foundUser = false;
+        boolean matchedPassword = false;
+
+        try {
+            hash = model.checkPasswordUser(id);
+            if (hash != null) {
+                foundUser = true;
+                matchedPassword = SaltHash.checkHash(password, hash);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (!foundUser) {
+            try {
+                hash = model.checkPasswordClinician(id);
+                if (hash != null) {
+                    matchedPassword = SaltHash.checkHash(password, hash);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(hash);
+        System.out.println(matchedPassword);
+        if (matchedPassword) {
+            response.status(200);
+        } else {
+            response.status(400);
+        }
+        return String.valueOf(matchedPassword);
+    }
 
     /**
      * method to handle the login requests

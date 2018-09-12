@@ -63,6 +63,7 @@ public class Server {
 
             post( "/login",         authorizationController::login);
             post( "/logout",        authorizationController::logout);
+            post("/password",       authorizationController::checkPassword);
             before("/reset",        profileUtils::hasAdminAccess);
             post( "/reset",         databaseController::reset);
             before("/resample",     profileUtils::hasAdminAccess);
