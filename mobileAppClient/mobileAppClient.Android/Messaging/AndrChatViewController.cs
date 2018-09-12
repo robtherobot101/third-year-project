@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Newtonsoft.Json;
 
 namespace mobileAppClient.Droid.Messaging
 {
@@ -45,6 +46,10 @@ namespace mobileAppClient.Droid.Messaging
             FindViewById<ListView>(Resource.Id.messages_listview).ItemClick += (object sender, ListView.ItemClickEventArgs e) =>
             {
                 Console.WriteLine("Clicked item in position: " + e.Position);
+                Intent intent = new Intent(Xamarin.Forms.Forms.Context, typeof(AndrConvoViewController));
+                intent.PutExtra("ConversationJSON", JsonConvert.SerializeObject(conversations[e.Position])); 
+                Xamarin.Forms.Forms.Context.StartActivity(intent);
+
             };
         }
     }

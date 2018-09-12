@@ -148,6 +148,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Messaging\AndrChatViewController.cs" />
     <Compile Include="Messaging\AndrConversation.cs" />
+    <Compile Include="Messaging\AndrConvoViewController.cs" />
     <Compile Include="Messaging\AndrMessageType.cs" />
     <Compile Include="Messaging\AndrMessagingEntryClass.cs" />
     <Compile Include="Messaging\AndrMessage.cs" />
@@ -400,6 +401,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\viewing_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\AndrConvoViewController.axml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\AndrChatViewController.axml">
