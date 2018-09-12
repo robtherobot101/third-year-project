@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Logic.SaltHash;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;
@@ -310,6 +311,7 @@ public class UserController {
             return "Missing user Body";
         } else {
             try {
+                receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
                 model.insertUser(receivedUser);
                 response.status(201);
                 return "Success";
@@ -396,6 +398,7 @@ public class UserController {
                 String token = request.headers("token");
                 ProfileUtils profileUtils = new ProfileUtils();
                 int accessLevel = profileUtils.checkToken(token);
+                receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
                 model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                 response.status(201);
                 return "USER SUCCESSFULLY UPDATED";

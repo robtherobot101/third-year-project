@@ -16,20 +16,18 @@ public class Authorization {
     /**
      * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
      * @param usernameEmail Either a username or an email address
-     * @param password A password
      * @return The matched user
      * @throws SQLException If there is an error working with the database
      */
-    public User loginUser(String usernameEmail, String password) throws SQLException{
+    public User loginUser(String usernameEmail) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-            String query = "SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?";
+            String query = "SELECT * FROM USER WHERE (username = ? OR email = ?)";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
-            statement.setString(3, password);
             ResultSet resultSet = statement.executeQuery();
 
             //If response is empty then return null
@@ -48,17 +46,15 @@ public class Authorization {
     /**
      * Returns the clinician with a matching username and password if such a clinician exists, otherwise returns null
      * @param username A username
-     * @param password A password
      * @return The matched clinician if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
-    public Clinician loginClinician(String username, String password) throws SQLException{
+    public Clinician loginClinician(String username) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
-            String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
+            String query = "SELECT * FROM CLINICIAN WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
 
             //If response is empty then return null
@@ -77,18 +73,16 @@ public class Authorization {
     /**
      * Returns the admin with a matching username and password if such a admin exists, otherwise returns null
      * @param username A username
-     * @param password A password
      * @return The matched admin if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
-    public Admin loginAdmin(String username, String password) throws SQLException {
+    public Admin loginAdmin(String username) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
-            String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
+            String query = "SELECT * FROM ADMIN WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, username);
-            statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
 
             //If response is empty then return null

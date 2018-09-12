@@ -309,9 +309,9 @@ public class CommandLineInterface {
                 if(dob.isBefore(LocalDate.now())) {
                     User insertUser = new User(nextCommand[3].replace("\"", ""), dob);
                     insertUser.setUsername(nextCommand[1]);
-                    insertUser.setPassword(nextCommand[2]);
+                    insertUser.setPassword(SaltHash.createHash(nextCommand[2]));
                     new GeneralUser().insertUser(insertUser);
-                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), insertUser.getPassword()).getId());
+                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername()).getId());
                 } else {
                     return new CommandLineResponse(false, "Date of birth must not be in the future.");
                 }
@@ -331,6 +331,7 @@ public class CommandLineInterface {
 
             try {
                 Clinician insertClinician = new Clinician(nextCommand[1], nextCommand[2], nextCommand[3].replace("\"", ""));
+                insertClinician.setPassword(SaltHash.createHash(insertClinician.getPassword()));
                 new GeneralClinician().insertClinician(insertClinician);
                 // TODO Ensure the client somehow gets the DB assigned ID of the new user if/when needed
                 return new CommandLineResponse(true, "New clinician created.");
@@ -816,7 +817,7 @@ public class CommandLineInterface {
                     wasSuccessful = true;
                     break;
                 case "password":
-                    toSet.setPassword(value);
+                    toSet.setPassword(SaltHash.createHash(value));
                     outputString = ("New password set.");
                     wasSuccessful = true;
                     break;

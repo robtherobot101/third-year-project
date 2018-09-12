@@ -3,6 +3,7 @@ package seng302.Controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.Authorization;
+import seng302.Logic.SaltHash;
 import seng302.Model.Admin;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Clinician;
@@ -41,11 +42,13 @@ public class AuthorizationController {
 
         // Check for a user match
         try {
-            currentUser = model.loginUser(usernameEmail, password);
+            currentUser = model.loginUser(usernameEmail);
             if (currentUser != null) {
-                loginToken = model.generateToken((int) currentUser.getId(), 0);
-                typeMatched = ProfileType.USER;
-                System.out.println("LoginController: Logging in as user...");
+                if (SaltHash.checkHash(password, currentUser.getPassword())) {
+                    loginToken = model.generateToken((int) currentUser.getId(), 0);
+                    typeMatched = ProfileType.USER;
+                    System.out.println("LoginController: Logging in as user...");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,11 +57,13 @@ public class AuthorizationController {
         if (loginToken == null) { //if user login was unsuccessful
             // Check for a clinician match
             try {
-                currentClinician = model.loginClinician(usernameEmail, password);
+                currentClinician = model.loginClinician(usernameEmail);
                 if (currentClinician != null) {
-                    loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
-                    typeMatched = ProfileType.CLINICIAN;
-                    System.out.println("LoginController: Logging in as clinician...");
+                    if (SaltHash.checkHash(password, currentClinician.getPassword())) {
+                        loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
+                        typeMatched = ProfileType.CLINICIAN;
+                        System.out.println("LoginController: Logging in as clinician...");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -68,11 +73,13 @@ public class AuthorizationController {
         if (loginToken == null) { //if user login and clinician login was unsuccessful
             // Check for an admin match
             try {
-                currentAdmin = model.loginAdmin(usernameEmail, password);
+                currentAdmin = model.loginAdmin(usernameEmail);
                 if (currentAdmin != null) {
-                    loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
-                    typeMatched = ProfileType.ADMIN;
-                    System.out.println("LoginController: Logging in as admin...");
+                    if (SaltHash.checkHash(password, currentAdmin.getPassword())) {
+                        loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
+                        typeMatched = ProfileType.ADMIN;
+                        System.out.println("LoginController: Logging in as admin...");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

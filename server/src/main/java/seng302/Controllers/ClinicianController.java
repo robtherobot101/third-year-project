@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralClinician;
+import seng302.Logic.SaltHash;
 import seng302.Model.Clinician;
 import seng302.Server;
 import spark.Request;
@@ -99,6 +100,7 @@ public class ClinicianController {
             return "Missing clinician Body";
         } else {
             try {
+                receivedClinician.setPassword(SaltHash.createHash(receivedClinician.getPassword()));
                 model.insertClinician(receivedClinician);
                 response.status(201);
                 return "placeholder token";
@@ -153,6 +155,7 @@ public class ClinicianController {
             return "Missing clinician Body";
         } else {
             try {
+                receivedClinician.setPassword(SaltHash.createHash(receivedClinician.getPassword()));
                 model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")));
                 response.status(201);
                 return "CLINICIAN SUCCESSFULLY UPDATED";
