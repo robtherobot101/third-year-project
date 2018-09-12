@@ -154,7 +154,7 @@ public class UserProceduresController extends UserTabController implements Initi
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
                 "Are you sure?", "Are you sure would like to delete the selected pending procedure? ", "By doing so, the procedure will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
                 pendingProcedureItems.remove(chosenProcedure);
                 userController.addHistoryEntry("Pending procedure removed", "A pending procedure (" + chosenProcedure.getSummary() + ") was removed.");
@@ -167,7 +167,7 @@ public class UserProceduresController extends UserTabController implements Initi
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
                 "Are you sure?", "Are you sure would like to delete the selected previous procedure? ", "By doing so, the procedure will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 Procedure chosenProcedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
                 previousProcedureItems.remove(chosenProcedure);
                 userController.addHistoryEntry("Previous procedure removed", "A previous procedure (" + chosenProcedure.getSummary() + ") was removed.");

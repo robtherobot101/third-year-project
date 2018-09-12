@@ -14,7 +14,7 @@ public abstract class DatabaseMethods {
     protected Statement stmt;
     protected ResultSet resultSet;
 
-    void close() throws SQLException {
+    protected void close() throws SQLException {
         try{ if (resultSet != null) resultSet.close(); } catch(SQLException ignored) {}
         try{ if (statement != null) statement.close(); } catch(SQLException ignored) {}
         try{ if (stmt != null) stmt.close(); } catch(SQLException ignored) {}

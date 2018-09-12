@@ -149,7 +149,7 @@ public class GeneralAdmin extends  DatabaseMethods {
     public void updateAdminDetails(Admin admin) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE ADMIN SET name = ?, work_address = ?, region = ? WHERE username = ?";
-            PreparedStatement statement = connection.prepareStatement(update);
+            statement = connection.prepareStatement(update);
 
             statement.setString(1, admin.getName());
             statement.setString(2, admin.getWorkAddress());
@@ -157,7 +157,8 @@ public class GeneralAdmin extends  DatabaseMethods {
             statement.setString(4, admin.getUsername());
             System.out.println("Update admin Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
-
+        finally {
+            close();
+        }
     }
-
 }

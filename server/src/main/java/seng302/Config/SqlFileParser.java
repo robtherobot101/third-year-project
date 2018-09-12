@@ -20,30 +20,26 @@ public abstract class SqlFileParser {
      */
     public static void executeFile(Connection connection, InputStream file) throws SQLException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(file));
-        Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        System.out.println("Reading SQL File...");
-        String line;
-        StringBuilder sb = new StringBuilder();
+        try(Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+            System.out.println("Reading SQL File...");
+            String line;
+            StringBuilder sb = new StringBuilder();
 
-        while( (line=br.readLine())!=null)
-        {
-            if(line.length()==0 || line.startsWith("--"))
-            {
-                continue;
-            }else
-            {
-                sb.append(line);
+            while ((line = br.readLine()) != null) {
+                if (line.length() == 0 || line.startsWith("--")) {
+                    continue;
+                } else {
+                    sb.append(line);
+                }
+
+                if (line.trim().endsWith(";")) {
+                    statement.addBatch(sb.toString());
+                    sb = new StringBuilder();
+                }
+
             }
-
-            if(line.trim().endsWith(";"))
-            {
-                statement.addBatch(sb.toString());
-                sb = new StringBuilder();
-            }
-
+            br.close();
+            statement.executeBatch();
         }
-        br.close();
-        statement.executeBatch();
-        statement.close();
     }
 }

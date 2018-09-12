@@ -4,8 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
-import seng302.NotificationManager.Notification;
-import seng302.NotificationManager.PushAPI;
+import seng302.Logic.Database.ProfileUtils;
 import spark.Request;
 import spark.Response;
 

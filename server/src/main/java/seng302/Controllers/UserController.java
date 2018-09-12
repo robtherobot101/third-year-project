@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Logic.Database.ProfileUtils;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;

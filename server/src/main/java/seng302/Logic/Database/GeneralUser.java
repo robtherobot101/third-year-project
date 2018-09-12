@@ -413,11 +413,14 @@ public class GeneralUser extends DatabaseMethods {
     public int getIdFromUser(String username) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT id FROM USER WHERE username = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             resultSet.next();
             return resultSet.getInt("id");
+        }
+        finally {
+            close();
         }
     }
 
