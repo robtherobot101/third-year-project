@@ -79,6 +79,11 @@ public class Server {
 
             get("/status", databaseController::status);
 
+            get("/teapot", (Request request, Response response) -> {
+                response.status(418);
+                return "I'm a little teapot,\nShort and stout!.";
+            });
+
             path("/admins", () -> {
                 before("",          profileUtils::hasAdminAccess);
                 get("",             adminController::getAllAdmins);
