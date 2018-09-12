@@ -502,11 +502,11 @@ ALTER TABLE `PUSH_DEVICE`
 -- Create default clinician and admin
 --
 
-INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', 'default', 'default', 'default', 'default', 'default');
+INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=', 'default', 'default', 'default', 'default');
 
 INSERT INTO TOKEN(id, token, access_level) VALUES(0, 'masterToken', 2);
 
-INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', 'default', 'default', 'default', 'default', 'default');
+INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=', 'default', 'default', 'default', 'default');
 
 
 --

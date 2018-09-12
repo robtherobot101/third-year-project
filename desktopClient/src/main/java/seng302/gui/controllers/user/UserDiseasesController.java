@@ -169,7 +169,7 @@ public class UserDiseasesController extends UserTabController implements Initial
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
                 "Are you sure?", "Are you sure would like to delete the selected current disease? ", "By doing so, the disease will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 userController.addCurrentUserToUndoStack();
                 Disease chosenDisease = currentDiseaseTableView.getSelectionModel().getSelectedItem();
                 currentDiseaseItems.remove(chosenDisease);
@@ -183,7 +183,7 @@ public class UserDiseasesController extends UserTabController implements Initial
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION,
                 "Are you sure?", "Are you sure would like to delete the selected cured disease? ", "By doing so, the disease will be erased from the database.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 userController.addCurrentUserToUndoStack();
                 Disease chosenDisease = curedDiseaseTableView.getSelectionModel().getSelectedItem();
                 curedDiseaseItems.remove(chosenDisease);

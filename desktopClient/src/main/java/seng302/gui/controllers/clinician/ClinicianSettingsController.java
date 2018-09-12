@@ -57,7 +57,6 @@ public class ClinicianSettingsController implements Initializable {
     public void populateAccountDetails() {
         userNameLabel.setText("clinician: " + clinician.getName());
         usernameField.setText(clinician.getUsername() != null ? clinician.getUsername() : "");
-        passwordField.setText(clinician.getPassword());
     }
 
     /**
