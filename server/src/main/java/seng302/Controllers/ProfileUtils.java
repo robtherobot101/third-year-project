@@ -279,7 +279,6 @@ public class ProfileUtils {
      */
     private int getId(String rawId) {
         int id;
-        System.out.println("CHECK ID CALLED");
 
         try {
             id = Integer.parseInt(rawId);

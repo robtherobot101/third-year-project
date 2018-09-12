@@ -470,7 +470,7 @@ public class UserController {
 
     }
 
-    public String   editUserPhoto(Request request, Response response){
+    public String editUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){

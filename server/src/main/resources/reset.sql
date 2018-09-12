@@ -189,9 +189,11 @@ CREATE TABLE IF NOT EXISTS `TOKEN` (
 DROP TABLE IF EXISTS `MESSAGE`;
 CREATE TABLE IF NOT EXISTS `MESSAGE` (
   `id` int(11) NOT NULL,
-  `conversation_id` text NOT NULL,
+  `conversation_id` int(11) NOT NULL,
   `text` text NOT NULL,
-  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int(11) NOT NULL,
+  `access_level` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -202,10 +204,20 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
 
 DROP TABLE IF EXISTS `CONVERSATION`;
 CREATE TABLE IF NOT EXISTS `CONVERSATION` (
-  `id` int(11) NOT NULL,
-  `user_id` text NOT NULL,
-  `clinician_id` text NOT NULL,
-  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CONVERSATION_MEMBER`
+--
+
+DROP TABLE IF EXISTS `CONVERSATION_MEMBER`;
+CREATE TABLE IF NOT EXISTS `CONVERSATION_MEMBER` (
+  `conversation_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `access_level` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -338,6 +350,19 @@ ALTER TABLE `WAITING_LIST_ITEM`
   ADD KEY `User_id_foreign_key5` (`user_id`);
 
 --
+-- Indexes for table `MESSAGE`
+--
+ALTER TABLE `MESSAGE`
+  ADD PRIMARY KEY (`id`),
+  ADD INDEX `id_index` (`conversation_id`,`id`);
+
+--
+-- Indexes for table `CONVERSATION`
+--
+ALTER TABLE `CONVERSATION`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -390,6 +415,16 @@ ALTER TABLE `USER`
 -- AUTO_INCREMENT for table `WAITING_LIST_ITEM`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `CONVERSATION`
+--
+ALTER TABLE `CONVERSATION`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `MESSAGE`
+--
+ALTER TABLE `MESSAGE`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
