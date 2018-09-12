@@ -117,10 +117,11 @@ public class Server {
                     before("",          profileUtils::isSpecificUser);
                     get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.CLINICIAN));
                     post("", (request, response) -> conversationsController.addConversation(request, response, ProfileType.CLINICIAN));
-                    delete("", (request, response) -> conversationsController.removeConversation(request, response, ProfileType.CLINICIAN));
+                    post("/user", (request, response) -> conversationsController.addConversationUser(request, response, ProfileType.CLINICIAN));
 
                     path("/:conversationId", () -> {
-                        get("", (request, response) -> conversationsController.getSingleConversation(request, response, ProfileType.CLINICIAN));
+                        get("", conversationsController::getSingleConversation);
+                        delete("", conversationsController::removeConversation);
                         post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.CLINICIAN));
                     });
                 });
@@ -206,7 +207,7 @@ public class Server {
                     get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.USER));
 
                     path("/:conversationId", () -> {
-                        get("", (request, response) -> conversationsController.getSingleConversation(request, response, ProfileType.USER));
+                        get("", conversationsController::getSingleConversation);
                         post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.USER));
                     });
                 });
