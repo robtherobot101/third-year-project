@@ -11,7 +11,7 @@ public class SaltHash {
      * @param password the given user password to hash
      * @return String the hash of the password
      */
-    public static String createHash(String password) {
+    public static String createHash(String password){
         String generatedSecuredPasswordHash = SCryptUtil.scrypt(password, 16, 16, 16);
         return generatedSecuredPasswordHash;
     }
@@ -23,8 +23,13 @@ public class SaltHash {
      * @param hash     the given hash to check
      * @return Boolean if the password matches the hash
      */
-    public static Boolean checkHash(String password, String hash) {
-        boolean matched = SCryptUtil.check(password, hash);
-        return matched;
+    public static Boolean checkHash(String password, String hash){
+        try {
+            boolean matched = SCryptUtil.check(password, hash);
+            return matched;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

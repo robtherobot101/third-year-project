@@ -14,6 +14,47 @@ import java.util.UUID;
 public class Authorization {
 
     /**
+     * method to get a password from a user with a given id
+     * @param id Long the user id to get the password of
+     * @return String the password of the user to check
+     * @throws SQLException catch sql execution errors
+     */
+    public String checkPasswordUser(long id) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT password FROM USER WHERE (id = ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()){
+                return null;
+            } else {
+                return resultSet.getString("password");
+            }
+        }
+    }
+
+    /**
+     * method to get a password from a user with a given id
+     * @param id Long the user id to get the password of
+     * @return String the password of the user to check
+     * @throws SQLException catch sql execution errors
+     */
+    public String checkPasswordClinician(long id) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT password FROM CLINICIAN WHERE (staff_id = ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()){
+                return null;
+            } else {
+                return resultSet.getString("password");
+            }
+        }
+    }
+
+
+    /**
      * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
      * @param usernameEmail Either a username or an email address
      * @return The matched user
