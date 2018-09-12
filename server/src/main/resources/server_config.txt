@@ -11,3 +11,7 @@ username=seng302-team300
 
 # The password to access the database
 password=WeldonAside5766
+
+# The Visual Studio App Center token
+vs_token=9dbaa6ff2cee9f13d427c78abd9f9516fd5f26d9
+

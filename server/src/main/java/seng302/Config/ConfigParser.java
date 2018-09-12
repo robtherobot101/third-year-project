@@ -23,7 +23,7 @@ public class ConfigParser {
     /**
      * The required parameters for the config file.
      */
-    private final String[] PARAMETERS = {"database_address", "database_name", "username", "password"};
+    private final String[] PARAMETERS = {"database_address", "database_name", "username", "password", "vs_token"};
 
     /**
      * A map containg the properties
@@ -55,7 +55,7 @@ public class ConfigParser {
             Server.getInstance().log.warn("Could not load or create config file");
             e.printStackTrace();
         } catch (IOException e) {
-            Server.getInstance().log.warn("An unexpected error occurred while reading config files.");
+            //Server.getInstance().log.warn("An unexpected error occurred while reading config files.");
             e.printStackTrace();
         }
     }

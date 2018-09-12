@@ -118,6 +118,7 @@ public class UserDonations {
      *
      * @param newOrgans The list of organs to update to
      * @param userId The id of the user to update
+     * @param dateOfDeath the date of death of a user
      * @throws SQLException If there is errors communicating with the database
      */
     public void updateAllDonations(Set<Organ> newOrgans, int userId, LocalDateTime dateOfDeath) throws SQLException {
