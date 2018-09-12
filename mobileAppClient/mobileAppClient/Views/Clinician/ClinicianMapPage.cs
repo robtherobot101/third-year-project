@@ -13,11 +13,11 @@ using System.Linq;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
-using MapKit;
+
 
 namespace mobileAppClient.Views.Clinician
 {
-	public class ClinicianMapPage : MenuContainerPage
+	public class ClinicianMapPage : ContentPage
 	{
 
         List<CustomMapObject> users;
@@ -28,27 +28,22 @@ namespace mobileAppClient.Views.Clinician
 
         public ClinicianMapPage()
         {
-            menu = new SlideUpMenuView();
             
-            this.SlideMenu = menu;
         }
 
-        public async void displayBottomSheet(CustomPin pin, CustomMap map, MKMapView nativeMap) {
+        public async void displayBottomSheet(CustomPin pin, CustomMap map) {
 
-            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map, nativeMap);
+            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map);
         }
+
 
         public async void displayUserDialog(string organString, string id)
         {
             //if Android, use the SlideOverKit stuff
             if (Device.RuntimePlatform == Device.Android)
             {
-                //menu = new SlideUpMenuView();
                 
-                
-                System.Diagnostics.Debug.WriteLine(id);
-                ShowMenu();
-                
+                //ShowMenu(); 
                 
             }
             //otherwise iPhone or something
@@ -108,8 +103,6 @@ namespace mobileAppClient.Views.Clinician
         ///// </summary>
         protected override async void OnAppearing()
         {
-            menu = new SlideUpMenuView();
-            //menu.Init("organs here", "Billll");
 
             customMap = new CustomMap
             {
@@ -140,11 +133,12 @@ namespace mobileAppClient.Views.Clinician
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
-
+            Console.WriteLine("Initialising hoppis....");
             await InitialiseHospitals();
-
+            
+            Console.WriteLine("Adding HeliChopper...");
             AddHelicopter();
-
+            Console.WriteLine("HeliChopper success, entering switch");
             switch (tuple.Item1)
             {
                 case HttpStatusCode.OK:
@@ -294,6 +288,7 @@ namespace mobileAppClient.Views.Clinician
                     }
 
                     StartTimer(200);
+                    Console.WriteLine("Reached the end of OnAppearing");
                     break;
 
                 case HttpStatusCode.ServiceUnavailable:
@@ -324,6 +319,7 @@ namespace mobileAppClient.Views.Clinician
 
                     foreach (Hospital currentHospital in hospitals)
                     {
+                        Console.WriteLine("Tracking positions");
                         Position finalPosition = new Position(currentHospital.latitude, currentHospital.longitude);
 
                         var pin = new CustomPin
@@ -360,15 +356,17 @@ namespace mobileAppClient.Views.Clinician
         private void AddHelicopter()
         {
             // TESTING
+            Console.WriteLine("Entered Add Heli...");
             Position start = new Position(-37.9061137, 176.2050742);
             Position end = new Position(-36.8613687, 174.7676895);
+            Console.WriteLine("Set postitions...");
 
             Helicopter heli = new Helicopter()
             {
                 startPosition = start,
                 destinationPosition = end
             };
-
+            Console.WriteLine("Created Heli...");
             CustomPin heliPin = new CustomPin
             {
                 CustomType = ODMSPinType.HELICOPTER,
@@ -377,7 +375,7 @@ namespace mobileAppClient.Views.Clinician
                 Position = heli.startPosition,
                 Address = "1"
             };
-
+            Console.WriteLine("Created Helipin...");
             customMap.HelicopterPins.Add(heliPin.Address, heliPin);
             customMap.Pins.Add(heliPin);
         }

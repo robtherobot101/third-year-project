@@ -2,6 +2,7 @@
 <MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms" 
                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
                   xmlns:local="clr-namespace:mobileAppClient"
+                  xmlns:androidLocal="clr-namespce:mobileAppClient.Droid;assembly:mobileAppClient.Droid"
                   xmlns:abstractions="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
                   x:Class="mobileAppClient.MainPage">
 
@@ -40,12 +41,12 @@
                              Padding="20,10,0,10"
                              Spacing="20">
 
-                                        <Image Source="{Binding Icon}"
+                                    <Image Source="{Binding Icon}"
                              WidthRequest="40"
                              HeightRequest="40"
                              VerticalOptions="Start" />
 
-                                        <Label Text="{Binding Title}"
+                                    <Label Text="{Binding Title}"
                              FontSize="Small"
                              VerticalOptions="End"
                              TextColor="Black"

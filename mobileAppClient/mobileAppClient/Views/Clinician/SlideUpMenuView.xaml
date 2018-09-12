@@ -3,6 +3,7 @@
     xmlns:t1="clr-namespace:SlideOverKit;assembly=SlideOverKit"
     xmlns="http://xamarin.com/schemas/2014/forms" 
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:androidWidget="clr-namespace:mobileAppClient.Droid;assembly=mobileAppClient.Droid;targetPlatform=Android"
     x:Class="mobileAppClient.Views.Clinician.SlideUpMenuView">
 
     <!-- TODO this. Tableview inside a grid?-->
@@ -34,4 +35,7 @@
         <Label Text="Navigation settings" Grid.Column="1" Grid.Row="3" XAlign="Start" YAlign="Center" TextColor="White"/>
         <Button Grid.ColumnSpan="2" Grid.Row="4" Text="Start" TextColor="White" FontSize="24" BorderRadius="5" BorderWidth="1" BackgroundColor="#2E3332"/>
     </Grid>
+    <androidWidget:BottomSheetLayout>
+        
+    </androidWidget:BottomSheetLayout>
 </t1:SlideMenuView >

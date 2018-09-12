@@ -261,9 +261,12 @@ namespace CustomRenderer.Droid
             {
                 throw new Exception("Custom pin not found");
             }
-            
-           
-    
+
+           // ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+           // parent.displayBottomSheet(customPin, formsMap);
+
+
+        
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
 
             parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
@@ -285,6 +288,9 @@ namespace CustomRenderer.Droid
                     // Hospital pop-up dialog not yet implemented
                     return null;
                 }
+
+                ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+                parent.displayBottomSheet(customPin, formsMap);
 
 
                 view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);

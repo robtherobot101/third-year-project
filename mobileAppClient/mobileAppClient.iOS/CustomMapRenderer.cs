@@ -214,7 +214,7 @@ namespace CustomRenderer.iOS
             }
 
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayBottomSheet(currentPin, formsMap, nativeMap);
+            parent.displayBottomSheet(currentPin, formsMap);
 
         }
 
