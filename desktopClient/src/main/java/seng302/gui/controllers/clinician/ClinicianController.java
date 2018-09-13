@@ -393,7 +393,7 @@ public class ClinicianController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
-        Dialog<String> dialog = new Dialog();
+        Dialog<ButtonType> dialog = new Dialog();
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
@@ -410,7 +410,6 @@ public class ClinicianController implements Initializable {
 
         PasswordField passwordfield = new PasswordField();
         passwordfield.setPromptText("Password");
-
         grid.add(new Label("Enter your password:"), 0, 1);
         grid.add(passwordfield, 1, 1);
 
@@ -423,39 +422,39 @@ public class ClinicianController implements Initializable {
 
         dialog.getDialogPane().setContent(grid);
 
-        Platform.runLater(() -> passwordfield.requestFocus());
-
-
-        Optional<String> password = dialog.showAndWait();
-        if (password.isPresent()) { //Ok was pressed, Else cancel
-            Boolean flag = false;
-            try {
-                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), clinician.getStaffID());
-            } catch (HttpResponseException e) {
-                e.printStackTrace();
-            }
-            if (flag) {
+        Optional<ButtonType> result = dialog.showAndWait();
+        result.ifPresent(option -> {
+            if (result.get() == loginButtonType) { //Ok was pressed, Else cancel
+                String password = passwordfield.getText();
+                Boolean flag = false;
                 try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
-                    Stage stage = new Stage();
-                    stage.getIcons().add(WindowManager.getIcon());
-                    stage.setResizable(false);
-                    stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 290, 280));
-                    stage.initModality(Modality.APPLICATION_MODAL);
-
-                    WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
-                    WindowManager.setClinicianAccountSettingsEnterEvent();
-
-                    stage.showAndWait();
-                } catch (Exception e) {
-                    Debugger.error(e.getLocalizedMessage());
+                    flag = WindowManager.getDataManager().getGeneral().checkPassword(password, clinician.getStaffID());
+                } catch (HttpResponseException e) {
+                    e.printStackTrace();
                 }
-            } else { // Password incorrect
-                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                if (flag) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
+                        Stage stage = new Stage();
+                        stage.getIcons().add(WindowManager.getIcon());
+                        stage.setResizable(false);
+                        stage.setTitle("Account Settings");
+                        stage.setScene(new Scene(root, 290, 280));
+                        stage.initModality(Modality.APPLICATION_MODAL);
+
+                        WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
+                        WindowManager.setClinicianAccountSettingsEnterEvent();
+
+                        stage.showAndWait();
+                    } catch (Exception e) {
+                        Debugger.error(e.getLocalizedMessage());
+                    }
+                } else { // Password incorrect
+                    WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
+                            "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                }
             }
-        }
+        });
     }
 
     /**
