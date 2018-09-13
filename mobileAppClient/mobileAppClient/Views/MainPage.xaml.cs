@@ -194,10 +194,19 @@ namespace mobileAppClient
                     }
                     break;
                 default:
-                    NavigationPage content = new NavigationPage((Page) Activator.CreateInstance(page));
+                    try
+                    {
+                        NavigationPage content = new NavigationPage((Page)Activator.CreateInstance(page));
+                        Detail = content;
+                        IsPresented = false;
 
-                    Detail = content;
-                    IsPresented = false;
+                    }
+                    catch (TargetInvocationException ie)
+                    {
+                        Console.WriteLine("Exception: " + ie.InnerException);
+                        Console.WriteLine("Exception: " + ie.InnerException.InnerException);
+                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
+                    }
                     break;
             }
         }

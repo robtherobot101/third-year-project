@@ -120,7 +120,7 @@
       <Version>60.1142.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.2.0.729530-pre2</Version>
+      <Version>3.2.0.809874-pre3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Android.Support.Design">
       <Version>27.0.2.1</Version>
@@ -140,12 +140,21 @@
     <PackageReference Include="Xamarin.Forms">
       <Version>3.2.0.637442-pre1</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Forms.Maps">
+      <Version>3.2.0.809874-pre3</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Base">
       <Version>60.1142.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Messaging\AndrChatViewController.cs" />
+    <Compile Include="Messaging\AndrConversation.cs" />
+    <Compile Include="Messaging\AndrConvoViewController.cs" />
+    <Compile Include="Messaging\AndrMessageType.cs" />
+    <Compile Include="Messaging\AndrMessagingEntryClass.cs" />
+    <Compile Include="Messaging\AndrMessage.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AndroidCamera.cs" />
@@ -395,6 +404,17 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\viewing_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\AndrConvoViewController.axml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\AndrChatViewController.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

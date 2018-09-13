@@ -196,27 +196,69 @@
     <ImageAsset Include="Assets.xcassets\LaunchImage.launchimage\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\donationIcon.v1.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_1rsz_donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_1donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_1rsz_1donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_2donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_3donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_4donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_5donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_6donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_7donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_8donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_9donationicon.png" />
-    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular.png" />
-    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular%402x.png" />
-    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular%403x.png" />
-    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular.png" />
-    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular%402x.png" />
-    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\donationIcon.v1.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_1rsz_donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_1donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_1rsz_1donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_2donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_3donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_4donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_5donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_6donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_7donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_8donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_9donationicon.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleOutgoing.imageset\bubble_regular%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\BubbleIncoming.imageset\bubble_regular%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
@@ -245,10 +287,10 @@
       <Version>0.10.0-preview</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.2.0.637442-pre1</Version>
+      <Version>3.2.0.809874-pre3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms.Maps">
-      <Version>3.1.0.697729</Version>
+      <Version>3.2.0.809874-pre3</Version>
     </PackageReference>
     <PackageReference Include="Rivets">
       <Version>1.0.5</Version>

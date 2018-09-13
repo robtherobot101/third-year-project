@@ -754,7 +754,7 @@ public class AdminController implements Initializable {
             result = alert.showAndWait();
         }
         boolean fail = false;
-        if (!ask || (result != null && result.isPresent() && result.get() == ButtonType.OK)) {
+        if (!ask || (result.isPresent() && result.get() == ButtonType.OK)) {
             try {
                 Admin latest = WindowManager.getDataManager().getAdmins().getAdmin((int) currentAdmin.getStaffID(), token);
                 setAdmin(latest, token);
@@ -1153,7 +1153,7 @@ public class AdminController implements Initializable {
         Platform.runLater(clinicianName::requestFocus);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.get() == updateButtonType){
+        if (result.isPresent() && result.get() == updateButtonType){
             String newName = "";
             String newAddress = "";
             String newRegion = "";

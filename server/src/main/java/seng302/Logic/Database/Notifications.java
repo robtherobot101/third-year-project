@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Notifications {
+public class Notifications extends DatabaseMethods {
 
     /**
      * Register a mobile device against a user id
@@ -21,11 +21,14 @@ public class Notifications {
             System.out.println(device_id);
             System.out.println(token);
             String query = "INSERT INTO PUSH_DEVICE (device_id, user_token) VALUES(?, ?) ON DUPLICATE KEY UPDATE user_token=?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, device_id);
             statement.setString(2, token);
             statement.setString(3, device_id);
             statement.execute();
+        }
+        finally {
+            close();
         }
     }
 
@@ -39,10 +42,13 @@ public class Notifications {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //
             String query = "DELETE FROM PUSH_DEVICE WHERE device_id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, device_id);
             statement.execute();
+        }
+        finally {
+            close();
         }
     }
 
@@ -63,7 +69,7 @@ public class Notifications {
                 markers[i] = ((i & 1) == 0 ? '?' : ',');
             // Create the SQL query with ?,?,?,?, inserted
             String query = "SELECT device_id FROM PUSH_DEVICE JOIN TOKEN WHERE id in (" + Arrays.toString(markers) + ") AND user_token=token";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             // Set the the user_id for each ? in the statement
             int id = 0;
@@ -77,6 +83,9 @@ public class Notifications {
                 devices.add(resultSet.getString("device_id"));
             }
             return devices;
+        }
+        finally {
+            close();
         }
     }
 
