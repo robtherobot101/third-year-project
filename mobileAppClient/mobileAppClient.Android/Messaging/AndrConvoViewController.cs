@@ -20,14 +20,14 @@ namespace mobileAppClient.Droid.Messaging
         {
             base.OnCreate(savedInstanceState);
 
-            //SetContentView(Resource.Layout.AndrConvoViewController);
+            SetContentView(Resource.Layout.AndrConvoViewController);
 
-            //AndrConversation conversation = JsonConvert.DeserializeObject<AndrConversation>(Intent.GetStringExtra("ConversationJSON"));
+            AndrConversation conversation = JsonConvert.DeserializeObject<AndrConversation>(Intent.GetStringExtra("ConversationJSON"));
 
-            //ArrayAdapter<AndrMessage> adapter = new ArrayAdapter<AndrMessage>(this,
-            //Android.Resource.Layout.SimpleListItem1, conversation.messages);
+            ArrayAdapter<AndrMessage> adapter = new ArrayAdapter<AndrMessage>(this,
+            Android.Resource.Layout.SimpleListItem1, conversation.messages);
 
-            //FindViewById<ListView>(Resource.Id.messages_listview).Adapter = adapter;
+            FindViewById<ListView>(Resource.Id.messages_list_view).Adapter = adapter;
         }
     }
 }

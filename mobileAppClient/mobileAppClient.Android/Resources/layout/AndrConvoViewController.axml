@@ -2,39 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-	
-	<ListView
-		android:layout_marginTop="10dp"
-		android:layout_marginBottom="80dp"
-		android:layout_width="match_parent"
-		android:layout_height="500dp"
-		android:id="@+id/messages_listview"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentStart="true" />
+    android:layout_height="match_parent"
+	android:gravity="bottom">
+
+    <ListView
+        android:id="@+id/messages_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:listSelector="@android:color/transparent"
+        android:transcriptMode="alwaysScroll"
+        android:divider="@null"/>
 
 	<LinearLayout
 		android:id="@+id/input_linearlayout"
 		android:layout_width="fill_parent"
-		android:layout_height="75dp"
-		android:layout_alignParentBottom="true"
+		android:layout_height="wrap_content"
 		android:orientation="horizontal" >
 
     <EditText
         android:id="@+id/input_edittext"
         android:layout_weight="0.7"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:inputType="text" />
+		android:hint="Enter message"
+		android:background="@android:color/transparent"
+		android:layout_gravity="center"
+		android:layout_marginLeft="16dp"
+		android:layout_marginRight="16dp"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:inputType="text"
+		android:maxLines="6"/>
 
     <Button
         android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:text="Send"/>
+        android:text="SEND"
+		android:textSize="14dp"
+		android:background="?attr/selectableItemBackground"
+		android:clickable="true"
+		android:layout_width="64dp"
+		android:layout_height="48dp"
+		android:gravity="center"
+		android:layout_gravity="bottom"/>
 
 	</LinearLayout>
 </LinearLayout>
