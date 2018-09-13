@@ -508,11 +508,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 // No need to check for default user
                 if (organ != null) {
                     System.out.println(organ);
-                    try {
-                        transferOrgan.setText("Transfer " + WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(),token).getName() + "'s " + organ.getOrganType());
-                    } catch (HttpResponseException e){
-                        Debugger.error(e.getMessage());
-                    }
+                    transferOrgan.setText("Transfer " + organ.getOrganType());
                     profileMenu.show(organsTreeTable, event.getScreenX(), event.getScreenY());
                 }
             }
