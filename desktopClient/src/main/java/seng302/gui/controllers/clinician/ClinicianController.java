@@ -402,7 +402,6 @@ public class ClinicianController implements Initializable {
         if (password.isPresent()) { //Ok was pressed, Else cancel
             Boolean flag = false;
             try {
-                System.out.println(password.get());
                 flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), clinician.getStaffID());
             } catch (HttpResponseException e) {
                 e.printStackTrace();
