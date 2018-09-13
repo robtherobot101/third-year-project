@@ -48,5 +48,9 @@
 	<string>com.uc.uctd</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.9</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
