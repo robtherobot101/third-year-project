@@ -35,7 +35,7 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 abstract class TestFXTest extends ApplicationTest {
 
-    private static final boolean runHeadless = true;
+    private static final boolean runHeadless = false;
 
     @Override
     public void start(Stage stage) {

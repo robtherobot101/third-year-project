@@ -393,11 +393,39 @@ public class ClinicianController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
-        TextInputDialog dialog = new TextInputDialog("");
+        Dialog<String> dialog = new Dialog();
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
-        dialog.setContentText("Please enter your password:");
+
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        PasswordField passwordfield = new PasswordField();
+        passwordfield.setPromptText("Password");
+
+        grid.add(new Label("Enter your password:"), 0, 1);
+        grid.add(passwordfield, 1, 1);
+
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        passwordfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(() -> passwordfield.requestFocus());
+
+
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
             Boolean flag = false;
