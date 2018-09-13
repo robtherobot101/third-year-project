@@ -400,7 +400,13 @@ public class ClinicianController implements Initializable {
         dialog.setContentText("Please enter your password:");
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(clinician.getPassword())) {
+            Boolean flag = false;
+            try {
+                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), clinician.getStaffID());
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            if (flag) {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
                     Stage stage = new Stage();

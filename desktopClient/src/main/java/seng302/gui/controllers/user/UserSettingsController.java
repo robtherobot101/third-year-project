@@ -59,7 +59,6 @@ public class UserSettingsController implements Initializable {
         userNameLabel.setText("user: " + currentUser.getName());
         usernameField.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "");
         emailField.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
-        passwordField.setText(currentUser.getPassword());
     }
 
     /**

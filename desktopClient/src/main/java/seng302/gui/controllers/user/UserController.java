@@ -501,7 +501,13 @@ public class UserController implements Initializable {
 
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(currentUser.getPassword())) {
+            Boolean flag = false;
+            try {
+                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), currentUser.getId());
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            if (flag) {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
                     Parent root = fxmlLoader.load();

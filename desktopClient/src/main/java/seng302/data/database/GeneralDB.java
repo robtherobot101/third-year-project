@@ -22,6 +22,19 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        Debugger.log("Checking password with server.");
+        Map<String, String> queryParameters = new HashMap<>();
+        queryParameters.put("password", password);
+        queryParameters.put("id", String.valueOf(id));
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "password");
+        if(response == null) return false;
+        if (response.getStatusCode() == 200) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * login the user into the program
      * @param usernameEmail the username/email of the user
