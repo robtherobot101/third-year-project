@@ -1,5 +1,6 @@
 package seng302.Logic.Database;
 
+import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.Database.DatabaseMethods;
 import seng302.Model.Attribute.ProfileType;
@@ -64,17 +65,7 @@ public class ProfileUtils extends DatabaseMethods {
             statement = connection.prepareStatement(
                     "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
             statement.setString(1, token);
-            switch (profileType) {
-                case USER:
-                    statement.setInt(2, 0);
-                    break;
-                case CLINICIAN:
-                    statement.setInt(2, 1);
-                    break;
-                case ADMIN:
-                    statement.setInt(2, 2);
-                    break;
-            }
+            statement.setInt(2, profileType.getAccessLevel());
             statement.setInt(3, id);
 
             resultSet = statement.executeQuery();
@@ -91,7 +82,7 @@ public class ProfileUtils extends DatabaseMethods {
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean isSpecificUser(Request request, Response response) {
+    public boolean isSpecificUser(Request request, Response response, ProfileType profileType) throws SQLException {
         String failure = "Unauthorised: access denied to specific user ";
 
         String token = request.headers("token");
@@ -102,23 +93,59 @@ public class ProfileUtils extends DatabaseMethods {
             halt(401, "Unauthorized");
             return false;
         }
-
-        switch (accessLevel) {
-            case -1:
-                Server.getInstance().log.warn(failure + "(token not found)");
-                halt(401, "Unauthorized");
-                return false; //Token was not found
-            case 0:
-                return checkIdMatch(failure + "(token does not match user id)", ProfileType.USER, token, id);
-            case 1:
-                return checkIdMatch(failure + "(token does not match clinician id)", ProfileType.CLINICIAN, token, id);
-            case 2:
-                return checkIdMatch(failure + "(token does not match admin id)", ProfileType.ADMIN, token, id);
-            default:
-                Server.getInstance().log.warn(failure + "(access attempt with malformed access level)");
-                halt(401, "Unauthorized");
-                return false;
+        if (accessLevel == -1) {
+            Server.getInstance().log.warn(failure + "(token not found)");
+            halt(401, "Unauthorized");
+            return false; //Token was not found
         }
+        if (accessLevel > 2) {
+            Server.getInstance().log.warn(failure + "(access attempt with malformed access level)");
+            halt(401, "Unauthorized");
+            return false;
+        }
+        return checkIdMatch(failure + "(token does not match id)", profileType, token, id);
+    }
+
+    /**
+     * Checks whether the accessor is permitted to access the conversation
+     *
+     * @param request Spark HTTP request obj
+     * @param response Spark HTTP response obj
+     * @return Whether they are authorised
+     */
+    public boolean hasConversationAccess(Request request, Response response, ProfileType profileType) throws SQLException {
+        if (!isSpecificUser(request, response, profileType)) {
+            return false;
+        }
+        int id = getId(request.params(":id"));
+        int conversationId;
+        try {
+            conversationId = Integer.parseInt(request.params(":conversationId"));
+        } catch (NumberFormatException nfe) {
+            Server.getInstance().log.warn("Invalid conversation id");
+            halt(400, "Bad request");
+            return false;
+        }
+        boolean authorized = false;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement(
+                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
+            statement.setInt(1, id);
+            statement.setInt(2, profileType.getAccessLevel());
+            statement.setInt(3, conversationId);
+
+            resultSet = statement.executeQuery();
+            authorized = resultSet.next();
+        } catch (SQLException ignored) {
+        } finally {
+            close();
+        }
+        if (!authorized) {
+            Server.getInstance().log.warn("Attempted access to unauthorized conversation.");
+            halt(401, "Unauthorized");
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -131,7 +158,7 @@ public class ProfileUtils extends DatabaseMethods {
      * @param id The id of the user/clinician/admin to check
      * @return Whether there was a match
      */
-    private boolean checkIdMatch(String failure, ProfileType profileType, String token, int id) {
+    private boolean checkIdMatch(String failure, ProfileType profileType, String token, int id) throws SQLException {
         if (checkTokenId(token, profileType, id)) {
             return true; //user is logged on and supplied their token
         } else {

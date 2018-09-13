@@ -3,6 +3,7 @@ package seng302.Controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import javafx.util.Pair;
 import seng302.Logic.Database.Conversations;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Conversation;
@@ -78,6 +79,18 @@ public class ConversationsController {
     }
 
     /**
+     * A formatter class to streamline deserialization of conversation participant input.
+     */
+    private class UserInfo {
+        private int key;
+        private ProfileType value;
+
+        public Pair<Integer, ProfileType> toPair() {
+            return new Pair<>(key, value);
+        }
+    }
+
+    /**
      * Adds a user to a conversation.
      *
      * @param request Spark HTTP request obj
@@ -86,7 +99,33 @@ public class ConversationsController {
      * @return Whether the operation succeeded
      */
     public String addConversationUser(Request request, Response response, ProfileType profileType) {
-        return null;
+        Gson gson = new Gson();
+        Pair<Integer, ProfileType> participant;
+
+        // Attempt to parse received JSON
+        try {
+            participant = gson.fromJson(request.body(), UserInfo.class).toPair();
+            if (participant == null) {
+                Server.getInstance().log.warn("Empty request body");
+                response.status(400);
+                return "Missing participant information";
+            }
+        } catch (JsonSyntaxException jse) {
+            jse.printStackTrace();
+            Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
+            response.status(400);
+            return "Bad Request";
+        }
+
+        try {
+            model.addConversationUser(participant.getKey(), participant.getValue(), Integer.parseInt(request.params(":conversationId")));
+            response.status(201);
+            return "Success";
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return "Internal Server Error";
+        }
     }
 
     /**
@@ -107,12 +146,7 @@ public class ConversationsController {
             return "Missing message body";
         } else {
             try {
-                int accessLevel = 0;
-                if (profileType == ProfileType.CLINICIAN) {
-                    accessLevel = 1;
-                } else if (profileType == ProfileType.ADMIN) {
-                    accessLevel = 2;
-                }
+                int accessLevel = profileType.getAccessLevel();
                 model.addMessage(conversationId, new Message(request.body(), userId, accessLevel));
                 response.status(201);
                 return "Success";
@@ -127,8 +161,8 @@ public class ConversationsController {
     /**
      * A formatter class to streamline deserialization of conversation participant input.
      */
-    private class conversationUserListFormat {
-        Map<ProfileType, List<Integer>> participants;
+    private class ConversationUserListFormat {
+        List<Pair<Integer, ProfileType>> participants;
     }
 
     /**
@@ -141,23 +175,27 @@ public class ConversationsController {
      */
     public String addConversation(Request request, Response response, ProfileType profileType) {
         Gson gson = new Gson();
-        Map<ProfileType, List<Integer>> conversationParticipants;
+        List<Pair<Integer, ProfileType>> participants;
         int userId = Integer.parseInt(request.params(":id"));
 
         // Attempt to parse received JSON
         try {
-            conversationParticipants = gson.fromJson(request.body(), conversationUserListFormat.class).participants;
-            if (conversationParticipants == null) {
+            participants = gson.fromJson(request.body(), ConversationUserListFormat.class).participants;
+            if (participants == null) {
                 Server.getInstance().log.warn("Empty request body");
                 response.status(400);
                 return "Missing participant information";
             }
-            for (ProfileType type: ProfileType.values()) {
-                conversationParticipants.computeIfAbsent(type, k -> new ArrayList<>());
-            }
             //Add self to conversation if not already there
-            if (!conversationParticipants.get(profileType).contains(userId)) {
-                conversationParticipants.get(profileType).add(userId);
+            boolean present = false;
+            for (Pair<Integer, ProfileType> participant: participants) {
+                if (participant.getKey() == userId && participant.getValue().equals(profileType)) {
+                    present = true;
+                    break;
+                }
+            }
+            if (!present) {
+                participants.add(new Pair<>(userId, profileType));
             }
         } catch (JsonSyntaxException jse) {
             jse.printStackTrace();
@@ -167,9 +205,9 @@ public class ConversationsController {
         }
 
         try {
-            model.addConversation(conversationParticipants);
+            int conversationId = model.addConversation(participants);
             response.status(201);
-            return "Success";
+            return "" + conversationId;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
