@@ -213,8 +213,8 @@ namespace CustomRenderer.iOS
                 }
             }
 
-            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayBottomSheet(currentPin, formsMap);
+            MapEntryClass mapEntryClass = new MapEntryClass();
+            mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap);
 
         }
 

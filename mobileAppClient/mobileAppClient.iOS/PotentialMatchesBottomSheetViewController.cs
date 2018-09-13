@@ -87,9 +87,9 @@ namespace mobileAppClient.iOS
             };
             var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
             nativeMap.AddOverlay(circleOverlay);
-            Position mapCenter = new Position(position.Latitude - 1, position.Longitude);
+            Position mapCenter = new Position(position.Latitude - 2, position.Longitude);
             map.MoveToRegion(MapSpan.FromCenterAndRadius(
-                mapCenter, Distance.FromMiles(100.0)));
+                mapCenter, Distance.FromMiles(200.0)));
 
             //Add all other user objects around the user
             //var bytes = File.ReadAllBytes("donationIcon.png");
