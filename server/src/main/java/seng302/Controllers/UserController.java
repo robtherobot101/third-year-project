@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Logic.SaltHash;
+import seng302.Logic.Database.ProfileUtils;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;
@@ -296,7 +297,7 @@ public class UserController {
         Gson gson = new Gson();
         User receivedUser;
 
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
             receivedUser = gson.fromJson(request.body(), User.class);
         } catch (JsonSyntaxException jse) {
@@ -333,7 +334,7 @@ public class UserController {
         Gson gson = new Gson();
         List<User> receivedUsers;
         System.out.println("IMPORTING USERS");
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
              receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
         } catch (JsonSyntaxException jse) {
@@ -483,7 +484,7 @@ public class UserController {
         Gson gson = new Gson();
         PhotoStruct receivedPhotoStruct;
 
-        // Attempt to parse received JSON into our simple photo structure
+        // Attempt to executeFile received JSON into our simple photo structure
         try {
             receivedPhotoStruct = gson.fromJson(request.body(), PhotoStruct.class);
         } catch (JsonSyntaxException jse) {
