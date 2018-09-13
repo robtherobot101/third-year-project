@@ -216,7 +216,8 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
 
 DROP TABLE IF EXISTS `CONVERSATION`;
 CREATE TABLE IF NOT EXISTS `CONVERSATION` (
-  `id` int(11) NOT NULL
+  `id` int(11) NOT NULL,
+  `token` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -372,7 +373,15 @@ ALTER TABLE `WAITING_LIST_ITEM`
 --
 ALTER TABLE `MESSAGE`
   ADD PRIMARY KEY (`id`),
-  ADD INDEX `id_index` (`conversation_id`,`id`);
+  ADD INDEX `id_index` (`conversation_id`,`id`),
+  ADD KEY `User_id_foreign_key7` (`conversation_id`);
+
+--
+-- Indexes for table `CONVERSATION_MEMBER`
+--
+ALTER TABLE `CONVERSATION_MEMBER`
+  ADD KEY `User_id_foreign_key8` (`conversation_id`),
+  ADD UNIQUE `unique_index` (`user_id`, `conversation_id`, `access_level`);
 
 --
 -- Indexes for table `CONVERSATION`
@@ -490,6 +499,18 @@ ALTER TABLE `PROCEDURES`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `MESSAGE`
+--
+ALTER TABLE `MESSAGE`
+  ADD CONSTRAINT `User_id_foreign_key7` FOREIGN KEY (`conversation_id`) REFERENCES `CONVERSATION` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `CONVERSATION_MEMBER`
+--
+ALTER TABLE `CONVERSATION_MEMBER`
+  ADD CONSTRAINT `User_id_foreign_key8` FOREIGN KEY (`conversation_id`) REFERENCES `CONVERSATION` (`id`) ON DELETE CASCADE;
 
 
 --

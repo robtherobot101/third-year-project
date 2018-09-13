@@ -1,5 +1,6 @@
 package seng302.Logic.Database;
 
+import javafx.util.Pair;
 import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.ProfileType;
@@ -8,12 +9,17 @@ import seng302.Model.Message;
 import seng302.Model.User;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Conversations {
+    /**
+     * Gets all of the conversations for a specific user.
+     *
+     * @param id The id of the user to fetch information from
+     * @param profileType The type of user
+     * @return A list of the user's conversations
+     * @throws SQLException If database interaction fails
+     */
     public List<Conversation> getAllConversations(int id, ProfileType profileType) throws SQLException {
         List<Conversation> conversations = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -23,13 +29,7 @@ public class Conversations {
             try {
                 statement = connection.prepareStatement("SELECT conversation_id FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ?");
                 statement.setInt(1, id);
-                int accessLevel = 0;
-                if (profileType == ProfileType.CLINICIAN) {
-                    accessLevel = 1;
-                } else if (profileType == ProfileType.ADMIN) {
-                    accessLevel = 2;
-                }
-                statement.setInt(2, accessLevel);
+                statement.setInt(2, profileType.getAccessLevel());
                 resultSet = statement.executeQuery();
 
                 conversations = new ArrayList<>();
@@ -50,6 +50,13 @@ public class Conversations {
         }
     }
 
+    /**
+     * Gets a single conversation from the database.
+     *
+     * @param conversationId The id of the conversation to fetch
+     * @return The conversation
+     * @throws SQLException If database interaction fails
+     */
     public Conversation getSingleConversation(int conversationId) throws SQLException {
         Conversation conversation = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -75,21 +82,9 @@ public class Conversations {
                 statement = connection.prepareStatement("SELECT user_id, access_level FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
                 statement.setInt(1, conversationId);
                 resultSet = statement.executeQuery();
-                Map<ProfileType, List<Integer>> participants = new HashMap<>();
-                for (ProfileType profileType: ProfileType.values()) {
-                    participants.put(profileType, new ArrayList<>());
-                }
+                List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
                 while (resultSet.next()) {
-                    switch (resultSet.getInt(2)) {
-                        case 0:
-                            participants.get(ProfileType.USER).add(resultSet.getInt(1));
-                            break;
-                        case 1:
-                            participants.get(ProfileType.CLINICIAN).add(resultSet.getInt(1));
-                            break;
-                        case 2:
-                            participants.get(ProfileType.ADMIN).add(resultSet.getInt(1));
-                    }
+                    participants.add(new Pair<>(resultSet.getInt(1), ProfileType.fromAccessLevel(resultSet.getInt(2))));
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException ignored) {
@@ -106,6 +101,36 @@ public class Conversations {
         }
     }
 
+    /**
+     * Adds a user to a conversation.
+     *
+     * @param id The id of the user to add
+     * @param profileType The type of user
+     */
+    public void addConversationUser(int id, ProfileType profileType, int conversationId) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            PreparedStatement statement = null;
+
+            try {
+                statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?, ?);");
+                statement.setInt(1, conversationId);
+                statement.setInt(2, id);
+                statement.setInt(3, profileType.getAccessLevel());
+                statement.execute();
+            } catch (SQLException ignored) {
+            } finally {
+                DbUtils.closeQuietly(statement);
+            }
+        }
+    }
+
+    /**
+     * Adds a message to a conversation.
+     *
+     * @param conversationId The id of the conversation to add to
+     * @param message The message to add
+     * @throws SQLException If database interaction fails
+     */
     public void addMessage(int conversationId, Message message) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
@@ -125,57 +150,63 @@ public class Conversations {
         }
     }
 
-    public void addConversation(Map<ProfileType, List<Integer>> participants) throws SQLException {
+    /**
+     * Adds a new conversation to the database.
+     *
+     * @param participants The ids and access levels of all participants
+     * @throws SQLException If database interaction fails
+     */
+    public void addConversation(List<Pair<Integer, ProfileType>> participants) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0);" +
-                        "SELECT LAST_INSERT_ID();");
+                statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0, ?)");
+                String token = UUID.randomUUID().toString();
+                statement.setString(1, token);
+                statement.execute();
+                DbUtils.closeQuietly(statement);
+                statement = connection.prepareStatement("SELECT id FROM CONVERSATION WHERE token = ?");
+                statement.setString(1, token);
                 ResultSet resultSet = statement.executeQuery();
                 resultSet.next();
                 int id = resultSet.getInt(1);
-                DbUtils.closeQuietly(statement);
                 DbUtils.closeQuietly(resultSet);
-                for (ProfileType profileType: ProfileType.values()) {
-                    int accessLevel = 0;
-                    switch (profileType) {
-                        case CLINICIAN:
-                            accessLevel = 1;
-                            break;
-                        case ADMIN:
-                            accessLevel = 2;
-                    }
-                    for (int userId: participants.get(profileType)) {
+                DbUtils.closeQuietly(statement);
+
+                for (Pair<Integer, ProfileType> participant: participants) {
+                    try {
                         statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?, ?);");
                         statement.setInt(1, id);
-                        statement.setInt(2, userId);
-                        statement.setInt(3, accessLevel);
+                        statement.setInt(2, participant.getKey());
+                        statement.setInt(3, participant.getValue().getAccessLevel());
                         statement.execute();
+                    } catch (SQLIntegrityConstraintViolationException ignored) {
+                    } finally {
                         DbUtils.closeQuietly(statement);
                     }
                 }
             } catch (SQLException ignored) {
+                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(statement);
             }
         }
     }
 
+    /**
+     * Deletes a conversation from the database.
+     *
+     * @param conversationId The id of the conversation to delete
+     * @throws SQLException If database interaction fails
+     */
     public void removeConversation(int conversationId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
 
             try {
                 statement = connection.prepareStatement("DELETE FROM CONVERSATION WHERE id = ?;");
-                statement.setInt(1, conversationId);
-                statement.execute();
-                DbUtils.closeQuietly(statement);
-                statement = connection.prepareStatement("DELETE FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
-                statement.setInt(1, conversationId);
-                statement.execute();
-                DbUtils.closeQuietly(statement);
-                statement = connection.prepareStatement("DELETE FROM MESSAGE WHERE conversation_id = ?;");
+                //This will cascade delete all associated messages and members
                 statement.setInt(1, conversationId);
                 statement.execute();
             } catch (SQLException ignored) {
