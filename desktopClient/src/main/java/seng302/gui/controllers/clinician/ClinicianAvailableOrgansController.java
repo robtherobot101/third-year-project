@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
@@ -438,6 +440,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         organsTreeTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
+        final ContextMenu profileMenu = new ContextMenu();
 
         ObservableList<String> organSearchlist = FXCollections.observableArrayList();
         Organ[] organsList = Organ.values();
@@ -492,6 +495,25 @@ public class ClinicianAvailableOrgansController implements Initializable{
                             TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                             TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)));
 
+                }
+            }
+        });
+
+        MenuItem transferOrgan = new MenuItem();
+        profileMenu.getItems().add(transferOrgan);
+
+        organsTreeTable.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                DonatableOrgan organ = (DonatableOrgan) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
+                // No need to check for default user
+                if (organ != null) {
+                    System.out.println(organ);
+                    try {
+                        transferOrgan.setText("Transfer " + WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(),token).getName() + "'s " + organ.getOrganType());
+                    } catch (HttpResponseException e){
+                        Debugger.error(e.getMessage());
+                    }
+                    profileMenu.show(organsTreeTable, event.getScreenX(), event.getScreenY());
                 }
             }
         });
