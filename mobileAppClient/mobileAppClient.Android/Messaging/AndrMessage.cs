@@ -16,6 +16,11 @@ namespace mobileAppClient.Droid.Messaging
     {
         public AndrMessageType type;
         public string text;
+        public AndrMessage(AndrMessageType type, string text)
+        {
+            this.type = type;
+            this.text = text;
+        }
 
         public override string ToString()
         {

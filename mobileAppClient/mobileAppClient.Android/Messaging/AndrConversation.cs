@@ -17,13 +17,9 @@ namespace mobileAppClient.Droid.Messaging
         public List<AndrMessage> messages = new List<AndrMessage>();
         public string title;
 
-        public void AddMessage(AndrMessageType type, string text)
+        public void Add(AndrMessage message)
         {
-            AndrMessage newMessage = new AndrMessage();
-            newMessage.text = text;
-            newMessage.type = type;
-            messages.Add(newMessage);
-
+            messages.Add(message);
         }
 
         public override string ToString()

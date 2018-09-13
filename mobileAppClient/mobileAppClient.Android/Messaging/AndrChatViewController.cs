@@ -29,9 +29,12 @@ namespace mobileAppClient.Droid.Messaging
 
             AndrConversation testConvo = new AndrConversation();
             testConvo.title = "Test Conversation";
-            AndrMessage testMessage1 = new AndrMessage();
-            testConvo.AddMessage(AndrMessageType.Incoming, "Incoming message 1");
-            testConvo.AddMessage(AndrMessageType.Incoming, "Incoming message 2");
+
+            testConvo.Add(new AndrMessage(AndrMessageType.Incoming, "Incoming message 1"));
+            testConvo.Add(new AndrMessage(AndrMessageType.Incoming, "Incoming message 2"));
+            testConvo.Add(new AndrMessage(AndrMessageType.Outgoing, "Outgoing message 1"));
+            testConvo.Add(new AndrMessage(AndrMessageType.Outgoing, "Outgoing message 2"));
+
             conversations.Add(testConvo);
 
 
@@ -49,7 +52,6 @@ namespace mobileAppClient.Droid.Messaging
                 Intent intent = new Intent(Xamarin.Forms.Forms.Context, typeof(AndrConvoViewController));
                 intent.PutExtra("ConversationJSON", JsonConvert.SerializeObject(conversations[e.Position])); 
                 Xamarin.Forms.Forms.Context.StartActivity(intent);
-
             };
         }
     }

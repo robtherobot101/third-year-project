@@ -152,6 +152,7 @@
     <Compile Include="Messaging\AndrChatViewController.cs" />
     <Compile Include="Messaging\AndrConversation.cs" />
     <Compile Include="Messaging\AndrConvoViewController.cs" />
+    <Compile Include="Messaging\AndrMessageArrayAdapter.cs" />
     <Compile Include="Messaging\AndrMessageType.cs" />
     <Compile Include="Messaging\AndrMessagingEntryClass.cs" />
     <Compile Include="Messaging\AndrMessage.cs" />
@@ -413,6 +414,16 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\AndrChatViewController.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\AndrIncomingMessage.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\AndrOutgoingMessage.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
