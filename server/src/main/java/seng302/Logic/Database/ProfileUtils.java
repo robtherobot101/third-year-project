@@ -61,13 +61,12 @@ public class ProfileUtils extends DatabaseMethods {
      * @return Whether the token is associated with that id or false if the database could not be contacted
      */
     public boolean checkTokenId(String token, ProfileType profileType, int id) throws SQLException {
-        try {
-            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                PreparedStatement statement = connection.prepareStatement(
-                        "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
-                statement.setString(1, token);
-                statement.setInt(2, profileType.getAccessLevel());
-                statement.setInt(3, id);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement(
+                    "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
+            statement.setString(1, token);
+            statement.setInt(2, profileType.getAccessLevel());
+            statement.setInt(3, id);
 
             resultSet = statement.executeQuery();
             return resultSet.next();
@@ -83,7 +82,7 @@ public class ProfileUtils extends DatabaseMethods {
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean isSpecificUser(Request request, Response response, ProfileType profileType) {
+    public boolean isSpecificUser(Request request, Response response, ProfileType profileType) throws SQLException {
         String failure = "Unauthorised: access denied to specific user ";
 
         String token = request.headers("token");
@@ -114,7 +113,7 @@ public class ProfileUtils extends DatabaseMethods {
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean hasConversationAccess(Request request, Response response, ProfileType profileType) {
+    public boolean hasConversationAccess(Request request, Response response, ProfileType profileType) throws SQLException {
         if (!isSpecificUser(request, response, profileType)) {
             return false;
         }
@@ -164,7 +163,7 @@ public class ProfileUtils extends DatabaseMethods {
      * @param id The id of the user/clinician/admin to check
      * @return Whether there was a match
      */
-    private boolean checkIdMatch(String failure, ProfileType profileType, String token, int id) {
+    private boolean checkIdMatch(String failure, ProfileType profileType, String token, int id) throws SQLException {
         if (checkTokenId(token, profileType, id)) {
             return true; //user is logged on and supplied their token
         } else {
