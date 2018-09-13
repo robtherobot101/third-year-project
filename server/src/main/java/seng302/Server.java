@@ -241,7 +241,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        INSTANCE.testing = true;
+        INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
             try{
