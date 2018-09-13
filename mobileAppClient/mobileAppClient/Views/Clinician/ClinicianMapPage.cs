@@ -134,10 +134,10 @@ namespace mobileAppClient.Views.Clinician
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
             Console.WriteLine("Initialising hoppis....");
-            await InitialiseHospitals();
+            //await InitialiseHospitals();
             
             Console.WriteLine("Adding HeliChopper...");
-            AddHelicopter();
+            //AddHelicopter();
             Console.WriteLine("HeliChopper success, entering switch");
             switch (tuple.Item1)
             {

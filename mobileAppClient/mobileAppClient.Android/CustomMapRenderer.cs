@@ -23,6 +23,7 @@ using FragmentManager = Android.Support.V4.App.FragmentManager;
 using mobileAppClient.Views.Clinician;
 using Cheesebaron.SlidingUpPanel;
 using Resource = mobileAppClient.Droid.Resource;
+using Plugin.CurrentActivity;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -33,10 +34,10 @@ namespace CustomRenderer.Droid
         private Dictionary<Position, CustomPin> customPins;
         private Dictionary<String, CustomPin> helicopterPins;
         CustomMap formsMap;
+        private CustomMapRenderer customMapRenderer;
 
         public CustomMapRenderer(Context context) : base(context)
         {
-
         }
 
 

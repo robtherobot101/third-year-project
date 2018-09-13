@@ -9,7 +9,11 @@
     app:shadowHeight="4dp"
     app:dragView="@+id/infobox">
 <!-- Main content -->
-    
+    <RelativeLayout
+		android:id="@+id/mainWindow"
+		android:layout_width="match_parent"
+        android:layout_height="match_parent">
+	</RelativeLayout>
 <!-- Sliding panel -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,8 +28,8 @@
             android:id="@+id/infobox">
             <TextView
                 android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:textSize="24sp"
@@ -41,14 +45,16 @@
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#fff"
             android:padding="8dp">
             <TextView
+				android:minWidth="25px"
+        android:minHeight="25px"
                 android:id="@+id/more_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:text="fuck yea"
                 android:textSize="14sp" />
         </RelativeLayout>
