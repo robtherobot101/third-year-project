@@ -72,10 +72,6 @@ public class MapObjectModel extends DatabaseMethods {
                 mapObject.getOrgans().add(organ);
             }
         }
-        //Get all the organs donated for the dead user
-        Set<Organ> organs =  new UserDonations().getAllUserDonations(mapObjectResultSet.getInt("id"));
-        mapObject.organs = new ArrayList<>();
-        mapObject.organs.addAll(organs);
 
         mapObject.firstName = mapObjectResultSet.getString("first_name");
         mapObject.middleName = mapObjectResultSet.getString("middle_names");
