@@ -300,7 +300,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                         lastUser = addUserInfo(organ);
                     }
                     //if multiple organs from the same user no need to do multiple API calls
-                    if (organ.getDonorId() == lastUser.getId()){
+                    if (lastUser != null && organ.getDonorId() == lastUser.getId()){
                         organ.setReceiverName(lastUser.getName());
                         organ.setReceiverDeathRegion(lastUser.getRegionOfDeath());
                     } else {
@@ -610,13 +610,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
     public void refreshTable(){
         updated = false;
         WindowManager.updateAvailableOrgans();
-        if (updated){
-            updateResultsLabel.setVisible(false);
-            refreshSuccessText.setText("Updated successfully.");
-            refreshSuccessText.setVisible(true);
-            fade.playFromStart();
-            filterApplied();
-        }
+        updateResultsLabel.setVisible(false);
+        refreshSuccessText.setText("Updated successfully.");
+        refreshSuccessText.setVisible(true);
+        fade.playFromStart();
+        filterApplied();
     }
 
     /**

@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class GeneralHospital {
+public class GeneralHospital extends DatabaseMethods {
 
     /**
      * Fetches all hospitals from the database and returns them.
@@ -20,8 +20,8 @@ public class GeneralHospital {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Hospital> hospitals = new ArrayList<>();
             String query = "SELECT * FROM HOSPITAL";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 hospitals.add(new Hospital(
                         resultSet.getString("name"),
@@ -34,6 +34,9 @@ public class GeneralHospital {
                         ));
             }
             return hospitals;
+        }
+        finally {
+            close();
         }
     }
 }

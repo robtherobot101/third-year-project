@@ -7,6 +7,7 @@ import seng302.Logic.CommandLineInterface;
 import seng302.Logic.Database.GeneralClinician;
 import seng302.Logic.Database.GeneralCountriesTest;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Logic.SaltHash;
 
 import java.io.PrintStream;
 import java.sql.SQLException;
@@ -45,7 +46,7 @@ public class CommandLineInterfaceTest {
     public void addWaitingListOrgan() throws SQLException {
         commandLine.readCommand("addUser tester2 testtest \"Bobby Ross\" 10/10/2010");
         Map<String, String> params = new HashMap<>();
-        params.put("password", "'testtest'");
+        params.put("username", "'tester2'");
         int id = (int)generalUser.getUsers(params).get(0).getId();
         commandLine.readCommand("addWaitingListOrgan " + id + " heart");
         assertTrue(generalUser.getUserFromId(id).getWaitingListItems().size() > 0);
@@ -55,7 +56,7 @@ public class CommandLineInterfaceTest {
     public void addDonationOrgan() throws SQLException {
         commandLine.readCommand("addUser tester23 asdf1234 \"Bobby Ross\" 10/10/2010");
         Map<String, String> params = new HashMap<>();
-        params.put("password", "'asdf1234'");
+        params.put("username", "'tester23'");
         int id = (int)generalUser.getUsers(params).get(0).getId();
         commandLine.readCommand("addDonationOrgan " + id + " heart");
         assertTrue(generalUser.getUserFromId(id).isDonor());
@@ -65,7 +66,7 @@ public class CommandLineInterfaceTest {
     public void removeDonationOrgan() throws SQLException {
         commandLine.readCommand("addUser mnbvvc zxcvb \"Bobbyb Ross\" 10/10/2010");
         Map<String, String> params = new HashMap<>();
-        params.put("password", "'zxcvb'");
+        params.put("username", "'mnbvvc'");
         int id = (int)generalUser.getUsers(params).get(0).getId();
         commandLine.readCommand("addDonationOrgan " + id + " heart");
         commandLine.readCommand("removeDonationOrgan " + id + " heart");
