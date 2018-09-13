@@ -94,6 +94,7 @@ public class GeneralUser {
 
             String nameFilter = nameFilter(params);
             String passwordFilter = matchFilter(params, "password", true);
+            String usernameFilter = matchFilter(params, "username", true);
             String userTypeFilter = userTypeFilter(params);
             String ageFilter = ageFilter(params);
             String genderFilter = matchFilter(params, "gender", false);
@@ -103,7 +104,7 @@ public class GeneralUser {
 
             List<String> filters = new ArrayList<String>();
             filters.addAll(Arrays.asList(
-                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,countryFilter,organFilter
+                    nameFilter,passwordFilter,usernameFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,countryFilter,organFilter
             ));
 
             filters.removeIf((String filter) -> filter.equals(""));

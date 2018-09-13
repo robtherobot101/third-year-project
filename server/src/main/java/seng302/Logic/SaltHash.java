@@ -28,7 +28,7 @@ public class SaltHash {
             boolean matched = SCryptUtil.check(password, hash);
             return matched;
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            System.out.println("User tried logging in with incorrect password.");
             return false;
         }
     }
