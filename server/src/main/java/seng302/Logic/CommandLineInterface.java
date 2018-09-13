@@ -269,6 +269,7 @@ public class CommandLineInterface {
      * @param command The command name
      * @param argc    The argument count
      * @param args    The arguments
+     * @return String  string explaining how to format a command correctly.
      */
     private String getIncorrectUsageString(String command, int argc, String args) {
         switch (argc) {
@@ -287,11 +288,14 @@ public class CommandLineInterface {
         String[] sqlArray = Arrays.copyOfRange(nextCommand, 1, nextCommand.length);
         String query = String.join(" ", sqlArray);
         String result = sqlSanitation.sanitizeSqlString(query);
-        if (!result.equals("")) {
-            return new CommandLineResponse(false, result);
-        } else {
-            return new CommandLineResponse(true, sqlSanitation.executeQuery(query).getResponse());
+        if (result.equals("")) {
+            try {
+                return new CommandLineResponse(true, sqlSanitation.executeQuery(query).getResponse());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return new CommandLineResponse(false, result);
     }
 
 
@@ -417,6 +421,7 @@ public class CommandLineInterface {
      * Finds out which user the user wants to delete, and ask for confirmation.
      *
      * @param nextCommand The command entered by the user
+     * @return CommandLineResponse a response to say if a command was successful or not
      */
     private CommandLineResponse deleteUser(String[] nextCommand) {
         if (nextCommand.length == 2) {
@@ -445,6 +450,7 @@ public class CommandLineInterface {
      * Finds out which user the user wants to delete, and ask for confirmation.
      *
      * @param nextCommand The command entered by the user
+     * @return CommandLineResponse a response to say if the command was successful or not
      */
     private CommandLineResponse deleteClinician(String[] nextCommand) {
         if (nextCommand.length == 2) {

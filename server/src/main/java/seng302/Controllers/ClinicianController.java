@@ -84,7 +84,7 @@ public class ClinicianController {
         Gson gson = new Gson();
         Clinician receivedClinician;
 
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
             receivedClinician = gson.fromJson(request.body(), Clinician.class);
         } catch (JsonSyntaxException jse) {

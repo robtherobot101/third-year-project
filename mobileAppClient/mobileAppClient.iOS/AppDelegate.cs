@@ -31,7 +31,6 @@ namespace mobileAppClient.iOS
             global::Xamarin.FormsMaps.Init();
             global::CarouselView.FormsPlugin.iOS.CarouselViewRenderer.Init();
 
-
             LoadApplication(new App());
 
             // For circular images (on menu drawer)

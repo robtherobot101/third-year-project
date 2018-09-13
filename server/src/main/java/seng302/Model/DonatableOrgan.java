@@ -54,17 +54,17 @@ public class DonatableOrgan {
         this.timeOfDeath = timeOfDeath;
     }
 
-    public Duration getTimeLeft(){
-        return timeLeft;
-    }
-
-    public void setTimeLeft(Duration time) {
-        timeLeft = time;
-    }
-
-    public void tickTimeLeft(){
-        timeLeft.minus(1, SECONDS);
-    }
+//    public Duration getTimeLeft(){
+//        return timeLeft;
+//    }
+//
+//    public void setTimeLeft(Duration time) {
+//        timeLeft = time;
+//    }
+//
+//    public void tickTimeLeft(){
+//        timeLeft.minus(1, SECONDS);
+//    }
 
     public List<User> getTopReceivers() {
         return topReceivers;
