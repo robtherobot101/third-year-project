@@ -348,7 +348,7 @@ public class ClinicianController implements Initializable {
                 "Refreshing will update your clinician attributes to the latest version from the server, as well as updating the search table and the waiting list item table.");
         result = alert.showAndWait();
 
-        if (result != null && result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 Clinician latest = WindowManager.getDataManager().getClinicians().getClinician((int) clinician.getStaffID(), token);
                 setClinician(latest, token);

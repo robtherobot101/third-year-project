@@ -19,6 +19,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>spring.io</id>
+            <url>http://repo.spring.io/plugins-release/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -59,6 +66,17 @@
             <version>1.4.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client</artifactId>
+            <version>1.23.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client-jackson -->
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson</artifactId>
+            <version>1.23.0</version>
+        </dependency>
 
 
     </dependencies>
@@ -113,9 +131,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.4</version>
                 <configuration>
-                    <systemPropertyVariables>
-                        <com.lambdaworks.jni.loader>jar</com.lambdaworks.jni.loader>
-                    </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                 </configuration>
             </plugin>

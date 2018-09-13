@@ -63,30 +63,6 @@ public class DatabaseConfiguration {
         return INSTANCE;
     }
 
-    /**
-     * Send an SQL update command to the database and return how many rows were affected or -1 if the command failed
-     * @param sql The command to be run
-     * @return The number of rows affected
-     */
-    public int updateSql(String sql){
-        try (Connection connection = cpds.getConnection()){
-            return connection.prepareStatement(sql).executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    /**
-     * Send an SQL query to the database and returns the set of results
-     * @param sql The query to be executed
-     * @return A ResultSet of the results
-     * @throws SQLException if an error occurred with communicating with the database
-     */
-    public ResultSet querySql(String sql) throws SQLException {
-        Connection connection = cpds.getConnection();
-        return connection.prepareStatement(sql).executeQuery();
-    }
 
     /**
      * Get a connection to the database from the pool

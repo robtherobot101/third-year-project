@@ -1,5 +1,7 @@
 package seng302.Model;
 
+import seng302.Model.Attribute.Organ;
+
 import java.util.List;
 
 public class MapObject {
@@ -14,17 +16,17 @@ public class MapObject {
     public String cityOfDeath;
     public String regionOfDeath;
     public String countryOfDeath;
-    public List<String> organs;
+    public List<Organ> organs;
 
     public MapObject() {
 
     }
 
-    public List<String> getOrgans() {
+    public List<Organ> getOrgans() {
         return organs;
     }
 
-    public void setOrgans(List<String> organs) {
+    public void setOrgans(List<Organ> organs) {
         this.organs = organs;
     }
 

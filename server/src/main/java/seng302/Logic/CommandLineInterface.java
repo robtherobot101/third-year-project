@@ -288,11 +288,14 @@ public class CommandLineInterface {
         String[] sqlArray = Arrays.copyOfRange(nextCommand, 1, nextCommand.length);
         String query = String.join(" ", sqlArray);
         String result = sqlSanitation.sanitizeSqlString(query);
-        if (!result.equals("")) {
-            return new CommandLineResponse(false, result);
-        } else {
-            return new CommandLineResponse(true, sqlSanitation.executeQuery(query).getResponse());
+        if (result.equals("")) {
+            try {
+                return new CommandLineResponse(true, sqlSanitation.executeQuery(query).getResponse());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return new CommandLineResponse(false, result);
     }
 
 
