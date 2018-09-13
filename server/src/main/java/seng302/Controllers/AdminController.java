@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralAdmin;
+import seng302.Logic.SaltHash;
 import seng302.Model.Admin;
 import seng302.Server;
 import spark.Request;
@@ -85,7 +86,7 @@ public class AdminController {
         Gson gson = new Gson();
         Admin receivedAdmin;
 
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
             receivedAdmin = gson.fromJson(request.body(), Admin.class);
         } catch (JsonSyntaxException jse) {
@@ -100,6 +101,7 @@ public class AdminController {
         } else {
             //TODO make model.insertAdmin return token
             try {
+                receivedAdmin.setPassword(SaltHash.createHash(receivedAdmin.getPassword()));
                 model.insertAdmin(receivedAdmin);
                 response.status(201);
                 return "placeholder token";
@@ -173,7 +175,6 @@ public class AdminController {
      */
     public String deleteAdmin(Request request, Response response) {
         Admin queriedAdmin = queryAdmin(request, response);
-
         if (queriedAdmin == null) {
             return response.body();
         }

@@ -1,5 +1,7 @@
 package seng302.Model;
 
+import seng302.Model.Attribute.Organ;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

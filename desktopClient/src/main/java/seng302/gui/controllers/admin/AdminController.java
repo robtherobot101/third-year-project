@@ -205,6 +205,7 @@ public class AdminController implements Initializable {
      * Sets the current value of the given regionComboBox and regionField to the given value.
      *
      * @param value The value which the ComboBox and TextField will be set to
+     * @param countryComboBox The combo box of countries
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
@@ -742,6 +743,7 @@ public class AdminController implements Initializable {
 
     /**
      * Refresh the items in the search table, waiting list table, and the current admin's attributes.
+     * @param ask if the program should ask to refresh
      */
     public void refresh(boolean ask) {
         Alert alert = null;
@@ -752,7 +754,7 @@ public class AdminController implements Initializable {
             result = alert.showAndWait();
         }
         boolean fail = false;
-        if (!ask || (result != null && result.isPresent() && result.get() == ButtonType.OK)) {
+        if (!ask || (result.isPresent() && result.get() == ButtonType.OK)) {
             try {
                 Admin latest = WindowManager.getDataManager().getAdmins().getAdmin((int) currentAdmin.getStaffID(), token);
                 setAdmin(latest, token);
@@ -874,11 +876,12 @@ public class AdminController implements Initializable {
             Alert alert = WindowManager.createAlert(Alert.AlertType.CONFIRMATION, areYouSure, "Confirm profile deletion",
                     "Are you sure you want to delete this profile? This cannot be undone.");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.orElse(null) == ButtonType.OK) {
+            if (result.get() == ButtonType.OK) {
                 if (selectedUser != null) {
                     // A user has been selected for deletion
                     Debugger.log("Deleting user: " + selectedUser);
                     try {
+                        System.out.println(selectedUser.getId());
                         WindowManager.getDataManager().getUsers().removeUser(selectedUser.getId(), token);
                         refreshLatestProfiles();
                     } catch (HttpResponseException e) {
@@ -929,6 +932,7 @@ public class AdminController implements Initializable {
                 User selectedUser = userTableView.getSelectionModel().getSelectedItem();
                 // No need to check for default user
                 if (selectedUser != null) {
+                    editClinician.setVisible(false);
                     deleteProfile.setText(delete + selectedUser.getName());
                     profileMenu.show(userTableView, event.getScreenX(), event.getScreenY());
                 }
@@ -940,9 +944,11 @@ public class AdminController implements Initializable {
                 Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
                 if (selectedClinician != null) {
                     // Check if this is the default clinician
-                    if (selectedClinician.getStaffID() == 1) {
+                    if (selectedClinician.getStaffID() == 0) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default clinician");
+                        editClinician.setVisible(true);
+                        editClinician.setText("Edit " + selectedClinician.getName());
                     } else {
                         deleteProfile.setDisable(false);
                         deleteProfile.setText(delete + selectedClinician.getName());
@@ -959,13 +965,14 @@ public class AdminController implements Initializable {
                 Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
                 if (selectedAdmin != null) {
                     // Check if this is the default clinician
-                    if (selectedAdmin.getStaffID() == 1) {
+                    if (selectedAdmin.getStaffID() == 0) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default admin");
                     } else {
                         deleteProfile.setDisable(false);
                         deleteProfile.setText(delete + selectedAdmin.getName());
                     }
+                    editClinician.setVisible(false);
                     profileMenu.show(adminTableView, event.getScreenX(), event.getScreenY());
                 }
             }
@@ -1094,7 +1101,7 @@ public class AdminController implements Initializable {
         Debugger.log("Name=" + clinician.getName() + ", Address=" + clinician.getWorkAddress() + ", Region=" + clinician.getRegion());
 
         // Create the custom dialog.
-        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Update clinician");
         dialog.setHeaderText("Update clinician Details");
         WindowManager.setIconAndStyle(dialog.getDialogPane());
@@ -1145,40 +1152,34 @@ public class AdminController implements Initializable {
         // Request focus on the username field by default.
         Platform.runLater(clinicianName::requestFocus);
 
-        dialog.setResultConverter(dialogButton -> {
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == updateButtonType){
             String newName = "";
             String newAddress = "";
             String newRegion = "";
-            if (dialogButton == updateButtonType) {
 
-                if (clinicianName.getText().equals("")) {
-                    newName = clinician.getName();
-                } else {
-                    newName = clinicianName.getText();
-                }
-
-                if (clinicianAddress.getText().equals("")) {
-                    newAddress = clinician.getWorkAddress();
-                } else {
-                    newAddress = clinicianAddress.getText();
-                }
-
-                if (clinicianRegion.getText().equals("")) {
-                    newRegion = clinician.getRegion();
-                } else {
-                    newRegion = clinicianRegion.getText();
-                }
+            if (clinicianName.getText().equals("")) {
+                newName = clinician.getName();
+            } else {
+                newName = clinicianName.getText();
             }
-            return new ArrayList<>(Arrays.asList(newName, newAddress, newRegion));
-        });
 
-        Optional<ArrayList<String>> result = dialog.showAndWait();
-        result.ifPresent(newClinicianDetails -> {
-            Debugger.log("Name=" + newClinicianDetails.get(0) + ", Address=" + newClinicianDetails.get(1) + ", Region=" + newClinicianDetails
-                    .get(2));
-            clinician.setName(newClinicianDetails.get(0));
-            clinician.setWorkAddress(newClinicianDetails.get(1));
-            clinician.setRegion(newClinicianDetails.get(2));
+            if (clinicianAddress.getText().equals("")) {
+                newAddress = clinician.getWorkAddress();
+            } else {
+                newAddress = clinicianAddress.getText();
+            }
+
+            if (clinicianRegion.getText().equals("")) {
+                newRegion = clinician.getRegion();
+            } else {
+                newRegion = clinicianRegion.getText();
+            }
+
+            Debugger.log("Name=" + newName + ", Address=" + newAddress + ", Region=" + newRegion);
+            clinician.setName(newName);
+            clinician.setWorkAddress(newAddress);
+            clinician.setRegion(newRegion);
             try {
                 WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
                 refreshLatestProfiles();
@@ -1187,7 +1188,7 @@ public class AdminController implements Initializable {
             }
 
 
-        });
+        }
     }
 
 

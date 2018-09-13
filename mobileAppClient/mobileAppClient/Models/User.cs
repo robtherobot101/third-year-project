@@ -15,7 +15,7 @@ namespace mobileAppClient
 
         public string gender { get; set; }
         public string genderIdentity { get; set; }
-        public string bloodType { get; set; }
+        public String bloodType { get; set; }
         //Could change to Enums however C# doesnt allow for string value Enums. Thoughts??
         public string smokerStatus { get; set; }
         public string alcoholConsumption { get; set; }
@@ -34,9 +34,9 @@ namespace mobileAppClient
         public string currentAddress { get; set; }
         public string region { get; set; }
         //public string city { get; set; }
-        //public string country { get; set; }
+        public string country { get; set; }
         public string cityOfDeath { get; set; }
-        //public string countryOfDeath { get; set; }
+        public string countryOfDeath { get; set; }
         public string regionOfDeath { get; set; }
         //public string homePhone { get; set; }
         //public string mobilePhone { get; set; }

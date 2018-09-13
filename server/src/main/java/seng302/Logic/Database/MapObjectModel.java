@@ -15,8 +15,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Set;
 
-public class MapObjectModel {
+public class MapObjectModel extends DatabaseMethods {
 
     public ArrayList<MapObject> getAllMapObjects() throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
@@ -27,13 +28,16 @@ public class MapObjectModel {
                             "FROM USER " +
                             "WHERE date_of_death IS NOT NULL";
 
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 allMapObjects.add(getMapObjectFromResultSet(resultSet));
             }
 
             return allMapObjects;
+        }
+        finally {
+            close();
         }
     }
 
@@ -68,6 +72,10 @@ public class MapObjectModel {
                 mapObject.getOrgans().add(organ);
             }
         }
+        //Get all the organs donated for the dead user
+        Set<Organ> organs =  new UserDonations().getAllUserDonations(mapObjectResultSet.getInt("id"));
+        mapObject.organs = new ArrayList<>();
+        mapObject.organs.addAll(organs);
 
         mapObject.firstName = mapObjectResultSet.getString("first_name");
         mapObject.middleName = mapObjectResultSet.getString("middle_names");

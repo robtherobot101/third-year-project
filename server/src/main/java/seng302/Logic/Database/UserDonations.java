@@ -2,7 +2,6 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
-import seng302.Model.DonatableOrgan;
 
 import java.sql.*;
 import java.time.Duration;
@@ -16,20 +15,23 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserDonations {
+public class UserDonations extends DatabaseMethods {
 
     public Set<Organ> getAllUserDonations(int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             Set<Organ> organs = new HashSet<>();
             String query = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setInt(1, userId);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 organs.add(getOrganFromResultSet(resultSet));
             }
             return organs;
+        }
+        finally {
+            close();
         }
     }
 
@@ -37,13 +39,16 @@ public class UserDonations {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             Set<Organ> organs = new HashSet<>();
             String query = "SELECT * FROM DONATION_LIST_ITEM";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 organs.add(getOrganFromResultSet(resultSet));
             }
             return organs;
+        }
+        finally {
+            close();
         }
     }
 
@@ -51,23 +56,26 @@ public class UserDonations {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insertDonationQuery = "INSERT INTO DONATION_LIST_ITEM (name, user_id, timeOfDeath, expired) " +
                     "VALUES (?,?,?,?)";
-            PreparedStatement insertDonationStatement = connection.prepareStatement(insertDonationQuery);
+            statement = connection.prepareStatement(insertDonationQuery);
 
-            insertDonationStatement.setString(1, organ.toString());
-            insertDonationStatement.setInt(2, userId);
+            statement.setString(1, organ.toString());
+            statement.setInt(2, userId);
             if (deathDate == null) {
-                insertDonationStatement.setNull(3, Types.BIGINT);
-                insertDonationStatement.setInt(4,0);
+                statement.setNull(3, Types.BIGINT);
+                statement.setInt(4,0);
             } else {
-                insertDonationStatement.setLong(3, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
+                statement.setLong(3, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
                 if (deathDate.plus(getExpiryDuration(organ)).isBefore(LocalDateTime.now())){
-                    insertDonationStatement.setInt(4, 1);
+                    statement.setInt(4, 1);
                 } else {
-                    insertDonationStatement.setInt(4,0);
+                    statement.setInt(4,0);
                 }
             }
 
-            System.out.println("Inserting new donation -> Successful -> Rows Added: " + insertDonationStatement.executeUpdate());
+            System.out.println("Inserting new donation -> Successful -> Rows Added: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
@@ -79,11 +87,11 @@ public class UserDonations {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM DONATION_LIST_ITEM id = id;
             String query = "SELECT * FROM DONATION_LIST_ITEM WHERE name = ? AND user_id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, donationListItemName);
             statement.setInt(2, userId);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -93,24 +101,33 @@ public class UserDonations {
                 return getOrganFromResultSet(resultSet);
             }
         }
+        finally {
+            close();
+        }
     }
 
     public void removeDonationListItem(int userId, String donationListItemName) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM DONATION_LIST_ITEM WHERE name = ? AND user_id = ?";
-            PreparedStatement statement = connection.prepareStatement(update);
+            statement = connection.prepareStatement(update);
             statement.setString(1, donationListItemName);
             statement.setInt(2, userId);
             System.out.println("Deletion of Donation List Item - NAME: " + donationListItemName + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
     public void removeAllUserDonations(int userId) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM DONATION_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement statement = connection.prepareStatement(update);
+            statement = connection.prepareStatement(update);
             statement.setInt(1, userId);
             System.out.println("Deletion of all Donation List Items for - " + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
@@ -119,6 +136,7 @@ public class UserDonations {
      *
      * @param newOrgans The list of organs to update to
      * @param userId The id of the user to update
+     * @param dateOfDeath the date of death of a user
      * @throws SQLException If there is errors communicating with the database
      */
     public void updateAllDonations(Set<Organ> newOrgans, int userId, LocalDateTime dateOfDeath) throws SQLException {

@@ -3,20 +3,20 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using System.Threading.Tasks;
 using System.IO;
 using Android.Media;
 using Android.Graphics;
-using mobileAppClient.Google;
 using Xamarin.Forms;
 using Android.Support.V4.Content;
 using Android;
 using ImageCircle.Forms.Plugin.Droid;
 using Plugin.CurrentActivity;
+
+using Firebase.Messaging;
+using Firebase.Iid;
+using Android.Util;
 
 namespace mobileAppClient.Droid
 {
@@ -26,6 +26,12 @@ namespace mobileAppClient.Droid
 
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+
+        static readonly string TAG = "MainActivity";
+
+        internal static readonly string CHANNEL_ID = "my_notification_channel";
+        internal static readonly int NOTIFICATION_ID = 100;
+
         internal static Context ActivityContext { get; private set; }
 
         protected override void OnCreate(Bundle bundle)

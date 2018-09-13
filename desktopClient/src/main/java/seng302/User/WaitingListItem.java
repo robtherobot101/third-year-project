@@ -89,14 +89,8 @@ public class WaitingListItem {
      */
     public void deregisterOrgan(Integer reasonCode) {
         if (this.organDeregisteredDate == null) {
-            if (reasonCode != 3) {
-                this.organDeregisteredDate = LocalDate.now();
-                this.organDeregisteredCode = reasonCode;
-            } else {
-                this.organDeregisteredDate = LocalDate.now();
-                this.organDeregisteredCode = reasonCode;
-            }
-
+            this.organDeregisteredDate = LocalDate.now();
+            this.organDeregisteredCode = reasonCode;
         }
     }
 
