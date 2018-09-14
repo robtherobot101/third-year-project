@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Essentials;
 
 namespace mobileAppClient
 {
@@ -13,8 +14,6 @@ namespace mobileAppClient
     {
         public Clinician LoggedInClinician { get; set; }
         public string AuthToken { get; set; }
-        public MainPage mainPageController { get; set; } 
-
         private static readonly Lazy<ClinicianController> lazy =
         new Lazy<ClinicianController>(() => new ClinicianController());
 
@@ -27,6 +26,7 @@ namespace mobileAppClient
         {
             this.LoggedInClinician = null;
             this.AuthToken = null;
+            SecureStorage.RemoveAll();
         }
 
         public bool isLoggedIn()
@@ -47,6 +47,12 @@ namespace mobileAppClient
         {
             this.LoggedInClinician = loggedInClinician;
             this.AuthToken = authToken;
+
+            if (UserController.Instance.loginPageController.rememberLogin)
+            {
+                SecureStorage.SetAsync("usernameEmail", loggedInClinician.username);
+                SecureStorage.SetAsync("password", loggedInClinician.password);
+            }
         }
 
         private ClinicianController()

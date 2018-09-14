@@ -57,6 +57,7 @@ public class MedicationsGUITest extends TestFXTest {
      * Method to add a new medication to a user's current medications list.
      *
      * @param medication The medication to add.
+     * @throws TimeoutException catch timeout of requests
      */
     private void addNewMedicationToCurrentMedications(String medication) throws TimeoutException {
         clickOn("#newMedicationField").write(medication);
@@ -70,6 +71,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     /**
      * Add a simple medication and verify it is correct
+     * @throws TimeoutException catch timeout of requests
      */
     @Ignore
     @Test
@@ -85,6 +87,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     /**
      * Add an invalid medication and verify it is not added to the user's current medications
+     * @throws TimeoutException catch timeout of requests
      */
     //@Ignore
     @Test
@@ -100,6 +103,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     /**
      * Adds a medication to the current medications and moves that medication to the history of medications
+     * @throws TimeoutException catch timeout of requests
      */
     @Ignore
     @Test
@@ -119,6 +123,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     /**
      * Adds a medication to the current medications and moves that medication to the history of medications
+     * @throws TimeoutException catch timeout of requests
      */
     @Ignore
     @Test
@@ -141,6 +146,7 @@ public class MedicationsGUITest extends TestFXTest {
 
     /**
      * Adds a medication to the donor and then deletes it, checking if the deletion is successful.
+     * @throws TimeoutException catch timeout of requests
      */
     @Ignore
     @Test
@@ -162,6 +168,7 @@ public class MedicationsGUITest extends TestFXTest {
     /**
      * Adds a medication to the donor and then saves the medications, and then checks that the donor has been updated in the back end
      * as well as checking that the current medications table has been populated.
+     * @throws TimeoutException catch timeout of requests
      */
     @Ignore
     @Test

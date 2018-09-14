@@ -6,6 +6,7 @@ using System.IO;
 using mobileAppClient.Google;
 using Newtonsoft.Json;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Notifications;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
@@ -44,6 +45,9 @@ namespace mobileAppClient
         protected override void OnStart()
         {
             // Handle when your app starts
+
+            // Visual Studio App Center initialisation 
+            VSAppCenter.Setup();
         }
 
         async protected override void OnSleep()

@@ -18,7 +18,7 @@ public class UserDiseasesTest extends GenericTest {
 
     /**
      * Create a user with cured, chrnoic and existing diseases and test they are all returned when requested
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void getAllDiseases() throws SQLException {
@@ -41,7 +41,7 @@ public class UserDiseasesTest extends GenericTest {
 
     /**
      * Test a single disease is inserted correctly
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void insertDisease() throws SQLException {
@@ -55,7 +55,7 @@ public class UserDiseasesTest extends GenericTest {
 
     /**
      * Test getting a disease by specifying id
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void getDiseaseFromId() throws SQLException {
@@ -70,7 +70,7 @@ public class UserDiseasesTest extends GenericTest {
 
     /**
      * Test trying to get a disease with a made up id
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void badDiseaseId() throws SQLException {
@@ -80,7 +80,7 @@ public class UserDiseasesTest extends GenericTest {
 
     /**
      * Test updating an existing disease to a cured disease
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void updateDisease() throws SQLException {
@@ -97,7 +97,7 @@ public class UserDiseasesTest extends GenericTest {
 
     /**
      * Test the removal of a disease
-     * @throws SQLException
+     * @throws SQLException catch sql execution errors
      */
     @Test
     public void removeDisease() throws SQLException {

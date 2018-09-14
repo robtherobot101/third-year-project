@@ -8,11 +8,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import seng302.User.Attribute.ProfileType;
+import seng302.User.Importers.ProfileReader;
+import seng302.User.Importers.UserReaderJSON;
+import seng302.User.User;
+import seng302.generic.IO;
 import seng302.generic.WindowManager;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdminCliController implements Initializable {
@@ -136,7 +144,7 @@ public class AdminCliController implements Initializable {
      * @return boolean if it is an instruction
      */
     private boolean isInstruction(String response){
-        return Collections.singletonList("CLEAR").contains(response);
+        return response == "CLEAR";
     }
 
     /**

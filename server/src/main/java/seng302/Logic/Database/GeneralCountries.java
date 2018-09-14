@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneralCountries {
+public class GeneralCountries extends DatabaseMethods {
 
     /**
      * Gets all the countries from the database and if they are valid or not
@@ -18,12 +18,15 @@ public class GeneralCountries {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Country> countries = new ArrayList<>();
             String query = "SELECT * FROM COUNTRIES";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 countries.add(new Country(resultSet.getString("country"), resultSet.getInt("valid")));
             }
             return countries;
+        }
+        finally {
+            close();
         }
     }
 
@@ -35,7 +38,7 @@ public class GeneralCountries {
     public void patchCounties(List<Country> countries) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "DELETE FROM COUNTRIES";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.executeUpdate();
             for (Country country : countries) {
                 query = "INSERT INTO `COUNTRIES`(`country`, `valid`) VALUES ('" + country.getCountryName() + "',";
@@ -44,9 +47,13 @@ public class GeneralCountries {
                 } else {
                     query += "0)";
                 }
-                PreparedStatement insertStatement = connection.prepareStatement(query);
-                insertStatement.executeUpdate();
+                statement.close();
+                statement = connection.prepareStatement(query);
+                statement.executeUpdate();
             }
+        }
+        finally {
+            close();
         }
     }
 }

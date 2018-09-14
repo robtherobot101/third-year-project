@@ -121,6 +121,35 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `HOSPITAL`
+--
+DROP TABLE IF EXISTS `HOSPITAL`;
+CREATE TABLE IF NOT EXISTS `HOSPITAL` (
+  `hospital_id` bigint(20) NOT NULL,
+  `name` text NOT NULL,
+  `address` text NOT NULL,
+  `region` text NOT NULL,
+  `city` text NOT NULL,
+  `country` text NOT NULL,
+  `latitude` float(10,6) NOT NULL,
+  `longitude` float(10,6) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `WAITING_LIST_ITEM`
+--
+
+DROP TABLE IF EXISTS `PUSH_DEVICE`;
+CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
+  `device_id` varchar(64) NOT NULL,
+  `user_token` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `MEDICATION`
 --
 
@@ -158,7 +187,7 @@ CREATE TABLE IF NOT EXISTS `PROCEDURES` (
 DROP TABLE IF EXISTS `TOKEN`;
 CREATE TABLE IF NOT EXISTS `TOKEN` (
   `id` int(11) NOT NULL,
-  `token` text NOT NULL,
+  `token` varchar(64) NOT NULL,
   `access_level` int(11) NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -258,6 +287,12 @@ ALTER TABLE `HISTORY_ITEM`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  ADD PRIMARY KEY (`hospital_id`);
+
+--
 -- Indexes for table `MEDICATION`
 --
 ALTER TABLE `MEDICATION`
@@ -270,6 +305,12 @@ ALTER TABLE `MEDICATION`
 ALTER TABLE `PROCEDURES`
   ADD PRIMARY KEY (`id`),
   ADD KEY `User_id_foreign_key4` (`user_id`);
+
+--
+-- Indexes for table `TOKEN`
+--
+ALTER TABLE `TOKEN`
+  ADD PRIMARY KEY (`token`);
 
 --
 -- Indexes for table `USER`
@@ -285,6 +326,13 @@ ALTER TABLE `USER`
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD PRIMARY KEY (`id`),
   ADD KEY `User_id_foreign_key5` (`user_id`);
+
+--
+-- Indexes for table `WAITING_LIST_ITEM`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD PRIMARY KEY (`device_id`),
+  ADD KEY `User_id_foreign_key6` (`user_token`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -315,6 +363,11 @@ ALTER TABLE `DONATION_LIST_ITEM`
 --
 ALTER TABLE `HISTORY_ITEM`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `HOSPITAL`
+--
+ALTER TABLE `HOSPITAL`
+  MODIFY `hospital_id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `MEDICATION`
 --
@@ -375,15 +428,22 @@ ALTER TABLE `PROCEDURES`
 ALTER TABLE `WAITING_LIST_ITEM`
   ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
+
+--
+-- Constraints for table `PUSH_DEVICE`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD CONSTRAINT `User_id_foreign_key6` FOREIGN KEY (`user_token`) REFERENCES `TOKEN` (`token`) ON DELETE CASCADE;
+
 --
 -- Create default clinician and admin
 --
 
-INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', 'default', 'default', 'default', 'default', 'default');
+INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=', 'default', 'default', 'default', 'default');
 
 INSERT INTO TOKEN(id, token, access_level) VALUES(0, 'masterToken', 2);
 
-INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', 'default', 'default', 'default', 'default', 'default');
+INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=', 'default', 'default', 'default', 'default');
 
 
 --

@@ -31,12 +31,10 @@ namespace mobileAppClient
             // If a clinician is entering into a user's view
             if (isClinicianView)
             {
-                ClinicianController.Instance.mainPageController = this;
                 clinicianViewingUser();
             } else
             {
                 UserController.Instance.mainPageController = this;
-                ClinicianController.Instance.mainPageController = this;
             }
         }
 
@@ -213,7 +211,7 @@ namespace mobileAppClient
         {
             BindingContext = new
             {
-                ProfileImage = "",
+                ProfileImage = "viewing_user_photo.png",
                 FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };
@@ -248,7 +246,7 @@ namespace mobileAppClient
             BindingContext = new
             {
                 ProfileImage = "default_clinician_photo.png",
-                FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name.Trim(),
+                FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name,
                 BorderColor = "White"
             };
         }

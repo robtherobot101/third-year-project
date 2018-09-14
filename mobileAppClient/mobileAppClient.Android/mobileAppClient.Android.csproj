@@ -101,11 +101,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AppCenter.Analytics">
+      <Version>1.9.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AppCenter.Crashes">
+      <Version>1.9.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AppCenter.Push">
+      <Version>1.9.0</Version>
+    </PackageReference>
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
       <Version>3.0.0.5</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Essentials">
+      <Version>0.10.0-preview</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Firebase.Messaging">
+      <Version>60.1142.1</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.2.0.637442-pre1</Version>
+      <Version>3.2.0.809874-pre3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Android.Support.Design">
       <Version>27.0.2.1</Version>
@@ -125,6 +140,12 @@
     <PackageReference Include="Xamarin.Forms">
       <Version>3.2.0.637442-pre1</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Forms.Maps">
+      <Version>3.2.0.809874-pre3</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Base">
+      <Version>60.1142.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -137,6 +158,7 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
+    <GoogleServicesJson Include="Resources\google-services.json" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
@@ -368,10 +390,13 @@
     <AndroidResource Include="Resources\drawable\profile_photo_bg.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\default_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\default_clinician_photo.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\default_user_photo.png" />
+    <AndroidResource Include="Resources\drawable\viewing_user_photo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

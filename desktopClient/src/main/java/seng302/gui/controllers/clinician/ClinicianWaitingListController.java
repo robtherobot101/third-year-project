@@ -132,6 +132,7 @@ public class ClinicianWaitingListController implements Initializable {
      * Sets the current value of the given regionComboBox and regionField to the given value.
      *
      * @param value The value which the ComboBox and TextField will be set to
+     * @param countryComboBox The combobox of countries
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
@@ -247,7 +248,7 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * updates the transplant  list table and filters users by a region.
-     *
+     * @param countrySearch the search text to be applied to the user contries given by a user.
      * @param regionSearch the search text to be applied to the user regions given by a user.
      * @param organSearch  the organ to specifically search for given by a user.
      */
@@ -334,6 +335,8 @@ public class ClinicianWaitingListController implements Initializable {
      * method to call the correct handling de-registering method based on the reason code given
      *
      * @param reason the reason code given by the clinician
+     * @param selectedItem the selected waiting list item to be deregistered.
+     * @param user the user to operate on
      */
     private void processDeregister(String reason, WaitingListItem selectedItem, User user) {
         try{
@@ -361,6 +364,9 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * Removes an organ from the transplant waiting list and writes it as an error to the history log.
+     * @param user the user to deregister from
+     * @param selectedWaitingListItem the waiting list item to deregister
+     * @throws HttpResponseException connection error catching
      */
     private void errorDeregister(WaitingListItem selectedWaitingListItem, User user) throws HttpResponseException {
         deregisterWaitingListItem(selectedWaitingListItem,user,1);
@@ -368,6 +374,9 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * method to show dialog to confirm the curing of a disease and then to perform the operations.
+     * @param selectedWaitingListItem the waiting list item to deregister
+     * @param selectedUser the user to operate on
+     * @throws HttpResponseException connection error catching
      */
     private void confirmDiseaseCuring(WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
         if (!selectedUser.getCurrentDiseases().isEmpty()) {
@@ -417,6 +426,9 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * method to show dialog for a clinician to choose from a receivers listed diseases, if any, to cure.
+     * @param selectedUser the user to operate on
+     * @param selectedWaitingListItem the waiting list item to deregister
+     * @throws HttpResponseException catch connection errors
      */
     private void showDiseaseDeregisterDialog(WaitingListItem selectedWaitingListItem, User selectedUser) throws HttpResponseException {
 
@@ -499,6 +511,9 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * method to show dialog the prompts the user asking for a select receivers date of death
+     * @param selectedItem the waiting list item to deregister
+     * @param user the user to operate on
+     * @throws HttpResponseException catch connection errors
      */
     private void showDeathDateDialog(WaitingListItem selectedItem, User user) throws HttpResponseException {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -571,6 +586,8 @@ public class ClinicianWaitingListController implements Initializable {
 
     /**
      * Method to deregister an organ when a successful transplant is complete
+     * @param selectedWaitingListItem the waiting list item to deregister
+     * @param user the user to operate on
      */
     private void transplantDeregister(WaitingListItem selectedWaitingListItem, User user) {
         deregisterWaitingListItem(selectedWaitingListItem, user, 4);
@@ -582,6 +599,8 @@ public class ClinicianWaitingListController implements Initializable {
      * Called when a receiver has deceased.
      *
      * @param deathDateInput LocalDate date to be set for a users date of death
+     * @param selectedWaitingListItem the waiting list item to deregister
+     * @param selectedUser the user to operate on
      */
     private void deathDeregister(LocalDateTime deathDateInput, WaitingListItem selectedWaitingListItem, User selectedUser) {
         deregisterWaitingListItem(selectedWaitingListItem,selectedUser,3);
