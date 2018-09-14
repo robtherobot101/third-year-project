@@ -53,9 +53,7 @@ namespace mobileAppClient.iOS
             cell.ImageView.Image = UIImage.FromFile(photoItem);
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
-            cell.DetailTextLabel.Text = "INSERT COUNTDOWN HERE";
-            //Change colour based on severity
-            cell.DetailTextLabel.TextColor = UIColor.Red;
+             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {                 countdownDetail = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 string timeRemaining = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemaining;                 //Change colour based on severity                 //string organColour = currentOrgan.GetDurationColour(timeRemaining);                 cell.DetailTextLabel.TextColor = UIColor.White;             }
 
             return cell;
         }

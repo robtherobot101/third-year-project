@@ -165,11 +165,11 @@ namespace mobileAppClient.Views.Clinician
 
                         List<string> organIcons = new List<string>();
 
-                        foreach (string organ in user.organs)
+                        foreach (DonatableOrgan organ in user.organs)
                         {
 
                             string imageString = "";
-                            switch (organ.ToLower())
+                            switch (organ.organType.ToLower())
                             {
                                 case ("pancreas"):
                                     imageString = "pancreas_icon.png";
@@ -181,28 +181,28 @@ namespace mobileAppClient.Views.Clinician
                                     imageString = "liver_icon.png";
                                     break;
                                 case ("connective-tissue"):
-                                    imageString = "tissue_icon.png";
+                                    imageString = "connective-tissue_icon.png";
                                     break;
                                 case ("bone-marrow"):
-                                    imageString = "bone_icon.png";
+                                    imageString = "bone-marrow_icon.png";
                                     break;
                                 case ("skin"):
                                     imageString = "skin_icon.png";
                                     break;
                                 case ("lung"):
-                                    imageString = "lungs_icon.png";
+                                    imageString = "lung_icon.png";
                                     break;
                                 case ("cornea"):
-                                    imageString = "eye_icon.png";
+                                    imageString = "cornea_icon.png";
                                     break;
                                 case ("kidney"):
                                     imageString = "kidney_icon.png";
                                     break;
                                 case ("intestine"):
-                                    imageString = "intestines_icon.png";
+                                    imageString = "intestine_icon.png";
                                     break;
                                 case ("middle-ear"):
-                                    imageString = "ear_icon.png";
+                                    imageString = "middle-ear_icon.png";
                                     break;
                             }
                             organIcons.Add(imageString);
@@ -270,7 +270,8 @@ namespace mobileAppClient.Views.Clinician
                             Url = String.Join(",", organIcons),
                             genderIcon = genderIcon,
                             userPhoto = profilePhoto,
-                            userId = user.id
+                            userId = user.id,
+                            donatableOrgans = user.organs
                         };
                         customMap.CustomPins.Add(pin.Position, pin);
 

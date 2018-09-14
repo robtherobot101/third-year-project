@@ -337,19 +337,19 @@ namespace CustomRenderer.Droid
                         var organImage = new ImageView(Context.ApplicationContext);
                         switch (organ)
                         {
-                            case "bone_icon.png":
+                            case "bone-marrow_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.bone_icon);
                                 break;
-                            case "ear_icon.png":
+                            case "middle-ear_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
-                            case "eye_icon.png":
+                            case "cornea_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.eye_icon);
                                 break;
                             case "heart_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.heart_icon);
                                 break;
-                            case "intestines_icon.png":
+                            case "intestine_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.intestines_icon);
                                 break;
                             case "kidney_icon.png":
@@ -358,7 +358,7 @@ namespace CustomRenderer.Droid
                             case "liver_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.liver_icon);
                                 break;
-                            case "lungs_icon.png":
+                            case "lung_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.lungs_icon);
                                 break;
                             case "pancreas_icon.png":
@@ -367,7 +367,7 @@ namespace CustomRenderer.Droid
                             case "skin_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.skin_icon);
                                 break;
-                            case "tissue_icon.png":
+                            case "connective-tissue_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.tissue_icon);
                                 break;
                         }

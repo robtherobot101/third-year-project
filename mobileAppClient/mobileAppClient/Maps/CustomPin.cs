@@ -13,5 +13,6 @@ namespace mobileAppClient
         public int userId { get; set; }
         public ODMSPinType CustomType { get; set; }
         public Helicopter HelicopterDetails { get; set; }
+        public List<DonatableOrgan> donatableOrgans { get; set; }
     }
 }
