@@ -11,7 +11,9 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
@@ -425,6 +427,61 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+
+    /**
+     *Opens a dialog and asks user who they wish to transfer the organ to
+     * @param organ the organ to transfer
+     * @throws HttpResponseException Throws if cannot connect to server
+     */
+    private void transferOrganDialog(DonatableOrgan organ) throws HttpResponseException{
+        Dialog<ArrayList<String>> dialog = new Dialog<>();
+        dialog.setTitle("Transfer Organ");
+        dialog.setHeaderText("Transfer " + WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token).getName() + "'s " + organ.getOrganType());
+        ButtonType transferButton = new ButtonType("Transfer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(transferButton, ButtonType.CANCEL);
+        ComboBox<User> receivers = new ComboBox<>();
+        receivers.getItems().addAll(organ.getTopReceivers());
+        receivers.setConverter(new StringConverter<User>() {
+
+            @Override
+            public String toString(User user) {
+                return user.getName() + ", Time to Transfer: ";
+            }
+
+            @Override
+            public User fromString(String string) {
+                return receivers.getItems().stream().filter(ap ->
+                        ap.getName().equals(string)).findFirst().orElse(null);
+            }
+        });
+        Label label = new Label("Select who to transfer to:");
+        dialog.getDialogPane().setContent(new VBox(8, label, receivers));
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == transferButton) {
+                return new ArrayList<>(Arrays.asList(Long.toString(receivers.getValue().getId())));
+            }
+            return null;
+        });
+
+        Optional<ArrayList<String>> result = dialog.showAndWait();
+
+        if (result.get().get(0) != null){
+
+            for (User user : organ.getTopReceivers()){
+                if (user.getId() == Long.parseLong(result.get().get(0))){
+                    tranferOrgan(organ, user);
+                }
+            }
+
+        }
+    }
+
+    private void tranferOrgan(DonatableOrgan organ, User user){
+        //todo
+    }
+
     /**
      * Initilizes the gui display with the correct content in the table.
      * @param location not used
@@ -501,6 +558,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         MenuItem transferOrgan = new MenuItem();
         profileMenu.getItems().add(transferOrgan);
+
+        transferOrgan.setOnAction(event -> {
+            DonatableOrgan organ = (DonatableOrgan) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
+            try {
+                transferOrganDialog(organ);
+            } catch (HttpResponseException e){
+                Debugger.error(e.getMessage());
+            }
+        });
 
         organsTreeTable.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {

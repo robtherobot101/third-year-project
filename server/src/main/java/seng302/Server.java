@@ -204,8 +204,8 @@ public class Server {
             });
 
             path("/mapObjects", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
-                get("",  mapObjectController::getAllMapObjects);
+                before("",  profileUtils::hasAccessToAllUsers);
+                get("",     mapObjectController::getAllMapObjects);
             });
 
             path("/usercount", () -> {
