@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Notifications {
+public class Notifications extends DatabaseMethods {
 
     /**
      * Register a mobile device against a user id
@@ -20,13 +20,17 @@ public class Notifications {
     public void register(String device_id, String token) throws SQLException {
         if(device_id == null) return;
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            //
-            String query = "INSERT INTO PUSH_DEVICE (device_id, user_token) VALUES(?, ?) ON DUPLICATE KEY UPDATE user_id=?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            System.out.println(device_id);
+            System.out.println(token);
+            String query = "INSERT INTO PUSH_DEVICE (device_id, user_token) VALUES(?, ?) ON DUPLICATE KEY UPDATE user_token=?";
+            statement = connection.prepareStatement(query);
             statement.setString(1, device_id);
             statement.setString(2, token);
             statement.setString(3, device_id);
             statement.execute();
+        }
+        finally {
+            close();
         }
     }
 
@@ -40,10 +44,13 @@ public class Notifications {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //
             String query = "DELETE FROM PUSH_DEVICE WHERE device_id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, device_id);
             statement.execute();
+        }
+        finally {
+            close();
         }
     }
 
@@ -58,15 +65,18 @@ public class Notifications {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //
             String query = "SELECT device_id FROM PUSH_DEVICE JOIN TOKEN WHERE id = ? AND user_token=token";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, user_id);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             List<String> devices = new ArrayList<>();
             while(resultSet.next()) {
                 devices.add(resultSet.getString("device_id"));
             }
             return devices;
+        }
+        finally {
+            close();
         }
     }
 

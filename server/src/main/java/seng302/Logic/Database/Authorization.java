@@ -11,27 +11,70 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class Authorization {
+public class Authorization extends DatabaseMethods {
+
+    /**
+     * method to get a password from a user with a given id
+     * @param id Long the user id to get the password of
+     * @return String the password of the user to check
+     * @throws SQLException catch sql execution errors
+     */
+    public String checkPasswordUser(long id) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT password FROM USER WHERE (id = ?)";
+            statement = connection.prepareStatement(query);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            if (!resultSet.next()){
+                return null;
+            } else {
+                return resultSet.getString("password");
+            }
+        }
+        finally {
+            close();
+        }
+    }
+
+    /**
+     * method to get a password from a user with a given id
+     * @param id Long the user id to get the password of
+     * @return String the password of the user to check
+     * @throws SQLException catch sql execution errors
+     */
+    public String checkPasswordClinician(long id) throws SQLException{
+        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT password FROM CLINICIAN WHERE (staff_id = ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()){
+                return null;
+            } else {
+                return resultSet.getString("password");
+            }
+        }
+    }
+
 
     /**
      * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
      * @param usernameEmail Either a username or an email address
-     * @param password A password
      * @return The matched user
      * @throws SQLException If there is an error working with the database
      */
-    public User loginUser(String usernameEmail, String password) throws SQLException{
+    public User loginUser(String usernameEmail) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-            String query = "SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?) AND password = ?";
+            String query = "SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?)";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
             statement.setString(3, usernameEmail);
             statement.setString(4, password);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -42,6 +85,9 @@ public class Authorization {
                 return generalUser.getUserFromResultSet(resultSet);
             }
         }
+        finally {
+            close();
+        }
 
     }
 
@@ -49,18 +95,16 @@ public class Authorization {
     /**
      * Returns the clinician with a matching username and password if such a clinician exists, otherwise returns null
      * @param username A username
-     * @param password A password
      * @return The matched clinician if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
-    public Clinician loginClinician(String username, String password) throws SQLException{
+    public Clinician loginClinician(String username) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
-            String query = "SELECT * FROM CLINICIAN WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            String query = "SELECT * FROM CLINICIAN WHERE username = ?";
+            statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -71,26 +115,26 @@ public class Authorization {
                 return generalClinician.getClinicianFromResultSet(resultSet);
             }
         }
-
+        finally {
+            close();
+        }
     }
 
 
     /**
      * Returns the admin with a matching username and password if such a admin exists, otherwise returns null
      * @param username A username
-     * @param password A password
      * @return The matched admin if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
-    public Admin loginAdmin(String username, String password) throws SQLException {
+    public Admin loginAdmin(String username) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
-            String query = "SELECT * FROM ADMIN WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            String query = "SELECT * FROM ADMIN WHERE username = ?";
+            statement = connection.prepareStatement(query);
 
             statement.setString(1, username);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -100,6 +144,9 @@ public class Authorization {
                 GeneralAdmin generalAdmin = new GeneralAdmin();
                 return generalAdmin.getAdminFromResultSet(resultSet);
             }
+        }
+        finally {
+            close();
         }
     }
 
@@ -114,11 +161,14 @@ public class Authorization {
     public String generateToken(int id, int accessLevel) throws SQLException {
         String token = UUID.randomUUID().toString();
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO TOKEN(id, token, access_level) VALUES (?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO TOKEN(id, token, access_level) VALUES (?, ?, ?)");
             statement.setInt(1, id);
             statement.setString(2, token);
             statement.setInt(3, accessLevel);
             statement.execute();
+        }
+        finally {
+            close();
         }
         return token;
     }
@@ -130,9 +180,12 @@ public class Authorization {
      */
     public void logout(String token) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM TOKEN WHERE token = ?");
+            statement = connection.prepareStatement("DELETE FROM TOKEN WHERE token = ?");
             statement.setString(1, token);
             statement.execute();
+        }
+        finally {
+            close();
         }
     }
 }

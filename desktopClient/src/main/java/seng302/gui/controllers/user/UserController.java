@@ -176,7 +176,7 @@ public class UserController implements Initializable {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Confirm Refresh", "Are you sure you want to refresh?",
                 "Refreshing will overwrite your all unsaved changes.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 User latest = WindowManager.getDataManager().getUsers().getUser((int)currentUser.getId(), token);
                 attributesController.undoStack.clear();
@@ -406,7 +406,7 @@ public class UserController implements Initializable {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
             "Are you sure would like to update the current user? ", "By doing so, the user will be updated with all filled in fields.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK && attributesController.updateUser()) {
+        if (result.isPresent() && result.get() == ButtonType.OK && attributesController.updateUser()) {
             medicationsController.updateUser();
             diseasesController.updateUser();
             proceduresController.updateUser();
@@ -501,7 +501,13 @@ public class UserController implements Initializable {
 
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(currentUser.getPassword())) {
+            Boolean flag = false;
+            try {
+                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), currentUser.getId());
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            if (flag) {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
                     Parent root = fxmlLoader.load();
@@ -556,7 +562,7 @@ public class UserController implements Initializable {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to log out? ", "Logging out " +
                 "without saving loses your non-saved data.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             serverLogout();
             WindowManager.resetScene(TFScene.login);
             WindowManager.setScene(TFScene.login);
@@ -574,7 +580,7 @@ public class UserController implements Initializable {
                 "Are you sure would like to exit the window? ", "Exiting without saving loses your non-saved data.");
         alert.getDialogPane().lookupButton(ButtonType.OK).setId("exitOK");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             Debugger.log("Exiting gui");
             Stage stage = (Stage) welcomePane.getScene().getWindow();
             stage.close();

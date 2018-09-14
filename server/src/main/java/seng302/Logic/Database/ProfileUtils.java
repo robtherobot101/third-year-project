@@ -1,7 +1,8 @@
-package seng302.Controllers;
+package seng302.Logic.Database;
 
 import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
+import seng302.Logic.Database.DatabaseMethods;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Server;
 import spark.Request;
@@ -17,7 +18,8 @@ import static spark.Spark.halt;
 /**
  * Utility class for profiles
  */
-public class ProfileUtils {
+public class ProfileUtils extends DatabaseMethods {
+
 
     /**
      * Checks the authorisation level of a token.
@@ -25,82 +27,72 @@ public class ProfileUtils {
      * @param token The token to check for
      * @return The authorisation level of the token, or -1 if the token is not found or the database could not be contacted
      */
-    public int checkToken(String token) {
-        try {
-            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                // Check all tokens for time expiry
-                PreparedStatement statement = connection.prepareStatement(
-                        "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < DATE_SUB(NOW(), INTERVAL 1 DAY)");
-                statement.execute();
+    public int checkToken(String token) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            // Check all tokens for time expiry
+            statement = connection.prepareStatement(
+                    "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < DATE_SUB(NOW(), INTERVAL 1 DAY)");
+            statement.execute();
 
+            statement = connection.prepareStatement(
+                    "SELECT access_level FROM TOKEN WHERE token = ?");
+            statement.setString(1, token);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
                 statement = connection.prepareStatement(
-                        "SELECT access_level FROM TOKEN WHERE token = ?");
+                        "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
                 statement.setString(1, token);
-                ResultSet resultSet = statement.executeQuery();
-                int accessLevel = -1;
-                if (resultSet.next()) {
-                    statement = connection.prepareStatement(
-                            "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
-                    statement.setString(1, token);
-                    statement.execute();
-                    accessLevel = resultSet.getInt("access_level");
-                }
-
-                DbUtils.closeQuietly(resultSet);
-                DbUtils.closeQuietly(statement);
-                return accessLevel;
+                statement.execute();
+                return resultSet.getInt("access_level");
+            } else {
+                return -1;
             }
-        } catch (SQLException | NullPointerException e) {
-            return -1;
+        } finally {
+            close();
         }
     }
 
     /**
      * Checks the id associated with a token.
      *
-     * @param token The token to check for
+     * @param token       The token to check for
      * @param profileType The type of profile associated with that token
-     * @param id The id to check for
+     * @param id          The id to check for
      * @return Whether the token is associated with that id or false if the database could not be contacted
      */
-    public boolean checkTokenId(String token, ProfileType profileType, int id) {
-        try {
-            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                PreparedStatement statement = connection.prepareStatement(
-                        "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
-                statement.setString(1, token);
-                switch (profileType) {
-                    case USER:
-                        statement.setInt(2, 0);
-                        break;
-                    case CLINICIAN:
-                        statement.setInt(2, 1);
-                        break;
-                    case ADMIN:
-                        statement.setInt(2, 2);
-                        break;
-                }
-                statement.setInt(3, id);
-
-                ResultSet resultSet = statement.executeQuery();
-                boolean hasNext = resultSet.next();
-                DbUtils.closeQuietly(resultSet);
-                DbUtils.closeQuietly(statement);
-                return hasNext;
+    public boolean checkTokenId(String token, ProfileType profileType, int id) throws SQLException {
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement(
+                    "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
+            statement.setString(1, token);
+            switch (profileType) {
+                case USER:
+                    statement.setInt(2, 0);
+                    break;
+                case CLINICIAN:
+                    statement.setInt(2, 1);
+                    break;
+                case ADMIN:
+                    statement.setInt(2, 2);
+                    break;
             }
-        } catch (SQLException e) {
-            return false;
+            statement.setInt(3, id);
+
+            resultSet = statement.executeQuery();
+            return resultSet.next();
+        } finally {
+            close();
         }
     }
 
     /**
      * Checks if the requester is authorized to access all users.
      *
-     * @param request Spark HTTP request obj
+     * @param request  Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean hasAccessToAllUsers(Request request, Response response) {
+    public boolean hasAccessToAllUsers(Request request, Response response) throws SQLException {
         String failure = "Unauthorised: access denied to all user access request ";
 
         String token = request.headers("token");
@@ -121,11 +113,11 @@ public class ProfileUtils {
     /**
      * Checks if the requester is authorized to access/modify a user.
      *
-     * @param request Spark HTTP request obj
+     * @param request  Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean hasUserLevelAccess(Request request, Response response) {
+    public boolean hasUserLevelAccess(Request request, Response response) throws SQLException {
         String failure = "Unauthorised: access denied to single user access ";
 
         String token = request.headers("token");
@@ -156,11 +148,11 @@ public class ProfileUtils {
     /**
      * Checks if the requester is authorized to access/modify a clinician.
      *
-     * @param request Spark HTTP request obj
+     * @param request  Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean hasClinicianLevelAccess(Request request, Response response) {
+    public boolean hasClinicianLevelAccess(Request request, Response response) throws SQLException {
         String failure = "Unauthorised: access denied to single clinician access ";
         String token = request.headers("token");
 
@@ -195,11 +187,11 @@ public class ProfileUtils {
     /**
      * Checks if the requester is authorized to access all users.
      *
-     * @param request Spark HTTP request obj
+     * @param request  Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether they are authorised
      */
-    public boolean hasAdminAccess(Request request, Response response) {
+    public boolean hasAdminAccess(Request request, Response response) throws SQLException {
         String failure = "Unauthorised: access denied to admin level request ";
 
         String token = request.headers("token");
@@ -223,7 +215,8 @@ public class ProfileUtils {
 
     /**
      * Checks the validity of the ":id" HTTP request param
-     * @param request Spark HTTP request obj
+     *
+     * @param request  Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return True if ID is valid, false otherwise
      */
@@ -258,65 +251,46 @@ public class ProfileUtils {
     /**
      * Checks whether the query param identifier is unique against all users, clinicians, and admins.
      *
-     * @param request Spark HTTP request obj
+     * @param request  Spark HTTP request obj
      * @param response Spark HTTP response obj
      * @return Whether the identifier is unique
      */
-    public boolean isUniqueIdentifier(Request request, Response response) {
-        String usernameEmail = request.queryParams("identifier");
+    public boolean isUniqueIdentifier(Request request, Response response) throws SQLException {
+        String usernameEmail = request.queryParams("usernameEmail");
         if (usernameEmail == null || usernameEmail.isEmpty()) {
             Server.getInstance().log.warn("Received unique identifier request that did not contain an identifier to check.");
             halt(400, "Bad Request");
             return false;
         }
 
-        ResultSet resultSet = null;
-        PreparedStatement statement = null;
-        boolean found = false;
-        boolean error = false;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ? OR nhi = ?");
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ?");
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
-            statement.setString(3, usernameEmail);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                found = true;
+                response.status(200);
+                return false;
             }
-            DbUtils.closeQuietly(resultSet);
-            DbUtils.closeQuietly(statement);
-
-            if (!found) {
-                statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
-                statement.setString(1, usernameEmail);
-                resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    found = true;
-                }
-                DbUtils.closeQuietly(resultSet);
-                DbUtils.closeQuietly(statement);
+            statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
+            statement.setString(1, usernameEmail);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                response.status(200);
+                return false;
             }
-
-            if (!found) {
-                statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
-                statement.setString(1, usernameEmail);
-                resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    found = true;
-                }
-                DbUtils.closeQuietly(resultSet);
-                DbUtils.closeQuietly(statement);
+            statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
+            statement.setString(1, usernameEmail);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                response.status(200);
+                return false;
             }
-        } catch (SQLException ignored) {
-        } finally {
-            DbUtils.closeQuietly(resultSet);
-            DbUtils.closeQuietly(statement);
+            response.status(200);
+            return true;
         }
-        if (error) {
-            halt(500, "Internal server error");
-            return false;
+        finally {
+            close();
         }
-        response.status(200);
-        return !found;
     }
 }
