@@ -47,7 +47,7 @@ public class GeneralDB implements GeneralDAO {
 
         Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("identifier", identifier);
+        queryParameters.put("usernameEmail", identifier);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
         if(response == null) return responseMap;
@@ -135,7 +135,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public boolean isUniqueIdentifier(String identifier) {
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("identifier", identifier);
+        queryParameters.put("usernameEmail", identifier);
         APIResponse response = server.getRequest(queryParameters, null, "unique");
         return response != null && response.getAsString().equalsIgnoreCase("true");
     }

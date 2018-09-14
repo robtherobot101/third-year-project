@@ -70,9 +70,9 @@ public class AuthorizationController {
      */
     public String login(Request request, Response response) {
 
-        String identifier = request.queryParams("identifier");
+        String usernameEmail = request.queryParams("usernameEmail");
         String password = request.queryParams("password");
-        if(identifier == null || password == null) {
+        if(usernameEmail == null || password == null) {
             response.status(400);
             return "Missing Parameters";
         }

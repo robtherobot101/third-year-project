@@ -73,7 +73,6 @@ public class Authorization extends DatabaseMethods {
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
             statement.setString(3, usernameEmail);
-            statement.setString(4, password);
             resultSet = statement.executeQuery();
 
             //If response is empty then return null
