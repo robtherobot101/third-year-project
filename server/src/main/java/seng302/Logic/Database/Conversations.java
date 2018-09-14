@@ -37,7 +37,6 @@ public class Conversations {
                     conversations.add(getSingleConversation(resultSet.getInt(1)));
                 }
             } catch (SQLException ignored) {
-                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -88,7 +87,6 @@ public class Conversations {
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException ignored) {
-                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -156,7 +154,8 @@ public class Conversations {
      * @param participants The ids and access levels of all participants
      * @throws SQLException If database interaction fails
      */
-    public void addConversation(List<Pair<Integer, ProfileType>> participants) throws SQLException {
+    public int addConversation(List<Pair<Integer, ProfileType>> participants) throws SQLException {
+        int id = -1;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
 
@@ -170,7 +169,7 @@ public class Conversations {
                 statement.setString(1, token);
                 ResultSet resultSet = statement.executeQuery();
                 resultSet.next();
-                int id = resultSet.getInt(1);
+                id = resultSet.getInt(1);
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
 
@@ -187,11 +186,11 @@ public class Conversations {
                     }
                 }
             } catch (SQLException ignored) {
-                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(statement);
             }
         }
+        return id;
     }
 
     /**

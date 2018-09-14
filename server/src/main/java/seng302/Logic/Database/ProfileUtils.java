@@ -126,24 +126,19 @@ public class ProfileUtils extends DatabaseMethods {
             halt(400, "Bad request");
             return false;
         }
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
         boolean authorized = false;
-        try {
-            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                statement = connection.prepareStatement(
-                        "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
-                statement.setInt(1, id);
-                statement.setInt(2, profileType.getAccessLevel());
-                statement.setInt(3, conversationId);
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement(
+                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
+            statement.setInt(1, id);
+            statement.setInt(2, profileType.getAccessLevel());
+            statement.setInt(3, conversationId);
 
-                resultSet = statement.executeQuery();
-                authorized = resultSet.next();
-            }
+            resultSet = statement.executeQuery();
+            authorized = resultSet.next();
         } catch (SQLException ignored) {
         } finally {
-            DbUtils.closeQuietly(resultSet);
-            DbUtils.closeQuietly(statement);
+            close();
         }
         if (!authorized) {
             Server.getInstance().log.warn("Attempted access to unauthorized conversation.");

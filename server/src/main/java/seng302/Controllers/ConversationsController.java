@@ -205,9 +205,9 @@ public class ConversationsController {
         }
 
         try {
-            model.addConversation(participants);
+            int conversationId = model.addConversation(participants);
             response.status(201);
-            return "Success";
+            return "" + conversationId;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);

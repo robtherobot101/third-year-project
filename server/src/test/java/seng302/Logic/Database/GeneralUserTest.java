@@ -50,10 +50,6 @@ public class GeneralUserTest extends GenericTest {
         assertEquals(user, user2);
     }
 
-    /**
-     * Test the function to get users from a raw resultset object from the database
-     * @throws SQLException
-     */
     @Test
     public void getUserFromResultSet() throws SQLException {
 
