@@ -13,24 +13,58 @@ namespace mobileAppClient
         {
         }
 
-        public string getTimeRemaining() {
+        public Tuple<string, int> getTimeRemaining() {
             string timeString = "Time until expire: ";
             DateTime now = DateTime.Now;
             DateTime timeOfDeathAsDateTime = timeOfDeath.ToDateTime();
             TimeSpan ts = (now - timeOfDeathAsDateTime);
-            switch(organType.ToLower()) {
+            int timeBurning = ts.Seconds;
+            int timeRemaining = 0;
+            TimeSpan t;
+            switch (organType.ToLower()) {
                 case("heart"):
-                    timeString += ts.ToString(@"hh\:mm\:ss");
+                case("lung"):
+                    timeRemaining = 21600 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"hh\:mm\:ss");
                     break;
-                case("intestine"):
-                    timeString += ts.ToString(@"hh\:mm");
+                case("pancreas"):
+                case("liver"):
+                    timeRemaining = 86400 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"hh\:mm\:ss");
                     break;
-                default:
-                    timeString += ts.ToString(@"hh");
+                case("kidney"):
+                    timeRemaining = 259200 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"hh\:mm\:ss");
+                    break;
+                case ("intestine"):
+                    timeRemaining = 36000 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"hh\:mm\:ss");
+                    break;
+                case ("cornea"):
+                    timeRemaining = 604800 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"hh\:mm\:ss");
+                    break;
+                case("middle-ear"):
+                case("skin"):
+                case("bone-marrow"):
+                    timeRemaining = 315360000 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"yy\:hh\:mm\:ss");
+                    break;
+                case ("connective-tissue"):
+                    timeRemaining = 157680000 - timeBurning;
+                    t = TimeSpan.FromSeconds(timeRemaining);
+                    timeString += t.ToString(@"yy\:hh\:mm\:ss");
                     break;
             }
 
-            return timeString;
+
+            return new Tuple<string, int>(timeString, timeRemaining);
         }
 
 
