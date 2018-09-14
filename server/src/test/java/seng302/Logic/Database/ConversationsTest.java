@@ -135,16 +135,18 @@ public class ConversationsTest extends GenericTest {
 
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        boolean nextMessage;
+        int count;
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("SELECT * FROM MESSAGE");
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM MESSAGE WHERE conversation_id = ? GROUP BY conversation_id;");
+            statement.setInt(1, id);
             resultSet = statement.executeQuery();
-            nextMessage = resultSet.next();
+            resultSet.next();
+            count = resultSet.getInt(1);
         } finally {
             DbUtils.closeQuietly(statement);
             DbUtils.closeQuietly(resultSet);
         }
-        assertTrue(nextMessage);
+        assertEquals(messages.size(), count);
     }
 
     @Test

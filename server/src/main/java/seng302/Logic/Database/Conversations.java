@@ -134,7 +134,7 @@ public class Conversations {
             PreparedStatement statement = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO MESSAGE VALUES(0, ?, ?, ?, ?, ?);");
+                statement = connection.prepareStatement("INSERT INTO MESSAGE(conversation_id, text, date_time, user_id, access_level) VALUES(?, ?, ?, ?, ?);");
                 statement.setInt(1, conversationId);
                 statement.setString(2, message.getText());
                 statement.setTimestamp(3, Timestamp.valueOf(message.getTimestamp()));
