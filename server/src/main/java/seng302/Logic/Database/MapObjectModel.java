@@ -2,6 +2,7 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
+import seng302.Model.DonatableOrgan;
 import seng302.Model.MapObject;
 import seng302.Model.User;
 import seng302.Model.WaitingListItem;
@@ -11,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 
 public class MapObjectModel {
@@ -20,7 +23,7 @@ public class MapObjectModel {
             ArrayList<MapObject> allMapObjects = new ArrayList<>();
             String query =
                     "SELECT first_name, middle_names, last_name, gender, id, current_address, region, cityOfDeath, " +
-                            "regionOfDeath, countryOfDeath " +
+                            "regionOfDeath, countryOfDeath, date_of_death " +
                             "FROM USER " +
                             "WHERE date_of_death IS NOT NULL";
 
@@ -48,8 +51,21 @@ public class MapObjectModel {
 
             mapObject.organs = new ArrayList<>();
 
+            boolean expired = true;
+            if (organsResultSet.getInt("expired") == 0){
+                expired = false;
+            }
+
             while (organsResultSet.next()) {
-                mapObject.getOrgans().add(organsResultSet.getString("name"));
+                DonatableOrgan organ = new DonatableOrgan(
+                        LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
+                        Organ.parse(organsResultSet.getString("name")),
+                        mapObjectResultSet.getInt("id"),
+                        expired
+
+                );
+
+                mapObject.getOrgans().add(organ);
             }
         }
 
@@ -63,8 +79,12 @@ public class MapObjectModel {
         mapObject.cityOfDeath = mapObjectResultSet.getString("cityOfDeath");
         mapObject.regionOfDeath = mapObjectResultSet.getString("regionOfDeath");
         mapObject.countryOfDeath = mapObjectResultSet.getString("countryOfDeath");
+        mapObject.dateOfDeath = mapObjectResultSet.getTimestamp("date_of_death").toLocalDateTime();
 
         return mapObject;
 
     }
+
 }
+
+

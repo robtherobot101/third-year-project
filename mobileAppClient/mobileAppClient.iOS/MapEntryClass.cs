@@ -5,10 +5,9 @@ using mobileAppClient.Maps;
 using UIKit;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(mobileAppClient.iOS.MapEntryClass))]
 namespace mobileAppClient.iOS
 {
-    public class MapEntryClass : BottomSheetMapInterface
+    public class MapEntryClass
     {
         public MapEntryClass()
         {

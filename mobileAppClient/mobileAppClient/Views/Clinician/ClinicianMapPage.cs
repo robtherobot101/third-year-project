@@ -13,7 +13,6 @@ using System.Linq;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
-using MapKit;
 
 namespace mobileAppClient.Views.Clinician
 {
@@ -31,9 +30,9 @@ namespace mobileAppClient.Views.Clinician
 
         }
 
-        public async void displayBottomSheet(CustomPin pin, CustomMap map, MKMapView nativeMap) {
+        public async void displayBottomSheet(CustomPin pin, CustomMap map) {
 
-            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map, nativeMap);
+            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map);
         }
 
         public async void displayUserDialog(string organString, string id)
