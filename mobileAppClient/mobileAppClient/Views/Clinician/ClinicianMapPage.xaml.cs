@@ -142,10 +142,10 @@ namespace mobileAppClient
                                 case ("liver"):
                                     imageString = "liver_icon.png";
                                     break;
-                                case ("connective-tissue"):
+                                case ("tissue"):
                                     imageString = "tissue_icon.png";
                                     break;
-                                case ("bone-marrow"):
+                                case ("bone"):
                                     imageString = "bone_icon.png";
                                     break;
                                 case ("skin"):
@@ -163,7 +163,7 @@ namespace mobileAppClient
                                 case ("intestine"):
                                     imageString = "intestines_icon.png";
                                     break;
-                                case ("middle-ear"):
+                                case ("ear"):
                                     imageString = "ear_icon.png";
                                     break;
                             }
