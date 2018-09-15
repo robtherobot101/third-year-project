@@ -12,7 +12,7 @@ using Android.Graphics;
 
 namespace mobileAppClient.Droid.Messaging
 {
-    [Activity(Label = "AndrConvoViewController", ParentActivity = typeof(AndrChatViewController))]
+    [Activity(Label = "AndrConvoViewController", ParentActivity = typeof(AndrChatViewController), WindowSoftInputMode = SoftInput.AdjustPan)]
     class AndrConvoViewController : AppCompatActivity
     {
         AndrConversation conversation;
@@ -49,8 +49,11 @@ namespace mobileAppClient.Droid.Messaging
             {
                 EditText editor = FindViewById<EditText>(Resource.Id.input_edittext);
                 String outgoingMessage = editor.Text;
-                sendMessage(outgoingMessage);
-                editor.Text = "";
+                if(outgoingMessage != "")
+                {
+                    sendMessage(outgoingMessage.Trim());
+                    editor.Text = "";
+                }
             };
         }
 
