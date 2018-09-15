@@ -25,6 +25,7 @@ namespace CustomRenderer.Droid
     {
         private Dictionary<Position, CustomPin> customPins;
         private Dictionary<String, CustomPin> helicopterPins;
+        private Dictionary<Organ, int> helicopterIcons;
 
         private Tuple<CustomPin, Polyline> highlightedFlightPath;
 
@@ -34,8 +35,6 @@ namespace CustomRenderer.Droid
         {
 
         }
-
-
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
         {
@@ -51,10 +50,28 @@ namespace CustomRenderer.Droid
                 formsMap = (CustomMap)e.NewElement;
                 customPins = formsMap.CustomPins;
                 helicopterPins = formsMap.HelicopterPins;
+                intialiseHelicopterIcons();
+
                 highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
 
                 Control.GetMapAsync(this);
             }
+        }
+
+        private void intialiseHelicopterIcons()
+        {
+            helicopterIcons = new Dictionary<Organ, int>();
+            helicopterIcons.Add(Organ.LIVER, Resource.Drawable.helicopter_liver_icon);
+            helicopterIcons.Add(Organ.KIDNEY, Resource.Drawable.helicopter_kidney_icon);
+            helicopterIcons.Add(Organ.PANCREAS, Resource.Drawable.helicopter_pancreas_icon);
+            helicopterIcons.Add(Organ.HEART, Resource.Drawable.helicopter_heart_icon);
+            helicopterIcons.Add(Organ.LUNG, Resource.Drawable.helicopter_lung_icon);
+            helicopterIcons.Add(Organ.INTESTINE, Resource.Drawable.helicopter_intestine_icon);
+            helicopterIcons.Add(Organ.CORNEA, Resource.Drawable.helicopter_cornea_icon);
+            helicopterIcons.Add(Organ.EAR, Resource.Drawable.helicopter_ear_icon);
+            helicopterIcons.Add(Organ.SKIN, Resource.Drawable.helicopter_skin_icon);
+            helicopterIcons.Add(Organ.BONE, Resource.Drawable.helicopter_bone_icon);
+            helicopterIcons.Add(Organ.TISSUE, Resource.Drawable.helicopter_tissue_icon);
         }
 
         protected override void OnMapReady(GoogleMap map)
@@ -219,10 +236,10 @@ namespace CustomRenderer.Droid
             marker.SetSnippet(pin.Address);
 
             // Create the image
-            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_icon);
+            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, helicopterIcons[pin.OrganToTransport]);
 
             // Scale the image
-            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
+            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 170, 170, false);
 
             marker.SetIcon(BitmapDescriptorFactory.FromBitmap(imageBitmap));
 

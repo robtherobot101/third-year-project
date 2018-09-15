@@ -437,4 +437,37 @@
   <ItemGroup>
     <BundleResource Include="Resources\helicopter_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_tissue_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_pancreas_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_heart_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_lung_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_intestine_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_cornea_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_ear_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_skin_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_bone_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_kidney_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_liver_icon.png" />
+  </ItemGroup>
 </Project>
