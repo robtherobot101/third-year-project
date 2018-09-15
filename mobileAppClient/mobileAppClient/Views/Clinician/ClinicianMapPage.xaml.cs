@@ -131,7 +131,7 @@ namespace mobileAppClient
                         foreach(string organ in user.organs) {
 
                             string imageString = "";
-                            switch (organ)
+                            switch (organ.ToLower())
                             {
                                 case ("pancreas"):
                                     imageString = "pancreas_icon.png";
