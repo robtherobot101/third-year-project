@@ -13,14 +13,9 @@ using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
-using Android.Support.V7.App;
-using Cocosw.BottomSheetActions;
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V4.App;
-using Android.App;
-using SlideOverKit;
-using FragmentManager = Android.Support.V4.App.FragmentManager;
+
 using mobileAppClient.Views.Clinician;
+using CustomPin = mobileAppClient.CustomPin;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -30,6 +25,9 @@ namespace CustomRenderer.Droid
     {
         private Dictionary<Position, CustomPin> customPins;
         private Dictionary<String, CustomPin> helicopterPins;
+
+        private Tuple<CustomPin, Polyline> highlightedFlightPath;
+
         CustomMap formsMap;
 
         public CustomMapRenderer(Context context) : base(context)
@@ -53,6 +51,7 @@ namespace CustomRenderer.Droid
                 formsMap = (CustomMap)e.NewElement;
                 customPins = formsMap.CustomPins;
                 helicopterPins = formsMap.HelicopterPins;
+                highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
 
                 Control.GetMapAsync(this);
             }
@@ -209,10 +208,15 @@ namespace CustomRenderer.Droid
         /// <returns></returns>
         private MarkerOptions CreateHelicopterMarker(CustomPin pin)
         {
+            refreshFlightPath(pin);
+            
             // Create basic options
             var marker = new MarkerOptions();
             marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
             marker.SetTitle(pin.Label);
+
+            // Snippet is set to store the unique heli identifier (dictionary key) so it can be recalled when searching for a customPin based on Marker
+            marker.SetSnippet(pin.Address);
 
             // Create the image
             Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_icon);
@@ -252,6 +256,7 @@ namespace CustomRenderer.Droid
             return markerToAddOptions;
         }
 
+
         void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
         {
             var customPin = GetCustomPin(e.Marker);
@@ -278,6 +283,61 @@ namespace CustomRenderer.Droid
             parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
         }
 
+        /// <summary>
+        /// Toggles more details regarding a helicopter (organs + flight path)
+        /// </summary>
+        /// <param name="customPin"></param>
+        private void processHelicopterTapped(CustomPin customPin)
+        {
+            customPin.HelicopterDetails.detailsShowing = !customPin.HelicopterDetails.detailsShowing;
+            if (customPin.HelicopterDetails.detailsShowing)
+            {
+                addFlightPath(customPin);
+            }
+            else
+            {
+                clearFlightPath();
+            }
+        }
+
+        private void refreshFlightPath(CustomPin heliPin)
+        {
+            if (highlightedFlightPath.Item2 != null)
+            {
+                // Flight path is currently needing to be shown -> shrink path to follow heli
+                clearFlightPath();
+                addFlightPath(heliPin);              
+            }
+        }
+
+        /// <summary>
+        /// Adds a polyline path in red based
+        /// </summary>
+        /// <param name="heliPin"></param>
+        private void addFlightPath(CustomPin heliPin)
+        {
+            var currentFlightPathOptions = new PolylineOptions();
+
+            // Other colour constants can be found at https://developer.android.com/reference/android/graphics/Color#constants_1
+            int BLUE = -16776961;
+            currentFlightPathOptions.InvokeColor(BLUE);
+            
+            // Add current position (start of path)
+            currentFlightPathOptions.Add(new LatLng(heliPin.Position.Latitude, heliPin.Position.Longitude));
+
+            // Add destination position (end of path)
+            currentFlightPathOptions.Add(new LatLng(heliPin.HelicopterDetails.destinationPosition.Latitude,
+                heliPin.HelicopterDetails.destinationPosition.Longitude));
+
+            highlightedFlightPath = new Tuple<CustomPin, Polyline>(heliPin, NativeMap.AddPolyline(currentFlightPathOptions));
+        }
+
+        private void clearFlightPath()
+        {
+            highlightedFlightPath.Item2.Remove();
+            highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
+        }
+
         public Android.Views.View GetInfoContents(Marker marker)
         {
             if (Android.App.Application.Context.GetSystemService(Context.LayoutInflaterService) is Android.Views.LayoutInflater inflater)
@@ -289,24 +349,25 @@ namespace CustomRenderer.Droid
                     return null;
                 }
 
-                if (customPin.CustomType == ODMSPinType.HOSPITAL || customPin.CustomType == ODMSPinType.HELICOPTER)
+                if (customPin.CustomType == ODMSPinType.HOSPITAL)
                 {
                     // Hospital pop-up dialog not yet implemented
                     return null;
                 }
 
+                if (customPin.CustomType == ODMSPinType.HELICOPTER)
+                {
+                    marker.Title = null;
+                    processHelicopterTapped(customPin);
+                    return null;
+                }
 
                 view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);
-
 
                 var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
                 var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
                 var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
                 var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
-
-
-
-
 
                 if (infoTitle != null)
                 {
@@ -392,19 +453,24 @@ namespace CustomRenderer.Droid
 
         /// <summary>
         /// Gets custom pin based on a marker
-        /// NOT FOR HELICOPTERS!!!
         /// </summary>
         /// <param name="annotation"></param>
         /// <returns></returns>
         CustomPin GetCustomPin(Marker annotation)
         {
             Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-
             // Search custom pins
             if (customPins.TryGetValue(key, out CustomPin foundPin))
             {
                 return foundPin;
             }
+
+            // Search helicopter pins
+            if (helicopterPins.TryGetValue(annotation.Snippet, out foundPin))
+            {
+                return foundPin;
+            }
+
             return null;
         }
 

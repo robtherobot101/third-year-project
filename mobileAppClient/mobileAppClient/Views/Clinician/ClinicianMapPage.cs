@@ -22,6 +22,8 @@ namespace mobileAppClient.Views.Clinician
         List<CustomMapObject> users;
         List<Hospital> hospitals;
 
+	    private int heliCount = 0;
+
         CustomMap customMap;
 
         public ClinicianMapPage()
@@ -131,7 +133,7 @@ namespace mobileAppClient.Views.Clinician
 
             await InitialiseHospitals();
 
-            AddHelicopter();
+            AddTestHelicopter();
 
             switch (tuple.Item1)
             {
@@ -345,29 +347,39 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private void AddHelicopter()
+        private void AddTestHelicopter()
         {
-            // TESTING
             Position start = new Position(-37.9061137, 176.2050742);
             Position end = new Position(-36.8613687, 174.7676895);
+            AddHelicopter(start, end, Organ.LIVER);
+        }
 
-            Helicopter heli = new Helicopter()
-            {
-                startPosition = start,
-                destinationPosition = end
-            };
+	    private void AddHelicopter(Position start, Position end, Organ organToTransferType)
+	    {
+	        String heliID = (++heliCount).ToString();
+
+	        Helicopter heli = new Helicopter()
+	        {
+	            startPosition = start,
+	            destinationPosition = end,
+                detailsShowing = false,
+	        };
 
             CustomPin heliPin = new CustomPin
-            {
-                CustomType = ODMSPinType.HELICOPTER,
-                Label = "Heli",
-                HelicopterDetails = heli,
-                Position = heli.startPosition,
-                Address = "1"
+	        {
+	            CustomType = ODMSPinType.HELICOPTER,
+                OrganToTransport = organToTransferType,
+	            Label = "Heli",
+	            HelicopterDetails = heli,
+	            Position = heli.startPosition,
+	            Address = heliID
             };
 
-            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
-            customMap.Pins.Add(heliPin);
+            // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
+	        customMap.HelicopterPins.Add(heliPin.Address, heliPin);
+
+            // Add the pin we want visible on the map (but cant track these)
+	        customMap.Pins.Add(heliPin);
         }
 
         /// <summary>
@@ -385,20 +397,28 @@ namespace mobileAppClient.Views.Clinician
 
             foreach (var singleHelicopterPin in customMap.HelicopterPins.Values)
             {
-                Position currentPosition = singleHelicopterPin.Position;
- 
+                Position currentPosition = singleHelicopterPin.Position;              
+                Position newHeliPosition = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+
                 intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
-                intermediateHeliPins[singleHelicopterPin.Address].Position = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+                intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
             }
 
             customMap.HelicopterPins = new Dictionary<String, CustomPin>(intermediateHeliPins);
 
             foreach (var singleHelicopterPin in intermediateHeliPins.Values)
             {
-                Device.BeginInvokeOnMainThread(() => { customMap.Pins.Remove(singleHelicopterPin); });
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    customMap.Pins.Remove(singleHelicopterPin);
+                });
+
                 if (!(singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
                 {
-                    Device.BeginInvokeOnMainThread(() => { customMap.Pins.Add(singleHelicopterPin); });
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        customMap.Pins.Add(singleHelicopterPin);
+                    });
                 }
                 else
                 {

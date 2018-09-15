@@ -10,6 +10,8 @@ namespace mobileAppClient.Models
         // Current location is not stored here as it is already within the Pin
         public Position destinationPosition { get; set; }
         public Position startPosition { get; set; }
+        public bool detailsShowing { get; set; }
+
 
         /// <summary>
         /// Gets the position of the helicopter after 1 tick
@@ -18,10 +20,20 @@ namespace mobileAppClient.Models
         /// <returns></returns>
         public Position getNewPosition(Position currentPosition)
         {
-            double newLatitude = currentPosition.Latitude + (destinationPosition.Latitude - startPosition.Latitude) / 100;
-            double newLongitude = currentPosition.Longitude + (destinationPosition.Longitude - startPosition.Longitude) / 100;
-
+            double newLatitude = currentPosition.Latitude + (destinationPosition.Latitude - startPosition.Latitude) / 200;
+            double newLongitude = currentPosition.Longitude + (destinationPosition.Longitude - startPosition.Longitude) / 200;
+            
             return new Position(newLatitude, newLongitude);
+        }
+
+        /// <summary>
+        /// Gets the position of where the organ pin should be nested/attached to the helicopter
+        /// </summary>
+        /// <param name="currentPosition"></param>
+        /// <returns></returns>
+        public Position getOrganPosition(Position currentPosition)
+        {
+            return new Position(currentPosition.Latitude + 0.01, currentPosition.Longitude + 0.01);
         }
 
         public bool hasArrived(Position currentPosition)
@@ -30,18 +42,6 @@ namespace mobileAppClient.Models
             bool longEqual = Math.Abs(currentPosition.Longitude - destinationPosition.Longitude) <= 0.0001;
 
             return latEqual && longEqual;
-        }
-
-
-        private double DistanceBetween()
-        {
-            double d = Math.Acos(
-                (Math.Sin(startPosition.Latitude) * Math.Sin(destinationPosition.Latitude)) +
-                (Math.Cos(startPosition.Latitude) * Math.Cos(destinationPosition.Latitude))
-                * Math.Cos(destinationPosition.Longitude - startPosition.Longitude));
-            int radiusOfEquator = 6378137;
-
-            return radiusOfEquator * d;
         }
     }
 }

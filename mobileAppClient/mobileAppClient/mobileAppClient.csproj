@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Fragments\**" />
     <Compile Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="Fragments\**" />
     <EmbeddedResource Remove="NewFolder1\**" />
+    <None Remove="Fragments\**" />
     <None Remove="NewFolder1\**" />
     <Compile Remove="Views\Diseases\DiseasesPage.xaml.cs" />
     <Compile Remove="RequestTester.cs" />
@@ -34,7 +37,6 @@
     <PackageReference Include="Xamarin.Forms" Version="3.2.0.637442-pre1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Fragments\" />
     <Folder Include="MenuItems\" />
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
