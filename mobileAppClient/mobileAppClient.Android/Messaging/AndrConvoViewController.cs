@@ -7,10 +7,12 @@ using System;
 using Android.Support.V7;
 using Android.Views;
 using Android.Support.V7.App;
+using Android.Support.V4.App;
+using Android.Graphics;
 
 namespace mobileAppClient.Droid.Messaging
 {
-    [Activity(Label = "AndrConvoViewController")]
+    [Activity(Label = "AndrConvoViewController", ParentActivity = typeof(AndrChatViewController))]
     class AndrConvoViewController : AppCompatActivity
     {
         AndrConversation conversation;
@@ -21,18 +23,24 @@ namespace mobileAppClient.Droid.Messaging
         {
             base.OnCreate(savedInstanceState);
 
-
-            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
-
-            //SetActionBar(toolbar);
-
-            //this.ActionBar.SetDisplayHomeAsUpEnabled(true);
-
+            Console.WriteLine("opopop");
             SetContentView(Resource.Layout.AndrConvoViewController);
+
+            var toolbar = FindViewById<Toolbar>(Resource.Id.custom_toolbar);
+            toolbar.SetTitleTextColor(Color.White);
+            toolbar.Title = "";
+            SetActionBar(toolbar);
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+            toolbar.NavigationOnClick += (sender, e) =>
+            {
+                NavUtils.NavigateUpFromSameTask(this);
+            };
+
+
 
             conversation = JsonConvert.DeserializeObject<AndrConversation>(Intent.GetStringExtra("ConversationJSON"));
 
-            AndrMessageArrayAdapter ArrayAdapter = new AndrMessageArrayAdapter(this, conversation.messages);
+            MessageArrayAdapter = new AndrMessageArrayAdapter(this, conversation.messages);
 
             FindViewById<ListView>(Resource.Id.messages_list_view).Adapter = MessageArrayAdapter;
 

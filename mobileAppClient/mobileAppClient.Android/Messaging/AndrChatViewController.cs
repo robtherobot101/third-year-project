@@ -5,15 +5,17 @@ using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
 using Newtonsoft.Json;
 
 namespace mobileAppClient.Droid.Messaging
 {
-    [Activity(Label = "AndrChatViewController")]
+    [Activity(Label = "AndrChatViewController", ParentActivity = typeof(MainActivity))]
     public class AndrChatViewController : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -22,7 +24,17 @@ namespace mobileAppClient.Droid.Messaging
 
             // Create your application here
             SetContentView(Resource.Layout.AndrChatViewController);
-            Console.WriteLine("abcdefgh");
+
+            var toolbar = FindViewById<Toolbar>(Resource.Id.custom_toolbar);
+            toolbar.SetTitleTextColor(Color.White);
+            toolbar.Title = "Conversations";
+            SetActionBar(toolbar);
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+            toolbar.NavigationOnClick += (sender, e) =>
+            {
+                Finish();
+            };
+
             List<TextView> messages = new List<TextView>();
 
             List<AndrConversation> conversations = new List<AndrConversation>();

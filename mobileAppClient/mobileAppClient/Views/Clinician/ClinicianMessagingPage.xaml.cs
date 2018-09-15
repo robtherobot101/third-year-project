@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Xamarin.Forms;
+using Xamarin.Forms;
 
 namespace mobileAppClient
 {

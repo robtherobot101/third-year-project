@@ -8052,9 +8052,6 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0043
 			public const int always = 2131558467;
 			
-			// aapt resource value: 0x7f0d0098
-			public const int app_bar = 2131558552;
-			
 			// aapt resource value: 0x7f0d0060
 			public const int async = 2131558496;
 			
@@ -8114,6 +8111,9 @@ namespace mobileAppClient.Droid
 			
 			// aapt resource value: 0x7f0d0078
 			public const int customPanel = 2131558520;
+			
+			// aapt resource value: 0x7f0d0097
+			public const int custom_toolbar = 2131558551;
 			
 			// aapt resource value: 0x7f0d0028
 			public const int dark = 2131558440;
@@ -8262,8 +8262,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0099
 			public const int messages_list_view = 2131558553;
 			
-			// aapt resource value: 0x7f0d0097
-			public const int messages_listview = 2131558551;
+			// aapt resource value: 0x7f0d0098
+			public const int messages_listview = 2131558552;
 			
 			// aapt resource value: 0x7f0d003c
 			public const int middle = 2131558460;
