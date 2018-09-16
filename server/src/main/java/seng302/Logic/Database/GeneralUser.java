@@ -289,13 +289,14 @@ public class GeneralUser extends DatabaseMethods {
             LocalDateTime lastModified = user.getCreationTime();
             String username = user.getUsername();
             String email = user.getEmail();
+            String nhi = user.getNhi();
             String password = user.getPassword();
             String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
         return   MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                " email, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
+                " email, nhi, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\", \"{12}\")",
                 firstName, middleNames == null ? null : "\"" + middleNames +"\"", lastName == null ? null : "\"" + lastName + "\"", preferredName, preferredMiddleNames == null ? null : "\"" + preferredMiddleNames + "\"",
-                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, password, dateOfBirth);
+                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, nhi, password, dateOfBirth);
     }
 
     /**
@@ -326,10 +327,11 @@ public class GeneralUser extends DatabaseMethods {
             statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
 
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?");
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?) AND password = ?");
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPassword());
+            statement.setString(3, user.getNhi());
+            statement.setString(4, user.getPassword());
             resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
@@ -449,6 +451,7 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("current_address"),
                     resultSet.getString("username"),
                     resultSet.getString("email"),
+                    resultSet.getString("nhi"),
                     resultSet.getString("password"),
                     resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
@@ -557,7 +560,7 @@ public class GeneralUser extends DatabaseMethods {
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                     "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, " +
-                    "email = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
+                    "email = ?, nhi = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
                     "WHERE id = ?";
             statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
@@ -584,12 +587,13 @@ public class GeneralUser extends DatabaseMethods {
             statement.setString(18, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
-            statement.setString(21, user.getPassword());
-            statement.setString(22, user.getCountry());
-            statement.setString(23, user.getCityOfDeath());
-            statement.setString(24, user.getRegionOfDeath());
-            statement.setString(25, user.getCountryOfDeath());
-            statement.setInt(26, userId);
+            statement.setString(21, user.getNhi());
+            statement.setString(22, user.getPassword());
+            statement.setString(23, user.getCountry());
+            statement.setString(24, user.getCityOfDeath());
+            statement.setString(25, user.getRegionOfDeath());
+            statement.setString(26, user.getCountryOfDeath());
+            statement.setInt(27, userId);
             System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         }
         finally {

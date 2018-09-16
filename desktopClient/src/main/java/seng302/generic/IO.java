@@ -24,13 +24,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class  IO {
 
     private static String jarPath;
-    private static String userPath;
-    private static String clinicianPath;
-    private static String adminPath;
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
@@ -195,6 +193,12 @@ public class  IO {
                 }
                 updateProgress(2, max);
 
+                for (User readUser : readUsers) {
+                    if (!User.checkNhi(readUser.getNhi())) {
+                        readUser.setNhi((char)((int)'C' + 3*ThreadLocalRandom.current().nextInt(0, 8)) + readUser.getNhi().substring(1));
+                    }
+                }
+
                 // Send POST request
                 try {
                     WindowManager.getDataManager().getUsers().exportUsers(readUsers);
@@ -222,7 +226,7 @@ public class  IO {
     }
 
     public static void runImportCSVThread(String path) {
-        Thread t = new Thread((Runnable) () -> {
+        Thread t = new Thread(() -> {
             // Start the timer
             long importTimeTaken = System.nanoTime();
             double duration;

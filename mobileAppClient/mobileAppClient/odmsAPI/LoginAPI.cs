@@ -39,7 +39,7 @@ namespace mobileAppClient.odmsAPI
             
             String queries = null;
 
-            queries = $"?usernameEmail={usernameEmail}&password={password}";
+            queries = $"?identifier={usernameEmail}&password={password}";
 
             HttpContent content = new StringContent("");
             content.Headers.Add("device_id", AppCenter.GetInstallIdAsync().Result.ToString());

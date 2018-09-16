@@ -1,5 +1,6 @@
 package seng302.Logic.Database;
 
+import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.Database.DatabaseMethods;
 import seng302.Model.Attribute.ProfileType;

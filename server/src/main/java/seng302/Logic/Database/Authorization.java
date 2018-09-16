@@ -67,11 +67,12 @@ public class Authorization extends DatabaseMethods {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-            String query = "SELECT * FROM USER WHERE (username = ? OR email = ?)";
-            statement = connection.prepareStatement(query);
+            String query = "SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
+            statement.setString(3, usernameEmail);
             resultSet = statement.executeQuery();
 
             //If response is empty then return null
