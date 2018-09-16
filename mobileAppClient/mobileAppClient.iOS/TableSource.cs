@@ -10,13 +10,14 @@ namespace mobileAppClient.iOS
 {
     public class TableSource : UITableViewSource
     {
-        string CellIdentifier = "TableCell";
-        BottomSheetViewController owner;
-        CustomPin pin;
-        string[] organs;
-        int userId;
-        CustomMap map;
-        MKMapView nativeMap;
+        public string CellIdentifier = "TableCell";
+        public BottomSheetViewController owner;
+        public CustomPin pin;
+        public string[] organs;
+        public int userId;
+        public CustomMap map;
+        public MKMapView nativeMap;
+        public List<UITableViewCell> Cells;
 
         public TableSource(CustomPin pin, CustomMap map, MKMapView nativeMap, BottomSheetViewController owner)
         {
@@ -27,6 +28,7 @@ namespace mobileAppClient.iOS
             organs = pin.Url.Split(',');
             userId = Int32.Parse(organs[organs.Length - 1]);
             organs = organs.Take(organs.Length - 1).ToArray();
+            Cells = new List<UITableViewCell>();
         }
 
 
@@ -76,6 +78,7 @@ namespace mobileAppClient.iOS
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(76, 244, 65);
                 }              }
 
+            Cells.Add(cell);
             return cell;
         }
 

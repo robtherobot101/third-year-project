@@ -131,9 +131,9 @@ namespace mobileAppClient.Views.Clinician
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
 
-            await InitialiseHospitals();
+            //await InitialiseHospitals();
 
-            AddTestHelicopter();
+            //AddTestHelicopter();
 
             switch (tuple.Item1)
             {
