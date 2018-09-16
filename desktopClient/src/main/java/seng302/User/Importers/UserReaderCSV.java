@@ -128,7 +128,7 @@ public class UserReaderCSV implements ProfileReader<User> {
                 // Finally create the user profile
                 User readUser = new User(firstName, lastNames, dateOfBirth, dateOfDeath,
                         birthGender, identityGender, bloodType, height, weight, address, region, city,
-                        zipCode, country, homePhone, mobilePhone, email);
+                        zipCode, country, homePhone, mobilePhone, email, NHI);
                 readUsers.add(readUser);
             }
 

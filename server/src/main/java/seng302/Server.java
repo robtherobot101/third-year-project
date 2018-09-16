@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
+import seng302.Logic.Database.ProfileUtils;
 import spark.Request;
 import spark.Response;
 
@@ -63,6 +64,7 @@ public class Server {
 
             post( "/login",         authorizationController::login);
             post( "/logout",        authorizationController::logout);
+            post("/password",       authorizationController::checkPassword);
             before("/reset",        profileUtils::hasAdminAccess);
             post( "/reset",         databaseController::reset);
             before("/resample",     profileUtils::hasAdminAccess);
@@ -78,6 +80,11 @@ public class Server {
             });
 
             get("/status", databaseController::status);
+
+            get("/teapot", (Request request, Response response) -> {
+                response.status(418);
+                return "I'm a little teapot,\nShort and stout!.";
+            });
 
             path("/admins", () -> {
                 before("",          profileUtils::hasAdminAccess);

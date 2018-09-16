@@ -47,6 +47,8 @@ namespace mobileAppClient
 
             hasDiedSwitch.On = UserController.Instance.LoggedInUser.dateOfDeath != null;
 
+            NHIInput.IsEnabled = isClinicianEditing;
+
             dobInput.MaximumDate = DateTime.Today;
             dodInput.MaximumDate = DateTime.Today;
 
@@ -78,6 +80,8 @@ namespace mobileAppClient
                 // Set the middle name to everything in between the first and last element
                 MiddleNameInput.Text = String.Join(" ", loggedInUser.name.GetRange(1, loggedInUser.name.Count - 2).ToArray());
             }
+
+            NHIInput.Text = loggedInUser.nhi;
 
             // Preferred Name
             PrefFirstNameInput.Text = loggedInUser.preferredName[0];
@@ -188,6 +192,8 @@ namespace mobileAppClient
 
             string givenRegion = InputValidation.Trim(RegionInput.SelectedItem == null ? "" : RegionInput.SelectedItem.ToString());
 
+            string givenNHINumber = InputValidation.Trim(NHIInput.Text);
+
             string givenHeight = InputValidation.Trim(HeightInput.Text);
             string givenWeight = InputValidation.Trim(WeightInput.Text);
             string givenBloodPressure = InputValidation.Trim(BloodPressureInput.Text);
@@ -229,6 +235,15 @@ namespace mobileAppClient
                 await DisplayAlert("", "Please enter a valid preferred last name", "OK");
                 return;
             }
+
+
+            if (!InputValidation.IsValidNhiInput(givenNHINumber))
+            {
+                await DisplayAlert("", "Please enter a valid NHI number", "OK");
+                return;
+            }
+
+
 
             // Physical attributes
             if (!InputValidation.IsValidNumericInput(givenWeight, 0, 500, true))

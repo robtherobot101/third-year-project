@@ -348,7 +348,7 @@ public class ClinicianController implements Initializable {
                 "Refreshing will update your clinician attributes to the latest version from the server, as well as updating the search table and the waiting list item table.");
         result = alert.showAndWait();
 
-        if (result != null && result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 Clinician latest = WindowManager.getDataManager().getClinicians().getClinician((int) clinician.getStaffID(), token);
                 setClinician(latest, token);
@@ -400,7 +400,13 @@ public class ClinicianController implements Initializable {
         dialog.setContentText("Please enter your password:");
         Optional<String> password = dialog.showAndWait();
         if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(clinician.getPassword())) {
+            Boolean flag = false;
+            try {
+                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), clinician.getStaffID());
+            } catch (HttpResponseException e) {
+                e.printStackTrace();
+            }
+            if (flag) {
                 try {
                     Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
                     Stage stage = new Stage();

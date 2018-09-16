@@ -129,7 +129,7 @@ public class GeneralM implements GeneralDAO {
     @Override
     public boolean isUniqueIdentifier(String usernameEmail) throws HttpResponseException {
         for(User u : users.getAllUsers(null)) {
-            if(u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail)) {
+            if(u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail) || u.getNhi().equals(usernameEmail)) {
                 return false;
             }
         }
@@ -174,6 +174,11 @@ public class GeneralM implements GeneralDAO {
 
     public void updateCountries(List<Country> countries, String token) {
         // does nothing on local
+    }
+
+    @Override
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        return null;
     }
 
     @Override

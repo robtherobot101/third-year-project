@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class GeneralUser {
+public class GeneralUser extends DatabaseMethods {
 
     /**
      * Update a user's attributes, medications, procedures, diseases, organ donations, waiting list items, and history.
@@ -65,12 +65,15 @@ public class GeneralUser {
 
             String query = buildUserQuery(params);
             System.out.println(query);
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
             }
             return users;
+        }
+        finally {
+            close();
         }
     }
 
@@ -94,6 +97,7 @@ public class GeneralUser {
 
             String nameFilter = nameFilter(params);
             String passwordFilter = matchFilter(params, "password", true);
+            String usernameFilter = matchFilter(params, "username", true);
             String userTypeFilter = userTypeFilter(params);
             String ageFilter = ageFilter(params);
             String genderFilter = matchFilter(params, "gender", false);
@@ -103,7 +107,7 @@ public class GeneralUser {
 
             List<String> filters = new ArrayList<String>();
             filters.addAll(Arrays.asList(
-                    nameFilter,passwordFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,countryFilter,organFilter
+                    nameFilter,passwordFilter,usernameFilter,userTypeFilter,ageFilter,genderFilter,regionFilter,countryFilter,organFilter
             ));
 
             filters.removeIf((String filter) -> filter.equals(""));
@@ -252,10 +256,10 @@ public class GeneralUser {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM USER id = id;
             String query = "SELECT * FROM USER WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
 
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
             //If response is empty then return null
             if (!resultSet.next()) {
@@ -264,6 +268,9 @@ public class GeneralUser {
                 //If response is not empty then return a new user Object with the fields from the database
                 return getUserFromResultSet(resultSet);
             }
+        }
+        finally {
+            close();
         }
     }
 
@@ -282,13 +289,14 @@ public class GeneralUser {
             LocalDateTime lastModified = user.getCreationTime();
             String username = user.getUsername();
             String email = user.getEmail();
+            String nhi = user.getNhi();
             String password = user.getPassword();
             String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
         return   MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                " email, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\")",
+                " email, nhi, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\", \"{12}\")",
                 firstName, middleNames == null ? null : "\"" + middleNames +"\"", lastName == null ? null : "\"" + lastName + "\"", preferredName, preferredMiddleNames == null ? null : "\"" + preferredMiddleNames + "\"",
-                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, password, dateOfBirth);
+                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, nhi, password, dateOfBirth);
     }
 
     /**
@@ -316,14 +324,15 @@ public class GeneralUser {
 //            statement.setString(10, user.getEmail());
 //            statement.setString(11, user.getPassword());
 //            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
-            PreparedStatement statement = connection.prepareStatement(createUserStatement(user));
+            statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
 
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ?) AND password = ?");
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?) AND password = ?");
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPassword());
-            ResultSet resultSet = statement.executeQuery();
+            statement.setString(3, user.getNhi());
+            statement.setString(4, user.getPassword());
+            resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
                 throw new SQLException("Could not fetch user directly after insertion.");
@@ -331,6 +340,9 @@ public class GeneralUser {
                 GeneralUser generalUser = new GeneralUser();
                 fromDb = generalUser.getUserFromResultSet(resultSet);
             }
+        }
+        finally {
+            close();
         }
         patchEntireUser(user, (int)fromDb.getId(), false);
 
@@ -364,7 +376,7 @@ public class GeneralUser {
      */
     public void insertUsers(List<User> userList) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            Statement stmt = connection.createStatement();
+            stmt = connection.createStatement();
             connection.setAutoCommit(false);
 
             for (User foundUser: userList) {
@@ -390,6 +402,9 @@ public class GeneralUser {
             }
 
         }
+        finally {
+            close();
+        }
     }
 
     /**
@@ -401,11 +416,14 @@ public class GeneralUser {
     public int getIdFromUser(String username) throws SQLException{
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT id FROM USER WHERE username = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             resultSet.next();
             return resultSet.getInt("id");
+        }
+        finally {
+            close();
         }
     }
 
@@ -433,6 +451,7 @@ public class GeneralUser {
                     resultSet.getString("current_address"),
                     resultSet.getString("username"),
                     resultSet.getString("email"),
+                    resultSet.getString("nhi"),
                     resultSet.getString("password"),
                     resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
@@ -478,171 +497,50 @@ public class GeneralUser {
             }
 
             //Get all the organs for the given user
-
-            String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
-
-            organsStatement.setInt(1, userId);
-            ResultSet organsResultSet = organsStatement.executeQuery();
-
-            while (organsResultSet.next()) {
-                user.getOrgans().add(Organ.parse(organsResultSet.getString("name")));
-            }
+            user.getOrgans().addAll(new UserDonations().getAllUserDonations(userId));
 
             //Get all the medications for the given user
+            List<Medication> medications = new UserMedications().getAllMedications(userId);
 
-            String medicationsQuery = "SELECT * FROM MEDICATION WHERE user_id = ?";
-            PreparedStatement medicationsStatement = connection.prepareStatement(medicationsQuery);
+            for (Medication medication : medications) {
 
-            medicationsStatement.setInt(1, userId);
-            ResultSet medicationsResultSet = medicationsStatement.executeQuery();
-
-            while (medicationsResultSet.next()) {
-                String[] activeIngredients = medicationsResultSet.getString("active_ingredients").split(",");
-                String[] historyStringList = medicationsResultSet.getString("history").split(",");
-
-                ArrayList<String> historyList = new ArrayList<>();
-                //Iterate through the history list to get associated values together
-                int counter = 1;
-                String historyItem = "";
-                for (int i = 0; i < historyStringList.length; i++) {
-                    if (counter % 2 == 1) {
-                        historyItem += historyStringList[i] + ",";
-                        counter++;
-                    } else {
-                        historyItem += historyStringList[i];
-                        historyList.add(historyItem);
-                        historyItem = "";
-                        counter++;
-                    }
-
-                }
-
-
-                if (historyList.size() > 0 && historyList.get(historyList.size() - 1).contains("Stopped taking")) { //Medication is historic
-                    user.getHistoricMedications().add(new Medication(
-                            medicationsResultSet.getString("name"),
-                            activeIngredients,
-                            historyList,
-                            medicationsResultSet.getInt("id")
-                    ));
+                if (medication.getHistory().size() > 0 && medication.getHistory().get(medication.getHistory().size() - 1).contains("Stopped taking")) { //Medication is historic
+                    user.getHistoricMedications().add(medication);
                 } else { //Medication is Current
-                    user.getCurrentMedications().add(new Medication(
-                            medicationsResultSet.getString("name"),
-                            activeIngredients,
-                            historyList,
-                            medicationsResultSet.getInt("id")
-                    ));
+                    user.getCurrentMedications().add(medication);
                 }
             }
 
 
             //Get all the procedures for the given user
+            List<Procedure> procedures = new UserProcedures().getAllProcedures(userId);
 
-            String proceduresQuery = "SELECT * FROM PROCEDURES WHERE user_id = ?";
-            PreparedStatement proceduresStatement = connection.prepareStatement(proceduresQuery);
-
-            proceduresStatement.setInt(1, userId);
-            ResultSet proceduresResultSet = proceduresStatement.executeQuery();
-
-            while (proceduresResultSet.next()) {
-
-                if (proceduresResultSet.getDate("date").toLocalDate().isAfter(LocalDate.now())) {
-                    ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                    for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        if (!organ.isEmpty()) {
-                            procedureOrgans.add(Organ.parse(organ));
-                        }
-                    }
-                    user.getPendingProcedures().add(new Procedure(
-                            proceduresResultSet.getString("summary"),
-                            proceduresResultSet.getString("description"),
-                            proceduresResultSet.getDate("date").toLocalDate(),
-                            procedureOrgans,
-                            proceduresResultSet.getInt("id")
-                    ));
+            for(Procedure procedure : procedures) {
+                if (procedure.getDate().isAfter(LocalDate.now())) {
+                    user.getPendingProcedures().add(procedure);
                 } else {
-                    ArrayList<Organ> procedureOrgans = new ArrayList<>();
-                    for (String organ : proceduresResultSet.getString("organs_affected").split(",")) {
-                        if (!organ.isEmpty()) {
-                            procedureOrgans.add(Organ.parse(organ));
-                        }
-                    }
-                    user.getPreviousProcedures().add(new Procedure(
-                            proceduresResultSet.getString("summary"),
-                            proceduresResultSet.getString("description"),
-                            proceduresResultSet.getDate("date").toLocalDate(),
-                            procedureOrgans,
-                            proceduresResultSet.getInt("id")
-                    ));
+                    user.getPreviousProcedures().add(procedure);
                 }
-
             }
 
             //Get all the diseases for the given user
-
-            String diseasesQuery = "SELECT * FROM DISEASE WHERE user_id = ?";
-            PreparedStatement diseasesStatement = connection.prepareStatement(diseasesQuery);
-
-            diseasesStatement.setInt(1, userId);
-            ResultSet diseasesResultSet = diseasesStatement.executeQuery();
-
-            while (diseasesResultSet.next()) {
-
-                if (diseasesResultSet.getBoolean("is_cured")) {
-                    user.getCuredDiseases().add(new Disease(
-                            diseasesResultSet.getString("name"),
-                            diseasesResultSet.getDate("diagnosis_date").toLocalDate(),
-                            diseasesResultSet.getBoolean("is_chronic"),
-                            diseasesResultSet.getBoolean("is_cured"),
-                            diseasesResultSet.getInt("id")
-                    ));
+            List<Disease> diseases = new UserDiseases().getAllDiseases(userId);
+            for (Disease disease : diseases) {
+                if (disease.isCured()) {
+                    user.getCuredDiseases().add(disease);
                 } else {
-                    user.getCurrentDiseases().add(new Disease(
-                            diseasesResultSet.getString("name"),
-                            diseasesResultSet.getDate("diagnosis_date").toLocalDate(),
-                            diseasesResultSet.getBoolean("is_chronic"),
-                            diseasesResultSet.getBoolean("is_cured"),
-                            diseasesResultSet.getInt("id")
-                    ));
+                    user.getCurrentDiseases().add(disease);
                 }
-
             }
 
             //Get all waiting list items from database
-            String waitingListQuery = "SELECT * FROM WAITING_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement waitingListStatement = connection.prepareStatement(waitingListQuery);
-            waitingListStatement.setInt(1, userId);
-            ResultSet waitingListResultSet = waitingListStatement.executeQuery();
+            List<WaitingListItem> waitingListItems = new UserWaitingList().getAllUserWaitingListItems(userId);
+            user.getWaitingListItems().addAll(waitingListItems);
 
 
-            while (waitingListResultSet.next()) {
-                Organ organ = Organ.parse(waitingListResultSet.getString("organ_type"));
-                LocalDate registeredDate = waitingListResultSet.getDate("organ_registered_date").toLocalDate();
-                LocalDate deregisteredDate = waitingListResultSet.getDate("organ_deregistered_date") != null ? waitingListResultSet.getDate("organ_deregistered_date").toLocalDate() : null;
-                int waitinguserId = waitingListResultSet.getInt("user_id");
-                int deregisteredCode = waitingListResultSet.getInt("deregistered_code");
-                int waitingListId = waitingListResultSet.getInt("id");
-
-                user.getWaitingListItems().add(new WaitingListItem(organ, registeredDate, waitingListId, waitinguserId, deregisteredDate, deregisteredCode));
-            }
-
-
-            //Get all waiting list items from database
-            String historyQuery = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
-            PreparedStatement historyStatement = connection.prepareStatement(historyQuery);
-            historyStatement.setInt(1, userId);
-            ResultSet historyResultSet = historyStatement.executeQuery();
-
-
-            while (historyResultSet.next()) {
-                LocalDateTime actionDateTime = historyResultSet.getTimestamp("dateTime").toLocalDateTime();
-                String action = historyResultSet.getString("action");
-                String description = historyResultSet.getString("description");
-                int id = historyResultSet.getInt("id");
-
-                user.getUserHistory().add(new HistoryItem(actionDateTime, action, description, id));
-            }
+            //Get all history items from database
+            List<HistoryItem> historyItems = new UserHistory().getAllHistoryItems(userId);
+            user.getUserHistory().addAll(historyItems);
 
             return user;
         }
@@ -662,9 +560,9 @@ public class GeneralUser {
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                     "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, " +
-                    "email = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
+                    "email = ?, nhi = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
                     "WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(update);
+            statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
             statement.setString(2, user.getNameArray().length > 2 ?
                     String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
@@ -689,13 +587,17 @@ public class GeneralUser {
             statement.setString(18, user.getAlcoholConsumption() != null ? user.getAlcoholConsumption().toString() : null);
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
-            statement.setString(21, user.getPassword());
-            statement.setString(22, user.getCountry());
-            statement.setString(23, user.getCityOfDeath());
-            statement.setString(24, user.getRegionOfDeath());
-            statement.setString(25, user.getCountryOfDeath());
-            statement.setInt(26, userId);
+            statement.setString(21, user.getNhi());
+            statement.setString(22, user.getPassword());
+            statement.setString(23, user.getCountry());
+            statement.setString(24, user.getCityOfDeath());
+            statement.setString(25, user.getRegionOfDeath());
+            statement.setString(26, user.getCountryOfDeath());
+            statement.setInt(27, userId);
             System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
@@ -707,9 +609,12 @@ public class GeneralUser {
     public void removeUser(User user) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM USER WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(update);
+            statement = connection.prepareStatement(update);
             statement.setLong(1, user.getId());
             System.out.println("Deletion of user: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
@@ -721,10 +626,13 @@ public class GeneralUser {
     public int countUsers() throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "SELECT count(*) AS count FROM USER";
-            PreparedStatement statement = connection.prepareStatement(update);
-            ResultSet noUsers = statement.executeQuery();
-            noUsers.next();
-            return noUsers.getInt("count");
+            statement = connection.prepareStatement(update);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt("count");
+        }
+        finally {
+            close();
         }
     }
 
@@ -738,23 +646,29 @@ public class GeneralUser {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             ArrayList<User> possibleMatches = new ArrayList<>();
             String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             while(resultSet.next()){
                 possibleMatches.add(getUserFromResultSet(resultSet));
             }
             return possibleMatches;
         }
+        finally {
+            close();
+        }
     }
 
     public void importUsers(List<User> users) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             for (User user : users) {
-                statement.addBatch(createUserStatement(user));
+                stmt.addBatch(createUserStatement(user));
             }
-            statement.executeBatch();
+            stmt.executeBatch();
+        }
+        finally {
+            close();
         }
     }
 }
