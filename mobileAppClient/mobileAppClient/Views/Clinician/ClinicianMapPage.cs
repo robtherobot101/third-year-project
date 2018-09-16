@@ -355,6 +355,12 @@ namespace mobileAppClient.Views.Clinician
             AddHelicopter(start, end, Organ.LIVER);
         }
 
+        /// <summary>
+        /// Adds a helicopter to the map!
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="organToTransferType"></param>
 	    private void AddHelicopter(Position start, Position end, Organ organToTransferType)
 	    {
 	        String heliID = (++heliCount).ToString();
@@ -423,7 +429,17 @@ namespace mobileAppClient.Views.Clinician
                 }
                 else
                 {
-                    customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                    if (!singleHelicopterPin.HelicopterDetails.isLanding)
+                    {
+                        // Start landing procedure
+                        customMap.HelicopterPins[singleHelicopterPin.Address].HelicopterDetails.isLanding = true;
+                        customMap.HelicopterPins[singleHelicopterPin.Address].HelicopterDetails.detailsShowing = false;
+                    }
+                    else
+                    {
+                        // Complete landing
+                        customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                    }
                 }
             }
         }

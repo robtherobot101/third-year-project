@@ -11,6 +11,7 @@ namespace mobileAppClient.Models
         public Position destinationPosition { get; set; }
         public Position startPosition { get; set; }
         public bool detailsShowing { get; set; }
+        public bool isLanding { get; set; }
 
 
         /// <summary>
@@ -20,6 +21,11 @@ namespace mobileAppClient.Models
         /// <returns></returns>
         public Position getNewPosition(Position currentPosition)
         {
+            if (this.hasArrived(currentPosition))
+            {
+                return destinationPosition;
+            }
+
             double newLatitude = currentPosition.Latitude + (destinationPosition.Latitude - startPosition.Latitude) / 200;
             double newLongitude = currentPosition.Longitude + (destinationPosition.Longitude - startPosition.Longitude) / 200;
             

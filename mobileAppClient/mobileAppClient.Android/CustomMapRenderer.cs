@@ -28,6 +28,7 @@ namespace CustomRenderer.Droid
         private Dictionary<Organ, int> helicopterIcons;
 
         private Tuple<CustomPin, Polyline> highlightedFlightPath;
+        private Tuple<CustomPin, Circle> highlightedOrganRange;
 
         CustomMap formsMap;
 
@@ -53,6 +54,7 @@ namespace CustomRenderer.Droid
                 intialiseHelicopterIcons();
 
                 highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
+                highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
 
                 Control.GetMapAsync(this);
             }
@@ -310,10 +312,12 @@ namespace CustomRenderer.Droid
             if (customPin.HelicopterDetails.detailsShowing)
             {
                 addFlightPath(customPin);
+                addOrganRange(customPin);
             }
             else
             {
                 clearFlightPath();
+                clearOrganRange();
             }
         }
 
@@ -324,6 +328,13 @@ namespace CustomRenderer.Droid
                 // Flight path is currently needing to be shown -> shrink path to follow heli
                 clearFlightPath();
                 addFlightPath(heliPin);              
+            }
+
+            if (highlightedOrganRange.Item2 != null)
+            {
+                // Organ range is currently needing to be shown -> move center to follow heli
+                clearOrganRange();
+                addOrganRange(heliPin);
             }
         }
 
@@ -349,10 +360,31 @@ namespace CustomRenderer.Droid
             highlightedFlightPath = new Tuple<CustomPin, Polyline>(heliPin, NativeMap.AddPolyline(currentFlightPathOptions));
         }
 
+        private void addOrganRange(CustomPin heliPin)
+        {
+            var circleOptions = new CircleOptions();
+            circleOptions.InvokeCenter(new LatLng(heliPin.Position.Latitude, heliPin.Position.Longitude));
+
+            // TODO adjust to organ countdown
+            circleOptions.InvokeRadius(40000);
+            circleOptions.InvokeFillColor(0X660000FF);
+            circleOptions.InvokeStrokeColor(0X660000FF);
+            circleOptions.InvokeStrokeWidth(0);
+
+            highlightedOrganRange = new Tuple<CustomPin, Circle>(heliPin, NativeMap.AddCircle(circleOptions));
+        }
+    
+
         private void clearFlightPath()
         {
             highlightedFlightPath.Item2.Remove();
             highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
+        }
+
+        private void clearOrganRange()
+        {
+            highlightedOrganRange.Item2.Remove();
+            highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
         }
 
         public Android.Views.View GetInfoContents(Marker marker)
