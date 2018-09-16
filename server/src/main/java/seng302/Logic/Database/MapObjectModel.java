@@ -51,12 +51,14 @@ public class MapObjectModel {
 
             mapObject.organs = new ArrayList<>();
 
-            boolean expired = true;
-            if (organsResultSet.getInt("expired") == 0){
-                expired = false;
-            }
 
             while (organsResultSet.next()) {
+
+                boolean expired = true;
+                if (organsResultSet.getInt("expired") == 0){
+                    expired = false;
+                }
+
                 DonatableOrgan organ = new DonatableOrgan(
                         LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                         Organ.parse(organsResultSet.getString("name")),
