@@ -45,9 +45,9 @@ public class Authorization extends DatabaseMethods {
     public String checkPasswordClinician(long id) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT password FROM CLINICIAN WHERE (staff_id = ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             if (!resultSet.next()){
                 return null;
             } else {
