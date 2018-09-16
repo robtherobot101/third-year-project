@@ -39,7 +39,7 @@ namespace mobileAppClient.odmsAPI
             
             String queries = null;
 
-            queries = $"?identifier={usernameEmail}&password={password}";
+            queries = $"?usernameEmail={usernameEmail}&password={password}";
 
             HttpContent content = new StringContent("");
             content.Headers.Add("device_id", AppCenter.GetInstallIdAsync().Result.ToString());
@@ -56,7 +56,6 @@ namespace mobileAppClient.odmsAPI
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
-
 
                 if (IsClinician(responseContent))
                 {
