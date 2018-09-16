@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class OrgansDatabase {
+public class OrgansDatabase extends DatabaseMethods {
 
     /**
      * gets all the organs from the database
@@ -25,12 +25,15 @@ public class OrgansDatabase {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
             String query = "SELECT * FROM DONATION_LIST_ITEM WHERE timeOfDeath IS NOT NULL and expired=0";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while(resultSet.next()){
                 allOrgans.add(getOrganFromResultSet(resultSet));
             }
             return allOrgans;
+        }
+        finally {
+            close();
         }
     }
 
@@ -38,6 +41,7 @@ public class OrgansDatabase {
     /**
      * gets all the organs from the database
      * @return returns a list of all the organs in the database
+     * @param params the params :\
      * @throws SQLException throws if cannot connect to the database
      */
     public List<DonatableOrgan> queryOrgans(Map<String, String> params) throws SQLException{
@@ -45,12 +49,15 @@ public class OrgansDatabase {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
             String query = buildOrganQuery(params);
             System.out.println(query);
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while(resultSet.next()){
                 allOrgans.add(getOrganFromResultSet(resultSet));
             }
             return allOrgans;
+        }
+        finally {
+            close();
         }
     }
 
@@ -80,12 +87,15 @@ public class OrgansDatabase {
     public void insertOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             String query = "INSERT INTO DONATION_LIST_ITEM (name, timeOfDeath, user_id) VALUES (?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, donatableOrgan.getOrganType().toString());
             statement.setLong(2, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setLong(3, donatableOrgan.getDonorId());
 
             System.out.println("Inserting new organ  -> Successful -> Rows Added: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
@@ -97,13 +107,16 @@ public class OrgansDatabase {
     public void removeOrgan(DonatableOrgan donatableOrgan) throws SQLException{
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             String query = "DELETE FROM DONATION_LIST_ITEM WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setInt(1, donatableOrgan.getId());
 
             System.out.println("Deletion of Organ - organType: "
                     + donatableOrgan.getOrganType().toString() +
                     " donor: " + donatableOrgan.getDonorId() +
                     " -> Successful -> Rows Removed: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 
@@ -115,7 +128,7 @@ public class OrgansDatabase {
     public void updateOrgan(DonatableOrgan donatableOrgan) throws SQLException {
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             String query = "UPDATE DONATION_LIST_ITEM SET timeOfDeath = ? WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setLong(1, donatableOrgan.getTimeOfDeath().atZone(ZoneId.systemDefault()).toEpochSecond());
             statement.setInt(2, donatableOrgan.getId());
 
@@ -124,6 +137,9 @@ public class OrgansDatabase {
                     " donor: " + donatableOrgan.getDonorId() +
                     " dateOfDeath: "+ donatableOrgan.getTimeOfDeath() +
                     " -> Successful -> Rows Updated: " + statement.executeUpdate());
+        }
+        finally {
+            close();
         }
     }
 

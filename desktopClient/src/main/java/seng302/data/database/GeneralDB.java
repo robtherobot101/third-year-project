@@ -22,6 +22,19 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        Debugger.log("Checking password with server.");
+        Map<String, String> queryParameters = new HashMap<>();
+        queryParameters.put("password", password);
+        queryParameters.put("id", String.valueOf(id));
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "password");
+        if(response == null) return false;
+        if (response.getStatusCode() == 200) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * login the user into the program
      * @param identifier the username/email of the user
@@ -34,7 +47,7 @@ public class GeneralDB implements GeneralDAO {
 
         Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("identifier", identifier);
+        queryParameters.put("usernameEmail", identifier);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
         if(response == null) return responseMap;
@@ -122,7 +135,7 @@ public class GeneralDB implements GeneralDAO {
      */
     public boolean isUniqueIdentifier(String identifier) {
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("identifier", identifier);
+        queryParameters.put("usernameEmail", identifier);
         APIResponse response = server.getRequest(queryParameters, null, "unique");
         return response != null && response.getAsString().equalsIgnoreCase("true");
     }

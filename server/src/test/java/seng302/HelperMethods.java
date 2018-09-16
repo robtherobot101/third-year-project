@@ -24,7 +24,7 @@ public abstract class HelperMethods {
      * Create a test user with semi-random attributes
      * @param generalUser Server access object
      * @return The created user
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     public static User insertUser(GeneralUser generalUser) throws SQLException {
         String[] middle = {"Middle" + r.nextInt(1000000)};
@@ -38,7 +38,7 @@ public abstract class HelperMethods {
      * Create a test admin with semi-random attributes
      * @param generalAdmin Server access object
      * @return The created admin
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     public static Admin insertAdmin(GeneralAdmin generalAdmin)  throws SQLException {
         Admin admin = new Admin("username" + r.nextInt(1000000), "password" + r.nextInt(1000000), "Full Name" + r.nextInt(1000000));
@@ -51,7 +51,7 @@ public abstract class HelperMethods {
      * Create a test clinician with semi-random attributes
      * @param generalClinician Server access object
      * @return The created clinician
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     public static Clinician insertClinician(GeneralClinician generalClinician) throws SQLException {
         Clinician Clinician = new Clinician("username" + r.nextInt(1000000), "password" + r.nextInt(1000000), "Full Name" + r.nextInt(1000000));
@@ -78,6 +78,7 @@ public abstract class HelperMethods {
 
     /**
      * Create a list of diseases with semi-random names and ingredients
+     * @param cured if the new disease is cured or not
      * @return A list of disease objects
      */
     public static ArrayList<Disease> makeDiseases(boolean cured) {
@@ -105,6 +106,7 @@ public abstract class HelperMethods {
 
     /**
      * Create a list of waiting list items
+     * @param userid the userid for the waiting list item
      * @return A list of waiting list items objects
      */
     public static ArrayList<WaitingListItem> makeWaitingListItems(int userid) {

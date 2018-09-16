@@ -177,6 +177,11 @@ public class GeneralM implements GeneralDAO {
     }
 
     @Override
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        return null;
+    }
+
+    @Override
     public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) {
         return new ArrayList<>();
     }

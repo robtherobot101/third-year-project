@@ -16,7 +16,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test the function to get admins from a raw resultset object from the database
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getAdminFromResultSet() throws SQLException {
@@ -38,7 +38,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test insertion of a valid Administrator
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void insertAdmin() throws SQLException {
@@ -48,7 +48,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test insertion of an admind with a non-unique username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test(expected = SQLIntegrityConstraintViolationException.class)
     public void insertDuplicateAdmin() throws SQLException {
@@ -60,7 +60,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test insertion of an admin with no username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test(expected = Exception.class)
     public void insertAdminNoUsername() throws SQLException {
@@ -70,7 +70,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test getting an ID for a valid username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getAdminIdFromUsername() throws SQLException {
@@ -80,7 +80,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test getting an ID for an invalid username
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test(expected = Exception.class)
     public void getAdminIdFromBadUsername() throws SQLException {
@@ -90,7 +90,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test getting admin with id 1
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getAdminFromId() throws SQLException {
@@ -100,7 +100,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test getting admin with id 9999
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getAdminFromBadId() throws SQLException {
@@ -110,7 +110,7 @@ public class GeneralAdminTest extends GenericTest {
 
     /**
      * Test the getAllAdmins method
-     * @throws SQLException
+     * @throws SQLException catch sql execution exceptions
      */
     @Test
     public void getAllAdmins() throws SQLException {

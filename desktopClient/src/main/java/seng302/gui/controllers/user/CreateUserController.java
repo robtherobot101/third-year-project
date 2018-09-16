@@ -79,36 +79,21 @@ public class CreateUserController implements Initializable {
     }
 
     /**
-     * Checks an NHI is of the correct format:
-     *      Starts with 3rd, 6th, 9th... letter of the alphabet
-     *      Is of the format cde1234
-     * @param nhi A National Health Index number
-     */
-    private boolean checkNhi(String nhi){
-        nhi = nhi.toLowerCase();
-        // Character 'c' has ASCII value 99
-        if ((int) nhi.charAt(0) % 3 == 0) {
-            return Pattern.matches("[a-z][a-z][a-z]\\d\\d\\d\\d", nhi);
-        }
-        else return false;
-    }
-
-    /**
      * Attempts to create a new user account based on the information currently provided by the user. Provides appropriate feedback if this fails.
      *
      * @return The created user
      */
     public User createAccount() {
         try {
-            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
+            if (!usernameInput.getText().isEmpty() && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailInput.getText())) {
+            } else if (!emailInput.getText().isEmpty() && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
                 errorText.setVisible(true);
                 return null;
-            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(nhiInput.getText())) {
+            } else if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(nhiInput.getText())) {
                 errorText.setText("There is already a user account with that NHII.");
                 errorText.setVisible(true);
                 return null;
@@ -124,7 +109,7 @@ public class CreateUserController implements Initializable {
             errorText.setText("Date of birth is in the future");
             errorText.setVisible(true);
             return null;
-        } else if (!checkNhi(nhiInput.getText())) {
+        } else if (!User.checkNhi(nhiInput.getText())) {
             errorText.setText("NHI is not valid");
             errorText.setVisible(true);
             return null;
@@ -143,7 +128,7 @@ public class CreateUserController implements Initializable {
             if (background.getScene().getWindow() == WindowManager.getStage()) {
                 try {
                     WindowManager.getDataManager().getUsers().insertUser(user);
-                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getUsername(), user.getPassword());
+                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getNhi(), user.getPassword());
                     User fromResponse = (User)response.keySet().iterator().next();
                     String token = response.values().iterator().next();
 
@@ -164,8 +149,8 @@ public class CreateUserController implements Initializable {
      * Enable/disable the create account button based on whether the required information is present or not.
      */
     private void checkRequiredFields() {
-        createAccountButton.setDisable((usernameInput.getText().isEmpty() || emailInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
-                passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null);
+        createAccountButton.setDisable((usernameInput.getText().isEmpty() && emailInput.getText().isEmpty() && nhiInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
+                passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null || nhiInput.getText().isEmpty());
     }
 
     /**
@@ -194,5 +179,6 @@ public class CreateUserController implements Initializable {
         passwordConfirmInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         firstNameInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         dateOfBirthInput.valueProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        nhiInput.textProperty().addListener(((observable, oldValue, newValue) -> checkRequiredFields()));
     }
 }

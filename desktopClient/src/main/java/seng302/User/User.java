@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * This class contains information about organ users.
@@ -718,4 +719,24 @@ public class User {
     public String getNhi() {
         return nhi;
     }
+
+    public void setNhi(String nhi) {
+        this.nhi = nhi;
+    }
+
+    /**
+     * Checks an NHI is of the correct format:
+     *      Starts with 3rd, 6th, 9th... letter of the alphabet
+     *      Is of the format cde1234
+     * @param nhi A National Health Index number
+     */
+    public static boolean checkNhi(String nhi){
+        nhi = nhi.toLowerCase();
+        // Character 'c' has ASCII value 99
+        if ((int) nhi.charAt(0) % 3 == 0) {
+            return Pattern.matches("[a-z][a-z][a-z]\\d\\d\\d\\d", nhi);
+        }
+        else return false;
+    }
+
 }

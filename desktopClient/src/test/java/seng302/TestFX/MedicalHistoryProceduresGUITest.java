@@ -42,6 +42,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Method that can be called to path correctly to the stage to be tested.
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     private void enterMedicalHistoryProceduresView() throws SQLException, HttpResponseException {
         // Assumed that calling method is currently on login screen
@@ -64,6 +66,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Adds a new procedure to the user's pending procedures table view
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     private void addNewProcedureToPendingProcedures() throws SQLException, HttpResponseException {
         enterMedicalHistoryProceduresView();
@@ -77,6 +81,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Add a completely valid procedure (both a pending and previous procedure)
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Test
     public void addAllValidProcedure() throws SQLException, HttpResponseException{
@@ -118,6 +124,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Add a procedure with an empty diagnosis but valid date
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Ignore
     @Test
@@ -133,6 +141,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Add a disease with an empty date of diagnosis but valid diagnosis
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Test
     public void addProcedureEmptyDate() throws SQLException, HttpResponseException{
@@ -146,6 +156,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Add a procedure with a valid diagnosis with date before user's date of birth
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Ignore
     @Test
@@ -163,6 +175,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Checks when a procedure is updated, changes are reflected appropriately
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Test
     public void updateProcedure() throws SQLException, HttpResponseException{
@@ -214,6 +228,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
 
     /**
      * Adds a procedure to the user and then deletes it, checking if the deletion is successful.
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Test
     public void deleteProcedure() throws SQLException, HttpResponseException{
@@ -234,6 +250,8 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
     /**
      * Adds a medication to the donor and then saves the medications, and then checks that the donor has been updated in the back end
      * as well as checking that the current medications table has been populated.
+     * @throws SQLException catch sql execution exceptions
+     * @throws HttpResponseException catch connection errors
      */
     @Ignore
     @Test

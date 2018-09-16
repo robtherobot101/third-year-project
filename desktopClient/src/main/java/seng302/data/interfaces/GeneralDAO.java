@@ -31,5 +31,7 @@ public interface GeneralDAO {
 
     void updateCountries(List<Country> countries, String token) throws HttpResponseException;
 
+    Boolean checkPassword(String password, long id) throws HttpResponseException;
+
     List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String Token) throws HttpResponseException;
 }
