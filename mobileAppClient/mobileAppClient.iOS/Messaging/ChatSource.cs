@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using mobileAppClient.Models;
 
 namespace mobileAppClient.iOS
 {
@@ -12,7 +13,6 @@ namespace mobileAppClient.iOS
     {
         static readonly NSString IncomingCellId = new NSString("Incoming");
         static readonly NSString OutgoingCellId = new NSString("Outgoing");
-
         IList<Message> messages;
 
         readonly BubbleCell[] sizingCells;
@@ -68,7 +68,7 @@ namespace mobileAppClient.iOS
             CGSize size = cell.ContentView.SystemLayoutSizeFittingSize(UIView.UILayoutFittingCompressedSize);
             return NMath.Ceiling(size.Height) + 1;
         }
-
+        
         NSString GetReuseId(MessageType msgType)
         {
             return msgType == MessageType.Incoming ? IncomingCellId : OutgoingCellId;
