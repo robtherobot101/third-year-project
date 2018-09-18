@@ -82,7 +82,7 @@ public class Notifications extends DatabaseMethods {
                 statement.setString(id++, user_id);
             }
 
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             List<String> devices = new ArrayList<>();
             while (resultSet.next()) {
                 devices.add(resultSet.getString("device_id"));
