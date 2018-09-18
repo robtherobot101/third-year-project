@@ -59,6 +59,9 @@ public class Authorization extends DatabaseMethods {
                 return resultSet.getString("password");
             }
         }
+        finally {
+            close(resultSet, statement);
+        }
     }
 
 

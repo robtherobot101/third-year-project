@@ -351,6 +351,7 @@ public class GeneralUser extends DatabaseMethods {
             resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
+                close(resultSet, statement);
                 throw new SQLException("Could not fetch user directly after insertion.");
             } else {
                 GeneralUser generalUser = new GeneralUser();

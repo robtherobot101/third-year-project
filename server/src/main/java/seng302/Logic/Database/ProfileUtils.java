@@ -278,6 +278,8 @@ public class ProfileUtils extends DatabaseMethods {
                 response.status(200);
                 return false;
             }
+            resultSet.close();
+            statement.close();
             statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
             statement.setString(1, usernameEmail);
             resultSet = statement.executeQuery();
@@ -285,6 +287,8 @@ public class ProfileUtils extends DatabaseMethods {
                 response.status(200);
                 return false;
             }
+            resultSet.close();
+            statement.close();
             statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
             statement.setString(1, usernameEmail);
             resultSet = statement.executeQuery();
