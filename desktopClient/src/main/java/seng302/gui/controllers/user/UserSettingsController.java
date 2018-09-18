@@ -67,12 +67,20 @@ public class UserSettingsController implements Initializable {
      */
     public void updateAccountDetails() {
         try {
-            if (!oldUsername.equals(usernameField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
-                errorLabel.setText("That username is already taken.");
+            if ((oldUsername != null && !oldUsername.equals(usernameField.getText())) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
+                if (usernameField.getText().isEmpty()) {
+                    errorLabel.setText("Cannot remove username.");
+                } else {
+                    errorLabel.setText("That username is already taken.");
+                }
                 errorLabel.setVisible(true);
                 return;
-            } else if (!oldEmail.equals(emailField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
-                errorLabel.setText("There is already a user account with that email.");
+            } else if ((oldEmail != null && !oldEmail.equals(emailField.getText())) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
+                if (emailField.getText().isEmpty()) {
+                    errorLabel.setText("Cannot remove email.");
+                } else {
+                    errorLabel.setText("There is already a user account with that email.");
+                }
                 errorLabel.setVisible(true);
                 return;
             }

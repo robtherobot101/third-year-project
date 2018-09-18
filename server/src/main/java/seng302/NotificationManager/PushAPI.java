@@ -95,7 +95,7 @@ public class PushAPI {
      * @param notification The Notification object containing the title, message etc.
      * @return JsonHttpContent to be sent in the POST
      */
-    private JsonHttpContent constructNotificationJson(List<String> devices, Notification notification) {
+    JsonHttpContent constructNotificationJson(List<String> devices, Notification notification) {
         Map<String, Object> notificationMap = new HashMap<>();
         notificationMap.put("notification_content", notification.getNotificationContent());
         Map<String, Object> targetMap = new HashMap<>();
