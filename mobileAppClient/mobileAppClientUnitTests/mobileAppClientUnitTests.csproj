@@ -72,7 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helichopper.cs" />
+    <Compile Include="HelichopperTest.cs" />
     <Compile Include="LoginAPITest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DrugInteractionTest.cs" />

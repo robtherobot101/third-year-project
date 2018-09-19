@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using mobileAppClient;
-using mobileAppClient.Models;
-using mobileAppClient.odmsAPI;
+﻿using mobileAppClient.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xamarin.Forms.Maps;
 
 namespace mobileAppClientUnitTests
 {
     [TestClass]
-    public class Helichopper
+    public class HelichopperTest
     {
         [TestMethod]
         public void SingleHeliMovement()

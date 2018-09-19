@@ -24,7 +24,7 @@ namespace CustomRenderer.Droid
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
         private Dictionary<Position, CustomPin> customPins;
-        private Dictionary<String, CustomPin> helicopterPins;
+        private Dictionary<string, CustomPin> helicopterPins;
         private Dictionary<Organ, int> helicopterIcons;
 
         private String selectedHeli;
@@ -61,6 +61,9 @@ namespace CustomRenderer.Droid
             }
         }
 
+        /// <summary>
+        /// Initialises a dictionary used to lookup helicopter icons based on an organ enum
+        /// </summary>
         private void intialiseHelicopterIcons()
         {
             helicopterIcons = new Dictionary<Organ, int>();
@@ -222,13 +225,13 @@ namespace CustomRenderer.Droid
         }
 
         /// <summary>
-        /// Generates marker options for a pin that contains information about a hospital
+        /// Generates marker options for a pin that contains information about a helicopter
         /// </summary>
         /// <param name="pin"></param>
         /// <returns></returns>
         private MarkerOptions CreateHelicopterMarker(CustomPin pin)
         {
-            refreshFlightPath(pin);
+            refreshFlightDetails(pin);
             
             // Create basic options
             var marker = new MarkerOptions();
@@ -326,7 +329,11 @@ namespace CustomRenderer.Droid
             }
         }
 
-        private void refreshFlightPath(CustomPin heliPin)
+        /// <summary>
+        /// Refreshes the flight path if the helicopter is currently selected
+        /// </summary>
+        /// <param name="heliPin"></param>
+        private void refreshFlightDetails(CustomPin heliPin)
         {
 
             if (heliPin.Address.Equals(selectedHeli))
@@ -343,7 +350,7 @@ namespace CustomRenderer.Droid
         }
 
         /// <summary>
-        /// Adds a polyline path in red based
+        /// Adds a polyline path based on helicopter destination and current position
         /// </summary>
         /// <param name="heliPin"></param>
         private void addFlightPath(CustomPin heliPin)
@@ -364,6 +371,10 @@ namespace CustomRenderer.Droid
             highlightedFlightPath = new Tuple<CustomPin, Polyline>(heliPin, NativeMap.AddPolyline(currentFlightPathOptions));
         }
 
+        /// <summary>
+        /// Adds a bubble that reflects the expiry range of a helicopter carrying organ
+        /// </summary>
+        /// <param name="heliPin"></param>
         private void addOrganRange(CustomPin heliPin)
         {
             var circleOptions = new CircleOptions();
@@ -371,6 +382,7 @@ namespace CustomRenderer.Droid
 
             // TODO adjust to organ countdown
             circleOptions.InvokeRadius(40000);
+
             circleOptions.InvokeFillColor(0X660000FF);
             circleOptions.InvokeStrokeColor(0X660000FF);
             circleOptions.InvokeStrokeWidth(0);
@@ -378,13 +390,18 @@ namespace CustomRenderer.Droid
             highlightedOrganRange = new Tuple<CustomPin, Circle>(heliPin, NativeMap.AddCircle(circleOptions));
         }
     
-
+        /// <summary>
+        /// Clears the highlighted flight path
+        /// </summary>
         private void clearFlightPath()
         {
             highlightedFlightPath.Item2?.Remove();
             highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
         }
 
+        /// <summary>
+        /// Clears the highlighted organ expiry range
+        /// </summary>
         private void clearOrganRange()
         {
             highlightedOrganRange.Item2?.Remove();
