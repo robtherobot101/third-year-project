@@ -16,57 +16,58 @@ public class Administration extends DatabaseMethods {
 
     /**
      * method to call to the database to check if it is online
+     *
      * @throws SQLException when the connection to te database has an error
      */
-    public void status() throws SQLException{
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()){
+    public void status() throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "SELECT staff_id FROM ADMIN WHERE staff_id = 1";
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             resultSet.next();
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
 
     /**
      * method to resample the database with default entries
+     *
      * @throws SQLException when the connection to te database has an error
-     * @throws IOException when the resource name has an error
+     * @throws IOException  when the resource name has an error
      */
     public void resample() throws SQLException, IOException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             SqlFileParser.executeFile(connection, getClass().getResourceAsStream("/resample.sql"));
         }
-        finally {
-            close();
-        }
     }
 
     /**
      * method to empty the database tables with no values
+     *
      * @throws SQLException when the connection to te database has an error
-     * @throws IOException when the resource name has an error
+     * @throws IOException  when the resource name has an error
      */
     public void reset() throws SQLException, IOException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             dropAllTables();
             SqlFileParser.executeFile(connection, getClass().getResourceAsStream("/reset.sql"));
         }
-        finally {
-            close();
-        }
     }
 
     /**
      * Drops all tables in the database
+     *
      * @throws SQLException When something goes wrong
-     * @throws IOException This should never occur
+     * @throws IOException  This should never occur
      */
     private void dropAllTables() throws SQLException, IOException {
-        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // Get statements to delete each table
             statement = connection.prepareStatement("SELECT concat('DROP TABLE IF EXISTS ', table_name, ';') " +
                     "FROM information_schema.tables " +
@@ -80,9 +81,8 @@ public class Administration extends DatabaseMethods {
             }
             sb.append("SET FOREIGN_KEY_CHECKS = 1;");
             SqlFileParser.executeFile(connection, new ByteArrayInputStream(sb.toString().getBytes()));
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 }

@@ -91,6 +91,7 @@ abstract class TestFXTest extends ApplicationTest {
                 LocalDate.of(1969, 8, 4),
                 "bflame",
                 "flameman@hotmail.com",
+                "cfj3742",
                 "password123");
         try {
             WindowManager.getDataManager().getUsers().insertUser(testUser);
