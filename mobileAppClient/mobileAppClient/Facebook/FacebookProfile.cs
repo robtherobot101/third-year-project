@@ -22,6 +22,7 @@ namespace mobileAppClient
         public string Email { get; set; }
         public string Birthday { get; set; }
         public Location Location { get; set; }
+        public string NHI { get; set; }
     }
 
     public class Location
