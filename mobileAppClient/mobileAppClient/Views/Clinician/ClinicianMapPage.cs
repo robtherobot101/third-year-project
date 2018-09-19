@@ -133,7 +133,8 @@ namespace mobileAppClient.Views.Clinician
 
             //await InitialiseHospitals();
 
-            //AddTestHelicopter();
+            AddTestHelicopter();
+            AddTest2Helicopter();
 
             switch (tuple.Item1)
             {
@@ -355,6 +356,13 @@ namespace mobileAppClient.Views.Clinician
             AddHelicopter(start, end, Organ.LIVER);
         }
 
+	    private void AddTest2Helicopter()
+	    {
+	        Position start = new Position(-36.8613687, 174.7676895);
+            Position end = new Position(-37.9061137, 176.2050742);
+            AddHelicopter(start, end, Organ.LUNG);
+        }
+
         /// <summary>
         /// Adds a helicopter to the map!
         /// </summary>
@@ -404,8 +412,17 @@ namespace mobileAppClient.Views.Clinician
 
             foreach (var singleHelicopterPin in customMap.HelicopterPins.Values)
             {
-                Position currentPosition = singleHelicopterPin.Position;              
-                Position newHeliPosition = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+                Position currentPosition = singleHelicopterPin.Position;
+                Position newHeliPosition;
+
+                if (!singleHelicopterPin.HelicopterDetails.isLanding)
+                {
+                    newHeliPosition = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+                }
+                else
+                {
+                    newHeliPosition = currentPosition;
+                }
 
                 intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
                 intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
@@ -420,27 +437,26 @@ namespace mobileAppClient.Views.Clinician
                     customMap.Pins.Remove(singleHelicopterPin);
                 });
 
-                if (!(singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        customMap.Pins.Add(singleHelicopterPin);
-                    });
-                }
-                else
+                if ((singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
                 {
                     if (!singleHelicopterPin.HelicopterDetails.isLanding)
                     {
                         // Start landing procedure
                         customMap.HelicopterPins[singleHelicopterPin.Address].HelicopterDetails.isLanding = true;
-                        customMap.HelicopterPins[singleHelicopterPin.Address].HelicopterDetails.detailsShowing = false;
                     }
                     else
                     {
                         // Complete landing
                         customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                        return;
                     }
                 }
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    customMap.Pins.Add(singleHelicopterPin);
+                });
+                
             }
         }
     }

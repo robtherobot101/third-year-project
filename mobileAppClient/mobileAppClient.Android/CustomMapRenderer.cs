@@ -27,6 +27,7 @@ namespace CustomRenderer.Droid
         private Dictionary<String, CustomPin> helicopterPins;
         private Dictionary<Organ, int> helicopterIcons;
 
+        private String selectedHeli;
         private Tuple<CustomPin, Polyline> highlightedFlightPath;
         private Tuple<CustomPin, Circle> highlightedOrganRange;
 
@@ -308,33 +309,36 @@ namespace CustomRenderer.Droid
         /// <param name="customPin"></param>
         private void processHelicopterTapped(CustomPin customPin)
         {
-            customPin.HelicopterDetails.detailsShowing = !customPin.HelicopterDetails.detailsShowing;
-            if (customPin.HelicopterDetails.detailsShowing)
+            clearFlightPath();
+            clearOrganRange();
+
+            // Heli is already highlighted, deselect
+            if (customPin.Address.Equals(selectedHeli))
             {
-                addFlightPath(customPin);
-                addOrganRange(customPin);
+                // Reset selected heli
+                selectedHeli = null;
             }
             else
             {
-                clearFlightPath();
-                clearOrganRange();
+                selectedHeli = customPin.Address;
+                addFlightPath(customPin);
+                addOrganRange(customPin);
             }
         }
 
         private void refreshFlightPath(CustomPin heliPin)
         {
-            if (highlightedFlightPath.Item2 != null)
-            {
-                // Flight path is currently needing to be shown -> shrink path to follow heli
-                clearFlightPath();
-                addFlightPath(heliPin);              
-            }
 
-            if (highlightedOrganRange.Item2 != null)
+            if (heliPin.Address.Equals(selectedHeli))
             {
-                // Organ range is currently needing to be shown -> move center to follow heli
+                clearFlightPath();
                 clearOrganRange();
-                addOrganRange(heliPin);
+
+                if (!heliPin.HelicopterDetails.hasArrived(heliPin.Position))
+                {
+                    addFlightPath(heliPin);
+                    addOrganRange(heliPin);
+                }
             }
         }
 
@@ -377,13 +381,13 @@ namespace CustomRenderer.Droid
 
         private void clearFlightPath()
         {
-            highlightedFlightPath.Item2.Remove();
+            highlightedFlightPath.Item2?.Remove();
             highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
         }
 
         private void clearOrganRange()
         {
-            highlightedOrganRange.Item2.Remove();
+            highlightedOrganRange.Item2?.Remove();
             highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
         }
 
