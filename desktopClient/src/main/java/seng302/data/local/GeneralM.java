@@ -129,7 +129,7 @@ public class GeneralM implements GeneralDAO {
     @Override
     public boolean isUniqueIdentifier(String usernameEmail) throws HttpResponseException {
         for(User u : users.getAllUsers(null)) {
-            if(u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail)) {
+            if(u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail) || u.getNhi().equals(usernameEmail)) {
                 return false;
             }
         }

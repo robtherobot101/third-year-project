@@ -11,11 +11,14 @@ public class GeneralCountries extends DatabaseMethods {
 
     /**
      * Gets all the countries from the database and if they are valid or not
+     *
      * @return returns a list of all the countries
      * @throws SQLException Throws if the database cannot be reached
      */
     public ArrayList<Country> getCountries() throws SQLException {
-        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Country> countries = new ArrayList<>();
             String query = "SELECT * FROM COUNTRIES";
             statement = connection.prepareStatement(query);
@@ -24,19 +27,20 @@ public class GeneralCountries extends DatabaseMethods {
                 countries.add(new Country(resultSet.getString("country"), resultSet.getInt("valid")));
             }
             return countries;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
     /**
      * updates all the countries in the database
+     *
      * @param countries the list of countries for the database to be updated to
      * @throws SQLException throws if the database cannot be reached
      */
     public void patchCounties(List<Country> countries) throws SQLException {
-        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "DELETE FROM COUNTRIES";
             statement = connection.prepareStatement(query);
             statement.executeUpdate();
@@ -51,9 +55,8 @@ public class GeneralCountries extends DatabaseMethods {
                 statement = connection.prepareStatement(query);
                 statement.executeUpdate();
             }
-        }
-        finally {
-            close();
+        } finally {
+            close(statement);
         }
     }
 }
