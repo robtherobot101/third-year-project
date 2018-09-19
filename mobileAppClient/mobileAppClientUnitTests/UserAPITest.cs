@@ -66,6 +66,8 @@ namespace mobileAppClientUnitTests
         #endregion
         /// <summary>
         /// This is a method
+        ///
+        /// TODO FIX NHI UPDATE
         /// </summary>
         [TestMethod]
         public async Task updateUser()
@@ -78,7 +80,7 @@ namespace mobileAppClientUnitTests
 
             UserController.Instance.Logout();
             await loginAPI.LoginUser("buzz", "drowssap");
-            Assert.AreEqual("Buzzy", UserController.Instance.LoggedInUser.name[0]);
+            Assert.AreEqual("Buzzy", UserController.Instance.LoggedInUser.FullName);
         }
 
         [TestMethod]
