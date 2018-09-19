@@ -26,7 +26,7 @@ namespace CustomRenderer.iOS
         Dictionary<String, CustomPin> helicopterPins;
         CustomMap formsMap;
         CustomPin currentPin;
-        MKCircleRenderer circleRenderer;
+        public MKCircleRenderer circleRenderer;
         MKMapView nativeMap;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
@@ -65,7 +65,7 @@ namespace CustomRenderer.iOS
             }
         }
 
-        MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
+        public MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
         {
             if (circleRenderer == null && !Equals(overlayWrapper, null))
             {
@@ -217,7 +217,7 @@ namespace CustomRenderer.iOS
             //parent.displayBottomSheet(currentPin, formsMap, nativeMap);
 
             MapEntryClass mapEntryClass = new MapEntryClass();
-            mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap);
+            mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap, this);
 
         }
 

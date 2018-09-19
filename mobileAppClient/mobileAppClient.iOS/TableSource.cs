@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
+using CustomRenderer.iOS;
 using Foundation;
 using MapKit;
 using UIKit;
@@ -17,9 +18,10 @@ namespace mobileAppClient.iOS
         public int userId;
         public CustomMap map;
         public MKMapView nativeMap;
-        public List<UITableViewCell> Cells;
+        public Dictionary<string, UITableViewCell> Cells;
+        public CustomMapRenderer customMapRenderer;
 
-        public TableSource(CustomPin pin, CustomMap map, MKMapView nativeMap, BottomSheetViewController owner)
+        public TableSource(CustomPin pin, CustomMap map, MKMapView nativeMap, BottomSheetViewController owner, CustomMapRenderer customMapRenderer)
         {
             this.nativeMap = nativeMap;
             this.map = map;
@@ -28,7 +30,8 @@ namespace mobileAppClient.iOS
             organs = pin.Url.Split(',');
             userId = Int32.Parse(organs[organs.Length - 1]);
             organs = organs.Take(organs.Length - 1).ToArray();
-            Cells = new List<UITableViewCell>();
+            Cells = new Dictionary<string, UITableViewCell>();
+            this.customMapRenderer = customMapRenderer;
         }
 
 
@@ -55,8 +58,8 @@ namespace mobileAppClient.iOS
             cell.ImageView.Image = UIImage.FromFile(photoItem);
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
-             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {                 countdownDetail = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 Tuple<string, int> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
-                int timeRemaining = timeRemainingTuple.Item2;                 if(timeRemaining <= 3600) {
+             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {                 countdownDetail = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
+                long timeRemaining = timeRemainingTuple.Item2;                 if(timeRemaining <= 3600) {
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(244, 65, 65);
                 } else if(timeRemaining <= 10800) {
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(244, 130, 65);
@@ -78,7 +81,7 @@ namespace mobileAppClient.iOS
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(76, 244, 65);
                 }              }
 
-            Cells.Add(cell);
+            Cells.Add(item.ToLower(),cell);
             return cell;
         }
 
@@ -99,7 +102,9 @@ namespace mobileAppClient.iOS
 
             string organ = organs[indexPath.Row].Replace("_icon.png", "");
 
-            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin, map, nativeMap, organ);
+            UITableViewCell currentOrganCell = Cells[organ];
+
+            var potentialRecipientsController = new PotentialMatchesBottomSheetViewController(pin, map, nativeMap, organ, currentOrganCell, customMapRenderer);
             
             var window = UIApplication.SharedApplication.KeyWindow;
 

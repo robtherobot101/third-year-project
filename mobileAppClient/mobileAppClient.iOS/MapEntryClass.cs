@@ -1,5 +1,6 @@
 ﻿using System;
 using CoreGraphics;
+using CustomRenderer.iOS;
 using MapKit;
 using mobileAppClient.Maps;
 using UIKit;
@@ -13,10 +14,10 @@ namespace mobileAppClient.iOS
         {
         }
 
-        public void addSlideUpSheet(CustomPin pin, CustomMap map, MKMapView nativeMap) {
+        public void addSlideUpSheet(CustomPin pin, CustomMap map, MKMapView nativeMap, CustomMapRenderer customMapRenderer) {
             //Get the current UI Window
             var window = UIApplication.SharedApplication.KeyWindow;
-            var bottomSheetVC = new BottomSheetViewController(pin, map, nativeMap);
+            var bottomSheetVC = new BottomSheetViewController(pin, map, nativeMap, customMapRenderer);
 
             var rootVC = window.RootViewController;
 
