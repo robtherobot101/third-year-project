@@ -49,6 +49,9 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Plugin.Geolocator">
+      <HintPath>..\..\..\..\..\.nuget\packages\xam.plugin.geolocator\4.5.0.6\lib\monoandroid71\Plugin.Geolocator.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -56,10 +59,10 @@
       <HintPath>..\packages\Xamarin.Forms.3.2.0.839982\lib\netstandard2.0\Xamarin.Forms.Core.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Maps, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.Forms.Maps.3.1.0.697729\lib\netstandard2.0\Xamarin.Forms.Maps.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Forms.Maps.3.2.0.839982\lib\netstandard2.0\Xamarin.Forms.Maps.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Maps.Design, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.Forms.Maps.3.1.0.697729\lib\netstandard2.0\Xamarin.Forms.Maps.Design.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Forms.Maps.3.2.0.839982\lib\netstandard2.0\Xamarin.Forms.Maps.Design.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Platform, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Forms.3.2.0.839982\lib\netstandard2.0\Xamarin.Forms.Platform.dll</HintPath>
@@ -69,6 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helichopper.cs" />
     <Compile Include="LoginAPITest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DrugInteractionTest.cs" />

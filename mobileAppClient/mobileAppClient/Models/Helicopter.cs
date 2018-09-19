@@ -10,7 +10,6 @@ namespace mobileAppClient.Models
         // Current location is not stored here as it is already within the Pin
         public Position destinationPosition { get; set; }
         public Position startPosition { get; set; }
-        public bool detailsShowing { get; set; }
         public bool isLanding { get; set; }
 
 

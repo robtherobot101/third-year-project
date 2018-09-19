@@ -377,7 +377,7 @@ namespace mobileAppClient.Views.Clinician
 	        {
 	            startPosition = start,
 	            destinationPosition = end,
-                detailsShowing = false,
+                isLanding = false
 	        };
 
             CustomPin heliPin = new CustomPin
@@ -414,15 +414,7 @@ namespace mobileAppClient.Views.Clinician
             {
                 Position currentPosition = singleHelicopterPin.Position;
                 Position newHeliPosition;
-
-                if (!singleHelicopterPin.HelicopterDetails.isLanding)
-                {
-                    newHeliPosition = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
-                }
-                else
-                {
-                    newHeliPosition = currentPosition;
-                }
+                newHeliPosition = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
 
                 intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
                 intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
