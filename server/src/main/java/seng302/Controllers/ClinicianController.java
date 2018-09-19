@@ -103,7 +103,7 @@ public class ClinicianController {
                 receivedClinician.setPassword(SaltHash.createHash(receivedClinician.getPassword()));
                 model.insertClinician(receivedClinician);
                 response.status(201);
-                return "placeholder token";
+                return "success";
             } catch (SQLException e) {
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);
