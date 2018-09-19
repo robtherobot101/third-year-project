@@ -67,7 +67,7 @@ namespace mobileAppClient
                             HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                             UserController.Instance.mainPageController.updateMenuPhoto();
                             await Navigation.PopModalAsync();
-                            await parentLoginPage.Navigation.PopModalAsync();
+                            await parentLoginPage.OpenMainPageFromSignUp();
                             break;
                         case HttpStatusCode.Unauthorized:
                             await DisplayAlert(
@@ -151,7 +151,7 @@ namespace mobileAppClient
                                         Console.WriteLine("Error uploading facebook photo to the server");
                                     }
                                     await Navigation.PopModalAsync();
-                                    await parentLoginPage.Navigation.PopModalAsync();
+                                    await parentLoginPage.OpenMainPageFromSignUp();
                                     break;
                                 case HttpStatusCode.Unauthorized:
                                     await DisplayAlert(
