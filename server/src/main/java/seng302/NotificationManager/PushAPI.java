@@ -5,10 +5,13 @@ import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.gson.Gson;
 import seng302.Logic.Database.Notifications;
+import seng302.Model.Message;
 import seng302.Server;
 
 
+import javax.swing.text.StringContent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -51,8 +54,10 @@ public class PushAPI {
         List<String> devices = getDevices(user_ids);
         if(devices.size() > 0) {
             for (String url : urls) {
-                // Convert notification to JSON
-                HttpContent content = constructNotificationJson(devices, notification);
+                // Get the notification JSON
+                String json = notification.toJSON(devices);
+                // Create the HttpContent
+                HttpContent content = new JsonHttpContent(new JacksonFactory(), new Gson().fromJson(json, Map.class));
                 // Create a request
                 HttpRequest request = createRequest(content, token, url);
                 // Execute the request
@@ -70,7 +75,9 @@ public class PushAPI {
      */
     public void sendMessage(Message message, int conversationId) {
         // Get the ids of users in the given conversation and assign the message to their devices
-        sendNotification(message, new ArrayList<>());
+        Notification n = new Notification("New Message", "You have unread messages");
+        n.addCustomData("message", message.getText());
+        sendNotification(n, Arrays.asList("1", "2", "3"));
     }
 
     /**
@@ -87,22 +94,6 @@ public class PushAPI {
             e.printStackTrace();
             return new ArrayList<>();
         }
-    }
-
-    /**
-     * Takes a notification and a list of devices and converts into json http content to be sent in a post request
-     * @param devices A list of Strings containing the device ids to be included in the notification
-     * @param notification The Notification object containing the title, message etc.
-     * @return JsonHttpContent to be sent in the POST
-     */
-    JsonHttpContent constructNotificationJson(List<String> devices, Notification notification) {
-        Map<String, Object> notificationMap = new HashMap<>();
-        notificationMap.put("notification_content", notification.getNotificationContent());
-        Map<String, Object> targetMap = new HashMap<>();
-        targetMap.put("type", "devices_target");
-        targetMap.put("devices", devices.toArray());
-        notificationMap.put("notification_target", targetMap);
-        return new JsonHttpContent(new JacksonFactory(), notificationMap).setMediaType(new HttpMediaType("text/json"));
     }
 
     /**

@@ -73,11 +73,13 @@ public class Notifications extends DatabaseMethods {
             for (int i = 0; i < markers.length; i++)
                 markers[i] = ((i & 1) == 0 ? '?' : ',');
             // Create the SQL query with ?,?,?,?, inserted
-            String query = "SELECT device_id FROM PUSH_DEVICE JOIN TOKEN WHERE id in (" + Arrays.toString(markers) + ") AND user_token=token";
+            String query = "SELECT device_id FROM PUSH_DEVICE JOIN TOKEN WHERE id in (" + new String(markers) + ") AND user_token=token";
             statement = connection.prepareStatement(query);
+            System.out.println(statement.getParameterMetaData().getParameterCount());
+            System.out.println(user_ids.size());
 
             // Set the the user_id for each ? in the statement
-            int id = 0;
+            int id = 1;
             for (String user_id : user_ids) {
                 statement.setString(id++, user_id);
             }
