@@ -26,11 +26,10 @@ namespace mobileAppClient.Droid
         public void addSlideUpSheet(CustomPin pin, CustomMap map)
         {
             Android.App.Activity mainActivity = CrossCurrentActivity.Current.Activity;
-            Console.WriteLine("Set main activity...");
-            
 
             Android.Views.View view = mainActivity.CurrentFocus;
             Android.Views.View root = view.RootView;
+            Android.Views.View altRoot = mainActivity.Window.DecorView.FindViewById(Android.Resource.Id.Content);
             Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
             parent.RemoveView(view);
             Console.WriteLine("Retrieved current focus...");
@@ -45,6 +44,8 @@ namespace mobileAppClient.Droid
                 Android.Widget.RelativeLayout bottom = main.FindViewById<Android.Widget.RelativeLayout>(Resource.Id.mainWindow);
                 bottom.AddView(view);
                 mainActivity.SetContentView(main);
+
+                
                 //parent.AddView(bottomSheetView);
                 //inflate to bsheet 
 

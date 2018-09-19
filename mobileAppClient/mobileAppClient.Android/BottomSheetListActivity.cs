@@ -32,7 +32,7 @@ namespace mobileAppClient.Droid
             //}
 
             base.OnCreate(bundle);
-            //SetContentView(Resource.Layout.BottomSheet);
+            SetContentView(Resource.Layout.OrganTransfer);
 
            // SupportActionBar.SetDisplayHomeAsUpEnabled(true);
           //  SupportActionBar.SetDisplayShowHomeEnabled(true);
@@ -46,7 +46,7 @@ namespace mobileAppClient.Droid
             //var listView = FindViewById<ListView>(Resource.Id.listView);
             //listView.Adapter = this.adapter;
             //listView.OnItemClickListener = this;
-            ShowBottomSheet();
+            PrepareSheet();
 
         }
 
@@ -64,12 +64,97 @@ namespace mobileAppClient.Droid
         //    this.ShowBottomSheet(this.selectedPosition);
         //}
 
-        public void ShowBottomSheet()
+        public void PrepareSheet()
         {
-            BottomSheetFragment fragment =
-                BottomSheetFragment.NewInstance();
+            var name = FindViewById<TextView>(Resource.Id.User_Name);
+            var address = FindViewById<TextView>(Resource.Id.Address);
+            var profilePicture = FindViewById<ImageView>(Resource.Id.ProfilePictureFrame);
+            var organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
 
-            fragment.Show(this.SupportFragmentManager, "dialog");
+            if (name != null)
+            {
+                name.Text = Intent.GetStringExtra("name");
+            }
+            if (address != null)
+            {
+                address.Text = Intent.GetStringExtra("address");
+            }
+            if (profilePicture != null)
+            {
+                var pictureString = Intent.GetStringExtra("profilePicture");
+                if (pictureString.Length == 0)
+                {
+                    profilePicture.SetImageResource(Resource.Drawable.donationIcon);
+                }
+                else
+                {
+                    var imageBytes = Convert.FromBase64String(pictureString);
+                    var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                    profilePicture.SetImageBitmap(imageData);
+                }
+            }
+
+            var organString = Intent.GetStringExtra("organs");
+
+            var organs = organString.Split(',');
+            foreach (var organ in organs)
+            {
+                TableRow organRow = new TableRow(this);
+                TextView organText = new TextView(this);
+                ImageView organImage = new ImageView(this);
+                switch (organ)
+                {
+                    case "bone_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.bone_icon);
+                        organText.Text = "Bone Marrow";
+                        break;
+                    case "ear_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.ear_icon);
+                        organText.Text = "Middle Ear";
+                        break;
+                    case "eye_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.eye_icon);
+                        organText.Text = "Cornea";
+                        break;
+                    case "heart_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.heart_icon);
+                        organText.Text = "Heart";
+                        break;
+                    case "intestines_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.intestines_icon);
+                        organText.Text = "Intestines";
+                        break;
+                    case "kidney_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.kidney_icon);
+                        organText.Text = "Kidney";
+                        break;
+                    case "liver_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.liver_icon);
+                        organText.Text = "Liver";
+                        break;
+                    case "lungs_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.lungs_icon);
+                        organText.Text = "Lungs";
+                        break;
+                    case "pancreas_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.pancreas_icon);
+                        organText.Text = "Pancreas";
+                        break;
+                    case "skin_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.skin_icon);
+                        organText.Text = "Skin";
+                        break;
+                    case "tissue_icon.png":
+                        organImage.SetImageResource(Resource.Drawable.tissue_icon);
+                        organText.Text = "Connective Tissue";
+                        break;
+                }
+                organRow.AddView(organImage);
+                organRow.AddView(organText);
+                organTable.AddView(organRow);
+
+            }
+               
 
         }
 

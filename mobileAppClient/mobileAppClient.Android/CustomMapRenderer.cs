@@ -263,14 +263,70 @@ namespace CustomRenderer.Droid
                 throw new Exception("Custom pin not found");
             }
 
-           // ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-           // parent.displayBottomSheet(customPin, formsMap);
+            Android.App.Activity mainActivity = CrossCurrentActivity.Current.Activity;
+            var view = mainActivity.CurrentFocus;
+            Android.Views.View root = view.RootView;
+            Android.Views.View altRoot = mainActivity.Window.DecorView.FindViewById(Android.Resource.Id.Content);
+            Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
+
+            Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
+            intent.PutExtra("name", customPin.Label);
+            intent.PutExtra("address", customPin.Address);
+            intent.PutExtra("profilePicture", customPin.userPhoto);
+            intent.PutExtra("organs", customPin.Url);
+            mainActivity.StartActivity(intent);
 
 
-        
-            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+            // ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
 
-            parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
+            // parent.displayBottomSheet(customPin, formsMap); 
+
+            // parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
+
+            if (Android.App.Application.Context.GetSystemService(Context.LayoutInflaterService) is Android.Views.LayoutInflater inflater)
+            {
+                Android.Views.View detailsView;
+                // detailsView.FindViewById<TextView>(Resource.Id.)
+
+                //detailsView = inflater.Inflate(Resource.Layout.OrganTransfer, null);
+
+                //var name = detailsView.FindViewById<TextView>(Resource.Id.User_Name);
+                //var address = detailsView.FindViewById<TextView>(Resource.Id.Address);
+                //var profilePicture = detailsView.FindViewById<ImageView>(Resource.Id.ProfilePictureFrame);
+
+                //Android.App.Activity mainActivity = CrossCurrentActivity.Current.Activity;
+
+                //var view = mainActivity.CurrentFocus;
+                //Android.Views.View root = view.RootView;
+                //Android.Views.View altRoot = mainActivity.Window.DecorView.FindViewById(Android.Resource.Id.Content);
+                //Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
+
+
+
+                //if (name != null)
+                //{
+                //    name.Text = customPin.Label;
+                //}
+                //if (address != null)
+                //{
+                //    address.Text = customPin.Address;
+                //}
+                //if (profilePicture != null)
+                //{
+                //    if (customPin.userPhoto.Length == 0)
+                //    {
+                //        profilePicture.SetImageResource(Resource.Drawable.donationIcon);
+                //    }
+                //    else
+                //    {
+                //        var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+                //        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                //        profilePicture.SetImageBitmap(imageData);
+                //    }
+                //}
+
+                //parent.AddView(detailsView);
+            }
         }
 
         public Android.Views.View GetInfoContents(Marker marker)
@@ -291,91 +347,91 @@ namespace CustomRenderer.Droid
                 }
 
                 ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-                parent.displayBottomSheet(customPin, formsMap);
+                //parent.displayBottomSheet(customPin, formsMap);
 
 
                 view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);
 
 
-                //        var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
-                //        var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
-                //        var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
-                //        var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
+                var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
+                var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
+                var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
+                var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
+
+                
 
 
 
-
-
-                //        if (infoTitle != null)
-                //        {
-                //            infoTitle.Text = customPin.Label;
-                //        }
-                //        if (infoAddress != null)
-                //        {
-                //            infoAddress.Text = customPin.Address;
-                //        }
-                //        if (imageFrame != null)
-                //        {
-                //            if (customPin.userPhoto.Length == 0)
-                //            {
-                //                imageFrame.SetImageResource(Resource.Drawable.donationIcon);
-                //            }
-                //            else
-                //            {
-                //                var imageBytes = Convert.FromBase64String(customPin.userPhoto);
-                //                var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
-                //                imageFrame.SetImageBitmap(imageData);
-                //            }
-                //        }
-                //        if (organFrame != null)
-                //        {
-                //            var organs = customPin.Url.Split(',');
-                //            foreach (var organ in organs)
-                //            {
-                //                var organImage = new ImageView(Context.ApplicationContext);
-                //                switch (organ)
-                //                {
-                //                    case "bone_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.bone_icon);
-                //                        break;
-                //                    case "ear_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.ear_icon);
-                //                        break;
-                //                    case "eye_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.eye_icon);
-                //                        break;
-                //                    case "heart_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.heart_icon);
-                //                        break;
-                //                    case "intestines_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.intestines_icon);
-                //                        break;
-                //                    case "kidney_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.kidney_icon);
-                //                        break;
-                //                    case "liver_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.liver_icon);
-                //                        break;
-                //                    case "lungs_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.lungs_icon);
-                //                        break;
-                //                    case "pancreas_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.pancreas_icon);
-                //                        break;
-                //                    case "skin_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.skin_icon);
-                //                        break;
-                //                    case "tissue_icon.png":
-                //                        organImage.SetImageResource(Resource.Drawable.tissue_icon);
-                //                        break;
-                //                }
-                //                organImage.SetAdjustViewBounds(true);
-                //                organImage.SetMaxHeight(80);
-                //                organImage.SetMaxWidth(80);
-                //                organImage.SetPadding(5, 0, 5, 0);
-                //                organFrame.AddView(organImage);
-                //            }
-                //        }
+                if (infoTitle != null)
+                {
+                    infoTitle.Text = customPin.Label;
+                }
+                if (infoAddress != null)
+                {
+                    infoAddress.Text = customPin.Address;
+                }
+                if (imageFrame != null)
+                {
+                    if (customPin.userPhoto.Length == 0)
+                    {
+                        imageFrame.SetImageResource(Resource.Drawable.donationIcon);
+                    }
+                    else
+                    {
+                        var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+                        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                        imageFrame.SetImageBitmap(imageData);
+                    }
+                }
+                if (organFrame != null)
+                {
+                    var organs = customPin.Url.Split(',');
+                    foreach (var organ in organs)
+                    {
+                        var organImage = new ImageView(Context.ApplicationContext);
+                        switch (organ)
+                        {
+                            case "bone_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.bone_icon);
+                                break;
+                            case "ear_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.ear_icon);
+                                break;
+                            case "eye_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.eye_icon);
+                                break;
+                            case "heart_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.heart_icon);
+                                break;
+                            case "intestines_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.intestines_icon);
+                                break;
+                            case "kidney_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.kidney_icon);
+                                break;
+                            case "liver_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.liver_icon);
+                                break;
+                            case "lungs_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.lungs_icon);
+                                break;
+                            case "pancreas_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.pancreas_icon);
+                                break;
+                            case "skin_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.skin_icon);
+                                break;
+                            case "tissue_icon.png":
+                                organImage.SetImageResource(Resource.Drawable.tissue_icon);
+                                break;
+                        }
+                        organImage.SetAdjustViewBounds(true);
+                        organImage.SetMaxHeight(80);
+                        organImage.SetMaxWidth(80);
+                        organImage.SetPadding(5, 0, 5, 0);
+                        organFrame.AddView(organImage);
+                    }
+                }
 
 
                 return view;

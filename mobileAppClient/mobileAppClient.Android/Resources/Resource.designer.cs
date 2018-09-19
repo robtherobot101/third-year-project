@@ -8192,23 +8192,26 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0042
 			public const int ALT = 2131558466;
 			
+			// aapt resource value: 0x7f0d00ed
+			public const int Address = 2131558637;
+			
 			// aapt resource value: 0x7f0d0043
 			public const int CTRL = 2131558467;
 			
 			// aapt resource value: 0x7f0d0044
 			public const int FUNCTION = 2131558468;
 			
-			// aapt resource value: 0x7f0d00f0
-			public const int ImageFrame = 2131558640;
+			// aapt resource value: 0x7f0d00f9
+			public const int ImageFrame = 2131558649;
 			
-			// aapt resource value: 0x7f0d00f5
-			public const int InfoWindowAddress = 2131558645;
+			// aapt resource value: 0x7f0d00fb
+			public const int InfoWindowAddress = 2131558651;
 			
-			// aapt resource value: 0x7f0d00f6
-			public const int InfoWindowButton = 2131558646;
+			// aapt resource value: 0x7f0d00fc
+			public const int InfoWindowButton = 2131558652;
 			
-			// aapt resource value: 0x7f0d00f3
-			public const int InfoWindowTitle = 2131558643;
+			// aapt resource value: 0x7f0d00fa
+			public const int InfoWindowTitle = 2131558650;
 			
 			// aapt resource value: 0x7f0d00a6
 			public const int Itemname = 2131558566;
@@ -8216,8 +8219,11 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0045
 			public const int META = 2131558469;
 			
-			// aapt resource value: 0x7f0d00ee
-			public const int OrganFrame = 2131558638;
+			// aapt resource value: 0x7f0d00f7
+			public const int OrganFrame = 2131558647;
+			
+			// aapt resource value: 0x7f0d00eb
+			public const int ProfilePictureFrame = 2131558635;
 			
 			// aapt resource value: 0x7f0d0046
 			public const int SHIFT = 2131558470;
@@ -8225,8 +8231,11 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0047
 			public const int SYM = 2131558471;
 			
-			// aapt resource value: 0x7f0d00e8
-			public const int SegControl = 2131558632;
+			// aapt resource value: 0x7f0d00f1
+			public const int SegControl = 2131558641;
+			
+			// aapt resource value: 0x7f0d00ea
+			public const int User_Name = 2131558634;
 			
 			// aapt resource value: 0x7f0d00d8
 			public const int action0 = 2131558616;
@@ -8429,6 +8438,9 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0050
 			public const int enterAlwaysCollapsed = 2131558480;
 			
+			// aapt resource value: 0x7f0d00f0
+			public const int exampleRow = 2131558640;
+			
 			// aapt resource value: 0x7f0d0051
 			public const int exitUntilCollapsed = 2131558481;
 			
@@ -8531,14 +8543,14 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d00a0
 			public const int mainWindow = 2131558560;
 			
-			// aapt resource value: 0x7f0d00f8
-			public const int masked = 2131558648;
+			// aapt resource value: 0x7f0d00fe
+			public const int masked = 2131558654;
 			
 			// aapt resource value: 0x7f0d00db
 			public const int media_actions = 2131558619;
 			
-			// aapt resource value: 0x7f0d00eb
-			public const int message = 2131558635;
+			// aapt resource value: 0x7f0d00f4
+			public const int message = 2131558644;
 			
 			// aapt resource value: 0x7f0d0041
 			public const int middle = 2131558465;
@@ -8657,6 +8669,9 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d00dd
 			public const int notification_main_column_container = 2131558621;
 			
+			// aapt resource value: 0x7f0d00ef
+			public const int organTableLayout = 2131558639;
+			
 			// aapt resource value: 0x7f0d00b5
 			public const int pager = 2131558581;
 			
@@ -8687,11 +8702,11 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0086
 			public const int radio = 2131558534;
 			
-			// aapt resource value: 0x7f0d00ef
-			public const int relative = 2131558639;
+			// aapt resource value: 0x7f0d00f8
+			public const int relative = 2131558648;
 			
-			// aapt resource value: 0x7f0d00ec
-			public const int relativeLayout1 = 2131558636;
+			// aapt resource value: 0x7f0d00f5
+			public const int relativeLayout1 = 2131558645;
 			
 			// aapt resource value: 0x7f0d0059
 			public const int right = 2131558489;
@@ -8765,8 +8780,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d009b
 			public const int select_dialog_listview = 2131558555;
 			
-			// aapt resource value: 0x7f0d00f9
-			public const int shape_id = 2131558649;
+			// aapt resource value: 0x7f0d00ff
+			public const int shape_id = 2131558655;
 			
 			// aapt resource value: 0x7f0d0085
 			public const int shortcut = 2131558533;
@@ -8783,8 +8798,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d009e
 			public const int sliding_layout = 2131558558;
 			
-			// aapt resource value: 0x7f0d00e9
-			public const int sliding_tabs = 2131558633;
+			// aapt resource value: 0x7f0d00f2
+			public const int sliding_tabs = 2131558642;
 			
 			// aapt resource value: 0x7f0d00a7
 			public const int smallLabel = 2131558567;
@@ -8831,17 +8846,17 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0030
 			public const int tabMode = 2131558448;
 			
-			// aapt resource value: 0x7f0d00f1
-			public const int tableLayout1 = 2131558641;
+			// aapt resource value: 0x7f0d00e8
+			public const int tableLayout1 = 2131558632;
 			
-			// aapt resource value: 0x7f0d00ed
-			public const int tableLayout2 = 2131558637;
+			// aapt resource value: 0x7f0d00f6
+			public const int tableLayout2 = 2131558646;
 			
-			// aapt resource value: 0x7f0d00f2
-			public const int tableRow1 = 2131558642;
+			// aapt resource value: 0x7f0d00e9
+			public const int tableRow1 = 2131558633;
 			
-			// aapt resource value: 0x7f0d00f4
-			public const int tableRow3 = 2131558644;
+			// aapt resource value: 0x7f0d00ec
+			public const int tableRow3 = 2131558636;
 			
 			// aapt resource value: 0x7f0d0019
 			public const int tag_transition_group = 2131558425;
@@ -8860,6 +8875,9 @@ namespace mobileAppClient.Droid
 			
 			// aapt resource value: 0x7f0d007a
 			public const int textSpacerNoTitle = 2131558522;
+			
+			// aapt resource value: 0x7f0d00ee
+			public const int textView = 2131558638;
 			
 			// aapt resource value: 0x7f0d00b4
 			public const int text_input_password_toggle = 2131558580;
@@ -8882,8 +8900,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0080
 			public const int title_template = 2131558528;
 			
-			// aapt resource value: 0x7f0d00ea
-			public const int toolbar = 2131558634;
+			// aapt resource value: 0x7f0d00f3
+			public const int toolbar = 2131558643;
 			
 			// aapt resource value: 0x7f0d004e
 			public const int top = 2131558478;
@@ -8924,8 +8942,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0016
 			public const int view_offset_helper = 2131558422;
 			
-			// aapt resource value: 0x7f0d00f7
-			public const int visible = 2131558647;
+			// aapt resource value: 0x7f0d00fd
+			public const int visible = 2131558653;
 			
 			// aapt resource value: 0x7f0d00cd
 			public const int volume_item_container = 2131558605;
@@ -9252,40 +9270,43 @@ namespace mobileAppClient.Droid
 			public const int notification_template_part_time = 2130968645;
 			
 			// aapt resource value: 0x7f040046
-			public const int RadioButton = 2130968646;
+			public const int OrganTransfer = 2130968646;
 			
 			// aapt resource value: 0x7f040047
-			public const int RadioGroup = 2130968647;
+			public const int RadioButton = 2130968647;
 			
 			// aapt resource value: 0x7f040048
-			public const int select_dialog_item_material = 2130968648;
+			public const int RadioGroup = 2130968648;
 			
 			// aapt resource value: 0x7f040049
-			public const int select_dialog_multichoice_material = 2130968649;
+			public const int select_dialog_item_material = 2130968649;
 			
 			// aapt resource value: 0x7f04004a
-			public const int select_dialog_singlechoice_material = 2130968650;
+			public const int select_dialog_multichoice_material = 2130968650;
 			
 			// aapt resource value: 0x7f04004b
-			public const int sfautocomplete_layout = 2130968651;
+			public const int select_dialog_singlechoice_material = 2130968651;
 			
 			// aapt resource value: 0x7f04004c
-			public const int support_simple_spinner_dropdown_item = 2130968652;
+			public const int sfautocomplete_layout = 2130968652;
 			
 			// aapt resource value: 0x7f04004d
-			public const int Tabbar = 2130968653;
+			public const int support_simple_spinner_dropdown_item = 2130968653;
 			
 			// aapt resource value: 0x7f04004e
-			public const int Toolbar = 2130968654;
+			public const int Tabbar = 2130968654;
 			
 			// aapt resource value: 0x7f04004f
-			public const int tooltip = 2130968655;
+			public const int Toolbar = 2130968655;
 			
 			// aapt resource value: 0x7f040050
-			public const int vertical_viewpager = 2130968656;
+			public const int tooltip = 2130968656;
 			
 			// aapt resource value: 0x7f040051
-			public const int XamarinMapInfoWindow = 2130968657;
+			public const int vertical_viewpager = 2130968657;
+			
+			// aapt resource value: 0x7f040052
+			public const int XamarinMapInfoWindow = 2130968658;
 			
 			static Layout()
 			{
