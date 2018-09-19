@@ -62,28 +62,25 @@ public class Notifications extends DatabaseMethods {
      * @return A list of the device UUIDs on which the user has logged in
      * @throws SQLException When something goes wrong
      */
-    public List<String> getDevices(List<String> user_ids) throws SQLException {
+    public List<String> getDevices(String[] user_ids) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // Note that what follows is the only way to achieve this in MySQL!
 
             // Set up the ?,?,?,?, portion of the sql statement
-            char[] markers = new char[user_ids.size() * 2 - 1];
+            char[] markers = new char[user_ids.length * 2 - 1];
             for (int i = 0; i < markers.length; i++)
                 markers[i] = ((i & 1) == 0 ? '?' : ',');
             // Create the SQL query with ?,?,?,?, inserted
             String query = "SELECT device_id FROM PUSH_DEVICE JOIN TOKEN WHERE id in (" + new String(markers) + ") AND user_token=token";
             statement = connection.prepareStatement(query);
-            System.out.println(statement.getParameterMetaData().getParameterCount());
-            System.out.println(user_ids.size());
 
             // Set the the user_id for each ? in the statement
             int id = 1;
             for (String user_id : user_ids) {
                 statement.setString(id++, user_id);
             }
-
             resultSet = statement.executeQuery();
             List<String> devices = new ArrayList<>();
             while (resultSet.next()) {

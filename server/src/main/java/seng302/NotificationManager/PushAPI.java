@@ -49,7 +49,7 @@ public class PushAPI {
      * @param notification The notification object containing title, message etc.
      * @param user_ids      The IDs of the users to which the notification is being sent
      */
-    public void sendNotification(Notification notification, List<String> user_ids) {
+    public void sendNotification(Notification notification, String... user_ids) {
         // Get the devices on which the users are logged on
         List<String> devices = getDevices(user_ids);
         if(devices.size() > 0) {
@@ -77,7 +77,7 @@ public class PushAPI {
         // Get the ids of users in the given conversation and assign the message to their devices
         Notification n = new Notification("New Message", "You have unread messages");
         n.addCustomData("message", message.getText());
-        sendNotification(n, Arrays.asList("1", "2", "3"));
+        sendNotification(n, "1", "2", "3");
     }
 
     /**
@@ -85,9 +85,9 @@ public class PushAPI {
      * @param user_ids The IDs of the users
      * @return A list of Strings representing the IDs of each device the user with the given ID is logged in on
      */
-    private List<String> getDevices(List<String> user_ids) {
+    private List<String> getDevices(String[] user_ids) {
         try {
-            Server.getInstance().log.info("Getting devices logged in by users with ids " + user_ids.toString());
+            Server.getInstance().log.info("Getting devices logged in by users with ids " + Arrays.toString(user_ids));
             return notificationsDatabase.getDevices(user_ids);
         } catch (SQLException e) {
             Server.getInstance().log.info("Failed to get devices");
