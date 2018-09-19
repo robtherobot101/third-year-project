@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using SegmentedControl;
 using Plugin.CrossPlatformTintedImage;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 using Foundation;
 using ImageCircle.Forms.Plugin.iOS;
 using UIKit;
+using Microsoft.AppCenter.Push;
 
 namespace mobileAppClient.iOS
 {
@@ -37,6 +41,29 @@ namespace mobileAppClient.iOS
             ImageCircleRenderer.Init();
 
             return base.FinishedLaunching(app, options);
+        }
+
+        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        {
+            Push.RegisteredForRemoteNotifications(deviceToken);
+        }
+
+        public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+        {
+            Push.FailedToRegisterForRemoteNotifications(error);
+        }
+
+        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, System.Action<UIBackgroundFetchResult> completionHandler)
+        {
+            var result = Push.DidReceiveRemoteNotification(userInfo);
+            if (result)
+            {
+                completionHandler?.Invoke(UIBackgroundFetchResult.NewData);
+            }
+            else
+            {
+                completionHandler?.Invoke(UIBackgroundFetchResult.NoData);
+            }
         }
     }
 }
