@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -492,46 +494,71 @@ public class UserController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
-        TextInputDialog dialog = new TextInputDialog("");
+        Dialog<ButtonType> dialog = new Dialog();
+        WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
-        dialog.setContentText("Please enter your password:");
-        WindowManager.setIconAndStyle(dialog.getDialogPane());
-        dialog.getDialogPane().getStyleClass().add("dialog");
 
-        Optional<String> password = dialog.showAndWait();
-        if (password.isPresent()) { //Ok was pressed, Else cancel
-            Boolean flag = false;
-            try {
-                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), currentUser.getId());
-            } catch (HttpResponseException e) {
-                e.printStackTrace();
-            }
-            if (flag) {
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        PasswordField passwordfield = new PasswordField();
+        passwordfield.setPromptText("Password");
+        grid.add(new Label("Enter your password:"), 0, 1);
+        grid.add(passwordfield, 1, 1);
+
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        passwordfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        result.ifPresent(option -> {
+            if (result.get() == loginButtonType) { //Ok was pressed, Else cancel
+                String password = passwordfield.getText();
+                Boolean flag = false;
                 try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
-                    Parent root = fxmlLoader.load();
-                    Stage stage = new Stage();
-                    stage.getIcons().add(WindowManager.getIcon());
-                    stage.setResizable(false);
-                    stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 270, 330));
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    UserSettingsController userSettingsController = fxmlLoader.getController();
-                    userSettingsController.setCurrentUser(currentUser);
-                    userSettingsController.setParent(this);
-                    userSettingsController.populateAccountDetails();
-                    userSettingsController.setEnterEvent();
-                    stage.showAndWait();
-
-                } catch (Exception e) {
+                    flag = WindowManager.getDataManager().getGeneral().checkPassword(password, currentUser.getId());
+                } catch (HttpResponseException e) {
                     e.printStackTrace();
                 }
-            } else { // Password incorrect
-                WindowManager.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view " +
-                        "account settings").show();
+                if (flag) {
+                    try {
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user/userAccountSettings.fxml"));
+                        Parent root = fxmlLoader.load();
+                        Stage stage = new Stage();
+                        stage.getIcons().add(WindowManager.getIcon());
+                        stage.setResizable(false);
+                        stage.setTitle("Account Settings");
+                        stage.setScene(new Scene(root, 270, 330));
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        UserSettingsController userSettingsController = fxmlLoader.getController();
+                        userSettingsController.setCurrentUser(currentUser);
+                        userSettingsController.setParent(this);
+                        userSettingsController.populateAccountDetails();
+                        userSettingsController.setEnterEvent();
+                        stage.showAndWait();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else { // Password incorrect
+                    WindowManager.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view " +
+                            "account settings").show();
+                }
             }
-        }
+        });
     }
 
     /**
@@ -598,6 +625,7 @@ public class UserController implements Initializable {
     public void setControlsShown(Boolean shown) {
         waitingListController.setControlsShown(shown);
         proceduresController.setControlsShown(shown);
+        attributesController.setControlsShown(shown);
         diseasesController.setControlsShown(shown);
         medicationsController.setControlsShown(shown);
         logoutMenuItem.setDisable(shown);

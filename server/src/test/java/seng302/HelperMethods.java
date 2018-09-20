@@ -28,7 +28,7 @@ public abstract class HelperMethods {
      */
     public static User insertUser(GeneralUser generalUser) throws SQLException {
         String[] middle = {"Middle" + r.nextInt(1000000)};
-        User user = new User("First" + r.nextInt(1000000), middle, "Last" + r.nextInt(1000000), LocalDate.of(1900 + r.nextInt(100), 8, 4), "username5" + r.nextInt(1000000), "email5@domain.com" + r.nextInt(1000000), "password");
+        User user = new User("First" + r.nextInt(1000000), middle, "Last" + r.nextInt(1000000), LocalDate.of(1900 + r.nextInt(100), 8, 4), "username5" + r.nextInt(1000000), "email5@domain.com" + r.nextInt(1000000), "chj" + r.nextInt(9999), "password");
         generalUser.insertUser(user);
         user.setId(generalUser.getIdFromUser(user.getUsername()));
         return user;

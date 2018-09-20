@@ -275,7 +275,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         try {
             HashMap filterParams = new HashMap();
 
-            if(!countryComboBox.getValue().toString().equals("All Countries")) {
+            if(countryComboBox.getValue() != null && !countryComboBox.getValue().toString().equals("All Countries")) {
                 filterParams.put("country", countryComboBox.getValue().toString());
             }
 
@@ -518,21 +518,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
 
 
-        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
-        regionTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        regionTextField.textProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
-        organFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        organFilter.valueProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
-        receiverNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        receiverNameTextField.textProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
 
 

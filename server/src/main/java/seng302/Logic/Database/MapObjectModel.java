@@ -16,6 +16,8 @@ import java.util.Set;
 public class MapObjectModel extends DatabaseMethods {
 
     public ArrayList<MapObject> getAllMapObjects() throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<MapObject> allMapObjects = new ArrayList<>();
             String query =
@@ -31,9 +33,8 @@ public class MapObjectModel extends DatabaseMethods {
             }
 
             return allMapObjects;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
@@ -42,7 +43,7 @@ public class MapObjectModel extends DatabaseMethods {
         MapObject mapObject = new MapObject();
 
         //Get all the organs donated for the dead user
-        Set<Organ> organs =  new UserDonations().getAllUserDonations(mapObjectResultSet.getInt("id"));
+        Set<Organ> organs = new UserDonations().getAllUserDonations(mapObjectResultSet.getInt("id"));
         mapObject.organs = new ArrayList<>();
         mapObject.organs.addAll(organs);
 

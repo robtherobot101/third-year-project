@@ -22,6 +22,10 @@
                 <Entry x:Name="usernameInput" Placeholder="Username"
                     VerticalOptions="CenterAndExpand" 
                     />
+
+                <Entry x:Name="nhiInput" Placeholder="NHI"
+                    VerticalOptions="CenterAndExpand" 
+                    />
                 <Button Text="Check Availability"
                     HorizontalOptions="Center"
                     VerticalOptions="CenterAndExpand"
