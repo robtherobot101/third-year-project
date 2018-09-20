@@ -5,5 +5,6 @@ namespace mobileAppClient
     {
         public MessageType Type { get; set; }
         public string Text { get; set; }
+        public DateTime MessagDateTime { get; set; }
     }
 }

@@ -7,7 +7,7 @@
               ItemTapped="Handle_Conversation_Tapped">
         <ListView.ItemTemplate>
             <DataTemplate>
-                <TextCell Text="{Binding title}"/>
+                <TextCell Text="{Binding conversationTitle}"/>
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>

@@ -205,7 +205,6 @@ namespace mobileAppClient
                     {
                         Console.WriteLine("Exception: " + ie.InnerException);
                         Console.WriteLine("Exception: " + ie.InnerException.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
                     }
                     break;
             }

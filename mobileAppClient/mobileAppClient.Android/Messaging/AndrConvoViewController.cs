@@ -51,17 +51,25 @@ namespace mobileAppClient.Droid.Messaging
             MessageArrayAdapter = new AndrMessageArrayAdapter(this, messages);
 
             FindViewById<ListView>(Resource.Id.messages_list_view).Adapter = MessageArrayAdapter;
-            //Send button pressed
-            FindViewById<Button>(Resource.Id.send_button).Click += (object sender, EventArgs e) =>
+
+            // Attach a send button event
+            FindViewById<Button>(Resource.Id.send_button).Click += SendButtonPressed;
+        }
+
+        /// <summary>
+        /// Event fired when the send button pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendButtonPressed(object sender, EventArgs e)
+        {
+            EditText editor = FindViewById<EditText>(Resource.Id.input_edittext);
+            String outgoingMessage = editor.Text;
+            if (outgoingMessage != "")
             {
-                EditText editor = FindViewById<EditText>(Resource.Id.input_edittext);
-                String outgoingMessage = editor.Text;
-                if(outgoingMessage != "")
-                {
-                    sendMessage(outgoingMessage.Trim());
-                    editor.Text = "";
-                }
-            };
+                sendMessage(outgoingMessage.Trim());
+                editor.Text = "";
+            }
         }
 
         public void receiveMessage(string text)
