@@ -31,8 +31,8 @@ public class ConversationsTest extends GenericTest {
         HelperMethods.insertClinician(generalClinician);
         Clinician converser = generalClinician.getAllClinicians().get(0);
 
-        List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
-        participants.add(new Pair<>((int)converser.getStaffID(), ProfileType.CLINICIAN));
+        List<Integer> participants = new ArrayList<>();
+        participants.add((int)converser.getStaffID());
 
         conversations.addConversation(participants);
         PreparedStatement statement = null;
@@ -60,8 +60,8 @@ public class ConversationsTest extends GenericTest {
         HelperMethods.insertClinician(generalClinician);
         Clinician converser = generalClinician.getAllClinicians().get(0);
 
-        List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
-        participants.add(new Pair<>((int)converser.getStaffID(), ProfileType.CLINICIAN));
+        List<Integer> participants = new ArrayList<>();
+        participants.add((int)converser.getStaffID());
 
         int convoId = conversations.addConversation(participants);
         conversations.addConversationUser(1, ProfileType.ADMIN, convoId);
@@ -89,8 +89,8 @@ public class ConversationsTest extends GenericTest {
         HelperMethods.insertClinician(generalClinician);
         Clinician converser = generalClinician.getAllClinicians().get(0);
 
-        List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
-        participants.add(new Pair<>((int)converser.getStaffID(), ProfileType.CLINICIAN));
+        List<Integer> participants = new ArrayList<>();
+        participants.add((int)converser.getStaffID());
 
         conversations.addConversation(participants);
         List<Conversation> databaseConversations = conversations.getAllConversations((int)converser.getStaffID(), ProfileType.CLINICIAN);
@@ -126,8 +126,8 @@ public class ConversationsTest extends GenericTest {
         for (int i = 0; i < 10; i++) {
             messages.add(new Message(Integer.toString(i), (int)converser.getStaffID(), 1));
         }
-        List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
-        participants.add(new Pair<>((int)converser.getStaffID(), ProfileType.CLINICIAN));
+        List<Integer> participants = new ArrayList<>();
+        participants.add((int)converser.getStaffID());
         int id = conversations.addConversation(participants);
         for (Message message: messages) {
             conversations.addMessage(id, message);
@@ -156,8 +156,8 @@ public class ConversationsTest extends GenericTest {
         HelperMethods.insertClinician(generalClinician);
         Clinician converser = generalClinician.getAllClinicians().get(0);
 
-        List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
-        participants.add(new Pair<>((int)converser.getStaffID(), ProfileType.CLINICIAN));
+        List<Integer> participants = new ArrayList<>();
+        participants.add((int)converser.getStaffID());
         int id = conversations.addConversation(participants);
         Conversation conversation = conversations.getSingleConversation(id);
         assertEquals(participants, conversation.getMembers());

@@ -50,5 +50,10 @@ namespace mobileAppClient
             conversationList.Add(testConvo2);
 
         }
+
+        private async void NewConversationTapped(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new CreateConversationPage());
+        }
     }
 }

@@ -16,6 +16,38 @@
                       SeparatorVisibility="None"
                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
             </ListView>
-</StackLayout>
+
+            <Grid RowSpacing="0" 
+                  ColumnSpacing="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Editor x:Name="chatTextInput" 
+                       Margin="1"  
+                       TextColor="Black" 
+                       Keyboard="Chat"  
+                       HorizontalOptions="FillAndExpand" 
+                       PlaceholderColor="LightGray"
+                       Placeholder="Message"
+                       Grid.Row="0" 
+                       Grid.Column="0"
+                       Completed="Handle_SendMessage"
+                       AutoSize="TextChanges"
+                       />
+                <Label Text="Send"
+                       Grid.Row="0"
+                       Grid.Column="1"
+                       VerticalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Tapped="Handle_SendMessage"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -6,7 +6,9 @@ namespace mobileAppClient.Models
 {
     public class Conversation
     {
+        // Unique conversation ID
         public int id { get; set; }
-        public string conversationTitle { get; set; }
+        public List<Message> messages { get; set; }
+        public List<int> members { get; set; }
     }
 }

@@ -3,8 +3,23 @@ namespace mobileAppClient
 {
     public class Message
     {
-        public MessageType Type { get; set; }
-        public string Text { get; set; }
-        public DateTime MessagDateTime { get; set; }
+        // Unique message ID
+        public int id { get; set; }
+        public string text { get; set; }
+        public CustomDateTime timestamp { get; set; }
+        // Senders account ID
+        public int userId { get; set; }
+
+        public MessageType GetType(int readersAccountID)
+        {
+            if (readersAccountID == this.id)
+            {
+                return MessageType.Outgoing;
+            }
+            else
+            {
+                return MessageType.Incoming;
+            }
+        }
     }
 }

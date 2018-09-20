@@ -78,12 +78,13 @@ public class Conversations {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
 
-                statement = connection.prepareStatement("SELECT user_id, access_level FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
+                statement = connection.prepareStatement("SELECT user_id FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
                 statement.setInt(1, conversationId);
                 resultSet = statement.executeQuery();
-                List<Pair<Integer, ProfileType>> participants = new ArrayList<>();
+
+                List<Integer> participants = new ArrayList<>();
                 while (resultSet.next()) {
-                    participants.add(new Pair<>(resultSet.getInt(1), ProfileType.fromAccessLevel(resultSet.getInt(2))));
+                    participants.add(resultSet.getInt(1));
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException ignored) {
@@ -110,10 +111,9 @@ public class Conversations {
             PreparedStatement statement = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?, ?);");
+                statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
                 statement.setInt(1, conversationId);
                 statement.setInt(2, id);
-                statement.setInt(3, profileType.getAccessLevel());
                 statement.execute();
             } catch (SQLException ignored) {
             } finally {
@@ -134,12 +134,11 @@ public class Conversations {
             PreparedStatement statement = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO MESSAGE(conversation_id, text, date_time, user_id, access_level) VALUES(?, ?, ?, ?, ?);");
+                statement = connection.prepareStatement("INSERT INTO MESSAGE(conversation_id, text, date_time, user_id) VALUES(?, ?, ?, ?);");
                 statement.setInt(1, conversationId);
                 statement.setString(2, message.getText());
                 statement.setTimestamp(3, Timestamp.valueOf(message.getTimestamp()));
                 statement.setInt(4, message.getUserId());
-                statement.setInt(5, message.getAccessLevel());
                 statement.execute();
             } catch (SQLException ignored) {
             } finally {
@@ -154,7 +153,7 @@ public class Conversations {
      * @param participants The ids and access levels of all participants
      * @throws SQLException If database interaction fails
      */
-    public int addConversation(List<Pair<Integer, ProfileType>> participants) throws SQLException {
+    public int addConversation(List<Integer> participants) throws SQLException {
         int id = -1;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
@@ -173,12 +172,11 @@ public class Conversations {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
 
-                for (Pair<Integer, ProfileType> participant: participants) {
+                for (Integer participant: participants) {
                     try {
-                        statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?, ?);");
+                        statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
                         statement.setInt(1, id);
-                        statement.setInt(2, participant.getKey());
-                        statement.setInt(3, participant.getValue().getAccessLevel());
+                        statement.setInt(2, participant);
                         statement.execute();
                     } catch (SQLIntegrityConstraintViolationException ignored) {
                     } finally {

@@ -7,7 +7,6 @@ public class Message {
     private String text;
     private LocalDateTime timestamp;
     private int userId;
-    private int accessLevel;
 
     /**
      * Constructs a new message to be added to the database.
@@ -21,7 +20,6 @@ public class Message {
         this.text = text;
         timestamp = LocalDateTime.now();
         this.userId = userId;
-        this.accessLevel = accessLevel;
     }
 
     /**
@@ -38,7 +36,6 @@ public class Message {
         this.text = text;
         this.timestamp = timestamp;
         this.userId = userId;
-        this.accessLevel = accessLevel;
     }
 
     public int getUserId() {
@@ -47,10 +44,6 @@ public class Message {
 
     public String getText() {
         return text;
-    }
-
-    public int getAccessLevel() {
-        return accessLevel;
     }
 
     public LocalDateTime getTimestamp() {
