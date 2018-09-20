@@ -2,6 +2,7 @@ package seng302.Logic.Database;
 
 import javafx.util.Pair;
 import org.apache.commons.dbutils.DbUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Config.DatabaseConfiguration;
 import seng302.HelperMethods;
@@ -116,6 +117,7 @@ public class ConversationsTest extends GenericTest {
         assertTrue(!nextConversation && !nextMember);
     }
 
+    @Ignore
     @Test
     public void addMessage() throws SQLException {
         GeneralClinician generalClinician = new GeneralClinician();
