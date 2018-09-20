@@ -22,7 +22,9 @@ import java.util.ResourceBundle;
 public class UserSettingsController implements Initializable {
 
     @FXML
-    private TextField usernameField, emailField, passwordField;
+    private TextField usernameField, emailField;
+    @FXML
+    private PasswordField passwordField;
     @FXML
     private Button updateButton, cancelButton;
     @FXML
