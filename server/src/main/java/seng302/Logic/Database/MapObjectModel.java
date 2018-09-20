@@ -1,6 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Logic.OrganMatching;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
 import seng302.Model.MapObject;
@@ -51,6 +52,7 @@ public class MapObjectModel {
 
             mapObject.organs = new ArrayList<>();
 
+            OrganMatching organMatching = new OrganMatching();
 
             while (organsResultSet.next()) {
 
@@ -66,6 +68,9 @@ public class MapObjectModel {
                         expired
 
                 );
+
+
+                organ.setTopReceivers(organMatching.getTop5Matches(organ, ""));
 
                 mapObject.getOrgans().add(organ);
             }

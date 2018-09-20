@@ -41,7 +41,6 @@ namespace mobileAppClient.iOS
             var imageData = NSData.FromArray(imageBytes);
             ProfilePhotoImageView.Image = UIImage.LoadFromData(imageData);
 
-            //string[] tableItems = new string[] { "Vegetables", "Fruits", "Flower Buds", "Legumes", "Bulbs", "Tubers" };
             OrgansTableView.Source = new TableSource(pin, map, nativeMap, this, customMapRenderer);
             OrgansTableView.ScrollEnabled = true;
         }

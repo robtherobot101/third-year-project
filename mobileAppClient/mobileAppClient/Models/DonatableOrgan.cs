@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace mobileAppClient
 {
     public class DonatableOrgan
@@ -8,6 +10,7 @@ namespace mobileAppClient
         public int donorId { get; set; }
         public int id { get; set; }
         public bool expired { get; set; }
+        public List<User> topReceivers { get; set; }
 
         public DonatableOrgan()
         {

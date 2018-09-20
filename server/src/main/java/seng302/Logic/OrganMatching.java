@@ -114,16 +114,22 @@ public class OrganMatching {
             List<User> topMatches = new ArrayList<>();
             for (User user : matches){
                 if(user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
-                    User u = new User("", LocalDate.now());
+                    User u = new User("", user.getDateOfBirth());
                     u.setName(user.getName());
                     u.setRegion(user.getRegion());
                     u.setId(user.getId());
+                    u.setBloodType(user.getBloodType());
+                    u.setGender(user.getGender());
+                    u.setCurrentAddress(user.getCurrentAddress());
                     topMatches.add(u);
                 } else if(user.getName() == null && user.getName().equals("")){
-                    User u = new User("", LocalDate.now());
+                    User u = new User("", user.getDateOfBirth());
                     u.setName(user.getName());
                     u.setRegion(user.getRegion());
                     u.setId(user.getId());
+                    u.setBloodType(user.getBloodType());
+                    u.setGender(user.getGender());
+                    u.setCurrentAddress(user.getCurrentAddress());
                     topMatches.add(u);
                 }
             }

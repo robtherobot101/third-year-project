@@ -80,5 +80,33 @@ namespace mobileAppClient
             }
         }
 
+         /* Converts a given string into a BloodType Enum used for when the user object is recieved from the server.
+         */
+        public static BloodType ToBloodTypeJSON(this string value)
+        {
+            switch (value)
+            {
+                case "AB_NEG":
+                    return BloodType.AB_NEG;
+                case "AB_POS":
+                    return BloodType.AB_POS;
+                case "A_NEG":
+                    return BloodType.A_NEG;
+                case "A_POS":
+                    return BloodType.A_POS;
+                case "B_NEG":
+                    return BloodType.B_NEG;
+                case "B_POS":
+                    return BloodType.B_POS;
+                case "O_NEG":
+                    return BloodType.O_NEG;
+                case "O_POS":
+                    return BloodType.O_POS;
+                default:
+                    // Unreachable
+                    return BloodType.O_POS;
+            }
+        }
+
     }
 }
