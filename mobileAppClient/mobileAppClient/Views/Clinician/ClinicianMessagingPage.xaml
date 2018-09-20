@@ -3,4 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              x:Class="mobileAppClient.ClinicianMessagingPage">
 
+    <ListView x:Name="ConversationsListView"
+              ItemTapped="Handle_Conversation_Tapped">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <TextCell Text="{Binding title}"/>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+    
 </ContentPage>

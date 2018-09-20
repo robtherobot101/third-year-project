@@ -28,6 +28,8 @@ public class ProfileUtils extends DatabaseMethods {
      * @return The authorisation level of the token, or -1 if the token is not found or the database could not be contacted
      */
     public int checkToken(String token) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // Check all tokens for time expiry
             statement = connection.prepareStatement(
@@ -48,7 +50,7 @@ public class ProfileUtils extends DatabaseMethods {
                 return -1;
             }
         } finally {
-            close();
+            close(resultSet, statement);
         }
     }
 
@@ -61,6 +63,8 @@ public class ProfileUtils extends DatabaseMethods {
      * @return Whether the token is associated with that id or false if the database could not be contacted
      */
     public boolean checkTokenId(String token, ProfileType profileType, int id) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             statement = connection.prepareStatement(
                     "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
@@ -71,7 +75,7 @@ public class ProfileUtils extends DatabaseMethods {
             resultSet = statement.executeQuery();
             return resultSet.next();
         } finally {
-            close();
+            close(resultSet, statement);
         }
     }
 
@@ -127,6 +131,8 @@ public class ProfileUtils extends DatabaseMethods {
             return false;
         }
         boolean authorized = false;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             statement = connection.prepareStatement(
                     "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
@@ -138,7 +144,7 @@ public class ProfileUtils extends DatabaseMethods {
             authorized = resultSet.next();
         } catch (SQLException ignored) {
         } finally {
-            close();
+            close(resultSet, statement);
         }
         if (!authorized) {
             Server.getInstance().log.warn("Attempted access to unauthorized conversation.");
@@ -333,6 +339,8 @@ public class ProfileUtils extends DatabaseMethods {
             return false;
         }
 
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ?");
             statement.setString(1, usernameEmail);
@@ -342,6 +350,8 @@ public class ProfileUtils extends DatabaseMethods {
                 response.status(200);
                 return false;
             }
+            resultSet.close();
+            statement.close();
             statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
             statement.setString(1, usernameEmail);
             resultSet = statement.executeQuery();
@@ -349,6 +359,8 @@ public class ProfileUtils extends DatabaseMethods {
                 response.status(200);
                 return false;
             }
+            resultSet.close();
+            statement.close();
             statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
             statement.setString(1, usernameEmail);
             resultSet = statement.executeQuery();
@@ -358,9 +370,8 @@ public class ProfileUtils extends DatabaseMethods {
             }
             response.status(200);
             return true;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 }

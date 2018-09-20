@@ -44,6 +44,7 @@ namespace mobileAppClient
 
         public string email { get; set; }
         public string username { get; set; }
+        public string nhi { get; set; }
         public string password { get; set; }
 
         public List<Organ> organs { get; set; }

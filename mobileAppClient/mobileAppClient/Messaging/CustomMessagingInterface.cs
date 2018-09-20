@@ -1,8 +1,9 @@
-﻿using System;
+﻿using mobileAppClient.Models;
+using System;
 namespace mobileAppClient
 {
     public interface CustomMessagingInterface
     {
-        void CreateMessagingPage();
+        void CreateMessagingPage(Conversation c);
     }
 }

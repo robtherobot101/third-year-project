@@ -1,5 +1,5 @@
 ﻿using System;
-namespace mobileAppClient.iOS
+namespace mobileAppClient
 {
     public class Message
     {

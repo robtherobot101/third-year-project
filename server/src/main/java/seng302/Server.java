@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
 import seng302.Model.Attribute.ProfileType;
+import seng302.Model.Message;
 import seng302.NotificationManager.Notification;
 import seng302.NotificationManager.PushAPI;
 import seng302.Logic.Database.ProfileUtils;
@@ -270,6 +271,8 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        PushAPI.getInstance().sendMessage(new Message("test", 1, 1), 1);
+        PushAPI.getInstance().sendNotification(new Notification("test", "test"), Arrays.asList("1", "2"));
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
