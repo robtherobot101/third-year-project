@@ -28,22 +28,26 @@
     <PackageReference Include="Microsoft.AppCenter.Push" Version="1.9.0" />
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle" Version="3.0.0.5" />
     <PackageReference Include="Xamarin.Essentials" Version="0.10.0-preview" />
+    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
     <PackageReference Include="CarouselView.FormsPlugin" Version="5.2.0" />
     <PackageReference Include="Microsoft.Toolkit.Parsers" Version="4.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="SegmentedControl.FormsPlugin" Version="2.0.1" />
     <PackageReference Include="Plugin.CrossPlatformTintedImage" Version="1.0.0" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="3.2.0.809874-pre3" />
+    <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="3.2.0.839982" />
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
-    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.1" />
+    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.3" />
     <PackageReference Include="Syncfusion.Xamarin.SfAutoComplete" Version="16.2.0.50" />
     <PackageReference Include="Xamarin.Forms" Version="3.2.0.809874-pre3" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="3.1.0.697729" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
     <Folder Include="Google\" />
     <Folder Include="Maps\" />
+    <Folder Include="Messaging\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />

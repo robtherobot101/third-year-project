@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="6.0" package="team300.mobileAppClient" android:installLocation="auto" android:versionCode="6">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="5.0" package="team300.mobileAppClient" android:installLocation="auto" android:versionCode="5">
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="27" />
 	<!-- We need to be able to download map tiles and access Google Play Services-->
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -29,7 +29,7 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<application android:label="mobileAppClient.Android" android:icon="@drawable/donationIcon" android:theme="@style/MainTheme.Base">
+	<application android:icon="@drawable/donationIcon" android:theme="@style/MainTheme.Base" android:label="Transcend Donation">
 		<provider android:name="android.support.v4.content.FileProvider" android:authorities="team300.mobileAppClient.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>

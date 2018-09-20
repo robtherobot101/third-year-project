@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: csse-mysql2
--- Generation Time: Jul 25, 2018 at 12:21 PM
+-- Generation Time: Sep 20, 2018 at 10:19 AM
 -- Server version: 5.6.40
 -- PHP Version: 5.4.16
 
@@ -16,6 +16,12 @@ SET time_zone = "+12:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Database: `seng302-2018-team300-test`
+--
+
+-- --------------------------------------------------------
+
 -- --------------------------------------------------------
 
 --
@@ -24,8 +30,6 @@ SET time_zone = "+12:00";
 
 DROP TABLE IF EXISTS `ADMIN`;
 CREATE TABLE IF NOT EXISTS `ADMIN` (
-  `username` varchar(255) NOT NULL,
-  `password` text NOT NULL,
   `name` text,
   `work_address` text,
   `region` text,
@@ -40,8 +44,6 @@ CREATE TABLE IF NOT EXISTS `ADMIN` (
 
 DROP TABLE IF EXISTS `CLINICIAN`;
 CREATE TABLE IF NOT EXISTS `CLINICIAN` (
-  `username` varchar(255) NOT NULL,
-  `password` text NOT NULL,
   `name` text,
   `work_address` text,
   `region` text,
@@ -58,18 +60,6 @@ DROP TABLE IF EXISTS `COUNTRIES`;
 CREATE TABLE IF NOT EXISTS `COUNTRIES` (
   `country` text NOT NULL,
   `valid` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `NZREGIONS`
---
-
-DROP TABLE IF EXISTS `NZREGIONS`;
-CREATE TABLE IF NOT EXISTS `NZREGIONS` (
-  `name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -101,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `user_id` bigint(11) NOT NULL,
   `timeOfDeath` bigint(20) DEFAULT NULL,
   `expired` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -123,6 +113,7 @@ CREATE TABLE IF NOT EXISTS `HISTORY_ITEM` (
 --
 -- Table structure for table `HOSPITAL`
 --
+
 DROP TABLE IF EXISTS `HOSPITAL`;
 CREATE TABLE IF NOT EXISTS `HOSPITAL` (
   `hospital_id` bigint(20) NOT NULL,
@@ -133,18 +124,6 @@ CREATE TABLE IF NOT EXISTS `HOSPITAL` (
   `country` text NOT NULL,
   `latitude` float(10,6) NOT NULL,
   `longitude` float(10,6) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `WAITING_LIST_ITEM`
---
-
-DROP TABLE IF EXISTS `PUSH_DEVICE`;
-CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
-  `device_id` varchar(64) NOT NULL,
-  `user_token` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -160,6 +139,58 @@ CREATE TABLE IF NOT EXISTS `MEDICATION` (
   `history` text NOT NULL,
   `user_id` bigint(11) NOT NULL,
   `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MESSAGE`
+--
+
+DROP TABLE IF EXISTS `MESSAGE`;
+CREATE TABLE IF NOT EXISTS `MESSAGE` (
+  `id` int(11) NOT NULL,
+  `conversation_id` int(11) NOT NULL,
+  `text` text NOT NULL,
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int(11) NOT NULL,
+  `access_level` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CONVERSATION_MEMBER`
+--
+
+DROP TABLE IF EXISTS `CONVERSATION_MEMBER`;
+CREATE TABLE IF NOT EXISTS `CONVERSATION_MEMBER` (
+  `conversation_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `access_level` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CONVERSATION`
+--
+
+DROP TABLE IF EXISTS `CONVERSATION`;
+CREATE TABLE IF NOT EXISTS `CONVERSATION` (
+  `id` int(11) NOT NULL,
+  `token` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `NZREGIONS`
+--
+
+DROP TABLE IF EXISTS `NZREGIONS`;
+CREATE TABLE IF NOT EXISTS `NZREGIONS` (
+  `name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -181,12 +212,24 @@ CREATE TABLE IF NOT EXISTS `PROCEDURES` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `PUSH_DEVICE`
+--
+
+DROP TABLE IF EXISTS `PUSH_DEVICE`;
+CREATE TABLE IF NOT EXISTS `PUSH_DEVICE` (
+  `device_id` varchar(64) NOT NULL,
+  `user_token` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `TOKEN`
 --
 
 DROP TABLE IF EXISTS `TOKEN`;
 CREATE TABLE IF NOT EXISTS `TOKEN` (
-  `id` int(11) NOT NULL,
+  `id` bigint(11) NOT NULL,
   `token` varchar(64) NOT NULL,
   `access_level` int(11) NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -232,9 +275,8 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `id` bigint(11) NOT NULL,
   `current_address` text,
   `region` text,
-  `username` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `password` text NOT NULL,
+  `nhi` varchar(7) DEFAULT NULL,
   `blood_pressure` text,
   `smoker_status` text,
   `alcohol_consumption` text,
@@ -246,24 +288,54 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `country` text,
   `profile_image_type` varchar(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- -------------------------------------------------------
+
+--
+-- Table structure for table `ACCOUNT`
+--
+
+DROP TABLE IF EXISTS `ACCOUNT`;
+CREATE TABLE IF NOT EXISTS `ACCOUNT` (
+  `id` bigint(11) NOT NULL,
+  `username` text NOT NULL,
+  `password` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `ACCOUNT`
+--
+ALTER TABLE `ACCOUNT`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY (`username`(255));
+
+--
 -- Indexes for table `ADMIN`
 --
 ALTER TABLE `ADMIN`
-  ADD PRIMARY KEY (`staff_id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`staff_id`);
 
 --
 -- Indexes for table `CLINICIAN`
 --
 ALTER TABLE `CLINICIAN`
-  ADD PRIMARY KEY (`staff_id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`staff_id`);
+
+--
+-- Indexes for table `CONVERSATION`
+--
+ALTER TABLE `CONVERSATION`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `CONVERSATION_MEMBER`
+--
+ALTER TABLE `CONVERSATION_MEMBER`
+  ADD UNIQUE KEY `unique_index` (`user_id`,`conversation_id`,`access_level`),
+  ADD KEY `User_id_foreign_key8` (`conversation_id`);
 
 --
 -- Indexes for table `DISEASE`
@@ -300,6 +372,14 @@ ALTER TABLE `MEDICATION`
   ADD KEY `User_id_foreign_key3` (`user_id`);
 
 --
+-- Indexes for table `MESSAGE`
+--
+ALTER TABLE `MESSAGE`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_index` (`conversation_id`,`id`),
+  ADD KEY `User_id_foreign_key7` (`conversation_id`);
+
+--
 -- Indexes for table `PROCEDURES`
 --
 ALTER TABLE `PROCEDURES`
@@ -307,18 +387,25 @@ ALTER TABLE `PROCEDURES`
   ADD KEY `User_id_foreign_key4` (`user_id`);
 
 --
+-- Indexes for table `PUSH_DEVICE`
+--
+ALTER TABLE `PUSH_DEVICE`
+  ADD PRIMARY KEY (`device_id`),
+  ADD KEY `User_id_foreign_key6` (`user_token`);
+
+--
 -- Indexes for table `TOKEN`
 --
 ALTER TABLE `TOKEN`
-  ADD PRIMARY KEY (`token`);
+  ADD PRIMARY KEY (`token`),
+  ADD KEY `token_foreign_key` (`id`);
 
 --
 -- Indexes for table `USER`
 --
 ALTER TABLE `USER`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `nhi` (`nhi`);
 
 --
 -- Indexes for table `WAITING_LIST_ITEM`
@@ -328,16 +415,14 @@ ALTER TABLE `WAITING_LIST_ITEM`
   ADD KEY `User_id_foreign_key5` (`user_id`);
 
 --
--- Indexes for table `WAITING_LIST_ITEM`
---
-ALTER TABLE `PUSH_DEVICE`
-  ADD PRIMARY KEY (`device_id`),
-  ADD KEY `User_id_foreign_key6` (`user_token`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
+--
+-- AUTO_INCREMENT for table `ACCOUNT`
+--
+ALTER TABLE `ACCOUNT`
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `ADMIN`
 --
@@ -348,6 +433,11 @@ ALTER TABLE `ADMIN`
 --
 ALTER TABLE `CLINICIAN`
   MODIFY `staff_id` bigint(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `CONVERSATION`
+--
+ALTER TABLE `CONVERSATION`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `DISEASE`
 --
@@ -374,6 +464,11 @@ ALTER TABLE `HOSPITAL`
 ALTER TABLE `MEDICATION`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `MESSAGE`
+--
+ALTER TABLE `MESSAGE`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `PROCEDURES`
 --
 ALTER TABLE `PROCEDURES`
@@ -391,6 +486,24 @@ ALTER TABLE `WAITING_LIST_ITEM`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `ADMIN`
+--
+ALTER TABLE `ADMIN`
+  ADD CONSTRAINT `admin_id` FOREIGN KEY (`staff_id`) REFERENCES `ACCOUNT` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `CLINICIAN`
+--
+ALTER TABLE `CLINICIAN`
+  ADD CONSTRAINT `clinician_id` FOREIGN KEY (`staff_id`) REFERENCES `ACCOUNT` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `CONVERSATION_MEMBER`
+--
+ALTER TABLE `CONVERSATION_MEMBER`
+  ADD CONSTRAINT `User_id_foreign_key8` FOREIGN KEY (`conversation_id`) REFERENCES `CONVERSATION` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `DISEASE`
@@ -417,17 +530,16 @@ ALTER TABLE `MEDICATION`
   ADD CONSTRAINT `User_id_foreign_key3` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `MESSAGE`
+--
+ALTER TABLE `MESSAGE`
+  ADD CONSTRAINT `User_id_foreign_key7` FOREIGN KEY (`conversation_id`) REFERENCES `CONVERSATION` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `PROCEDURES`
 --
 ALTER TABLE `PROCEDURES`
   ADD CONSTRAINT `User_id_foreign_key4` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `WAITING_LIST_ITEM`
---
-ALTER TABLE `WAITING_LIST_ITEM`
-  ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
-
 
 --
 -- Constraints for table `PUSH_DEVICE`
@@ -436,14 +548,31 @@ ALTER TABLE `PUSH_DEVICE`
   ADD CONSTRAINT `User_id_foreign_key6` FOREIGN KEY (`user_token`) REFERENCES `TOKEN` (`token`) ON DELETE CASCADE;
 
 --
--- Create default clinician and admin
+-- Constraints for table `TOKEN`
 --
+ALTER TABLE `TOKEN`
+  ADD CONSTRAINT `token_foreign_key` FOREIGN KEY (`id`) REFERENCES `ACCOUNT` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-INSERT INTO ADMIN(username, password, name, work_address, region, staff_id) VALUES('admin', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=', 'default', 'default', 'default', 'default');
+--
+-- Constraints for table `USER`
+--
+ALTER TABLE `USER`
+  ADD CONSTRAINT `user_id` FOREIGN KEY (`id`) REFERENCES `ACCOUNT` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-INSERT INTO TOKEN(id, token, access_level) VALUES(0, 'masterToken', 2);
+--
+-- Constraints for table `WAITING_LIST_ITEM`
+--
+ALTER TABLE `WAITING_LIST_ITEM`
+  ADD CONSTRAINT `User_id_foreign_key5` FOREIGN KEY (`user_id`) REFERENCES `USER` (`id`) ON DELETE CASCADE;
 
-INSERT INTO CLINICIAN(username, password, name, work_address, region, staff_id) VALUES('default', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=', 'default', 'default', 'default', 'default');
+INSERT INTO ACCOUNT(username, password) VALUES('admin', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=');
+INSERT INTO ADMIN(name, work_address, region, staff_id) VALUES('default', 'default', 'default', 1);
+
+INSERT INTO TOKEN(id, token, access_level) VALUES(1, 'masterToken', 2);
+
+INSERT INTO ACCOUNT(username, password) VALUES('default', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=');
+
+INSERT INTO CLINICIAN(name, work_address, region, staff_id) VALUES('default', 'default', 'default', 2);
 
 
 --

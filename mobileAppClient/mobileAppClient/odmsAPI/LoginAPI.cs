@@ -57,7 +57,6 @@ namespace mobileAppClient.odmsAPI
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
 
-
                 if (IsClinician(responseContent))
                 {
                     Clinician loggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);

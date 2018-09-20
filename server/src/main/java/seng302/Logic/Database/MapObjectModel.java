@@ -5,26 +5,25 @@ import seng302.Model.Attribute.Organ;
 import seng302.Model.MapObject;
 import seng302.Model.User;
 import seng302.Model.WaitingListItem;
-import seng302.Model.DonatableOrgan;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Set;
 
 public class MapObjectModel extends DatabaseMethods {
 
     public ArrayList<MapObject> getAllMapObjects() throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<MapObject> allMapObjects = new ArrayList<>();
             String query =
                     "SELECT first_name, middle_names, last_name, gender, id, current_address, region, cityOfDeath, " +
-                            "regionOfDeath, countryOfDeath, date_of_death " +
+                            "regionOfDeath, countryOfDeath " +
                             "FROM USER " +
                             "WHERE date_of_death IS NOT NULL";
 
@@ -35,9 +34,8 @@ public class MapObjectModel extends DatabaseMethods {
             }
 
             return allMapObjects;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
@@ -45,33 +43,10 @@ public class MapObjectModel extends DatabaseMethods {
 
         MapObject mapObject = new MapObject();
 
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            //Get all the organs donated for the dead user
-            String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
-
-            organsStatement.setInt(1, mapObjectResultSet.getInt("id"));
-            ResultSet organsResultSet = organsStatement.executeQuery();
-
-            mapObject.organs = new ArrayList<>();
-
-            boolean expired = true;
-            if (organsResultSet.getInt("expired") == 0){
-                expired = false;
-            }
-
-            while (organsResultSet.next()) {
-                DonatableOrgan organ = new DonatableOrgan(
-                        LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
-                        Organ.parse(organsResultSet.getString("name")),
-                        mapObjectResultSet.getInt("id"),
-                        expired
-
-                );
-
-                mapObject.getOrgans().add(organ);
-            }
-        }
+        //Get all the organs donated for the dead user
+        Set<Organ> organs = new UserDonations().getAllUserDonations(mapObjectResultSet.getInt("id"));
+        mapObject.organs = new ArrayList<>();
+        mapObject.organs.addAll(organs);
 
         mapObject.firstName = mapObjectResultSet.getString("first_name");
         mapObject.middleName = mapObjectResultSet.getString("middle_names");
@@ -83,7 +58,6 @@ public class MapObjectModel extends DatabaseMethods {
         mapObject.cityOfDeath = mapObjectResultSet.getString("cityOfDeath");
         mapObject.regionOfDeath = mapObjectResultSet.getString("regionOfDeath");
         mapObject.countryOfDeath = mapObjectResultSet.getString("countryOfDeath");
-        mapObject.dateOfDeath = mapObjectResultSet.getTimestamp("date_of_death").toLocalDateTime();
 
         return mapObject;
 

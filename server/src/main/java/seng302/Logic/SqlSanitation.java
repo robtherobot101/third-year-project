@@ -73,13 +73,15 @@ public class SqlSanitation extends DatabaseMethods {
      * @return Returns a string table of the results.
      */
     public CommandLineResponse executeQuery(String query) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
                 statement = connection.prepareStatement(query);
                 resultSet = statement.executeQuery();
                 return new CommandLineResponse(true, createTable(resultSet));
             }
             finally {
-                close();
+                close(statement, resultSet);
             }
     }
 }

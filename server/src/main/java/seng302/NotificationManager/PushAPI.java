@@ -5,15 +5,16 @@ import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.gson.Gson;
 import seng302.Logic.Database.Notifications;
+import seng302.Model.Message;
 import seng302.Server;
 
 
+import javax.swing.text.StringContent;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PushAPI {
     /**
@@ -46,15 +47,17 @@ public class PushAPI {
      * Sends a notification to each device on which the user with the given IF is logged in
      *
      * @param notification The notification object containing title, message etc.
-     * @param user_id      The ID of the user to which the notification is being sent
+     * @param user_ids      The IDs of the users to which the notification is being sent
      */
-    public void sendNotification(Notification notification, String user_id) {
-        // Get the devices on which the user is logged on
-        List<String> devices = getDevices(user_id);
-        if(devices != null) {
+    public void sendNotification(Notification notification, String... user_ids) {
+        // Get the devices on which the users are logged on
+        List<String> devices = getDevices(user_ids);
+        if(devices.size() > 0) {
             for (String url : urls) {
-                // Convert notification to JSON
-                HttpContent content = constructNotificationJson(devices, notification);
+                // Get the notification JSON
+                String json = notification.toJSON(devices);
+                // Create the HttpContent
+                HttpContent content = new JsonHttpContent(new JacksonFactory(), new Gson().fromJson(json, Map.class));
                 // Create a request
                 HttpRequest request = createRequest(content, token, url);
                 // Execute the request
@@ -66,35 +69,31 @@ public class PushAPI {
     }
 
     /**
-     * Gets a list of device ids on which a user is logged in
-     * @param user_id The ID of the user
-     * @return A list of Strings representing the IDs of each device the user with the given ID is logged in on
+     * Sends a message to all memmbers of a conversation
+     * @param message A message object simply holding the message text
+     * @param conversationId The id of the conversation
      */
-    private List<String> getDevices(String user_id) {
-        try {
-            Server.getInstance().log.info("Getting devices logged in by user with id " + user_id);
-            return notificationsDatabase.getDevices(user_id);
-        } catch (SQLException e) {
-            Server.getInstance().log.info("Failed to get devices");
-            e.printStackTrace();
-            return null;
-        }
+    public void sendMessage(Message message, int conversationId) {
+        // Get the ids of users in the given conversation and assign the message to their devices
+        Notification n = new Notification("New Message", "You have unread messages");
+        n.addCustomData("message", message.getText());
+        sendNotification(n, "1", "2", "3");
     }
 
     /**
-     * Takes a notification and a list of devices and converts into json http content to be sent in a post request
-     * @param devices A list of Strings containing the device ids to be included in the notification
-     * @param notification The Notification object containing the title, message etc.
-     * @return JsonHttpContent to be sent in the POST
+     * Gets a list of device ids on which the given users are logged in
+     * @param user_ids The IDs of the users
+     * @return A list of Strings representing the IDs of each device the user with the given ID is logged in on
      */
-    private JsonHttpContent constructNotificationJson(List<String> devices, Notification notification) {
-        Map<String, Object> notificationMap = new HashMap<>();
-        notificationMap.put("notification_content", notification.getNotificationContent());
-        Map<String, Object> targetMap = new HashMap<>();
-        targetMap.put("type", "devices_target");
-        targetMap.put("devices", devices.toArray());
-        notificationMap.put("notification_target", targetMap);
-        return new JsonHttpContent(new JacksonFactory(), notificationMap).setMediaType(new HttpMediaType("text/json"));
+    private List<String> getDevices(String[] user_ids) {
+        try {
+            Server.getInstance().log.info("Getting devices logged in by users with ids " + Arrays.toString(user_ids));
+            return notificationsDatabase.getDevices(user_ids);
+        } catch (SQLException e) {
+            Server.getInstance().log.info("Failed to get devices");
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     /**

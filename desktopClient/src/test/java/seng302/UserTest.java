@@ -23,7 +23,7 @@ public class UserTest {
     @Before
     public void setup() {
         testUser = new User("Test er", new String[]{"Middle", "Names"}, "lName", LocalDate.parse("21/02/1890", User.dateFormat), null, Gender.NONBINARY,
-        1.8, 64, BloodType.O_POS, "Canterbury", "12345 Ilam Road", "tstr1", "tester@test.com", "testeriscool", "New Zealand",
+        1.8, 64, BloodType.O_POS, "Canterbury", "12345 Ilam Road", "tstr1", "tester@test.com", "fao3751", "testeriscool", "New Zealand",
                 null, null, null);
     }
 
@@ -98,7 +98,7 @@ public class UserTest {
     public void testAttributeChecker() {
         User testUser1 = new User("first", "last", LocalDate.parse("21/02/1890", User.dateFormat), null, Gender.MALE,
                 Gender.MALE, BloodType.AB_NEG, 2, 55, "somethingroad", "christchurch",
-                "city", 1234, "country", "033145253", "+64113021452", "a@a.com");
+                "city", 1234, "country", "033145253", "+64113021452", "a@a.com","iba4562");
         User testUser2 = new User(testUser1);
         assertTrue(testUser1.attributeFieldsEqual(testUser2));
     }
