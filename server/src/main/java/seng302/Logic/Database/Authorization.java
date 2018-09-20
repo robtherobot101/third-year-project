@@ -113,7 +113,7 @@ public class Authorization extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
-            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE CLINICIAN.id = ACCOUNT.id AND username = ?";
+            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE CLINICIAN.staff_id = ACCOUNT.id AND username = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
@@ -144,7 +144,7 @@ public class Authorization extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
-            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE ADMIN.id = ACCOUNT.id AND  username = ?";
+            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE ADMIN.staff_id = ACCOUNT.id AND  username = ?";
             statement = connection.prepareStatement(query);
 
             statement.setString(1, username);
