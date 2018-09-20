@@ -17,7 +17,7 @@
         <Frame Grid.Row="0" OutlineColor="Transparent" HasShadow="False" Grid.Column="1" BackgroundColor="#F5F5F5">
       <Label TextColor="Black" HorizontalTextAlignment="End" Text="{Binding Text}" />
     </Frame>
-    <Label Grid.Row="1" FontSize="Micro" Grid.Column="1" HorizontalTextAlignment="End"  Text="{Binding MessagDateTime, StringFormat='{0:MM/dd/yyyy hh:mm tt}'}" TextColor="Gray"></Label>
+        <Label Grid.Row="1" FontSize="Micro" Grid.Column="1" HorizontalTextAlignment="End"  Text="{Binding timestampDateTime, StringFormat='{0:MM/dd/yyyy hh:mm tt}'}" TextColor="Gray"></Label>
     
   </Grid>
 </ViewCell>

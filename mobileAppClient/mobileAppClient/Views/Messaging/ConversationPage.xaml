@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:mobileAppClient="clr-namespace:mobileAppClient;assembly=mobileAppClient"
-             x:Class="mobileAppClient.ClinicianSimpleConversationPage">
+             xmlns:mobileAppClient="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.ConversationPage">
     <ContentPage.Resources>
         <ResourceDictionary>
             <mobileAppClient:MessageTemplateSelector x:Key="MessageTemplateSelector" />

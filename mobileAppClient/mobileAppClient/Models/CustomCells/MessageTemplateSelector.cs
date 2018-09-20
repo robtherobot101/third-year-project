@@ -18,10 +18,10 @@ namespace mobileAppClient
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
             Message currentMessage = (Message) item;
-            if (currentMessage.Type == MessageType.Incoming)
+            if (currentMessage.messageType == MessageType.Incoming)
             {
                 return this.incomingDataTemplate;
-            } else if (currentMessage.Type == MessageType.Outgoing)
+            } else if (currentMessage.messageType == MessageType.Outgoing)
             {
                 return this.outgoingDataTemplate;
             }

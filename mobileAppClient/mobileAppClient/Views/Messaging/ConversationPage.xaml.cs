@@ -11,22 +11,30 @@ using mobileAppClient.Models.CustomObjects;
 namespace mobileAppClient
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ClinicianSimpleConversationPage : ContentPage
+	public partial class ConversationPage : ContentPage
 	{
-	    private Conversation conversationKey;
+        // Id of local participant in chat
+	    private int localId { get; set; }
+
+	    // Id of the other participant in chat
+	    private int externalId { get; set; }
+
+	    private Conversation conversation;
         private CustomObservableCollection<Message> conversationMessages;
 
-		public ClinicianSimpleConversationPage(Conversation conversationToDisplay)
+		public ConversationPage(Conversation conversationToDisplay)
 		{
 			InitializeComponent ();
-		    conversationKey = conversationToDisplay;
-            Title = conversationKey.conversationTitle;
+		    conversation = conversationToDisplay;
+            Title = "Test Convo";
+
+            externalId = conversation.members.Except(new List<int>(localId)).First();
 
             conversationMessages = new CustomObservableCollection<Message>();
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            addTestMessages();
+            populateMessages();
         }
 
         /// <summary>
@@ -40,28 +48,13 @@ namespace mobileAppClient
 	        ((ListView)sender).SelectedItem = null;
 	    }
 
-        private void addTestMessages()
+        private void populateMessages()
         {
-            conversationMessages.Add(new Message
+            foreach (Message currentMessage in conversation.messages)
             {
-                Text = "Hello Buzz!",
-                Type = MessageType.Incoming,
-                MessagDateTime = DateTime.Now
-            });
-
-            conversationMessages.Add(new Message
-            {
-                Text = "Howdy howdy!",
-                Type = MessageType.Outgoing,
-                MessagDateTime = DateTime.Now
-            });
-
-            conversationMessages.Add(new Message
-            {
-                Text = "Whats cooking good lookin ;)",
-                Type = MessageType.Incoming,
-                MessagDateTime = DateTime.Now
-            });
+                currentMessage.SetType(localId);
+                conversationMessages.Add(currentMessage);
+            }
         }
 
         /// <summary>
@@ -76,11 +69,13 @@ namespace mobileAppClient
 	            return;
 	        }
 
-	        Message newMessage = new Message
-	        {
-	            Text = InputValidation.Trim(chatTextInput.Text),
-	            Type = MessageType.Outgoing,
-	            MessagDateTime = DateTime.Now
+            // TODO API CALL TO SEND THE MESSAGE
+
+            Message newMessage = new Message
+            {
+                text = InputValidation.Trim(chatTextInput.Text),
+                messageType = MessageType.Outgoing,
+                timestamp = new CustomDateTime(DateTime.Now)
 	        };
 
             conversationMessages.Add(newMessage);

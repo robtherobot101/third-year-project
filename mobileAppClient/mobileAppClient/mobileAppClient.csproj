@@ -67,6 +67,9 @@
     <Reference Include="Mono.Android">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Forms.Core">
+      <HintPath>..\..\..\..\..\.nuget\packages\xamarin.forms\3.1.0.697729\lib\Xamarin.iOS10\Xamarin.Forms.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -77,8 +80,11 @@
     <Compile Update="Views\Clinician\AttributesPageClinician.xaml.cs">
       <DependentUpon>AttributesPageClinician.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Clinician\Messaging\ClinicianSimpleConversationPage.xaml.cs">
-      <DependentUpon>ClinicianSimpleConversationPage.xaml</DependentUpon>
+    <Compile Update="Views\Messaging\MessageThreadsListPage.xaml.cs">
+      <DependentUpon>MessageThreadsListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messaging\ConversationPage.xaml.cs">
+      <DependentUpon>ConversationPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -115,10 +121,10 @@
     <EmbeddedResource Update="Views\Clinician\ClinicianOverviewPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Clinician\Messaging\ClinicianSimpleConversationPage.xaml">
+    <EmbeddedResource Update="Views\Messaging\ConversationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Clinician\Messaging\CreateConversationPage.xaml">
+    <EmbeddedResource Update="Views\Clinician\CreateConversationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">
