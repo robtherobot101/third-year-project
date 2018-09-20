@@ -232,6 +232,12 @@ public class Server {
             path("/hospitals", () -> {
                 get("", hospitalController::getHospitals);
             });
+
+            path("/transfer",()->{
+               get("", mapObjectController::getAllTransfers);
+               post("", mapObjectController::postTransfer);
+               delete("/organId", mapObjectController::deleteOrganTransfer);
+            });
         });
     }
 

@@ -91,6 +91,23 @@ CREATE TABLE IF NOT EXISTS `DISEASE` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `TRANSFERS`
+--
+
+DROP TABLE IF EXISTS 'TRANSFERS';
+CREATE TABLE IF NOT EXISTS `TRANSFERS` (
+  `OrganId` int(11) NOT NULL,
+  `StartLat` double NOT NULL,
+  `StartLon` double NOT NULL,
+  `EndLat` double NOT NULL,
+  `EndLon` double NOT NULL,
+  `ReceiverId` int(11) NOT NULL,
+  `ArrivalTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `DONATION_LIST_ITEM`
 --
 
@@ -280,6 +297,12 @@ ALTER TABLE `DONATION_LIST_ITEM`
   ADD KEY `User_id_foreign_key2` (`user_id`);
 
 --
+-- Indexes for table `TRANSFERS`
+--
+ALTER TABLE `TRANSFERS`
+  ADD UNIQUE KEY `OrganId` (`OrganId`);
+
+--
 -- Indexes for table `HISTORY_ITEM`
 --
 ALTER TABLE `HISTORY_ITEM`
@@ -434,6 +457,12 @@ ALTER TABLE `WAITING_LIST_ITEM`
 --
 ALTER TABLE `PUSH_DEVICE`
   ADD CONSTRAINT `User_id_foreign_key6` FOREIGN KEY (`user_token`) REFERENCES `TOKEN` (`token`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `TRANSFERS`
+--
+ALTER TABLE `TRANSFERS`
+  ADD CONSTRAINT `organId` FOREIGN KEY (`OrganId`) REFERENCES `DONATION_LIST_ITEM` (`id`);
 
 --
 -- Create default clinician and admin
