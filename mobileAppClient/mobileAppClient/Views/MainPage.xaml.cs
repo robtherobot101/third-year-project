@@ -238,12 +238,11 @@ namespace mobileAppClient
             else
             {
                 // Use photo from server
-                profileImagePath = UserController.Instance.ProfilePhotoSource.ToString();
+                ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
             }
 
             BindingContext = new
             {
-                ProfileImage = profileImagePath,
                 FullName = UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };

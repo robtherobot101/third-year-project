@@ -125,13 +125,13 @@ public class Server {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.CLINICIAN));
                     get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.CLINICIAN));
                     post("", (request, response) -> conversationsController.addConversation(request, response, ProfileType.CLINICIAN));
-                    post("/user", (request, response) -> conversationsController.addConversationUser(request, response, ProfileType.CLINICIAN));
 
                     path("/:conversationId", () -> {
                         before("", (request, response) -> profileUtils.hasConversationAccess(request, response, ProfileType.CLINICIAN));
                         get("", conversationsController::getSingleConversation);
                         delete("", conversationsController::removeConversation);
                         post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.CLINICIAN));
+                        post("/user", (request, response) -> conversationsController.addConversationUser(request, response, ProfileType.CLINICIAN));
                     });
                 });
             });
