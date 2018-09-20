@@ -4,13 +4,9 @@ import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.MapObject;
 import seng302.Model.OrganTransfer;
-import seng302.Model.User;
-import seng302.Model.WaitingListItem;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class MapObjectModel extends DatabaseMethods {
@@ -68,6 +64,8 @@ public class MapObjectModel extends DatabaseMethods {
      * @throws SQLException throws if cannot connect to database
      */
     public ArrayList<OrganTransfer> getAllTransfers() throws SQLException{
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<OrganTransfer> allTransfers = new ArrayList<>();
             String query =
@@ -83,7 +81,7 @@ public class MapObjectModel extends DatabaseMethods {
             return allTransfers;
         }
         finally {
-            close();
+            close(resultSet, statement);
         }
     }
 
@@ -93,6 +91,7 @@ public class MapObjectModel extends DatabaseMethods {
      * @throws SQLException throws if cannot connect to database
      */
     public void insertTransfer(OrganTransfer transfer) throws SQLException{
+        PreparedStatement statement = null;
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
             String query = "INSERT INTO TRANSFERS (StartLat, StartLon, EndLat, EndLon, ArrivalTime, OrganId, ReceiverId) VALUES (?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
@@ -108,7 +107,7 @@ public class MapObjectModel extends DatabaseMethods {
             System.out.println("Inserting new transfer  -> Successful -> Rows Added: " + statement.executeUpdate());
         }
         finally {
-            close();
+            close(statement);
         }
     }
 
@@ -137,6 +136,7 @@ public class MapObjectModel extends DatabaseMethods {
      * @throws SQLException throws if cannot connect to database
      */
     public void removeDonationListItem(int organId) throws SQLException {
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String deleteTransfer = "DELETE FROM TRANSFERS WHERE OrganId = ?";
             statement = connection.prepareStatement(deleteTransfer);
@@ -144,7 +144,7 @@ public class MapObjectModel extends DatabaseMethods {
             System.out.println("Deletion of Organ Transfer - OrganId: " + organId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
         }
         finally {
-            close();
+            close(statement);
         }
     }
 
