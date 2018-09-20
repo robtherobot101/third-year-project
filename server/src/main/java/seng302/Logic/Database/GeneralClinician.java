@@ -43,7 +43,7 @@ public class GeneralClinician extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM CLINICIAN id = id;
-            String query = "SELECT * FROM CLINICIAN WHERE staff_id = ?";
+            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE staff_id = id AND staff_id = ?";
             statement = connection.prepareStatement(query);
 
             statement.setInt(1, id);
@@ -72,12 +72,12 @@ public class GeneralClinician extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT staff_id FROM CLINICIAN WHERE username = ?";
+            String query = "SELECT id FROM ACCOUNT WHERE username = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
             resultSet.next();
-            return resultSet.getInt("staff_id");
+            return resultSet.getInt("id");
         } finally {
             close(resultSet, statement);
         }
@@ -92,15 +92,18 @@ public class GeneralClinician extends DatabaseMethods {
     public void insertClinician(Clinician clinician) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insert = "INSERT INTO CLINICIAN(username, password, name, work_address, region) " +
-                    "VALUES(?, ?, ?, ?, ?)";
-            statement = connection.prepareStatement(insert);
-
+            String insertAccount = "INSERT INTO ACCOUNT(username, password) VALUES(?, ?)";
+            statement = connection.prepareStatement(insertAccount);
             statement.setString(1, clinician.getUsername());
             statement.setString(2, clinician.getPassword());
-            statement.setString(3, clinician.getName());
-            statement.setString(4, clinician.getWorkAddress());
-            statement.setString(5, clinician.getRegion());
+            statement.executeUpdate();
+            String insert = "INSERT INTO CLINICIAN(name, work_address, region, staff_id) VALUES(?, ?, ?, (SELECT id FROM ACCOUNT WHERE username = ?))";
+            statement = connection.prepareStatement(insert);
+
+            statement.setString(1, clinician.getName());
+            statement.setString(2, clinician.getWorkAddress());
+            statement.setString(3, clinician.getRegion());
+            statement.setString(4, clinician.getUsername());
             System.out.println("Inserting new clinician -> Successful -> Rows Added: " + statement.executeUpdate());
         } finally {
             close(statement);
@@ -118,7 +121,7 @@ public class GeneralClinician extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Clinician> allClinicans = new ArrayList<>();
-            String query = "SELECT * FROM CLINICIAN";
+            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE staff_id = id";
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -140,7 +143,7 @@ public class GeneralClinician extends DatabaseMethods {
     public void removeClinician(Clinician clinician) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "DELETE FROM CLINICIAN WHERE username = ?";
+            String update = "DELETE FROM ACCOUNT WHERE username = ?";
             statement = connection.prepareStatement(update);
             statement.setString(1, clinician.getUsername());
             System.out.println("Deletion of clinician: " + clinician.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
@@ -159,7 +162,7 @@ public class GeneralClinician extends DatabaseMethods {
     public void updateClinicianDetails(Clinician clinician, int clinicianId) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "UPDATE CLINICIAN SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = ?";
+            String update = "UPDATE CLINICIAN JOIN ACCOUNT SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = id AND staff_id = ?";
             statement = connection.prepareStatement(update);
 
             statement.setString(1, clinician.getName());

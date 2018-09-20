@@ -55,7 +55,7 @@ public class GeneralUserTest extends GenericTest {
 
         User user = HelperMethods.insertUser(generalUser);
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT * FROM USER WHERE username = ?";
+            String query = "SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, user.getUsername());
@@ -106,10 +106,11 @@ public class GeneralUserTest extends GenericTest {
     @Test
     public void removeUser() throws SQLException {
         User user = HelperMethods.insertUser(generalUser);
-
-        int numBefore = generalUser.getUsers(new HashMap<>()).size();
+        HashMap<String, String> params = new HashMap<>();
+        params.put("count", "200");
+        int numBefore = generalUser.getUsers(params).size();
         generalUser.removeUser(user);
-        int numAfter = generalUser.getUsers(new HashMap<>()).size();
+        int numAfter = generalUser.getUsers(params).size();
 
         assertEquals(numBefore - 1, numAfter);
         assertFalse(generalUser.getUsers(new HashMap<>()).contains(user));

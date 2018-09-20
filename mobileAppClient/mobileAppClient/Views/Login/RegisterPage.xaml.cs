@@ -169,7 +169,7 @@ namespace mobileAppClient
                     await Navigation.PopModalAsync();
 
                     // Dismiss the login modal dialog
-                    await parentLoginPage.Navigation.PopModalAsync();
+                    await parentLoginPage.OpenMainPageFromSignUp();
                     break;
 
                 case HttpStatusCode.Unauthorized:
