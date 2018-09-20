@@ -24,7 +24,7 @@ public class ClinicianSettingsController implements Initializable {
     @FXML
     private TextField usernameField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
     @FXML
     private Button updateButton;
     @FXML
