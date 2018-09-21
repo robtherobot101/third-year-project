@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
   `conversation_id` int(11) NOT NULL,
   `text` text NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
 DROP TABLE IF EXISTS `CONVERSATION_MEMBER`;
 CREATE TABLE IF NOT EXISTS `CONVERSATION_MEMBER` (
   `conversation_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
