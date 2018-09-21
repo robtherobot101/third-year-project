@@ -483,7 +483,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
                         receiverHospital.getLongitude(),
                         arrivalTime,
                         organ.getId(),
-                        receiver.getId()), token);
+                        receiver.getId(),
+                        organ.getOrganType()), token);
     }
 
     public double distance(double lat1, double lat2, double lon1,
