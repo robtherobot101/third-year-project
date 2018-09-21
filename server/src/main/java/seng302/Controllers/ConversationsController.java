@@ -8,6 +8,7 @@ import seng302.Logic.Database.Conversations;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Conversation;
 import seng302.Model.Message;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -147,7 +148,9 @@ public class ConversationsController {
         } else {
             try {
                 int accessLevel = profileType.getAccessLevel();
-                model.addMessage(conversationId, new Message(request.body(), userId, accessLevel));
+                Message toSend = new Message(request.body(), userId, accessLevel);
+                model.addMessage(conversationId, toSend);
+                PushAPI.getInstance().sendMessage(toSend, conversationId);
                 response.status(201);
                 return "Success";
             } catch (SQLException e) {

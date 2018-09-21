@@ -6,6 +6,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.gson.Gson;
+import seng302.Logic.Database.Conversations;
 import seng302.Logic.Database.Notifications;
 import seng302.Model.Message;
 import seng302.Model.WaitingListItem;
@@ -16,6 +17,7 @@ import javax.swing.text.StringContent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PushAPI {
     /**
@@ -74,11 +76,12 @@ public class PushAPI {
      * @param message A message object simply holding the message text
      * @param conversationId The id of the conversation
      */
-    public void sendMessage(Message message, int conversationId) {
+    public void sendMessage(Message message, int conversationId) throws SQLException {
         // Get the ids of users in the given conversation and assign the message to their devices
         Notification n = new Notification("New Message", "You have unread messages");
         n.addCustomData("message", message.getText());
-        sendNotification(n, "1", "2", "3");
+        List<Integer> users = new Conversations().getConversationUsers(conversationId);
+        sendNotification(n, (String[]) users.stream().map(Object::toString).toArray());
     }
 
     /**

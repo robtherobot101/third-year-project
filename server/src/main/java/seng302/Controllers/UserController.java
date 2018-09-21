@@ -421,6 +421,7 @@ public class UserController {
                     receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
                     model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                     response.status(201);
+                    PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Details updated.", "Your details have been updated.");
                     return "USER SUCCESSFULLY UPDATED";
                 } catch (SQLException e) {
 

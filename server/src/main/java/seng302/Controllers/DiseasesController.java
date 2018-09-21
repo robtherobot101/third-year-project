@@ -7,6 +7,7 @@ import seng302.Logic.Database.UserProcedures;
 import seng302.Model.Disease;
 import seng302.Model.Medication.Medication;
 import seng302.Model.Procedure;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -90,6 +91,8 @@ public class DiseasesController {
             try {
                 model.insertDisease(receivedDisease, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Disease added.",
+                        "A new disease (" + receivedDisease.getName() + ") has been added to your profile.");
                 return "DISEASE INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
                 response.status(500);
@@ -125,6 +128,9 @@ public class DiseasesController {
             try {
                 model.updateDisease(receivedDisease, requestedDiseaseId, requestedUserId);
                 response.status(201);
+
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Disease updated.",
+                        "One of your diseases (" + receivedDisease.getName() + ") has been updated.");
                 return "DISEASE WITH ID: "+ requestedDiseaseId +" FOR USER ID: "+ requestedUserId +" SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
                 response.status(500);
@@ -153,6 +159,8 @@ public class DiseasesController {
         try {
             model.removeDisease(requestedUserId, requestedDiseaseId);
             response.status(201);
+            PushAPI.getInstance().sendTextNotification(requestedUserId, "Disease removed.",
+                    "One of your diseases (" + queriedDisease.getName() + ") has been removed.");
             return "DISEASE WITH ID: "+ requestedDiseaseId +" FOR USER ID: "+ requestedUserId +" DELETED";
         } catch (SQLException e) {
             response.status(500);
