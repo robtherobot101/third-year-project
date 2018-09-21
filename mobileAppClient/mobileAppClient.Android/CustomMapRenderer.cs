@@ -346,7 +346,7 @@ namespace CustomRenderer.Droid
                     return null;
                 }
 
-                ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+               // ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
                 //parent.displayBottomSheet(customPin, formsMap);
 
 

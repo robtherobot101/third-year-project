@@ -8,68 +8,87 @@ using mobileAppClient.odmsAPI;
 using System.Net;
 using System.IO;
 using System.Linq;
+using mobileAppClient.Models;
+using System.Threading;
 
 namespace mobileAppClient
 {
     public partial class ClinicianMapPage : ContentPage
     {
         List<CustomMapObject> users;
+        List<Hospital> hospitals;
+
         CustomMap customMap;
 
         public ClinicianMapPage()
         {
 
-
         }
 
-        public async void displayUserDialog(string organString, string id) {
-            string[] organList = organString.Split(',');
-            id = organList[organList.Length - 1];
-            organList = organList.Take(organList.Length - 1).ToArray();
-            List<string> finalList = new List<string>();
-            string final;
-            foreach(string item in organList) {
-                final = item.Replace("_icon.png", "");
-                finalList.Add("- " + final + "\n");
+        public async void displayUserDialog(string organString, string id)
+        {
+            //if Android, use the SlideOverKit stuff
+            if (Device.RuntimePlatform == Device.Android)
+            {
+
+                //ShowMenu(); 
+
             }
-            string listString = String.Join("", finalList);
-            
-            var answer = await DisplayAlert("Display User?", "This user is currently donating: \n" + listString + "Would you like to view their profile?", "Yes", "No");
-            if(answer == true) {
-                UserAPI userAPI = new UserAPI();
-                Tuple<HttpStatusCode, User> userTuple = await userAPI.GetSingleUser(id);
-                switch (userTuple.Item1)
+            //otherwise iPhone or something
+            else
+            {
+                string[] organList = organString.Split(',');
+                id = organList[organList.Length - 1];
+                organList = organList.Take(organList.Length - 1).ToArray();
+                List<string> finalList = new List<string>();
+                string final;
+                foreach (string item in organList)
                 {
-                    case HttpStatusCode.OK:
-                        UserController.Instance.LoggedInUser = userTuple.Item2;
+                    final = item.Replace("_icon.png", "");
+                    finalList.Add("- " + final + "\n");
+                }
+                string listString = String.Join("", finalList);
 
-                        MainPage mainPage = new MainPage(true);
-                        mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
+                var answer = await DisplayAlert("Display User?", "This user is currently donating: \n" + listString + "Would you like to view their profile?", "Yes", "No");
+                if (answer == true)
+                {
+                    UserAPI userAPI = new UserAPI();
+                    Tuple<HttpStatusCode, User> userTuple = await userAPI.GetSingleUser(id);
+                    switch (userTuple.Item1)
+                    {
+                        case HttpStatusCode.OK:
+                            UserController.Instance.LoggedInUser = userTuple.Item2;
 
-                        await Navigation.PushAsync(mainPage);
-                        break;
-                    case HttpStatusCode.ServiceUnavailable:
-                        await DisplayAlert("",
-                        "Server unavailable, check connection",
-                        "OK");
-                        break;
-                    case HttpStatusCode.Unauthorized:
-                        await DisplayAlert("",
-                        "Unauthorised to get profile",
-                        "OK");
-                        break;
-                    case HttpStatusCode.InternalServerError:
-                        await DisplayAlert("",
-                        "Server error, please try again (500)",
-                        "OK");
-                        break;
+                            MainPage mainPage = new MainPage(true);
+                            mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
+
+                            await Navigation.PushAsync(mainPage);
+                            break;
+                        case HttpStatusCode.ServiceUnavailable:
+                            await DisplayAlert("",
+                            "Server unavailable, check connection",
+                            "OK");
+                            break;
+                        case HttpStatusCode.Unauthorized:
+                            await DisplayAlert("",
+                            "Unauthorised to get profile",
+                            "OK");
+                            break;
+                        case HttpStatusCode.InternalServerError:
+                            await DisplayAlert("",
+                            "Server error, please try again (500)",
+                            "OK");
+                            break;
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Activated whenever focus is on this page
-        /// </summary>
+
+
+        ///// <summary>
+        ///// Activated whenever focus is on this page
+        ///// </summary>
         protected override async void OnAppearing()
         {
 
@@ -77,15 +96,20 @@ namespace mobileAppClient
             {
                 MapType = MapType.Street,
                 WidthRequest = 100,
-                HeightRequest = 100
+                HeightRequest = 100,
             };
 
 
-            customMap.CustomPins = new List<CustomPin> { };
+            customMap.CustomPins = new Dictionary<Position, CustomPin> { };
+            customMap.HelicopterPins = new Dictionary<String, CustomPin> { };
 
+            //Center on New Zealand
+
+            var centerPosition = new Position(-41.626217, 172.361873);
 
             customMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                new Position(-41.626217, 172.361873), Distance.FromMiles(350.0)));
+                centerPosition, Distance.FromMiles(500.0)));
+
 
 
             var stack = new StackLayout { Spacing = 0 };
@@ -97,6 +121,12 @@ namespace mobileAppClient
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
+            Console.WriteLine("Initialising hoppis....");
+            //await InitialiseHospitals();
+
+            Console.WriteLine("Adding HeliChopper...");
+            //AddHelicopter();
+            Console.WriteLine("HeliChopper success, entering switch");
             switch (tuple.Item1)
             {
                 case HttpStatusCode.OK:
@@ -107,11 +137,12 @@ namespace mobileAppClient
 
                     foreach (CustomMapObject user in users)
                     {
-                        if(user.organs.Count == 0) {
+                        if (user.organs.Count == 0)
+                        {
                             continue;
                         }
 
-                        
+
                         IEnumerable<Position> position = await geocoder.GetPositionsForAddressAsync(user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath);
                         Position organPosition = new Position();
                         using (var sequenceEnum = position.GetEnumerator())
@@ -128,10 +159,11 @@ namespace mobileAppClient
 
                         List<string> organIcons = new List<string>();
 
-                        foreach(string organ in user.organs) {
+                        foreach (string organ in user.organs)
+                        {
 
                             string imageString = "";
-                            switch (organ.ToLower())
+                            switch (organ)
                             {
                                 case ("pancreas"):
                                     imageString = "pancreas_icon.png";
@@ -142,10 +174,10 @@ namespace mobileAppClient
                                 case ("liver"):
                                     imageString = "liver_icon.png";
                                     break;
-                                case ("tissue"):
+                                case ("connective-tissue"):
                                     imageString = "tissue_icon.png";
                                     break;
-                                case ("bone"):
+                                case ("bone-marrow"):
                                     imageString = "bone_icon.png";
                                     break;
                                 case ("skin"):
@@ -163,7 +195,7 @@ namespace mobileAppClient
                                 case ("intestine"):
                                     imageString = "intestines_icon.png";
                                     break;
-                                case ("ear"):
+                                case ("middle-ear"):
                                     imageString = "ear_icon.png";
                                     break;
                             }
@@ -179,16 +211,17 @@ namespace mobileAppClient
                         //If none then also set to a pin
 
                         string genderIcon = "";
-                        switch(user.gender) {
-                            case("Male"):
+                        switch (user.gender)
+                        {
+                            case ("Male"):
                                 int number = rnd.Next(1, 15);
                                 genderIcon = "man" + number + ".png";
                                 break;
-                            case("Female"):
+                            case ("Female"):
                                 number = rnd.Next(1, 12);
                                 genderIcon = "woman" + number + ".png";
                                 break;
-                            case("Other"):
+                            case ("Other"):
                                 genderIcon = "other.png";
                                 break;
                             default:
@@ -201,36 +234,97 @@ namespace mobileAppClient
 
                         string profilePhoto = "";
                         Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(user.id);
-                        if(photoResponse.Item1 != HttpStatusCode.OK) {
+                        if (photoResponse.Item1 != HttpStatusCode.OK)
+                        {
                             Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
                             Byte[] bytes;
-                            if(Device.RuntimePlatform == Device.Android) {
-                             
-                            } else {
+                            if (Device.RuntimePlatform == Device.Android)
+                            {
+
+                            }
+                            else
+                            {
                                 bytes = File.ReadAllBytes("donationIcon.png");
                                 profilePhoto = Convert.ToBase64String(bytes);
                             }
 
-                        } else {
+                        }
+                        else
+                        {
                             profilePhoto = photoResponse.Item2;
                         }
 
 
                         var pin = new CustomPin
                         {
-                            Type = PinType.Generic,
+                            CustomType = ODMSPinType.DONOR,
                             Position = finalPosition,
                             Label = user.firstName + " " + user.middleName + " " + user.lastName,
                             Address = user.cityOfDeath + ", " + user.regionOfDeath + ", " + user.countryOfDeath,
-                            Id = "Xamarin",
                             Url = String.Join(",", organIcons),
                             genderIcon = genderIcon,
-                            userPhoto = profilePhoto                         
+                            userPhoto = profilePhoto,
+                            userId = user.id
                         };
-                        customMap.CustomPins.Add(pin);
-                        customMap.Pins.Add(pin);
+                        customMap.CustomPins.Add(pin.Position, pin);
 
+                        lock (customMap.Pins)
+                        {
+                            customMap.Pins.Add(pin);
+                        }
 
+                    }
+
+                    StartTimer(200);
+                    Console.WriteLine("Reached the end of OnAppearing");
+                    break;
+
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    StartTimer(200);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error retrieving organs, please try again (500)",
+                    "OK");
+                    StartTimer(200);
+                    break;
+            }
+        }
+
+        private async Task InitialiseHospitals()
+        {
+
+            ClinicianAPI clinicianApi = new ClinicianAPI();
+            Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();
+            switch (tuple.Item1)
+            {
+                case HttpStatusCode.OK:
+                    Console.WriteLine("Organ map hospitals retrieved successfully");
+                    hospitals = tuple.Item2;
+
+                    foreach (Hospital currentHospital in hospitals)
+                    {
+                        Console.WriteLine("Tracking positions");
+                        Position finalPosition = new Position(currentHospital.latitude, currentHospital.longitude);
+
+                        var pin = new CustomPin
+                        {
+                            CustomType = ODMSPinType.HOSPITAL,
+                            Position = finalPosition,
+                            Label = currentHospital.name,
+                            Address = currentHospital.address,
+                        };
+
+                        // We add to this list to track our pins with additional information (like hospital or donor)
+                        customMap.CustomPins.Add(pin.Position, pin);
+
+                        lock (customMap.Pins)
+                        {
+                            customMap.Pins.Add(pin);
+                        }
                     }
 
                     break;
@@ -241,14 +335,75 @@ namespace mobileAppClient
                     break;
                 case HttpStatusCode.InternalServerError:
                     await DisplayAlert("",
-                    "Server error retrieving organs, please try again (500)",
+                    "Server error retrieving hospitals, please try again (500)",
                     "OK");
                     break;
             }
-
-
         }
 
+        private void AddHelicopter()
+        {
+            // TESTING
+            Console.WriteLine("Entered Add Heli...");
+            Position start = new Position(-37.9061137, 176.2050742);
+            Position end = new Position(-36.8613687, 174.7676895);
+            Console.WriteLine("Set postitions...");
 
+            Helicopter heli = new Helicopter()
+            {
+                startPosition = start,
+                destinationPosition = end
+            };
+            Console.WriteLine("Created Heli...");
+            CustomPin heliPin = new CustomPin
+            {
+                CustomType = ODMSPinType.HELICOPTER,
+                Label = "Heli",
+                HelicopterDetails = heli,
+                Position = heli.startPosition,
+                Address = "1"
+            };
+            Console.WriteLine("Created Helipin...");
+            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
+            customMap.Pins.Add(heliPin);
+        }
+
+        /// <summary>
+        /// Starts the helicopter refresh timer
+        /// </summary>
+        /// <param name="interval"> Time between refreshes in milliseconds </param>
+        public void StartTimer(int interval)
+        {
+            Timer t = new Timer(RefreshHelipcopterPositions, null, 5000, interval);
+        }
+
+        private void RefreshHelipcopterPositions(object o)
+        {
+            Dictionary<String, CustomPin> intermediateHeliPins = new Dictionary<String, CustomPin>();
+
+            foreach (var singleHelicopterPin in customMap.HelicopterPins.Values)
+            {
+                Position currentPosition = singleHelicopterPin.Position;
+
+                intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
+                intermediateHeliPins[singleHelicopterPin.Address].Position = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+            }
+
+            customMap.HelicopterPins = new Dictionary<String, CustomPin>(intermediateHeliPins);
+
+            foreach (var singleHelicopterPin in intermediateHeliPins.Values)
+            {
+                Device.BeginInvokeOnMainThread(() => { customMap.Pins.Remove(singleHelicopterPin); });
+                if (!(singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
+                {
+                    Device.BeginInvokeOnMainThread(() => { customMap.Pins.Add(singleHelicopterPin); });
+                }
+                else
+                {
+                    customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                }
+            }
+        }
     }
 }
+
