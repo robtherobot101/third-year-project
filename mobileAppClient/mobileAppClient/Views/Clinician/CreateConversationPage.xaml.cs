@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -197,17 +198,76 @@ namespace mobileAppClient
             
 
             // Create conversation here
+            
+            await CreateConversation(tappedUser.id);
+        }
+
+        async Task CreateConversation(int TappedUserId)
+        {
             MessagingAPI messagingApi = new MessagingAPI();
-
             int localClincianId = ClinicianController.Instance.LoggedInClinician.staffID;
-            int userToMessageId = tappedUser.id;
 
-            /*switch (await messagingApi.CreateConversation(localClincianId,
-                new List<int> {localClincianId, userToMessageId}))
+            Tuple<HttpStatusCode, int> returnStatus = await messagingApi.CreateConversation(localClincianId,
+                new List<int> {localClincianId, TappedUserId});
+            switch (returnStatus.Item1)
             {
-                case HttpS
-            }*/
-            await Navigation.PopAsync();
+                case HttpStatusCode.BadRequest:
+                    await DisplayAlert("", "Bad Request", "OK");
+                    return;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("", "Server error, please try again", "OK");
+                    return;
+                case HttpStatusCode.Created:
+                    // JUMP INTO CONVO
+                    Conversation newlyCreatedConversation = await GetNewlyCreatedConversation(returnStatus.Item2);
+
+                    if (newlyCreatedConversation != null)
+                    {
+                        await Navigation.PushAsync(new ConversationPage(newlyCreatedConversation));
+                    }
+
+                    return;
+            }
+        }
+
+        async Task<Conversation> GetNewlyCreatedConversation(int conversationId)
+        {
+            MessagingAPI messagingApi = new MessagingAPI();
+            int localClincianId = ClinicianController.Instance.LoggedInClinician.staffID;
+
+            Tuple<HttpStatusCode, Conversation> returnStatus = await messagingApi.GetConversation(localClincianId, conversationId, true);
+
+            switch (returnStatus.Item1)
+            {
+                case HttpStatusCode.OK:
+                    // JUMP INTO CONVO
+                    return returnStatus.Item2;
+                default:
+                    await DisplayAlert("", "Failed to get newly created conversation (" + returnStatus.Item1 + ")", "OK");
+                    return null;         
+            }
+        }
+
+        // TODO
+        async Task RefreshCurrentConversations()
+        {
+            MessagingAPI messagingApi = new MessagingAPI();
+            int localClincianId = ClinicianController.Instance.LoggedInClinician.staffID;
+
+            Tuple<HttpStatusCode, List<Conversation>> returnStatus = await messagingApi.GetConversations(localClincianId, true);
+
+            switch (returnStatus.Item1)
+            {
+                case HttpStatusCode.BadRequest:
+                    await DisplayAlert("", "Bad Request", "OK");
+                    return;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("", "Server error, please try again", "OK");
+                    return;
+                case HttpStatusCode.Created:
+                    // JUMP INTO CONVO
+                    return;
+            }
         }
     }
 }

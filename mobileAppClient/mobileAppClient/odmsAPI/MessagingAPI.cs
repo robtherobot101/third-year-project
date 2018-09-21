@@ -11,12 +11,27 @@ namespace mobileAppClient.odmsAPI
 {
     class MessagingAPI
     {
-        public async Task<Tuple<HttpStatusCode, List<Conversation>>> GetConversation(int localUserId)
+        public async Task<Tuple<HttpStatusCode, List<Conversation>>> GetConversations(int localUserId, bool isClinicianFetching)
         {
+            // Check connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, List<Conversation>>(HttpStatusCode.ServiceUnavailable, new List<Conversation>());
+            }
+
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            var request = new HttpRequestMessage(new HttpMethod("GET"), url + localUserId + "/conversations");
+            if (isClinicianFetching)
+            {
+                url = String.Format("{0}/{1}/{2}/conversations", url, "clinicians", localUserId);
+            }
+            else
+            {
+                url = String.Format("{0}/{1}/{2}/conversations", url, "users", localUserId);
+            }
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url);
 
             request.Headers.Add("token",
                 ClinicianController.Instance.isLoggedIn()
@@ -38,12 +53,69 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
-        public async Task<HttpStatusCode> SendMessage(int localUserId, int conversationId, string messageContents) 
+        public async Task<Tuple<HttpStatusCode, Conversation>> GetConversation(int localUserId, int conversationId, bool isClinicianFetching)
         {
+            // Check connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, Conversation>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            var request = new HttpRequestMessage(new HttpMethod("POST"), url + localUserId + "/conversations/" + conversationId);
+            if (isClinicianFetching)
+            {
+                url = String.Format("{0}/{1}/{2}/conversations/{3}", url, "clinicians", localUserId, conversationId);
+            }
+            else
+            {
+                url = String.Format("{0}/{1}/{2}/conversations/{3}", url, "users", localUserId, conversationId);
+            }
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url);
+
+            request.Headers.Add("token",
+                ClinicianController.Instance.isLoggedIn()
+                    ? ClinicianController.Instance.AuthToken
+                    : UserController.Instance.AuthToken);
+
+
+            var response = await client.SendAsync(request);
+            string body = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                return new Tuple<HttpStatusCode, Conversation>
+                    (response.StatusCode, JsonConvert.DeserializeObject<Conversation>(body));
+            }
+            catch (JsonSerializationException jse)
+            {
+                return null;
+            }
+        }
+
+        public async Task<HttpStatusCode> SendMessage(int localUserId, int conversationId, string messageContents, bool isClinicianFetching) 
+        {
+            // Check connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            if (isClinicianFetching)
+            {
+                url = String.Format("{0}/{1}/{2}/conversations/{3}", url, "clinicians", localUserId, conversationId);
+            }
+            else
+            {
+                url = String.Format("{0}/{1}/{2}/conversations/{3}", url, "users", localUserId, conversationId);
+            }
+
+            var request = new HttpRequestMessage(new HttpMethod("POST"), url);
             request.Content = new StringContent(messageContents);
 
             request.Headers.Add("token",
@@ -54,20 +126,38 @@ namespace mobileAppClient.odmsAPI
             return (await client.SendAsync(request)).StatusCode;
         }
 
-        public async Task<HttpStatusCode> CreateConversation(int localUserId, List<int> participants)
+        public async Task<Tuple<HttpStatusCode, int>> CreateConversation(int localUserId, List<int> participants)
         {
+            // Check connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, -1);
+            }
+
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            var request = new HttpRequestMessage(new HttpMethod("POST"), url + localUserId + "/conversations");
-            request.Content = new StringContent(JsonConvert.SerializeObject(participants));
+            ConversationParticipants conversationParticipants = new ConversationParticipants
+            {
+                participants = participants
+            };
+
+            var request = new HttpRequestMessage(new HttpMethod("POST"), url + "/clinicians/" + localUserId + "/conversations");
+            request.Content = new StringContent(JsonConvert.SerializeObject(conversationParticipants));
 
             request.Headers.Add("token",
                 ClinicianController.Instance.isLoggedIn()
                     ? ClinicianController.Instance.AuthToken
                     : UserController.Instance.AuthToken);
 
-            return (await client.SendAsync(request)).StatusCode;
+            int conversationId = -1;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                conversationId = Int32.Parse(await response.Content.ReadAsStringAsync());
+            }
+
+            return new Tuple<HttpStatusCode, int>(response.StatusCode, conversationId);
         }
     }
 }

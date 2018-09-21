@@ -24,7 +24,7 @@ public class DatabaseController {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             response.status(500);
-            return "RESET FAILURE";
+            return e.getMessage();
         }
 
     }
