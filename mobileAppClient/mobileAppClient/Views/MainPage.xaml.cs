@@ -125,7 +125,7 @@ namespace mobileAppClient
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
-            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(ClinicianMessagingPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -205,7 +205,6 @@ namespace mobileAppClient
                     {
                         Console.WriteLine("Exception: " + ie.InnerException);
                         Console.WriteLine("Exception: " + ie.InnerException.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
                     }
                     break;
             }

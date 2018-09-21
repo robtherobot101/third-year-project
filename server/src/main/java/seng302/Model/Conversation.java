@@ -8,7 +8,7 @@ import java.util.List;
 public class Conversation {
     private int id;
     private List<Message> messages;
-    private List<Pair<Integer, ProfileType>> members;
+    private List<Integer> members;
 
     /**
      * Constructs a new conversation from a database entry.
@@ -17,7 +17,7 @@ public class Conversation {
      * @param messages The messages in the conversation
      * @param members The conversation members
      */
-    public Conversation(int id, List<Message> messages, List<Pair<Integer, ProfileType>> members) {
+    public Conversation(int id, List<Message> messages, List<Integer> members) {
         this.id = id;
         this.messages = messages;
         this.members = members;
@@ -27,7 +27,7 @@ public class Conversation {
         return messages;
     }
 
-    public List<Pair<Integer, ProfileType>> getMembers() {
+    public List<Integer> getMembers() {
         return members;
     }
 

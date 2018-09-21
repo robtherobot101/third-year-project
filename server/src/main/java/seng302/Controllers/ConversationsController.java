@@ -167,7 +167,7 @@ public class ConversationsController {
      * A formatter class to streamline deserialization of conversation participant input.
      */
     private class ConversationUserListFormat {
-        List<Pair<Integer, ProfileType>> participants;
+        List<Integer> participants;
     }
 
     /**
@@ -180,7 +180,7 @@ public class ConversationsController {
      */
     public String addConversation(Request request, Response response, ProfileType profileType) {
         Gson gson = new Gson();
-        List<Pair<Integer, ProfileType>> participants;
+        List<Integer> participants;
         int userId = Integer.parseInt(request.params(":id"));
 
         // Attempt to parse received JSON
@@ -193,14 +193,14 @@ public class ConversationsController {
             }
             //Add self to conversation if not already there
             boolean present = false;
-            for (Pair<Integer, ProfileType> participant: participants) {
-                if (participant.getKey() == userId && participant.getValue().equals(profileType)) {
+            for (Integer participant: participants) {
+                if (participant == userId) {
                     present = true;
                     break;
                 }
             }
             if (!present) {
-                participants.add(new Pair<>(userId, profileType));
+                participants.add(userId);
             }
         } catch (JsonSyntaxException jse) {
             jse.printStackTrace();
