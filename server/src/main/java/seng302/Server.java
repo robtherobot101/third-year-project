@@ -4,6 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
+import seng302.Model.Attribute.ProfileType;
+import seng302.Model.Message;
+import seng302.NotificationManager.Notification;
+import seng302.NotificationManager.PushAPI;
+import seng302.Logic.Database.ProfileUtils;
 import spark.Request;
 import spark.Response;
 
@@ -35,6 +40,7 @@ public class Server {
     private OrgansController organsController;
     private MapObjectController mapObjectController;
     private HospitalController hospitalController;
+    private ConversationsController conversationsController;
 
     private int port = 7015;
     private boolean testing = true;
@@ -63,7 +69,8 @@ public class Server {
 
             post( "/login",         authorizationController::login);
             post( "/logout",        authorizationController::logout);
-            before("/reset",        profileUtils::hasAdminAccess);
+            post("/password",       authorizationController::checkPassword);
+            //before("/reset",        profileUtils::hasAdminAccess);
             post( "/reset",         databaseController::reset);
             before("/resample",     profileUtils::hasAdminAccess);
             post( "/resample",      databaseController::resample);
@@ -78,6 +85,11 @@ public class Server {
             });
 
             get("/status", databaseController::status);
+
+            get("/teapot", (Request request, Response response) -> {
+                response.status(418);
+                return "I'm a little teapot,\nShort and stout!.";
+            });
 
             path("/admins", () -> {
                 before("",          profileUtils::hasAdminAccess);
@@ -108,6 +120,20 @@ public class Server {
                 get( "/:id",        clinicianController::getClinician);
                 delete( "/:id",     clinicianController::deleteClinician);
                 patch( "/:id",      clinicianController::editClinician);
+
+                path("/:id/conversations", () -> {
+                    before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.CLINICIAN));
+                    get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.CLINICIAN));
+                    post("", (request, response) -> conversationsController.addConversation(request, response, ProfileType.CLINICIAN));
+
+                    path("/:conversationId", () -> {
+                        before("", (request, response) -> profileUtils.hasConversationAccess(request, response, ProfileType.CLINICIAN));
+                        get("", conversationsController::getSingleConversation);
+                        delete("", conversationsController::removeConversation);
+                        post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.CLINICIAN));
+                        post("/user", (request, response) -> conversationsController.addConversationUser(request, response, ProfileType.CLINICIAN));
+                    });
+                });
             });
 
             path("/users", () -> {
@@ -183,6 +209,17 @@ public class Server {
                     get("/:waitingListItemId",  waitingListController::getSingleUserWaitingListItem);
                     patch("/:waitingListItemId", waitingListController::editWaitingListItem);
                     delete("/:waitingListItemId", waitingListController::deleteWaitingListItem);
+                });
+
+                path("/:id/conversations", () -> {
+                    before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.USER));
+                    get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.USER));
+
+                    path("/:conversationId", () -> {
+                        before("", (request, response) -> profileUtils.hasConversationAccess(request, response, ProfileType.USER));
+                        get("", conversationsController::getSingleConversation);
+                        post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.USER));
+                    });
                 });
             });
 
@@ -280,5 +317,6 @@ public class Server {
         mapObjectController = new MapObjectController();
         organsController = new OrgansController();
         hospitalController = new HospitalController();
+        conversationsController = new ConversationsController();
     }
 }

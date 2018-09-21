@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Callback;
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
@@ -210,7 +211,7 @@ public class AdminController implements Initializable {
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegion(String value, ComboBox countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
-        String country = countryComboBox.getValue().toString();
+        String country = countryComboBox.getValue() == null ? null : countryComboBox.getValue().toString();
         boolean useCombo = false;
         if (country != null) {
             useCombo = country.equalsIgnoreCase("New Zealand");
@@ -267,7 +268,7 @@ public class AdminController implements Initializable {
      */
     public void countryChanged() {
         String currentRegion = getRegion(countryComboBox, regionComboBox, adminRegionField);
-        setRegionControls(currentRegion, countryComboBox.getValue().toString(), regionComboBox, adminRegionField);
+        setRegionControls(currentRegion, countryComboBox.getValue() == null ? null : countryComboBox.getValue().toString(), regionComboBox, adminRegionField);
         updateFoundUsers(resultsPerPage,false);
     }
 
@@ -289,7 +290,9 @@ public class AdminController implements Initializable {
                 if(c.getValid())
                     validCountries.add(c.getCountryName());
             }
-            countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            if (validCountries != null) {
+                countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            }
             countryComboBox.getItems().add("All Countries");
         } catch (HttpResponseException e) {
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
@@ -485,6 +488,7 @@ public class AdminController implements Initializable {
 
         // Formats the initial load dialog window
         Alert loadDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        WindowManager.setIconAndStyle(loadDialog.getDialogPane());
         loadDialog.setTitle("Confirm data Type");
         loadDialog.setHeaderText("Please Select the Profile Type to Import");
         loadDialog.setContentText("This will close other open ODMS windows.");
@@ -519,6 +523,7 @@ public class AdminController implements Initializable {
                         }
                         if (extension.equals("csv")) {
                             IO.importUserCSV(fileToLoadPath);
+                            setAdmin(currentAdmin, token);
                             return;
                         } else if (extension.equals("json")) {
                             loadSuccessful = IO.importProfiles(fileToLoadPath, ProfileType.USER, token);
@@ -558,8 +563,7 @@ public class AdminController implements Initializable {
                     "",
                     "All profiles successfully loaded.");
             successAlert.showAndWait();
-            refreshLatestProfiles();
-            updateFoundUsers();
+            setAdmin(currentAdmin, token);
         } else if (loadAborted) {
             Alert abortAlert = WindowManager.createAlert(Alert.AlertType.INFORMATION, "Load cancelled",
                     "",
@@ -686,7 +690,7 @@ public class AdminController implements Initializable {
 
         //Add in check for country
 
-        if (!countryComboBox.getValue().toString().equals("All Countries")) {
+        if (countryComboBox.getValue() != null && !countryComboBox.getValue().toString().equals("All Countries")) {
             searchMap.put("country", countryComboBox.getValue().toString());
         }
 
@@ -754,7 +758,7 @@ public class AdminController implements Initializable {
             result = alert.showAndWait();
         }
         boolean fail = false;
-        if (!ask || (result != null && result.isPresent() && result.get() == ButtonType.OK)) {
+        if (!ask || (result.isPresent() && result.get() == ButtonType.OK)) {
             try {
                 Admin latest = WindowManager.getDataManager().getAdmins().getAdmin((int) currentAdmin.getStaffID(), token);
                 setAdmin(latest, token);
@@ -1004,13 +1008,9 @@ public class AdminController implements Initializable {
             updateFoundUsers();
         });
 
-        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateFoundUsers(resultsPerPage,false);
-        });
+        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateFoundUsers(resultsPerPage,false));
 
-        adminRegionField.textProperty().addListener((observable, oldValue, newValue) -> {
-            updateFoundUsers(resultsPerPage,false);
-        });
+        adminRegionField.textProperty().addListener((observable, oldValue, newValue) -> updateFoundUsers(resultsPerPage,false));
 
         adminAgeField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchAgeTerm = newValue;
@@ -1078,7 +1078,7 @@ public class AdminController implements Initializable {
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty() && event.getClickCount() == 2) {
                         try{
-                            User latestCopy = WindowManager.getDataManager().getUsers().getUser((long)row.getItem().getId(), token);
+                            User latestCopy = WindowManager.getDataManager().getUsers().getUser(row.getItem().getId(), token);
                             row.setItem(latestCopy);
                             WindowManager.newAdminsUserWindow(latestCopy, token);
                         } catch (HttpResponseException e) {
@@ -1153,7 +1153,7 @@ public class AdminController implements Initializable {
         Platform.runLater(clinicianName::requestFocus);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.get() == updateButtonType){
+        if (result.isPresent() && result.get() == updateButtonType){
             String newName = "";
             String newAddress = "";
             String newRegion = "";

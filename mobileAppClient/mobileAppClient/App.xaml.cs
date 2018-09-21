@@ -6,6 +6,7 @@ using System.IO;
 using mobileAppClient.Google;
 using Newtonsoft.Json;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Notifications;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
@@ -19,11 +20,10 @@ namespace mobileAppClient
         //Static variables for the app
         public static string DefaultImageId = "default_image";
         public static string ImageIdToSave = null;
-
         /*
          * Open the app to have a the main page xaml as the bottom of 
          * the stack of views.
-         */ 
+         */
         public App()
         {
             InitializeComponent();
@@ -44,6 +44,9 @@ namespace mobileAppClient
         protected override void OnStart()
         {
             // Handle when your app starts
+
+            // Visual Studio App Center initialisation 
+            VSAppCenter.Setup();
         }
 
         async protected override void OnSleep()

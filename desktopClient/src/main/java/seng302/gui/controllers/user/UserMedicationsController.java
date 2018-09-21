@@ -246,7 +246,7 @@ public class UserMedicationsController extends UserTabController implements Init
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?",
                 "Are you sure would like to delete the selected medication? ", "By doing so, the medication will be erased from the database.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             if (currentListView.getSelectionModel().getSelectedItem() != null) {
                 Medication m = currentListView.getSelectionModel().getSelectedItem();
                 currentItems.remove(m);

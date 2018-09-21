@@ -13,13 +13,13 @@
                 <Grid HeightRequest="200">
                     <Image Source="profile_photo_bg.png" Aspect="AspectFill" />
                     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                        <abstractions:CircleImage Source="{Binding ProfileImage}" Aspect="AspectFit" BorderColor="{Binding BorderColor}" BorderThickness="2" WidthRequest="90" HeightRequest="90">
+                        <Image x:Name="ProfilePhotoImage" Source="{Binding ProfileImage}" Aspect="AspectFit" WidthRequest="90" HeightRequest="90">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnProfilePhotoTapped"
                                 />
                             </Image.GestureRecognizers>
-                        </abstractions:CircleImage>
+                        </Image>
                         <Label Text="{Binding FullName}" TextColor="White" FontSize="Large" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </Grid>

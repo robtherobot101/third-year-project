@@ -1,3 +1,4 @@
+using Microsoft.AppCenter;
 using mobileAppClient.Models;
 using mobileAppClient.odmsAPI.RequestFormat;
 using Newtonsoft.Json;
@@ -41,6 +42,7 @@ namespace mobileAppClient.odmsAPI
             queries = $"?usernameEmail={usernameEmail}&password={password}";
 
             HttpContent content = new StringContent("");
+            content.Headers.Add("device_id", AppCenter.GetInstallIdAsync().Result.ToString());
             HttpResponseMessage response;
 
             try
@@ -54,7 +56,6 @@ namespace mobileAppClient.odmsAPI
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
-
 
                 if (IsClinician(responseContent))
                 {

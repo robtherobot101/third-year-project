@@ -1,14 +1,6 @@
-﻿using CarouselView.FormsPlugin.Abstractions;
-using Microsoft.Toolkit.Parsers.Rss;
-using mobileAppClient.Models;
-using mobileAppClient.Models.CustomObjects;
-using mobileAppClient.odmsAPI;
+﻿using mobileAppClient.odmsAPI;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -33,7 +25,7 @@ namespace mobileAppClient.Views
 
         private async void fillFields()
         {
-            Clinician currentClinician = ClinicianController.Instance.LoggedInClinician;
+            Models.Clinician currentClinician = ClinicianController.Instance.LoggedInClinician;
 
             // Database Pane
             UserAPI userAPI = new UserAPI();

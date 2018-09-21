@@ -86,7 +86,7 @@ namespace mobileAppClient
             }
             else
             {
-                getFeed("https://www.stuff.co.nz/rss/national/health");
+                getFeed("http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom");
                 // For each source
                 foreach (String feed in feeds)
                 {

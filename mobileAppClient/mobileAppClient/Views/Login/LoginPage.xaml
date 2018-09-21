@@ -12,7 +12,7 @@
                        Margin="0, 0, 0, 30"
                        />
 
-                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email" ReturnType="Next"               
+                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email/NHI" ReturnType="Next"
                     />
 
                 <Entry x:Name="passwordInput" Placeholder="Password" ReturnType="Go"
@@ -34,7 +34,7 @@
                 </StackLayout>
 
                 <StackLayout Orientation="Horizontal" Margin="0, 0, 0, 50">
-                    <Label Text="Remember me?" Margin="0, 0, 30, 0"/>
+                    <Label x:Name="RememberMeLabel" Text="Remember me?" Margin="0, 0, 30, 0"/>
                     <Switch x:Name="RememberMeSwitch"/>
                 </StackLayout>
                 

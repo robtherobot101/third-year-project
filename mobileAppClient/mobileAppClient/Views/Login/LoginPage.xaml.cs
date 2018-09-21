@@ -57,16 +57,22 @@ namespace mobileAppClient
 
 	    public bool rememberLogin;
 
-		public LoginPage()
+	    private MainPage baseMainPage;
+
+        public LoginPage()
 		{
 			InitializeComponent ();
-		    
-		    IsLoading = false;
+		    baseMainPage = new MainPage(false);
+
+            IsLoading = false;
 		    UserController.Instance.loginPageController = this;
 
             // Temporary fix for the Google login not working on iOS
             if (Device.RuntimePlatform == Device.iOS) {
                 GoogleButton.IsVisible = false;
+                RememberMeSwitch.IsVisible = false;
+                RememberMeLabel.IsVisible = false;
+
             }
 
             // Hide the poorly sized Facebook logo on Android
@@ -113,6 +119,15 @@ namespace mobileAppClient
         }
 
         /*
+         * Process a successful sign up
+         */
+	    public async Task OpenMainPageFromSignUp()
+	    {
+	        baseMainPage.userLoggedIn();
+	        await Navigation.PushModalAsync(baseMainPage);
+        }
+ 
+        /*
          * Called when the Login button is pressed
          */
         async void LoginButtonClicked(object sender, EventArgs args)
@@ -153,8 +168,6 @@ namespace mobileAppClient
                         UserAPI userAPI = new UserAPI();
                         await userAPI.GetUserPhoto();
                     }
-
-                    MainPage baseMainPage = new MainPage(false);
 
                     if (ClinicianController.Instance.isLoggedIn())
                     {
@@ -238,8 +251,6 @@ namespace mobileAppClient
                         UserAPI userAPI = new UserAPI();
                         await userAPI.GetUserPhoto();
                     }
-
-                    MainPage baseMainPage = new MainPage(false);
 
                     if (ClinicianController.Instance.isLoggedIn())
                     {
@@ -364,8 +375,7 @@ namespace mobileAppClient
                         // Pop away login screen on successful login
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                         UserController.Instance.mainPageController.updateMenuPhoto();
-
-                        MainPage baseMainPage = new MainPage(false);
+                       
                         baseMainPage.userLoggedIn();
                         await Navigation.PushModalAsync(baseMainPage);
 

@@ -4,10 +4,14 @@
 database_address=mysql2.csse.canterbury.ac.nz
 
 # The name of the Database
-database_name=seng302-2018-team300-prod
+database_name=seng302-2018-team300-test
 
 # The username to access the database
 username=seng302-team300
 
 # The password to access the database
 password=WeldonAside5766
+
+# The Visual Studio App Center token
+vs_token=9dbaa6ff2cee9f13d427c78abd9f9516fd5f26d9
+
