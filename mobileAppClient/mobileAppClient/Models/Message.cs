@@ -17,12 +17,12 @@ namespace mobileAppClient
         [JsonIgnore]
         public DateTime timestampDateTime
         {
-            get { return timestamp.ToDateTime(); }
+            get { return timestamp.ToDateTimeWithSeconds(); }
         }
 
         public void SetType(int readersAccountID)
         {
-            if (readersAccountID == this.id)
+            if (readersAccountID == this.userId)
             {
                 this.messageType = MessageType.Outgoing;
             }

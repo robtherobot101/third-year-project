@@ -33,13 +33,14 @@ public class ConversationsController {
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
+     * @param profileType The type of user accessing the conversations
      * @return The serialised conversations
      */
-    public String getAllConversations(Request request, Response response) {
+    public String getAllConversations(Request request, Response response, ProfileType profileType) {
         List<Conversation> queriedConversations;
         int requestedUserId = Integer.parseInt(request.params(":id"));
         try {
-            queriedConversations = model.getAllConversations(requestedUserId);
+            queriedConversations = model.getAllConversations(requestedUserId, profileType);
         } catch (SQLException e) {
             response.status(500);
             return e.getMessage();
@@ -120,8 +121,6 @@ public class ConversationsController {
         try {
             model.addConversationUser(participant.getKey(), participant.getValue(), Integer.parseInt(request.params(":conversationId")));
             response.status(201);
-            PushAPI.getInstance().sendTextNotification(participant.getKey(), "New conversation.",
-                    "You have been added to a new conversation.");
             return "Success";
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
@@ -135,10 +134,9 @@ public class ConversationsController {
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @param profileType The type of user accessing the conversations
      * @return Whether the operation succeeded
      */
-    public String addMessage(Request request, Response response, ProfileType profileType) {
+    public String addMessage(Request request, Response response) {
         int userId = Integer.parseInt(request.params(":id"));
         int conversationId = Integer.parseInt(request.params(":conversationId"));
 
@@ -148,10 +146,9 @@ public class ConversationsController {
             return "Missing message body";
         } else {
             try {
-                int accessLevel = profileType.getAccessLevel();
-                Message toSend = new Message(request.body(), userId, accessLevel);
-                model.addMessage(conversationId, toSend);
-                PushAPI.getInstance().sendMessage(toSend, conversationId);
+                Message messageToSend = new Message(request.body(), userId);
+                model.addMessage(conversationId, messageToSend);
+                sendMessageNotification(conversationId, userId, messageToSend);
                 response.status(201);
                 return "Success";
             } catch (SQLException e) {
@@ -160,6 +157,25 @@ public class ConversationsController {
                 return "Internal Server Error";
             }
         }
+    }
+
+    /**
+     * Sends message
+     */
+    private void sendMessageNotification(int conversationId, int localId, Message messageToSend) {
+        Conversation queriedConversation;
+        try {
+            queriedConversation = model.getSingleConversation(conversationId);
+        } catch (SQLException ignored) {
+            return;
+        }
+
+        List<Integer> participants = queriedConversation.getMembers();
+        participants.remove(new Integer(localId));
+        assert(participants.size() == 1);
+
+        int externalId = participants.get(0);
+        PushAPI.getInstance().sendMessage(messageToSend, externalId);
     }
 
     /**
@@ -211,10 +227,6 @@ public class ConversationsController {
         try {
             int conversationId = model.addConversation(participants);
             response.status(201);
-            for (int id: model.getConversationUsers(conversationId)) {
-                PushAPI.getInstance().sendTextNotification(id, "New conversation.",
-                        "You have been added to a new conversation.");
-            }
             return "" + conversationId;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
@@ -235,10 +247,6 @@ public class ConversationsController {
         try {
             model.removeConversation(conversationId);
             response.status(200);
-            for (int id: model.getConversationUsers(conversationId)) {
-                PushAPI.getInstance().sendTextNotification(id, "Conversation deleted.",
-                        "One of your conversations has been deleted.");
-            }
             return "Success";
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());

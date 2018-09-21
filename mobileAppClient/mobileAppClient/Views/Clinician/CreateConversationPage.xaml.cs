@@ -221,9 +221,13 @@ namespace mobileAppClient
                     // JUMP INTO CONVO
                     Conversation newlyCreatedConversation = await GetNewlyCreatedConversation(returnStatus.Item2);
 
+                    Clinician loggedInClinician = ClinicianController.Instance.LoggedInClinician;
                     if (newlyCreatedConversation != null)
                     {
-                        await Navigation.PushAsync(new ConversationPage(newlyCreatedConversation));
+                        newlyCreatedConversation.getParticipantNames(loggedInClinician.staffID);
+                        
+                        await Navigation.PushAsync(new ConversationPage(newlyCreatedConversation, localClincianId));
+                        
                     }
 
                     return;
