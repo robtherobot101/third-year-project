@@ -111,8 +111,7 @@ public class WaitingListItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WaitingListItem that = (WaitingListItem) o;
-        return id == that.id &&
-                userId == that.userId &&
+        return  userId == that.userId &&
                 organDeregisteredCode == that.organDeregisteredCode &&
                 organType == that.organType &&
                 Objects.equals(organRegisteredDate, that.organRegisteredDate) &&

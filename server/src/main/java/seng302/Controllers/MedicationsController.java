@@ -94,8 +94,6 @@ public class MedicationsController {
                 model.insertMedication(receivedMedication, requestedUserId);
                 response.status(201);
                 // Example push notification for new medication
-                PushAPI.getInstance().sendNotification(new Notification("New Medication",
-                        "A clinician has added a new medication" + receivedMedication.getName()), Integer.toString(requestedUserId));
                 return "MEDICATION INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
