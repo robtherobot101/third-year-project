@@ -132,6 +132,8 @@ public class MedicationsController {
             try {
                 model.updateMedication(receivedMedication, requestedMedicationId, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Medication edited.",
+                        "One of your medications (" + receivedMedication.getName() + ") has been edited.");
                 return "MEDICATION WITH ID: "+ requestedMedicationId +" FOR USER ID: "+ requestedUserId +" SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
                 response.status(500);
@@ -159,6 +161,8 @@ public class MedicationsController {
         try {
             model.removeMedication(requestedUserId, requestedMedicationId);
             response.status(201);
+            PushAPI.getInstance().sendTextNotification(requestedUserId, "Medication deleted.",
+                    "One of your medications (" + queriedMedication.getName() + ") has been deleted.");
             return "MEDICATION WITH ID: "+ requestedMedicationId +" FOR USER ID: "+ requestedUserId +" DELETED";
         } catch (SQLException e) {
             response.status(500);

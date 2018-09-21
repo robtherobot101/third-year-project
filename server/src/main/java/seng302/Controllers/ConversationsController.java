@@ -121,6 +121,8 @@ public class ConversationsController {
         try {
             model.addConversationUser(participant.getKey(), participant.getValue(), Integer.parseInt(request.params(":conversationId")));
             response.status(201);
+            PushAPI.getInstance().sendTextNotification(participant.getKey(), "New conversation.",
+                    "You have been added to a new conversation.");
             return "Success";
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
@@ -210,6 +212,10 @@ public class ConversationsController {
         try {
             int conversationId = model.addConversation(participants);
             response.status(201);
+            for (int id: model.getConversationUsers(conversationId)) {
+                PushAPI.getInstance().sendTextNotification(id, "New conversation.",
+                        "You have been added to a new conversation.");
+            }
             return "" + conversationId;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
@@ -230,6 +236,10 @@ public class ConversationsController {
         try {
             model.removeConversation(conversationId);
             response.status(200);
+            for (int id: model.getConversationUsers(conversationId)) {
+                PushAPI.getInstance().sendTextNotification(id, "Conversation deleted.",
+                        "One of your conversations has been deleted.");
+            }
             return "Success";
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
