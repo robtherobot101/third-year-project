@@ -197,6 +197,16 @@ namespace mobileAppClient
             
 
             // Create conversation here
+            MessagingAPI messagingApi = new MessagingAPI();
+
+            int localClincianId = ClinicianController.Instance.LoggedInClinician.staffID;
+            int userToMessageId = tappedUser.id;
+
+            /*switch (await messagingApi.CreateConversation(localClincianId,
+                new List<int> {localClincianId, userToMessageId}))
+            {
+                case HttpS
+            }*/
             await Navigation.PopAsync();
         }
     }
