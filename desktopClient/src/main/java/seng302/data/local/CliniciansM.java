@@ -1,5 +1,6 @@
 package seng302.data.local;
 
+import org.apache.http.client.HttpResponseException;
 import seng302.data.interfaces.CliniciansDAO;
 import seng302.generic.Debugger;
 import seng302.User.Clinician;
@@ -41,6 +42,11 @@ public class CliniciansM implements CliniciansDAO {
     public void updateClinician(Clinician clinician, String token) {
         removeClinician(clinician.getStaffID(), null);
         clinicians.add(clinician);
+    }
+
+    @Override
+    public void updateAccount(long id, String username, String password, String token) throws HttpResponseException {
+
     }
 
     /**

@@ -217,6 +217,15 @@ public class UsersDB implements UsersDAO {
         return Integer.parseInt(response.getAsString());
     }
 
+    /**
+     * Updates a user's username, email and password
+     * @param id The id of the user
+     * @param username The new username to update too
+     * @param email The new email
+     * @param password The new password
+     * @param token The login token
+     * @throws HttpResponseException If something goes wrong
+     */
     @Override
     public void updateAccount(long id, String username, String email, String password, String token) throws HttpResponseException {
         JsonObject jo = new JsonObject();
