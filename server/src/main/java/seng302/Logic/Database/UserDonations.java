@@ -147,38 +147,30 @@ public class UserDonations extends DatabaseMethods {
      * @throws SQLException If there is errors communicating with the database
      */
     public void updateAllDonations(Set<Organ> newOrgans, int userId, LocalDateTime dateOfDeath) throws SQLException {
-        removeAllUserDonations(userId);
-        for (Organ organ : newOrgans) {
-            insertDonation(organ, userId, dateOfDeath);
-        }
-
-        ////////////////////////////////////////////////////////////
-
         List<Organ> oldDonationItems = new ArrayList<Organ>(getAllUserDonations(userId));
         List<Organ> newDonationItems = new ArrayList<Organ>(newOrgans);
-
 
         //Ignore all waiting list items that are already on the database and up to date
         for (int i = oldDonationItems.size() - 1; i >= 0; i--) {
             Organ found = null;
-            for (Organ organ : newOrgans) {
-                if (organ.equals(oldDonationItems.get(i))) {
-                    found = organ;
+            for (Organ newOrgan : newDonationItems) {
+                if (newOrgan == oldDonationItems.get(i)) {
+                    found = newOrgan;
                     break;
                 }
             }
             if (found == null) {
-                //Patch edited waiting list items
+                //Patch edited donations
                 for (Organ newOrgan : newDonationItems) {
                     if (newOrgan == oldDonationItems.get(i)) {
-
+                        System.out.println("Exists: " + newOrgan);
                         found = newOrgan;
                         break;
                     }
                 }
             }
             if (found != null) {
-                newOrgans.remove(found);
+                newDonationItems.remove(found);
                 oldDonationItems.remove(i);
             }
         }
@@ -191,8 +183,8 @@ public class UserDonations extends DatabaseMethods {
         //Upload all new waiting list items
         for (Organ organ : newDonationItems) {
             insertDonation(organ, userId, new GeneralUser().getUserFromId(userId).getDateOfDeath());
-            PushAPI.getInstance().sendTextNotification(userId, "Organ added to waiting list.",
-                    Organ.capitalise(organ.toString()) + " was added to your organ waiting list.");
+            PushAPI.getInstance().sendTextNotification(userId, "Organ added to your donation list.",
+                    Organ.capitalise(organ.toString()) + " was added to your organ donation list.");
         }
     }
 
