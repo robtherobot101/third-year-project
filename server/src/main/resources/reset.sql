@@ -91,8 +91,9 @@ CREATE TABLE IF NOT EXISTS `TRANSFERS` (
   `StartLon` double NOT NULL,
   `EndLat` double NOT NULL,
   `EndLon` double NOT NULL,
-  `ReceiverId` int(11) NOT NULL,
-  `ArrivalTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `ReceiverId` bigint(11) NOT NULL,
+  `ArrivalTime` timestamp NOT NULL,
+  `OrganType` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
