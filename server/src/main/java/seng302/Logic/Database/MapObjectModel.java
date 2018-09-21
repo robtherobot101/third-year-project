@@ -93,7 +93,7 @@ public class MapObjectModel extends DatabaseMethods {
     public void insertTransfer(OrganTransfer transfer) throws SQLException{
         PreparedStatement statement = null;
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()){
-            String query = "INSERT INTO TRANSFERS (StartLat, StartLon, EndLat, EndLon, ArrivalTime, OrganId, ReceiverId) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO TRANSFERS (StartLat, StartLon, EndLat, EndLon, ArrivalTime, OrganId, ReceiverId, OrganType) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(query);
             statement.setDouble(1, transfer.getStartLat());
             statement.setDouble(2, transfer.getStartLon());
@@ -102,6 +102,7 @@ public class MapObjectModel extends DatabaseMethods {
             statement.setTimestamp(5, Timestamp.valueOf(transfer.getArrivalTime()));
             statement.setInt(6, transfer.getOrganId());
             statement.setLong(7, transfer.getReceiverId());
+            statement.setString(8, transfer.getOrganType().toString());
 
 
             System.out.println("Inserting new transfer  -> Successful -> Rows Added: " + statement.executeUpdate());
@@ -125,7 +126,8 @@ public class MapObjectModel extends DatabaseMethods {
                 organTransferResultSet.getDouble("EndLon"),
                 organTransferResultSet.getTimestamp("ArrivalTime") != null ? organTransferResultSet.getTimestamp("ArrivalTime").toLocalDateTime() : null,
                 organTransferResultSet.getInt("OrganId"),
-                organTransferResultSet.getLong("ReceiverId"));
+                organTransferResultSet.getLong("ReceiverId"),
+                Organ.parse(organTransferResultSet.getString("OrganType")));
 
         return  organTransfer;
     }
