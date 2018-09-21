@@ -315,8 +315,8 @@ public class UserController {
         } else {
             if (checkNhi(receivedUser.getNhi())) {
                 try {
-                    receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
-                    model.insertUser(receivedUser);
+                    String passwordHash = SaltHash.createHash((String) gson.fromJson(request.body(), Map.class).get("password"));
+                    model.insertUser(receivedUser, passwordHash);
                     response.status(201);
                     return "Success";
                 } catch (SQLException e) {
@@ -417,7 +417,6 @@ public class UserController {
                     String token = request.headers("token");
                     ProfileUtils profileUtils = new ProfileUtils();
                     int accessLevel = profileUtils.checkToken(token);
-                    receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
                     model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                     response.status(201);
                     return "USER SUCCESSFULLY UPDATED";

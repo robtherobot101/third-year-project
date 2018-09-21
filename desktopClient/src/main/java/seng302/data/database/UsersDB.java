@@ -35,22 +35,6 @@ public class UsersDB implements UsersDAO {
     }
 
     /**
-     * gets a users id from the username
-     * @param username the username of the user
-     * @param token the users token
-     * @return returns the id of the user
-     */
-    @Override
-    public int getUserId(String username, String token) {
-        for (User user : getAllUsers(token)) {
-            if (user.getUsername().equals(username)) {
-                return (int) user.getId();
-            }
-        }
-        return -1;
-    }
-
-    /**
      * inserts a new user into the server
      * @param user the user to insert
      */
@@ -58,7 +42,7 @@ public class UsersDB implements UsersDAO {
     public void insertUser(User user) {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        Debugger.log("INSERTIN USER");
+        Debugger.log("INSERTING USER");
         Debugger.log(userJson);
         userJson.remove("id");
         server.postRequest(userJson, new HashMap<>(), null, users);

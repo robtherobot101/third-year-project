@@ -99,7 +99,6 @@ public class GeneralUser extends DatabaseMethods {
             queryBuilder.append("AND ");
 
             String nameFilter = nameFilter(params);
-            String passwordFilter = matchFilter(params, "password", true);
             String usernameFilter = matchFilter(params, "username", true);
             String userTypeFilter = userTypeFilter(params);
             String ageFilter = ageFilter(params);
@@ -110,7 +109,7 @@ public class GeneralUser extends DatabaseMethods {
 
             List<String> filters = new ArrayList<String>();
             filters.addAll(Arrays.asList(
-                    nameFilter, passwordFilter, usernameFilter, userTypeFilter, ageFilter, genderFilter, regionFilter, countryFilter, organFilter
+                    nameFilter, usernameFilter, userTypeFilter, ageFilter, genderFilter, regionFilter, countryFilter, organFilter
             ));
 
             filters.removeIf((String filter) -> filter.equals(""));
@@ -304,7 +303,6 @@ public class GeneralUser extends DatabaseMethods {
         String username = user.getUsername();
         String email = user.getEmail();
         String nhi = user.getNhi();
-        String password = user.getPassword();
         String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
         String g = MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified," +
@@ -321,7 +319,7 @@ public class GeneralUser extends DatabaseMethods {
      * @param user The given user which will be inserted.
      * @throws SQLException If there is a problem working with the database.
      */
-    public void insertUser(User user) throws SQLException {
+    public void insertUser(User user, String passwordHash) throws SQLException {
         User fromDb;
         ResultSet resultSet = null;
         PreparedStatement statement = null;
@@ -346,7 +344,7 @@ public class GeneralUser extends DatabaseMethods {
             String insertAccount = "INSERT INTO ACCOUNT(username, password) VALUES(?, ?)";
             statement = connection.prepareStatement(insertAccount);
             statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
+            statement.setString(2, passwordHash);
             statement.executeUpdate();
             statement.close();
             statement = connection.prepareStatement(createUserStatement(user));
@@ -417,6 +415,7 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("blood_type") != null ? BloodType.parse(resultSet.getString("blood_type")) : null,
                     resultSet.getString("region"),
                     resultSet.getString("current_address"),
+                    resultSet.getString("username"),
                     resultSet.getString("email"),
                     resultSet.getString("nhi"),
                     resultSet.getString("country"),
@@ -527,7 +526,7 @@ public class GeneralUser extends DatabaseMethods {
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                     "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, " +
-                    "email = ?, nhi = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
+                    "email = ?, nhi = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
                     "WHERE USER.id = ACCOUNT.id AND USER.id = ?";
             statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
@@ -555,12 +554,11 @@ public class GeneralUser extends DatabaseMethods {
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
             statement.setString(21, user.getNhi());
-            statement.setString(22, user.getPassword());
-            statement.setString(23, user.getCountry());
-            statement.setString(24, user.getCityOfDeath());
-            statement.setString(25, user.getRegionOfDeath());
-            statement.setString(26, user.getCountryOfDeath());
-            statement.setInt(27, userId);
+            statement.setString(22, user.getCountry());
+            statement.setString(23, user.getCityOfDeath());
+            statement.setString(24, user.getRegionOfDeath());
+            statement.setString(25, user.getCountryOfDeath());
+            statement.setInt(26, userId);
             System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         } finally {
             close(statement);

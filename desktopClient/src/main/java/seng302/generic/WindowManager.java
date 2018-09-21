@@ -453,7 +453,6 @@ public class WindowManager extends Application {
      */
     private static void showError(Thread t, Throwable e) {
         Debugger.log("Non-critical error caught, probably platform dependent.");
-        Debugger.error(e.getMessage());
         if (Platform.isFxApplicationThread()) {
             Debugger.error(e.getLocalizedMessage());
         } else {
@@ -539,7 +538,7 @@ public class WindowManager extends Application {
         dataManager = createDatabaseDataManager();
         //dataManager = createLocalDataManager();
 
-        Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
+        //Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding(closeAllWindows -> {

@@ -18,11 +18,6 @@ public class UsersM implements UsersDAO {
         this.users = new ArrayList<>();
     }
 
-    @Override
-    public int getUserId(String username, String token) {
-        return 0;
-    }
-
     /**
      * inserts a new user
      * @param user the user to insert

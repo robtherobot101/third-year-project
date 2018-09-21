@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface UsersDAO {
-    int getUserId(String username, String token) throws HttpResponseException;
 
     void insertUser(User user) throws HttpResponseException;
 

@@ -3,11 +3,11 @@ package seng302;
 import seng302.Logic.Database.GeneralAdmin;
 import seng302.Logic.Database.GeneralClinician;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Logic.SaltHash;
 import seng302.Model.*;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.Medication.Medication;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,8 +28,8 @@ public abstract class HelperMethods {
      */
     public static User insertUser(GeneralUser generalUser) throws SQLException {
         String[] middle = {"Middle" + r.nextInt(1000000)};
-        User user = new User("First" + r.nextInt(1000000), middle, "Last" + r.nextInt(1000000), LocalDate.of(1900 + r.nextInt(100), 8, 4), "username5" + r.nextInt(1000000), "email5@domain.com" + r.nextInt(1000000), "chj" + r.nextInt(9999), "password");
-        generalUser.insertUser(user);
+        User user = new User("First" + r.nextInt(1000000), middle, "Last" + r.nextInt(1000000), LocalDate.of(1900 + r.nextInt(100), 8, 4), "username5" + r.nextInt(1000000), "email5@domain.com" + r.nextInt(1000000), "chj" + r.nextInt(9999));
+        generalUser.insertUser(user, SaltHash.createHash("pasword"));
         user.setId(generalUser.getIdFromUser(user.getUsername()));
         return user;
     }
