@@ -63,7 +63,7 @@ public class OrganMatching {
         List<User> matches = new ArrayList<>();
         List<User> possibleMatches = model.getMatchingUsers(organ);
         for (User user: possibleMatches){
-            if (isSameBloodType(donor, user) && isWithinAgeRange(donor, user) && user.getRegion() != null && !user.getRegion().equals("")){
+            if (isSameBloodType(donor, user) && isWithinAgeRange(donor, user)){
                 matches.add(user);
             }
         }

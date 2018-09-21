@@ -417,10 +417,8 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("blood_type") != null ? BloodType.parse(resultSet.getString("blood_type")) : null,
                     resultSet.getString("region"),
                     resultSet.getString("current_address"),
-                    resultSet.getString("username"),
                     resultSet.getString("email"),
                     resultSet.getString("nhi"),
-                    resultSet.getString("password"),
                     resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
                     resultSet.getString("regionOfDeath"),
@@ -619,11 +617,13 @@ public class GeneralUser extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0 AND USER.region is NOT NULL";
             statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             resultSet = statement.executeQuery();
+            System.out.println("test");
             while (resultSet.next()) {
+                System.out.println("testest");
                 possibleMatches.add(getUserFromResultSet(resultSet));
             }
             return possibleMatches;
