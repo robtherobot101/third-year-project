@@ -1,6 +1,8 @@
 package seng302.User;
 
 
+import seng302.User.Attribute.Organ;
+
 import java.time.LocalDateTime;
 
 public class OrganTransfer {
@@ -11,8 +13,9 @@ public class OrganTransfer {
     private LocalDateTime arrivalTime;
     private int OrganId;
     private long receiverId;
+    private Organ organType;
 
-    public OrganTransfer(double startLat, double startLon, double endLat, double endLon, LocalDateTime arrivalTime, int organId, long receiverId){
+    public OrganTransfer(double startLat, double startLon, double endLat, double endLon, LocalDateTime arrivalTime, int organId, long receiverId, Organ organType){
         this.startLat = startLat;
         this.startLon = startLon;
         this.endLat = endLat;
@@ -20,6 +23,7 @@ public class OrganTransfer {
         this.arrivalTime = arrivalTime;
         this.OrganId = organId;
         this.receiverId = receiverId;
+        this.organType = organType;
     }
 
     public double getEndLat() {
@@ -48,5 +52,9 @@ public class OrganTransfer {
 
     public long getReceiverId() {
         return receiverId;
+    }
+
+    public Organ getOrganType() {
+        return organType;
     }
 }
