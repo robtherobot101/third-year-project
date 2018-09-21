@@ -99,6 +99,11 @@ public class Server {
                 get("/:id",         adminController::getAdmin);
                 delete("/:id",      adminController::deleteAdmin);
                 patch("/:id",       adminController::editAdmin);
+
+                path("/:id/account", () -> {
+                    before("",          profileUtils::hasAdminAccess);
+                    patch("",       clinicianController::editAccount);
+                });
             });
 
             path("/clinicians", () -> {
@@ -120,6 +125,11 @@ public class Server {
                 get( "/:id",        clinicianController::getClinician);
                 delete( "/:id",     clinicianController::deleteClinician);
                 patch( "/:id",      clinicianController::editClinician);
+
+                path("/:id/account", () -> {
+                    before("",          profileUtils::hasClinicianLevelAccess);
+                    patch("",       clinicianController::editAccount);
+                });
 
                 path("/:id/conversations", () -> {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.CLINICIAN));

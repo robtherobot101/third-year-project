@@ -12,6 +12,8 @@ import spark.Response;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 public class ClinicianController {
     private GeneralClinician model;
@@ -165,6 +167,34 @@ public class ClinicianController {
                 return "Internal Server Error";
             }
         }
+    }
+
+    /**
+     * method to process the editing of a specific account
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the editing of the user was successful or not
+     */
+    public String editAccount(Request request, Response response) {
+        Map content = new Gson().fromJson(request.body(), Map.class);
+        try {
+            if (!content.keySet().containsAll(Arrays.asList("username", "password"))) {
+                throw new JsonSyntaxException("Missing parameters from JSON body");
+            }
+            model.updateAccount(Long.parseLong(request.params().get(":id")),
+                    (String) content.get("username"),
+                    (String) content.get("password"));
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return "Internal Server Error";
+        } catch (JsonSyntaxException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(400);
+            return "Request body not correct";
+        }
+        response.status(201);
+        return "Account updated";
     }
 
     /**

@@ -568,6 +568,7 @@ public class GeneralUser extends DatabaseMethods {
 
     /**
      * Update account details
+     * @param id The id of the user account
      * @param username The new username to associate with the account
      * @param password The new password
      * @param email The new email
