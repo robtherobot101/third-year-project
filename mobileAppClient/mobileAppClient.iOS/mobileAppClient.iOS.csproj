@@ -25,10 +25,11 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchArch>x86_64</MtouchArch>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
-    <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
+    <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
+    <CodesignProvision>TranscendDonation</CodesignProvision>
+    <MtouchSdkVersion>11.2</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -39,7 +40,8 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
+    <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
+    <CodesignProvision>iOS Wildcard Distribution</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,6 +57,7 @@
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
+    <MtouchSdkVersion>11.4</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -64,9 +67,11 @@
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>iOS Wildcard Distribution</CodesignProvision>
+    <CodesignProvision>TranscendDonation</CodesignProvision>
+    <MtouchFloat32>true</MtouchFloat32>
+    <MtouchSdkVersion>11.2</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -171,10 +176,21 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
+    <Compile Include="Messaging\Cells\BubbleCell.cs" />
+    <Compile Include="Messaging\Cells\IncomingCell.cs" />
+    <Compile Include="Messaging\Cells\OutgoingCell.cs" />
+    <Compile Include="Messaging\ChatInput\ChatInputView.cs" />
+    <Compile Include="Messaging\ChatSource.cs" />
+    <Compile Include="Messaging\ChatViewController.cs" />
+    <Compile Include="Messaging\ChatViewController.designer.cs">
+      <DependentUpon>ChatViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Messaging\MessagingEntryClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
+    <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -182,9 +198,6 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\LaunchImage.launchimage\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\donationIcon.v1.png">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_donationicon.png">
@@ -223,6 +236,9 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\rsz_9donationicon.png">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\donationIcon copy.v1.png">
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -250,10 +266,10 @@
       <Version>0.10.0-preview</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.2.0.809874-pre3</Version>
+      <Version>3.2.0.839982</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms.Maps">
-      <Version>3.2.0.809874-pre3</Version>
+      <Version>3.2.0.839982</Version>
     </PackageReference>
     <PackageReference Include="Rivets">
       <Version>1.0.5</Version>

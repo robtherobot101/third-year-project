@@ -10,9 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserHistory extends DatabaseMethods{
+public class UserHistory extends DatabaseMethods {
 
     public ArrayList<HistoryItem> getAllHistoryItems(int userId) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<HistoryItem> allHistoryItems = new ArrayList<>();
             String query = "SELECT * FROM HISTORY_ITEM WHERE user_id = ?";
@@ -23,13 +25,13 @@ public class UserHistory extends DatabaseMethods{
                 allHistoryItems.add(getHistoryItemFromResultSet(resultSet));
             }
             return allHistoryItems;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
     public void insertHistoryItem(HistoryItem historyItem, int userId) throws SQLException {
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insertHistoryItemQuery = "INSERT INTO HISTORY_ITEM (dateTime, action, description, user_id) " +
                     "VALUES (?, ?, ?, ?)";
@@ -41,22 +43,21 @@ public class UserHistory extends DatabaseMethods{
             statement.setInt(4, userId);
 
             System.out.println("Inserting new history item -> Successful -> Rows Added: " + statement.executeUpdate());
-        }
-        finally {
-            close();
+        } finally {
+            close(statement);
         }
     }
 
     public void removeHistoryItem(int userId, int historyItemId) throws SQLException {
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM HISTORY_ITEM WHERE id = ? AND user_id = ?";
             statement = connection.prepareStatement(update);
             statement.setInt(1, historyItemId);
             statement.setInt(2, userId);
             System.out.println("Deletion of History Item - ID: " + historyItemId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
-        }
-        finally {
-            close();
+        } finally {
+            close(statement);
         }
     }
 
@@ -75,7 +76,7 @@ public class UserHistory extends DatabaseMethods{
      * Updates a user's history on the database to a new history list.
      *
      * @param newHistory The list of history to update to
-     * @param userId The id of the user to update
+     * @param userId     The id of the user to update
      * @throws SQLException If there is issues connecting to the database
      */
     public void updateHistory(List<HistoryItem> newHistory, int userId) throws SQLException {
@@ -88,10 +89,10 @@ public class UserHistory extends DatabaseMethods{
         newHistory = newHistory.subList(sameUntil, newHistory.size());
         oldHistory = oldHistory.subList(sameUntil, oldHistory.size());
 
-        for (HistoryItem oldItem: oldHistory) {
+        for (HistoryItem oldItem : oldHistory) {
             removeHistoryItem(userId, oldItem.getId());
         }
-        for (HistoryItem newItem: newHistory) {
+        for (HistoryItem newItem : newHistory) {
             insertHistoryItem(newItem, userId);
         }
     }

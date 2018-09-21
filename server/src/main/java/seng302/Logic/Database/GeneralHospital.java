@@ -13,11 +13,14 @@ public class GeneralHospital extends DatabaseMethods {
 
     /**
      * Fetches all hospitals from the database and returns them.
+     *
      * @return a list of hospital objects
      * @throws SQLException If the database cannot be reached.
      */
     public ArrayList<Hospital> getHospitals() throws SQLException {
-        try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Hospital> hospitals = new ArrayList<>();
             String query = "SELECT * FROM HOSPITAL";
             statement = connection.prepareStatement(query);
@@ -31,12 +34,11 @@ public class GeneralHospital extends DatabaseMethods {
                         resultSet.getString("country"),
                         resultSet.getDouble("latitude"),
                         resultSet.getDouble("longitude")
-                        ));
+                ));
             }
             return hospitals;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 }

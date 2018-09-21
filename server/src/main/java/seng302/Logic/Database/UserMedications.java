@@ -12,7 +12,9 @@ import java.util.List;
 
 public class UserMedications extends DatabaseMethods {
 
-    public ArrayList<Medication> getAllMedications(int userId) throws SQLException{
+    public ArrayList<Medication> getAllMedications(int userId) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Medication> allMedications = new ArrayList<>();
             String query = "SELECT * FROM MEDICATION WHERE user_id = ?";
@@ -23,34 +25,34 @@ public class UserMedications extends DatabaseMethods {
                 allMedications.add(getMedicationFromResultSet(resultSet));
             }
             return allMedications;
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
     public void insertMedication(Medication medication, int userId) throws SQLException {
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insertMedicationsQuery = "INSERT INTO MEDICATION (name, active_ingredients, history, user_id) " +
                     "VALUES (?, ?, ?, ?)";
+
             statement = connection.prepareStatement(insertMedicationsQuery);
 
             String activeIngredientsString = String.join(",", medication.getActiveIngredients());
             String historyString = String.join(",", medication.getHistory());
-
             statement.setString(1, medication.getName());
             statement.setString(2, activeIngredientsString);
             statement.setString(3, historyString);
             statement.setInt(4, userId);
-
             System.out.println("Inserting new medication -> Successful -> Rows Added: " + statement.executeUpdate());
-        }
-        finally {
-            close();
+        } finally {
+            close(statement);
         }
     }
 
     public Medication getMedicationFromId(int medicationId, int userId) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM MEDICATION id = id;
             String query = "SELECT * FROM MEDICATION WHERE id = ? AND user_id = ?";
@@ -67,13 +69,13 @@ public class UserMedications extends DatabaseMethods {
                 //If response is not empty then return a indication that fields arent empty
                 return getMedicationFromResultSet(resultSet);
             }
-        }
-        finally {
-            close();
+        } finally {
+            close(resultSet, statement);
         }
     }
 
     public void updateMedication(Medication medication, int medicationId, int userId) throws SQLException {
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "UPDATE MEDICATION SET name = ?, active_ingredients = ?, history = ? WHERE user_id = ? AND id = ?";
             statement = connection.prepareStatement(update);
@@ -86,22 +88,21 @@ public class UserMedications extends DatabaseMethods {
             statement.setInt(4, userId);
             statement.setInt(5, medicationId);
             System.out.println("Update Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Updated: " + statement.executeUpdate());
-        }
-        finally {
-            close();
+        } finally {
+            close(statement);
         }
     }
 
     public void removeMedication(int userId, int medicationId) throws SQLException {
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String update = "DELETE FROM MEDICATION WHERE id = ? AND user_id = ?";
             statement = connection.prepareStatement(update);
             statement.setInt(1, medicationId);
             statement.setInt(2, userId);
             System.out.println("Deletion of Medication - ID: " + medicationId + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
-        }
-        finally {
-            close();
+        } finally {
+            close(statement);
         }
     }
 
@@ -137,7 +138,7 @@ public class UserMedications extends DatabaseMethods {
      * Replace a user's medications on the database with a new set of medications.
      *
      * @param newMedications The list of medications to replace the old one with
-     * @param userId The id of the user to replace medications of
+     * @param userId         The id of the user to replace medications of
      * @throws SQLException If there is errors communicating with the database
      */
     public void updateAllMedications(List<Medication> newMedications, int userId) throws SQLException {
@@ -146,7 +147,7 @@ public class UserMedications extends DatabaseMethods {
         //Ignore all medications that are already on the database and up to date
         for (int i = oldMedications.size() - 1; i >= 0; i--) {
             Medication found = null;
-            for (Medication newMedication: newMedications) {
+            for (Medication newMedication : newMedications) {
                 if (newMedication.equals(oldMedications.get(i))) {
                     found = newMedication;
                     break;
@@ -154,7 +155,7 @@ public class UserMedications extends DatabaseMethods {
             }
             if (found == null) {
                 //Patch edited medications
-                for (Medication newMedication: newMedications) {
+                for (Medication newMedication : newMedications) {
                     if (newMedication.getId() == oldMedications.get(i).getId()) {
                         updateMedication(newMedication, oldMedications.get(i).getId(), userId);
                         found = newMedication;
@@ -169,12 +170,12 @@ public class UserMedications extends DatabaseMethods {
         }
 
         //Delete all medications from the database that are no longer up to date
-        for (Medication medication: oldMedications) {
+        for (Medication medication : oldMedications) {
             removeMedication(userId, medication.getId());
         }
 
         //Upload all new medications
-        for (Medication medication: newMedications) {
+        for (Medication medication : newMedications) {
             insertMedication(medication, userId);
         }
     }

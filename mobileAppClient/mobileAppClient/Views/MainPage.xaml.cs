@@ -125,6 +125,7 @@ namespace mobileAppClient
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(ClinicianMessagingPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -132,6 +133,7 @@ namespace mobileAppClient
             menuList.Add(attributesPage);
             menuList.Add(transplantListPage);
             menuList.Add(mapPage);
+            menuList.Add(messagesPage);
             menuList.Add(logoutPage);
         }
 
@@ -192,10 +194,19 @@ namespace mobileAppClient
                     }
                     break;
                 default:
-                    NavigationPage content = new NavigationPage((Page) Activator.CreateInstance(page));
+                    try
+                    {
+                        NavigationPage content = new NavigationPage((Page)Activator.CreateInstance(page));
+                        Detail = content;
+                        IsPresented = false;
 
-                    Detail = content;
-                    IsPresented = false;
+                    }
+                    catch (TargetInvocationException ie)
+                    {
+                        Console.WriteLine("Exception: " + ie.InnerException);
+                        Console.WriteLine("Exception: " + ie.InnerException.InnerException);
+                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
+                    }
                     break;
             }
         }
@@ -228,12 +239,11 @@ namespace mobileAppClient
             else
             {
                 // Use photo from server
-                profileImagePath = UserController.Instance.ProfilePhotoSource.ToString();
+                ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
             }
 
             BindingContext = new
             {
-                ProfileImage = profileImagePath,
                 FullName = UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };
