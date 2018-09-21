@@ -1,34 +1,32 @@
 package seng302.Logic.Database;
 
-import javafx.util.Pair;
 import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Conversation;
 import seng302.Model.Message;
-import seng302.Model.User;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Conversations {
     /**
      * Gets all of the conversations for a specific user.
      *
      * @param id The id of the user to fetch information from
-     * @param profileType The type of user
      * @return A list of the user's conversations
      * @throws SQLException If database interaction fails
      */
-    public List<Conversation> getAllConversations(int id, ProfileType profileType) throws SQLException {
+    public List<Conversation> getAllConversations(int id) throws SQLException {
         List<Conversation> conversations = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         SQLException error = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("SELECT conversation_id FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ?");
+            statement = connection.prepareStatement("SELECT conversation_id FROM CONVERSATION_MEMBER WHERE user_id = ?");
             statement.setInt(1, id);
-            statement.setInt(2, profileType.getAccessLevel());
             resultSet = statement.executeQuery();
 
             conversations = new ArrayList<>();
@@ -76,7 +74,7 @@ public class Conversations {
             DbUtils.closeQuietly(resultSet);
             DbUtils.closeQuietly(statement);
 
-            statement = connection.prepareStatement("SELECT user_id, access_level FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
+            statement = connection.prepareStatement("SELECT user_id FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
             statement.setInt(1, conversationId);
             resultSet = statement.executeQuery();
 
@@ -196,7 +194,7 @@ public class Conversations {
         SQLException error = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0, ?)");
+            statement = connection.prepareStatement("INSERT INTO CONVERSATION(token) VALUES(?)");
             String token = UUID.randomUUID().toString();
             statement.setString(1, token);
             statement.execute();
@@ -213,7 +211,7 @@ public class Conversations {
                 try {
                     statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
                     statement.setInt(1, id);
-                    statement.setInt(2, participant.getKey());
+                    statement.setInt(2, participant);
                     statement.execute();
                 } catch (SQLIntegrityConstraintViolationException ignored) {
                 } finally {

@@ -33,14 +33,13 @@ public class ConversationsController {
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @param profileType The type of user accessing the conversations
      * @return The serialised conversations
      */
-    public String getAllConversations(Request request, Response response, ProfileType profileType) {
+    public String getAllConversations(Request request, Response response) {
         List<Conversation> queriedConversations;
         int requestedUserId = Integer.parseInt(request.params(":id"));
         try {
-            queriedConversations = model.getAllConversations(requestedUserId, profileType);
+            queriedConversations = model.getAllConversations(requestedUserId);
         } catch (SQLException e) {
             response.status(500);
             return e.getMessage();
