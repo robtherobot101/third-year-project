@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.UserMedications;
 import seng302.Model.Medication.Medication;
+import seng302.NotificationManager.Notification;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MedicationsController {
     private UserMedications model;
@@ -90,8 +93,12 @@ public class MedicationsController {
             try {
                 model.insertMedication(receivedMedication, requestedUserId);
                 response.status(201);
+                // Example push notification for new medication
+                PushAPI.getInstance().sendNotification(new Notification("New Medication",
+                        "A clinician has added a new medication" + receivedMedication.getName()), Integer.toString(requestedUserId));
                 return "MEDICATION INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
+                System.out.println(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }

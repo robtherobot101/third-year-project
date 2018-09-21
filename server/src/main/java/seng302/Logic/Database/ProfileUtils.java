@@ -342,27 +342,18 @@ public class ProfileUtils extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ?");
+            statement = connection.prepareStatement("SELECT * FROM ACCOUNT WHERE username = ?");
+            statement.setString(1, usernameEmail);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                response.status(200);
+                return false;
+            }
+            resultSet.close();
+            statement.close();
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE email = ? OR nhi = ?");
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                response.status(200);
-                return false;
-            }
-            resultSet.close();
-            statement.close();
-            statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
-            statement.setString(1, usernameEmail);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                response.status(200);
-                return false;
-            }
-            resultSet.close();
-            statement.close();
-            statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
-            statement.setString(1, usernameEmail);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 response.status(200);

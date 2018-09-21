@@ -271,8 +271,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        PushAPI.getInstance().sendMessage(new Message("test", 1, 1), 1);
-        PushAPI.getInstance().sendNotification(new Notification("test", "test"), Arrays.asList("1", "2"));
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){

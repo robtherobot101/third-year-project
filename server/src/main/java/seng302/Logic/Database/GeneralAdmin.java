@@ -40,15 +40,19 @@ public class GeneralAdmin extends DatabaseMethods {
     public void insertAdmin(Admin admin) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String insert = "INSERT INTO ADMIN(username, password, name, work_address, region) " +
-                    "VALUES(?, ?, ?, ?, ?)";
-            statement = connection.prepareStatement(insert);
-
+            String insertAccount = "INSERT INTO ACCOUNT(username, password) VALUES(?, ?)";
+            statement = connection.prepareStatement(insertAccount);
             statement.setString(1, admin.getUsername());
             statement.setString(2, admin.getPassword());
-            statement.setString(3, admin.getName());
-            statement.setString(4, admin.getWorkAddress());
-            statement.setString(5, admin.getRegion());
+            statement.executeUpdate();
+            statement.close();
+            String insertAdmin = "INSERT INTO ADMIN (name, work_address, region, staff_id) VALUES(?, ?, ?, (SELECT id FROM ACCOUNT WHERE username = ?))";
+            statement = connection.prepareStatement(insertAdmin);
+
+            statement.setString(1, admin.getName());
+            statement.setString(2, admin.getWorkAddress());
+            statement.setString(3, admin.getRegion());
+            statement.setString(4, admin.getUsername());
             System.out.println("Inserting new admin -> Successful -> Rows Added: " + statement.executeUpdate());
         } finally {
             close(statement);
@@ -66,12 +70,12 @@ public class GeneralAdmin extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT staff_id FROM ADMIN WHERE username = ?";
+            String query = "SELECT id FROM ACCOUNT WHERE username = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
             resultSet.next();
-            return resultSet.getInt("staff_id");
+            return resultSet.getInt("id");
         } finally {
             close(resultSet, statement);
         }
@@ -90,7 +94,7 @@ public class GeneralAdmin extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM ADMIN id = id;
-            String query = "SELECT * FROM ADMIN WHERE staff_id = ?";
+            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE staff_id = id AND staff_id = ?";
             statement = connection.prepareStatement(query);
 
             statement.setInt(1, id);
@@ -119,7 +123,7 @@ public class GeneralAdmin extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<Admin> allAdmins = new ArrayList<>();
-            String query = "SELECT * FROM ADMIN";
+            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE staff_id = id";
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -141,7 +145,7 @@ public class GeneralAdmin extends DatabaseMethods {
     public void removeAdmin(Admin admin) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "DELETE FROM ADMIN WHERE username = ?";
+            String update = "DELETE FROM ACCOUNT WHERE username = ?";
             statement = connection.prepareStatement(update);
             statement.setString(1, admin.getUsername());
             System.out.println("Deletion of admin: " + admin.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
@@ -159,7 +163,7 @@ public class GeneralAdmin extends DatabaseMethods {
     public void updateAdminDetails(Admin admin) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "UPDATE ADMIN SET name = ?, work_address = ?, region = ? WHERE username = ?";
+            String update = "UPDATE ADMIN JOIN ACCOUNT SET name = ?, work_address = ?, region = ? WHERE staff_id = id AND username = ?";
             statement = connection.prepareStatement(update);
 
             statement.setString(1, admin.getName());
