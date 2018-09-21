@@ -78,7 +78,7 @@ public class Authorization extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-            String query = "SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?)";
+            String query = "SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND (username = ? OR email = ? OR nhi = ?)";
             statement = connection.prepareStatement(query);
 
             statement.setString(1, usernameEmail);
@@ -113,7 +113,7 @@ public class Authorization extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
-            String query = "SELECT * FROM CLINICIAN WHERE username = ?";
+            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE CLINICIAN.staff_id = ACCOUNT.id AND username = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
@@ -144,7 +144,7 @@ public class Authorization extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
-            String query = "SELECT * FROM ADMIN WHERE username = ?";
+            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE ADMIN.staff_id = ACCOUNT.id AND  username = ?";
             statement = connection.prepareStatement(query);
 
             statement.setString(1, username);

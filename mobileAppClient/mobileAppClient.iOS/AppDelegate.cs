@@ -34,11 +34,14 @@ namespace mobileAppClient.iOS
             global::Plugin.CrossPlatformTintedImage.iOS.TintedImageRenderer.Init();
             global::Xamarin.FormsMaps.Init();
             global::CarouselView.FormsPlugin.iOS.CarouselViewRenderer.Init();
+            global::ImageCircle.Forms.Plugin.iOS.ImageCircleRenderer.Init();
 
             LoadApplication(new App());
 
             // For circular images (on menu drawer)
-            ImageCircleRenderer.Init();
+
+
+           
 
             return base.FinishedLaunching(app, options);
         }

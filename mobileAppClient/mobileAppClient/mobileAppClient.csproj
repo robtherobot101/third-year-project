@@ -45,6 +45,7 @@
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
     <Folder Include="Maps\" />
+    <Folder Include="Messaging\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />

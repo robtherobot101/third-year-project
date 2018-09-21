@@ -176,10 +176,21 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
+    <Compile Include="Messaging\Cells\BubbleCell.cs" />
+    <Compile Include="Messaging\Cells\IncomingCell.cs" />
+    <Compile Include="Messaging\Cells\OutgoingCell.cs" />
+    <Compile Include="Messaging\ChatInput\ChatInputView.cs" />
+    <Compile Include="Messaging\ChatSource.cs" />
+    <Compile Include="Messaging\ChatViewController.cs" />
+    <Compile Include="Messaging\ChatViewController.designer.cs">
+      <DependentUpon>ChatViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Messaging\MessagingEntryClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
+    <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

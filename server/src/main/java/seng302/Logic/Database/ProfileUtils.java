@@ -69,23 +69,108 @@ public class ProfileUtils extends DatabaseMethods {
             statement = connection.prepareStatement(
                     "SELECT access_level FROM TOKEN WHERE token = ? AND access_level = ? AND id = ?");
             statement.setString(1, token);
-            switch (profileType) {
-                case USER:
-                    statement.setInt(2, 0);
-                    break;
-                case CLINICIAN:
-                    statement.setInt(2, 1);
-                    break;
-                case ADMIN:
-                    statement.setInt(2, 2);
-                    break;
-            }
+            statement.setInt(2, profileType.getAccessLevel());
             statement.setInt(3, id);
 
             resultSet = statement.executeQuery();
             return resultSet.next();
         } finally {
             close(resultSet, statement);
+        }
+    }
+
+    /**
+     * Checks whether the accessor is the same user/clinician/admin they are trying to access.
+     *
+     * @param request Spark HTTP request obj
+     * @param response Spark HTTP response obj
+     * @return Whether they are authorised
+     */
+    public boolean isSpecificUser(Request request, Response response, ProfileType profileType) throws SQLException {
+        String failure = "Unauthorised: access denied to specific user ";
+
+        String token = request.headers("token");
+        int accessLevel = checkToken(token);
+        int id = getId(request.params(":id"));
+        if (id == -1) {
+            Server.getInstance().log.warn(failure + "(invalid id supplied)");
+            halt(401, "Unauthorized");
+            return false;
+        }
+        if (accessLevel == -1) {
+            Server.getInstance().log.warn(failure + "(token not found)");
+            halt(401, "Unauthorized");
+            return false; //Token was not found
+        }
+        if (accessLevel > 2) {
+            Server.getInstance().log.warn(failure + "(access attempt with malformed access level)");
+            halt(401, "Unauthorized");
+            return false;
+        }
+        return checkIdMatch(failure + "(token does not match id)", profileType, token, id);
+    }
+
+    /**
+     * Checks whether the accessor is permitted to access the conversation
+     *
+     * @param request Spark HTTP request obj
+     * @param response Spark HTTP response obj
+     * @return Whether they are authorised
+     */
+    public boolean hasConversationAccess(Request request, Response response, ProfileType profileType) throws SQLException {
+        if (!isSpecificUser(request, response, profileType)) {
+            return false;
+        }
+        int id = getId(request.params(":id"));
+        int conversationId;
+        try {
+            conversationId = Integer.parseInt(request.params(":conversationId"));
+        } catch (NumberFormatException nfe) {
+            Server.getInstance().log.warn("Invalid conversation id");
+            halt(400, "Bad request");
+            return false;
+        }
+        boolean authorized = false;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement(
+                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
+            statement.setInt(1, id);
+            statement.setInt(2, profileType.getAccessLevel());
+            statement.setInt(3, conversationId);
+
+            resultSet = statement.executeQuery();
+            authorized = resultSet.next();
+        } catch (SQLException ignored) {
+        } finally {
+            close(resultSet, statement);
+        }
+        if (!authorized) {
+            Server.getInstance().log.warn("Attempted access to unauthorized conversation.");
+            halt(401, "Unauthorized");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a user/clinician/admin with a specified id and profile type matches a token. Halts and sets status to
+     * 401 unauthorized if there is no match.
+     *
+     * @param failure The server log failure message to display if there is no match
+     * @param profileType The profile type of the user to check
+     * @param token The token to check against
+     * @param id The id of the user/clinician/admin to check
+     * @return Whether there was a match
+     */
+    private boolean checkIdMatch(String failure, ProfileType profileType, String token, int id) throws SQLException {
+        if (checkTokenId(token, profileType, id)) {
+            return true; //user is logged on and supplied their token
+        } else {
+            Server.getInstance().log.warn(failure);
+            halt(401, "Unauthorized");
+            return false;
         }
     }
 
@@ -137,13 +222,7 @@ public class ProfileUtils extends DatabaseMethods {
                 halt(401, "Unauthorized");
                 return false;
             }
-            if (checkTokenId(token, ProfileType.USER, id)) {
-                return true; //user is logged on and supplied their token
-            } else {
-                Server.getInstance().log.warn(failure + "(token does not match user id)");
-                halt(401, "Unauthorized");
-                return false;
-            }
+            return checkIdMatch(failure, ProfileType.USER, token, id);
         } else {
             return true; //user has clinician or admin level access
         }
@@ -176,13 +255,7 @@ public class ProfileUtils extends DatabaseMethods {
                 halt(401, "Unauthorized");
                 return false;
             }
-            if (checkTokenId(token, ProfileType.CLINICIAN, id)) {
-                return true; //user is logged on and supplied their token
-            } else {
-                Server.getInstance().log.warn(failure + "(token does not match clinician id)");
-                halt(401, "Unauthorized");
-                return false;
-            }
+            return checkIdMatch(failure + "(token does not match clinician id)", ProfileType.CLINICIAN, token, id);
         } else {
             return true; //user has clinician or admin level access
         }
@@ -236,7 +309,6 @@ public class ProfileUtils extends DatabaseMethods {
      */
     private int getId(String rawId) {
         int id;
-        System.out.println("CHECK ID CALLED");
 
         try {
             id = Integer.parseInt(rawId);
@@ -270,27 +342,18 @@ public class ProfileUtils extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE username = ? OR email = ?");
+            statement = connection.prepareStatement("SELECT * FROM ACCOUNT WHERE username = ?");
+            statement.setString(1, usernameEmail);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                response.status(200);
+                return false;
+            }
+            resultSet.close();
+            statement.close();
+            statement = connection.prepareStatement("SELECT * FROM USER WHERE email = ? OR nhi = ?");
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                response.status(200);
-                return false;
-            }
-            resultSet.close();
-            statement.close();
-            statement = connection.prepareStatement("SELECT * FROM CLINICIAN WHERE username = ?");
-            statement.setString(1, usernameEmail);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                response.status(200);
-                return false;
-            }
-            resultSet.close();
-            statement.close();
-            statement = connection.prepareStatement("SELECT * FROM ADMIN WHERE username = ?");
-            statement.setString(1, usernameEmail);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 response.status(200);
