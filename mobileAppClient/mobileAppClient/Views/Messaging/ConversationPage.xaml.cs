@@ -61,14 +61,12 @@ namespace mobileAppClient
                 List<Message> mergedConversations = new List<Message>(conversationMessages.Union(newConversationMessages));
                 if (mergedConversations.Count > conversation.messages.Count)
                 {
-                    conversationMessages.AddRange(newConversationMessages.Except(conversation.messages));
+                    conversationMessages.AddRange(newConversationMessages.Except(conversationMessages));
                     if (conversationMessages.Count > 0)
                     {
                         MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
                     }
                 }
-
-                
 	        }
 	    }
 
