@@ -133,7 +133,7 @@ namespace mobileAppClient.Views.Clinician
 
             await InitialiseHospitals();
 
-            StartTransfers();
+            //StartTransfers();
 
             //AddTestHelicopter();
             //AddTest2Helicopter();
@@ -420,8 +420,9 @@ namespace mobileAppClient.Views.Clinician
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
-            });
-        }
+                });
+
+            }
 
             // Copy intermediary dictionary into the Maps custom dictionary of helis
             customMap.HelicopterPins = new Dictionary<String, CustomPin>(intermediateHeliPins);

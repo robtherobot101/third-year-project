@@ -107,6 +107,9 @@ namespace CustomRenderer.iOS
                     case ODMSPinType.HELICOPTER:
                         annotationView = CreateHelicopterPin(annotationView, customPin, annotation);
                         break;
+                    case ODMSPinType.RECEIVER:
+                        annotationView = CreateReceiverPin(annotationView, customPin, annotation);
+                        break;
                 }
 
 
@@ -150,6 +153,23 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
+        private MKAnnotationView CreateReceiverPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation)
+        {
+            annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
+            annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70, 70));
+            annotationView.CalloutOffset = new CGPoint(0, 0);
+            //Set image to profile photo
+
+            var imageBytes = Convert.FromBase64String(customPin.userPhoto);
+            var imageData = NSData.FromArray(imageBytes);
+
+            annotationView.LeftCalloutAccessoryView = new UIImageView(UIImage.LoadFromData(imageData).Scale(new CGSize(40, 40)));
+            ((CustomMKAnnotationView)annotationView).Id = customPin.Id.ToString();
+            ((CustomMKAnnotationView)annotationView).Url = customPin.Url;
+            //annotationView.Set(true, true);
+            return annotationView;
+        }
+
         async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs e)
         {
 
@@ -162,7 +182,7 @@ namespace CustomRenderer.iOS
 
         }
 
-        void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
+        async void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
 
             var customView = e.View as CustomMKAnnotationView;
@@ -172,35 +192,41 @@ namespace CustomRenderer.iOS
                 return;
             }
 
-            //Remove all overlays on map
-            removeOverlays();
-
-            // Set size of frame and add all photos from the custom pin image
-            // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
             string[] organs = customView.Url.Split(',');
-            int userId = Int32.Parse(organs[organs.Length - 1]);
+            int userId = 0;
+            if (!organs[0].Equals("ReceiverURL"))
+            {
 
-            organs = organs.Take(organs.Length - 1).ToArray();
-            int rectangleWidthInt = (organs.Length * 40) + (5 * (organs.Length + 1));
+                // Set size of frame and add all photos from the custom pin image
+                // Will probably have to redo how we use the url, im thinking a custom object that packs and unpacks the url string of all sorts of values we need (like a json)
 
-            customPinView.Frame = new CGRect(0, 0, rectangleWidthInt, 50);
-            customPinView.BackgroundColor = UIColor.White;
-            customPinView.Layer.CornerRadius = 5;
-            customPinView.Layer.MasksToBounds = true;
+                userId = Int32.Parse(organs[organs.Length - 1]);
 
-            int i = 0;
-            foreach(string organ in organs) {
-                int horizontalPosition = 5 + (45 * i);
-                var image = new UIImageView(new CGRect(horizontalPosition, 5, 40, 40));
-                image.Image = UIImage.FromFile(organ);
-                customPinView.AddSubview(image);
-                i++;
+                organs = organs.Take(organs.Length - 1).ToArray();
+                int rectangleWidthInt = (organs.Length * 40) + (5 * (organs.Length + 1));
+
+                customPinView.Frame = new CGRect(0, 0, rectangleWidthInt, 50);
+                customPinView.BackgroundColor = UIColor.White;
+                customPinView.Layer.CornerRadius = 5;
+                customPinView.Layer.MasksToBounds = true;
+
+                int i = 0;
+                foreach (string organ in organs)
+                {
+                    int horizontalPosition = 5 + (45 * i);
+                    var image = new UIImageView(new CGRect(horizontalPosition, 5, 40, 40));
+                    image.Image = UIImage.FromFile(organ);
+                    customPinView.AddSubview(image);
+                    i++;
+                }
+
+                customPinView.Center = new CGPoint(0, -(e.View.Frame.Height + 20));
+
+
+                e.View.AddSubview(customPinView);
+            } else {
+                userId = Int32.Parse(organs[1]);
             }
-
-            customPinView.Center = new CGPoint(0, -(e.View.Frame.Height + 20));
-
-
-            e.View.AddSubview(customPinView);
 
 
             // Do a search to get the current custom pin (gets the first)
@@ -216,8 +242,15 @@ namespace CustomRenderer.iOS
             //ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
             //parent.displayBottomSheet(currentPin, formsMap, nativeMap);
 
-            MapEntryClass mapEntryClass = new MapEntryClass();
-            mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap, this);
+            if(currentPin.CustomType == ODMSPinType.DONOR) {
+                //Remove all overlays on map
+                removeOverlays();
+
+                MapEntryClass mapEntryClass = new MapEntryClass();
+                await mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap, this);
+            } 
+
+
 
         }
 
@@ -225,41 +258,41 @@ namespace CustomRenderer.iOS
         {
             if (!e.View.Selected)
             {
+            
                 customPinView.RemoveFromSuperview();
                 customPinView.Dispose();
                 customPinView = null;
 
                 //Handle Helicopters and Hospitals
                 var customView = e.View as CustomMKAnnotationView;
-                if (customView.Url == null) {
+                if (customView.Url == null)
+                {
                     return;
                 }
 
                 removeOverlays();
 
+                ClearAllReceivers();
+
 
                 var window = UIApplication.SharedApplication.KeyWindow;
                 var rootVC = window.RootViewController;
-                var number = rootVC.ChildViewControllers;
-                var menuPopUp = rootVC.ChildViewControllers[1];
-                if(menuPopUp is BottomSheetViewController) {
-                    BottomSheetViewController bottomSheet = (BottomSheetViewController)rootVC.ChildViewControllers[1];
+                if (rootVC is BottomSheetViewController)
+                {
+                    BottomSheetViewController bottomSheet = (BottomSheetViewController)rootVC;
                     await bottomSheet.closeMenu();
-                    bottomSheet.View.RemoveFromSuperview();
-                    bottomSheet.View.Dispose();
-                    bottomSheet.View = null;
-                    bottomSheet.RemoveFromParentViewController();
-                } else {
-                    PotentialMatchesBottomSheetViewController matchesSheet = (PotentialMatchesBottomSheetViewController)rootVC.ChildViewControllers[1];
+                    bottomSheet = null;
+                    rootVC = null;
+                }
+                else
+                {
+                    PotentialMatchesBottomSheetViewController matchesSheet = (PotentialMatchesBottomSheetViewController)rootVC;
                     await matchesSheet.closeMenu();
-                    matchesSheet.View.RemoveFromSuperview();
-                    matchesSheet.View.Dispose();
-                    matchesSheet.View = null;
-                    matchesSheet.RemoveFromParentViewController();
+                    matchesSheet = null;
+                    rootVC = null;
                 }
 
-
-            }
+            } 
         }
 
         public void removeOverlays() {
@@ -269,6 +302,14 @@ namespace CustomRenderer.iOS
 
             }
 
+        }
+
+        public void ClearAllReceivers() {
+            foreach(CustomPin item in customPins.Values) {
+                if(item.CustomType == ODMSPinType.RECEIVER) {
+                    formsMap.Pins.Remove(item);
+                }
+            }
         }
 
         CustomPin GetCustomPin(MKPointAnnotation annotation)

@@ -59,8 +59,22 @@ namespace mobileAppClient.iOS
             //Change colour based on severity
             timeRemainingLabel.TextColor = currentOrganCell.DetailTextLabel.TextColor;
             organImageView.Image = UIImage.FromFile(organName + "_icon.png");
-            potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan);
-            potentialRecipientsTableView.ScrollEnabled = true;
+            if (currentOrganCell.DetailTextLabel.Text.Equals("EXPIRED"))
+            {
+                potentialRecipientsLabel.Text = "This organ has expired.";
+                potentialRecipientsTableView.Hidden = true;
+            }
+            else if (currentOrgan.topReceivers.Count == 0) {
+                potentialRecipientsLabel.Text = "No matched recipients found.";
+                potentialRecipientsTableView.Hidden = true;
+       
+            } else {
+                potentialRecipientsTableView.Hidden = false;
+                potentialRecipientsLabel.Text = "Potential Recipients:";
+                potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan);
+                potentialRecipientsTableView.ScrollEnabled = true;
+            }
+
 
         }
 
@@ -95,9 +109,9 @@ namespace mobileAppClient.iOS
                     {
                         detailString = "EXPIRED";
                         timeRemainingLabel.TextColor = UIColor.Red;
-                        //Update the Organ object to be expired
-                        //TODO Clear the table and get rid of all recipients
                         currentOrgan.expired = true;
+                        potentialRecipientsLabel.Text = "This organ has expired.";
+                        potentialRecipientsTableView.Hidden = true;
                         return;
                     }
                     else
@@ -119,20 +133,8 @@ namespace mobileAppClient.iOS
             var window = UIApplication.SharedApplication.KeyWindow;
             var bottomSheetVC = new BottomSheetViewController(customPin, map, nativeMap, customMapRenderer);
 
-            var rootVC = window.RootViewController;
+            window.RootViewController = bottomSheetVC;
 
-            this.View.RemoveFromSuperview();
-            this.View.Dispose();
-            this.View = null;
-            this.RemoveFromParentViewController();
-
-            rootVC.AddChildViewController(bottomSheetVC);
-            rootVC.View.AddSubview(bottomSheetVC.View);
-            bottomSheetVC.DidMoveToParentViewController(rootVC);
-
-            var height = window.Frame.Height;
-            var width = window.Frame.Width;
-            bottomSheetVC.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
 
         }
 
@@ -149,20 +151,30 @@ namespace mobileAppClient.iOS
 
             Device.BeginInvokeOnMainThread(() =>
             {
-                organTimeLeft -= 5000;
+                organTimeLeft--;
                 Console.WriteLine(organTimeLeft);
 
                 if(organTimeLeft <= 0) {
                     return;
-                } else {
+                } else
+                {
+                    double mapRadius;
+                    double distanceTime = organTimeLeft * 70;
+
+                    if (distanceTime > 500000)
+                    {
+                        mapRadius = 500000;
+                    } else {
+                        mapRadius = distanceTime;
+                    }
                     Position currentPosition = customPin.Position;
 
                     map.Circle = new CustomCircle
                     {
                         Position = currentPosition,
-                        Radius = organTimeLeft
+                        Radius = mapRadius
                     };
-                    var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(currentPosition.Latitude, currentPosition.Longitude), organTimeLeft);
+                    var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
                     if(nativeMap.Overlays == null || nativeMap.Overlays.Length == 0) {
                         return;
                     } else {
@@ -180,7 +192,7 @@ namespace mobileAppClient.iOS
             });
         }
 
-        void prepareRecipientsOnMap(Position position) {
+        async void prepareRecipientsOnMap(Position position) {
             string detailString = timeRemainingLabel.Text;
             if (detailString.Equals("EXPIRED"))
             {
@@ -188,16 +200,27 @@ namespace mobileAppClient.iOS
             }
             else
             {
-
                 string timeLeftString = detailString.Substring(16);
                 string timeString = timeLeftString.Remove(timeLeftString.Length - 5);
                 TimeSpan timeLeft = TimeSpan.Parse(timeString);
                 organTimeLeft = timeLeft.TotalSeconds;
 
+                double distanceTime = organTimeLeft * 70;
+
+                double mapRadius;
+                if (organTimeLeft > 500000)
+                {
+                    mapRadius = 500000;
+                }
+                else 
+                {
+                    mapRadius = distanceTime;
+                }
+
                 map.Circle = new CustomCircle
                 {
                     Position = position,
-                    Radius = organTimeLeft
+                    Radius = mapRadius
                 };
                 var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
                 nativeMap.AddOverlay(circleOverlay);
@@ -206,12 +229,8 @@ namespace mobileAppClient.iOS
                     mapCenter, Distance.FromMiles(100.0)));
 
                 //Add all other user objects around the user
-                double xpos = -41.626217;
                 Random rnd = new Random();
                 foreach (User item in currentOrgan.topReceivers) {
-                    var bytes = File.ReadAllBytes("donationIcon.png");
-                    var profilePhoto = Convert.ToBase64String(bytes);
-                    xpos -= 0.1;
 
                     //SET GENDER ICON
                     //Randomize man or woman photo
@@ -237,16 +256,55 @@ namespace mobileAppClient.iOS
                             break;
                     }
 
+                    //Find the position of the Pin
+                    Geocoder geocoder = new Geocoder();
+                    IEnumerable<Position> usersPosition = await geocoder.GetPositionsForAddressAsync(item?.currentAddress + ", " + item?.region + ", " + item?.country);
+                    Position receiverPosition = new Position();
+                    using (var sequenceEnum = usersPosition.GetEnumerator())
+                    {
+                        while (sequenceEnum.MoveNext())
+                        {
+                            receiverPosition = sequenceEnum.Current;
+                        }
+                    }
+
+                    //double randomNumberLongitude = rnd.NextDouble() / 50.00;
+                    //double randomNumberLatitude = rnd.NextDouble() / 50.00;
+                    //Position finalPosition = new Position(organPosition.Latitude + randomNumberLatitude, organPosition.Longitude + randomNumberLongitude);
+
+                    Position finalPosition = new Position(receiverPosition.Latitude, receiverPosition.Longitude);
+
+
+                    //SET PROFILE PHOTO
+                    //Get profile photo from users uploaded photo (if there is one)
+
+                    UserAPI userAPI = new UserAPI();
+
+                    string profilePhoto = "";
+                    Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(item.id);
+                    if (photoResponse.Item1 != HttpStatusCode.OK)
+                    {
+                        Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
+                        Byte[] bytes = File.ReadAllBytes("donationIcon.png");
+                        profilePhoto = Convert.ToBase64String(bytes);
+
+                    }
+                    else
+                    {
+                        profilePhoto = photoResponse.Item2;
+                    }
+
+
                     var pin = new CustomPin
                     {
-                        CustomType = ODMSPinType.DONOR,
-                        Position = new Position(xpos, 172.361873),
+                        CustomType = ODMSPinType.RECEIVER,
+                        Position = finalPosition,
                         Label = item.FullName,
-                        Address = item?.currentAddress + "  " + item?.region,
-                        Url = "700",
+                        Address = item?.currentAddress + ", " + item?.region,
+                        Url = "ReceiverURL," + item.id.ToString(),
                         genderIcon = genderIcon,
                         userPhoto = profilePhoto,
-                        userId = 700
+                        userId = item.id
                     };
                     map.CustomPins.Add(pin.Position, pin);
                     map.Pins.Add(pin);

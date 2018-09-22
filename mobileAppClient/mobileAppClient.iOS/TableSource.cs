@@ -111,20 +111,12 @@ namespace mobileAppClient.iOS
             
             var window = UIApplication.SharedApplication.KeyWindow;
 
-            var rootVC = window.RootViewController;
+            owner = null;
 
-            owner.View.RemoveFromSuperview();
-            owner.View.Dispose();
-            owner.View = null;
-            owner.RemoveFromParentViewController();
+            window.RootViewController = potentialRecipientsController;
 
-            rootVC.AddChildViewController(potentialRecipientsController);
-            rootVC.View.AddSubview(potentialRecipientsController.View);
-            potentialRecipientsController.DidMoveToParentViewController(rootVC);
 
-            var height = window.Frame.Height;
-            var width = window.Frame.Width;
-            potentialRecipientsController.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
+
 
         }
     }
