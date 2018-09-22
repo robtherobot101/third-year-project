@@ -11,10 +11,10 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
-using ObjCRuntime;
 using mobileAppClient.iOS;
 using mobileAppClient.Views.Clinician;
 using mobileAppClient.Models;
+using ObjCRuntime;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS

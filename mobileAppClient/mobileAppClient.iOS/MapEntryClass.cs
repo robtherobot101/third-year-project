@@ -26,13 +26,18 @@ namespace mobileAppClient.iOS
                 subView.RemoveFromSuperview();
             }
 
-            rootVC.AddChildViewController(bottomSheetVC);
-            rootVC.View.AddSubview(bottomSheetVC.View);
-            bottomSheetVC.DidMoveToParentViewController(rootVC);
+            //bottomSheetVC.ModalPresentationStyle = UIModalPresentationStyle.OverCurrentContext;
+            //rootVC.AddChildViewController(bottomSheetVC);
+            UIApplication.SharedApplication.Delegate.GetWindow().RootViewController = bottomSheetVC;
+            //rootVC.PresentModalViewController(bottomSheetVC, true);
 
-            var height = window.Frame.Height;
-            var width = window.Frame.Width;
-            bottomSheetVC.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
+            //rootVC.View.AddSubview(bottomSheetVC.View);
+            ////rootVC.View.BringSubviewToFront(bottomSheetVC.View);
+            //bottomSheetVC.DidMoveToParentViewController(rootVC);
+
+            //var height = window.Frame.Height;
+            //var width = window.Frame.Width;
+            //bottomSheetVC.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
 
 
 

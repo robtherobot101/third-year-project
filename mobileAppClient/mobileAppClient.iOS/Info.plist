@@ -52,7 +52,5 @@
 	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Transcend Donation</string>
-	<key>AppCenterAppDelegateForwarderEnabled</key>
-	<string>0</string>
 </dict>
 </plist>

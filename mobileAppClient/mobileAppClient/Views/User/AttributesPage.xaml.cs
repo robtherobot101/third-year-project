@@ -1,7 +1,6 @@
 using mobileAppClient.Google;
 using mobileAppClient.odmsAPI;
 using Newtonsoft.Json;
-using Syncfusion.SfAutoComplete.XForms;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

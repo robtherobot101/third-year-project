@@ -27,7 +27,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer: suren@mail.com (52Z7Y8J8MK)</CodesignKey>
+    <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignProvision>uctdTEST</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>

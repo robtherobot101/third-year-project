@@ -38,7 +38,7 @@ namespace mobileAppClient.iOS
             LoadApplication(new App());
 
             // For circular images (on menu drawer)
-            ImageCircleRenderer.Init();
+            //ImageCircleRenderer.Init();
 
             return base.FinishedLaunching(app, options);
         }
