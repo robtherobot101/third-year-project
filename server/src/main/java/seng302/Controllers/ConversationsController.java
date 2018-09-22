@@ -147,7 +147,7 @@ public class ConversationsController {
         } else {
             try {
                 int accessLevel = profileType.getAccessLevel();
-                model.addMessage(conversationId, new Message(request.body(), userId, accessLevel));
+                model.addMessage(conversationId, new Message(request.body(), userId));
                 response.status(201);
                 return "Success";
             } catch (SQLException e) {
