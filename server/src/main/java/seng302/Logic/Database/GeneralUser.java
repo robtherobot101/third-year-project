@@ -426,6 +426,8 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
+            user.setPassword(resultSet.getString("password"));
+            user.setUsername(resultSet.getString("username"));
 
             int userId = (int) user.getId();
 
@@ -617,13 +619,11 @@ public class GeneralUser extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0 AND USER.region is NOT NULL";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id JOIN ACCOUNT ON ACCOUNT.id = USER .id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0 AND USER.region is NOT NULL";
             statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             resultSet = statement.executeQuery();
-            System.out.println("test");
             while (resultSet.next()) {
-                System.out.println("testest");
                 possibleMatches.add(getUserFromResultSet(resultSet));
             }
             return possibleMatches;

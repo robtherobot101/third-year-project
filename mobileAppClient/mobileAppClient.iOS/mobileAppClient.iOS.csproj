@@ -27,9 +27,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
-    <CodesignProvision>TranscendDonation</CodesignProvision>
-    <MtouchSdkVersion>11.2</MtouchSdkVersion>
+    <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignProvision>uctdTEST</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -40,8 +40,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
-    <CodesignProvision>iOS Wildcard Distribution</CodesignProvision>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,9 +68,7 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>TranscendDonation</CodesignProvision>
-    <MtouchFloat32>true</MtouchFloat32>
-    <MtouchSdkVersion>11.2</MtouchSdkVersion>
+    <CodesignProvision>iOS Wildcard Distribution</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -190,6 +187,17 @@
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="CustomMKAnnotationView.cs" />
+    <Compile Include="MapEntryClass.cs" />
+    <Compile Include="BottomSheetViewController.cs" />
+    <Compile Include="BottomSheetViewController.designer.cs">
+      <DependentUpon>BottomSheetViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TableSource.cs" />
+    <Compile Include="PotentialMatchesBottomSheetViewController.cs" />
+    <Compile Include="PotentialMatchesBottomSheetViewController.designer.cs">
+      <DependentUpon>PotentialMatchesBottomSheetViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RecipientsTableSource.cs" />
     <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +247,8 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\donationIcon copy.v1.png">
       <Visible>false</Visible>
     </ImageAsset>
+    <InterfaceDefinition Include="BottomSheetViewController.xib" />
+    <InterfaceDefinition Include="PotentialMatchesBottomSheetViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -297,17 +307,17 @@
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
     <BundleResource Include="Resources\map_icon.png" />
-    <BundleResource Include="Resources\bone_icon.png" />
-    <BundleResource Include="Resources\ear_icon.png" />
-    <BundleResource Include="Resources\eye_icon.png" />
+    <BundleResource Include="Resources\bone-marrow_icon.png" />
+    <BundleResource Include="Resources\middle-ear_icon.png" />
+    <BundleResource Include="Resources\cornea_icon.png" />
     <BundleResource Include="Resources\heart_icon.png" />
-    <BundleResource Include="Resources\intestines_icon.png" />
+    <BundleResource Include="Resources\intestine_icon.png" />
     <BundleResource Include="Resources\kidney_icon.png" />
     <BundleResource Include="Resources\liver_icon.png" />
-    <BundleResource Include="Resources\lungs_icon.png" />
+    <BundleResource Include="Resources\lung_icon.png" />
     <BundleResource Include="Resources\pancreas_icon.png" />
     <BundleResource Include="Resources\skin_icon.png" />
-    <BundleResource Include="Resources\tissue_icon.png" />
+    <BundleResource Include="Resources\connective-tissue_icon.png" />
     <BundleResource Include="Resources\man1.png" />
     <BundleResource Include="Resources\man2.png" />
     <BundleResource Include="Resources\man3.png" />
@@ -455,6 +465,46 @@
     <BundleResource Include="Resources\default_clinician_photo.png" />
   </ItemGroup>
   <ItemGroup>
+    <BundleResource Include="Resources\default_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\hospital_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_tissue_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_pancreas_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_heart_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_lung_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_intestine_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_cornea_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_ear_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_skin_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_bone_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_kidney_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\helicopter_liver_icon.png" />
     <BundleResource Include="Resources\viewing_user_photo.png" />
   </ItemGroup>
 </Project>

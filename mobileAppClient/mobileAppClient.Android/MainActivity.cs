@@ -45,6 +45,7 @@ namespace mobileAppClient.Droid
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
             global::Xamarin.FormsMaps.Init(this, bundle);
 
+
             ActivityContext = this;
 
             // For circular images (on menu drawer)

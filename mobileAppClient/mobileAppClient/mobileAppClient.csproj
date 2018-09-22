@@ -36,14 +36,16 @@
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
     <PackageReference Include="Xamarin.Forms.Maps" Version="3.2.0.839982" />
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
-    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.3" />
-    <PackageReference Include="Syncfusion.Xamarin.SfAutoComplete" Version="16.2.0.50" />
-    <PackageReference Include="Xamarin.Forms" Version="3.2.0.809874-pre3" />
-    <PackageReference Include="Xamarin.Forms.Maps" Version="3.1.0.697729" />
+    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.1" />
+    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
+    <PackageReference Include="SlideOverKit" Version="2.1.6.2" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Fragments\" />
+    <Folder Include="MenuItems\" />
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
+    <Folder Include="Google\" />
     <Folder Include="Maps\" />
     <Folder Include="Messaging\" />
   </ItemGroup>
@@ -62,10 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\Microsoft.CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\Microsoft.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.0\Mono.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.iOS">
+      <HintPath>..\..\..\..\..\..\..\..\..\Library\Frameworks\Xamarin.iOS.framework\Versions\Current\lib\mono\Xamarin.iOS\Xamarin.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +81,9 @@
     </Compile>
     <Compile Update="Views\Clinician\AttributesPageClinician.xaml.cs">
       <DependentUpon>AttributesPageClinician.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Clinician\SlideUpMenuView.xaml.cs">
+      <DependentUpon>SlideUpMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -110,6 +118,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Clinician\ClinicianOverviewPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Clinician\SlideUpMenuView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\LoginPage.xaml">

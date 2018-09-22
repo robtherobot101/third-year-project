@@ -2,6 +2,7 @@ package seng302.Model;
 
 import seng302.Model.Attribute.Organ;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MapObject {
@@ -16,17 +17,18 @@ public class MapObject {
     public String cityOfDeath;
     public String regionOfDeath;
     public String countryOfDeath;
-    public List<Organ> organs;
+    public List<DonatableOrgan> organs;
+    public LocalDateTime dateOfDeath;
 
     public MapObject() {
 
     }
 
-    public List<Organ> getOrgans() {
+    public List<DonatableOrgan> getOrgans() {
         return organs;
     }
 
-    public void setOrgans(List<Organ> organs) {
+    public void setOrgans(List<DonatableOrgan> organs) {
         this.organs = organs;
     }
 
@@ -109,6 +111,8 @@ public class MapObject {
     public void setCountryOfDeath(String countryOfDeath) {
         this.countryOfDeath = countryOfDeath;
     }
+
+
 
 
 }
