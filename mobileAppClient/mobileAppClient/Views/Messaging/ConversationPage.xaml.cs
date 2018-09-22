@@ -58,15 +58,17 @@ namespace mobileAppClient
 	        if (refreshedConversation.Item1 == HttpStatusCode.OK)
 	        {
 	            List<Message> newConversationMessages = refreshedConversation.Item2.messages;
-                if (conversation.messages.Union(newConversationMessages).Count() != conversation.messages.Count())
+                List<Message> mergedConversations = new List<Message>(conversationMessages.Union(newConversationMessages));
+                if (mergedConversations.Count > conversation.messages.Count)
                 {
-                    conversation.messages.AddRange(newConversationMessages.Except(conversation.messages));
+                    conversationMessages.AddRange(newConversationMessages.Except(conversation.messages));
+                    if (conversationMessages.Count > 0)
+                    {
+                        MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+                    }
                 }
 
-                if (conversationMessages.Count > 0)
-                {
-                    MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
-                }
+                
 	        }
 	    }
 
@@ -106,7 +108,12 @@ namespace mobileAppClient
             {
                 currentMessage.SetType(localId);
                 conversationMessages.Add(currentMessage);
-            } 
+            }
+
+            if (conversationMessages.Count > 0)
+            {
+                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+            }
         }
 
         /// <summary>
