@@ -1,8 +1,11 @@
 package seng302.Model;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Message {
+    private int conversationId;
     private int id;
     private String text;
     private LocalDateTime timestamp;
@@ -14,11 +17,12 @@ public class Message {
      * @param text The message body
      * @param userId The id of the user that sent the message
      */
-    public Message(String text, int userId) {
+    public Message(String text, int userId, int conversationId) {
         id = 0;
         this.text = text;
         timestamp = LocalDateTime.now();
         this.userId = userId;
+        this.conversationId = conversationId;
     }
 
     /**
@@ -46,5 +50,19 @@ public class Message {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public int getConversationId() {
+        return conversationId;
+    }
+
+    public Map<String, Object> messageMap() {
+        Map<String, Object> m = new HashMap<>();
+        m.put("id", id);
+        m.put("text", text);
+        m.put("timestamp", timestamp);
+        m.put("userId", userId);
+        m.put("conversationId", conversationId);
+        return m;
     }
 }
