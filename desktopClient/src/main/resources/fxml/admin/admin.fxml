@@ -278,6 +278,16 @@
                               <Font name="Noto Sans Symbols2 Regular" size="31.0" />
                            </font>
                         </Label>
+
+                         <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="✈" GridPane.rowIndex="4">
+                             <GridPane.margin>
+                                 <Insets bottom="6.0" left="15.0" />
+                             </GridPane.margin>
+                             <font>
+                                 <Font name="Noto Sans Symbols2 Regular" size="31.0" />
+                             </font>
+                         </Label>
+
                      </children>
                   </GridPane>
                   <GridPane layoutY="387.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">

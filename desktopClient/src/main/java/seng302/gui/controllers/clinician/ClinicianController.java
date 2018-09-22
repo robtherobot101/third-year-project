@@ -933,7 +933,7 @@ public class ClinicianController implements Initializable {
      */
     public void organsTransfer() {
         hideAllTabs();
-        setButtonSelected(organListButton, true);
+        setButtonSelected(transferListButton, true);
         transfersPane.setVisible(true);
 
         transferOrgansController.startTimer();
