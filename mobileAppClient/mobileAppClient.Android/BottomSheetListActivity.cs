@@ -20,56 +20,28 @@ namespace mobileAppClient.Droid
     [Activity]
     public class BottomSheetListActivity : AppCompatActivity
     {
-       // private int action;
-       // private ArrayAdapter<String> adapter;
-      //  private int selectedPosition;
 
         protected override void OnCreate(Bundle bundle)
         {
-            //if (Intent.GetBooleanExtra("style", false))
-            //{
-            //    this.SetTheme(Resource.Style.StyleTheme);
-            //}
-
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.OrganTransfer);
 
-           // SupportActionBar.SetDisplayHomeAsUpEnabled(true);
-          //  SupportActionBar.SetDisplayShowHomeEnabled(true);
-
-            //this.Title = Intent.GetStringExtra("title");
-           // this.action = Intent.GetIntExtra("action", 0);
-
-            //String[] items = new String[] { "Miguel de Icaza", "Nat Friedman", "James Montemagno", "Joseph Hill", "Stephanie Schatz\n" };
-
-            //this.adapter = new ArrayAdapter<String>(this, Android.Resource.Layout.SimpleListItem1, Android.Resource.Id.Text1, items);
-            //var listView = FindViewById<ListView>(Resource.Id.listView);
-            //listView.Adapter = this.adapter;
-            //listView.OnItemClickListener = this;
             PrepareSheet();
 
         }
 
-        //public override bool OnOptionsItemSelected(IMenuItem item)
-        //{
-        //    if (item.ItemId == Android.Resource.Id.Home)
-        //        this.Finish();
-
-        //    return base.OnOptionsItemSelected(item);
-        //}
-
-        //public void OnItemClick(AdapterView parent, View view, int position, long id)
-        //{
-        //    this.selectedPosition = position;
-        //    this.ShowBottomSheet(this.selectedPosition);
-        //}
-
         public void PrepareSheet()
         {
+            /* TODO:
+                - Countdowns
+                - Hospital support
+                - Recipient support
+            */
             var name = FindViewById<TextView>(Resource.Id.User_Name);
             var address = FindViewById<TextView>(Resource.Id.Address);
             var profilePicture = FindViewById<ImageView>(Resource.Id.ProfilePictureFrame);
             var organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
+
 
             if (name != null)
             {
@@ -97,11 +69,13 @@ namespace mobileAppClient.Droid
             var organString = Intent.GetStringExtra("organs");
 
             var organs = organString.Split(',');
+            var id = organs[organs.Length];
             foreach (var organ in organs)
             {
                 TableRow organRow = new TableRow(this);
                 TextView organText = new TextView(this);
                 ImageView organImage = new ImageView(this);
+
                 switch (organ)
                 {
                     case "bone_icon.png":
@@ -149,6 +123,18 @@ namespace mobileAppClient.Droid
                         organText.Text = "Connective Tissue";
                         break;
                 }
+                organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
+
+                organImage.SetAdjustViewBounds(true);
+                organImage.SetMaxHeight(80);
+                organImage.SetMaxWidth(80);
+                organImage.SetPadding(5, 0, 20, 0);
+                organRow.Click += (sender, e) =>
+                {
+                    transferOrgan(id, organString, organTable.IndexOfChild(organRow));
+                };
+                
+
                 organRow.AddView(organImage);
                 organRow.AddView(organText);
                 organTable.AddView(organRow);
@@ -158,24 +144,18 @@ namespace mobileAppClient.Droid
 
         }
 
-        //public void OnClick(IDialogInterface dialog, int which)
-        //{
-        //    //string name = this.adapter.GetItem(this.selectedPosition);
-        //    //switch (which)
-        //    //{
-        //    //    case Resource.Id.share:
-        //    //        Toast.MakeText(this, "Share to " + name, ToastLength.Short).Show();
-        //    //        break;
-        //    //    case Resource.Id.upload:
-        //    //        Toast.MakeText(this, "Upload for " + name, ToastLength.Short).Show();
-        //    //        break;
-        //    //    case Resource.Id.call:
-        //    //        Toast.MakeText(this, "Call to " + name, ToastLength.Short).Show();
-        //    //        break;
-        //    //    case Resource.Id.help:
-        //    //        Toast.MakeText(this, "Help me!", ToastLength.Short).Show();
-        //    //        break;
-        //    //}
-        //}
+        public void transferOrgan(String userId, String Organ, int Index)
+        {
+            var organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
+            TableLayout recipientTable = new TableLayout(this);
+            //Get list of recipients
+
+            //Iterate and create rows for each
+
+            organTable.AddView(recipientTable, Index);
+        }
+
     }
+
+   
 }

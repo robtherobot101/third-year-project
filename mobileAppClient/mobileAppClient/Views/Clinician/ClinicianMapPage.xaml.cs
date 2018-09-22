@@ -161,9 +161,9 @@ namespace mobileAppClient
 
                         foreach (string organ in user.organs)
                         {
-
+                            string organLower = organ.ToLower();
                             string imageString = "";
-                            switch (organ)
+                            switch (organLower)
                             {
                                 case ("pancreas"):
                                     imageString = "pancreas_icon.png";
@@ -197,6 +197,9 @@ namespace mobileAppClient
                                     break;
                                 case ("middle-ear"):
                                     imageString = "ear_icon.png";
+                                    break;
+                                case ("bone"):
+                                    imageString = "bone_icon.png";
                                     break;
                             }
                             organIcons.Add(imageString);
