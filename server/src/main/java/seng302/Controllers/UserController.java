@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
+import seng302.Logic.SaltHash;
+import seng302.Logic.Database.ProfileUtils;
+import seng302.Logic.SaltHash;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;
@@ -22,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static java.lang.Integer.max;
 
@@ -295,7 +299,7 @@ public class UserController {
         Gson gson = new Gson();
         User receivedUser;
 
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
             receivedUser = gson.fromJson(request.body(), User.class);
         } catch (JsonSyntaxException jse) {
@@ -309,14 +313,21 @@ public class UserController {
             response.status(400);
             return "Missing user Body";
         } else {
-            try {
-                model.insertUser(receivedUser);
-                response.status(201);
-                return "Success";
-            } catch (SQLException e) {
-                Server.getInstance().log.error(e.getMessage());
-                response.status(500);
-                return "Internal Server Error";
+            if (checkNhi(receivedUser.getNhi())) {
+                try {
+                    receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
+                    model.insertUser(receivedUser);
+                    response.status(201);
+                    return "Success";
+                } catch (SQLException e) {
+                    Server.getInstance().log.error(e.getMessage());
+                    response.status(500);
+                    return "Internal Server Error";
+                }
+            } else {
+                Server.getInstance().log.error("Invalid nhi in user update: " + receivedUser.getNhi());
+                response.status(400);
+                return "Malformed NHI supplied";
             }
         }
     }
@@ -331,7 +342,7 @@ public class UserController {
         Gson gson = new Gson();
         List<User> receivedUsers;
         System.out.println("IMPORTING USERS");
-        // Attempt to parse received JSON
+        // Attempt to executeFile received JSON
         try {
              receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
         } catch (JsonSyntaxException jse) {
@@ -340,6 +351,15 @@ public class UserController {
             return "Bad Request";
         }
         System.out.println("Got " + receivedUsers.size() + " entries");
+        if (receivedUsers.size() > 0) {
+            for (User user: receivedUsers) {
+                if (!checkNhi(user.getNhi())) {
+                    Server.getInstance().log.error("Invalid nhi in imported user: " + user.getNhi());
+                    response.status(400);
+                    return "Malformed NHI supplied";
+                }
+            }
+        }
         try {
             model.importUsers(receivedUsers);
         } catch (SQLException e) {
@@ -392,19 +412,26 @@ public class UserController {
             response.status(400);
             return "Missing user Body";
         } else {
-            try {
-                String token = request.headers("token");
-                ProfileUtils profileUtils = new ProfileUtils();
-                int accessLevel = profileUtils.checkToken(token);
-                model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
-                response.status(201);
-                return "USER SUCCESSFULLY UPDATED";
-            } catch (SQLException e) {
+            if (checkNhi(receivedUser.getNhi())) {
+                try {
+                    String token = request.headers("token");
+                    ProfileUtils profileUtils = new ProfileUtils();
+                    int accessLevel = profileUtils.checkToken(token);
+                    receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
+                    model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
+                    response.status(201);
+                    return "USER SUCCESSFULLY UPDATED";
+                } catch (SQLException e) {
 
-                e.printStackTrace();
-                Server.getInstance().log.error(e.getMessage());
-                response.status(500);
-                return "Internal Server Error";
+                    e.printStackTrace();
+                    Server.getInstance().log.error(e.getMessage());
+                    response.status(500);
+                    return "Internal Server Error";
+                }
+            } else {
+                Server.getInstance().log.error("Invalid nhi in user update: " + receivedUser.getNhi());
+                response.status(400);
+                return "Malformed NHI supplied";
             }
         }
     }
@@ -470,7 +497,7 @@ public class UserController {
 
     }
 
-    public String   editUserPhoto(Request request, Response response){
+    public String editUserPhoto(Request request, Response response){
         User queriedUser = queryUser(request, response);
 
         if (queriedUser == null){
@@ -480,7 +507,7 @@ public class UserController {
         Gson gson = new Gson();
         PhotoStruct receivedPhotoStruct;
 
-        // Attempt to parse received JSON into our simple photo structure
+        // Attempt to executeFile received JSON into our simple photo structure
         try {
             receivedPhotoStruct = gson.fromJson(request.body(), PhotoStruct.class);
         } catch (JsonSyntaxException jse) {
@@ -550,6 +577,21 @@ public class UserController {
             //update
             return "Internal server error";
         }
+    }
+
+    /**
+     * Checks an NHI is of the correct format:
+     *      Starts with 3rd, 6th, 9th... letter of the alphabet
+     *      Is of the format cde1234
+     * @param nhi A National Health Index number
+     */
+    private boolean checkNhi(String nhi){
+        nhi = nhi.toLowerCase();
+        // Character 'c' has ASCII value 99
+        if ((int) nhi.charAt(0) % 3 == 0) {
+            return Pattern.matches("[a-z][a-z][a-z]\\d\\d\\d\\d", nhi);
+        }
+        else return false;
     }
 
 }

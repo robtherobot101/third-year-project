@@ -24,7 +24,7 @@ public class ClinicianSettingsController implements Initializable {
     @FXML
     private TextField usernameField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
     @FXML
     private Button updateButton;
     @FXML
@@ -57,7 +57,6 @@ public class ClinicianSettingsController implements Initializable {
     public void populateAccountDetails() {
         userNameLabel.setText("clinician: " + clinician.getName());
         usernameField.setText(clinician.getUsername() != null ? clinician.getUsername() : "");
-        passwordField.setText(clinician.getPassword());
     }
 
     /**

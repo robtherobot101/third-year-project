@@ -1,6 +1,8 @@
 package seng302.data.local;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
+import org.json.JSONObject;
 import seng302.data.interfaces.AdminsDAO;
 import seng302.data.interfaces.CliniciansDAO;
 import seng302.data.interfaces.GeneralDAO;
@@ -129,7 +131,7 @@ public class GeneralM implements GeneralDAO {
     @Override
     public boolean isUniqueIdentifier(String usernameEmail) throws HttpResponseException {
         for(User u : users.getAllUsers(null)) {
-            if(u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail)) {
+            if(u.getEmail().equals(usernameEmail) || u.getUsername().equals(usernameEmail) || u.getNhi().equals(usernameEmail)) {
                 return false;
             }
         }
@@ -177,7 +179,27 @@ public class GeneralM implements GeneralDAO {
     }
 
     @Override
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        return null;
+    }
+
+    @Override
     public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public JSONObject getPosition(String address) throws UnirestException{
+        return new JSONObject();
+    }
+
+    @Override
+    public List<Hospital> getHospitals(String token) throws HttpResponseException {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException {
+
     }
 }

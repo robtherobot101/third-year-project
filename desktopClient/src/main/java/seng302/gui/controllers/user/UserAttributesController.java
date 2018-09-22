@@ -76,6 +76,8 @@ public class UserAttributesController extends UserTabController implements Initi
     @FXML
     private TextField regionField;
     @FXML
+    private TextField nhiField;
+    @FXML
     private DatePicker dateOfBirthPicker;
 
     @FXML
@@ -495,6 +497,11 @@ public class UserAttributesController extends UserTabController implements Initi
             preferredName[preferredName.length - 1] = preferredLastName;
         }
 
+        if (!User.checkNhi(nhiField.getText())) {
+            WindowManager.createAlert(AlertType.ERROR, "Error", "Error with the NHI Input ", "Please input a valid NHI input.").show();
+            userController.requestFocus();
+            return false;
+        }
 
         double userHeight = -1;
         if (!heightField.getText().equals("")) {
@@ -561,6 +568,8 @@ public class UserAttributesController extends UserTabController implements Initi
         currentUser.setWeight(userWeight);
         currentUser.setBloodPressure(userBloodPressure);
         currentUser.setDateOfBirth(dateOfBirthPicker.getValue());
+        currentUser.setNhi(nhiField.getText());
+
 
         if(!Objects.equals(dateOfDeath.getText().trim(), "")) {
             currentUser.setDateOfDeath(LocalDateTime.parse(dateOfDeath.getText()));
@@ -626,6 +635,7 @@ public class UserAttributesController extends UserTabController implements Initi
         extractNames(currentUser.getNameArray(), firstNameField, middleNameField, lastNameField);
         extractNames(currentUser.getPreferredNameArray(), preferredFirstNameField, preferredMiddleNamesField, preferredLastNameField);
         addressField.setText(currentUser.getCurrentAddress());
+        nhiField.setText(currentUser.getNhi());
 
         countryComboBox.getSelectionModel().select(currentUser.getCountry());
 
@@ -914,6 +924,12 @@ public class UserAttributesController extends UserTabController implements Initi
             }
         });
 
+        nhiField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                attributeFieldUnfocused();
+            }
+        });
+
         //Add listeners to correctly update BMI and blood pressure based on user input
         heightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
         weightField.textProperty().addListener((observable, oldValue, newValue) -> updateBMI());
@@ -954,6 +970,12 @@ public class UserAttributesController extends UserTabController implements Initi
         updatingFields--;
     }
 
+    /**
+     * Set whether clinician/admin level controls should be shown or not.
+     */
+    public void setControlsShown(boolean shown) {
+        nhiField.setDisable(!shown);
+    }
 
     /**
      * set whether to show the date of death controls

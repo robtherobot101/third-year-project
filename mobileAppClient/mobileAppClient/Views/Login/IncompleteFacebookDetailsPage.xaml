@@ -10,6 +10,7 @@
                 <TableView Intent="Menu" >
                     <TableRoot>
                         <TableSection Title="Facebook Details">
+                            <EntryCell Label="NHI" x:Name="NHIInput"/>
                             <EntryCell Label="Email" x:Name="emailInput"/>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal" Padding="15,0,0,0">

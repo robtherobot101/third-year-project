@@ -1,10 +1,11 @@
 package seng302.Logic;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Logic.Database.DatabaseMethods;
 
 import java.sql.*;
 
-public class SqlSanitation {
+public class SqlSanitation extends DatabaseMethods {
 
     /**
      * Checks if the query has any illegal arguments in it and returns the corresponding string statement.
@@ -71,13 +72,16 @@ public class SqlSanitation {
      * @param query The query to execute.
      * @return Returns a string table of the results.
      */
-    public CommandLineResponse executeQuery(String query) {
+    public CommandLineResponse executeQuery(String query) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
             try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-                PreparedStatement statement = connection.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery();
+                statement = connection.prepareStatement(query);
+                resultSet = statement.executeQuery();
                 return new CommandLineResponse(true, createTable(resultSet));
-            } catch (SQLException e) {
-                return new CommandLineResponse(false, e.getMessage());
+            }
+            finally {
+                close(statement, resultSet);
             }
     }
 }

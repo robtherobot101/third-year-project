@@ -38,6 +38,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
 
     /**
      * Adds three new users to be used for all of the tests.
+     * @throws SQLException for sql connection errors
      */
     @Before
     public void setUp() throws SQLException {
@@ -53,6 +54,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1969, 8, 4),
             "bflame",
             "flameman@hotmail.com",
+                "cfj3772",
             "password123");
         testUserBobby.setGender(Gender.MALE);
         testUserBobby.setRegion("Auckland");
@@ -63,6 +65,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1997, 1, 4),
             "andy",
             "andy@hotmail.com",
+                "lsj4940",
             "andyANDY");
         testUserAndy.setGender(Gender.FEMALE);
         testUserAndy.setRegion("Arrowtown");
@@ -74,6 +77,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1996, 8, 4),
             "test",
             "test@hotmail.com",
+                "cfj3769",
             "tester123");
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");

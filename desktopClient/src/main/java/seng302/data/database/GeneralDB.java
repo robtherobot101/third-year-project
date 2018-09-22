@@ -2,7 +2,11 @@ package seng302.data.database;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
+import org.json.JSONObject;
 import seng302.data.interfaces.GeneralDAO;
 import seng302.generic.APIResponse;
 import seng302.generic.APIServer;
@@ -22,19 +26,32 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        Debugger.log("Checking password with server.");
+        Map<String, String> queryParameters = new HashMap<>();
+        queryParameters.put("password", password);
+        queryParameters.put("id", String.valueOf(id));
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "password");
+        if(response == null) return false;
+        if (response.getStatusCode() == 200) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * login the user into the program
-     * @param usernameEmail the username/email of the user
+     * @param identifier the username/email of the user
      * @param password the users password
      * @return returns the response from the server
      */
-    public Map<Object, String> loginUser(String usernameEmail, String password) {
+    public Map<Object, String> loginUser(String identifier, String password) {
         String accountType = "accountType";
         Map<Object, String> responseMap = new HashMap<>();
 
         Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("usernameEmail", usernameEmail);
+        queryParameters.put("usernameEmail", identifier);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
         if(response == null) return responseMap;
@@ -50,11 +67,11 @@ public class GeneralDB implements GeneralDAO {
                 responseMap.put(new Gson().fromJson(serverResponse, Admin.class), response.getToken());
                 return responseMap;
             } else {
-                responseMap.put(null, "Username/email and password combination not recognized.");
+                responseMap.put(null, "Username/email/NHI and password combination not recognized.");
                 return responseMap;
             }
         } else {
-            responseMap.put(null, "Username/email and password combination not recognized.");
+            responseMap.put(null, "Username/email/NHI and password combination not recognized.");
             return responseMap;
         }
     }
@@ -209,6 +226,41 @@ public class GeneralDB implements GeneralDAO {
             return organs;
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public JSONObject getPosition(String address) throws UnirestException{
+        address = address.replace(' ', '+');
+        String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=AIzaSyD7DEH6Klk3ZyduVyqbaVEyTscj4sp48PQ", address);
+        JSONObject response = new JSONObject(Unirest.get(url).asString().getBody());
+        return response;
+    }
+
+    @Override
+    public List<Hospital> getHospitals(String token) {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "hospitals");
+        if(response == null){
+            return new ArrayList<>();
+        }
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Hospital>>() {
+            }.getType());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException{
+        JsonParser jp = new JsonParser();
+        JsonObject jsonTransfer = jp.parse(new Gson().toJson(transfer)).getAsJsonObject();
+        APIResponse response = server.postRequest(jsonTransfer, new HashMap<>(), token, "transfer");
+        if (response == null) {
+            Debugger.log(response.getStatusCode());
+        }
+        if (response.getStatusCode() != 201){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         }
     }
 }
