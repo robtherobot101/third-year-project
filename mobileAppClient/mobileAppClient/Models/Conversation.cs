@@ -17,7 +17,7 @@ namespace mobileAppClient.Models
 
         public string localName { get; set; }
         public string externalName { get; set; }
-        public Dictionary<int, string> memberNames { get; set; }
+        public Dictionary<int, String> memberNames { get; set; }
 
         public string lastMessage
         {

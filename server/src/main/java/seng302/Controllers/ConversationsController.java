@@ -134,10 +134,9 @@ public class ConversationsController {
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @param profileType The type of user accessing the conversations
      * @return Whether the operation succeeded
      */
-    public String addMessage(Request request, Response response, ProfileType profileType) {
+    public String addMessage(Request request, Response response) {
         int userId = Integer.parseInt(request.params(":id"));
         int conversationId = Integer.parseInt(request.params(":conversationId"));
 
@@ -147,7 +146,6 @@ public class ConversationsController {
             return "Missing message body";
         } else {
             try {
-                int accessLevel = profileType.getAccessLevel();
                 Message messageToSend = new Message(request.body(), userId);
                 model.addMessage(conversationId, messageToSend);
                 sendMessageNotification(conversationId, userId, messageToSend);
@@ -173,7 +171,7 @@ public class ConversationsController {
         }
 
         List<Integer> participants = queriedConversation.getMembers();
-        participants.remove(localId);
+        participants.remove(new Integer(localId));
         assert(participants.size() == 1);
 
         int externalId = participants.get(0);
