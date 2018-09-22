@@ -133,7 +133,7 @@ public class Server {
 
                 path("/:id/conversations", () -> {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.CLINICIAN));
-                    get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.CLINICIAN));
+                    get("", (request, response) -> conversationsController.getAllConversations(request, response));
                     post("", (request, response) -> conversationsController.addConversation(request, response, ProfileType.CLINICIAN));
 
                     path("/:conversationId", () -> {
@@ -228,7 +228,7 @@ public class Server {
 
                 path("/:id/conversations", () -> {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.USER));
-                    get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.USER));
+                    get("", (request, response) -> conversationsController.getAllConversations(request, response));
 
                     path("/:conversationId", () -> {
                         before("", (request, response) -> profileUtils.hasConversationAccess(request, response, ProfileType.USER));

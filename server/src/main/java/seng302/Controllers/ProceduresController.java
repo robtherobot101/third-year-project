@@ -6,6 +6,7 @@ import seng302.Logic.Database.UserMedications;
 import seng302.Logic.Database.UserProcedures;
 import seng302.Model.Medication.Medication;
 import seng302.Model.Procedure;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -91,6 +92,8 @@ public class ProceduresController {
             try {
                 model.insertProcedure(receivedProcedure, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "New procedure added.",
+                        "A new procedure has been added to your profile: " + receivedProcedure.getSummary());
                 return "PROCEDURE INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
                 response.status(500);
@@ -126,6 +129,8 @@ public class ProceduresController {
             try {
                 model.updateProcedure(receivedProcedure, requestedProcedureId, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Procedure edited.",
+                        "One of your procedures has been edited: " + receivedProcedure.getSummary());
                 return "PROCEDURE WITH ID: "+ requestedProcedureId +" FOR USER ID: "+ requestedUserId +" SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
                 response.status(500);
@@ -154,6 +159,8 @@ public class ProceduresController {
         try {
             model.removeProcedure(requestedUserId, requestedProcedureId);
             response.status(201);
+            PushAPI.getInstance().sendTextNotification(requestedUserId, "Procedure deleted.",
+                    "One of your procedures was deleted.");
             return "PROCEDURE WITH ID: "+ requestedProcedureId +" FOR USER ID: "+ requestedUserId +" DELETED";
         } catch (SQLException e) {
             response.status(500);

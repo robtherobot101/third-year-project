@@ -575,7 +575,7 @@ public class WindowManager extends Application {
         dataManager = createDatabaseDataManager();
         //dataManager = createLocalDataManager();
 
-        Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
+        //Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding(closeAllWindows -> {

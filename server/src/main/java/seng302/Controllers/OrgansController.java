@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.OrgansDatabase;
 import seng302.Logic.OrganMatching;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -105,6 +107,8 @@ public class OrgansController {
             try {
                 model.insertOrgan(organ);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification((int)organ.getDonorId(), "Organ added to donations.",
+                        Organ.capitalise(organ.getOrganType().toString()) + " was added to your organ donations.");
                 return "ORGAN INSERTED FOR USER ID: " + organ.getDonorId();
             } catch (SQLException e) {
                 response.status(500);
@@ -131,6 +135,8 @@ public class OrgansController {
             try {
                 model.removeOrgan(organ);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification((int)organ.getDonorId(), "Organ removed from donations.",
+                        Organ.capitalise(organ.getOrganType().toString()) + " was removed from your organ donations.");
                 return "ORGAN REMOVED FOR USER ID: " + organ.getDonorId();
             } catch (SQLException e) {
                 response.status(500);
@@ -157,6 +163,8 @@ public class OrgansController {
             try {
                 model.updateOrgan(organ);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification((int)organ.getDonorId(), "Organ donation updated.",
+                        Organ.capitalise(organ.getOrganType().toString()) + " from your organ donations was updated.");
                 return "ORGAN UPDATED FOR USER ID: " + organ.getDonorId();
             } catch (SQLException e) {
                 response.status(500);
