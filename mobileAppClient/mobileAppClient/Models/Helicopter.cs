@@ -11,6 +11,7 @@ namespace mobileAppClient.Models
         public Position destinationPosition { get; set; }
         public Position startPosition { get; set; }
         public bool isLanding { get; set; }
+        public int duration { get; set; }
 
 
         /// <summary>
@@ -25,8 +26,8 @@ namespace mobileAppClient.Models
                 return destinationPosition;
             }
 
-            double newLatitude = currentPosition.Latitude + (destinationPosition.Latitude - startPosition.Latitude) / 200;
-            double newLongitude = currentPosition.Longitude + (destinationPosition.Longitude - startPosition.Longitude) / 200;
+            double newLatitude = currentPosition.Latitude + (destinationPosition.Latitude - startPosition.Latitude) / (5*duration);
+            double newLongitude = currentPosition.Longitude + (destinationPosition.Longitude - startPosition.Longitude) / (5*duration);
             
             return new Position(newLatitude, newLongitude);
         }

@@ -351,27 +351,13 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private void AddTestHelicopter()
-        {
-            Position start = new Position(-37.9061137, 176.2050742);
-            Position end = new Position(-36.8613687, 174.7676895);
-            AddHelicopter(start, end, Organ.LIVER);
-        }
-
-	    private void AddTest2Helicopter()
-	    {
-	        Position start = new Position(-36.8613687, 174.7676895);
-            Position end = new Position(-37.9061137, 176.2050742);
-            AddHelicopter(start, end, Organ.LUNG);
-        }
-
         /// <summary>
         /// Adds a helicopter to the map!
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="organToTransferType"></param>
-	    private void AddHelicopter(Position start, Position end, Organ organToTransferType)
+	    private void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds)
 	    {
             // Iterate the unique helicopter identifier (is used as a dict key in the map renderer)
 	        string heliID = (++heliCount).ToString();
@@ -380,7 +366,8 @@ namespace mobileAppClient.Views.Clinician
 	        {
 	            startPosition = start,
 	            destinationPosition = end,
-                isLanding = false
+                isLanding = false,
+                duration = seconds
 	        };
 
             // Address is used by helicopters to hold their unique ID
@@ -484,7 +471,7 @@ namespace mobileAppClient.Views.Clinician
             foreach (OrganTransfer transfer in transfers)
             {
 
-                AddHelicopter(GetCurrentPoint(transfer), new Position(transfer.endLat, transfer.endLon), transfer.organType);
+                AddHelicopter(GetCurrentPoint(transfer), new Position(transfer.endLat, transfer.endLon), transfer.organType, (int) transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds);
             }
         }
 
