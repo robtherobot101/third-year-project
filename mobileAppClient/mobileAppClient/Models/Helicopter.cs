@@ -12,6 +12,9 @@ namespace mobileAppClient.Models
         public Position startPosition { get; set; }
         public bool isLanding { get; set; }
         public int duration { get; set; }
+        public long receiverId { get; set; }
+        public int waitingListItemId { get; set; }
+        public int organId { get; set; }
 
 
         /// <summary>

@@ -211,6 +211,11 @@ public class Server {
                     delete("/:waitingListItemId", waitingListController::deleteWaitingListItem);
                 });
 
+                path("/:id/waitingListOrgan", () -> {
+                    before("",          profileUtils::hasAccessToAllUsers);
+                    get("/:organType",  waitingListController::getWaitingListId);
+                });
+
                 path("/:id/conversations", () -> {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.USER));
                     get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.USER));
