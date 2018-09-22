@@ -24,6 +24,8 @@ namespace mobileAppClient.Views.Clinician
         List<Hospital> hospitals;
         SlideUpMenuView menu;
 
+	    private int heliCount = 0;
+
         CustomMap customMap;
 
         public ClinicianMapPage()
@@ -133,12 +135,12 @@ namespace mobileAppClient.Views.Clinician
             //Create pins for every organ
             UserAPI userAPI = new UserAPI();
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
-            Console.WriteLine("Initialising hoppis....");
-            //await InitialiseHospitals();
-            
-            Console.WriteLine("Adding HeliChopper...");
-            //AddHelicopter();
-            Console.WriteLine("HeliChopper success, entering switch");
+
+            await InitialiseHospitals();
+
+            //AddTestHelicopter();
+            //AddTest2Helicopter();
+
             switch (tuple.Item1)
             {
                 case HttpStatusCode.OK:
@@ -171,11 +173,11 @@ namespace mobileAppClient.Views.Clinician
 
                         List<string> organIcons = new List<string>();
 
-                        foreach (string organ in user.organs)
+                        foreach (DonatableOrgan organ in user.organs)
                         {
 
                             string imageString = "";
-                            switch (organ)
+                            switch (organ.organType.ToLower())
                             {
                                 case ("pancreas"):
                                     imageString = "pancreas_icon.png";
@@ -187,28 +189,28 @@ namespace mobileAppClient.Views.Clinician
                                     imageString = "liver_icon.png";
                                     break;
                                 case ("connective-tissue"):
-                                    imageString = "tissue_icon.png";
+                                    imageString = "connective-tissue_icon.png";
                                     break;
                                 case ("bone-marrow"):
-                                    imageString = "bone_icon.png";
+                                    imageString = "bone-marrow_icon.png";
                                     break;
                                 case ("skin"):
                                     imageString = "skin_icon.png";
                                     break;
                                 case ("lung"):
-                                    imageString = "lungs_icon.png";
+                                    imageString = "lung_icon.png";
                                     break;
                                 case ("cornea"):
-                                    imageString = "eye_icon.png";
+                                    imageString = "cornea_icon.png";
                                     break;
                                 case ("kidney"):
                                     imageString = "kidney_icon.png";
                                     break;
                                 case ("intestine"):
-                                    imageString = "intestines_icon.png";
+                                    imageString = "intestine_icon.png";
                                     break;
                                 case ("middle-ear"):
-                                    imageString = "ear_icon.png";
+                                    imageString = "middle-ear_icon.png";
                                     break;
                             }
                             organIcons.Add(imageString);
@@ -276,7 +278,8 @@ namespace mobileAppClient.Views.Clinician
                             Url = String.Join(",", organIcons),
                             genderIcon = genderIcon,
                             userPhoto = profilePhoto,
-                            userId = user.id
+                            userId = user.id,
+                            donatableOrgans = user.organs
                         };
                         customMap.CustomPins.Add(pin.Position, pin);
 
@@ -353,31 +356,54 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private void AddHelicopter()
+        private void AddTestHelicopter()
         {
-            // TESTING
-            Console.WriteLine("Entered Add Heli...");
             Position start = new Position(-37.9061137, 176.2050742);
             Position end = new Position(-36.8613687, 174.7676895);
-            Console.WriteLine("Set postitions...");
+            AddHelicopter(start, end, Organ.LIVER);
+        }
 
-            Helicopter heli = new Helicopter()
-            {
-                startPosition = start,
-                destinationPosition = end
-            };
-            Console.WriteLine("Created Heli...");
+	    private void AddTest2Helicopter()
+	    {
+	        Position start = new Position(-36.8613687, 174.7676895);
+            Position end = new Position(-37.9061137, 176.2050742);
+            AddHelicopter(start, end, Organ.LUNG);
+        }
+
+        /// <summary>
+        /// Adds a helicopter to the map!
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="organToTransferType"></param>
+	    private void AddHelicopter(Position start, Position end, Organ organToTransferType)
+	    {
+            // Iterate the unique helicopter identifier (is used as a dict key in the map renderer)
+	        string heliID = (++heliCount).ToString();
+
+	        Helicopter heli = new Helicopter()
+	        {
+	            startPosition = start,
+	            destinationPosition = end,
+                isLanding = false
+	        };
+
+            // Address is used by helicopters to hold their unique ID
             CustomPin heliPin = new CustomPin
-            {
-                CustomType = ODMSPinType.HELICOPTER,
-                Label = "Heli",
-                HelicopterDetails = heli,
-                Position = heli.startPosition,
-                Address = "1"
+	        {
+	            CustomType = ODMSPinType.HELICOPTER,
+                OrganToTransport = organToTransferType,
+	            Label = "Heli",
+	            HelicopterDetails = heli,
+	            Position = heli.startPosition,
+	            Address = heliID
             };
-            Console.WriteLine("Created Helipin...");
-            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
-            customMap.Pins.Add(heliPin);
+
+            // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
+	        customMap.HelicopterPins.Add(heliPin.Address, heliPin);
+
+            // Add the pin we want visible on the map (but cant track these)
+	        customMap.Pins.Add(heliPin);
         }
 
         /// <summary>
@@ -386,34 +412,69 @@ namespace mobileAppClient.Views.Clinician
         /// <param name="interval"> Time between refreshes in milliseconds </param>
         public void StartTimer(int interval)
         {
+            // TODO change '5000' to '0' when transferring is correctly implemented (is delay between timer started + timer actually starting to call tick method)
             Timer t = new Timer(RefreshHelipcopterPositions, null, 5000, interval);
         }
 
+        /// <summary>
+        /// Processes each live helicopter and moves it one step, disposing of the helicopter in case of reaching the destination
+        /// </summary>
+        /// <param name="o"></param>
         private void RefreshHelipcopterPositions(object o)
         {
             Dictionary<String, CustomPin> intermediateHeliPins = new Dictionary<String, CustomPin>();
 
+            // Copy the live map helicopters into an intermediary array that we can edit and calc new positions
             foreach (var singleHelicopterPin in customMap.HelicopterPins.Values)
             {
                 Position currentPosition = singleHelicopterPin.Position;
- 
+                Position newHeliPosition;
+
+                // Calc new position
+                newHeliPosition = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+
+                // Add to the intermediary dictionary, and modify to include the new position
                 intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
-                intermediateHeliPins[singleHelicopterPin.Address].Position = singleHelicopterPin.HelicopterDetails.getNewPosition(currentPosition);
+                intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
             }
 
+            // Copy intermediary dictionary into the Maps custom dictionary of helis
             customMap.HelicopterPins = new Dictionary<String, CustomPin>(intermediateHeliPins);
 
+            
             foreach (var singleHelicopterPin in intermediateHeliPins.Values)
             {
-                Device.BeginInvokeOnMainThread(() => { customMap.Pins.Remove(singleHelicopterPin); });
-                if (!(singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
+                // Clear the pin first
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    Device.BeginInvokeOnMainThread(() => { customMap.Pins.Add(singleHelicopterPin); });
-                }
-                else
+                    customMap.Pins.Remove(singleHelicopterPin);
+                });
+
+                // Check if the helicopter has reached its destination
+                if ((singleHelicopterPin.HelicopterDetails.hasArrived(singleHelicopterPin.Position)))
                 {
-                    customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                    // If it has, raise the isLanding flag and still add the pin to map
+                    // (allows the map renderer to remove the organ radius + flight path if selected)
+                    if (!singleHelicopterPin.HelicopterDetails.isLanding)
+                    {
+                        // Start landing procedure
+                        customMap.HelicopterPins[singleHelicopterPin.Address].HelicopterDetails.isLanding = true;
+                    }
+                    else
+                    {
+                        // When the pin (in the last refresh loop had its isLanding flag raised) is refreshed again,
+                        // remove the pin as it will have been tidied up on the map renderer side
+                        customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+                        return;
+                    }
                 }
+
+                // Add the pin finally on the map in its refreshed locations
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    customMap.Pins.Add(singleHelicopterPin);
+                });
+                
             }
         }
     }

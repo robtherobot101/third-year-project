@@ -15,7 +15,8 @@ namespace mobileAppClient
         public string cityOfDeath { get; set; }
         public string regionOfDeath { get; set; }
         public string countryOfDeath { get; set; }
-        public List<string> organs { get; set; }
+        public List<DonatableOrgan> organs { get; set; }
+        public CustomDateTime dateOfDeath { get; set; }
 
         public CustomMapObject()
         {

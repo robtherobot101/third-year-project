@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CoreGraphics;
+using CustomRenderer.iOS;
 using Foundation;
 using iAd;
 using MapKit;
 using ObjCRuntime;
 using UIKit;
+using Xamarin.Forms;
 
 namespace mobileAppClient.iOS
 {
@@ -17,8 +20,9 @@ namespace mobileAppClient.iOS
         public CustomPin pin;
         public CustomMap map;
         public MKMapView nativeMap;
+        public CustomMapRenderer customMapRenderer;
 
-        public BottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap) : base("BottomSheetViewController", null)
+        public BottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, CustomMapRenderer customMapRenderer) : base("BottomSheetViewController", null)
         {
             this.nativeMap = nativeMap;
             this.map = map;
@@ -26,6 +30,7 @@ namespace mobileAppClient.iOS
             holdView = new UIView();
             fullView = 300;
             partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 70;
+            this.customMapRenderer = customMapRenderer;
         }
 
         public void prepareSheetDetails() {
@@ -36,8 +41,48 @@ namespace mobileAppClient.iOS
             var imageData = NSData.FromArray(imageBytes);
             ProfilePhotoImageView.Image = UIImage.LoadFromData(imageData);
 
-            OrgansTableView.Source = new TableSource(pin, map, nativeMap, this);
+            OrgansTableView.Source = new TableSource(pin, map, nativeMap, this, customMapRenderer);
             OrgansTableView.ScrollEnabled = true;
+        }
+
+        public void StartTickingTimer(int interval) {
+            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval); 
+        }
+
+        public void RefreshCountdownsInTableView(object o) {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                TableSource tableSource = (TableSource)OrgansTableView.Source;
+                foreach (UITableViewCell cell in tableSource.Cells.Values)
+                {
+                    string detailString = cell.DetailTextLabel.Text;
+                    if(detailString.Equals("EXPIRED")) {
+                        continue;
+                    } else {
+                        string timeLeftString = detailString.Substring(16);
+                        string timeString = timeLeftString.Remove(timeLeftString.Length - 5);
+
+                        TimeSpan timeLeft = TimeSpan.Parse(timeString);
+                        if (timeLeft.Equals(new TimeSpan(0, 0, 0)))
+                        {
+                            detailString = "EXPIRED";
+                            cell.DetailTextLabel.TextColor = UIColor.Red;
+                            //Update the Organ object to be expired
+                        }
+                        else
+                        {
+                            timeLeft = timeLeft.Subtract(new TimeSpan(0, 0, 1));
+                            detailString = detailString.Substring(0, 16) + timeLeft.ToString(@"dd\:hh\:mm\:ss") + " days";
+
+                        }
+                        cell.DetailTextLabel.Text = detailString;
+                    }
+
+
+                }
+            });
+
+
         }
 
         public async Task closeMenu() {
@@ -96,6 +141,8 @@ namespace mobileAppClient.iOS
             roundViews();
 
             prepareSheetDetails();
+
+            StartTickingTimer(1000);
 
         }
 

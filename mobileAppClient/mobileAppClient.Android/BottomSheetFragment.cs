@@ -11,7 +11,6 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using Cocosw.BottomSheetActions;
 using Android.Graphics.Drawables;
 using Android.Graphics;
 using Android.Support.V4.Graphics.Drawable;
@@ -39,22 +38,22 @@ namespace mobileAppClient.Droid
             return frag;
         }
         
-        public override Dialog OnCreateDialog(Bundle savedInstanceState)
-        {
-           // this.name = this.Arguments.GetString("title");
-          //  this.action = this.Arguments.GetInt("action");
+   //     public override Dialog OnCreateDialog(Bundle savedInstanceState)
+   //     {
+   //        // this.name = this.Arguments.GetString("title");
+   //       //  this.action = this.Arguments.GetInt("action");
 
-            BottomSheet sheet = new BottomSheet.Builder(this.Activity)
-                .Icon(this.GetRoundedBitmap(Resource.Drawable.default_user_photo))
-   //             .Listener((IDialogInterfaceOnClickListener)this.Activity)
-                .Build();
+   ////         BottomSheet sheet = new BottomSheet.Builder(this.Activity)
+   ////             .Icon(this.GetRoundedBitmap(Resource.Drawable.default_user_photo))
+   //////             .Listener((IDialogInterfaceOnClickListener)this.Activity)
+        //        //.Build();
 
-            //@ Andy the below commented stuff is from the sample project. Various ways to show bottom sheets. Also has functionality such that if we can just get the sheet to show we can modify it to our hearts desire and get exactly what we need
-            // Good luck xo
+        //    //@ Andy the below commented stuff is from the sample project. Various ways to show bottom sheets. Also has functionality such that if we can just get the sheet to show we can modify it to our hearts desire and get exactly what we need
+        //    // Good luck xo
        
 
-            return sheet;
-        }
+        //    //return sheet;
+        //}
 
 
         //private BottomSheet SheetFromXml()
@@ -208,14 +207,14 @@ namespace mobileAppClient.Droid
             return roundedBitmapDrawable;
         }
 
-        private BottomSheet.Builder GetShareActions(String text)
-        {
-            Intent shareIntent = new Intent(Intent.ActionSend);
-            shareIntent.SetType("text/plain");
-            shareIntent.PutExtra(Intent.ExtraText, text);
+        //private BottomSheet.Builder GetShareActions(String text)
+        //{
+        //    Intent shareIntent = new Intent(Intent.ActionSend);
+        //    shareIntent.SetType("text/plain");
+        //    shareIntent.PutExtra(Intent.ExtraText, text);
 
-            return BottomSheetHelper.ShareAction(this.Activity, shareIntent);
-        }
+        //    return BottomSheetHelper.ShareAction(this.Activity, shareIntent);
+        //}
 
         private class MenuItemListener : Java.Lang.Object, IMenuItemOnMenuItemClickListener
         {

@@ -11,10 +11,10 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.iOS;
 using Xamarin.Forms.Platform.iOS;
 using System.Linq;
-using ObjCRuntime;
 using mobileAppClient.iOS;
 using mobileAppClient.Views.Clinician;
 using mobileAppClient.Models;
+using ObjCRuntime;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
@@ -26,7 +26,7 @@ namespace CustomRenderer.iOS
         Dictionary<String, CustomPin> helicopterPins;
         CustomMap formsMap;
         CustomPin currentPin;
-        MKCircleRenderer circleRenderer;
+        public MKCircleRenderer circleRenderer;
         MKMapView nativeMap;
 
         protected override void OnElementChanged(ElementChangedEventArgs<View> e)
@@ -65,7 +65,7 @@ namespace CustomRenderer.iOS
             }
         }
 
-        MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
+        public MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
         {
             if (circleRenderer == null && !Equals(overlayWrapper, null))
             {

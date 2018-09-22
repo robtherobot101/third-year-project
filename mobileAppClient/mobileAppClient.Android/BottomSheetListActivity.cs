@@ -10,7 +10,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.App;
-using Cocosw.BottomSheetActions;
 using Android.Graphics.Drawables;
 using Android.Graphics;
 using Android.Support.V4.Graphics.Drawable;

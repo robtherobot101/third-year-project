@@ -13,17 +13,12 @@ using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
-using Android.Support.V7.App;
-using Cocosw.BottomSheetActions;
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V4.App;
-using Android.App;
-using SlideOverKit;
-using FragmentManager = Android.Support.V4.App.FragmentManager;
+
 using mobileAppClient.Views.Clinician;
 using Cheesebaron.SlidingUpPanel;
 using Resource = mobileAppClient.Droid.Resource;
 using Plugin.CurrentActivity;
+using CustomPin = mobileAppClient.CustomPin;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -32,15 +27,19 @@ namespace CustomRenderer.Droid
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
         private Dictionary<Position, CustomPin> customPins;
-        private Dictionary<String, CustomPin> helicopterPins;
+        private Dictionary<string, CustomPin> helicopterPins;
+        private Dictionary<Organ, int> helicopterIcons;
+
+        private String selectedHeli;
+        private Tuple<CustomPin, Polyline> highlightedFlightPath;
+        private Tuple<CustomPin, Circle> highlightedOrganRange;
+
         CustomMap formsMap;
         private CustomMapRenderer customMapRenderer;
 
         public CustomMapRenderer(Context context) : base(context)
         {
         }
-
-
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
         {
@@ -56,9 +55,32 @@ namespace CustomRenderer.Droid
                 formsMap = (CustomMap)e.NewElement;
                 customPins = formsMap.CustomPins;
                 helicopterPins = formsMap.HelicopterPins;
+                intialiseHelicopterIcons();
+
+                highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
+                highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
 
                 Control.GetMapAsync(this);
             }
+        }
+
+        /// <summary>
+        /// Initialises a dictionary used to lookup helicopter icons based on an organ enum
+        /// </summary>
+        private void intialiseHelicopterIcons()
+        {
+            helicopterIcons = new Dictionary<Organ, int>();
+            helicopterIcons.Add(Organ.LIVER, Resource.Drawable.helicopter_liver_icon);
+            helicopterIcons.Add(Organ.KIDNEY, Resource.Drawable.helicopter_kidney_icon);
+            helicopterIcons.Add(Organ.PANCREAS, Resource.Drawable.helicopter_pancreas_icon);
+            helicopterIcons.Add(Organ.HEART, Resource.Drawable.helicopter_heart_icon);
+            helicopterIcons.Add(Organ.LUNG, Resource.Drawable.helicopter_lung_icon);
+            helicopterIcons.Add(Organ.INTESTINE, Resource.Drawable.helicopter_intestine_icon);
+            helicopterIcons.Add(Organ.CORNEA, Resource.Drawable.helicopter_cornea_icon);
+            helicopterIcons.Add(Organ.EAR, Resource.Drawable.helicopter_ear_icon);
+            helicopterIcons.Add(Organ.SKIN, Resource.Drawable.helicopter_skin_icon);
+            helicopterIcons.Add(Organ.BONE, Resource.Drawable.helicopter_bone_icon);
+            helicopterIcons.Add(Organ.TISSUE, Resource.Drawable.helicopter_tissue_icon);
         }
 
         protected override void OnMapReady(GoogleMap map)
@@ -206,22 +228,27 @@ namespace CustomRenderer.Droid
         }
 
         /// <summary>
-        /// Generates marker options for a pin that contains information about a hospital
+        /// Generates marker options for a pin that contains information about a helicopter
         /// </summary>
         /// <param name="pin"></param>
         /// <returns></returns>
         private MarkerOptions CreateHelicopterMarker(CustomPin pin)
         {
+            refreshFlightDetails(pin);
+            
             // Create basic options
             var marker = new MarkerOptions();
             marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
             marker.SetTitle(pin.Label);
 
+            // Snippet is set to store the unique heli identifier (dictionary key) so it can be recalled when searching for a customPin based on Marker
+            marker.SetSnippet(pin.Address);
+
             // Create the image
-            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_icon);
+            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, helicopterIcons[pin.OrganToTransport]);
 
             // Scale the image
-            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
+            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 170, 170, false);
 
             marker.SetIcon(BitmapDescriptorFactory.FromBitmap(imageBitmap));
 
@@ -255,6 +282,7 @@ namespace CustomRenderer.Droid
             return markerToAddOptions;
         }
 
+
         void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
         {
             var customPin = GetCustomPin(e.Marker);
@@ -277,6 +305,108 @@ namespace CustomRenderer.Droid
             mainActivity.StartActivity(intent);
         }
 
+        /// <summary>
+        /// Toggles more details regarding a helicopter (organs + flight path)
+        /// </summary>
+        /// <param name="customPin"></param>
+        private void processHelicopterTapped(CustomPin customPin)
+        {
+            clearFlightPath();
+            clearOrganRange();
+
+            // Heli is already highlighted, deselect
+            if (customPin.Address.Equals(selectedHeli))
+            {
+                // Reset selected heli
+                selectedHeli = null;
+            }
+            else
+            {
+                selectedHeli = customPin.Address;
+                addFlightPath(customPin);
+                addOrganRange(customPin);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the flight path if the helicopter is currently selected
+        /// </summary>
+        /// <param name="heliPin"></param>
+        private void refreshFlightDetails(CustomPin heliPin)
+        {
+
+            if (heliPin.Address.Equals(selectedHeli))
+            {
+                clearFlightPath();
+                clearOrganRange();
+
+                if (!heliPin.HelicopterDetails.hasArrived(heliPin.Position))
+                {
+                    addFlightPath(heliPin);
+                    addOrganRange(heliPin);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds a polyline path based on helicopter destination and current position
+        /// </summary>
+        /// <param name="heliPin"></param>
+        private void addFlightPath(CustomPin heliPin)
+        {
+            var currentFlightPathOptions = new PolylineOptions();
+
+            // Other colour constants can be found at https://developer.android.com/reference/android/graphics/Color#constants_1
+            int BLUE = -16776961;
+            currentFlightPathOptions.InvokeColor(BLUE);
+            
+            // Add current position (start of path)
+            currentFlightPathOptions.Add(new LatLng(heliPin.Position.Latitude, heliPin.Position.Longitude));
+
+            // Add destination position (end of path)
+            currentFlightPathOptions.Add(new LatLng(heliPin.HelicopterDetails.destinationPosition.Latitude,
+                heliPin.HelicopterDetails.destinationPosition.Longitude));
+
+            highlightedFlightPath = new Tuple<CustomPin, Polyline>(heliPin, NativeMap.AddPolyline(currentFlightPathOptions));
+        }
+
+        /// <summary>
+        /// Adds a bubble that reflects the expiry range of a helicopter carrying organ
+        /// </summary>
+        /// <param name="heliPin"></param>
+        private void addOrganRange(CustomPin heliPin)
+        {
+            var circleOptions = new CircleOptions();
+            circleOptions.InvokeCenter(new LatLng(heliPin.Position.Latitude, heliPin.Position.Longitude));
+
+            // TODO adjust to organ countdown
+            circleOptions.InvokeRadius(40000);
+
+            circleOptions.InvokeFillColor(0X660000FF);
+            circleOptions.InvokeStrokeColor(0X660000FF);
+            circleOptions.InvokeStrokeWidth(0);
+
+            highlightedOrganRange = new Tuple<CustomPin, Circle>(heliPin, NativeMap.AddCircle(circleOptions));
+        }
+    
+        /// <summary>
+        /// Clears the highlighted flight path
+        /// </summary>
+        private void clearFlightPath()
+        {
+            highlightedFlightPath.Item2?.Remove();
+            highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
+        }
+
+        /// <summary>
+        /// Clears the highlighted organ expiry range
+        /// </summary>
+        private void clearOrganRange()
+        {
+            highlightedOrganRange.Item2?.Remove();
+            highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
+        }
+
         public Android.Views.View GetInfoContents(Marker marker)
         {
             if (Android.App.Application.Context.GetSystemService(Context.LayoutInflaterService) is Android.Views.LayoutInflater inflater)
@@ -288,23 +418,25 @@ namespace CustomRenderer.Droid
                     return null;
                 }
 
-                if (customPin.CustomType == ODMSPinType.HOSPITAL || customPin.CustomType == ODMSPinType.HELICOPTER)
+                if (customPin.CustomType == ODMSPinType.HOSPITAL)
                 {
                     // Hospital pop-up dialog not yet implemented
                     return null;
                 }
 
-                view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);
+                if (customPin.CustomType == ODMSPinType.HELICOPTER)
+                {
+                    marker.Title = null;
+                    processHelicopterTapped(customPin);
+                    return null;
+                }
 
+                view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);
 
                 var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
                 var infoAddress = view.FindViewById<TextView>(Resource.Id.InfoWindowAddress);
                 var imageFrame = view.FindViewById<ImageView>(Resource.Id.ImageFrame);
                 var organFrame = view.FindViewById<LinearLayout>(Resource.Id.OrganFrame);
-
-                
-
-
 
                 if (infoTitle != null)
                 {
@@ -335,19 +467,19 @@ namespace CustomRenderer.Droid
                         var organImage = new ImageView(Context.ApplicationContext);
                         switch (organ)
                         {
-                            case "bone_icon.png":
+                            case "bone-marrow_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.bone_icon);
                                 break;
-                            case "ear_icon.png":
+                            case "middle-ear_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
-                            case "eye_icon.png":
+                            case "cornea_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.eye_icon);
                                 break;
                             case "heart_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.heart_icon);
                                 break;
-                            case "intestines_icon.png":
+                            case "intestine_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.intestines_icon);
                                 break;
                             case "kidney_icon.png":
@@ -356,7 +488,7 @@ namespace CustomRenderer.Droid
                             case "liver_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.liver_icon);
                                 break;
-                            case "lungs_icon.png":
+                            case "lung_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.lungs_icon);
                                 break;
                             case "pancreas_icon.png":
@@ -365,7 +497,7 @@ namespace CustomRenderer.Droid
                             case "skin_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.skin_icon);
                                 break;
-                            case "tissue_icon.png":
+                            case "connective-tissue_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.tissue_icon);
                                 break;
                         }
@@ -390,19 +522,24 @@ namespace CustomRenderer.Droid
 
         /// <summary>
         /// Gets custom pin based on a marker
-        /// NOT FOR HELICOPTERS!!!
         /// </summary>
         /// <param name="annotation"></param>
         /// <returns></returns>
         CustomPin GetCustomPin(Marker annotation)
         {
             Position key = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-
             // Search custom pins
             if (customPins.TryGetValue(key, out CustomPin foundPin))
             {
                 return foundPin;
             }
+
+            // Search helicopter pins
+            if (helicopterPins.TryGetValue(annotation.Snippet, out foundPin))
+            {
+                return foundPin;
+            }
+
             return null;
         }
 
