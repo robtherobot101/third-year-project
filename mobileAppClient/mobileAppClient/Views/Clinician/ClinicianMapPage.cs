@@ -552,10 +552,16 @@ namespace mobileAppClient.Views.Clinician
 
             int TTA = (int)newOrganTransfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
 
+            int waitingListId = await transplantListAPI.GetWaitingListId((int)newOrganTransfer.receiverId, newOrganTransfer.organType);
+
             AddHelicopter(donorPosition,
                           HospitalPosition,
                           newOrganTransfer.organType,
-                          TTA);
+                          TTA,
+                          newOrganTransfer.receiverId,
+                          waitingListId,
+                          newOrganTransfer.id
+                          );
         }
 
         public double distance(double lat1, double lat2, double lon1,
