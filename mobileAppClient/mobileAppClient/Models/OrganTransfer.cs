@@ -9,10 +9,10 @@ namespace mobileAppClient.Models
         public int organId { get; set; }
         public double startLat { get; set; }
         public double startLon { get; set; }
-        public double endtLat { get; set; }
+        public double endLat { get; set; }
         public double endLon { get; set; }
         public long receiverId { get; set; }
-        public DateTime arrivalTime { get; set; }
+        public CustomDateTime arrivalTime { get; set; }
         public Organ organType { get; set; }
 
         public OrganTransfer()

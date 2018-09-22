@@ -132,14 +132,22 @@ namespace mobileAppClient.odmsAPI
 
             try
             {
-                return JsonConvert.DeserializeObject<List<OrganTransfer>>(body);
+                //return JsonConvert.DeserializeObject<List<OrganTransfer>>(body);
+                IEnumerable<OrganTransfer> items = JsonConvert.DeserializeObject<IEnumerable<OrganTransfer>>(body);
+                List<OrganTransfer> itemss = new List<OrganTransfer>();
+                foreach (OrganTransfer item in items)
+                {
+                    itemss.Add(item);
+                }
+                return itemss;
             }
             catch (JsonSerializationException jse)
             {
                 return new List<OrganTransfer>();
             }
-            catch (JsonReaderException)
+            catch (JsonReaderException e)
             {
+                Console.WriteLine(e.Message);
                 return new List<OrganTransfer>();
 
             }

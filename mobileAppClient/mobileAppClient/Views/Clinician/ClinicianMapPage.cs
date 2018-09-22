@@ -480,7 +480,8 @@ namespace mobileAppClient.Views.Clinician
 
             foreach (OrganTransfer transfer in transfers)
             {
-                AddHelicopter(new Position(transfer.startLat, transfer.startLon), new Position(transfer.endtLat, transfer.endLon), transfer.organType);
+
+                AddHelicopter(new Position(transfer.startLat, transfer.startLon), new Position(transfer.endLat, transfer.endLon), transfer.organType);
             }
         }
     }
