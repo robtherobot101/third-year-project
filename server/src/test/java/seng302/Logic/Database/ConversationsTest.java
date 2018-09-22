@@ -126,7 +126,7 @@ public class ConversationsTest extends GenericTest {
 
         List<Message> messages = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            messages.add(new Message(Integer.toString(i), (int)converser.getStaffID()));
+            messages.add(new Message(Integer.toString(i), (int)converser.getStaffID(), 0));
         }
         List<Integer> participants = new ArrayList<>();
         participants.add((int)converser.getStaffID());

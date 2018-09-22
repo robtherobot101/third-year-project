@@ -146,7 +146,7 @@ public class ConversationsController {
             return "Missing message body";
         } else {
             try {
-                Message messageToSend = new Message(request.body(), userId);
+                Message messageToSend = new Message(request.body(), userId, conversationId);
                 model.addMessage(conversationId, messageToSend);
                 sendMessageNotification(conversationId, userId, messageToSend);
                 response.status(201);

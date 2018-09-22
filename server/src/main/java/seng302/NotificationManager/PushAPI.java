@@ -79,7 +79,9 @@ public class PushAPI {
     public void sendMessage(Message message, int userAccountId) {
         // Get the ids of users in the given conversation and assign the message to their devices
         Notification n = new Notification("New Message", "You have unread messages");
-        n.addCustomData("message", message.getText());
+        for (Map.Entry<String, String> entry : message.messageMap().entrySet()) {
+            n.addCustomData(entry.getKey(), entry.getValue());
+        }
         sendNotification(n, String.valueOf(userAccountId));
     }
 
