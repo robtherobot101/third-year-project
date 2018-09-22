@@ -2,7 +2,11 @@ package seng302.data.database;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
+import org.json.JSONObject;
 import seng302.data.interfaces.GeneralDAO;
 import seng302.generic.APIResponse;
 import seng302.generic.APIServer;
@@ -220,6 +224,58 @@ public class GeneralDB implements GeneralDAO {
                 Debugger.log("Top receivers: "+organ.getTopReceivers());
             }
             return organs;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public JSONObject getPosition(String address) throws UnirestException{
+        address = address.replace(' ', '+');
+        String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=AIzaSyD7DEH6Klk3ZyduVyqbaVEyTscj4sp48PQ", address);
+        JSONObject response = new JSONObject(Unirest.get(url).asString().getBody());
+        return response;
+    }
+
+    @Override
+    public List<Hospital> getHospitals(String token) {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "hospitals");
+        if(response == null){
+            return new ArrayList<>();
+        }
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<Hospital>>() {
+            }.getType());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException{
+        JsonParser jp = new JsonParser();
+        JsonObject jsonTransfer = jp.parse(new Gson().toJson(transfer)).getAsJsonObject();
+        APIResponse response = server.postRequest(jsonTransfer, new HashMap<>(), token, "transfer");
+        if (response == null) {
+            Debugger.log(response.getStatusCode());
+        }
+        if (response.getStatusCode() != 201){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
+    @Override
+    public List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "transfer");
+        if (response == null) {
+            return new ArrayList<>();
+        }
+        if (response.getStatusCode() != 200){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        if (response.isValidJson()) {
+            List<OrganTransfer> transfers = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<OrganTransfer>>(){}.getType());
+            return transfers;
         } else {
             return new ArrayList<>();
         }

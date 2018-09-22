@@ -2,6 +2,8 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
+import seng302.Model.WaitingListItem;
+import seng302.NotificationManager.PushAPI;
 
 import java.sql.*;
 import java.time.Duration;
@@ -12,7 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class UserDonations extends DatabaseMethods {
@@ -146,6 +150,49 @@ public class UserDonations extends DatabaseMethods {
         removeAllUserDonations(userId);
         for (Organ organ : newOrgans) {
             insertDonation(organ, userId, dateOfDeath);
+        }
+
+        ////////////////////////////////////////////////////////////
+
+        List<Organ> oldDonationItems = new ArrayList<Organ>(getAllUserDonations(userId));
+        List<Organ> newDonationItems = new ArrayList<Organ>(newOrgans);
+
+
+        //Ignore all waiting list items that are already on the database and up to date
+        for (int i = oldDonationItems.size() - 1; i >= 0; i--) {
+            Organ found = null;
+            for (Organ organ : newOrgans) {
+                if (organ.equals(oldDonationItems.get(i))) {
+                    found = organ;
+                    break;
+                }
+            }
+            if (found == null) {
+                //Patch edited waiting list items
+                for (Organ newOrgan : newDonationItems) {
+                    if (newOrgan == oldDonationItems.get(i)) {
+
+                        found = newOrgan;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                newOrgans.remove(found);
+                oldDonationItems.remove(i);
+            }
+        }
+
+        //Delete all waiting list items from the database that are no longer up to date
+        for (Organ organ : oldDonationItems) {
+            removeDonationListItem(userId, organ.toString());
+        }
+
+        //Upload all new waiting list items
+        for (Organ organ : newDonationItems) {
+            insertDonation(organ, userId, new GeneralUser().getUserFromId(userId).getDateOfDeath());
+            PushAPI.getInstance().sendTextNotification(userId, "Organ added to waiting list.",
+                    Organ.capitalise(organ.toString()) + " was added to your organ waiting list.");
         }
     }
 

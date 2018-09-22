@@ -70,7 +70,7 @@ public class Server {
             post( "/login",         authorizationController::login);
             post( "/logout",        authorizationController::logout);
             post("/password",       authorizationController::checkPassword);
-            //before("/reset",        profileUtils::hasAdminAccess);
+            before("/reset",        profileUtils::hasAdminAccess);
             post( "/reset",         databaseController::reset);
             before("/resample",     profileUtils::hasAdminAccess);
             post( "/resample",      databaseController::resample);
@@ -99,6 +99,11 @@ public class Server {
                 get("/:id",         adminController::getAdmin);
                 delete("/:id",      adminController::deleteAdmin);
                 patch("/:id",       adminController::editAdmin);
+
+                path("/:id/account", () -> {
+                    before("",          profileUtils::hasAdminAccess);
+                    patch("",       clinicianController::editAccount);
+                });
             });
 
             path("/clinicians", () -> {
@@ -121,6 +126,11 @@ public class Server {
                 delete( "/:id",     clinicianController::deleteClinician);
                 patch( "/:id",      clinicianController::editClinician);
 
+                path("/:id/account", () -> {
+                    before("",          profileUtils::hasClinicianLevelAccess);
+                    patch("",       clinicianController::editAccount);
+                });
+
                 path("/:id/conversations", () -> {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.CLINICIAN));
                     get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.CLINICIAN));
@@ -130,7 +140,7 @@ public class Server {
                         before("", (request, response) -> profileUtils.hasConversationAccess(request, response, ProfileType.CLINICIAN));
                         get("", conversationsController::getSingleConversation);
                         delete("", conversationsController::removeConversation);
-                        post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.CLINICIAN));
+                        post("", (request, response) -> conversationsController.addMessage(request, response));
                         post("/user", (request, response) -> conversationsController.addConversationUser(request, response, ProfileType.CLINICIAN));
                     });
                 });
@@ -151,6 +161,11 @@ public class Server {
                 get( "/:id",       userController::getUser);
                 patch( "/:id",     userController::editUser);
                 delete( "/:id",    userController::deleteUser);
+
+                path("/:id/account", () -> {
+                    before("",                  profileUtils::hasUserLevelAccess);
+                    patch("",                   userController::editAccount);
+                });
 
                 path("/:id/photo", () -> {
                     before("",                  profileUtils::hasUserLevelAccess);
@@ -218,7 +233,7 @@ public class Server {
                     path("/:conversationId", () -> {
                         before("", (request, response) -> profileUtils.hasConversationAccess(request, response, ProfileType.USER));
                         get("", conversationsController::getSingleConversation);
-                        post("", (request, response) -> conversationsController.addMessage(request, response, ProfileType.USER));
+                        post("", (request, response) -> conversationsController.addMessage(request, response));
                     });
                 });
             });
@@ -234,8 +249,8 @@ public class Server {
             });
 
             path("/mapObjects", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
-                get("",  mapObjectController::getAllMapObjects);
+                before("",  profileUtils::hasAccessToAllUsers);
+                get("",     mapObjectController::getAllMapObjects);
             });
 
             path("/usercount", () -> {
@@ -261,6 +276,12 @@ public class Server {
 
             path("/hospitals", () -> {
                 get("", hospitalController::getHospitals);
+            });
+
+            path("/transfer",()->{
+               get("", mapObjectController::getAllTransfers);
+               post("", mapObjectController::postTransfer);
+               delete("/organId", mapObjectController::deleteOrganTransfer);
             });
         });
     }

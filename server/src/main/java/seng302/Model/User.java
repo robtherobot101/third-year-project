@@ -28,7 +28,16 @@ public class User {
     private String nhi;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "", profileImageType="";
+    private String currentAddress = "";
+    private String region = "";
+    private String city="";
+    private String country="";
+    private String homePhone="";
+    private String mobilePhone="";
+    private String username;
+    private String email;
+    private String bloodPressure = "";
+    private String profileImageType="";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -49,9 +58,8 @@ public class User {
      * @param username String the username of the user
      * @param email String the email of the user
      * @param nhi String the NHI of the user
-     * @param password String the password of the user
      */
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi, String password) {
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
         this.name[0] = firstName;
@@ -65,7 +73,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.nhi = nhi;
-        this.password = password;
         this.profileImageType = null;
         /*this.id = DataManager.getNextId(true, ProfileType.USER);*/
     }
@@ -124,7 +131,6 @@ public class User {
      * @param username String the username of the user
      * @param email String the email of the user
      * @param nhi String the NHI of the user
-     * @param password String the password of the user
      * @param cityOfDeath String of the city of death
      * @param country String of the country of residence
      * @param countryOfDeath String of the country of death
@@ -132,7 +138,7 @@ public class User {
      * @param profileImageType String of the type of profile image
      */
     public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String password, String country, String cityOfDeath,
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String country, String cityOfDeath,
                 String regionOfDeath, String countryOfDeath, String profileImageType) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
@@ -158,7 +164,69 @@ public class User {
         this.username = username;
         this.email = email;
         this.nhi = nhi;
-        this.password = password;
+        this.country = country;
+        this.id = id;
+        this.cityOfDeath = cityOfDeath;
+        this.regionOfDeath = regionOfDeath;
+        this.countryOfDeath = countryOfDeath;
+        this.currentMedications = new ArrayList<>();
+        this.historicMedications = new ArrayList<>();
+        this.waitingListItems = new ArrayList<>();
+        this.currentDiseases = new ArrayList<>();
+        this.curedDiseases = new ArrayList<>();
+        this.pendingProcedures = new ArrayList<>();
+        this.previousProcedures = new ArrayList<>();
+        this.profileImageType = profileImageType;
+    }
+
+    /**
+     * constructor method to create a user object from the database
+     * @param id int the id of the user
+     * @param firstName String the user first name
+     * @param middleNames String[] the middle names of the user
+     * @param lastName String the last name of the user
+     * @param dateOfBirth LocalDate the date of birth of the userh
+     * @param dateOfDeath LocalDate the date of death of the user
+     * @param gender String the gender of the user
+     * @param height double the height of the user
+     * @param weight double the weight of the user
+     * @param bloodType String the blood type of the user
+     * @param region String the region of the user
+     * @param currentAddress String the current address of the user
+     * @param email String the email of the user
+     * @param nhi String the NHI of the user
+     * @param cityOfDeath String of the city of death
+     * @param country String of the country of residence
+     * @param countryOfDeath String of the country of death
+     * @param regionOfDeath String of the region of death
+     * @param profileImageType String of the type of profile image
+     */
+    public User(int id, String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
+                double weight, BloodType bloodType, String region, String currentAddress, String email, String nhi, String country, String cityOfDeath,
+                String regionOfDeath, String countryOfDeath, String profileImageType) {
+        int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
+        int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
+        this.name = new String[1 + lenMiddleNames + isLastName];
+        this.name[0] = firstName;
+        if (middleNames != null) {
+            System.arraycopy(middleNames, 0, this.name, 1, lenMiddleNames);
+        }
+        if (isLastName == 1) {
+            this.name[this.name.length - 1] = lastName;
+        }
+        this.preferredName = this.name;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+        this.gender = gender;
+        this.genderIdentity = gender;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.region = region;
+        this.currentAddress = currentAddress;
+        this.creationTime = LocalDateTime.now();
+        this.email = email;
+        this.nhi = nhi;
         this.country = country;
         this.id = id;
         this.cityOfDeath = cityOfDeath;
@@ -216,10 +284,6 @@ public class User {
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public LocalDateTime getCreationTime() {
         return creationTime;
     }
@@ -238,10 +302,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public EnumSet<Organ> getOrgans() {
@@ -529,14 +589,13 @@ public class User {
                 Arrays.equals(preferredName, user.preferredName) &&
                 Objects.equals(dateOfBirth, user.dateOfBirth) &&
                 Objects.equals(username, user.username) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(password, user.password);
+                Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(dateOfBirth, id, username, email, password);
+        int result = Objects.hash(dateOfBirth, id, username, email);
         result = 31 * result + Arrays.hashCode(name);
         result = 31 * result + Arrays.hashCode(preferredName);
         return result;

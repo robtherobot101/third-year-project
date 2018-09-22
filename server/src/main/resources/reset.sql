@@ -81,6 +81,24 @@ CREATE TABLE IF NOT EXISTS `DISEASE` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `TRANSFERS`
+--
+
+DROP TABLE IF EXISTS `TRANSFERS`;
+CREATE TABLE IF NOT EXISTS `TRANSFERS` (
+  `OrganId` int(11) NOT NULL,
+  `StartLat` double NOT NULL,
+  `StartLon` double NOT NULL,
+  `EndLat` double NOT NULL,
+  `EndLon` double NOT NULL,
+  `ReceiverId` bigint(11) NOT NULL,
+  `ArrivalTime` timestamp NOT NULL,
+  `OrganType` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `DONATION_LIST_ITEM`
 --
 
@@ -350,6 +368,12 @@ ALTER TABLE `DONATION_LIST_ITEM`
   ADD KEY `User_id_foreign_key2` (`user_id`);
 
 --
+-- Indexes for table `TRANSFERS`
+--
+ALTER TABLE `TRANSFERS`
+  ADD UNIQUE KEY `OrganId` (`OrganId`);
+
+--
 -- Indexes for table `HISTORY_ITEM`
 --
 ALTER TABLE `HISTORY_ITEM`
@@ -567,6 +591,15 @@ INSERT INTO ACCOUNT(username, password) VALUES('admin', '$s0$41010$CkHTBZ9QeUBpF
 INSERT INTO ADMIN(name, work_address, region, staff_id) VALUES('default', 'default', 'default', 1);
 
 INSERT INTO TOKEN(id, token, access_level) VALUES(1, 'masterToken', 2);
+--
+-- Constraints for table `TRANSFERS`
+--
+ALTER TABLE `TRANSFERS`
+  ADD CONSTRAINT `organId` FOREIGN KEY (`OrganId`) REFERENCES `DONATION_LIST_ITEM` (`id`);
+
+--
+-- Create default clinician and admin
+--
 
 INSERT INTO ACCOUNT(username, password) VALUES('default', '$s0$41010$CkHTBZ9QeUBpFHif8lzeFA==$7oakApiF7u64QFo+DJit9q78Cfj59IZQT++r3xKS4o8=');
 

@@ -313,9 +313,8 @@ public class CommandLineInterface {
                     User insertUser = new User(nextCommand[4].replace("\"", ""), dob);
                     insertUser.setUsername(nextCommand[1]);
                     insertUser.setNhi(nextCommand[2]);
-                    insertUser.setPassword(SaltHash.createHash(nextCommand[3]));
-                    new GeneralUser().insertUser(insertUser);
-                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername()).getId());
+                    new GeneralUser().insertUser(insertUser, SaltHash.createHash(nextCommand[3]));
+                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), nextCommand[3]).getId());
                 } else {
                     return new CommandLineResponse(false, "Date of birth must not be in the future.");
                 }

@@ -1,5 +1,6 @@
 ﻿using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
+using mobileAppClient.Views.Clinician;
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -95,6 +96,7 @@ namespace mobileAppClient
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
             var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
             var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -104,6 +106,7 @@ namespace mobileAppClient
             menuList.Add(medicationsPage);
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
+            menuList.Add(messagesPage);
             menuList.Add(waitingListItemsPage);
             menuList.Add(userSettingsPage);
             menuList.Add(logoutPage);

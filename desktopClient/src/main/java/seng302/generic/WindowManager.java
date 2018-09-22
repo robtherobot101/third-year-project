@@ -28,10 +28,7 @@ import seng302.data.local.CliniciansM;
 import seng302.data.local.GeneralM;
 import seng302.data.local.UsersM;
 import seng302.gui.controllers.admin.AdminController;
-import seng302.gui.controllers.clinician.ClinicianAvailableOrgansController;
-import seng302.gui.controllers.clinician.ClinicianController;
-import seng302.gui.controllers.clinician.ClinicianSettingsController;
-import seng302.gui.controllers.clinician.ClinicianWaitingListController;
+import seng302.gui.controllers.clinician.*;
 import seng302.gui.controllers.LoginController;
 import seng302.gui.controllers.user.CreateUserController;
 import seng302.gui.controllers.user.UserController;
@@ -83,6 +80,9 @@ public class WindowManager extends Application {
     private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController;
     private static ClinicianAvailableOrgansController adminClinicianAvailableController;
 
+    private static ClinicianTransferOrgansController clinicianClinicianTransferOrgansController;
+    private static ClinicianTransferOrgansController adminClinicianTransferOrgansController;
+
     private static DataManager dataManager;
 
     public static DataManager getDataManager() {
@@ -119,10 +119,11 @@ public class WindowManager extends Application {
 
     /**
      * Creates a new user window from a clinician's view.
-     * @param user The user to create the window for
+     *
+     * @param user  The user to create the window for
      * @param token the users token
      */
-    public static void newAdminsUserWindow(User user, String token){
+    public static void newAdminsUserWindow(User user, String token) {
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
         stage.setMinHeight(WindowManager.MAIN_WINDOW_MIN_HEIGHT);
@@ -138,7 +139,7 @@ public class WindowManager extends Application {
             UserController newUserController = loader.getController();
             newUserController.setTitleBar(stage);
 
-            User latest = WindowManager.getDataManager().getUsers().getUser((int)user.getId(), token);
+            User latest = WindowManager.getDataManager().getUsers().getUser((int) user.getId(), token);
             latest = latest == null ? user : latest;
             newUserController.setCurrentUser(latest, token);
             newUserController.addHistoryEntry("Clinician opened", "A clinician opened this profile to view and/or edit information.");
@@ -160,10 +161,11 @@ public class WindowManager extends Application {
 
     /**
      * Creates a new user window from a clinician's view.
-     * @param user The user to create the window for
+     *
+     * @param user  The user to create the window for
      * @param token the users token
      */
-    public static void newCliniciansUserWindow(User user, String token){
+    public static void newCliniciansUserWindow(User user, String token) {
         Stage stage = new Stage();
         stage.getIcons().add(WindowManager.getIcon());
         stage.setMinHeight(WindowManager.MAIN_WINDOW_MIN_HEIGHT);
@@ -202,7 +204,7 @@ public class WindowManager extends Application {
      * sets the current clinician
      *
      * @param clinician the logged clinician
-     * @param token the users token
+     * @param token     the users token
      */
     public static void setCurrentClinician(Clinician clinician, String token) {
         clinicianController.setClinician(clinician, token);
@@ -216,7 +218,7 @@ public class WindowManager extends Application {
     /**
      * Set whether a menu button is selected and highlighted or not.
      *
-     * @param button The button to set
+     * @param button   The button to set
      * @param selected Whether it should be highlighted
      */
     public static void setButtonSelected(Button button, boolean selected) {
@@ -239,13 +241,15 @@ public class WindowManager extends Application {
         adminController.setAdmin(admin, token);
     }
 
-    public static Admin getCurrentAdmin() { return adminController.getAdmin(); }
+    public static Admin getCurrentAdmin() {
+        return adminController.getAdmin();
+    }
 
     /**
      * sets the current user
      *
      * @param currentUser the current user
-     * @param token the users token
+     * @param token       the users token
      */
     public static void setCurrentUser(User currentUser, String token) {
         userController.setCurrentUser(currentUser, token);
@@ -288,11 +292,23 @@ public class WindowManager extends Application {
         if (adminClinicianAvailableController.hasToken()) {
             adminClinicianAvailableController.updateOrgans();
         }
+    }
 
+    /**
+     * Calls the function which updates the transfer organs pane.
+     */
+    public static void updateTransferOrgans() {
+        if (clinicianClinicianTransferOrgansController.hasToken()) {
+            clinicianClinicianTransferOrgansController.updateOrgans();
+        }
+        if (adminClinicianTransferOrgansController.hasToken()) {
+            adminClinicianTransferOrgansController.updateOrgans();
+        }
     }
 
     /**
      * Calls for an auto refresh of the avaliable organs table after the next tick.
+     *
      * @param value the bool value. T = refresh F = no refresh
      */
     public static void updateAvailableOrgansAutoRefresh(boolean value) {
@@ -309,7 +325,7 @@ public class WindowManager extends Application {
      * sets the current clinican for account settings
      *
      * @param currentClinician the current clinician
-     * @param token the users token
+     * @param token            the users token
      */
     public static void setCurrentClinicianForAccountSettings(Clinician currentClinician, String token) {
         clinicianSettingsController.setCurrentClinician(currentClinician, token);
@@ -326,6 +342,7 @@ public class WindowManager extends Application {
 
     /**
      * sets the create user controller
+     *
      * @param createUserController the current create user controller
      */
     public static void setCreateUserController(CreateUserController createUserController) {
@@ -334,6 +351,7 @@ public class WindowManager extends Application {
 
     /**
      * sets the clinician settings controller
+     *
      * @param clinicianSettingsController the current clinician settings controller
      */
     public static void setClinicianAccountSettingsController(ClinicianSettingsController clinicianSettingsController) {
@@ -342,6 +360,7 @@ public class WindowManager extends Application {
 
     /**
      * sets the clinician waiting list controller
+     *
      * @param clinicianWaitingListController the current clinician waiting list controller
      */
     public static void setTransplantWaitingListController(ClinicianWaitingListController clinicianWaitingListController) {
@@ -360,8 +379,18 @@ public class WindowManager extends Application {
         }
     }
 
+    public static void setClinicianTransferOrgansController(ClinicianTransferOrgansController clinicianTransferOrgansController) {
+        if (scenes.get(TFScene.clinician) == null) {
+            WindowManager.clinicianClinicianTransferOrgansController = clinicianTransferOrgansController;
+        } else {
+            WindowManager.adminClinicianTransferOrgansController = clinicianTransferOrgansController;
+        }
+    }
+
+
     /**
      * sets the clinician controller
+     *
      * @param clinicianController the current clinician controller
      */
     public static void setClinicianController(ClinicianController clinicianController) {
@@ -370,6 +399,7 @@ public class WindowManager extends Application {
 
     /**
      * sets the admin controller
+     *
      * @param adminController the current admin controller
      */
     public static void setAdminController(AdminController adminController) {
@@ -394,8 +424,9 @@ public class WindowManager extends Application {
 
     /**
      * show the dialog for deregistering a waiting list item
+     *
      * @param waitingListItem the waiting list item to deregister
-     * @param user the user
+     * @param user            the user
      */
     public static void showDeregisterDialog(WaitingListItem waitingListItem, User user) {
         clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem, user);
@@ -406,7 +437,7 @@ public class WindowManager extends Application {
     }
 
     public static void closeAllChildren() {
-        for (Stage stage: cliniciansUserWindows.keySet()) {
+        for (Stage stage : cliniciansUserWindows.keySet()) {
             stage.close();
         }
         cliniciansUserWindows.clear();
@@ -452,12 +483,14 @@ public class WindowManager extends Application {
      * @param e Exception?
      */
     private static void showError(Thread t, Throwable e) {
-        Debugger.log("Non-critical error caught, probably platform dependent.");
-        Debugger.error(e.getMessage());
-        if (Platform.isFxApplicationThread()) {
-            Debugger.error(e.getLocalizedMessage());
-        } else {
-            Debugger.error("An unexpected error occurred in " + t);
+        try {
+            Debugger.log("Non-critical error caught, probably platform dependent.");
+            if (Platform.isFxApplicationThread()) {
+                Debugger.error(e.getLocalizedMessage());
+            } else {
+                Debugger.error("An unexpected error occurred in " + t);
+            }
+        } catch (Exception ignored) {
         }
     }
 
@@ -472,35 +505,38 @@ public class WindowManager extends Application {
 
     /**
      * Creates an internal, non-persistant DataManager (For testing and debugging)
+     *
      * @return A new DataManager instance
      */
     public DataManager createLocalDataManager() {
         UsersDAO users = new UsersM();
         CliniciansDAO clinicians = new CliniciansM();
         AdminsDAO admins = new AdminsM();
-        GeneralDAO general = new GeneralM(users,clinicians,admins);
-        return new DataManager(users,clinicians,admins,general);
+        GeneralDAO general = new GeneralM(users, clinicians, admins);
+        return new DataManager(users, clinicians, admins, general);
     }
 
     /**
      * Creates a standard DataManager which manipulates the database via the API server.
+     *
      * @return A new DataManager instance
      */
     private DataManager createDatabaseDataManager() {
         String serverAddress = (String) config.get("server");
-        if(testing) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
+        if (testing) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
 
         APIServer server = new APIServer(serverAddress);
         UsersDAO users = new UsersDB(server);
         CliniciansDAO clinicians = new CliniciansDB(server);
         AdminsDAO admins = new AdminsDB(server);
         GeneralDAO general = new GeneralDB(server);
-        return new DataManager(users,clinicians,admins,general);
+        return new DataManager(users, clinicians, admins, general);
     }
 
 
     /**
      * checks the connection to the server.
+     *
      * @return returns true if can connect to the server, otherwise false
      */
     private boolean checkConnection() {
@@ -539,7 +575,7 @@ public class WindowManager extends Application {
         dataManager = createDatabaseDataManager();
         //dataManager = createLocalDataManager();
 
-        Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
+        //Thread.setDefaultUncaughtExceptionHandler(WindowManager::showError);
         WindowManager.stage = stage;
         stage.setTitle("Transplant Finder");
         stage.setOnHiding(closeAllWindows -> {
@@ -607,13 +643,14 @@ public class WindowManager extends Application {
     /**
      * Sets up a drug interaction cache
      */
-    private void setupDrugInteractionCache(){
+    private void setupDrugInteractionCache() {
         Cache cache = IO.importCache(getJarPath() + File.separatorChar + "interactions.json");
         InteractionApi.setCache(cache);
     }
 
     /**
      * resets the scene
+     *
      * @param scene the scene to reset
      */
     public static void resetScene(TFScene scene) {
