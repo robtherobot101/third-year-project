@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:mobileAppClient"
+             x:Class="mobileAppClient.Views.UserSettings.AccountSettingsPage"
+             Title="Photo"
+             xmlns:controls="clr-namespace:Plugin.CrossPlatformTintedImage.Abstractions;assembly=Plugin.CrossPlatformTintedImage.Abstractions">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <TableView Intent="Menu" HasUnevenRows="true" x:Name="Table">
+                <TableRoot>
+                    <TableSection>
+                        <EntryCell Label="Username" x:Name="UsernameEntry"/>
+                        <EntryCell Label="Email" x:Name="EmailEntry"/>
+
+                        <ViewCell Tapped="Handle_ChangePasswordTapped" x:Name="ChangePasswordMenuItemViewCell">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                                <Label Text="Change Password" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
+                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
+                            </StackLayout>
+                        </ViewCell>
+                        
+                        <ViewCell x:Name="PasswordChangeViewCell">
+                            <StackLayout Orientation="Vertical">
+                                <Entry x:Name="passwordInput" Placeholder="Password" IsPassword="true"/>
+                                <Entry x:Name="confirmPasswordInput" Placeholder="Confirm Password" IsPassword="true"/>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell>
+                            <Button Text="Confirm" x:Name="passwordChangeConfirm" Clicked="Handle_ConfirmButtonClicked"/>
+                        </ViewCell>
+
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+
+            <TableView Intent="Menu" HasUnevenRows="false" IsVisible="False">
+                <TableRoot>
+                    <TableSection>
+                        <TextCell x:Name="dummyCell"/>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

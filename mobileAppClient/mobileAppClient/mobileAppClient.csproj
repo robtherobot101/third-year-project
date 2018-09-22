@@ -7,6 +7,11 @@
     <StartupObject />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Fragments\**" />
     <Compile Remove="NewFolder1\**" />
@@ -79,6 +84,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\ClincianSettings\ClinicianSettings.xaml.cs">
+      <DependentUpon>ClinicianSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Clinician\AttributesPageClinician.xaml.cs">
       <DependentUpon>AttributesPageClinician.xaml</DependentUpon>
     </Compile>
@@ -90,6 +98,9 @@
     </Compile>
     <Compile Update="Views\Login\GooglePage.xaml.cs">
       <DependentUpon>GooglePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UserSettings\AccountSettingsPage.xaml.cs">
+      <DependentUpon>AccountSettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\User\LivesSavedPage.xaml.cs">
       <DependentUpon>LivesSavedPage.xaml</DependentUpon>
@@ -142,6 +153,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Clinician\TransplantListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UserSettings\AccountSettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

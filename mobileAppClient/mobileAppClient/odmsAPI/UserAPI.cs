@@ -550,5 +550,29 @@ namespace mobileAppClient.odmsAPI
                 return null;
             }
         }
+
+        public async Task<HttpStatusCode> updateAccountSettings(User user, string token)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            Newtonsoft.Json.Linq.JObject o = Newtonsoft.Json.Linq.JObject.FromObject(new
+            {
+                username = user.username,
+                password = user.password,
+                email = user.email
+            });
+
+            String itemRequestBody = JsonConvert.SerializeObject(o);
+            HttpContent body = new StringContent(itemRequestBody);
+
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/users/" + user.id + "/account" );
+            request.Content = body;
+
+            request.Headers.Add("token", token);
+
+            var response = await client.SendAsync(request);
+            return response.StatusCode;
+        }
     }
 }

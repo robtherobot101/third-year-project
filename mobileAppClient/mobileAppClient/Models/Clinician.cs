@@ -13,5 +13,6 @@ namespace mobileAppClient.Models
         public string password { get; set; }
         public long staffID { get; set; }
         public string accountType { get; set; }
+
     }
 }

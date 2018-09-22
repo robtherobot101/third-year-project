@@ -507,4 +507,10 @@
     <BundleResource Include="Resources\helicopter_liver_icon.png" />
     <BundleResource Include="Resources\viewing_user_photo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\facebook_cell_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\google_cell_icon.png" />
+  </ItemGroup>
 </Project>

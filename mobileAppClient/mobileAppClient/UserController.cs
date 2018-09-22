@@ -28,6 +28,8 @@ namespace mobileAppClient
         private static readonly Lazy<UserController> lazy =
         new Lazy<UserController>(() => new UserController());
 
+        public bool isTestMode;
+
         public static UserController Instance { get { return lazy.Value; } }
 
         /*
