@@ -19,6 +19,11 @@ namespace mobileAppClient.Models
         public string externalName { get; set; }
         public Dictionary<int, string> memberNames { get; set; }
 
+        public string lastMessage
+        {
+            get { return messages.Count > 0 ? messages.Last().text : ""; }
+        }
+
         public void getParticipantNames(int localId)
         {
             // Gets the complement of the members list in respect to the local id -> the external participants id

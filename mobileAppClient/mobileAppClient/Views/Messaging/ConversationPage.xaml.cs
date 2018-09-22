@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using mobileAppClient.Models;
 using Xamarin.Forms;
@@ -24,6 +25,8 @@ namespace mobileAppClient
 	    private Conversation conversation;
         private CustomObservableCollection<Message> conversationMessages;
 
+	    private Timer t;
+
 		public ConversationPage(Conversation conversationToDisplay, int localId)
 		{
 			InitializeComponent();
@@ -40,7 +43,29 @@ namespace mobileAppClient
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
             populateMessages();
+
+            StartTimer(4000);
         }
+
+	    private void StartTimer(int interval)
+	    {
+            t = new Timer(timerTick, null, 100, interval);
+	    }
+
+	    public async void timerTick(object o)
+	    {
+	        Tuple<HttpStatusCode, Conversation> refreshedConversation = await new MessagingAPI().GetConversation(localId, conversation.id, isClinicianAccessing);
+	        if (refreshedConversation.Item1 == HttpStatusCode.OK)
+	        {
+	            conversation = refreshedConversation.Item2;
+                populateMessages();
+	        }
+	    }
+
+	    protected async override void OnDisappearing()
+	    {
+	        t.Dispose();
+	    }
 
 
 
@@ -68,6 +93,7 @@ namespace mobileAppClient
 
         private void populateMessages()
         {
+            conversationMessages.Clear();
             foreach (Message currentMessage in conversation.messages)
             {
                 currentMessage.SetType(localId);
@@ -108,6 +134,8 @@ namespace mobileAppClient
             conversationMessages.Add(newMessage);
             MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
+
+
 	    }
 	}
 }

@@ -29,5 +29,17 @@ namespace mobileAppClient
             return dt;
         }
 
+        /*
+         * Method to convert a CustomDate to a C# DateTime variable with the
+         * given day, month and year, hours, minutes and seconds.
+        */
+        public DateTime ToDateTimeWithSeconds()
+        {
+            String rawDate = String.Format("{0}/{1}/{2}/{3}/{4}/{5}", this.date.day, this.date.month, this.date.year, this.time.hour, this.time.minute, this.time.second);
+            DateTime dt = DateTime.ParseExact(rawDate, "d/M/yyyy/H/m/s", CultureInfo.InvariantCulture);
+
+            return dt;
+        }
+
     }
 }

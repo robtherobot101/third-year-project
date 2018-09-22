@@ -8,7 +8,7 @@
                   ItemTapped="Handle_Conversation_Tapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding externalName}"/>
+                    <TextCell Text="{Binding externalName}" Detail="{Binding lastMessage}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

@@ -17,7 +17,7 @@ namespace mobileAppClient
         [JsonIgnore]
         public DateTime timestampDateTime
         {
-            get { return timestamp.ToDateTime(); }
+            get { return timestamp.ToDateTimeWithSeconds(); }
         }
 
         public void SetType(int readersAccountID)

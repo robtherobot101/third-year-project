@@ -61,8 +61,8 @@ namespace mobileAppClient
         /// </summary>
         protected override async void OnAppearing()
         {
-            IsLoading = true;
             conversationList.Clear();
+            IsLoading = true;
             if (isClinicianAccessing)
             {
                 localClinician = ClinicianController.Instance.LoggedInClinician;
@@ -79,9 +79,9 @@ namespace mobileAppClient
         }
 
         /// <summary>
-            /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
-            /// </summary>
-            private void CheckIfClinicianAccessing()
+        /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
+        /// </summary>
+        private void CheckIfClinicianAccessing()
         {
             if (ClinicianController.Instance.isLoggedIn())
             {
