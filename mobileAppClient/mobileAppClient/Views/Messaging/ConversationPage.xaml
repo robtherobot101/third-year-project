@@ -35,7 +35,6 @@
                        Placeholder="Message"
                        Grid.Row="0" 
                        Grid.Column="0"
-                       Completed="Handle_SendMessage"
                        AutoSize="TextChanges"
                        />
                 <Label Text="Send"

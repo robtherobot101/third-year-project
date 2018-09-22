@@ -15,7 +15,7 @@
 
         </Grid.RowDefinitions>
         <Frame Grid.Row="0" OutlineColor="Transparent" HasShadow="False" Grid.Column="1" BackgroundColor="#03A9F4">
-  <Label TextColor="White" Text="{Binding Text}" />
+  <Label TextColor="White" Text="{Binding text}" />
 </Frame>
         <Label FontSize="Micro" Grid.Row="1" Grid.Column="1" Text="{Binding timestampDateTime, StringFormat='{0:MM/dd/yyyy hh:mm tt}'}" TextColor="Gray"></Label>  
 </Grid>

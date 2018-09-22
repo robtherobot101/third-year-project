@@ -21,33 +21,29 @@ public class Conversations {
      * @throws SQLException If database interaction fails
      */
     public List<Conversation> getAllConversations(int id, ProfileType profileType) throws SQLException {
-        List<Conversation> conversations = null;
+        List<Conversation> conversations = new ArrayList<>();
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
             ResultSet resultSet = null;
 
             try {
-                statement = connection.prepareStatement("SELECT conversation_id FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ?");
+                statement = connection.prepareStatement("SELECT conversation_id FROM CONVERSATION_MEMBER WHERE user_id = ?");
                 statement.setInt(1, id);
-                statement.setInt(2, profileType.getAccessLevel());
                 resultSet = statement.executeQuery();
 
-                conversations = new ArrayList<>();
                 while (resultSet.next()) {
                     conversations.add(getSingleConversation(resultSet.getInt(1)));
                 }
             } catch (SQLException ignored) {
+                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
             }
         }
-        if (conversations == null) {
-            throw new SQLException("Unable to fetch conversations");
-        } else {
-            return conversations;
-        }
+        return conversations;
     }
+
 
     /**
      * Gets a single conversation from the database.
@@ -72,8 +68,7 @@ public class Conversations {
                             resultSet.getInt("id"),
                             resultSet.getString("text"),
                             resultSet.getTimestamp("date_time").toLocalDateTime(),
-                            resultSet.getInt("user_id"),
-                            resultSet.getInt("access_level")));
+                            resultSet.getInt("user_id")));
                 }
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -88,6 +83,7 @@ public class Conversations {
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException ignored) {
+                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -150,7 +146,7 @@ public class Conversations {
     /**
      * Adds a new conversation to the database.
      *
-     * @param participants The ids and access levels of all participants
+     * @param participants The ids of all participants
      * @throws SQLException If database interaction fails
      */
     public int addConversation(List<Integer> participants) throws SQLException {

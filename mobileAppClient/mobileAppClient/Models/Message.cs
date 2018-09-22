@@ -22,7 +22,7 @@ namespace mobileAppClient
 
         public void SetType(int readersAccountID)
         {
-            if (readersAccountID == this.id)
+            if (readersAccountID == this.userId)
             {
                 this.messageType = MessageType.Outgoing;
             }
