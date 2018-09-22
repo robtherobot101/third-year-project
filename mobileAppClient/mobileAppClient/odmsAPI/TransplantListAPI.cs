@@ -152,5 +152,81 @@ namespace mobileAppClient.odmsAPI
 
             }
         }
+
+        private async void DeleteTransfer(int id)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            var request = new HttpRequestMessage(new HttpMethod("Delete"), url + "/transfer/" + id);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            var response = await client.SendAsync(request);
+        }
+
+        private async void DeleteWaitingListItem(int userId, int id)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            var request = new HttpRequestMessage(new HttpMethod("Delete"), url + "/" + userId + "/waitingListItems/" + id);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            var response = await client.SendAsync(request);
+        }
+
+        private async void SetInTransfer(int organId)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            var request = new HttpRequestMessage(new HttpMethod("patch"), url + "/organs/" + organId);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            var response = await client.SendAsync(request);
+        }
+
+        public async Task<HttpStatusCode> InsertTransfer(OrganTransfer transfer)
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            //Create the request with token as a header
+            String uploadTransfer = JsonConvert.SerializeObject(transfer);
+            HttpContent body = new StringContent(uploadTransfer);
+
+            var request = new HttpRequestMessage(new HttpMethod("POST"), url + "/transfer");
+            request.Content = body;
+            request.Headers.Add("token", UserController.Instance.AuthToken);
+
+            try
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    Console.WriteLine("Success on uploading transfer");
+                    return HttpStatusCode.OK;
+                }
+                else
+                {
+                    Console.WriteLine(String.Format("Failed to upload transfer ({0})", response.StatusCode));
+                    return response.StatusCode;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+        }
     }
 }

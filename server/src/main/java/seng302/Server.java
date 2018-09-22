@@ -253,10 +253,11 @@ public class Server {
             });
 
             path("/organs", () -> {
-                get("",     organsController::queryOrgans);
-                post("",    organsController::insertOrgan);
-                delete("",  organsController::removeOrgan);
-                patch("",   organsController::updateOrgan);
+                get("",         organsController::queryOrgans);
+                post("",        organsController::insertOrgan);
+                delete("",      organsController::removeOrgan);
+                patch("",       organsController::updateOrgan);
+                patch("/:id",   organsController::setInTransfer);
             });
 
             path("/hospitals", () -> {
@@ -266,7 +267,7 @@ public class Server {
             path("/transfer",()->{
                get("", mapObjectController::getAllTransfers);
                post("", mapObjectController::postTransfer);
-               delete("/organId", mapObjectController::deleteOrganTransfer);
+               delete("/:organId", mapObjectController::deleteOrganTransfer);
             });
         });
     }

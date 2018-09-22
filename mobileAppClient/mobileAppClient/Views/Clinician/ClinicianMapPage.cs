@@ -395,7 +395,7 @@ namespace mobileAppClient.Views.Clinician
         public void StartTimer(int interval)
         {
             // TODO change '5000' to '0' when transferring is correctly implemented (is delay between timer started + timer actually starting to call tick method)
-            Timer t = new Timer(RefreshHelipcopterPositions, null, 5000, interval);
+            Timer t = new Timer(RefreshHelipcopterPositions, null, 0, interval);
         }
 
         /// <summary>

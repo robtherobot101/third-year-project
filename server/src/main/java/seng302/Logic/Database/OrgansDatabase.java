@@ -170,4 +170,24 @@ public class OrgansDatabase extends DatabaseMethods {
                 organResultSet.getInt("id"),
                 expired);
     }
+
+    /**
+     * sets a donatable organ's inTransfer field to 1
+     * @param organId the donatable organ to change
+     * @throws SQLException throws if cannot reach the database
+     */
+    public void inTransfer(int organId) throws SQLException{
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE DONATION_LIST_ITEM SET inTransfer = 1 WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, organId);
+
+            statement.executeUpdate();
+
+            System.out.println("Update of Organ with id = " + organId + " set inTransfer to 1");
+        } finally {
+            close(statement);
+        }
+    }
 }

@@ -166,4 +166,17 @@ public class OrgansController {
         }
     }
 
+    public String setInTransfer(Request request, Response response) {
+        int organId = Integer.parseInt(request.params(":id"));
+        try {
+            model.inTransfer(organId);
+            response.status(201);
+            return "ORGAN  " + organId + " SET IN TRANSFER";
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+    }
+
 }
