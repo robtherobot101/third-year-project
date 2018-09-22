@@ -71,7 +71,7 @@ namespace mobileAppClient.iOS
             } else {
                 potentialRecipientsTableView.Hidden = false;
                 potentialRecipientsLabel.Text = "Potential Recipients:";
-                potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan);
+                potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan, map, customPin);
                 potentialRecipientsTableView.ScrollEnabled = true;
             }
 

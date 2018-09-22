@@ -133,7 +133,7 @@ namespace mobileAppClient.Views.Clinician
 
             await InitialiseHospitals();
 
-            //StartTransfers();
+            StartTransfers();
 
             //AddTestHelicopter();
             //AddTest2Helicopter();
@@ -357,7 +357,7 @@ namespace mobileAppClient.Views.Clinician
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="organToTransferType"></param>
-	    private void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds)
+	    public void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds)
 	    {
             // Iterate the unique helicopter identifier (is used as a dict key in the map renderer)
 	        string heliID = (++heliCount).ToString();
@@ -464,7 +464,7 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private async void StartTransfers()
+        public async void StartTransfers()
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             List<OrganTransfer> transfers = await transplantListAPI.GetAllTransfers();
@@ -503,6 +503,32 @@ namespace mobileAppClient.Views.Clinician
             double currentLon = ((transfer.endLon * degToRad - distanceLon + Math.PI) % (2 * Math.PI)) - Math.PI;
 
             return new Position(currentLat / degToRad, currentLon / degToRad);
+        }
+
+        public void NewTransfer(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition) {
+            OrganTransfer newOrganTransfer = new OrganTransfer();
+            newOrganTransfer.organId = currentOrgan.id;
+            newOrganTransfer.receiverId = selectedRecipient.id;
+
+            //Find the position of the donor
+            newOrganTransfer.startLat = donorPosition.Latitude;
+            newOrganTransfer.startLon = donorPosition.Longitude;
+
+            Hospital receiverHospital = null;
+            foreach(Hospital hospital in hospitals) {
+                if(hospital.region.Equals(selectedRecipient.region)) {
+                    receiverHospital = hospital;
+                }
+            }
+
+            //Find the nearest hospital
+            newOrganTransfer.endLat = receiverHospital.latitude;
+            newOrganTransfer.endLon = receiverHospital.longitude;
+
+            newOrganTransfer.organType = OrganExtensions.ToOrgan(currentOrgan.organType);
+
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            //transplantListAPI;
         }
     }
 }
