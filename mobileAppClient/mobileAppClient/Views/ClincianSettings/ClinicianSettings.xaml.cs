@@ -41,7 +41,6 @@ namespace mobileAppClient
                     UserController.Instance.LoggedInUser.password = passwordInput.Text;
                 }
                 UserController.Instance.LoggedInUser.username = UsernameEntry.Text;
-                UserController.Instance.LoggedInUser.email = EmailEntry.Text;
                 HttpStatusCode status = await new UserAPI().updateAccountSettings(UserController.Instance.LoggedInUser, UserController.Instance.AuthToken);
 
                 switch (status)
