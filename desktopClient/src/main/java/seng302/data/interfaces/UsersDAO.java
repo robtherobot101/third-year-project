@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface UsersDAO {
-    int getUserId(String username, String token) throws HttpResponseException;
 
     void insertUser(User user) throws HttpResponseException;
 
@@ -33,4 +32,6 @@ public interface UsersDAO {
     void removeUser(long id, String token) throws HttpResponseException;
 
     int count(String token) throws HttpResponseException;
+
+    void updateAccount(long id, String username, String email, String password, String token) throws HttpResponseException;
 }
