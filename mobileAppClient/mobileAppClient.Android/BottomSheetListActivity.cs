@@ -13,13 +13,14 @@ using Android.Support.V7.App;
 using Android.Graphics.Drawables;
 using Android.Graphics;
 using Android.Support.V4.Graphics.Drawable;
+using ServiceStack;
 
 namespace mobileAppClient.Droid
 {
     [Activity]
     public class BottomSheetListActivity : AppCompatActivity
     {
-
+        List<DonatableOrgan> organs;
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -67,57 +68,58 @@ namespace mobileAppClient.Droid
 
             var organString = Intent.GetStringExtra("organs");
 
-            var organs = organString.Split(',');
-            var id = organs[organs.Length];
-            foreach (var organ in organs)
+            organs = organString.FromJson<List<DonatableOrgan>>();
+            
+            foreach (DonatableOrgan organ in organs)
             {
                 TableRow organRow = new TableRow(this);
                 TextView organText = new TextView(this);
                 ImageView organImage = new ImageView(this);
+                String organName = organ.organType;
 
-                switch (organ)
+                switch (organ.organType.ToLower())
                 {
-                    case "bone_icon.png":
+                    case "bone-marrow":
                         organImage.SetImageResource(Resource.Drawable.bone_icon);
                         organText.Text = "Bone Marrow";
                         break;
-                    case "ear_icon.png":
+                    case "middle-ear":
                         organImage.SetImageResource(Resource.Drawable.ear_icon);
                         organText.Text = "Middle Ear";
                         break;
-                    case "eye_icon.png":
+                    case "cornea":
                         organImage.SetImageResource(Resource.Drawable.eye_icon);
                         organText.Text = "Cornea";
                         break;
-                    case "heart_icon.png":
+                    case "heart":
                         organImage.SetImageResource(Resource.Drawable.heart_icon);
                         organText.Text = "Heart";
                         break;
-                    case "intestines_icon.png":
+                    case "intestines":
                         organImage.SetImageResource(Resource.Drawable.intestines_icon);
                         organText.Text = "Intestines";
                         break;
-                    case "kidney_icon.png":
+                    case "kidney":
                         organImage.SetImageResource(Resource.Drawable.kidney_icon);
                         organText.Text = "Kidney";
                         break;
-                    case "liver_icon.png":
+                    case "liver":
                         organImage.SetImageResource(Resource.Drawable.liver_icon);
                         organText.Text = "Liver";
                         break;
-                    case "lungs_icon.png":
+                    case "lungs":
                         organImage.SetImageResource(Resource.Drawable.lungs_icon);
                         organText.Text = "Lungs";
                         break;
-                    case "pancreas_icon.png":
+                    case "pancreas":
                         organImage.SetImageResource(Resource.Drawable.pancreas_icon);
                         organText.Text = "Pancreas";
                         break;
-                    case "skin_icon.png":
+                    case "skin":
                         organImage.SetImageResource(Resource.Drawable.skin_icon);
                         organText.Text = "Skin";
                         break;
-                    case "tissue_icon.png":
+                    case "connective-tissue":
                         organImage.SetImageResource(Resource.Drawable.tissue_icon);
                         organText.Text = "Connective Tissue";
                         break;
@@ -128,10 +130,10 @@ namespace mobileAppClient.Droid
                 organImage.SetMaxHeight(80);
                 organImage.SetMaxWidth(80);
                 organImage.SetPadding(5, 0, 20, 0);
-                organRow.Click += (sender, e) =>
-                {
-                    transferOrgan(id, organString, organTable.IndexOfChild(organRow));
-                };
+               // organRow.Click += (sender, e) =>
+               // {
+              //      transferOrgan(organs, organName, organTable.IndexOfChild(organRow));
+              //  };
                 
 
                 organRow.AddView(organImage);
@@ -143,15 +145,31 @@ namespace mobileAppClient.Droid
 
         }
 
-        public void transferOrgan(String userId, String Organ, int Index)
+        private void transferOrgan(List<DonatableOrgan> organs, String organName, int index)
         {
             var organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
             TableLayout recipientTable = new TableLayout(this);
             //Get list of recipients
-
             //Iterate and create rows for each
 
-            organTable.AddView(recipientTable, Index);
+            foreach(DonatableOrgan organ in organs)
+            {
+                if (organName.Equals(organ.organType))
+                {
+                    foreach (User recipient in organ.topReceivers)
+                    {
+                        TableRow recipientRow = new TableRow(this);
+                        TextView recipientName = new TextView(this);
+
+                        recipientName.Text = recipient.FullName;
+
+                        recipientRow.AddView(recipientName);
+                    }
+                }
+            }
+
+            //Uncommenting causes the tableview not to display proper
+            //organTable.AddView(recipientTable, index);
         }
 
     }

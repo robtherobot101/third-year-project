@@ -15,10 +15,13 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
 
 using mobileAppClient.Views.Clinician;
-using Cheesebaron.SlidingUpPanel;
+using ServiceStack;
+using ServiceStack.Text;
 using Resource = mobileAppClient.Droid.Resource;
 using Plugin.CurrentActivity;
 using CustomPin = mobileAppClient.CustomPin;
+using Android.App;
+using Android.OS;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -297,11 +300,13 @@ namespace CustomRenderer.Droid
             Android.Views.View altRoot = mainActivity.Window.DecorView.FindViewById(Android.Resource.Id.Content);
             Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
 
+            String organString = customPin.donatableOrgans.ToJson();
+            
             Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
             intent.PutExtra("name", customPin.Label);
             intent.PutExtra("address", customPin.Address);
             intent.PutExtra("profilePicture", customPin.userPhoto);
-            intent.PutExtra("organs", customPin.Url);
+            intent.PutExtra("organs", organString);
             mainActivity.StartActivity(intent);
         }
 
@@ -461,43 +466,44 @@ namespace CustomRenderer.Droid
                 }
                 if (organFrame != null)
                 {
-                    var organs = customPin.Url.Split(',');
-                    foreach (var organ in organs)
+                    
+                    
+                    foreach (DonatableOrgan organ in customPin.donatableOrgans)
                     {
                         var organImage = new ImageView(Context.ApplicationContext);
-                        switch (organ)
+                        switch (organ.organType.ToLower())
                         {
-                            case "bone-marrow_icon.png":
+                            case "bone-marrow":
                                 organImage.SetImageResource(Resource.Drawable.bone_icon);
                                 break;
-                            case "middle-ear_icon.png":
+                            case "middle-ear":
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
-                            case "cornea_icon.png":
+                            case "cornea":
                                 organImage.SetImageResource(Resource.Drawable.eye_icon);
                                 break;
-                            case "heart_icon.png":
+                            case "heart":
                                 organImage.SetImageResource(Resource.Drawable.heart_icon);
                                 break;
-                            case "intestine_icon.png":
+                            case "intestine":
                                 organImage.SetImageResource(Resource.Drawable.intestines_icon);
                                 break;
-                            case "kidney_icon.png":
+                            case "kidney":
                                 organImage.SetImageResource(Resource.Drawable.kidney_icon);
                                 break;
-                            case "liver_icon.png":
+                            case "liver":
                                 organImage.SetImageResource(Resource.Drawable.liver_icon);
                                 break;
-                            case "lung_icon.png":
+                            case "lung":
                                 organImage.SetImageResource(Resource.Drawable.lungs_icon);
                                 break;
-                            case "pancreas_icon.png":
+                            case "pancreas":
                                 organImage.SetImageResource(Resource.Drawable.pancreas_icon);
                                 break;
-                            case "skin_icon.png":
+                            case "skin":
                                 organImage.SetImageResource(Resource.Drawable.skin_icon);
                                 break;
-                            case "connective-tissue_icon.png":
+                            case "connective-tissue":
                                 organImage.SetImageResource(Resource.Drawable.tissue_icon);
                                 break;
                         }
