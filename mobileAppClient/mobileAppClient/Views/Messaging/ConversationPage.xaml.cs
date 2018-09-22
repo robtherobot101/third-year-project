@@ -57,6 +57,12 @@ namespace mobileAppClient
             }
         }
 
+        public void messageReceived(Message message)
+        {
+            message.SetType(localId);
+            conversationMessages.Add(message);
+        }
+
         /// <summary>
         /// Handles the sending of a message
         /// </summary>
