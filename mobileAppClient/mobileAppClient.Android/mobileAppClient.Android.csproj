@@ -140,6 +140,9 @@
     <PackageReference Include="Xamarin.Forms">
       <Version>3.2.0.637442-pre1</Version>
     </PackageReference>
+    <PackageReference Include="SlideOverKit">
+      <Version>2.1.6.2</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms.Maps">
       <Version>3.2.0.839982</Version>
     </PackageReference>
@@ -148,6 +151,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BottomSheetFragment.cs" />
+    <Compile Include="BottomSheetListActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Messaging\AndrConvoViewController.cs" />
     <Compile Include="Messaging\AndrMessageArrayAdapter.cs" />
@@ -156,6 +161,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AndroidCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
+    <Compile Include="MapActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -399,6 +405,51 @@
     <AndroidResource Include="Resources\drawable\default_clinician_photo.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\default_user_photo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\BottomSheet.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\hospital_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_heart_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_lung_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_intestine_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_cornea_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_ear_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_skin_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_bone_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_kidney_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_liver_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_tissue_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\helicopter_pancreas_icon.png" />
     <AndroidResource Include="Resources\drawable\viewing_user_photo.png" />
   </ItemGroup>
   <ItemGroup>
