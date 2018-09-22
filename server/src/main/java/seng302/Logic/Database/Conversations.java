@@ -113,7 +113,6 @@ public class Conversations {
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException ignored) {
-                ignored.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
