@@ -28,10 +28,7 @@ import seng302.data.local.CliniciansM;
 import seng302.data.local.GeneralM;
 import seng302.data.local.UsersM;
 import seng302.gui.controllers.admin.AdminController;
-import seng302.gui.controllers.clinician.ClinicianAvailableOrgansController;
-import seng302.gui.controllers.clinician.ClinicianController;
-import seng302.gui.controllers.clinician.ClinicianSettingsController;
-import seng302.gui.controllers.clinician.ClinicianWaitingListController;
+import seng302.gui.controllers.clinician.*;
 import seng302.gui.controllers.LoginController;
 import seng302.gui.controllers.user.CreateUserController;
 import seng302.gui.controllers.user.UserController;
@@ -82,6 +79,9 @@ public class WindowManager extends Application {
     private static ClinicianWaitingListController adminClinicianWaitingListController;
     private static ClinicianAvailableOrgansController clinicianClinicianAvailableOrgansController;
     private static ClinicianAvailableOrgansController adminClinicianAvailableController;
+
+    private static ClinicianTransferOrgansController clinicianClinicianTransferOrgansController;
+    private static ClinicianTransferOrgansController adminClinicianTransferOrgansController;
 
     private static DataManager dataManager;
 
@@ -288,7 +288,18 @@ public class WindowManager extends Application {
         if (adminClinicianAvailableController.hasToken()) {
             adminClinicianAvailableController.updateOrgans();
         }
+    }
 
+    /**
+     * Calls the function which updates the transfer organs pane.
+     */
+    public static void updateTransferOrgans() {
+        if (clinicianClinicianTransferOrgansController.hasToken()) {
+            clinicianClinicianTransferOrgansController.updateOrgans();
+        }
+        if (adminClinicianTransferOrgansController.hasToken()) {
+            adminClinicianTransferOrgansController.updateOrgans();
+        }
     }
 
     /**
@@ -359,6 +370,15 @@ public class WindowManager extends Application {
             WindowManager.adminClinicianAvailableController = clinicianAvailableOrgansController;
         }
     }
+
+    public static void setClinicianTransferOrgansController(ClinicianTransferOrgansController clinicianTransferOrgansController) {
+        if (scenes.get(TFScene.clinician) == null) {
+            WindowManager.clinicianClinicianTransferOrgansController = clinicianTransferOrgansController;
+        } else {
+            WindowManager.adminClinicianTransferOrgansController = clinicianTransferOrgansController;
+        }
+    }
+
 
     /**
      * sets the clinician controller
