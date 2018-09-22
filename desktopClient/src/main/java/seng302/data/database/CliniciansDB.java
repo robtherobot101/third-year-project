@@ -56,6 +56,30 @@ public class CliniciansDB implements CliniciansDAO {
     }
 
     /**
+     * Updates a clinician's username, email and password
+     * @param id The id of the clinician
+     * @param username The new username to update too
+     * @param password The new password
+     * @param token The login token
+     * @throws HttpResponseException If something goes wrong
+     */
+    @Override
+    public void updateAccount(long id, String username, String password, String token) throws HttpResponseException {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("username", username);
+        jo.addProperty("password", password);
+
+        APIResponse response = server.patchRequest(jo, new HashMap<>(), token, clinicians, String.valueOf(id), "account");
+        System.out.println(response.getAsString());
+        if (response == null) {
+            throw new HttpResponseException(0, "Could not reach server");
+        }
+        if (response.getStatusCode() != 201) {
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
+    /**
      * gets all the clinicians in the database
      * @param token the users token
      * @return returns all the clinicians from the server

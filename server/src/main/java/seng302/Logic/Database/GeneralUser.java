@@ -1,6 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.*;
 import seng302.Model.*;
 import seng302.Model.Medication.Medication;
@@ -99,7 +100,6 @@ public class GeneralUser extends DatabaseMethods {
             queryBuilder.append("AND ");
 
             String nameFilter = nameFilter(params);
-            String passwordFilter = matchFilter(params, "password", true);
             String usernameFilter = matchFilter(params, "username", true);
             String userTypeFilter = userTypeFilter(params);
             String ageFilter = ageFilter(params);
@@ -110,7 +110,7 @@ public class GeneralUser extends DatabaseMethods {
 
             List<String> filters = new ArrayList<String>();
             filters.addAll(Arrays.asList(
-                    nameFilter, passwordFilter, usernameFilter, userTypeFilter, ageFilter, genderFilter, regionFilter, countryFilter, organFilter
+                    nameFilter, usernameFilter, userTypeFilter, ageFilter, genderFilter, regionFilter, countryFilter, organFilter
             ));
 
             filters.removeIf((String filter) -> filter.equals(""));
@@ -304,7 +304,6 @@ public class GeneralUser extends DatabaseMethods {
         String username = user.getUsername();
         String email = user.getEmail();
         String nhi = user.getNhi();
-        String password = user.getPassword();
         String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
         String g = MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified," +
@@ -321,7 +320,7 @@ public class GeneralUser extends DatabaseMethods {
      * @param user The given user which will be inserted.
      * @throws SQLException If there is a problem working with the database.
      */
-    public void insertUser(User user) throws SQLException {
+    public void insertUser(User user, String passwordHash) throws SQLException {
         User fromDb;
         ResultSet resultSet = null;
         PreparedStatement statement = null;
@@ -346,7 +345,7 @@ public class GeneralUser extends DatabaseMethods {
             String insertAccount = "INSERT INTO ACCOUNT(username, password) VALUES(?, ?)";
             statement = connection.prepareStatement(insertAccount);
             statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
+            statement.setString(2, passwordHash);
             statement.executeUpdate();
             statement.close();
             statement = connection.prepareStatement(createUserStatement(user));
@@ -420,7 +419,6 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("username"),
                     resultSet.getString("email"),
                     resultSet.getString("nhi"),
-                    resultSet.getString("password"),
                     resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
                     resultSet.getString("regionOfDeath"),
@@ -428,6 +426,7 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
+            user.setUsername(resultSet.getString("username"));
 
             int userId = (int) user.getId();
 
@@ -529,7 +528,7 @@ public class GeneralUser extends DatabaseMethods {
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                     "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, " +
-                    "email = ?, nhi = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
+                    "email = ?, nhi = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
                     "WHERE USER.id = ACCOUNT.id AND USER.id = ?";
             statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
@@ -557,13 +556,35 @@ public class GeneralUser extends DatabaseMethods {
             statement.setString(19, user.getUsername());
             statement.setString(20, user.getEmail());
             statement.setString(21, user.getNhi());
-            statement.setString(22, user.getPassword());
-            statement.setString(23, user.getCountry());
-            statement.setString(24, user.getCityOfDeath());
-            statement.setString(25, user.getRegionOfDeath());
-            statement.setString(26, user.getCountryOfDeath());
-            statement.setInt(27, userId);
+            statement.setString(22, user.getCountry());
+            statement.setString(23, user.getCityOfDeath());
+            statement.setString(24, user.getRegionOfDeath());
+            statement.setString(25, user.getCountryOfDeath());
+            statement.setInt(26, userId);
             System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        } finally {
+            close(statement);
+        }
+    }
+
+    /**
+     * Update account details
+     * @param id The id of the user account
+     * @param username The new username to associate with the account
+     * @param password The new password
+     * @param email The new email
+     */
+    public void updateAccount(long id, String username, String email, String password) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            password = SaltHash.createHash(password);
+            String update = "UPDATE USER JOIN ACCOUNT ON USER.id = ACCOUNT.id AND USER.id = ? SET username = ?, email = ?, password = ?";
+            statement = connection.prepareStatement(update);
+            statement.setLong(1, id);
+            statement.setString(2, username);
+            statement.setString(3, email);
+            statement.setString(4, password);
+            statement.executeUpdate();
         } finally {
             close(statement);
         }
@@ -619,7 +640,7 @@ public class GeneralUser extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id JOIN ACCOUNT ON ACCOUNT.id = USER .id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0 AND USER.region is NOT NULL";
             statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             resultSet = statement.executeQuery();

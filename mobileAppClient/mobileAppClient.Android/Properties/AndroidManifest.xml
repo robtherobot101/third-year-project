@@ -31,7 +31,7 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<application android:icon="@drawable/donationIcon" android:theme="@style/MainTheme.Base" android:label="Transcend Donation">
 		<provider android:name="android.support.v4.content.FileProvider" android:authorities="team300.mobileAppClient.fileprovider" android:exported="false" android:grantUriPermissions="true">
-			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
+			<meta-data android:largeHeap="true" android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>
 		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAydo-_tG10jYCRTSdBWelhTXHmR_LK6VE" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />

@@ -1,5 +1,6 @@
 package seng302.data.local;
 
+import org.apache.http.client.HttpResponseException;
 import seng302.data.interfaces.AdminsDAO;
 import seng302.generic.Debugger;
 import seng302.User.Admin;
@@ -42,6 +43,11 @@ public class AdminsM implements AdminsDAO {
     public void updateAdminDetails(Admin admin, String token) {
         removeAdmin(admin.getStaffID(), null);
         admins.add(admin);
+    }
+
+    @Override
+    public void updateAccount(long id, String username, String password, String token) throws HttpResponseException {
+
     }
 
     /**
