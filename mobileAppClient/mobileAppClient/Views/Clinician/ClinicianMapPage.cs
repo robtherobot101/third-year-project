@@ -351,27 +351,13 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private void AddTestHelicopter()
-        {
-            Position start = new Position(-37.9061137, 176.2050742);
-            Position end = new Position(-36.8613687, 174.7676895);
-            AddHelicopter(start, end, Organ.LIVER);
-        }
-
-	    private void AddTest2Helicopter()
-	    {
-	        Position start = new Position(-36.8613687, 174.7676895);
-            Position end = new Position(-37.9061137, 176.2050742);
-            AddHelicopter(start, end, Organ.LUNG);
-        }
-
         /// <summary>
         /// Adds a helicopter to the map!
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="organToTransferType"></param>
-	    private void AddHelicopter(Position start, Position end, Organ organToTransferType)
+	    private void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds)
 	    {
             // Iterate the unique helicopter identifier (is used as a dict key in the map renderer)
 	        string heliID = (++heliCount).ToString();
@@ -380,7 +366,8 @@ namespace mobileAppClient.Views.Clinician
 	        {
 	            startPosition = start,
 	            destinationPosition = end,
-                isLanding = false
+                isLanding = false,
+                duration = seconds
 	        };
 
             // Address is used by helicopters to hold their unique ID
@@ -434,7 +421,7 @@ namespace mobileAppClient.Views.Clinician
                 {
                     intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
                 });
-                                                             
+
             }
 
             // Copy intermediary dictionary into the Maps custom dictionary of helis
@@ -485,8 +472,37 @@ namespace mobileAppClient.Views.Clinician
             foreach (OrganTransfer transfer in transfers)
             {
 
-                AddHelicopter(new Position(transfer.startLat, transfer.startLon), new Position(transfer.endLat, transfer.endLon), transfer.organType);
+                AddHelicopter(GetCurrentPoint(transfer), new Position(transfer.endLat, transfer.endLon), transfer.organType, (int) transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds);
             }
+        }
+
+        private Position GetCurrentPoint(OrganTransfer transfer)
+        {
+            double degToRad = Math.PI / 180;
+
+            double timeToDest = transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
+
+            double distToDest = timeToDest * 70 / 1852;
+
+            double distRads = (Math.PI / (180 * 60)) * distToDest;
+
+            double deltaLongitude = transfer.startLon - transfer.endLon;
+
+
+
+            double x = Math.Cos(transfer.endLat * degToRad) * Math.Sin(deltaLongitude * degToRad);
+            double y = Math.Cos(transfer.startLat * degToRad) * Math.Sin(transfer.endLat * degToRad) - Math.Sin(transfer.startLat * degToRad) * Math.Cos(transfer.endLat * degToRad) * Math.Cos(deltaLongitude * degToRad);
+
+            double bearing = Math.Atan2(x, y) / degToRad - 180;
+
+            double currentLat = Math.Asin(Math.Sin(transfer.endLat * degToRad) * Math.Cos(distRads) + Math.Cos(transfer.endLat * degToRad) * Math.Sin(distRads) * Math.Cos(bearing * degToRad));
+
+            double test = currentLat / degToRad;
+
+            double distanceLon = Math.Atan2(Math.Sin(bearing * degToRad) * Math.Sin(distRads) * Math.Cos(transfer.endLat * degToRad), Math.Cos(distRads) - Math.Sin(transfer.endLat * degToRad) * Math.Sin(currentLat));
+            double currentLon = ((transfer.endLon * degToRad - distanceLon + Math.PI) % (2 * Math.PI)) - Math.PI;
+
+            return new Position(currentLat / degToRad, currentLon / degToRad);
         }
     }
 }
