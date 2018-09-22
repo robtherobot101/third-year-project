@@ -44,4 +44,6 @@ public interface GeneralDAO {
     List<Hospital> getHospitals(String token) throws HttpResponseException;
 
     void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException;
+
+    List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException;
 }

@@ -6,7 +6,6 @@ import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Logic.SaltHash;
 import seng302.Logic.Database.ProfileUtils;
-import seng302.Logic.SaltHash;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;
@@ -315,8 +314,8 @@ public class UserController {
         } else {
             if (checkNhi(receivedUser.getNhi())) {
                 try {
-                    receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
-                    model.insertUser(receivedUser);
+                    String passwordHash = SaltHash.createHash((String) gson.fromJson(request.body(), Map.class).get("password"));
+                    model.insertUser(receivedUser, passwordHash);
                     response.status(201);
                     return "Success";
                 } catch (SQLException e) {
@@ -417,7 +416,6 @@ public class UserController {
                     String token = request.headers("token");
                     ProfileUtils profileUtils = new ProfileUtils();
                     int accessLevel = profileUtils.checkToken(token);
-                    receivedUser.setPassword(SaltHash.createHash(receivedUser.getPassword()));
                     model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                     response.status(201);
                     return "USER SUCCESSFULLY UPDATED";
@@ -434,6 +432,35 @@ public class UserController {
                 return "Malformed NHI supplied";
             }
         }
+    }
+
+    /**
+     * method to process the editing of a specific user account
+     * @param request Java request object, used to invoke correct methods
+     * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
+     * @return String whether the editing of the user was successful or not
+     */
+    public String editAccount(Request request, Response response) {
+        Map content = new Gson().fromJson(request.body(), Map.class);
+        try {
+            if (!content.keySet().containsAll(Arrays.asList("username", "email", "password"))) {
+                throw new JsonSyntaxException("Missing parameters from JSON body");
+            }
+            model.updateAccount(Long.parseLong(request.params().get(":id")),
+                    (String) content.get("username"),
+                    (String) content.get("email"),
+                    (String) content.get("password"));
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return "Internal Server Error";
+        } catch (JsonSyntaxException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(400);
+            return "Request body not correct";
+        }
+        response.status(201);
+        return "Account updated";
     }
 
     /**

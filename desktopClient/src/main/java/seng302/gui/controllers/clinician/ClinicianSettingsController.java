@@ -85,7 +85,7 @@ public class ClinicianSettingsController implements Initializable {
                     stage.close();
                     WindowManager.setCurrentClinician(clinician, token);
                     try {
-                        WindowManager.getDataManager().getClinicians().updateClinician(clinician, token);
+                        WindowManager.getDataManager().getClinicians().updateAccount(clinician.getStaffID(), usernameField.getText(), passwordField.getText(), token);
                     } catch (HttpResponseException e) {
                         Debugger.error("Failed to update clinician with id: " + clinician.getStaffID());
                     }

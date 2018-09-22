@@ -29,6 +29,7 @@ import org.controlsfx.control.StatusBar;
 import seng302.User.Attribute.NZRegion;
 import seng302.data.interfaces.GeneralDAO;
 import seng302.gui.controllers.clinician.ClinicianAvailableOrgansController;
+import seng302.gui.controllers.clinician.ClinicianTransferOrgansController;
 import seng302.gui.controllers.clinician.ClinicianWaitingListController;
 import seng302.gui.controllers.clinician.CreateClinicianController;
 import seng302.gui.controllers.user.CreateUserController;
@@ -117,6 +118,8 @@ public class AdminController implements Initializable {
     @FXML
     private Button availableOrgansButton;
     @FXML
+    private Button transferOrgansButton;
+    @FXML
     private Button refreshButton;
     @FXML
     private GridPane mainPane;
@@ -141,11 +144,17 @@ public class AdminController implements Initializable {
     @FXML
     private AnchorPane organsPane;
     @FXML
+    private AnchorPane transfersPane;
+
+    @FXML
     private AdminCliController cliController;
     @FXML
     private ClinicianWaitingListController waitingListController;
     @FXML
     private ClinicianAvailableOrgansController availableOrgansController;
+    @FXML
+    private ClinicianTransferOrgansController transferOrgansController;
+
 
     @FXML
     private TextField adminRegionField;
@@ -283,6 +292,7 @@ public class AdminController implements Initializable {
         cliController.setToken(token);
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
+        transferOrgansController.setToken(token);
 
         try {
             List<String> validCountries = new ArrayList<>();
@@ -1200,9 +1210,11 @@ public class AdminController implements Initializable {
         setButtonSelected(transplantListButton, false);
         setButtonSelected(cliTabButton, false);
         setButtonSelected(availableOrgansButton, false);
+        setButtonSelected(transferOrgansButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
+        transfersPane.setVisible(false);
         cliPane.setVisible(false);
         organsPane.setVisible(false);
     }
@@ -1243,6 +1255,22 @@ public class AdminController implements Initializable {
         availableOrgansController.setup();
         WindowManager.updateAvailableOrgans();
     }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organTransfers() {
+        hideAllTabs();
+
+        setButtonSelected(transferOrgansButton, true);
+
+        transfersPane.setVisible(true);
+        availableOrgansController.startTimer();
+        availableOrgansController.setup();
+        WindowManager.updateAvailableOrgans();
+    }
+
 
     /**
      * Switches the active pane to the CLI pane.
