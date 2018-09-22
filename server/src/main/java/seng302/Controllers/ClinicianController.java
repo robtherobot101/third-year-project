@@ -185,10 +185,12 @@ public class ClinicianController {
                     (String) content.get("username"),
                     (String) content.get("password"));
         } catch (SQLException e) {
+            e.printStackTrace();
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "Internal Server Error";
         } catch (JsonSyntaxException e) {
+            e.printStackTrace();
             Server.getInstance().log.error(e.getMessage());
             response.status(400);
             return "Request body not correct";
