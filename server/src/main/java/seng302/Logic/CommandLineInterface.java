@@ -306,13 +306,14 @@ public class CommandLineInterface {
      * @return Whether the command was executed
      */
     private CommandLineResponse addUser(String[] nextCommand) {
-        if (nextCommand.length == 5) {
+        if (nextCommand.length == 6) {
             try {
-                LocalDate dob = LocalDate.parse(nextCommand[4], User.dateFormat);
+                LocalDate dob = LocalDate.parse(nextCommand[5], User.dateFormat);
                 if(dob.isBefore(LocalDate.now())) {
-                    User insertUser = new User(nextCommand[3].replace("\"", ""), dob);
+                    User insertUser = new User(nextCommand[4].replace("\"", ""), dob);
                     insertUser.setUsername(nextCommand[1]);
-                    insertUser.setPassword(SaltHash.createHash(nextCommand[2]));
+                    insertUser.setNhi(nextCommand[2]);
+                    insertUser.setPassword(SaltHash.createHash(nextCommand[3]));
                     new GeneralUser().insertUser(insertUser);
                     return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername()).getId());
                 } else {
@@ -321,10 +322,11 @@ public class CommandLineInterface {
             } catch (DateTimeException e) {
                 return new CommandLineResponse(false, "Please enter a valid date of birth in the format dd/mm/yyyy.");
             } catch (SQLException e) {
+                System.out.println(e.getMessage());
                 return new CommandLineResponse(false, "An error occurred creating this user. This username may already be taken");
             }
         } else {
-            return new CommandLineResponse(false, getIncorrectUsageString("addUser", 4, "<username> <password> \"name part 1,name part 2\" <date of birth>"));
+            return new CommandLineResponse(false, getIncorrectUsageString("addUser", 4, "<username> <NHI> <password> \"name part 1,name part 2\" <date of birth>"));
         }
     }
 

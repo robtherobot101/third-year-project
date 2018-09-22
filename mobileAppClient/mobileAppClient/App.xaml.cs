@@ -20,11 +20,10 @@ namespace mobileAppClient
         //Static variables for the app
         public static string DefaultImageId = "default_image";
         public static string ImageIdToSave = null;
-
         /*
          * Open the app to have a the main page xaml as the bottom of 
          * the stack of views.
-         */ 
+         */
         public App()
         {
             InitializeComponent();

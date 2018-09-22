@@ -1,6 +1,8 @@
 package seng302.data.local;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
+import org.json.JSONObject;
 import seng302.data.interfaces.AdminsDAO;
 import seng302.data.interfaces.CliniciansDAO;
 import seng302.data.interfaces.GeneralDAO;
@@ -184,5 +186,20 @@ public class GeneralM implements GeneralDAO {
     @Override
     public List<DonatableOrgan> getAllDonatableOrgans(Map filterParams, String token) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public JSONObject getPosition(String address) throws UnirestException{
+        return new JSONObject();
+    }
+
+    @Override
+    public List<Hospital> getHospitals(String token) throws HttpResponseException {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException {
+
     }
 }

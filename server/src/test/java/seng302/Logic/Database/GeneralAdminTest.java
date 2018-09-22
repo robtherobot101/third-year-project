@@ -22,7 +22,7 @@ public class GeneralAdminTest extends GenericTest {
     public void getAdminFromResultSet() throws SQLException {
         Admin admin = HelperMethods.insertAdmin(generalAdmin);
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT * FROM ADMIN WHERE username = ?";
+            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE staff_id = id AND username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, admin.getUsername());

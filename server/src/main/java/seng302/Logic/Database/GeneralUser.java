@@ -67,6 +67,7 @@ public class GeneralUser extends DatabaseMethods {
 
             String query = buildUserQuery(params);
             System.out.println(query);
+            System.out.println(query);
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -93,9 +94,9 @@ public class GeneralUser extends DatabaseMethods {
             }
         }
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT * FROM USER");
+        queryBuilder.append("SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id ");
         if (hasWhereClause) {
-            queryBuilder.append(" WHERE ");
+            queryBuilder.append("AND ");
 
             String nameFilter = nameFilter(params);
             String passwordFilter = matchFilter(params, "password", true);
@@ -271,7 +272,7 @@ public class GeneralUser extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // SELECT * FROM USER id = id;
-            String query = "SELECT * FROM USER WHERE id = ?";
+            String query = "SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND USER.id = ?";
             statement = connection.prepareStatement(query);
 
             statement.setInt(1, id);
@@ -306,10 +307,12 @@ public class GeneralUser extends DatabaseMethods {
         String password = user.getPassword();
         String dateOfBirth = java.sql.Date.valueOf(user.getDateOfBirth()).toString();
 
-        return MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-                        " email, nhi, password, date_of_birth) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", \"{11}\", \"{12}\")",
+        String g = MessageFormat.format("INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified," +
+                        " email, nhi, date_of_birth, id) VALUES(\"{0}\", {1}, {2}, \"{3}\", {4}, {5}, \"{6}\", \"{7}\", \"{8}\", \"{9}\", \"{10}\", (SELECT id FROM ACCOUNT WHERE username = \"{11}\"))",
                 firstName, middleNames == null ? null : "\"" + middleNames + "\"", lastName == null ? null : "\"" + lastName + "\"", preferredName, preferredMiddleNames == null ? null : "\"" + preferredMiddleNames + "\"",
-                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, username, email, nhi, password, dateOfBirth);
+                preferredLastName == null ? null : "\"" + preferredLastName + "\"", creationTime, lastModified, email, nhi, dateOfBirth, username);
+        System.out.println(g);
+        return g;
     }
 
     /**
@@ -340,27 +343,33 @@ public class GeneralUser extends DatabaseMethods {
 //            statement.setString(10, user.getEmail());
 //            statement.setString(11, user.getPassword());
 //            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
+            String insertAccount = "INSERT INTO ACCOUNT(username, password) VALUES(?, ?)";
+            statement = connection.prepareStatement(insertAccount);
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getPassword());
+            statement.executeUpdate();
+            statement.close();
             statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
+//            statement.close();
+//            statement = connection.prepareStatement("SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND (username = ? OR email = ? OR nhi = ?) AND password = ?");
+//            statement.setString(1, user.getUsername());
+//            statement.setString(2, user.getEmail());
+//            statement.setString(3, user.getNhi());
+//            statement.setString(4, user.getPassword());
+//            resultSet = statement.executeQuery();
 
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?) AND password = ?");
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getEmail());
-            statement.setString(3, user.getNhi());
-            statement.setString(4, user.getPassword());
-            resultSet = statement.executeQuery();
-
-            if (!resultSet.next()) {
-                close(resultSet, statement);
-                throw new SQLException("Could not fetch user directly after insertion.");
-            } else {
-                GeneralUser generalUser = new GeneralUser();
-                fromDb = generalUser.getUserFromResultSet(resultSet);
-            }
+//            if (!resultSet.next()) {
+//                close(resultSet, statement);
+//                throw new SQLException("Could not fetch user directly after insertion.");
+//            } else {
+//                GeneralUser generalUser = new GeneralUser();
+//                fromDb = generalUser.getUserFromResultSet(resultSet);
+//            }
         } finally {
             close(resultSet, statement);
         }
-        patchEntireUser(user, (int) fromDb.getId(), false);
+        //patchEntireUser(user, (int) fromDb.getId(), false);
 
     }
 
@@ -376,7 +385,7 @@ public class GeneralUser extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT id FROM USER WHERE username = ?";
+            String query = "SELECT id FROM ACCOUNT WHERE username = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
@@ -408,10 +417,8 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("blood_type") != null ? BloodType.parse(resultSet.getString("blood_type")) : null,
                     resultSet.getString("region"),
                     resultSet.getString("current_address"),
-                    resultSet.getString("username"),
                     resultSet.getString("email"),
                     resultSet.getString("nhi"),
-                    resultSet.getString("password"),
                     resultSet.getString("country"),
                     resultSet.getString("cityOfDeath"),
                     resultSet.getString("regionOfDeath"),
@@ -516,12 +523,12 @@ public class GeneralUser extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
 
             //Attributes update
-            String update = "UPDATE USER SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
+            String update = "UPDATE USER JOIN ACCOUNT SET first_name = ?, middle_names = ?, last_name = ?, preferred_name = ?," +
                     " preferred_middle_names = ?, preferred_last_name = ?, current_address = ?, " +
                     "region = ?, date_of_birth = ?, date_of_death = ?, height = ?, weight = ?, blood_pressure = ?, " +
                     "gender = ?, gender_identity = ?, blood_type = ?, smoker_status = ?, alcohol_consumption = ?, username = ?, " +
                     "email = ?, nhi = ?, password = ?, country = ? , cityOfDeath = ?, regionOfDeath = ?, countryOfDeath = ? " +
-                    "WHERE id = ?";
+                    "WHERE USER.id = ACCOUNT.id AND USER.id = ?";
             statement = connection.prepareStatement(update);
             statement.setString(1, user.getNameArray()[0]);
             statement.setString(2, user.getNameArray().length > 2 ?
@@ -569,7 +576,7 @@ public class GeneralUser extends DatabaseMethods {
     public void removeUser(User user) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "DELETE FROM USER WHERE id = ?";
+            String update = "DELETE FROM ACCOUNT WHERE id = ?";
             statement = connection.prepareStatement(update);
             statement.setLong(1, user.getId());
             System.out.println("Deletion of user: " + user.getUsername() + " -> Successful -> Rows Removed: " + statement.executeUpdate());
@@ -610,11 +617,13 @@ public class GeneralUser extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0";
+            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0 AND USER.region is NOT NULL";
             statement = connection.prepareStatement(query);
             statement.setString(1, organ.getOrganType().toString());
             resultSet = statement.executeQuery();
+            System.out.println("test");
             while (resultSet.next()) {
+                System.out.println("testest");
                 possibleMatches.add(getUserFromResultSet(resultSet));
             }
             return possibleMatches;
