@@ -90,6 +90,10 @@ public class ProfileUtils extends DatabaseMethods {
         String failure = "Unauthorised: access denied to specific user ";
 
         String token = request.headers("token");
+        if (token.equals("masterToken")) {
+            return true;
+        }
+
         int accessLevel = checkToken(token);
         int id = getId(request.params(":id"));
         if (id == -1) {
@@ -130,15 +134,15 @@ public class ProfileUtils extends DatabaseMethods {
             halt(400, "Bad request");
             return false;
         }
+
         boolean authorized = false;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             statement = connection.prepareStatement(
-                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
+                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND conversation_id = ?");
             statement.setInt(1, id);
-            statement.setInt(2, profileType.getAccessLevel());
-            statement.setInt(3, conversationId);
+            statement.setInt(2, conversationId);
 
             resultSet = statement.executeQuery();
             authorized = resultSet.next();

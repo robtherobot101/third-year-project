@@ -34,6 +34,16 @@ public enum Organ {
         }
         throw new IllegalArgumentException("Organ not recognised");
     }
+
+    /**
+     * Change the first letter of a string to a capital letter.
+     *
+     * @param s The string to capitalise
+     * @return The capitalised string
+     */
+    public static String capitalise(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
 }
 
 
