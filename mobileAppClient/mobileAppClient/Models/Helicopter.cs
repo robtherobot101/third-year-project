@@ -32,16 +32,6 @@ namespace mobileAppClient.Models
             return new Position(newLatitude, newLongitude);
         }
 
-        /// <summary>
-        /// Gets the position of where the organ pin should be nested/attached to the helicopter
-        /// </summary>
-        /// <param name="currentPosition"></param>
-        /// <returns></returns>
-        public Position getOrganPosition(Position currentPosition)
-        {
-            return new Position(currentPosition.Latitude + 0.01, currentPosition.Longitude + 0.01);
-        }
-
         public bool hasArrived(Position currentPosition)
         {
             bool latEqual = Math.Abs(currentPosition.Latitude - destinationPosition.Latitude) <= 0.0001;
