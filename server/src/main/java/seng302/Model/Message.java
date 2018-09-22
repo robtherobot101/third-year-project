@@ -56,13 +56,13 @@ public class Message {
         return conversationId;
     }
 
-    public Map<String, Object> messageMap() {
-        Map<String, Object> m = new HashMap<>();
-        m.put("id", id);
+    public Map<String, String> messageMap() {
+        Map<String, String> m = new HashMap<>();
+        m.put("id", String.valueOf(id));
         m.put("text", text);
-        m.put("timestamp", timestamp);
-        m.put("userId", userId);
-        m.put("conversationId", conversationId);
+        m.put("timestamp", timestamp.toString());
+        m.put("userId", String.valueOf(userId));
+        m.put("conversationId", String.valueOf(conversationId));
         return m;
     }
 }

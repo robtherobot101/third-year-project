@@ -109,8 +109,8 @@ public class Conversations {
                     participants.put(resultSet.getInt(1), resultSet.getString(2));
                 }
                 conversation = new Conversation(conversationId, messages, participants);
-            } catch (SQLException ignored) {
-                ignored.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
