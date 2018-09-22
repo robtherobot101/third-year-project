@@ -57,8 +57,16 @@ namespace mobileAppClient
 	        Tuple<HttpStatusCode, Conversation> refreshedConversation = await new MessagingAPI().GetConversation(localId, conversation.id, isClinicianAccessing);
 	        if (refreshedConversation.Item1 == HttpStatusCode.OK)
 	        {
-	            conversation = refreshedConversation.Item2;
-                populateMessages();
+	            List<Message> newConversationMessages = refreshedConversation.Item2.messages;
+                if (conversation.messages.Union(newConversationMessages).Count() != conversation.messages.Count())
+                {
+                    conversation.messages.AddRange(newConversationMessages.Except(conversation.messages));
+                }
+
+                if (conversationMessages.Count > 0)
+                {
+                    MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+                }
 	        }
 	    }
 
@@ -98,7 +106,7 @@ namespace mobileAppClient
             {
                 currentMessage.SetType(localId);
                 conversationMessages.Add(currentMessage);
-            }
+            } 
         }
 
         /// <summary>
@@ -134,8 +142,6 @@ namespace mobileAppClient
             conversationMessages.Add(newMessage);
             MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
-
-
 	    }
 	}
 }
