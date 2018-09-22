@@ -185,11 +185,11 @@ namespace mobileAppClient.Views.Clinician
                                 case ("liver"):
                                     imageString = "liver_icon.png";
                                     break;
-                                case ("connective-tissue"):
-                                    imageString = "connective-tissue_icon.png";
+                                case ("tissue"):
+                                    imageString = "tissue_icon.png";
                                     break;
-                                case ("bone-marrow"):
-                                    imageString = "bone-marrow_icon.png";
+                                case ("bone"):
+                                    imageString = "bone_icon.png";
                                     break;
                                 case ("skin"):
                                     imageString = "skin_icon.png";
@@ -206,8 +206,8 @@ namespace mobileAppClient.Views.Clinician
                                 case ("intestine"):
                                     imageString = "intestine_icon.png";
                                     break;
-                                case ("middle-ear"):
-                                    imageString = "middle-ear_icon.png";
+                                case ("ear"):
+                                    imageString = "ear_icon.png";
                                     break;
                             }
                             organIcons.Add(imageString);

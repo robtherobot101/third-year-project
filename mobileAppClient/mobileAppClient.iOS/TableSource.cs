@@ -58,7 +58,8 @@ namespace mobileAppClient.iOS
             cell.ImageView.Image = UIImage.FromFile(photoItem);
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
-             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {                 countdownDetail = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
+             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {
+                cell.DetailTextLabel.Text = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
                 long timeRemaining = timeRemainingTuple.Item2;                 if(timeRemaining <= 3600) {
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(244, 65, 65);
                 } else if(timeRemaining <= 10800) {
@@ -81,7 +82,9 @@ namespace mobileAppClient.iOS
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(76, 244, 65);
                 }              }
 
-            Cells.Add(item.ToLower(),cell);
+            if(!Cells.ContainsKey(item.ToLower())) {
+                Cells.Add(item.ToLower(), cell);
+            }
             return cell;
         }
 
